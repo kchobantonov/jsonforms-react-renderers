@@ -76,6 +76,7 @@ export * from './register';
 export * from './example';
 
 import * as ifThenElse from './examples/if_then_else';
+import * as templateRenderers from './examples/template-renderers';
 
 export {
   issue_1948,
@@ -129,4 +130,5 @@ export {
   additionalErrors,
   issue_1884,
   arrayWithDefaults,
+  templateRenderers,
 };

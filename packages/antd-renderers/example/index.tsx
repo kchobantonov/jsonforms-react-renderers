@@ -34,6 +34,7 @@ import {
 } from 'antd';
 import { renderExample } from '../../examples-react/src/index';
 import { antdRenderers, antdCells } from '../src';
+import { extendedRenderers } from '../../extended-renderers/src/index';
 
 const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   const [variant, setVariant] =
@@ -80,4 +81,4 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   );
 };
 
-renderExample(antdRenderers, antdCells, AntdWrapper);
+renderExample(antdRenderers.concat(extendedRenderers), antdCells, AntdWrapper);
