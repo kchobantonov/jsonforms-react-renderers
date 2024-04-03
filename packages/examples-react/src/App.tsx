@@ -31,9 +31,8 @@ import {
   JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Highlight from 'react-highlight';
-import 'highlight.js/styles/default.css';
 import './App.css';
+import Editor from '@monaco-editor/react';
 
 type AppProps = {
   examples: ExampleDescription[];
@@ -169,13 +168,67 @@ const App = ({
                   </TabList>
                   <div className='panel-wrapper'>
                     <TabPanel>
-                      <Highlight className='json'>{dataAsString}</Highlight>
+                      <Editor
+                        height='90vh'
+                        defaultLanguage='json'
+                        value={dataAsString}
+                        onChange={(value) =>
+                          setExampleProps((oldProps) => {
+                            try {
+                              const data = JSON.parse(value ?? '');
+
+                              return {
+                                ...oldProps,
+                                data: data,
+                              };
+                            } catch (e) {
+                              return oldProps;
+                            }
+                          })
+                        }
+                      />
                     </TabPanel>
                     <TabPanel>
-                      <Highlight className='json'>{schemaAsString}</Highlight>
+                      <Editor
+                        height='90vh'
+                        defaultLanguage='json'
+                        value={schemaAsString}
+                        onChange={(value) =>
+                          setExampleProps((oldProps) => {
+                            try {
+                              const schema = JSON.parse(value ?? '');
+
+                              return {
+                                ...oldProps,
+                                schema: schema,
+                              };
+                            } catch (e) {
+                              return oldProps;
+                            }
+                          })
+                        }
+                      />
                     </TabPanel>
                     <TabPanel>
-                      <Highlight className='json'>{uiSchemaAsString}</Highlight>
+                      <Editor
+                        height='90vh'
+                        defaultLanguage='json'
+                        value={uiSchemaAsString}
+                        onChange={(value) =>
+                          setExampleProps((oldProps) => {
+                            try {
+                              const uischema = JSON.parse(value ?? '');
+
+                              return {
+                                ...oldProps,
+                                uischema: uischema,
+                              };
+                            } catch (e) {
+                              return oldProps;
+                            }
+                          })
+                        }
+                      />
                     </TabPanel>
                   </div>
                 </Tabs>

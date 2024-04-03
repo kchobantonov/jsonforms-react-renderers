@@ -3,17 +3,15 @@
   "version": "3.2.1",
   "private": true,
   "dependencies": {
-    "@jsonforms/core": "3.2.1",
     "@chobantonov/examples": "workspace:*",
+    "@jsonforms/core": "3.2.1",
     "@jsonforms/react": "3.2.1",
-    "@types/react-highlight": "^0.12.5",
+    "@monaco-editor/react": "^4.6.0",
     "@types/react-tabs": "^2.3.3",
-    "highlight.js": "^11.3.1",
     "json-refs": "3.0.15",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-highlight": "^0.14.0",
     "react-tabs": "^3.2.3"
   },
   "devDependencies": {
