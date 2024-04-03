@@ -169,7 +169,7 @@ const App = ({
                   <div className='panel-wrapper'>
                     <TabPanel>
                       <Editor
-                        height='90vh'
+                        height='70vh'
                         defaultLanguage='json'
                         value={dataAsString}
                         onChange={(value) =>
@@ -190,7 +190,7 @@ const App = ({
                     </TabPanel>
                     <TabPanel>
                       <Editor
-                        height='90vh'
+                        height='70vh'
                         defaultLanguage='json'
                         value={schemaAsString}
                         onChange={(value) =>
@@ -211,7 +211,7 @@ const App = ({
                     </TabPanel>
                     <TabPanel>
                       <Editor
-                        height='90vh'
+                        height='70vh'
                         defaultLanguage='json'
                         value={uiSchemaAsString}
                         onChange={(value) =>
