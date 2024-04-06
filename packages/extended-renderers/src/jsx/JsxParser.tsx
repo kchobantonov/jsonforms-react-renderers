@@ -4,7 +4,6 @@ import * as AcornJSX from 'acorn-jsx';
 import React, { Fragment, ComponentType, ExoticComponent } from 'react';
 import ATTRIBUTES from './constants/attributeNames';
 import { canHaveChildren, canHaveWhitespace } from './constants/specialTags';
-import { randomHash } from './helpers/hash';
 import { parseStyle } from './helpers/parseStyle';
 import { resolvePath } from './helpers/resolvePath';
 
@@ -137,7 +136,9 @@ export default class JsxParser extends React.Component<
       case 'JSXExpressionContainer':
         return this.parseExpression(expression.expression, scope);
       case 'JSXText': {
-        const key = this.props.disableKeyGeneration ? undefined : randomHash();
+        const key = this.props.disableKeyGeneration
+          ? undefined
+          : expression.start;
         return this.props.disableFragments ? (
           expression.value
         ) : (
@@ -462,7 +463,7 @@ export default class JsxParser extends React.Component<
     }
 
     const props: { [key: string]: any } = {
-      key: this.props.disableKeyGeneration ? undefined : randomHash(),
+      key: this.props.disableKeyGeneration ? undefined : element.start,
     };
     attributes.forEach(
       // eslint-disable-next-line max-len
