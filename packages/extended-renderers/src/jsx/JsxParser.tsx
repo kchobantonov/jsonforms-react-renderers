@@ -327,19 +327,26 @@ export default class JsxParser extends React.Component<
   ): any => {
     // eslint-disable-next-line prefer-destructuring
     let { object } = expression;
-    const path = [
-      expression.property.type === 'MemberExpression'
-        ? this.parseExpression(expression.property, scope)
-        : expression.property?.name ??
-          JSON.parse(expression.property?.raw ?? '""'),
-    ];
+
+    let propertyValue: any = undefined;
+    if (expression.property.type === 'MemberExpression') {
+      propertyValue = this.parseExpression(expression.property, scope);
+    } else if (expression.property.type === 'Literal') {
+      propertyValue = expression.property?.value;
+    } else {
+      propertyValue =
+        expression.property?.name ??
+        JSON.parse(JSON.stringify(expression.property?.raw) ?? '""');
+    }
+
+    const path = [propertyValue];
     if (expression.object.type !== 'Literal') {
       while (object && ['MemberExpression', 'Literal'].includes(object?.type)) {
         const { property } = object as AcornJSX.MemberExpression;
         if ((object as AcornJSX.MemberExpression).computed) {
           path.unshift(this.parseExpression(property!, scope));
         } else {
-          path.unshift(property?.name ?? JSON.parse(property?.raw ?? '""'));
+          path.unshift(property?.name ?? property?.value ?? '""');
         }
 
         object = (object as AcornJSX.MemberExpression).object;

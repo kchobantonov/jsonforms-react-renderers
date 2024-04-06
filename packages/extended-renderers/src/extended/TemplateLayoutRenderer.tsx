@@ -68,7 +68,9 @@ export const TemplateLayoutRenderer = ({
   const namedElements = useMemo(() => {
     const elements = (uischema as Layout).elements ?? [];
     return elements.map((element, index) => {
-      (element as any).name = index;
+      if ((element as any).name === undefined) {
+        (element as any).name = index;
+      }
       return element;
     });
   }, [uischema]);
