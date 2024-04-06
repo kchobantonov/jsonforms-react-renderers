@@ -333,6 +333,12 @@ export default class JsxParser extends React.Component<
       propertyValue = this.parseExpression(expression.property, scope);
     } else if (expression.property.type === 'Literal') {
       propertyValue = expression.property?.value;
+    } else if (expression.property.type === 'Identifier') {
+      if (expression.computed) {
+        propertyValue = this.parseExpression(expression.property, scope);
+      } else {
+        propertyValue = expression.property?.name;
+      }
     } else {
       propertyValue =
         expression.property?.name ??
