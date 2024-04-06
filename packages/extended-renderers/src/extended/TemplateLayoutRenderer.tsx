@@ -22,10 +22,20 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { LayoutProps, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
-import { useJsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
+import {
+  Layout,
+  LayoutProps,
+  RankedTester,
+  rankWith,
+  uiTypeIs,
+} from '@jsonforms/core';
+import {
+  JsonFormsDispatch,
+  useJsonForms,
+  withJsonFormsLayoutProps,
+} from '@jsonforms/react';
 import React, { useMemo } from 'react';
-import JsxParser from 'react-jsx-parser';
+import JsxParser from '../jsx/JsxParser';
 
 export interface TemplateLayoutProps extends LayoutProps {
   template: string;
@@ -44,12 +54,40 @@ export const templateRendererTester: RankedTester = rankWith(
  * Default renderer for a template layout.
  */
 export const TemplateLayoutRenderer = ({
+  enabled,
+  schema,
   uischema,
   visible,
+  path,
+  renderers,
+  cells,
 }: TemplateLayoutProps) => {
   const ctx = useJsonForms();
 
-  const template = useMemo(() => (uischema as any).template, [uischema]);
+  const template = (uischema as any).template;
+  const namedElements = useMemo(() => {
+    const elements = (uischema as Layout).elements ?? [];
+    return elements.map((element, index) => {
+      (element as any).name = index;
+      return element;
+    });
+  }, [uischema]);
+
+  const children = Object.fromEntries(
+    namedElements.map((element, index) => [
+      (element as any).name,
+
+      <JsonFormsDispatch
+        key={`${path}-${index}`}
+        uischema={element}
+        schema={schema}
+        path={path}
+        enabled={enabled}
+        renderers={renderers}
+        cells={cells}
+      />,
+    ])
+  );
 
   return useMemo(() => {
     if (!visible) return null;
@@ -60,6 +98,9 @@ export const TemplateLayoutRenderer = ({
           jsonforms: ctx,
           locale: ctx.i18n?.locale,
           translate: ctx.i18n?.translate,
+
+          children: children,
+          elements: namedElements,
 
           data: ctx.core?.data,
           schema: ctx.core?.schema,
@@ -72,7 +113,15 @@ export const TemplateLayoutRenderer = ({
         renderInWrapper={false}
       />
     );
-  }, [visible, template, ctx]);
+  }, [
+    visible,
+    template,
+    ctx.i18n?.locale,
+    namedElements,
+    ctx.core?.data,
+    ctx.core?.errors,
+    ctx.core?.additionalErrors,
+  ]);
 };
 
 export default withJsonFormsLayoutProps(TemplateLayoutRenderer);

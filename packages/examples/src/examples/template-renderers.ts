@@ -83,20 +83,73 @@ export const schema = {
 };
 
 export const uischema = {
-  type: 'VerticalLayout',
+  type: 'TemplateLayout',
+  template:
+    '<div>{elements.map(element => (<div key={element.name}>{children[element.name]}</div>))}</div>',
   elements: [
     {
-      type: 'Control',
-      scope: '#/properties/name',
-      label: 'Name',
-      options: {
-        trim: true,
-        restrict: true,
-      },
+      type: 'TemplateLayout',
+      template: 'Hello {data.name}',
+    },
+    {
+      type: 'VerticalLayout',
+      elements: [
+        {
+          type: 'HorizontalLayout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/name',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/personalData/properties/age',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/birthDate',
+            },
+          ],
+        },
+        {
+          type: 'TemplateLayout',
+          template:
+            '<div>Additional Information For <strong>{ data.name }</strong></div>',
+        },
+        {
+          type: 'HorizontalLayout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/personalData/properties/height',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/nationality',
+            },
+            {
+              type: 'Control',
+              scope: '#/properties/occupation',
+              options: {
+                suggestion: [
+                  'Accountant',
+                  'Engineer',
+                  'Freelancer',
+                  'Journalism',
+                  'Physician',
+                  'Student',
+                  'Teacher',
+                  'Other',
+                ],
+              },
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'TemplateLayout',
-      template: '<div>This is a template layout for Name: {data.name} </div>',
+      template: 'Footer',
     },
   ],
 };

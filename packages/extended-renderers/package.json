@@ -34,7 +34,8 @@
   "module": "lib/jsonforms-react-extended.esm.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "react-jsx-parser": "^1.29.0"
+    "acorn": "8.0.5",
+    "acorn-jsx": "5.3.1"
   },
   "peerDependencies": {
     "@jsonforms/core": "3.2.1",
@@ -50,6 +51,7 @@
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.1",
+    "@types/acorn": "4.0.5",
     "@types/enzyme": "^3.10.3",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
