@@ -183,8 +183,12 @@ const withActionsColumn = (columns: any, props: ArrayLayoutProps) => {
           title: '',
           editable: true,
           width,
-          render: (_field: any, _row: any, index: number) => {
-            return <RenderActionsCell {...{ index, ...props }} />;
+          render: (
+            _field: any,
+            row: { index: number; key: number },
+            _index: number
+          ) => {
+            return <RenderActionsCell {...{ index: row.index, ...props }} />;
           },
         },
       ])
