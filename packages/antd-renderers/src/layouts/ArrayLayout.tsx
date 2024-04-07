@@ -22,21 +22,46 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import range from 'lodash/range';
-import React, { useState, useCallback } from 'react';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  DeleteFilled,
+} from '@ant-design/icons';
 import {
   ArrayLayoutProps,
+  OwnPropsOfJsonFormsRenderer,
+  Resolve,
   composePaths,
   computeLabel,
   createDefaultValue,
+  findUISchema,
+  getFirstPrimitiveProp,
 } from '@jsonforms/core';
+import {
+  JsonFormsDispatch,
+  JsonFormsStateContext,
+  withJsonFormsContext,
+} from '@jsonforms/react';
+import {
+  Avatar,
+  Button,
+  Collapse,
+  Empty,
+  Space,
+  Tooltip,
+  Typography,
+} from 'antd';
+import get from 'lodash/get';
 import map from 'lodash/map';
-import { ArrayLayoutToolbar } from './ArrayToolbar';
-import ExpandPanelRenderer from './ExpandPanelRenderer';
 import merge from 'lodash/merge';
-import { Collapse, Empty } from 'antd';
+import range from 'lodash/range';
+import React, { ComponentType, useCallback, useMemo, useState } from 'react';
+import Hidden from '../util/Hidden';
+import { ArrayLayoutToolbar } from './ArrayToolbar';
 
-const ArrayLayoutComponent = (props: ArrayLayoutProps) => {
+const ArrayLayoutComponent = (
+  props: JsonFormsStateContext & ArrayLayoutProps
+) => {
   const [expanded, setExpanded] = useState<string | boolean>(false);
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
@@ -48,9 +73,6 @@ const ArrayLayoutComponent = (props: ArrayLayoutProps) => {
     },
     []
   );
-  const isExpanded = (index: number) =>
-    expanded === composePaths(props.path, `${index}`);
-
   const {
     enabled,
     data,
@@ -68,8 +90,77 @@ const ArrayLayoutComponent = (props: ArrayLayoutProps) => {
     uischemas,
     translations,
     description,
+    moveUp,
+    moveDown,
+    removeItems,
   } = props;
-  const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
+
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const showSortButtons =
+    appliedUiSchemaOptions.showSortButtons ||
+    appliedUiSchemaOptions.showArrayLayoutSortButtons;
+
+  const avatarStyle = useMemo(() => {
+    const style: React.CSSProperties = { marginRight: '10px' };
+
+    if (expanded) {
+      style.backgroundColor = 'red';
+    }
+    return style;
+  }, [expanded]);
+
+  const getExtra = (data: number, index: number) => {
+    return (
+      <>
+        {showSortButtons && enabled ? (
+          <>
+            <Tooltip key='tooltip-up' title={translations.up}>
+              <Button
+                onClick={moveUp(path, index)}
+                shape='circle'
+                icon={<ArrowUpOutlined rev={undefined} />}
+                disabled={index == 0}
+                aria-label={translations.upAriaLabel}
+              />
+            </Tooltip>
+            <Tooltip key='tooltip-down' title={translations.down}>
+              <Button
+                onClick={moveDown(path, index)}
+                shape='circle'
+                icon={<ArrowDownOutlined rev={undefined} />}
+                disabled={index >= data - 1}
+                aria-label={translations.downAriaLabel}
+              />
+            </Tooltip>
+          </>
+        ) : null}
+        {enabled ? (
+          <Tooltip key='tooltip-remove' title={translations.removeTooltip}>
+            <Button
+              onClick={removeItems(path, [index])}
+              shape='circle'
+              icon={<DeleteFilled rev={undefined} />}
+              aria-label={translations.removeAriaLabel}
+            />
+          </Tooltip>
+        ) : null}
+      </>
+    );
+  };
+
+  const foundUISchema = useMemo(
+    () =>
+      findUISchema(
+        uischemas,
+        schema,
+        uischema.scope,
+        path,
+        undefined,
+        uischema,
+        rootSchema
+      ),
+    [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+  );
 
   return (
     <ArrayLayoutToolbar
@@ -87,31 +178,42 @@ const ArrayLayoutComponent = (props: ArrayLayoutProps) => {
       createDefault={innerCreateDefaultValue}
     >
       {data > 0 ? (
-        <Collapse accordion onChange={(value: any) => handleChange(value)}>
-          {map(range(data), (index) => {
-            return (
-              <ExpandPanelRenderer
-                enabled={enabled}
-                index={index}
-                expanded={isExpanded(index)}
-                schema={schema}
-                path={path}
-                handleExpansion={handleChange}
-                uischema={uischema}
-                renderers={renderers}
-                cells={cells}
-                key={index}
-                rootSchema={rootSchema}
-                enableMoveUp={index != 0}
-                enableMoveDown={index < data - 1}
-                config={config}
-                childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                uischemas={uischemas}
-                translations={translations}
-              />
-            );
+        <Collapse
+          accordion
+          onChange={(value: any) => handleChange(value)}
+          items={map(range(data), (index) => {
+            const childPath = composePaths(path, `${index}`);
+            const childData = Resolve.data(props.ctx.core.data, childPath);
+            const childLabel = appliedUiSchemaOptions.elementLabelProp
+              ? get(childData, appliedUiSchemaOptions.elementLabelProp, '')
+              : get(childData, getFirstPrimitiveProp(schema), '');
+
+            return {
+              key: String(index),
+              label: (
+                <>
+                  <Avatar aria-label='Index' style={avatarStyle}>
+                    {index + 1}
+                  </Avatar>
+                  <Hidden hidden={!childLabel}>
+                    <Typography.Text>{childLabel}</Typography.Text>
+                  </Hidden>
+                </>
+              ),
+              extra: <Space>{getExtra(data, index)}</Space>,
+              children: (
+                <JsonFormsDispatch
+                  schema={schema}
+                  uischema={foundUISchema}
+                  path={childPath}
+                  key={childPath}
+                  renderers={renderers}
+                  cells={cells}
+                />
+              ),
+            };
           })}
-        </Collapse>
+        ></Collapse>
       ) : (
         <Empty />
       )}
@@ -119,4 +221,18 @@ const ArrayLayoutComponent = (props: ArrayLayoutProps) => {
   );
 };
 
-export const ArrayLayout = React.memo(ArrayLayoutComponent);
+export const withContextToJsonFormsRendererProps = (
+  Component: ComponentType<ArrayLayoutProps>
+): ComponentType<OwnPropsOfJsonFormsRenderer> =>
+  function WithContextToJsonFormsRendererProps({
+    ctx,
+    props,
+  }: JsonFormsStateContext & ArrayLayoutProps) {
+    return <Component {...props} ctx={ctx} />;
+  };
+
+export const ArrayLayout = React.memo(
+  withJsonFormsContext(
+    withContextToJsonFormsRendererProps(ArrayLayoutComponent)
+  )
+);

@@ -22,11 +22,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import ExpandPanelRenderer, {
-  ctxDispatchToExpandPanelProps,
-  withContextToExpandPanelProps,
-  withJsonFormsExpandPanelProps,
-} from './ExpandPanelRenderer';
 import GroupLayout, { antdGroupTester } from './GroupLayout';
 import HorizontalLayout, { horizontalLayoutTester } from './HorizontalLayout';
 import VerticalLayout, { verticalLayoutTester } from './VerticalLayout';
@@ -36,10 +31,6 @@ import CategorizationLayout, {
 import ArrayLayout, { arrayLayoutTester } from './ArrayLayoutRenderer';
 
 export {
-  ExpandPanelRenderer,
-  ctxDispatchToExpandPanelProps,
-  withContextToExpandPanelProps,
-  withJsonFormsExpandPanelProps,
   ArrayLayout,
   arrayLayoutTester,
   CategorizationLayout,

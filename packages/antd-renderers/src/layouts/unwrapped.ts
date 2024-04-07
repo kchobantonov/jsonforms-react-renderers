@@ -22,7 +22,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { ExpandPanelRenderer as ExpandPanelRendererUnwrapped } from './ExpandPanelRenderer';
 import { GroupLayoutRenderer } from './GroupLayout';
 import { HorizontalLayoutRenderer } from './HorizontalLayout';
 import { VerticalLayoutRenderer } from './VerticalLayout';
@@ -30,7 +29,6 @@ import { CategorizationLayoutRenderer } from './CategorizationLayout';
 import { ArrayLayoutRenderer } from './ArrayLayoutRenderer';
 
 export const UnwrappedLayouts = {
-  ExpandPanelRenderer: ExpandPanelRendererUnwrapped,
   ArrayLayout: ArrayLayoutRenderer,
   CategorizationLayout: CategorizationLayoutRenderer,
   GroupLayout: GroupLayoutRenderer,
