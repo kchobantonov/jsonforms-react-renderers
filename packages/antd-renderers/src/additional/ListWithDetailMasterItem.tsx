@@ -27,6 +27,7 @@ import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
 import React, { useMemo } from 'react';
 import { DeleteFilled } from '@ant-design/icons';
 import { Avatar, Button, List, Tooltip, theme as antdTheme } from 'antd';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 export const ListWithDetailMasterItem = ({
   index,
@@ -52,7 +53,7 @@ export const ListWithDetailMasterItem = ({
       actions={
         enabled
           ? [
-              <Tooltip title={translations.removeAriaLabel} key='action_remove'>
+              <Tooltip title={translations.removeTooltip} key='action_remove'>
                 <Button
                   aria-label={translations.removeAriaLabel}
                   icon={<DeleteFilled rev={undefined} />}
@@ -69,7 +70,7 @@ export const ListWithDetailMasterItem = ({
             {index + 1}
           </Avatar>
         }
-        title={childLabel}
+        title={<Paragraph ellipsis={true}>{childLabel}</Paragraph>}
       />
     </List.Item>
   );
