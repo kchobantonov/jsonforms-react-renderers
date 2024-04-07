@@ -118,8 +118,12 @@ const generateColumns = (props: ArrayLayoutProps) => {
         dataIndex: prop,
         editable: enabled,
         title: schema.properties?.[prop]?.title ?? startCase(prop),
-        render: (_field: any, _row: any, index: number) => {
-          const rowPath = Paths.compose(path, `${index}`);
+        render: (
+          _field: any,
+          row: { index: number; key: number },
+          _index: number
+        ) => {
+          const rowPath = Paths.compose(path, `${row.index}`);
 
           return (
             <RenderCell
@@ -141,8 +145,12 @@ const generateColumns = (props: ArrayLayoutProps) => {
     const columns = [
       {
         editable: enabled,
-        render: (_field: any, _row: any, index: number) => {
-          const rowPath = Paths.compose(path, `${index}`);
+        render: (
+          _field: any,
+          row: { index: number; key: number },
+          _index: number
+        ) => {
+          const rowPath = Paths.compose(path, `${row.index}`);
 
           return (
             <RenderCell
