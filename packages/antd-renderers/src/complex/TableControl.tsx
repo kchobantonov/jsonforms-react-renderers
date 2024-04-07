@@ -337,7 +337,12 @@ export class TableControl extends React.Component<
           enabled={enabled}
           translations={translations}
         >
-          <Table columns={columns} dataSource={dataSource}></Table>
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            showHeader={schema.type === 'object'}
+            pagination={{ hideOnSinglePage: true }}
+          ></Table>
         </TableToolbar>
       </Hidden>
     );
