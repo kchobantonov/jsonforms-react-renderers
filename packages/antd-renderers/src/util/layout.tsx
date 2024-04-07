@@ -22,55 +22,14 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+import type { UISchemaElement } from '@jsonforms/core';
+import { getAjv, OwnPropsOfRenderer } from '@jsonforms/core';
+import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
+import Ajv from 'ajv';
+import { Col, Row } from 'antd';
 import isEmpty from 'lodash/isEmpty';
 import React, { ComponentType } from 'react';
-import Ajv from 'ajv';
-import type { UISchemaElement } from '@jsonforms/core';
-import {
-  getAjv,
-  JsonFormsCellRendererRegistryEntry,
-  JsonFormsRendererRegistryEntry,
-  JsonSchema,
-  OwnPropsOfRenderer,
-} from '@jsonforms/core';
-import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
-import { Col, Row } from 'antd';
 import Hidden from '../util/Hidden';
-
-export const renderLayoutElements = (
-  elements: UISchemaElement[],
-  schema: JsonSchema,
-  path: string,
-  enabled: boolean,
-  direction: 'row' | 'column',
-  renderers?: JsonFormsRendererRegistryEntry[],
-  cells?: JsonFormsCellRendererRegistryEntry[]
-) => {
-  const Item = direction === 'row' ? Col : Row;
-  const itemProps: any = {};
-
-  if (direction === 'row') {
-    itemProps.flex = 1;
-    itemProps.style = {
-      flexBasis: '10em',
-    };
-  } else {
-    itemProps.xs = { flex: '100%' };
-  }
-
-  return elements.map((child, index) => (
-    <Item {...itemProps} key={`${path}-${index}`}>
-      <JsonFormsDispatch
-        uischema={child}
-        schema={schema}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-      />
-    </Item>
-  ));
-};
 
 export interface LayoutRendererProps extends OwnPropsOfRenderer {
   elements: UISchemaElement[];
@@ -89,27 +48,44 @@ const LayoutRendererComponent = ({
   if (isEmpty(elements)) {
     return null;
   } else {
-    const Container = direction === 'row' ? Row : Col;
-    const containerProps: any = {};
-
-    if (direction === 'row') {
-      containerProps.gutter = 8;
-      containerProps.style = { width: '100%' };
-    }
-
     return (
       <Hidden hidden={!visible}>
-        <Container {...containerProps}>
-          {renderLayoutElements(
-            elements,
-            schema,
-            path,
-            enabled,
-            direction,
-            renderers,
-            cells
-          )}
-        </Container>
+        {direction === 'column' ? (
+          <>
+            {elements.map((child, index) => (
+              <Row key={`${path}-${index}`}>
+                <Col span={24}>
+                  <JsonFormsDispatch
+                    uischema={child}
+                    schema={schema}
+                    path={path}
+                    enabled={enabled}
+                    renderers={renderers}
+                    cells={cells}
+                  />
+                </Col>
+              </Row>
+            ))}
+          </>
+        ) : (
+          <Row gutter={8} style={{ width: '100%' }}>
+            {elements.map((child, index) => (
+              <Col
+                key={`${path}-${index}`}
+                span={Math.floor(24 / elements.length)}
+              >
+                <JsonFormsDispatch
+                  uischema={child}
+                  schema={schema}
+                  path={path}
+                  enabled={enabled}
+                  renderers={renderers}
+                  cells={cells}
+                />
+              </Col>
+            ))}
+          </Row>
+        )}
       </Hidden>
     );
   }
