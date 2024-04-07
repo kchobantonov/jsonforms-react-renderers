@@ -77,6 +77,7 @@ const TableToolbar = React.memo(function TableToolbar({
 }: TableToolbarProps) {
   return (
     <Card
+      style={{ width: '100%' }}
       size='small'
       type='inner'
       title={renderTitle(label, errors, description)}

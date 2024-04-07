@@ -44,6 +44,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
 }: ArrayLayoutToolbarProps) {
   return (
     <Card
+      style={{ width: '100%' }}
       size='small'
       type='inner'
       title={renderTitle(label, errors, description)}

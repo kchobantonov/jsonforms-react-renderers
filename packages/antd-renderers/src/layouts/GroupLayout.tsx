@@ -36,7 +36,7 @@ import { LabelableLayoutRendererProps, LayoutRenderer } from '../util/layout';
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
 
 export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
-const style: { [x: string]: any } = { marginBottom: '10px' };
+const style: { [x: string]: any } = { marginBottom: '10px', width: '100%' };
 
 const GroupComponent = React.memo(function GroupComponent({
   visible,
