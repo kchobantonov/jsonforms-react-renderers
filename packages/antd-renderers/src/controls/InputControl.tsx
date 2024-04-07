@@ -76,9 +76,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
         required={required}
         hasFeedback={!isValid}
         validateStatus={isValid ? 'success' : 'error'}
-        label={
-          input === AntdCheckbox || input === AntdRadioGroup ? undefined : label
-        }
+        label={input === AntdCheckbox || input === AntdRadioGroup ? ' ' : label}
         help={help}
         style={style}
         htmlFor={id + '-input'}
