@@ -45,6 +45,7 @@ import RadioGroupControl, {
 import SliderControl, { sliderControlTester } from './SliderControl';
 import TextControl, { textControlTester } from './TextControl';
 import TimeControl, { timeControlTester } from './TimeControl';
+import FileControl, { fileControlTester } from './FileControl';
 
 export {
   AnyOfStringOrEnumControl,
@@ -77,6 +78,8 @@ export {
   textControlTester,
   TimeControl,
   timeControlTester,
+  FileControl,
+  fileControlTester,
 };
 
 export * from './InputControl';

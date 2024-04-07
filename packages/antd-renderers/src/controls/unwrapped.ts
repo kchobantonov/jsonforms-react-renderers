@@ -37,6 +37,7 @@ import { RadioGroupControl } from './RadioGroupControl';
 import { SliderControl } from './SliderControl';
 import { TextControl } from './TextControl';
 import { TimeControl } from './TimeControl';
+import { FileControl } from './FileControl';
 
 export const UnwrappedControls = {
   AnyOfStringOrEnumControl,
@@ -54,4 +55,5 @@ export const UnwrappedControls = {
   RadioGroupControl,
   TextControl,
   TimeControl,
+  FileControl,
 };

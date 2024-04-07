@@ -1,19 +1,19 @@
 /*
   The MIT License
-  
-  Copyright (c) 2019 EclipseSource Munich
+
+  Copyright (c) 2018-2019 EclipseSource Munich
   https://github.com/eclipsesource/jsonforms
-  
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,16 +22,41 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-export * from './AntdCheckbox';
-export * from './AntdDatePicker';
-export * from './AntdFile';
-export * from './AntdDateTimePicker';
-export * from './AntdInputInteger';
-export * from './AntdInputNumber';
-export * from './AntdInputNumberFormat';
-export * from './AntdInputText';
-export * from './AntdRadioGroup';
-export * from './AntdSelect';
-export * from './AntdSlider';
-export * from './AntdTimePicker';
-export * from './AntdToggle';
+import React from 'react';
+import {
+  and,
+  ControlProps,
+  isStringControl,
+  RankedTester,
+  rankWith,
+  schemaMatches,
+  uiTypeIs,
+} from '@jsonforms/core';
+import { InputControl } from './InputControl';
+import {
+  TranslateProps,
+  withJsonFormsControlProps,
+  withTranslateProps,
+} from '@jsonforms/react';
+import { AntdFile } from '../antd-controls';
+
+export const FileControl = (props: ControlProps & TranslateProps) => {
+  return <InputControl {...props} input={AntdFile} />;
+};
+
+export const isBase64String = and(
+  uiTypeIs('Control'),
+  isStringControl,
+  schemaMatches(
+    (schema) =>
+      (Object.prototype.hasOwnProperty.call(schema, 'contentEncoding') &&
+        (schema as any).contentEncoding == 'base64') ||
+      schema.format === 'binary' ||
+      schema.format === 'byte'
+  )
+);
+
+export const fileControlTester: RankedTester = rankWith(2, isBase64String);
+export default withJsonFormsControlProps(
+  withTranslateProps(React.memo(FileControl))
+);

@@ -77,6 +77,8 @@ import {
   textControlTester,
   OneOfRadioGroupControl,
   oneOfRadioGroupControlTester,
+  FileControl,
+  fileControlTester,
 } from './controls';
 import {
   ArrayLayout,
@@ -147,6 +149,7 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
   { tester: allOfControlTester, renderer: AllOfRenderer },
   { tester: anyOfControlTester, renderer: AnyOfRenderer },
   { tester: oneOfControlTester, renderer: OneOfRenderer },
+  { tester: fileControlTester, renderer: FileControl },
   {
     tester: radioGroupControlTester,
     renderer: RadioGroupControl,
