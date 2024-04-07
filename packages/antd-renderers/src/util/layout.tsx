@@ -51,6 +51,9 @@ export const renderLayoutElements = (
 
   if (direction === 'row') {
     itemProps.flex = 1;
+    itemProps.style = {
+      flexBasis: '10em',
+    };
   } else {
     itemProps.xs = { flex: '100%' };
   }
@@ -90,7 +93,7 @@ const LayoutRendererComponent = ({
     const containerProps: any = {};
 
     if (direction === 'row') {
-      containerProps.gutter = 2;
+      containerProps.gutter = 8;
       containerProps.style = { width: '100%' };
     }
 
