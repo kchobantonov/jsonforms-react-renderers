@@ -31,12 +31,18 @@ import {
   Select,
   Form,
   ThemeConfig,
+  Radio,
+  theme as antTheme,
+  Card,
+  Space,
 } from 'antd';
 import { renderExample } from '../../examples-react/src/index';
 import { antdRenderers, antdCells } from '../src';
 import { extendedRenderers } from '../../extended-renderers/src/index';
 
 const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
+  const [mode, setMode] = React.useState<'dark' | 'light'>('light');
+
   const [variant, setVariant] =
     React.useState<InputProps['variant']>('outlined');
 
@@ -46,12 +52,14 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
 
   const theme = React.useMemo<ThemeConfig>(() => {
     return {
+      algorithm:
+        mode === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
       components: {
         Input: {},
         Select: {},
       },
     };
-  }, []);
+  }, [mode]);
 
   const label = 'Input variant';
 
@@ -61,23 +69,36 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   };
 
   return (
-    <ConfigProvider theme={theme}>
-      <Form {...layout} variant={variant}>
-        <Form.Item label={label}>
-          <Select
-            style={{ width: 200 }}
-            value={variant}
-            onChange={handleVariantChange}
-          >
-            <Select.Option value='outlined'>Outlined</Select.Option>
-            <Select.Option value='borderless'>Borderless</Select.Option>
-            <Select.Option value='filled'>Filled</Select.Option>
-          </Select>
-        </Form.Item>
-        <Divider />
-        {children}
-      </Form>
-    </ConfigProvider>
+    <Space direction='vertical' style={{ width: '100%' }}>
+      <Radio.Group
+        onChange={(e) => {
+          setMode(e.target.value);
+        }}
+        value={mode}
+      >
+        <Radio.Button value='dark'>Dark</Radio.Button>
+        <Radio.Button value='light'>Light</Radio.Button>
+      </Radio.Group>
+      <ConfigProvider theme={theme}>
+        <Card style={{ width: '100%' }}>
+          <Form {...layout} variant={variant}>
+            <Form.Item label={label}>
+              <Select
+                style={{ width: 200 }}
+                value={variant}
+                onChange={handleVariantChange}
+              >
+                <Select.Option value='outlined'>Outlined</Select.Option>
+                <Select.Option value='borderless'>Borderless</Select.Option>
+                <Select.Option value='filled'>Filled</Select.Option>
+              </Select>
+            </Form.Item>
+            <Divider />
+            {children}
+          </Form>
+        </Card>
+      </ConfigProvider>
+    </Space>
   );
 };
 
