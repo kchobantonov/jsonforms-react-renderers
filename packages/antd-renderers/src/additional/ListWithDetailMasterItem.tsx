@@ -46,10 +46,17 @@ export const ListWithDetailMasterItem = ({
     () => (selected ? { background: theme.colorPrimary } : {}),
     [selected]
   );
+
+  const listItemStyle = useMemo(
+    () => (selected ? { background: theme.controlItemBgActive } : {}),
+    [selected]
+  );
+
   return (
     <List.Item
       key={index}
       onClick={handleSelect(index)}
+      style={listItemStyle}
       actions={
         enabled
           ? [
@@ -66,7 +73,7 @@ export const ListWithDetailMasterItem = ({
     >
       <List.Item.Meta
         avatar={
-          <Avatar aria-label='Index' style={avatarStyle}>
+          <Avatar aria-label='Index' style={avatarStyle} size={'small'}>
             {index + 1}
           </Avatar>
         }
