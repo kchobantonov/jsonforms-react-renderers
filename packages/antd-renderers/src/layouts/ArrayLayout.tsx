@@ -60,7 +60,7 @@ import Hidden from '../util/Hidden';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
 
 const ArrayLayoutComponent = (
-  props: JsonFormsStateContext & ArrayLayoutProps
+  props: { ctx: JsonFormsStateContext } & ArrayLayoutProps
 ) => {
   const [expanded, setExpanded] = useState<string | boolean>(false);
   const innerCreateDefaultValue = useCallback(
