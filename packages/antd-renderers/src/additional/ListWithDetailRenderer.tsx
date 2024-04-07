@@ -121,45 +121,46 @@ export const ListWithDetailRenderer = ({
         enabled={enabled}
         addItem={addItem}
         createDefault={handleCreateDefaultValue}
-      />
-      <Row gutter={8}>
-        <Col xs={6}>
-          {data > 0 ? (
-            <List
-              dataSource={range(data)}
-              renderItem={(_item, index) => (
-                <ListWithDetailMasterItem
-                  index={index}
-                  path={path}
-                  schema={schema}
-                  enabled={enabled}
-                  handleSelect={handleListItemClick}
-                  removeItem={handleRemoveItem}
-                  selected={selectedIndex === index}
-                  key={index}
-                  translations={translations}
-                />
-              )}
-            ></List>
-          ) : (
-            <Empty description='No data' />
-          )}
-        </Col>
-        <Col xs={18}>
-          {selectedIndex !== undefined ? (
-            <JsonFormsDispatch
-              renderers={renderers}
-              cells={cells}
-              visible={visible}
-              schema={schema}
-              uischema={foundUISchema}
-              path={composePaths(path, `${selectedIndex}`)}
-            />
-          ) : (
-            <Empty description={translations.noSelection} />
-          )}
-        </Col>
-      </Row>
+      >
+        <Row gutter={8}>
+          <Col xs={6}>
+            {data > 0 ? (
+              <List
+                dataSource={range(data)}
+                renderItem={(_item, index) => (
+                  <ListWithDetailMasterItem
+                    index={index}
+                    path={path}
+                    schema={schema}
+                    enabled={enabled}
+                    handleSelect={handleListItemClick}
+                    removeItem={handleRemoveItem}
+                    selected={selectedIndex === index}
+                    key={index}
+                    translations={translations}
+                  />
+                )}
+              ></List>
+            ) : (
+              <Empty description='No data' />
+            )}
+          </Col>
+          <Col xs={18}>
+            {selectedIndex !== undefined ? (
+              <JsonFormsDispatch
+                renderers={renderers}
+                cells={cells}
+                visible={visible}
+                schema={schema}
+                uischema={foundUISchema}
+                path={composePaths(path, `${selectedIndex}`)}
+              />
+            ) : (
+              <Empty description={translations.noSelection} />
+            )}
+          </Col>
+        </Row>
+      </ArrayLayoutToolbar>
     </Hidden>
   );
 };
