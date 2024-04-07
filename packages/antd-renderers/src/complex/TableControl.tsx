@@ -98,7 +98,7 @@ const RenderActionsCell = (
           </Tooltip>
         </>
       ) : null}
-      <Tooltip title='Delete'>
+      <Tooltip title={translations.removeTooltip}>
         <Button
           aria-label={translations.removeAriaLabel}
           icon={<DeleteFilled rev={undefined} />}
