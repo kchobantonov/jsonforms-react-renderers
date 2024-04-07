@@ -69,19 +69,10 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   };
 
   return (
-    <Space direction='vertical' style={{ width: '100%' }}>
-      <Radio.Group
-        onChange={(e) => {
-          setMode(e.target.value);
-        }}
-        value={mode}
-      >
-        <Radio.Button value='dark'>Dark</Radio.Button>
-        <Radio.Button value='light'>Light</Radio.Button>
-      </Radio.Group>
-      <ConfigProvider theme={theme}>
-        <Card style={{ width: '100%' }}>
-          <Form {...layout} variant={variant}>
+    <ConfigProvider theme={theme}>
+      <Card style={{ width: '100%' }}>
+        <Form {...layout} variant={variant}>
+          <Space>
             <Form.Item label={label}>
               <Select
                 style={{ width: 200 }}
@@ -93,12 +84,23 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
                 <Select.Option value='filled'>Filled</Select.Option>
               </Select>
             </Form.Item>
-            <Divider />
-            {children}
-          </Form>
-        </Card>
-      </ConfigProvider>
-    </Space>
+            <Form.Item label={'Mode'}>
+              <Radio.Group
+                onChange={(e) => {
+                  setMode(e.target.value);
+                }}
+                value={mode}
+              >
+                <Radio.Button value='dark'>Dark</Radio.Button>
+                <Radio.Button value='light'>Light</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+          </Space>
+          <Divider />
+          {children}
+        </Form>
+      </Card>
+    </ConfigProvider>
   );
 };
 
