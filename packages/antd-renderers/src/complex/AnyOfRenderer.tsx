@@ -115,29 +115,25 @@ export const AnyOfRenderer = ({
         rootSchema={rootSchema}
       />
       <Tabs
-        activeKey={selectedAnyOf.toString()}
+        defaultActiveKey={selectedAnyOf.toString()}
         onChange={handleTabChange}
         items={anyOfRenderInfos.map(
           (anyOfRenderInfo, idx) =>
             ({
               label: anyOfRenderInfo.label,
-              key: idx,
+              key: String(idx),
+              children: (
+                <JsonFormsDispatch
+                  schema={anyOfRenderInfo.schema}
+                  uischema={anyOfRenderInfo.uischema}
+                  path={path}
+                  renderers={renderers}
+                  cells={cells}
+                />
+              ),
             } as any)
         )}
       ></Tabs>
-      {anyOfRenderInfos.map(
-        (anyOfRenderInfo, anyOfIndex) =>
-          selectedAnyOf === anyOfIndex && (
-            <JsonFormsDispatch
-              key={anyOfIndex}
-              schema={anyOfRenderInfo.schema}
-              uischema={anyOfRenderInfo.uischema}
-              path={path}
-              renderers={renderers}
-              cells={cells}
-            />
-          )
-      )}
       <TabSwitchConfirmDialog
         cancel={handleClose}
         confirm={confirm}

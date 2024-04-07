@@ -119,7 +119,6 @@ export const CategorizationLayoutRenderer = (
 
   const safeCategory =
     activeCategory >= categorization.elements.length ? 0 : activeCategory;
-
   const childProps: LayoutRendererProps = {
     elements: categories[safeCategory] ? categories[safeCategory].elements : [],
     schema,
@@ -146,20 +145,17 @@ export const CategorizationLayoutRenderer = (
   return (
     <Hidden hidden={!visible}>
       <Tabs
-        activeKey={safeCategory?.toString()}
+        defaultActiveKey={safeCategory?.toString()}
         onChange={onTabChange}
         items={categories.map(
           (_, idx: number) =>
             ({
               label: tabLabels[idx],
-              key: idx,
+              key: String(idx),
+              children: <LayoutRenderer {...childProps} />,
             } as any)
         )}
       ></Tabs>
-
-      <div style={{ marginTop: '0.5em' }}>
-        <LayoutRenderer {...childProps} key={safeCategory} />
-      </div>
     </Hidden>
   );
 };
