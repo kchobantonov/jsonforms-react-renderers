@@ -75,7 +75,7 @@ const RenderActionsCell = (
   const childPath = Paths.compose(path, `${index}`);
 
   return (
-    <div style={{ marginBottom: '24px' }}>
+    <div>
       {appliedUiSchemaOptions.showSortButtons ? (
         <>
           <Tooltip title='Move up'>
