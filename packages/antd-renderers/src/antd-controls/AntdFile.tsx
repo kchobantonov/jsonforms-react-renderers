@@ -186,6 +186,7 @@ export const AntdFile = React.memo(function AntdFile(
 
           const formatSize = formatBytes(maxFileSize);
 
+          handleChange(path, undefined);
           onError({
             message: t(key, `size should be less than ${formatSize}`, {
               limitText: `${formatSize}`,
@@ -211,6 +212,7 @@ export const AntdFile = React.memo(function AntdFile(
           );
 
           const formatSize = formatBytes(minFileSize);
+          handleChange(path, undefined);
           onError({
             message: t(key, `size should be greater than ${formatSize}`, {
               limitText: `${formatSize}`,
