@@ -27,7 +27,7 @@ import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
 import React, { useMemo } from 'react';
 import { DeleteFilled } from '@ant-design/icons';
 import { Avatar, Button, List, Tooltip, theme as antdTheme } from 'antd';
-import Paragraph from 'antd/es/typography/Paragraph';
+import Text from 'antd/es/typography/Text';
 
 export const ListWithDetailMasterItem = ({
   index,
@@ -48,7 +48,13 @@ export const ListWithDetailMasterItem = ({
   );
 
   const listItemStyle = useMemo(
-    () => (selected ? { background: theme.controlItemBgActive } : {}),
+    () =>
+      selected
+        ? {
+            background: theme.controlItemBgActive,
+            borderRadius: '5px',
+          }
+        : {},
     [selected]
   );
 
@@ -72,12 +78,13 @@ export const ListWithDetailMasterItem = ({
       }
     >
       <List.Item.Meta
+        style={{ marginLeft: '8px' }}
         avatar={
           <Avatar aria-label='Index' style={avatarStyle} size={'small'}>
             {index + 1}
           </Avatar>
         }
-        title={<Paragraph ellipsis={true}>{childLabel}</Paragraph>}
+        title={<Text ellipsis={true}>{childLabel}</Text>}
       />
     </List.Item>
   );
