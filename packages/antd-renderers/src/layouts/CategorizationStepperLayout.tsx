@@ -150,7 +150,7 @@ export const CategorizationStepperLayoutRenderer = (
           </Button>
           <Button
             style={buttonStyle}
-            color='secondary'
+            color='default'
             disabled={activeCategory <= 0}
             onClick={() => handleStep(activeCategory - 1)}
           >
