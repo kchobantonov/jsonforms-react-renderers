@@ -1,0 +1,12 @@
+{
+  "name": "@chobantonov/examples-app",
+  "version": "3.2.1",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {},
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "fs-extra": "^11.1.0"
+  }
+}
