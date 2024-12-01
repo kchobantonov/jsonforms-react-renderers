@@ -22,14 +22,13 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React from 'react';
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
 import { Form } from 'antd';
+import React from 'react';
 
 import merge from 'lodash/merge';
+import { AntdCheckbox } from '../antd-controls';
 import { useFocus } from '../util';
-import { AntdCheckbox } from '../antd-controls/AntdCheckbox';
-import { AntdRadioGroup } from '../antd-controls/AntdRadioGroup';
 
 export interface WithInput {
   input: any;
@@ -78,7 +77,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       required={required}
       hasFeedback={!isValid}
       validateStatus={isValid ? 'success' : 'error'}
-      label={input === AntdCheckbox || input === AntdRadioGroup ? ' ' : label}
+      label={label}
       help={help}
       style={style}
       htmlFor={id + '-input'}
@@ -86,6 +85,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     >
       <InnerComponent
         {...props}
+        label={input === AntdCheckbox ? ' ' : props.label}
         onFocus={onFocus}
         onBlur={onBlur}
         id={id + '-input'}

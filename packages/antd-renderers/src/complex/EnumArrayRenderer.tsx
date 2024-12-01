@@ -59,6 +59,7 @@ export const EnumArrayRenderer = ({
       required={required}
       hasFeedback={!isValid}
       validateStatus={isValid ? 'success' : 'error'}
+      label={label}
       help={!isValid ? errors : showDescription ? description : null}
     >
       {options.map((option: any, index: number) => {
