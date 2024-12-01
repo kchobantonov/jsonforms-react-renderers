@@ -22,10 +22,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { CSSProperties, useState } from 'react';
+import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import { CellProps, WithClassname } from '@jsonforms/core';
-import merge from 'lodash/merge';
 import { Input } from 'antd';
+import merge from 'lodash/merge';
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDebouncedChange, useFocus } from '../util';
 
 const eventToValue = (ev: any) =>
@@ -79,11 +86,32 @@ export const AntdInputText = React.memo(function AntdInputText(
     InputComponent = Input.Password;
   }
 
-  const onMouseOver = () => setPointed(true);
-  const onMouseLeave = () => setPointed(false);
+  const onMouseOver = useCallback(() => setPointed(true), []);
+  const onMouseLeave = useCallback(() => setPointed(false), []);
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const inputWrapper =
+      inputRef.current?.input?.parentElement ||
+      inputRef.current?.textarea?.parentElement;
+
+    if (inputWrapper) {
+      inputWrapper.addEventListener('mouseover', onMouseOver);
+      inputWrapper.addEventListener('mouseleave', onMouseLeave);
+    }
+
+    return () => {
+      if (inputWrapper) {
+        inputWrapper.removeEventListener('mouseover', onMouseOver);
+        inputWrapper.removeEventListener('mouseleave', onMouseLeave);
+      }
+    };
+  }, [inputRef]);
 
   return (
     <InputComponent
+      ref={inputRef}
       value={inputText}
       onChange={onChange}
       className={className}
@@ -92,9 +120,10 @@ export const AntdInputText = React.memo(function AntdInputText(
       autoFocus={appliedUiSchemaOptions.focus}
       style={inputStyle}
       maxLength={maxLength}
-      allowClear={pointed && enabled}
-      onMouseOver={onMouseOver}
-      onMouseLeave={onMouseLeave}
+      allowClear={{
+        clearIcon:
+          enabled && pointed && inputText ? <CloseCircleFilled /> : <></>,
+      }}
       onFocus={onFocus}
       onBlur={onBlur}
       placeholder={appliedUiSchemaOptions.placeholder}
