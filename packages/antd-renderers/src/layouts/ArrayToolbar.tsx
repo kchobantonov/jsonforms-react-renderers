@@ -50,21 +50,17 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       size='small'
       type='inner'
       title={renderTitle(label, errors, description)}
-      extra={
-        enabled && !disableAdd
-          ? [
-              <Tooltip key='1' title={translations.addTooltip}>
-                <Button
-                  disabled={!enabled}
-                  aria-label={translations.addTooltip}
-                  onClick={addItem(path, createDefault())}
-                  shape='circle'
-                  icon={<PlusOutlined rev={undefined} />}
-                />
-              </Tooltip>,
-            ]
-          : []
-      }
+      extra={[
+        <Tooltip key='1' title={translations.addTooltip}>
+          <Button
+            disabled={!enabled || disableAdd}
+            aria-label={translations.addTooltip}
+            onClick={addItem(path, createDefault())}
+            shape='circle'
+            icon={<PlusOutlined rev={undefined} />}
+          />
+        </Tooltip>,
+      ]}
     >
       {children}
     </Card>

@@ -159,6 +159,7 @@ interface ActionCellProps {
   rowIndex: number;
   moveUpCreator: (path: string, position: number) => () => void;
   moveDownCreator: (path: string, position: number) => () => void;
+  enabled: boolean;
   enableUp: boolean;
   enableDown: boolean;
   showSortButtons: boolean;
@@ -173,6 +174,7 @@ const ActionCell = ({
   openDeleteDialog,
   moveUpCreator,
   moveDownCreator,
+  enabled,
   enableUp,
   enableDown,
   showSortButtons,
@@ -199,7 +201,7 @@ const ActionCell = ({
               aria-label={translations.upAriaLabel}
               icon={<ArrowUpOutlined rev={undefined} />}
               onClick={moveUp}
-              disabled={!enableUp}
+              disabled={!enabled || !enableUp}
             />
           </Tooltip>
           <Tooltip title={translations.down}>
@@ -208,20 +210,19 @@ const ActionCell = ({
               aria-label={translations.downAriaLabel}
               icon={<ArrowDownOutlined rev={undefined} />}
               onClick={moveDown}
-              disabled={!enableDown}
+              disabled={!enabled || !enableDown}
             />
           </Tooltip>
         </>
       ) : null}
-      {!disableRemove ? (
-        <Tooltip title={translations.removeTooltip}>
-          <Button
-            aria-label={translations.removeAriaLabel}
-            icon={<DeleteFilled rev={undefined} />}
-            onClick={() => openDeleteDialog(childPath, rowIndex)}
-          />
-        </Tooltip>
-      ) : null}
+      <Tooltip title={translations.removeTooltip}>
+        <Button
+          disabled={!enabled || disableRemove}
+          aria-label={translations.removeAriaLabel}
+          icon={<DeleteFilled rev={undefined} />}
+          onClick={() => openDeleteDialog(childPath, rowIndex)}
+        />
+      </Tooltip>
     </div>
   );
 };

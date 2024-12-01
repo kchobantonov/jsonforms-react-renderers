@@ -64,19 +64,16 @@ export const ListWithDetailMasterItem = ({
       key={index}
       onClick={handleSelect(index)}
       style={listItemStyle}
-      actions={
-        enabled && !disableRemove
-          ? [
-              <Tooltip title={translations.removeTooltip} key='action_remove'>
-                <Button
-                  aria-label={translations.removeAriaLabel}
-                  icon={<DeleteFilled rev={undefined} />}
-                  onClick={removeItem(path, index)}
-                />
-              </Tooltip>,
-            ]
-          : []
-      }
+      actions={[
+        <Tooltip title={translations.removeTooltip} key='action_remove'>
+          <Button
+            disabled={!enabled || disableRemove}
+            aria-label={translations.removeAriaLabel}
+            icon={<DeleteFilled rev={undefined} />}
+            onClick={removeItem(path, index)}
+          />
+        </Tooltip>,
+      ]}
     >
       <List.Item.Meta
         style={{ marginLeft: '8px' }}

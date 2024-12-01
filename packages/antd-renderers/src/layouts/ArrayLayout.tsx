@@ -50,12 +50,19 @@ import {
   Tooltip,
   Typography,
 } from 'antd';
-import get from 'lodash/get';
 import map from 'lodash/map';
 import merge from 'lodash/merge';
 import range from 'lodash/range';
 import React, { ComponentType, useCallback, useMemo, useState } from 'react';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
+
+interface ExtraProps {
+  rowIndex: number;
+  enableUp: boolean;
+  enableDown: boolean;
+  showSortButtons: boolean;
+  disableRemove?: boolean;
+}
 
 const ArrayLayoutComponent = (
   props: { ctx: JsonFormsStateContext } & ArrayLayoutProps & {
@@ -111,41 +118,55 @@ const ArrayLayoutComponent = (
     return style;
   }, [expanded]);
 
-  const getExtra = (data: number, index: number) => {
+  const getExtra = ({
+    rowIndex,
+    enableUp,
+    enableDown,
+    showSortButtons,
+    disableRemove,
+  }: ExtraProps) => {
     return (
       <>
-        {showSortButtons && enabled ? (
+        {showSortButtons ? (
           <>
-            <Tooltip key='tooltip-up' title={translations.up}>
+            <Tooltip title={translations.up}>
               <Button
-                onClick={moveUp(path, index)}
                 shape='circle'
-                icon={<ArrowUpOutlined rev={undefined} />}
-                disabled={index == 0}
                 aria-label={translations.upAriaLabel}
+                icon={<ArrowUpOutlined rev={undefined} />}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  moveUp(path, rowIndex)();
+                }}
+                disabled={!enabled || !enableUp}
               />
             </Tooltip>
-            <Tooltip key='tooltip-down' title={translations.down}>
+            <Tooltip title={translations.down}>
               <Button
-                onClick={moveDown(path, index)}
                 shape='circle'
-                icon={<ArrowDownOutlined rev={undefined} />}
-                disabled={index >= data - 1}
                 aria-label={translations.downAriaLabel}
+                icon={<ArrowDownOutlined rev={undefined} />}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  moveDown(path, rowIndex)();
+                }}
+                disabled={!enabled || !enableDown}
               />
             </Tooltip>
           </>
         ) : null}
-        {enabled ? (
-          <Tooltip key='tooltip-remove' title={translations.removeTooltip}>
-            <Button
-              onClick={removeItems(path, [index])}
-              shape='circle'
-              icon={<DeleteFilled rev={undefined} />}
-              aria-label={translations.removeAriaLabel}
-            />
-          </Tooltip>
-        ) : null}
+        <Tooltip key='tooltip-remove' title={translations.removeTooltip}>
+          <Button
+            onClick={(event) => {
+              event.stopPropagation();
+              removeItems(path, [rowIndex])();
+            }}
+            shape='circle'
+            disabled={!enabled || disableRemove}
+            icon={<DeleteFilled rev={undefined} />}
+            aria-label={translations.removeAriaLabel}
+          />
+        </Tooltip>
       </>
     );
   };
@@ -163,11 +184,44 @@ const ArrayLayoutComponent = (
       ),
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   );
-  const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
-  const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
-  if (doDisableRemove) {
-    // TODO
-  }
+
+  const arraySchema = Resolve.schema(rootSchema, uischema.scope, rootSchema);
+
+  const doDisableAdd =
+    disableAdd ||
+    appliedUiSchemaOptions.disableAdd ||
+    (appliedUiSchemaOptions.restrict &&
+      arraySchema !== undefined &&
+      arraySchema.maxItems !== undefined &&
+      data >= arraySchema.maxItems);
+
+  const doDisableRemove =
+    disableRemove ||
+    appliedUiSchemaOptions.disableRemove ||
+    (appliedUiSchemaOptions.restrict &&
+      arraySchema !== undefined &&
+      arraySchema.minItems !== undefined &&
+      data <= arraySchema.minItems);
+
+  const childLabelForIndex = (childPath: string, index: number) => {
+    const childLabelProp =
+      uischema.options?.childLabelProp ?? getFirstPrimitiveProp(schema);
+    if (!childLabelProp) {
+      return `${index}`;
+    }
+    const labelValue = Resolve.data(
+      props.ctx.core.data,
+      composePaths(childPath, childLabelProp)
+    );
+    if (
+      labelValue === undefined ||
+      labelValue === null ||
+      Number.isNaN(labelValue)
+    ) {
+      return '';
+    }
+    return `${labelValue}`;
+  };
 
   return (
     <ArrayLayoutToolbar
@@ -188,13 +242,12 @@ const ArrayLayoutComponent = (
       {data > 0 ? (
         <Collapse
           accordion
+          expandIconPosition='end'
           onChange={(value: any) => handleChange(value)}
           items={map(range(data), (index) => {
             const childPath = composePaths(path, `${index}`);
-            const childData = Resolve.data(props.ctx.core.data, childPath);
-            const childLabel = appliedUiSchemaOptions.elementLabelProp
-              ? get(childData, appliedUiSchemaOptions.elementLabelProp, '')
-              : get(childData, getFirstPrimitiveProp(schema), '');
+
+            const text = childLabelForIndex(childPath, index);
 
             return {
               key: String(index),
@@ -203,12 +256,20 @@ const ArrayLayoutComponent = (
                   <Avatar aria-label='Index' style={avatarStyle}>
                     {index + 1}
                   </Avatar>
-                  {!childLabel ? (
-                    <Typography.Text>{childLabel}</Typography.Text>
-                  ) : null}
+                  {text ? <Typography.Text>{text}</Typography.Text> : null}
                 </>
               ),
-              extra: <Space>{getExtra(data, index)}</Space>,
+              extra: (
+                <Space>
+                  {getExtra({
+                    rowIndex: index,
+                    enableUp: index !== 0,
+                    enableDown: index !== props.data - 1,
+                    showSortButtons: showSortButtons,
+                    disableRemove: doDisableRemove,
+                  })}
+                </Space>
+              ),
               children: (
                 <JsonFormsDispatch
                   schema={schema}

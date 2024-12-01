@@ -85,27 +85,21 @@ const TableToolbar = React.memo(function TableToolbar({
       size='small'
       type='inner'
       title={renderTitle(label, errors, description)}
-      extra={
-        enabled && !disableAdd
-          ? [
-              <Tooltip
-                key='tooltip-add'
-                title={translations.addTooltip}
-                placement='bottom'
-              >
-                <Button
-                  aria-label={translations.addAriaLabel}
-                  onClick={addItem(
-                    path,
-                    createDefaultValue(schema, rootSchema)
-                  )}
-                  shape='circle'
-                  icon={<PlusOutlined rev={undefined} />}
-                />
-              </Tooltip>,
-            ]
-          : []
-      }
+      extra={[
+        <Tooltip
+          key='tooltip-add'
+          title={translations.addTooltip}
+          placement='bottom'
+        >
+          <Button
+            disabled={!enabled || disableAdd}
+            aria-label={translations.addAriaLabel}
+            onClick={addItem(path, createDefaultValue(schema, rootSchema))}
+            shape='circle'
+            icon={<PlusOutlined rev={undefined} />}
+          />
+        </Tooltip>,
+      ]}
     >
       {children}
     </Card>
