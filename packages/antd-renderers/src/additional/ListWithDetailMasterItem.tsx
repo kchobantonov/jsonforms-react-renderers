@@ -22,7 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { DeleteFilled } from '@ant-design/icons';
+import DeleteFilled from '@ant-design/icons/DeleteFilled';
 import type { StatePropsOfMasterItem } from '@jsonforms/core';
 import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
 import { Avatar, Button, List, Tooltip, theme as antdTheme } from 'antd';
