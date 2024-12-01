@@ -462,6 +462,160 @@ importers:
         specifier: ^4.15.1
         version: 4.15.2(webpack-cli@5.1.4)(webpack@5.96.1)
 
+  packages/primereact-renderers:
+    dependencies:
+      '@date-io/dayjs':
+        specifier: 1.3.13
+        version: 1.3.13(dayjs@1.11.13)
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.13
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@emotion/react':
+        specifier: ^11.5.0
+        version: 11.13.5(@types/react@17.0.83)(react@17.0.2)
+      '@emotion/styled':
+        specifier: ^11.3.0
+        version: 11.13.5(@emotion/react@11.13.5)(@types/react@17.0.83)(react@17.0.2)
+      '@jsonforms/core':
+        specifier: 3.4.1
+        version: 3.4.1
+      '@jsonforms/react':
+        specifier: 3.4.1
+        version: 3.4.1(@jsonforms/core@3.4.1)(react@17.0.2)
+      '@rollup/plugin-commonjs':
+        specifier: ^23.0.3
+        version: 23.0.7(rollup@2.79.2)
+      '@rollup/plugin-json':
+        specifier: ^5.0.2
+        version: 5.0.2(rollup@2.79.2)
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.0.1
+        version: 15.3.0(rollup@2.79.2)
+      '@rollup/plugin-replace':
+        specifier: ^5.0.1
+        version: 5.0.7(rollup@2.79.2)
+      '@types/enzyme':
+        specifier: ^3.10.3
+        version: 3.10.18
+      '@types/react':
+        specifier: ^17.0.24
+        version: 17.0.83
+      '@types/react-dom':
+        specifier: ^17.0.9
+        version: 17.0.25
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^5.54.1
+        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.1)(typescript@4.9.5)
+      '@typescript-eslint/parser':
+        specifier: ^5.54.1
+        version: 5.62.0(eslint@8.57.1)(typescript@4.9.5)
+      '@wojtekmaj/enzyme-adapter-react-17':
+        specifier: ^0.6.7
+        version: 0.6.7(enzyme@3.11.0)(react-dom@17.0.2)(react@17.0.2)
+      copy-webpack-plugin:
+        specifier: ^5.0.5
+        version: 5.1.2(webpack@5.96.1)
+      enzyme:
+        specifier: ^3.11.0
+        version: 3.11.0
+      eslint:
+        specifier: ^8.56.0
+        version: 8.57.1
+      eslint-config-prettier:
+        specifier: ^8.7.0
+        version: 8.10.0(eslint@8.57.1)
+      eslint-plugin-import:
+        specifier: ^2.27.5
+        version: 2.31.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.1)
+      eslint-plugin-prettier:
+        specifier: ^4.2.1
+        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.1)(prettier@2.8.8)
+      eslint-plugin-react:
+        specifier: ^7.32.2
+        version: 7.37.2(eslint@8.57.1)
+      jest:
+        specifier: ^27.5.1
+        version: 27.5.1(ts-node@10.9.2)
+      jsdom:
+        specifier: ^22.0.0
+        version: 22.1.0
+      jsdom-global:
+        specifier: ^3.0.2
+        version: 3.0.2(jsdom@22.1.0)
+      nyc:
+        specifier: ^15.1.0
+        version: 15.1.0
+      prettier:
+        specifier: ^2.8.4
+        version: 2.8.8
+      primeflex:
+        specifier: ^3.3.1
+        version: 3.3.1
+      primeicons:
+        specifier: ^7.0.0
+        version: 7.0.0
+      primereact:
+        specifier: ^10.6.3
+        version: 10.8.5(@types/react@17.0.83)(react-dom@17.0.2)(react@17.0.2)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      rollup:
+        specifier: ^2.78.0
+        version: 2.79.2
+      rollup-plugin-cleanup:
+        specifier: ^3.2.1
+        version: 3.2.1(rollup@2.79.2)
+      rollup-plugin-copy:
+        specifier: ^3.4.0
+        version: 3.5.0
+      rollup-plugin-import-css:
+        specifier: ^3.3.1
+        version: 3.5.7(rollup@2.79.2)
+      rollup-plugin-typescript2:
+        specifier: ^0.34.1
+        version: 0.34.1(rollup@2.79.2)(typescript@4.9.5)
+      rollup-plugin-visualizer:
+        specifier: ^5.4.1
+        version: 5.12.0(rollup@2.79.2)
+      source-map-loader:
+        specifier: ^0.2.4
+        version: 0.2.4
+      ts-jest:
+        specifier: ^27.1.4
+        version: 27.1.5(@babel/core@7.26.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@4.9.5)
+      ts-loader:
+        specifier: ^9.5.1
+        version: 9.5.1(typescript@4.9.5)(webpack@5.96.1)
+      tslib:
+        specifier: ^2.5.0
+        version: 2.8.1
+      typedoc:
+        specifier: ~0.25.3
+        version: 0.25.13(typescript@4.9.5)
+      typescript:
+        specifier: ~4.9.5
+        version: 4.9.5
+      webpack:
+        specifier: ^5.78.0
+        version: 5.96.1(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.1.4
+        version: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.96.1)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.2(webpack-cli@5.1.4)(webpack@5.96.1)
+
 packages:
 
   /@ampproject/remapping@2.3.0:
@@ -1652,7 +1806,7 @@ packages:
     resolution: {integrity: sha512-QyKIWEnKQFnYu2ey+SAAm1A5xjzJLJJj3bhIZd3QKyXKKjaJ0hlxam/OsWSltxTNbcyH1jRJjC6Cxv31usv0Ag==}
     engines: {node: ^14.17.0 || >=16.0.0}
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       execa: 5.0.0
       strong-log-transformer: 2.1.0
     dev: true
@@ -2817,6 +2971,12 @@ packages:
     dependencies:
       '@types/react': 17.0.83
     dev: false
+
+  /@types/react-transition-group@4.4.11:
+    resolution: {integrity: sha512-RM05tAniPZ5DZPzzNFP+DmrcOdD0efDUxMy3145oljWSl3x9ZV5vhme98gTxFrj2lhXvmGNnUiuDyJgY9IKkNA==}
+    dependencies:
+      '@types/react': 17.0.83
+    dev: true
 
   /@types/react@16.14.62:
     resolution: {integrity: sha512-BWf7hqninZav6nerxXj+NeZT/mTpDeG6Lk2zREHAy63CrnXoOGPGtNqTFYFN/sqpSaREDP5otVV88axIXmKfGA==}
@@ -5367,7 +5527,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       globby: 11.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       is-glob: 4.0.3
       is-path-cwd: 2.2.0
       is-path-inside: 3.0.3
@@ -5471,6 +5631,13 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: true
+
+  /dom-helpers@5.2.1:
+    resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+    dependencies:
+      '@babel/runtime': 7.26.0
+      csstype: 3.1.3
     dev: true
 
   /dom-serializer@2.0.0:
@@ -6913,7 +7080,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -8155,7 +8322,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.6
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -9106,7 +9273,7 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
@@ -9499,7 +9666,7 @@ packages:
       redent: 3.0.0
       trim-newlines: 3.0.1
       type-fest: 0.18.1
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
     dev: true
 
   /merge-descriptors@1.0.3:
@@ -9812,7 +9979,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
     dev: true
 
   /mute-stream@0.0.8:
@@ -10198,7 +10365,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.6
       axios: 1.7.8
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 7.0.4
@@ -10990,6 +11157,32 @@ packages:
       parse-ms: 2.1.0
     dev: true
 
+  /primeflex@3.3.1:
+    resolution: {integrity: sha512-zaOq3YvcOYytbAmKv3zYc+0VNS9Wg5d37dfxZnveKBFPr7vEIwfV5ydrpiouTft8MVW6qNjfkaQphHSnvgQbpQ==}
+    dev: true
+
+  /primeicons@7.0.0:
+    resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
+    dev: true
+
+  /primereact@10.8.5(@types/react@17.0.83)(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-B1LeJdNGGAB8P1VRJE0TDYz6rZSDwxE7Ft8PLFjRYLO44+mIJNDsLYSB56LRJOoqUNRhQrRIe/5ctS5eyQAzwQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 17.0.83
+      '@types/react-transition-group': 4.4.11
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      react-transition-group: 4.4.5(react-dom@17.0.2)(react@17.0.2)
+    dev: true
+
   /proc-log@2.0.1:
     resolution: {integrity: sha512-Kcmo2FhfDTXdcbfDH76N7uBYHINxc/8GW7UAVuVP9I+Va3uHSerrnKV6dLooga/gh7GlgzuCCr/eoldnL1muGw==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -11749,7 +11942,7 @@ packages:
     dependencies:
       object-assign: 4.1.1
       react: 17.0.2
-      react-is: 17.0.2
+      react-is: 18.3.1
     dev: true
 
   /react-tabs@3.2.3(react@17.0.2):
@@ -11772,6 +11965,20 @@ packages:
       react-is: 17.0.2
       react-shallow-renderer: 16.15.0(react@17.0.2)
       scheduler: 0.20.2
+    dev: true
+
+  /react-transition-group@4.4.5(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
+    peerDependencies:
+      react: '>=16.6.0'
+      react-dom: '>=16.6.0'
+    dependencies:
+      '@babel/runtime': 7.26.0
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
     dev: true
 
   /react@17.0.2:

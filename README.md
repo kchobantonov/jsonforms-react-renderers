@@ -11,3 +11,4 @@
 - Test (all packages): `pnpm run test`
 - Clean (delete `dist` folder of all packages): `pnpm run clean`
 - Run React Ant Design examples: `cd packages/antd-renderers && pnpm run dev`
+- Run React PrimeReact examples: `cd packages/primereact-renderers && pnpm run dev`
