@@ -43,12 +43,11 @@ import {
 } from '@jsonforms/react';
 import {
   AjvProps,
-  LayoutRenderer,
-  LayoutRendererProps,
+  AntdLayoutRenderer,
+  AntdLayoutRendererProps,
   withAjvProps,
 } from '../util/layout';
 import { Tabs } from 'antd';
-import Hidden from '../util/Hidden';
 
 export const isSingleLevelCategorization: Tester = and(
   uiTypeIs('Categorization'),
@@ -119,7 +118,7 @@ export const CategorizationLayoutRenderer = (
 
   const safeCategory =
     activeCategory >= categorization.elements.length ? 0 : activeCategory;
-  const childProps: LayoutRendererProps = {
+  const childProps: AntdLayoutRendererProps = {
     elements: categories[safeCategory] ? categories[safeCategory].elements : [],
     schema,
     path,
@@ -142,21 +141,23 @@ export const CategorizationLayoutRenderer = (
     return categories.map((e: Category) => deriveLabelForUISchemaElement(e, t));
   }, [categories, t]);
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <Tabs
-        defaultActiveKey={safeCategory?.toString()}
-        onChange={onTabChange}
-        items={categories.map(
-          (_, idx: number) =>
-            ({
-              label: tabLabels[idx],
-              key: String(idx),
-              children: <LayoutRenderer {...childProps} />,
-            } as any)
-        )}
-      ></Tabs>
-    </Hidden>
+    <Tabs
+      defaultActiveKey={safeCategory?.toString()}
+      onChange={onTabChange}
+      items={categories.map(
+        (_, idx: number) =>
+          ({
+            label: tabLabels[idx],
+            key: String(idx),
+            children: <AntdLayoutRenderer {...childProps} />,
+          } as any)
+      )}
+    ></Tabs>
   );
 };
 

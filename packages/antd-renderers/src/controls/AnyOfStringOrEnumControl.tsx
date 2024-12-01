@@ -109,7 +109,7 @@ const AntdAutocompleteInputText = (props: EnumCellProps & WithClassname) => {
       autoFocus={appliedUiSchemaOptions.focus}
       maxLength={maxLength}
       style={inputStyle}
-      allowClear={true}
+      allowClear={enabled}
     />
   );
 };

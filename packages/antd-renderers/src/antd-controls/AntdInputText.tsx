@@ -22,11 +22,11 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { Input } from 'antd';
-import { useDebouncedChange } from '../util';
+import { useDebouncedChange, useFocus } from '../util';
 
 const eventToValue = (ev: any) =>
   ev.target.value === '' ? undefined : ev.target.value;
@@ -34,6 +34,9 @@ const eventToValue = (ev: any) =>
 export const AntdInputText = React.memo(function AntdInputText(
   props: CellProps & WithClassname
 ) {
+  const [pointed, setPointed] = useState(false);
+  const [focused, onFocus, onBlur] = useFocus();
+
   const {
     data,
     config,
@@ -56,7 +59,11 @@ export const AntdInputText = React.memo(function AntdInputText(
     eventToValue
   );
 
-  const InputComponent = appliedUiSchemaOptions.multi ? Input.TextArea : Input;
+  let InputComponent:
+    | typeof Input
+    | typeof Input.TextArea
+    | typeof Input.Password = Input;
+
   const inputStyle: CSSProperties =
     !appliedUiSchemaOptions.trim || maxLength === undefined
       ? { width: '100%' }
@@ -65,11 +72,18 @@ export const AntdInputText = React.memo(function AntdInputText(
   if (appliedUiSchemaOptions.multi) {
     inputStyle.resize = 'vertical';
     inputStyle.overflow = 'auto';
+    InputComponent = Input.TextArea;
   }
+
+  if (schema.format === 'password') {
+    InputComponent = Input.Password;
+  }
+
+  const onMouseOver = () => setPointed(true);
+  const onMouseLeave = () => setPointed(false);
 
   return (
     <InputComponent
-      type={appliedUiSchemaOptions.format === 'password' ? 'password' : 'text'}
       value={inputText}
       onChange={onChange}
       className={className}
@@ -78,8 +92,15 @@ export const AntdInputText = React.memo(function AntdInputText(
       autoFocus={appliedUiSchemaOptions.focus}
       style={inputStyle}
       maxLength={maxLength}
-      allowClear
+      allowClear={pointed && enabled}
+      onMouseOver={onMouseOver}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
       placeholder={appliedUiSchemaOptions.placeholder}
+      count={
+        maxLength !== undefined ? { max: maxLength, show: focused } : undefined
+      }
       {...(appliedUiSchemaOptions.multi
         ? { autoSize: { minRows: 5, maxRows: 5 } }
         : {})}

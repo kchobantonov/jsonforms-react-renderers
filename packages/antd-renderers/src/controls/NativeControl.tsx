@@ -36,7 +36,6 @@ import { withJsonFormsControlProps } from '@jsonforms/react';
 import merge from 'lodash/merge';
 import { useDebouncedChange, useFocus } from '../util';
 import { Form, Input } from 'antd';
-import Hidden from '../util/Hidden';
 
 export const NativeControl = (props: ControlProps) => {
   const [focused, onFocus, onBlur] = useFocus();
@@ -72,29 +71,31 @@ export const NativeControl = (props: ControlProps) => {
 
   const inputStyle = appliedUiSchemaOptions.trim ? {} : { width: '100%' };
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <Form.Item
-        required={required}
-        hasFeedback={!isValid}
-        validateStatus={isValid ? 'success' : 'error'}
-        label={label}
-        help={!isValid ? errors : showDescription ? description : null}
-        htmlFor={id + '-input'}
-        id={id}
-      >
-        <Input
-          id={id + '-input'}
-          type={fieldType}
-          disabled={!enabled}
-          style={inputStyle}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={inputValue}
-          onChange={onChange}
-        />
-      </Form.Item>
-    </Hidden>
+    <Form.Item
+      required={required}
+      hasFeedback={!isValid}
+      validateStatus={isValid ? 'success' : 'error'}
+      label={label}
+      help={!isValid ? errors : showDescription ? description : null}
+      htmlFor={id + '-input'}
+      id={id}
+    >
+      <Input
+        id={id + '-input'}
+        type={fieldType}
+        disabled={!enabled}
+        style={inputStyle}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        value={inputValue}
+        onChange={onChange}
+      />
+    </Form.Item>
   );
 };
 

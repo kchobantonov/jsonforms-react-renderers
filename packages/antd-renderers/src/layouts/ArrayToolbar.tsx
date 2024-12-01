@@ -12,6 +12,7 @@ export interface ArrayLayoutToolbarProps {
   addItem(path: string, data: any): () => void;
   createDefault(): any;
   translations: ArrayTranslations;
+  disableAdd?: boolean;
   children?: React.ReactNode;
 }
 
@@ -40,6 +41,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   enabled,
   createDefault,
   translations,
+  disableAdd,
   children,
 }: ArrayLayoutToolbarProps) {
   return (
@@ -49,7 +51,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       type='inner'
       title={renderTitle(label, errors, description)}
       extra={
-        enabled
+        enabled && !disableAdd
           ? [
               <Tooltip key='1' title={translations.addTooltip}>
                 <Button

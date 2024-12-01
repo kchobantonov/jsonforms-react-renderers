@@ -54,7 +54,7 @@ export const DeleteDialog = React.memo(function DeleteDialog({
     <Modal
       title={title}
       open={open}
-      afterClose={onClose}
+      onClose={onClose}
       onOk={onConfirm}
       onCancel={onCancel}
       okText={acceptText}

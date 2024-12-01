@@ -38,7 +38,6 @@ import {
   rankWith,
 } from '@jsonforms/core';
 import { Tabs } from 'antd';
-import Hidden from '../util/Hidden';
 import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
 import CombinatorProperties from './CombinatorProperties';
 
@@ -106,8 +105,12 @@ export const OneOfRenderer = ({
     [setConfirmDialogOpen, setSelectedIndex, data]
   );
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
+    <>
       <CombinatorProperties
         schema={schema}
         combinatorKeyword={'oneOf'}
@@ -141,7 +144,7 @@ export const OneOfRenderer = ({
         open={confirmDialogOpen}
         handleClose={handleClose}
       />
-    </Hidden>
+    </>
   );
 };
 

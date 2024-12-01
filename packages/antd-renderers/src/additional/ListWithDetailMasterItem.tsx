@@ -22,12 +22,12 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+import { DeleteFilled } from '@ant-design/icons';
 import type { StatePropsOfMasterItem } from '@jsonforms/core';
 import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
-import React, { useMemo } from 'react';
-import { DeleteFilled } from '@ant-design/icons';
 import { Avatar, Button, List, Tooltip, theme as antdTheme } from 'antd';
 import Text from 'antd/es/typography/Text';
+import React, { useMemo } from 'react';
 
 export const ListWithDetailMasterItem = ({
   index,
@@ -38,6 +38,7 @@ export const ListWithDetailMasterItem = ({
   removeItem,
   path,
   translations,
+  disableRemove,
 }: StatePropsOfMasterItem) => {
   const { useToken } = antdTheme;
   const { token: theme } = useToken();
@@ -64,7 +65,7 @@ export const ListWithDetailMasterItem = ({
       onClick={handleSelect(index)}
       style={listItemStyle}
       actions={
-        enabled
+        enabled && !disableRemove
           ? [
               <Tooltip title={translations.removeTooltip} key='action_remove'>
                 <Button

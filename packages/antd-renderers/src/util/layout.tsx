@@ -22,20 +22,80 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import type { UISchemaElement } from '@jsonforms/core';
-import { getAjv, OwnPropsOfRenderer } from '@jsonforms/core';
-import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
-import Ajv from 'ajv';
-import { Col, Row } from 'antd';
 import isEmpty from 'lodash/isEmpty';
 import React, { ComponentType } from 'react';
-import Hidden from '../util/Hidden';
+import Ajv from 'ajv';
+import type { UISchemaElement } from '@jsonforms/core';
+import {
+  getAjv,
+  JsonFormsCellRendererRegistryEntry,
+  JsonFormsRendererRegistryEntry,
+  JsonSchema,
+  OwnPropsOfRenderer,
+} from '@jsonforms/core';
+import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
+import { Col, Row } from 'antd';
 
-export interface LayoutRendererProps extends OwnPropsOfRenderer {
+export interface AntdLayoutRendererProps extends OwnPropsOfRenderer {
   elements: UISchemaElement[];
   direction: 'row' | 'column';
 }
-const LayoutRendererComponent = ({
+
+export const renderColumnLayoutElements = (
+  elements: UISchemaElement[],
+  schema: JsonSchema,
+  path: string,
+  enabled: boolean,
+  renderers?: JsonFormsRendererRegistryEntry[],
+  cells?: JsonFormsCellRendererRegistryEntry[]
+) => {
+  return (
+    <>
+      {elements.map((child, index) => (
+        <Row key={`${path}-${index}`}>
+          <Col span={24}>
+            <JsonFormsDispatch
+              uischema={child}
+              schema={schema}
+              path={path}
+              enabled={enabled}
+              renderers={renderers}
+              cells={cells}
+            />
+          </Col>
+        </Row>
+      ))}
+    </>
+  );
+};
+
+export const renderRowLayoutElements = (
+  elements: UISchemaElement[],
+  schema: JsonSchema,
+  path: string,
+  enabled: boolean,
+  renderers?: JsonFormsRendererRegistryEntry[],
+  cells?: JsonFormsCellRendererRegistryEntry[]
+) => {
+  return (
+    <Row gutter={8} style={{ width: '100%' }}>
+      {elements.map((child, index) => (
+        <Col key={`${path}-${index}`} span={Math.floor(24 / elements.length)}>
+          <JsonFormsDispatch
+            uischema={child}
+            schema={schema}
+            path={path}
+            enabled={enabled}
+            renderers={renderers}
+            cells={cells}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
+};
+
+const AntdLayoutRendererComponent = ({
   visible,
   elements,
   schema,
@@ -44,53 +104,31 @@ const LayoutRendererComponent = ({
   direction,
   renderers,
   cells,
-}: LayoutRendererProps) => {
-  if (isEmpty(elements)) {
+}: AntdLayoutRendererProps) => {
+  if (isEmpty(elements) || !visible) {
     return null;
   } else {
-    return (
-      <Hidden hidden={!visible}>
-        {direction === 'column' ? (
-          <>
-            {elements.map((child, index) => (
-              <Row key={`${path}-${index}`}>
-                <Col span={24}>
-                  <JsonFormsDispatch
-                    uischema={child}
-                    schema={schema}
-                    path={path}
-                    enabled={enabled}
-                    renderers={renderers}
-                    cells={cells}
-                  />
-                </Col>
-              </Row>
-            ))}
-          </>
-        ) : (
-          <Row gutter={8} style={{ width: '100%' }}>
-            {elements.map((child, index) => (
-              <Col
-                key={`${path}-${index}`}
-                span={Math.floor(24 / elements.length)}
-              >
-                <JsonFormsDispatch
-                  uischema={child}
-                  schema={schema}
-                  path={path}
-                  enabled={enabled}
-                  renderers={renderers}
-                  cells={cells}
-                />
-              </Col>
-            ))}
-          </Row>
-        )}
-      </Hidden>
+    if (direction === 'column') {
+      return renderColumnLayoutElements(
+        elements,
+        schema,
+        path,
+        enabled,
+        renderers,
+        cells
+      );
+    }
+    return renderRowLayoutElements(
+      elements,
+      schema,
+      path,
+      enabled,
+      renderers,
+      cells
     );
   }
 };
-export const LayoutRenderer = React.memo(LayoutRendererComponent);
+export const AntdLayoutRenderer = React.memo(AntdLayoutRendererComponent);
 
 export interface AjvProps {
   ajv: Ajv;
@@ -108,6 +146,7 @@ export const withAjvProps = <P extends {}>(
     return <Component {...props} ajv={ajv} />;
   };
 
-export interface LabelableLayoutRendererProps extends LayoutRendererProps {
+export interface AntdLabelableLayoutRendererProps
+  extends AntdLayoutRendererProps {
   label?: string;
 }

@@ -64,6 +64,7 @@ export const AntdSelect = (
       value={data !== undefined ? data : ''}
       onChange={(value) => handleChange(path, value || undefined)}
       style={selectStyle}
+      allowClear={enabled}
     >
       {[
         <Option value={''} key='jsonforms.enum.none'>

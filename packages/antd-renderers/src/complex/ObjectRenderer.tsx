@@ -33,7 +33,6 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch, withJsonFormsDetailProps } from '@jsonforms/react';
 import React, { useMemo } from 'react';
-import Hidden from '../util/Hidden';
 
 export const ObjectRenderer = ({
   renderers,
@@ -66,18 +65,21 @@ export const ObjectRenderer = ({
       ),
     [uischemas, schema, uischema.scope, path, label, uischema, rootSchema]
   );
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <JsonFormsDispatch
-        visible={visible}
-        enabled={enabled}
-        schema={schema}
-        uischema={detailUiSchema}
-        path={path}
-        renderers={renderers}
-        cells={cells}
-      />
-    </Hidden>
+    <JsonFormsDispatch
+      visible={visible}
+      enabled={enabled}
+      schema={schema}
+      uischema={detailUiSchema}
+      path={path}
+      renderers={renderers}
+      cells={cells}
+    />
   );
 };
 

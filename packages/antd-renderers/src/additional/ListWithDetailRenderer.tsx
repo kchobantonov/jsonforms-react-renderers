@@ -25,6 +25,7 @@
 import {
   and,
   ArrayLayoutProps,
+  ArrayTranslations,
   composePaths,
   computeLabel,
   createDefaultValue,
@@ -36,10 +37,11 @@ import {
 } from '@jsonforms/core';
 import {
   JsonFormsDispatch,
+  withArrayTranslationProps,
   withJsonFormsArrayLayoutProps,
+  withTranslateProps,
 } from '@jsonforms/react';
 import { Col, Empty, List, Row } from 'antd';
-import Hidden from '../util/Hidden';
 
 import range from 'lodash/range';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -64,9 +66,11 @@ export const ListWithDetailRenderer = ({
   cells,
   config,
   rootSchema,
-  translations,
   description,
-}: ArrayLayoutProps) => {
+  disableAdd,
+  disableRemove,
+  translations,
+}: ArrayLayoutProps & { translations: ArrayTranslations }) => {
   const [selectedIndex, setSelectedIndex] = useState(undefined);
   const handleRemoveItem = useCallback(
     (p: string, value: any) => () => {
@@ -101,67 +105,75 @@ export const ListWithDetailRenderer = ({
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
+  const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
 
   React.useEffect(() => {
     setSelectedIndex(undefined);
   }, [schema]);
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <ArrayLayoutToolbar
-        translations={translations}
-        label={computeLabel(
-          label,
-          required,
-          appliedUiSchemaOptions.hideRequiredAsterisk
-        )}
-        description={description}
-        errors={errors}
-        path={path}
-        enabled={enabled}
-        addItem={addItem}
-        createDefault={handleCreateDefaultValue}
-      >
-        <Row gutter={8}>
-          <Col xs={6}>
-            {data > 0 ? (
-              <List
-                dataSource={range(data)}
-                renderItem={(_item, index) => (
-                  <ListWithDetailMasterItem
-                    index={index}
-                    path={path}
-                    schema={schema}
-                    enabled={enabled}
-                    handleSelect={handleListItemClick}
-                    removeItem={handleRemoveItem}
-                    selected={selectedIndex === index}
-                    key={index}
-                    translations={translations}
-                  />
-                )}
-              ></List>
-            ) : (
-              <Empty description='No data' />
-            )}
-          </Col>
-          <Col xs={18}>
-            {selectedIndex !== undefined ? (
-              <JsonFormsDispatch
-                renderers={renderers}
-                cells={cells}
-                visible={visible}
-                schema={schema}
-                uischema={foundUISchema}
-                path={composePaths(path, `${selectedIndex}`)}
-              />
-            ) : (
-              <Empty description={translations.noSelection} />
-            )}
-          </Col>
-        </Row>
-      </ArrayLayoutToolbar>
-    </Hidden>
+    <ArrayLayoutToolbar
+      translations={translations}
+      label={computeLabel(
+        label,
+        required,
+        appliedUiSchemaOptions.hideRequiredAsterisk
+      )}
+      description={description}
+      errors={errors}
+      path={path}
+      enabled={enabled}
+      addItem={addItem}
+      createDefault={handleCreateDefaultValue}
+      disableAdd={doDisableAdd}
+    >
+      <Row gutter={8}>
+        <Col xs={6}>
+          {data > 0 ? (
+            <List
+              dataSource={range(data)}
+              renderItem={(_item, index) => (
+                <ListWithDetailMasterItem
+                  index={index}
+                  path={path}
+                  schema={schema}
+                  enabled={enabled}
+                  handleSelect={handleListItemClick}
+                  removeItem={handleRemoveItem}
+                  selected={selectedIndex === index}
+                  key={index}
+                  uischema={foundUISchema}
+                  childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                  translations={translations}
+                  disableRemove={doDisableRemove}
+                />
+              )}
+            ></List>
+          ) : (
+            <Empty description={translations.noDataMessage} />
+          )}
+        </Col>
+        <Col xs={18}>
+          {selectedIndex !== undefined ? (
+            <JsonFormsDispatch
+              renderers={renderers}
+              cells={cells}
+              visible={visible}
+              schema={schema}
+              uischema={foundUISchema}
+              path={composePaths(path, `${selectedIndex}`)}
+            />
+          ) : (
+            <Empty description={translations.noSelection} />
+          )}
+        </Col>
+      </Row>
+    </ArrayLayoutToolbar>
   );
 };
 
@@ -170,4 +182,6 @@ export const listWithDetailTester: RankedTester = rankWith(
   and(uiTypeIs('ListWithDetail'), isObjectArray)
 );
 
-export default withJsonFormsArrayLayoutProps(ListWithDetailRenderer);
+export default withJsonFormsArrayLayoutProps(
+  withTranslateProps(withArrayTranslationProps(ListWithDetailRenderer))
+);

@@ -22,13 +22,12 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  DeleteFilled,
-} from '@ant-design/icons';
+import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
+import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
+import DeleteFilled from '@ant-design/icons/DeleteFilled';
 import {
   ArrayLayoutProps,
+  ArrayTranslations,
   OwnPropsOfJsonFormsRenderer,
   Resolve,
   composePaths,
@@ -56,11 +55,12 @@ import map from 'lodash/map';
 import merge from 'lodash/merge';
 import range from 'lodash/range';
 import React, { ComponentType, useCallback, useMemo, useState } from 'react';
-import Hidden from '../util/Hidden';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
 
 const ArrayLayoutComponent = (
-  props: { ctx: JsonFormsStateContext } & ArrayLayoutProps
+  props: { ctx: JsonFormsStateContext } & ArrayLayoutProps & {
+      translations: ArrayTranslations;
+    }
 ) => {
   const [expanded, setExpanded] = useState<string | boolean>(false);
   const innerCreateDefaultValue = useCallback(
@@ -88,8 +88,10 @@ const ArrayLayoutComponent = (
     rootSchema,
     config,
     uischemas,
-    translations,
     description,
+    disableAdd,
+    disableRemove,
+    translations,
     moveUp,
     moveDown,
     removeItems,
@@ -161,6 +163,11 @@ const ArrayLayoutComponent = (
       ),
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   );
+  const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
+  const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
+  if (doDisableRemove) {
+    // TODO
+  }
 
   return (
     <ArrayLayoutToolbar
@@ -176,6 +183,7 @@ const ArrayLayoutComponent = (
       enabled={enabled}
       addItem={addItem}
       createDefault={innerCreateDefaultValue}
+      disableAdd={doDisableAdd}
     >
       {data > 0 ? (
         <Collapse
@@ -195,9 +203,9 @@ const ArrayLayoutComponent = (
                   <Avatar aria-label='Index' style={avatarStyle}>
                     {index + 1}
                   </Avatar>
-                  <Hidden hidden={!childLabel}>
+                  {!childLabel ? (
                     <Typography.Text>{childLabel}</Typography.Text>
-                  </Hidden>
+                  ) : null}
                 </>
               ),
               extra: <Space>{getExtra(data, index)}</Space>,
@@ -215,7 +223,7 @@ const ArrayLayoutComponent = (
           })}
         ></Collapse>
       ) : (
-        <Empty />
+        <Empty description={translations.noDataMessage} />
       )}
     </ArrayLayoutToolbar>
   );

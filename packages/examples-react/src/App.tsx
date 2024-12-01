@@ -25,7 +25,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { JsonForms, JsonFormsInitStateProps } from '@jsonforms/react';
-import { ExampleDescription } from '@chobantonov/examples';
+import { ExampleDescription } from '@jsonforms/examples';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,

@@ -22,102 +22,48 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import isEmpty from 'lodash/isEmpty';
-import union from 'lodash/union';
-import {
-  DispatchCell,
-  JsonFormsStateContext,
-  useJsonForms,
-} from '@jsonforms/react';
-import startCase from 'lodash/startCase';
-import range from 'lodash/range';
-import React from 'react';
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  DeleteFilled,
-} from '@ant-design/icons';
-import { Button, Form, Table, Tooltip } from 'antd';
+import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
+import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
+import DeleteFilled from '@ant-design/icons/DeleteFilled';
 import {
   ArrayLayoutProps,
+  ArrayTranslations,
   ControlElement,
   errorsAt,
   formatErrorMessage,
+  JsonFormsCellRendererRegistryEntry,
+  JsonFormsRendererRegistryEntry,
   JsonSchema,
   Paths,
-  Resolve,
-  JsonFormsRendererRegistryEntry,
-  JsonFormsCellRendererRegistryEntry,
-  encode,
 } from '@jsonforms/core';
-import Hidden from '../util/Hidden';
+import { JsonFormsStateContext, useJsonForms } from '@jsonforms/react';
+import { Button, Table, TableColumnProps, Tooltip } from 'antd';
+import range from 'lodash/range';
+import startCase from 'lodash/startCase';
+import union from 'lodash/union';
+import React, { useMemo } from 'react';
 
-import { WithDeleteDialogSupport } from './DeleteDialog';
-import TableToolbar from './TableToolbar';
 import { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';
+import { WithDeleteDialogSupport } from './DeleteDialog';
+import DataCell, { DataCellProps } from './DataCell';
+import TableToolbar from './TableToolbar';
 
-const RenderActionsCell = (
-  props: ArrayLayoutProps & WithDeleteDialogSupport & any
-) => {
-  const {
-    data,
-    config,
-    uischema,
-    path,
-    index,
-    moveUp,
-    moveDown,
-    openDeleteDialog,
-    translations,
-  } = props;
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const childPath = Paths.compose(path, `${index}`);
-
-  return (
-    <div>
-      {appliedUiSchemaOptions.showSortButtons ? (
-        <>
-          <Tooltip title='Move up'>
-            <Button
-              shape='circle'
-              aria-label={translations.upAriaLabel}
-              icon={<ArrowUpOutlined rev={undefined} />}
-              onClick={moveUp(path, index)}
-              disabled={index <= 0}
-            />
-          </Tooltip>
-          <Tooltip title='Move down'>
-            <Button
-              shape='circle'
-              aria-label={translations.downAriaLabel}
-              icon={<ArrowDownOutlined rev={undefined} />}
-              onClick={moveDown(path, index)}
-              disabled={index >= data - 1}
-            />
-          </Tooltip>
-        </>
-      ) : null}
-      <Tooltip title={translations.removeTooltip}>
-        <Button
-          aria-label={translations.removeAriaLabel}
-          icon={<DeleteFilled rev={undefined} />}
-          onClick={() => openDeleteDialog(childPath, index)}
-        />
-      </Tooltip>
-    </div>
-  );
-};
-
-const generateColumns = (props: ArrayLayoutProps) => {
-  const { path, schema, enabled, renderers, cells } = props;
+const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
+  const { path, schema, enabled, cells } = props;
 
   if (schema.type === 'object') {
     return getValidColumnProps(schema).map((prop) => {
-      const column = {
-        dataIndex: prop,
-        editable: enabled,
+      const props = {
+        propName: prop,
+        schema,
         title: schema.properties?.[prop]?.title ?? startCase(prop),
+        enabled,
+        cells,
+      };
+      return {
+        dataIndex: props.propName,
+        title: props.title,
         render: (
           _field: any,
           row: { index: number; key: number },
@@ -125,26 +71,18 @@ const generateColumns = (props: ArrayLayoutProps) => {
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
-          return (
-            <RenderCell
-              schema={schema}
-              propName={prop}
-              rowPath={rowPath}
-              enabled={enabled}
-              renderers={renderers}
-              cells={cells}
-            />
-          );
+          return <RowDataCell {...props} rowPath={rowPath}></RowDataCell>;
         },
-      };
-
-      return column;
+      } as TableColumnProps;
     });
   } else {
     // primitives
-    const columns = [
+    const props = {
+      schema,
+      enabled,
+    };
+    return [
       {
-        editable: enabled,
         render: (
           _field: any,
           row: { index: number; key: number },
@@ -152,47 +90,11 @@ const generateColumns = (props: ArrayLayoutProps) => {
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
-          return (
-            <RenderCell
-              schema={schema}
-              rowPath={rowPath}
-              enabled={enabled}
-              renderers={renderers}
-              cells={cells}
-            />
-          );
+          return <RowDataCell {...props} rowPath={rowPath}></RowDataCell>;
         },
       },
     ];
-    return columns;
   }
-};
-
-const withActionsColumn = (columns: any, props: ArrayLayoutProps) => {
-  const appliedUiSchemaOptions = merge(
-    {},
-    props.config,
-    props.uischema.options
-  );
-  const width = appliedUiSchemaOptions.showSortButtons ? 150 : 50;
-
-  return props.enabled
-    ? columns.concat([
-        {
-          dataIndex: '',
-          title: '',
-          editable: true,
-          width,
-          render: (
-            _field: any,
-            row: { index: number; key: number },
-            _index: number
-          ) => {
-            return <RenderActionsCell {...{ index: row.index, ...props }} />;
-          },
-        },
-      ])
-    : columns;
 };
 
 const getValidColumnProps = (scopedSchema: JsonSchema) => {
@@ -208,14 +110,7 @@ const getValidColumnProps = (scopedSchema: JsonSchema) => {
   return [''];
 };
 
-interface RenderCellProps extends OwnPropsOfRenderCell {
-  rootSchema: JsonSchema;
-  errors: string;
-  path: string;
-  enabled: boolean;
-}
-
-interface OwnPropsOfRenderCell {
+interface RowDataCellProps {
   rowPath: string;
   propName?: string;
   schema: JsonSchema;
@@ -224,10 +119,10 @@ interface OwnPropsOfRenderCell {
   cells?: JsonFormsCellRendererRegistryEntry[];
 }
 
-const ctxToRenderCellProps = (
+const ctxToDataCellProps = (
   ctx: JsonFormsStateContext,
-  ownProps: OwnPropsOfRenderCell
-): RenderCellProps => {
+  ownProps: RowDataCellProps
+): DataCellProps => {
   const path =
     ownProps.rowPath +
     (ownProps.schema.type === 'object' ? '.' + ownProps.propName : '');
@@ -241,7 +136,6 @@ const ctxToRenderCellProps = (
     )
   );
   return {
-    rowPath: ownProps.rowPath,
     propName: ownProps.propName,
     schema: ownProps.schema,
     rootSchema: ctx.core.schema,
@@ -253,62 +147,135 @@ const ctxToRenderCellProps = (
   };
 };
 
-const controlWithoutLabel = (scope: string): ControlElement => ({
-  type: 'Control',
-  scope: scope,
-  label: false,
-});
-
-const RenderCell = (ownProps: OwnPropsOfRenderCell) => {
+const RowDataCell = (ownProps: RowDataCellProps) => {
   const ctx = useJsonForms();
-  const {
-    path,
-    propName,
-    schema,
-    rootSchema,
-    errors,
-    enabled,
-    renderers,
-    cells,
-  } = ctxToRenderCellProps(ctx, ownProps);
+  const dataCellProps = ctxToDataCellProps(ctx, ownProps);
 
-  const isValid = isEmpty(errors);
+  return <DataCell {...dataCellProps} />;
+};
+
+interface ActionCellProps {
+  childPath: string;
+  rowIndex: number;
+  moveUpCreator: (path: string, position: number) => () => void;
+  moveDownCreator: (path: string, position: number) => () => void;
+  enableUp: boolean;
+  enableDown: boolean;
+  showSortButtons: boolean;
+  path: string;
+  translations: ArrayTranslations;
+  disableRemove?: boolean;
+}
+
+const ActionCell = ({
+  childPath,
+  rowIndex,
+  openDeleteDialog,
+  moveUpCreator,
+  moveDownCreator,
+  enableUp,
+  enableDown,
+  showSortButtons,
+  path,
+  translations,
+  disableRemove,
+}: ActionCellProps & WithDeleteDialogSupport) => {
+  const moveUp = useMemo(
+    () => moveUpCreator(path, rowIndex),
+    [moveUpCreator, path, rowIndex]
+  );
+  const moveDown = useMemo(
+    () => moveDownCreator(path, rowIndex),
+    [moveDownCreator, path, rowIndex]
+  );
+
   return (
-    <Form.Item
-      hasFeedback={!isValid}
-      validateStatus={isValid ? 'success' : 'error'}
-      help={errors}
-      style={{ marginBottom: 0 }}
-    >
-      {schema.properties ? (
-        <DispatchCell
-          schema={Resolve.schema(
-            schema,
-            `#/properties/${encode(propName)}`,
-            rootSchema
-          )}
-          uischema={controlWithoutLabel(`#/properties/${encode(propName)}`)}
-          path={path}
-          enabled={enabled}
-          renderers={renderers}
-          cells={cells}
-        />
-      ) : (
-        <DispatchCell
-          schema={schema}
-          uischema={controlWithoutLabel('#')}
-          path={path}
-          enabled={enabled}
-          renderers={renderers}
-          cells={cells}
-        />
-      )}
-    </Form.Item>
+    <div>
+      {showSortButtons ? (
+        <>
+          <Tooltip title={translations.up}>
+            <Button
+              shape='circle'
+              aria-label={translations.upAriaLabel}
+              icon={<ArrowUpOutlined rev={undefined} />}
+              onClick={moveUp}
+              disabled={!enableUp}
+            />
+          </Tooltip>
+          <Tooltip title={translations.down}>
+            <Button
+              shape='circle'
+              aria-label={translations.downAriaLabel}
+              icon={<ArrowDownOutlined rev={undefined} />}
+              onClick={moveDown}
+              disabled={!enableDown}
+            />
+          </Tooltip>
+        </>
+      ) : null}
+      {!disableRemove ? (
+        <Tooltip title={translations.removeTooltip}>
+          <Button
+            aria-label={translations.removeAriaLabel}
+            icon={<DeleteFilled rev={undefined} />}
+            onClick={() => openDeleteDialog(childPath, rowIndex)}
+          />
+        </Tooltip>
+      ) : null}
+    </div>
+  );
+};
+
+interface GenerateColumns extends ArrayLayoutProps, WithDeleteDialogSupport {
+  moveUpCreator: (path: string, position: number) => () => void;
+  moveDownCreator: (path: string, position: number) => () => void;
+  showSortButtons: boolean;
+  path: string;
+  translations: ArrayTranslations;
+  disableRemove?: boolean;
+}
+
+const generateColumns = (props: GenerateColumns) => {
+  const path = props.path;
+  const width = props.showSortButtons ? 150 : 50;
+
+  return generateDataColumns(props).concat(
+    props.enabled
+      ? [
+          {
+            dataIndex: '',
+            title: '',
+            width: width,
+            render: (
+              _field: any,
+              row: { index: number; key: number },
+              _index: number
+            ) => {
+              const rowIndex = row.index;
+              const childPath = Paths.compose(path, `${rowIndex}`);
+
+              const enableUp = rowIndex !== 0;
+              const enableDown = rowIndex !== props.data - 1;
+
+              return (
+                <ActionCell
+                  {...props}
+                  enableUp={enableUp}
+                  enableDown={enableDown}
+                  rowIndex={rowIndex}
+                  childPath={childPath}
+                />
+              );
+            },
+          },
+        ]
+      : []
   );
 };
 
 export class TableControl extends React.Component<
-  ArrayLayoutProps & WithDeleteDialogSupport,
+  ArrayLayoutProps &
+    WithDeleteDialogSupport & { translations: ArrayTranslations },
   any
 > {
   addItem = (path: string, value: any) => this.props.addItem(path, value);
@@ -321,42 +288,65 @@ export class TableControl extends React.Component<
       rootSchema,
       uischema,
       errors,
+      openDeleteDialog,
+      moveUp,
+      moveDown,
       visible,
       enabled,
       translations,
+      disableAdd,
+      disableRemove,
+      config,
       data,
     } = this.props;
 
-    const controlElement = uischema as ControlElement;
+    const appliedUiSchemaOptions = merge({}, config, uischema.options);
+    const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
+    const doDisableRemove =
+      disableRemove || appliedUiSchemaOptions.disableRemove;
 
-    const columns: any = withActionsColumn(
-      generateColumns(this.props),
-      this.props
-    );
+    const controlElement = uischema as ControlElement;
+    const isObjectSchema = schema.type === 'object';
+
+    if (!visible) {
+      return null;
+    }
+
+    const columns: any = generateColumns({
+      openDeleteDialog,
+      translations,
+      ...this.props,
+      disableRemove: doDisableRemove,
+      showSortButtons:
+        appliedUiSchemaOptions.showSortButtons ||
+        appliedUiSchemaOptions.showArrayTableSortButtons,
+      moveUpCreator: moveUp,
+      moveDownCreator: moveDown,
+    });
+
     const dataSource = range(data).map((index) => ({ index, key: index }));
 
     return (
-      <Hidden hidden={!visible}>
-        <TableToolbar
-          errors={errors}
-          label={label}
-          description={description}
-          addItem={this.addItem}
-          path={path}
-          uischema={controlElement}
-          schema={schema}
-          rootSchema={rootSchema}
-          enabled={enabled}
-          translations={translations}
-        >
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            showHeader={schema.type === 'object'}
-            pagination={{ hideOnSinglePage: true }}
-          ></Table>
-        </TableToolbar>
-      </Hidden>
+      <TableToolbar
+        errors={errors}
+        label={label}
+        description={description}
+        addItem={this.addItem}
+        path={path}
+        uischema={controlElement}
+        schema={schema}
+        rootSchema={rootSchema}
+        enabled={enabled}
+        translations={translations}
+        disableAdd={doDisableAdd}
+      >
+        <Table
+          dataSource={dataSource}
+          showHeader={isObjectSchema}
+          columns={columns}
+          pagination={{ hideOnSinglePage: true }}
+        ></Table>
+      </TableToolbar>
     );
   }
 }

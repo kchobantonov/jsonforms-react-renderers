@@ -32,7 +32,10 @@ import {
   uiTypeIs,
   withIncreasedRank,
 } from '@jsonforms/core';
-import { LabelableLayoutRendererProps, LayoutRenderer } from '../util/layout';
+import {
+  AntdLabelableLayoutRendererProps,
+  AntdLayoutRenderer,
+} from '../util/layout';
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
 
 export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
@@ -44,11 +47,11 @@ const GroupComponent = React.memo(function GroupComponent({
   uischema,
   label,
   ...props
-}: LabelableLayoutRendererProps) {
+}: AntdLabelableLayoutRendererProps) {
   const groupLayout = uischema as GroupLayout;
   return (
     <Card hidden={!visible} title={label} style={style}>
-      <LayoutRenderer
+      <AntdLayoutRenderer
         {...props}
         visible={visible}
         enabled={enabled}

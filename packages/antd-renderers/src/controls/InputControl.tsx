@@ -25,7 +25,6 @@
 import React from 'react';
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
 import { Form } from 'antd';
-import Hidden from '../util/Hidden';
 
 import merge from 'lodash/merge';
 import { useFocus } from '../util';
@@ -70,27 +69,29 @@ export const InputControl = (props: ControlProps & WithInput) => {
   const InnerComponent = input;
   const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <Form.Item
-        required={required}
-        hasFeedback={!isValid}
-        validateStatus={isValid ? 'success' : 'error'}
-        label={input === AntdCheckbox || input === AntdRadioGroup ? ' ' : label}
-        help={help}
-        style={style}
-        htmlFor={id + '-input'}
-        id={id}
-      >
-        <InnerComponent
-          {...props}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          id={id + '-input'}
-          isValid={isValid}
-          visible={visible}
-        />
-      </Form.Item>
-    </Hidden>
+    <Form.Item
+      required={required}
+      hasFeedback={!isValid}
+      validateStatus={isValid ? 'success' : 'error'}
+      label={input === AntdCheckbox || input === AntdRadioGroup ? ' ' : label}
+      help={help}
+      style={style}
+      htmlFor={id + '-input'}
+      id={id}
+    >
+      <InnerComponent
+        {...props}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        id={id + '-input'}
+        isValid={isValid}
+        visible={visible}
+      />
+    </Form.Item>
   );
 };

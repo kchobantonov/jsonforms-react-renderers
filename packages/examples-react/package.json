@@ -1,11 +1,11 @@
 {
   "name": "@chobantonov/examples-react",
-  "version": "3.2.1",
+  "version": "3.4.1",
   "private": true,
   "dependencies": {
-    "@chobantonov/examples": "workspace:*",
-    "@jsonforms/core": "3.2.1",
-    "@jsonforms/react": "3.2.1",
+    "@jsonforms/core": "3.4.1",
+    "@jsonforms/examples": "3.4.1",
+    "@jsonforms/react": "3.4.1",
     "@monaco-editor/react": "^4.6.0",
     "@types/react-tabs": "^2.3.3",
     "json-refs": "3.0.15",

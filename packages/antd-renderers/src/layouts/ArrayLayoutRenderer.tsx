@@ -30,9 +30,12 @@ import {
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
-import Hidden from '../util/Hidden';
+import {
+  withArrayTranslationProps,
+  withJsonFormsArrayLayoutProps,
+  withTranslateProps,
+} from '@jsonforms/react';
 import { ArrayLayout } from './ArrayLayout';
-import { withJsonFormsArrayLayoutProps } from '@jsonforms/react';
 
 export const ArrayLayoutRenderer = ({
   visible,
@@ -43,15 +46,18 @@ export const ArrayLayoutRenderer = ({
     (p: string, value: any) => addItem(p, value),
     [addItem]
   );
-  return (
-    <Hidden hidden={!visible}>
-      <ArrayLayout visible={visible} addItem={addItemCb} {...props} />
-    </Hidden>
-  );
+
+  if (!visible) {
+    return null;
+  }
+
+  return <ArrayLayout visible={visible} addItem={addItemCb} {...props} />;
 };
 
 export const arrayLayoutTester: RankedTester = rankWith(
   4,
   isObjectArrayWithNesting
 );
-export default withJsonFormsArrayLayoutProps(ArrayLayoutRenderer);
+export default withJsonFormsArrayLayoutProps(
+  withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer))
+);

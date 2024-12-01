@@ -30,7 +30,7 @@ import {
   ArrayTranslations,
 } from '@jsonforms/core';
 import { Button, Tooltip, Typography, Row, Col, Card } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import ValidationIcon from './ValidationIcon';
 
 export interface TableToolbarProps {
@@ -44,6 +44,7 @@ export interface TableToolbarProps {
   enabled: boolean;
   translations: ArrayTranslations;
   addItem(path: string, value: any): () => void;
+  disableAdd?: boolean;
   children?: React.ReactNode;
 }
 
@@ -56,7 +57,9 @@ const renderTitle = (label: string, errors: string, description: string) => (
         <Title level={3}>{label}</Title>
       </Col>
       <Col style={{ padding: '10px' }}>
-        <ValidationIcon id='tooltip-validation' errorMessages={errors} />
+        {errors.length !== 0 && (
+          <ValidationIcon id='tooltip-validation' errorMessages={errors} />
+        )}
       </Col>
     </Row>
     {description && <Card.Meta description={description} />}
@@ -73,6 +76,7 @@ const TableToolbar = React.memo(function TableToolbar({
   enabled,
   translations,
   rootSchema,
+  disableAdd,
   children,
 }: TableToolbarProps) {
   return (
@@ -82,11 +86,14 @@ const TableToolbar = React.memo(function TableToolbar({
       type='inner'
       title={renderTitle(label, errors, description)}
       extra={
-        enabled
+        enabled && !disableAdd
           ? [
-              <Tooltip key='tooltip-add' title={translations.addTooltip}>
+              <Tooltip
+                key='tooltip-add'
+                title={translations.addTooltip}
+                placement='bottom'
+              >
                 <Button
-                  disabled={!enabled}
                   aria-label={translations.addAriaLabel}
                   onClick={addItem(
                     path,

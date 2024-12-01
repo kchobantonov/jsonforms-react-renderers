@@ -23,7 +23,6 @@
   THE SOFTWARE.
 */
 import React from 'react';
-import Hidden from '../util/Hidden';
 
 import {
   createCombinatorRenderInfos,
@@ -51,17 +50,20 @@ export const AllOfRenderer = ({
     uischema.scope,
     path
   );
+
+  if (!visible) {
+    return null;
+  }
+
   if (delegateUISchema) {
     return (
-      <Hidden hidden={!visible}>
-        <JsonFormsDispatch
-          schema={schema}
-          uischema={delegateUISchema}
-          path={path}
-          renderers={renderers}
-          cells={cells}
-        />
-      </Hidden>
+      <JsonFormsDispatch
+        schema={schema}
+        uischema={delegateUISchema}
+        path={path}
+        renderers={renderers}
+        cells={cells}
+      />
     );
   }
   const allOfRenderInfos = createCombinatorRenderInfos(
@@ -74,7 +76,7 @@ export const AllOfRenderer = ({
   );
 
   return (
-    <Hidden hidden={!visible}>
+    <>
       {allOfRenderInfos.map((allOfRenderInfo, allOfIndex) => (
         <JsonFormsDispatch
           key={allOfIndex}
@@ -85,7 +87,7 @@ export const AllOfRenderer = ({
           cells={cells}
         />
       ))}
-    </Hidden>
+    </>
   );
 };
 

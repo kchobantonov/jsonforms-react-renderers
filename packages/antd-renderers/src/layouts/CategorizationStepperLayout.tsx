@@ -25,7 +25,6 @@
 import React, { useState, useMemo } from 'react';
 import merge from 'lodash/merge';
 import { Button, Steps } from 'antd';
-import Hidden from '../util/Hidden';
 import {
   and,
   Categorization,
@@ -46,8 +45,8 @@ import {
 } from '@jsonforms/react';
 import {
   AjvProps,
-  LayoutRenderer,
-  LayoutRendererProps,
+  AntdLayoutRenderer,
+  AntdLayoutRendererProps,
   withAjvProps,
 } from '../util/layout';
 
@@ -112,7 +111,7 @@ export const CategorizationStepperLayoutRenderer = (
       ),
     [categorization, data, ajv]
   );
-  const childProps: LayoutRendererProps = {
+  const childProps: AntdLayoutRendererProps = {
     elements: categories[activeCategory].elements,
     schema,
     path,
@@ -124,8 +123,13 @@ export const CategorizationStepperLayoutRenderer = (
   const tabLabels = useMemo(() => {
     return categories.map((e: Category) => deriveLabelForUISchemaElement(e, t));
   }, [categories, t]);
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
+    <>
       <Steps current={activeCategory} style={{ marginBottom: '10px' }}>
         {categories.map((_: Category, idx: number) => (
           <Steps.Step
@@ -136,7 +140,7 @@ export const CategorizationStepperLayoutRenderer = (
         ))}
       </Steps>
       <div>
-        <LayoutRenderer {...childProps} />
+        <AntdLayoutRenderer {...childProps} />
       </div>
       {appliedUiSchemaOptions.showNavButtons ? (
         <div style={buttonWrapperStyle}>
@@ -160,7 +164,7 @@ export const CategorizationStepperLayoutRenderer = (
       ) : (
         <></>
       )}
-    </Hidden>
+    </>
   );
 };
 

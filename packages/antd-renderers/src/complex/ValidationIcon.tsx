@@ -25,7 +25,7 @@
 import React from 'react';
 
 import { Badge, Tooltip, theme as antdTheme } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
 export interface ValidationProps {
   errorMessages: string;
@@ -38,7 +38,7 @@ const ValidationIcon: React.FC<ValidationProps> = ({ errorMessages, id }) => {
 
   return errorMessages ? (
     <Tooltip id={id} title={errorMessages}>
-      <Badge count={errorMessages.split('\n').length} size='small'>
+      <Badge text={errorMessages.split('\n').length} size='small'>
         <ExclamationCircleOutlined
           style={{ fontSize: '20px', color: theme.colorError }}
           rev={undefined}

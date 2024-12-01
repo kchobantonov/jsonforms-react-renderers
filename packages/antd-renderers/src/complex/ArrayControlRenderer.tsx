@@ -22,25 +22,31 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { useCallback, useState } from 'react';
 import {
   ArrayLayoutProps,
+  ArrayTranslations,
   RankedTester,
   isObjectArrayControl,
   isPrimitiveArrayControl,
   or,
   rankWith,
 } from '@jsonforms/core';
-import { withJsonFormsArrayLayoutProps } from '@jsonforms/react';
-import { TableControl } from './TableControl';
-import Hidden from '../util/Hidden';
+import {
+  withArrayTranslationProps,
+  withJsonFormsArrayLayoutProps,
+  withTranslateProps,
+} from '@jsonforms/react';
+import React, { useCallback, useState } from 'react';
 import { DeleteDialog } from './DeleteDialog';
+import { TableControl } from './TableControl';
 
-export const ArrayControlRenderer = (props: ArrayLayoutProps) => {
+export const ArrayControlRenderer = (
+  props: ArrayLayoutProps & { translations: ArrayTranslations }
+) => {
   const [open, setOpen] = useState(false);
   const [path, setPath] = useState(undefined);
   const [rowData, setRowData] = useState(undefined);
-  const { removeItems, visible } = props;
+  const { removeItems, visible, translations } = props;
 
   const openDeleteDialog = useCallback(
     (p: string, rowIndex: number) => {
@@ -58,20 +64,28 @@ export const ArrayControlRenderer = (props: ArrayLayoutProps) => {
   }, [setOpen, path, rowData]);
   const deleteClose = useCallback(() => setOpen(false), [setOpen]);
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <TableControl {...props} openDeleteDialog={openDeleteDialog} />
+    <>
+      <TableControl
+        {...props}
+        openDeleteDialog={openDeleteDialog}
+        translations={translations}
+      />
       <DeleteDialog
         open={open}
         onCancel={deleteCancel}
         onConfirm={deleteConfirm}
         onClose={deleteClose}
-        acceptText={props.translations.deleteDialogAccept}
-        declineText={props.translations.deleteDialogDecline}
-        title={props.translations.deleteDialogTitle}
-        message={props.translations.deleteDialogMessage}
+        acceptText={translations.deleteDialogAccept}
+        declineText={translations.deleteDialogDecline}
+        title={translations.deleteDialogTitle}
+        message={translations.deleteDialogMessage}
       />
-    </Hidden>
+    </>
   );
 };
 
@@ -80,4 +94,6 @@ export const arrayControlTester: RankedTester = rankWith(
   or(isObjectArrayControl, isPrimitiveArrayControl)
 );
 
-export default withJsonFormsArrayLayoutProps(ArrayControlRenderer);
+export default withJsonFormsArrayLayoutProps(
+  withTranslateProps(withArrayTranslationProps(ArrayControlRenderer))
+);

@@ -22,7 +22,6 @@ import merge from 'lodash/merge';
 import React from 'react';
 import { AntdCheckbox } from '../antd-controls/AntdCheckbox';
 import { useFocus } from '../util';
-import Hidden from '../util/Hidden';
 
 export const EnumArrayRenderer = ({
   config,
@@ -51,41 +50,43 @@ export const EnumArrayRenderer = ({
     appliedUiSchemaOptions.showUnfocusedDescription
   );
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
-      <Form.Item
-        required={required}
-        hasFeedback={!isValid}
-        validateStatus={isValid ? 'success' : 'error'}
-        help={!isValid ? errors : showDescription ? description : null}
-      >
-        {options.map((option: any, index: number) => {
-          const optionPath = Paths.compose(path, `${index}`);
-          const checkboxValue = data?.includes(option.value)
-            ? option.value
-            : undefined;
-          return (
-            <AntdCheckbox
-              id={id + '-label-' + option.value}
-              key={option.value}
-              label={option.label}
-              isValid={isEmpty(errors)}
-              path={optionPath}
-              handleChange={(_childPath, newValue) =>
-                newValue
-                  ? addItem(path, option.value)
-                  : removeItem(path, option.value)
-              }
-              data={checkboxValue}
-              errors={errors}
-              schema={schema}
-              visible={visible}
-              {...otherProps}
-            />
-          );
-        })}
-      </Form.Item>
-    </Hidden>
+    <Form.Item
+      required={required}
+      hasFeedback={!isValid}
+      validateStatus={isValid ? 'success' : 'error'}
+      help={!isValid ? errors : showDescription ? description : null}
+    >
+      {options.map((option: any, index: number) => {
+        const optionPath = Paths.compose(path, `${index}`);
+        const checkboxValue = data?.includes(option.value)
+          ? option.value
+          : undefined;
+        return (
+          <AntdCheckbox
+            id={id + '-label-' + option.value}
+            key={option.value}
+            label={option.label}
+            isValid={isEmpty(errors)}
+            path={optionPath}
+            handleChange={(_childPath, newValue) =>
+              newValue
+                ? addItem(path, option.value)
+                : removeItem(path, option.value)
+            }
+            data={checkboxValue}
+            errors={errors}
+            schema={schema}
+            visible={visible}
+            {...otherProps}
+          />
+        );
+      })}
+    </Form.Item>
   );
 };
 

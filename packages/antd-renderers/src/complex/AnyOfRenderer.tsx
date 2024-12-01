@@ -35,7 +35,6 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch, withJsonFormsAnyOfProps } from '@jsonforms/react';
 import { Tabs } from 'antd';
-import Hidden from '../util/Hidden';
 import CombinatorProperties from './CombinatorProperties';
 import isEmpty from 'lodash/isEmpty';
 import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
@@ -106,8 +105,12 @@ export const AnyOfRenderer = ({
     uischemas
   );
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Hidden hidden={!visible}>
+    <>
       <CombinatorProperties
         schema={schema}
         combinatorKeyword={anyOf}
@@ -118,11 +121,11 @@ export const AnyOfRenderer = ({
         defaultActiveKey={selectedAnyOf.toString()}
         onChange={handleTabChange}
         items={anyOfRenderInfos.map(
-          (anyOfRenderInfo, idx) =>
+          (anyOfRenderInfo, anyOfIndex) =>
             ({
               label: anyOfRenderInfo.label,
-              key: String(idx),
-              children: (
+              key: String(anyOfIndex),
+              children: selectedAnyOf === anyOfIndex && (
                 <JsonFormsDispatch
                   schema={anyOfRenderInfo.schema}
                   uischema={anyOfRenderInfo.uischema}
@@ -141,7 +144,7 @@ export const AnyOfRenderer = ({
         open={confirmDialogOpen}
         handleClose={handleClose}
       />
-    </Hidden>
+    </>
   );
 };
 
