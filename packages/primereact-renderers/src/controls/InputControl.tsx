@@ -23,7 +23,6 @@
   THE SOFTWARE.
 */
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
-import { Message } from 'primereact/message';
 import React from 'react';
 
 import merge from 'lodash/merge';
@@ -54,6 +53,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
   //   ? errors
   //   : null;
   // const secondFormHelperText = showDescription && !isValid ? errors : null;
+  const help = !isValid ? errors : showDescription ? description : null;
 
   const InnerComponent = input;
   const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
@@ -77,9 +77,13 @@ export const InputControl = (props: ControlProps & WithInput) => {
           isValid && showDescription ? id + '-input-help' : null
         }
       />
-      {!isValid && <Message severity='error' text={errors} />}{' '}
-      {isValid && showDescription && (
-        <small id={id + '-input-help'}>{description}</small>
+      {help && (
+        <small
+          className={!isValid ? 'p-error' : 'p-description'}
+          style={{ display: 'block', marginTop: '5px' }}
+        >
+          {help}
+        </small>
       )}
     </div>
   );
