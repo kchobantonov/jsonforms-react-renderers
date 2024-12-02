@@ -23,11 +23,15 @@
   THE SOFTWARE.
 */
 import { CellProps, WithClassname } from '@jsonforms/core';
+import every from 'lodash/every';
+import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import merge from 'lodash/merge';
+import { AutoComplete, AutoCompleteProps } from 'primereact/autocomplete';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Password } from 'primereact/password';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { useDebouncedChange } from '../util';
 
 const eventToValue = (ev: any) =>
@@ -59,10 +63,28 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     eventToValue
   );
 
-  let InputComponent:
-    | typeof InputText
-    | typeof InputTextarea
-    | typeof Password = InputText;
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
+
+  let InputComponent: React.ComponentType<any> = InputText;
+
+  const specificProps: Record<string, any> = {};
+
+  const suggestions = appliedUiSchemaOptions?.suggestion;
+
+  if (isArray(suggestions) && every(suggestions, isString)) {
+    InputComponent = AutoComplete;
+
+    const search = (event: { query: string }) => {
+      const filtered = suggestions.filter((option) =>
+        option.toLowerCase().includes(event.query.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+    };
+
+    (specificProps as AutoCompleteProps).suggestions = filteredOptions;
+    (specificProps as AutoCompleteProps).completeMethod = search;
+    (specificProps as AutoCompleteProps).inputStyle = { width: '100%' };
+  }
 
   const inputStyle: CSSProperties =
     !appliedUiSchemaOptions.trim || maxLength === undefined
@@ -73,6 +95,8 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     inputStyle.resize = 'vertical';
     inputStyle.overflow = 'auto';
     InputComponent = InputTextarea;
+
+    specificProps.rows = 5;
   }
 
   if (schema.format === 'password') {
@@ -90,7 +114,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
       style={inputStyle}
       maxLength={maxLength}
       placeholder={appliedUiSchemaOptions.placeholder}
-      {...(appliedUiSchemaOptions.multi ? { rows: 5 } : {})}
+      {...specificProps}
       invalid={!!errors}
     />
   );
