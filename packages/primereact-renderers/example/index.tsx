@@ -24,7 +24,7 @@
 */
 
 import { PrimeReactProvider } from 'primereact/api';
-import { Divider } from 'primereact/divider';
+import { Card } from 'primereact/card';
 import React, { useState } from 'react';
 import { renderExample } from '../../examples-react/src/index';
 import { extendedRenderers } from '../../extended-renderers/src/index';
@@ -34,8 +34,8 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
 import { AppContentContextProvider } from './AppContentContext';
-import Header from './Header';
 import Config from './Config';
+import Header from './Header';
 
 const PrimeReactWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   const [configActive, setConfigActive] = useState(false);
@@ -43,10 +43,12 @@ const PrimeReactWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   return (
     <AppContentContextProvider>
       <PrimeReactProvider value={{ inputStyle: 'outlined' }}>
-        <Config active={configActive} onHide={() => setConfigActive(false)} />
-        <Header onConfigButtonClick={() => setConfigActive(true)} />
-        <Divider />
-        {children}
+        <Card
+          header={<Header onConfigButtonClick={() => setConfigActive(true)} />}
+        >
+          <Config active={configActive} onHide={() => setConfigActive(false)} />
+          {children}
+        </Card>
       </PrimeReactProvider>
     </AppContentContextProvider>
   );

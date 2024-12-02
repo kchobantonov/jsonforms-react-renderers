@@ -33,11 +33,7 @@ const Header: React.FC<HeaderProps> = (props) => {
     </div>
   );
 
-  return (
-    <div className='card'>
-      <Toolbar end={endContent} />
-    </div>
-  );
+  return <Toolbar end={endContent} />;
 };
 
 export default Header;
