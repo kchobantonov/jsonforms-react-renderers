@@ -27,11 +27,11 @@ import {
   WithClassname,
   defaultDateTimeFormat,
 } from '@jsonforms/core';
-import { Calendar } from 'primereact/calendar';
+import dayjs from 'dayjs';
 import merge from 'lodash/merge';
+import { Calendar } from 'primereact/calendar';
 import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
-import dayjs from 'dayjs';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
   'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -47,8 +47,17 @@ const DATE_PICKER_STYLE = {
 export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
   props: CellProps & WithClassname
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    errors,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format = appliedUiSchemaOptions.dateTimeFormat ?? 'YYYY-MM-DD HH:mm';
@@ -80,6 +89,9 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
       hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
       style={DATE_PICKER_STYLE}
       showButtonBar
+      showIcon
+      icon={<i className='pi pi-calendar-clock' />}
+      invalid={!!errors}
     />
   );
 });

@@ -37,8 +37,17 @@ const DATE_PICKER_STYLE = {
 export const PrimeDatePicker = React.memo(function PrimeDatePicker(
   props: CellProps & WithClassname
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    errors,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format: string = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
@@ -75,7 +84,9 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
       placeholder={appliedUiSchemaOptions.placeholder}
       style={DATE_PICKER_STYLE}
       showButtonBar
+      showIcon
       view={view}
+      invalid={!!errors}
     />
   );
 });

@@ -23,11 +23,12 @@
   THE SOFTWARE.
 */
 import { CellProps, WithClassname, defaultTimeFormat } from '@jsonforms/core';
-import { Calendar } from 'primereact/calendar';
+import dayjs from 'dayjs';
 import merge from 'lodash/merge';
+import { PrimeIcons } from 'primereact/api';
+import { Calendar } from 'primereact/calendar';
 import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
-import dayjs from 'dayjs';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -43,8 +44,17 @@ const TIME_PICKER_STYLE = {
 export const PrimeTimePicker = React.memo(function PrimeTimePicker(
   props: CellProps & WithClassname
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    errors,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format =
@@ -79,6 +89,9 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
       style={TIME_PICKER_STYLE}
       timeOnly
       showButtonBar
+      showIcon
+      icon={PrimeIcons.CLOCK}
+      invalid={!!errors}
     />
   );
 });
