@@ -28,7 +28,8 @@ import merge from 'lodash/merge';
 import { InputNumber, InputNumberChangeEvent } from 'primereact/inputnumber';
 import { useDebouncedChange } from '../util';
 
-const eventToValue = (e: InputNumberChangeEvent) => e.value;
+const eventToValue = (e: InputNumberChangeEvent) =>
+  e.value === null ? undefined : e.value;
 
 export const PrimeInputNumber = React.memo(function PrimeInputNumber(
   props: CellProps & WithClassname
@@ -50,7 +51,7 @@ export const PrimeInputNumber = React.memo(function PrimeInputNumber(
 
   const [inputValue, onChange] = useDebouncedChange(
     handleChange,
-    '',
+    null,
     data,
     path,
     eventToValue
