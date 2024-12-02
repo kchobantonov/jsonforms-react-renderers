@@ -89,9 +89,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
       style={inputStyle}
       maxLength={maxLength}
       placeholder={appliedUiSchemaOptions.placeholder}
-      {...(appliedUiSchemaOptions.multi
-        ? { autoSize: { minRows: 5, maxRows: 5 } }
-        : {})}
+      {...(appliedUiSchemaOptions.multi ? { rows: 5 } : {})}
     />
   );
 });

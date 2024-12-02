@@ -23,91 +23,33 @@
   THE SOFTWARE.
 */
 
-import React from 'react';
+import { PrimeReactProvider } from 'primereact/api';
+import { Divider } from 'primereact/divider';
+import React, { useState } from 'react';
 import { renderExample } from '../../examples-react/src/index';
-import { primereactRenderers, primereactCells } from '../src';
 import { extendedRenderers } from '../../extended-renderers/src/index';
-import { APIOptions, PrimeReactProvider } from 'primereact/api';
-import { Dropdown } from 'primereact/dropdown';
+import { primereactCells, primereactRenderers } from '../src';
 
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-dark-indigo/theme.css';
-import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
+import 'primereact/resources/primereact.min.css';
+import { AppContentContextProvider } from './AppContentContext';
+import Header from './Header';
+import Config from './Config';
 
 const PrimeReactWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
-  //const [mode, setMode] = React.useState<'dark' | 'light'>('light');
-
-  const [value, setValue] = React.useState<Partial<APIOptions>>({
-    inputStyle: 'outlined',
-  });
-
-  const handleVariantChange = (variant: 'outlined' | 'filled') => {
-    setValue({ ...value, inputStyle: variant });
-  };
-
-  // const theme = React.useMemo<ThemeConfig>(() => {
-  //   return {
-  //     algorithm:
-  //       mode === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
-  //     components: {
-  //       Input: {},
-  //       Select: {},
-  //     },
-  //   };
-  // }, [mode]);
+  const [configActive, setConfigActive] = useState(false);
 
   return (
-    <PrimeReactProvider value={value}>
-      <Dropdown
-        style={{ width: 200 }}
-        value={value.inputStyle}
-        onChange={(event) => handleVariantChange(event.value)}
-        checkmark={true}
-        options={[
-          { value: 'outlined', label: 'Outlined' },
-          { value: 'filled', label: 'Filled' },
-        ]}
-      ></Dropdown>
-      {children}
-    </PrimeReactProvider>
+    <AppContentContextProvider>
+      <PrimeReactProvider value={{ inputStyle: 'outlined' }}>
+        <Config active={configActive} onHide={() => setConfigActive(false)} />
+        <Header onConfigButtonClick={() => setConfigActive(true)} />
+        <Divider />
+        {children}
+      </PrimeReactProvider>
+    </AppContentContextProvider>
   );
-
-  // return (
-  //   <ConfigProvider theme={theme}>
-  //     <Card style={{ width: '100%' }}>
-  //       <Form {...layout} variant={variant}>
-  //         <Space>
-  //           <Form.Item label={label}>
-  //             <Select
-  //               style={{ width: 200 }}
-  //               value={variant}
-  //               onChange={handleVariantChange}
-  //             >
-  //               <Select.Option value='outlined'>Outlined</Select.Option>
-  //               <Select.Option value='borderless'>Borderless</Select.Option>
-  //               <Select.Option value='filled'>Filled</Select.Option>
-  //             </Select>
-  //           </Form.Item>
-  //           <Form.Item label={'Mode'}>
-  //             <Radio.Group
-  //               onChange={(e) => {
-  //                 setMode(e.target.value);
-  //               }}
-  //               value={mode}
-  //             >
-  //               <Radio.Button value='dark'>Dark</Radio.Button>
-  //               <Radio.Button value='light'>Light</Radio.Button>
-  //             </Radio.Group>
-  //           </Form.Item>
-  //         </Space>
-  //         <Divider />
-  //         {children}
-  //       </Form>
-  //     </Card>
-  //   </ConfigProvider>
-  // );
 };
 
 renderExample(

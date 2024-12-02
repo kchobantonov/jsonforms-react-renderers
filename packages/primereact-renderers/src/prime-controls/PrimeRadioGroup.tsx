@@ -38,7 +38,7 @@ export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
           <div key={option.value} className='flex align-items-center'>
             <RadioButton
               inputId={option.value}
-              name='category'
+              name={props.path}
               value={option.value}
               onChange={(e: any) => handleChange(path, e.value)}
               checked={data === option.value}
