@@ -102,6 +102,8 @@ export const PrimeInputText = React.memo(function PrimeInputText(
   if (schema.format === 'password') {
     InputComponent = Password;
 
+    (specificProps as PasswordProps).toggleMask = true; // be able to display the password as plain text
+    (specificProps as PasswordProps).feedback = false; // do not show how strong is the password
     (specificProps as PasswordProps).inputStyle = { width: '100%' };
   }
 
