@@ -26,7 +26,8 @@ import { CellProps, WithClassname, defaultTimeFormat } from '@jsonforms/core';
 import { Calendar } from 'primereact/calendar';
 import merge from 'lodash/merge';
 import React, { useMemo } from 'react';
-import { createOnChangeHandler, getData } from '../util';
+import { createOnChangeHandler, formatDate, getData } from '../util';
+import dayjs from 'dayjs';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -68,6 +69,7 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
       onChange={onChange}
       showTime={true}
       showSeconds={format.includes('s')}
+      formatDateTime={(date) => formatDate(dayjs(date), format)}
       className={className}
       id={id}
       disabled={!enabled}
@@ -76,6 +78,7 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
       hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
       style={TIME_PICKER_STYLE}
       timeOnly
+      showButtonBar
     />
   );
 });

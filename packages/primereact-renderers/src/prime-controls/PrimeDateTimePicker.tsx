@@ -30,7 +30,8 @@ import {
 import { Calendar } from 'primereact/calendar';
 import merge from 'lodash/merge';
 import React, { useMemo } from 'react';
-import { createOnChangeHandler, getData } from '../util';
+import { createOnChangeHandler, formatDate, getData } from '../util';
+import dayjs from 'dayjs';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
   'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -69,7 +70,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
     <Calendar
       value={value}
       onChange={onChange}
-      dateFormat={format}
+      formatDateTime={(date) => formatDate(dayjs(date), format)}
       className={className}
       id={id}
       disabled={!enabled}
@@ -78,6 +79,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
       showTime={true}
       hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
       style={DATE_PICKER_STYLE}
+      showButtonBar
     />
   );
 });

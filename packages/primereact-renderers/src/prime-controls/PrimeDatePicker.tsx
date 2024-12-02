@@ -23,10 +23,11 @@
   THE SOFTWARE.
 */
 import { CellProps, WithClassname, defaultDateFormat } from '@jsonforms/core';
-import { Calendar } from 'primereact/calendar';
+import dayjs from 'dayjs';
 import merge from 'lodash/merge';
+import { Calendar } from 'primereact/calendar';
 import React, { useMemo } from 'react';
-import { createOnChangeHandler, getData } from '../util';
+import { createOnChangeHandler, formatDate, getData } from '../util';
 
 const JSON_SCHEMA_DATE_FORMATS = ['YYYY-MM-DD'];
 const DATE_PICKER_STYLE = {
@@ -40,7 +41,7 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
     props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
-  const format = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
+  const format: string = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
   const saveFormat = appliedUiSchemaOptions.dateSaveFormat ?? defaultDateFormat;
 
   const onChange = useMemo(
@@ -54,17 +55,27 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
     ...JSON_SCHEMA_DATE_FORMATS,
   ]);
 
+  let view: 'date' | 'month' | 'year' = 'date';
+  if (!saveFormat.includes('D')) {
+    view = 'month';
+  }
+  if (!saveFormat.includes('M')) {
+    view = 'year';
+  }
+
   return (
     <Calendar
       value={value}
       onChange={onChange}
-      dateFormat={format}
+      formatDateTime={(date) => formatDate(dayjs(date), format)}
       className={className}
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
       placeholder={appliedUiSchemaOptions.placeholder}
       style={DATE_PICKER_STYLE}
+      showButtonBar
+      view={view}
     />
   );
 });
