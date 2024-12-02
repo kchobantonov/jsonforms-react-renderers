@@ -22,13 +22,12 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { useMemo } from 'react';
 import { EnumCellProps, WithClassname } from '@jsonforms/core';
+import React from 'react';
 
-import { Dropdown } from 'primereact/dropdown';
-import merge from 'lodash/merge';
-import { i18nDefaults } from '../util';
 import { TranslateProps } from '@jsonforms/react';
+import merge from 'lodash/merge';
+import { Dropdown } from 'primereact/dropdown';
 
 export const PrimeSelect = (
   props: EnumCellProps & WithClassname & TranslateProps
@@ -38,20 +37,14 @@ export const PrimeSelect = (
     className,
     id,
     enabled,
-    schema,
     uischema,
     path,
     handleChange,
     options,
     config,
     errors,
-    t,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const noneOptionLabel = useMemo(
-    () => t('enum.none', i18nDefaults['enum.none'], { schema, uischema, path }),
-    [t, schema, uischema, path]
-  );
 
   const selectStyle = appliedUiSchemaOptions.trim ? {} : { width: '100%' };
 
@@ -62,16 +55,14 @@ export const PrimeSelect = (
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
       value={data !== undefined ? data : ''}
-      onChange={(value) => handleChange(path, value || undefined)}
+      onChange={(event) => handleChange(path, event.value || undefined)}
       style={selectStyle}
       showClear={enabled}
       checkmark={true}
-      options={[{ value: '', label: noneOptionLabel }].concat(
-        options.map((optionValue) => ({
-          value: optionValue.value,
-          label: optionValue.label,
-        }))
-      )}
+      options={options.map((optionValue) => ({
+        value: optionValue.value,
+        label: optionValue.label,
+      }))}
       invalid={!!errors}
     ></Dropdown>
   );
