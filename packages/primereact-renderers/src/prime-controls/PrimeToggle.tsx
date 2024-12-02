@@ -30,8 +30,16 @@ import merge from 'lodash/merge';
 export const PrimeToggle = React.memo(function PrimeToggle(
   props: CellProps & WithClassname
 ) {
-  const { data, className, enabled, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    uischema,
+    path,
+    handleChange,
+    config,
+    errors,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const checked = !!data;
 
@@ -42,6 +50,7 @@ export const PrimeToggle = React.memo(function PrimeToggle(
       className={className}
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
+      invalid={!!errors}
     />
   );
 });

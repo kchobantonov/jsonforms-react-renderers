@@ -31,8 +31,17 @@ import merge from 'lodash/merge';
 export const PrimeSlider = React.memo(function PrimeSlider(
   props: CellProps & WithClassname
 ) {
-  const { data, id, enabled, uischema, path, handleChange, config, schema } =
-    props;
+  const {
+    data,
+    id,
+    enabled,
+    uischema,
+    path,
+    handleChange,
+    config,
+    schema,
+    errors,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   return (
@@ -43,6 +52,7 @@ export const PrimeSlider = React.memo(function PrimeSlider(
         max={schema.maximum}
         disabled={!enabled}
         onChange={(e) => handleChange(path, Number(e.value))}
+        invalid={!!errors}
       />
       <Slider
         id={id}

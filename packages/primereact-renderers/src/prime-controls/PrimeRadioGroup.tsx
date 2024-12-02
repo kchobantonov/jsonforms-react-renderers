@@ -29,7 +29,7 @@ import { RadioButton } from 'primereact/radiobutton';
 export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
   props: CellProps & WithClassname & OwnPropsOfEnum
 ) {
-  const { data, options, handleChange, path } = props;
+  const { data, options, handleChange, path, errors } = props;
 
   return (
     <>
@@ -42,6 +42,7 @@ export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
               value={option.value}
               onChange={(e: any) => handleChange(path, e.value)}
               checked={data === option.value}
+              invalid={!!errors}
             />
             <label htmlFor={option.value} className='ml-2'>
               {option.label}

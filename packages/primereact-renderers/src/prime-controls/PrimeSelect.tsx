@@ -44,6 +44,7 @@ export const PrimeSelect = (
     handleChange,
     options,
     config,
+    errors,
     t,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -71,6 +72,7 @@ export const PrimeSelect = (
           label: optionValue.label,
         }))
       )}
+      invalid={!!errors}
     ></Dropdown>
   );
 };

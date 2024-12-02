@@ -43,6 +43,7 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
     path,
     handleChange,
     config,
+    errors,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
@@ -56,6 +57,7 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
       id={id}
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
+      invalid={!!errors}
     >
       {label}
     </TriStateCheckbox>

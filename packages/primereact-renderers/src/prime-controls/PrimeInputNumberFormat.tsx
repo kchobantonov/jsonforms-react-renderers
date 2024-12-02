@@ -40,6 +40,7 @@ export const PrimeInputNumberFormat = (
     handleChange,
     schema,
     config,
+    errors,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -67,6 +68,7 @@ export const PrimeInputNumberFormat = (
       autoFocus={appliedUiSchemaOptions.focus}
       maxLength={maxLength}
       style={inputStyle}
+      invalid={!!errors}
     />
   );
 };

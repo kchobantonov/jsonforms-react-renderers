@@ -46,6 +46,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     path,
     handleChange,
     schema,
+    errors,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -90,6 +91,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
       maxLength={maxLength}
       placeholder={appliedUiSchemaOptions.placeholder}
       {...(appliedUiSchemaOptions.multi ? { rows: 5 } : {})}
+      invalid={!!errors}
     />
   );
 });
