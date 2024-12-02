@@ -49,7 +49,9 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
   return (
     <TriStateCheckbox
       value={data}
-      onChange={(e: any) => handleChange(path, e.value)}
+      onChange={(e: any) =>
+        handleChange(path, e.value === '' ? undefined : e.value)
+      }
       className={className}
       id={id}
       disabled={!enabled}
