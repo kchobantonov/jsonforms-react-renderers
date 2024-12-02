@@ -30,7 +30,7 @@ import merge from 'lodash/merge';
 import { AutoComplete, AutoCompleteProps } from 'primereact/autocomplete';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { Password } from 'primereact/password';
+import { Password, PasswordProps } from 'primereact/password';
 import React, { CSSProperties, useState } from 'react';
 import { useDebouncedChange } from '../util';
 
@@ -101,6 +101,8 @@ export const PrimeInputText = React.memo(function PrimeInputText(
 
   if (schema.format === 'password') {
     InputComponent = Password;
+
+    (specificProps as PasswordProps).inputStyle = { width: '100%' };
   }
 
   return (
