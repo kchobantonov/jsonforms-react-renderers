@@ -28,28 +28,26 @@ import isEmpty from 'lodash/isEmpty';
 import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
 
 import {
+  and,
   CombinatorRendererProps,
   createCombinatorRenderInfos,
   createDefaultValue,
-  isDescriptionHidden,
   isOneOfControl,
   JsonSchema,
+  optionIs,
   OwnPropsOfControl,
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
-import { Select, Form } from 'antd';
+import { Tabs } from 'antd';
 import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
 import CombinatorProperties from './CombinatorProperties';
-import merge from 'lodash/merge';
-import { useFocus } from '../util';
-const { Option } = Select;
 
 export interface OwnOneOfProps extends OwnPropsOfControl {
   indexOfFittingSchema?: number;
 }
 
-export const OneOfRenderer = ({
+export const OneOfTabRenderer = ({
   handleChange,
   schema,
   path,
@@ -62,12 +60,6 @@ export const OneOfRenderer = ({
   uischema,
   uischemas,
   data,
-  enabled,
-  config,
-  required,
-  errors,
-  label,
-  description,
 }: CombinatorRendererProps) => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
@@ -91,9 +83,7 @@ export const OneOfRenderer = ({
   const openNewTab = (newIndex: number) => {
     handleChange(
       path,
-      newIndex !== null
-        ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
-        : undefined
+      createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
     );
     setSelectedIndex(newIndex);
   };
@@ -104,9 +94,8 @@ export const OneOfRenderer = ({
   }, [handleChange, createDefaultValue, newSelectedIndex]);
 
   const handleTabChange = useCallback(
-    (value: string | null) => {
-      const newOneOfIndex =
-        value === null || value === undefined ? null : parseInt(value, 10);
+    (value: string) => {
+      const newOneOfIndex = parseInt(value, 10);
 
       setNewSelectedIndex(newOneOfIndex);
       if (isEmpty(data)) {
@@ -117,20 +106,6 @@ export const OneOfRenderer = ({
     },
     [setConfirmDialogOpen, setSelectedIndex, data]
   );
-
-  const [focused, onFocus, onBlur] = useFocus();
-
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const isValid = errors.length === 0;
-  const showDescription = !isDescriptionHidden(
-    visible,
-    description,
-    focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
-  );
-
-  const help = !isValid ? errors : showDescription ? description : null;
-  const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
   if (!visible) {
     return null;
@@ -144,45 +119,26 @@ export const OneOfRenderer = ({
         path={path}
         rootSchema={rootSchema}
       />
-      <Form.Item
-        required={required}
-        hasFeedback={!isValid}
-        validateStatus={isValid ? 'success' : 'error'}
-        label={label}
-        help={help}
-        style={style}
-        htmlFor={id + '-input'}
-        id={id}
-      >
-        <Select
-          id={id + '-input'}
-          disabled={!enabled}
-          autoFocus={appliedUiSchemaOptions.focus}
-          placeholder={appliedUiSchemaOptions.placeholder}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={selectedIndex?.toString()}
-          onChange={handleTabChange}
-          allowClear={enabled}
-        >
-          {oneOfRenderInfos.map((oneOfRenderInfo, idx) => (
-            <Option value={String(idx)} key={String(idx)}>
-              {oneOfRenderInfo.label}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {selectedIndex !== undefined && selectedIndex !== null && (
-        <JsonFormsDispatch
-          uischema={oneOfRenderInfos[selectedIndex].uischema}
-          schema={oneOfRenderInfos[selectedIndex].schema}
-          path={path}
-          renderers={renderers}
-          cells={cells}
-        />
-      )}
-
+      <Tabs
+        defaultActiveKey={selectedIndex?.toString()}
+        onChange={handleTabChange}
+        items={oneOfRenderInfos.map(
+          (oneOfRenderInfo, idx) =>
+            ({
+              label: oneOfRenderInfo.label,
+              key: String(idx),
+              children: (
+                <JsonFormsDispatch
+                  schema={oneOfRenderInfo.schema}
+                  uischema={oneOfRenderInfo.uischema}
+                  path={path}
+                  renderers={renderers}
+                  cells={cells}
+                />
+              ),
+            } as any)
+        )}
+      ></Tabs>
       <TabSwitchConfirmDialog
         cancel={cancel}
         confirm={confirm}
@@ -194,6 +150,9 @@ export const OneOfRenderer = ({
   );
 };
 
-export const oneOfControlTester: RankedTester = rankWith(3, isOneOfControl);
+export const oneOfTabControlTester: RankedTester = rankWith(
+  4,
+  and(isOneOfControl, optionIs('variant', 'tab'))
+);
 
-export default withJsonFormsOneOfProps(OneOfRenderer);
+export default withJsonFormsOneOfProps(OneOfTabRenderer);

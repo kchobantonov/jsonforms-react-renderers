@@ -32,6 +32,7 @@ import EnumArrayRenderer, {
 } from './EnumArrayRenderer';
 import ObjectRenderer, { objectControlTester } from './ObjectRenderer';
 import OneOfRenderer, { oneOfControlTester } from './OneOfRenderer';
+import OneOfTabRenderer, { oneOfTabControlTester } from './OneOfTabRenderer';
 
 export {
   allOfControlTester,
@@ -46,6 +47,8 @@ export {
   ObjectRenderer,
   oneOfControlTester,
   OneOfRenderer,
+  oneOfTabControlTester,
+  OneOfTabRenderer,
 };
 
 export * from './CombinatorProperties';
