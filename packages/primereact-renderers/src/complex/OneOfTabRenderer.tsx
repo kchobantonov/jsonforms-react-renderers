@@ -22,63 +22,47 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import isEmpty from 'lodash/isEmpty';
 import React, { useCallback, useState } from 'react';
+import isEmpty from 'lodash/isEmpty';
 
 import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
 
 import {
+  and,
   CombinatorRendererProps,
   createCombinatorRenderInfos,
   createDefaultValue,
-  isDescriptionHidden,
   isOneOfControl,
   JsonSchema,
+  optionIs,
   OwnPropsOfControl,
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
+import { TabView, TabPanel, TabViewTabChangeEvent } from 'primereact/tabview';
 import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
-import merge from 'lodash/merge';
-import { Dropdown } from 'primereact/dropdown';
-import { FormEvent } from 'primereact/ts-helpers';
-import { useFocus } from '../util';
 import CombinatorProperties from './CombinatorProperties';
 
 export interface OwnOneOfProps extends OwnPropsOfControl {
   indexOfFittingSchema?: number;
 }
 
-export const OneOfRenderer = (props: CombinatorRendererProps) => {
-  const {
-    handleChange,
-    schema,
-    path,
-    renderers,
-    cells,
-    rootSchema,
-    id,
-    visible,
-    indexOfFittingSchema,
-    uischema,
-    uischemas,
-    data,
-    enabled,
-    config,
-    errors,
-    label,
-    required,
-    description,
-  } = props;
-
+export const OneOfTabRenderer = ({
+  handleChange,
+  schema,
+  path,
+  renderers,
+  cells,
+  rootSchema,
+  id,
+  visible,
+  indexOfFittingSchema,
+  uischema,
+  uischemas,
+  data,
+}: CombinatorRendererProps) => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(
-    indexOfFittingSchema !== null && indexOfFittingSchema !== undefined
-      ? indexOfFittingSchema
-      : !isEmpty(data)
-      ? 0 // uses the first schema and report errors if not empty
-      : null
-  );
+  const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
@@ -96,12 +80,10 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
     uischemas
   );
 
-  const openNewTab = (newIndex: number | null) => {
+  const openNewTab = (newIndex: number) => {
     handleChange(
       path,
-      newIndex !== null
-        ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
-        : undefined
+      createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
     );
     setSelectedIndex(newIndex);
   };
@@ -112,9 +94,8 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
   }, [handleChange, createDefaultValue, newSelectedIndex]);
 
   const handleTabChange = useCallback(
-    (event: FormEvent<number | null | undefined>) => {
-      const newOneOfIndex =
-        event.value === null || event.value === undefined ? null : event.value;
+    (e: TabViewTabChangeEvent) => {
+      const newOneOfIndex = e.index;
 
       setNewSelectedIndex(newOneOfIndex);
       if (isEmpty(data)) {
@@ -125,19 +106,6 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
     },
     [setConfirmDialogOpen, setSelectedIndex, data]
   );
-
-  const [focused, onFocus, onBlur] = useFocus();
-  const isValid = errors.length === 0;
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const showDescription = !isDescriptionHidden(
-    visible,
-    description,
-    focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
-  );
-  const help = !isValid ? errors : showDescription ? description : null;
-
-  const selectStyle = appliedUiSchemaOptions.trim ? {} : { width: '100%' };
 
   if (!visible) {
     return null;
@@ -151,46 +119,19 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
         path={path}
         rootSchema={rootSchema}
       />
-
-      <div className='flex flex-column gap-2' id={id} style={selectStyle}>
-        <label htmlFor={id + '-input'}>{label}</label>
-        <Dropdown
-          id={id + '-input'}
-          disabled={!enabled}
-          autoFocus={appliedUiSchemaOptions.focus}
-          value={selectedIndex}
-          onChange={handleTabChange}
-          style={selectStyle}
-          showClear={enabled}
-          checkmark={true}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          options={oneOfRenderInfos.map((oneOfRenderInfo, idx) => ({
-            value: idx,
-            label: oneOfRenderInfo.label,
-          }))}
-          required={required}
-          invalid={!!errors}
-        ></Dropdown>
-        {help && (
-          <small
-            className={!isValid ? 'p-error' : 'p-description'}
-            style={{ display: 'block', marginTop: '5px' }}
-          >
-            {help}
-          </small>
-        )}
-      </div>
-
-      {selectedIndex !== undefined && selectedIndex !== null && (
-        <JsonFormsDispatch
-          uischema={oneOfRenderInfos[selectedIndex].uischema}
-          schema={oneOfRenderInfos[selectedIndex].schema}
-          path={path}
-          renderers={renderers}
-          cells={cells}
-        />
-      )}
+      <TabView activeIndex={selectedIndex} onTabChange={handleTabChange}>
+        {oneOfRenderInfos.map((oneOfRenderInfo, idx) => (
+          <TabPanel header={oneOfRenderInfo.label} key={`${path}-${idx}`}>
+            <JsonFormsDispatch
+              schema={oneOfRenderInfo.schema}
+              uischema={oneOfRenderInfo.uischema}
+              path={path}
+              renderers={renderers}
+              cells={cells}
+            />
+          </TabPanel>
+        ))}
+      </TabView>
       <TabSwitchConfirmDialog
         cancel={cancel}
         confirm={confirm}
@@ -202,6 +143,9 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
   );
 };
 
-export const oneOfControlTester: RankedTester = rankWith(3, isOneOfControl);
+export const oneOfTabControlTester: RankedTester = rankWith(
+  4,
+  and(isOneOfControl, optionIs('variant', 'tab'))
+);
 
-export default withJsonFormsOneOfProps(OneOfRenderer);
+export default withJsonFormsOneOfProps(OneOfTabRenderer);

@@ -58,7 +58,9 @@ export const PrimeSelect = (
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
       value={data !== undefined ? data : ''}
-      onChange={(event) => handleChange(path, event.value || undefined)}
+      onChange={(event) =>
+        handleChange(path, event.value !== null ? event.value : undefined)
+      }
       style={selectStyle}
       showClear={enabled}
       checkmark={true}

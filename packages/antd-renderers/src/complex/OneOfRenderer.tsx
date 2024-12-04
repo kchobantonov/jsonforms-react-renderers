@@ -70,7 +70,13 @@ export const OneOfRenderer = ({
   description,
 }: CombinatorRendererProps) => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
+  const [selectedIndex, setSelectedIndex] = useState(
+    indexOfFittingSchema !== null && indexOfFittingSchema !== undefined
+      ? indexOfFittingSchema
+      : !isEmpty(data)
+      ? 0 // uses the first schema and report errors if not empty
+      : null
+  );
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
@@ -88,7 +94,7 @@ export const OneOfRenderer = ({
     uischemas
   );
 
-  const openNewTab = (newIndex: number) => {
+  const openNewTab = (newIndex: number | null) => {
     handleChange(
       path,
       newIndex !== null
