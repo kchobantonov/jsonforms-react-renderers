@@ -17,12 +17,17 @@ export interface ArrayLayoutToolbarProps {
   children?: React.ReactNode;
 }
 
-const renderTitle = (label: string, errors: string) => (
+const renderTitle = (
+  label: string,
+  errors: string,
+  button: React.JSX.Element
+) => (
   <div className='grid'>
     <div className='col'>{label}</div>
-    <div className='col' style={{ padding: '10px' }}>
+    <div className='col-fixed' style={{ padding: '10px' }}>
       <ValidationIcon id='tooltip-validation' errorMessages={errors} />
     </div>
+    {button}
   </div>
 );
 
@@ -41,9 +46,9 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   return (
     <Card
       style={{ width: '100%' }}
-      title={renderTitle(label, errors)}
-      subTitle={description}
-      header={
+      title={renderTitle(
+        label,
+        errors,
         enabled ? (
           <Button
             tooltip={translations.addTooltip}
@@ -55,7 +60,8 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
         ) : (
           <></>
         )
-      }
+      )}
+      subTitle={description}
     >
       {children}
     </Card>
