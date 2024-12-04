@@ -49,17 +49,13 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       title={renderTitle(
         label,
         errors,
-        enabled ? (
-          <Button
-            tooltip={translations.addTooltip}
-            disabled={!enabled || disableAdd}
-            aria-label={translations.addTooltip}
-            onClick={addItem(path, createDefault())}
-            icon={PrimeIcons.PLUS_CIRCLE}
-          />
-        ) : (
-          <></>
-        )
+        <Button
+          tooltip={translations.addTooltip}
+          disabled={!enabled || disableAdd}
+          aria-label={translations.addTooltip}
+          onClick={addItem(path, createDefault())}
+          icon={PrimeIcons.PLUS_CIRCLE}
+        />
       )}
       subTitle={description}
     >
