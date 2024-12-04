@@ -117,7 +117,7 @@ const App = ({
   };
 
   const changeData = (data: any) => {
-    setDataAsString(JSON.stringify(data, null, 2));
+    setDataAsString(data !== undefined ? JSON.stringify(data, null, 2) : '');
   };
 
   return (

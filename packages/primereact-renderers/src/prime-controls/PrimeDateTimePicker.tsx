@@ -30,7 +30,7 @@ import {
 import dayjs from 'dayjs';
 import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
-import React, { useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
@@ -45,7 +45,8 @@ const DATE_PICKER_STYLE = {
 };
 
 export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof Calendar> }
 ) {
   const {
     data,
@@ -57,6 +58,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
     handleChange,
     config,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
@@ -64,7 +66,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
   const saveFormat =
     appliedUiSchemaOptions.dateTimeSaveFormat ?? defaultDateTimeFormat;
 
-  const onChange = useMemo(
+  const onChange = useCallback(
     () => createOnChangeHandler(path, handleChange, saveFormat),
     [path, handleChange, saveFormat]
   );
@@ -77,7 +79,8 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
 
   return (
     <Calendar
-      value={value}
+      value={value as any}
+      selectionMode='single'
       onChange={onChange}
       formatDateTime={(date) => formatDate(dayjs(date), format)}
       className={className}
@@ -92,6 +95,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
       showIcon
       icon={<i className='pi pi-calendar-clock' />}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 });

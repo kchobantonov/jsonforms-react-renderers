@@ -29,7 +29,13 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 export const PrimeInputNumberFormat = (
-  props: CellProps & WithClassname & Formatted<number>
+  props: CellProps &
+    WithClassname &
+    Formatted<number> & {
+      inputProps?: React.ComponentProps<
+        typeof InputText | typeof InputTextarea
+      >;
+    }
 ) => {
   const {
     className,
@@ -41,6 +47,7 @@ export const PrimeInputNumberFormat = (
     schema,
     config,
     errors,
+    inputProps,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -50,9 +57,12 @@ export const PrimeInputNumberFormat = (
     const validStringNumber = props.fromFormatted(ev.currentTarget.value);
     handleChange(path, validStringNumber);
   };
-  const InputComponent = appliedUiSchemaOptions.multi
-    ? InputTextarea
-    : InputText;
+  let InputComponent: React.ComponentType<any> = InputText;
+
+  if (appliedUiSchemaOptions.multi === true) {
+    InputComponent = InputTextarea;
+  }
+
   const inputStyle =
     !appliedUiSchemaOptions.trim || maxLength === undefined
       ? { width: '100%' }
@@ -69,6 +79,7 @@ export const PrimeInputNumberFormat = (
       maxLength={maxLength}
       style={inputStyle}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 };

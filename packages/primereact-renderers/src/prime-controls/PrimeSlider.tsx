@@ -29,7 +29,8 @@ import { InputNumber } from 'primereact/inputnumber';
 import merge from 'lodash/merge';
 
 export const PrimeSlider = React.memo(function PrimeSlider(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> }
 ) {
   const {
     data,
@@ -41,6 +42,7 @@ export const PrimeSlider = React.memo(function PrimeSlider(
     config,
     schema,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
@@ -65,6 +67,7 @@ export const PrimeSlider = React.memo(function PrimeSlider(
         disabled={!enabled}
         step={schema.multipleOf || 1}
         autoFocus={!!appliedUiSchemaOptions.focus}
+        {...inputProps}
       ></Slider>
     </>
   );

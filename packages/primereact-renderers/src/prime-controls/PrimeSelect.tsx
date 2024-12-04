@@ -30,7 +30,9 @@ import merge from 'lodash/merge';
 import { Dropdown } from 'primereact/dropdown';
 
 export const PrimeSelect = (
-  props: EnumCellProps & WithClassname & TranslateProps
+  props: EnumCellProps &
+    WithClassname &
+    TranslateProps & { inputProps?: React.ComponentProps<typeof Dropdown> }
 ) => {
   const {
     data,
@@ -43,6 +45,7 @@ export const PrimeSelect = (
     options,
     config,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
@@ -64,6 +67,7 @@ export const PrimeSelect = (
         label: optionValue.label,
       }))}
       invalid={!!errors}
+      {...inputProps}
     ></Dropdown>
   );
 };

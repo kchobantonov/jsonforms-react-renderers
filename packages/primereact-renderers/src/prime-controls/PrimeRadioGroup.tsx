@@ -27,9 +27,13 @@ import { CellProps, OwnPropsOfEnum, WithClassname } from '@jsonforms/core';
 import { RadioButton } from 'primereact/radiobutton';
 
 export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
-  props: CellProps & WithClassname & OwnPropsOfEnum
+  props: CellProps &
+    WithClassname &
+    OwnPropsOfEnum & {
+      inputProps?: React.ComponentProps<typeof RadioButton>;
+    }
 ) {
-  const { data, options, handleChange, path, errors } = props;
+  const { data, options, handleChange, path, errors, inputProps } = props;
 
   return (
     <>
@@ -40,9 +44,11 @@ export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
               inputId={option.value}
               name={props.path}
               value={option.value}
+              key={option.label}
               onChange={(e: any) => handleChange(path, e.value)}
               checked={data === option.value}
               invalid={!!errors}
+              {...inputProps}
             />
             <label htmlFor={option.value} className='ml-2'>
               {option.label}

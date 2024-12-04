@@ -28,6 +28,7 @@ import React from 'react';
 import merge from 'lodash/merge';
 import { PrimeCheckbox } from '../prime-controls/PrimeCheckbox';
 import { useFocus } from '../util';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export interface WithInput {
   input: any;
@@ -62,20 +63,59 @@ export const InputControl = (props: ControlProps & WithInput) => {
     return null;
   }
 
+  const useFloatLabel = true;
+
+  if (useFloatLabel) {
+    return (
+      <div className='flex flex-column gap-2' id={id} style={style}>
+        <span style={{ height: '.75rem' }}></span>
+        <FloatLabel>
+          <InnerComponent
+            {...props}
+            label={input === PrimeCheckbox ? ' ' : props.label}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            id={id + '-input'}
+            isValid={isValid}
+            visible={visible}
+            aria-describedby={
+              isValid && showDescription ? id + '-input-help' : null
+            }
+            inputProps={{
+              onFocus,
+              onBlur,
+            }}
+          />
+          <label htmlFor={id + '-input'}>{label}</label>
+        </FloatLabel>
+        {help && (
+          <small
+            className={!isValid ? 'p-error' : 'p-description'}
+            style={{ display: 'block', marginTop: '5px' }}
+          >
+            {help}
+          </small>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className='flex flex-column gap-2' id={id} style={style}>
       <label htmlFor={id + '-input'}>{label}</label>
       <InnerComponent
         {...props}
         label={input === PrimeCheckbox ? ' ' : props.label}
-        onFocus={onFocus}
-        onBlur={onBlur}
         id={id + '-input'}
         isValid={isValid}
         visible={visible}
         aria-describedby={
           isValid && showDescription ? id + '-input-help' : null
         }
+        inputProps={{
+          onFocus,
+          onBlur,
+        }}
       />
       {help && (
         <small

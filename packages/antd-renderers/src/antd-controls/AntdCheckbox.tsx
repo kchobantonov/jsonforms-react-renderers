@@ -30,8 +30,11 @@ import merge from 'lodash/merge';
 type Props = {
   label?: string;
 };
+
 export const AntdCheckbox = React.memo(function AntdCheckbox(
-  props: CellProps & WithClassname & Props
+  props: CellProps &
+    WithClassname &
+    Props & { inputProps?: React.ComponentProps<typeof Checkbox> }
 ) {
   const {
     data,
@@ -43,6 +46,7 @@ export const AntdCheckbox = React.memo(function AntdCheckbox(
     path,
     handleChange,
     config,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   // !! causes undefined value to be converted to false, otherwise has no effect
@@ -57,6 +61,7 @@ export const AntdCheckbox = React.memo(function AntdCheckbox(
       id={id}
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
+      {...inputProps}
     >
       {label}
     </Checkbox>

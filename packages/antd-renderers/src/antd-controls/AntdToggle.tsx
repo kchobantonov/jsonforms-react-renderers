@@ -28,10 +28,19 @@ import { Switch } from 'antd';
 import merge from 'lodash/merge';
 
 export const AntdToggle = React.memo(function AntdToggle(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof Switch> }
 ) {
-  const { data, className, enabled, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    uischema,
+    path,
+    handleChange,
+    config,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const checked = !!data;
 
@@ -42,6 +51,7 @@ export const AntdToggle = React.memo(function AntdToggle(
       className={className}
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
+      {...inputProps}
     />
   );
 });

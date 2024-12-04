@@ -157,9 +157,11 @@ const toBase64 = (
   });
 
 export const PrimeFile = React.memo(function PrimeFile(
-  props: CellProps & WithClassname & TranslateProps
+  props: CellProps &
+    WithClassname &
+    TranslateProps & { inputProps?: React.ComponentProps<typeof FileUpload> }
 ) {
-  const { schema, uischema, path, handleChange, enabled } = props;
+  const { schema, uischema, path, handleChange, enabled, inputProps } = props;
   const [progress, setProgress] = useState(0);
 
   const uploadImage = async (event: FileUploadHandlerEvent) => {
@@ -372,6 +374,7 @@ export const PrimeFile = React.memo(function PrimeFile(
       cancelOptions={cancelOptions}
       onError={() => handleChange(path, undefined)}
       onClear={() => handleChange(path, undefined)}
+      {...inputProps}
     ></FileUpload>
   );
 });

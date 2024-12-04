@@ -22,13 +22,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React from 'react';
 import { CellProps, Formatted, WithClassname } from '@jsonforms/core';
-import merge from 'lodash/merge';
 import { Input } from 'antd';
+import merge from 'lodash/merge';
+import React from 'react';
 
 export const AntdInputNumberFormat = (
-  props: CellProps & WithClassname & Formatted<number>
+  props: CellProps &
+    WithClassname &
+    Formatted<number> & {
+      inputProps?: React.ComponentProps<typeof Input | typeof Input.TextArea>;
+    }
 ) => {
   const {
     className,
@@ -39,6 +43,7 @@ export const AntdInputNumberFormat = (
     handleChange,
     schema,
     config,
+    inputProps,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -48,7 +53,13 @@ export const AntdInputNumberFormat = (
     const validStringNumber = props.fromFormatted(ev.currentTarget.value);
     handleChange(path, validStringNumber);
   };
-  const InputComponent = appliedUiSchemaOptions.multi ? Input.TextArea : Input;
+
+  let InputComponent: React.ComponentType<any> = Input;
+
+  if (appliedUiSchemaOptions.multi === true) {
+    InputComponent = Input.TextArea;
+  }
+
   const inputStyle =
     !appliedUiSchemaOptions.trim || maxLength === undefined
       ? { width: '100%' }
@@ -64,6 +75,7 @@ export const AntdInputNumberFormat = (
       autoFocus={appliedUiSchemaOptions.focus}
       maxLength={maxLength}
       style={inputStyle}
+      {...inputProps}
     />
   );
 };

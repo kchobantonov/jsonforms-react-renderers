@@ -33,10 +33,20 @@ const toNumber = (value: string) =>
 const eventToValue = (value: any) => toNumber(value);
 
 export const AntdInputInteger = React.memo(function AntdInputInteger(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> }
 ) {
-  const { data, className, id, enabled, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    id,
+    enabled,
+    uischema,
+    path,
+    handleChange,
+    config,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
@@ -58,6 +68,7 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
       autoFocus={appliedUiSchemaOptions.focus}
       style={inputStyle}
       placeholder={appliedUiSchemaOptions.placeholder}
+      {...inputProps}
     />
   );
 });

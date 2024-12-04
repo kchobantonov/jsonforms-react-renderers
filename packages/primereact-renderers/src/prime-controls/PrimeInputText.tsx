@@ -38,7 +38,15 @@ const eventToValue = (ev: any) =>
   ev.target.value === '' ? undefined : ev.target.value;
 
 export const PrimeInputText = React.memo(function PrimeInputText(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & {
+      inputProps?: React.ComponentProps<
+        | typeof InputText
+        | typeof InputTextarea
+        | typeof Password
+        | typeof AutoComplete
+      >;
+    }
 ) {
   const {
     data,
@@ -51,9 +59,11 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     handleChange,
     schema,
     errors,
+    inputProps,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
 
   const [inputText, onChange, _onClear] = useDebouncedChange(
     handleChange,
@@ -63,8 +73,6 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     eventToValue
   );
 
-  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
-
   let InputComponent: React.ComponentType<any> = InputText;
 
   const specificProps: Record<string, any> = {};
@@ -72,10 +80,11 @@ export const PrimeInputText = React.memo(function PrimeInputText(
   const suggestions = appliedUiSchemaOptions?.suggestion;
 
   if (isArray(suggestions) && every(suggestions, isString)) {
+    const options = suggestions as string[];
     InputComponent = AutoComplete;
 
     const search = (event: { query: string }) => {
-      const filtered = suggestions.filter((option) =>
+      const filtered = options.filter((option) =>
         option.toLowerCase().includes(event.query.toLowerCase())
       );
       setFilteredOptions(filtered);
@@ -120,6 +129,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
       placeholder={appliedUiSchemaOptions.placeholder}
       {...specificProps}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 });

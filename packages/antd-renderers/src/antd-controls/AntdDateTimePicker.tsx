@@ -44,10 +44,21 @@ const DATE_PICKER_STYLE = {
 };
 
 export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> }
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    isValid,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format = appliedUiSchemaOptions.dateTimeFormat ?? 'YYYY-MM-DD HH:mm';
@@ -79,6 +90,8 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
       showTime={true}
       use12Hours={!!appliedUiSchemaOptions.ampm}
       style={DATE_PICKER_STYLE}
+      status={isValid ? undefined : 'error'}
+      {...inputProps}
     />
   );
 });

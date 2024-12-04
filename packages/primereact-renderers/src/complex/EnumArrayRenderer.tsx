@@ -33,8 +33,9 @@ export const EnumArrayRenderer = (
     data,
     addItem,
     removeItem,
-    handleChange: _handleChange,
-    ...otherProps
+    uischema,
+    rootSchema,
+    enabled,
   } = props;
 
   if (!visible) {
@@ -65,7 +66,9 @@ export const EnumArrayRenderer = (
             errors={errors}
             schema={schema}
             visible={visible}
-            {...otherProps}
+            uischema={uischema}
+            rootSchema={rootSchema}
+            enabled={enabled}
           />
         );
       })}

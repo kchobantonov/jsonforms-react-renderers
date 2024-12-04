@@ -32,7 +32,8 @@ const eventToValue = (e: InputNumberChangeEvent) =>
   e.value === null ? undefined : e.value;
 
 export const PrimeInputNumber = React.memo(function PrimeInputNumber(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> }
 ) {
   const {
     data,
@@ -44,8 +45,8 @@ export const PrimeInputNumber = React.memo(function PrimeInputNumber(
     handleChange,
     config,
     errors,
+    inputProps,
   } = props;
-  const inputProps = { step: 0.1 };
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
@@ -64,11 +65,12 @@ export const PrimeInputNumber = React.memo(function PrimeInputNumber(
       className={className}
       id={id}
       disabled={!enabled}
+      step={0.1}
       autoFocus={appliedUiSchemaOptions.focus}
-      {...inputProps}
       style={inputStyle}
       placeholder={appliedUiSchemaOptions.placeholder}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 });

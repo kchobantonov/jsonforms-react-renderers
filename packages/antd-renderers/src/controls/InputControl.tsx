@@ -86,8 +86,10 @@ export const InputControl = (props: ControlProps & WithInput) => {
       <InnerComponent
         {...props}
         label={input === AntdCheckbox ? ' ' : props.label}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        inputProps={{
+          onFocus,
+          onBlur,
+        }}
         id={id + '-input'}
         isValid={isValid}
         visible={visible}

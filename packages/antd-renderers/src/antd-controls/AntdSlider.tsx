@@ -28,10 +28,20 @@ import { Slider } from 'antd';
 import merge from 'lodash/merge';
 
 export const AntdSlider = React.memo(function AntdSlider(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> }
 ) {
-  const { data, id, enabled, uischema, path, handleChange, config, schema } =
-    props;
+  const {
+    data,
+    id,
+    enabled,
+    uischema,
+    path,
+    handleChange,
+    config,
+    schema,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const sliderStyle: { [x: string]: any } = {
@@ -50,13 +60,14 @@ export const AntdSlider = React.memo(function AntdSlider(
       min={schema.minimum}
       max={schema.maximum}
       marks={marks}
-      value={Number(data || schema.default)}
+      value={Number(data || schema.default) as any}
       onChange={(value: any) => {
         handleChange(path, Number(value));
       }}
       disabled={!enabled}
       step={schema.multipleOf || 1}
       autoFocus={!!appliedUiSchemaOptions.focus}
+      {...inputProps}
     ></Slider>
   );
 });

@@ -32,7 +32,8 @@ const eventToValue = (e: InputNumberChangeEvent) =>
   e.value === null ? undefined : e.value;
 
 export const PrimeInputInteger = React.memo(function PrimeInputInteger(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> }
 ) {
   const {
     data,
@@ -44,6 +45,7 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
     handleChange,
     config,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
@@ -68,6 +70,7 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
       placeholder={appliedUiSchemaOptions.placeholder}
       maxFractionDigits={0}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 });

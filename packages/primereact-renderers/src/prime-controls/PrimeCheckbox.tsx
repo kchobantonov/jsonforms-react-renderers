@@ -31,7 +31,9 @@ type Props = {
   label?: string;
 };
 export const PrimeCheckbox = React.memo(function PrimeCheckbox(
-  props: CellProps & WithClassname & Props
+  props: CellProps &
+    WithClassname &
+    Props & { inputProps?: React.ComponentProps<typeof TriStateCheckbox> }
 ) {
   const {
     data,
@@ -44,6 +46,7 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
     handleChange,
     config,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
@@ -58,6 +61,7 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
       invalid={!!errors}
+      {...inputProps}
     >
       {label}
     </TriStateCheckbox>

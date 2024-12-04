@@ -34,10 +34,21 @@ const DATE_PICKER_STYLE = {
 };
 
 export const AntdDatePicker = React.memo(function AntdDatePicker(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> }
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    isValid,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
@@ -54,6 +65,14 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
     ...JSON_SCHEMA_DATE_FORMATS,
   ]);
 
+  let mode: 'date' | 'month' | 'year' = 'date';
+  if (!saveFormat.includes('D')) {
+    mode = 'month';
+  }
+  if (!saveFormat.includes('M')) {
+    mode = 'year';
+  }
+
   return (
     <DatePicker
       value={value}
@@ -66,6 +85,9 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
       autoFocus={appliedUiSchemaOptions.focus}
       placeholder={appliedUiSchemaOptions.placeholder}
       style={DATE_PICKER_STYLE}
+      mode={mode}
+      status={isValid ? undefined : 'error'}
+      {...inputProps}
     />
   );
 });

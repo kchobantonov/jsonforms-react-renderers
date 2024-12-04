@@ -28,7 +28,8 @@ import { InputSwitch } from 'primereact/inputswitch';
 import merge from 'lodash/merge';
 
 export const PrimeToggle = React.memo(function PrimeToggle(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputSwitch> }
 ) {
   const {
     data,
@@ -39,6 +40,7 @@ export const PrimeToggle = React.memo(function PrimeToggle(
     handleChange,
     config,
     errors,
+    inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const checked = !!data;
@@ -51,6 +53,7 @@ export const PrimeToggle = React.memo(function PrimeToggle(
       disabled={!enabled}
       autoFocus={!!appliedUiSchemaOptions.focus}
       invalid={!!errors}
+      {...inputProps}
     />
   );
 });
