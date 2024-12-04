@@ -12,6 +12,12 @@ const distDir = join(__dirname, 'dist');
 const packagesDir = join(__dirname, '..');
 const examples = {
   'react-antd': join(packagesDir, 'antd-renderers', 'example', 'dist'),
+  'react-primereact': join(
+    packagesDir,
+    'primereact-renderers',
+    'example',
+    'dist'
+  ),
 };
 
 // Clean and recreate dist dir

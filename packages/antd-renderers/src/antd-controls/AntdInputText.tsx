@@ -24,7 +24,11 @@
 */
 import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import { CellProps, WithClassname } from '@jsonforms/core';
-import { Input } from 'antd';
+import { AutoComplete, AutoCompleteProps, Input } from 'antd';
+import { PasswordProps } from 'antd/es/input';
+import every from 'lodash/every';
+import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import merge from 'lodash/merge';
 import React, {
   CSSProperties,
@@ -35,11 +39,26 @@ import React, {
 } from 'react';
 import { useDebouncedChange, useFocus } from '../util';
 
-const eventToValue = (ev: any) =>
-  ev.target.value === '' ? undefined : ev.target.value;
+const eventToValue = (ev: any) => {
+  if (ev.target) {
+    return ev.target.value === '' ? undefined : ev.target.value;
+  }
+  return ev === '' ? undefined : ev;
+};
+
+type ElementType<T> = T extends (infer U)[] ? U : never;
+type AutoCompleteOption = ElementType<AutoCompleteProps['options']>;
 
 export const AntdInputText = React.memo(function AntdInputText(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & {
+      inputProps?: React.ComponentProps<
+        | typeof Input
+        | typeof Input.TextArea
+        | typeof Input.Password
+        | typeof AutoComplete
+      >;
+    }
 ) {
   const [pointed, setPointed] = useState(false);
   const [focused, onFocus, onBlur] = useFocus();
@@ -54,6 +73,7 @@ export const AntdInputText = React.memo(function AntdInputText(
     path,
     handleChange,
     schema,
+    inputProps,
   } = props;
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -66,10 +86,22 @@ export const AntdInputText = React.memo(function AntdInputText(
     eventToValue
   );
 
-  let InputComponent:
-    | typeof Input
-    | typeof Input.TextArea
-    | typeof Input.Password = Input;
+  let InputComponent: React.ComponentType<any> = Input;
+
+  const specificProps: Record<string, any> = {};
+
+  const suggestions = appliedUiSchemaOptions?.suggestion;
+
+  if (isArray(suggestions) && every(suggestions, isString)) {
+    const options: AutoCompleteOption[] = (suggestions as string[]).map(
+      (suggestion) => ({ value: suggestion })
+    );
+    InputComponent = AutoComplete;
+
+    (specificProps as AutoCompleteProps).options = options;
+    (specificProps as AutoCompleteProps).filterOption = true;
+    (specificProps as AutoCompleteProps).popupMatchSelectWidth = true;
+  }
 
   const inputStyle: CSSProperties =
     !appliedUiSchemaOptions.trim || maxLength === undefined
@@ -80,10 +112,15 @@ export const AntdInputText = React.memo(function AntdInputText(
     inputStyle.resize = 'vertical';
     inputStyle.overflow = 'auto';
     InputComponent = Input.TextArea;
+
+    specificProps.rows = 5;
+    specificProps.autoSize = { minRows: 5, maxRows: 5 };
   }
 
   if (schema.format === 'password') {
     InputComponent = Input.Password;
+
+    (specificProps as PasswordProps).visibilityToggle = true; // be able to display the password as plain text
   }
 
   const onMouseOver = useCallback(() => setPointed(true), []);
@@ -130,9 +167,8 @@ export const AntdInputText = React.memo(function AntdInputText(
       count={
         maxLength !== undefined ? { max: maxLength, show: focused } : undefined
       }
-      {...(appliedUiSchemaOptions.multi
-        ? { autoSize: { minRows: 5, maxRows: 5 } }
-        : {})}
+      {...specificProps}
+      {...inputProps}
     />
   );
 });

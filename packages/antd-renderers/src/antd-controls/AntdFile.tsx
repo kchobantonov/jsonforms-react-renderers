@@ -151,9 +151,14 @@ const toBase64 = (
   });
 
 export const AntdFile = React.memo(function AntdFile(
-  props: CellProps & WithClassname & TranslateProps
+  props: CellProps &
+    WithClassname &
+    TranslateProps & {
+      inputProps?: React.ComponentProps<typeof Upload.Dragger>;
+    }
 ) {
-  const { schema, uischema, path, handleChange, enabled, t } = props;
+  const { schema, uischema, path, handleChange, enabled, t, inputProps } =
+    props;
 
   const uploadImage = async (options) => {
     const { onSuccess, onError, file, onProgress } = options;
@@ -247,8 +252,9 @@ export const AntdFile = React.memo(function AntdFile(
       listType='picture'
       maxCount={1}
       onRemove={() => handleChange(path, undefined)}
+      {...inputProps}
     >
-      Select File
+      {t('Select File', 'Select File')}
     </Upload.Dragger>
   );
 });

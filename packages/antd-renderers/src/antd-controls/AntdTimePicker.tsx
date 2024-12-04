@@ -40,10 +40,20 @@ const TIME_PICKER_STYLE = {
 };
 
 export const AntdTimePicker = React.memo(function AntdTimePicker(
-  props: CellProps & WithClassname
+  props: CellProps &
+    WithClassname & { inputProps?: React.ComponentProps<typeof TimePicker> }
 ) {
-  const { data, className, enabled, id, uischema, path, handleChange, config } =
-    props;
+  const {
+    data,
+    className,
+    enabled,
+    id,
+    uischema,
+    path,
+    handleChange,
+    config,
+    inputProps,
+  } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const format =
@@ -75,6 +85,7 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
       placeholder={appliedUiSchemaOptions.placeholder}
       use12Hours={!!appliedUiSchemaOptions.ampm}
       style={TIME_PICKER_STYLE}
+      {...inputProps}
     />
   );
 });

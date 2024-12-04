@@ -30,6 +30,20 @@ module.exports = merge(baseConfig, {
         },
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource', // Use asset modules to handle fonts
+        generator: {
+          filename: 'fonts/[name].[hash][ext][query]', // Configure output directory and file naming
+        },
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset/resource', // Webpack 5 asset modules for SVG
+        generator: {
+          filename: 'icons/[name].[hash][ext][query]', // Customize the output path and filename
+        },
+      },
     ],
   },
 });

@@ -37,12 +37,13 @@ export const EnumArrayRenderer = ({
   data,
   addItem,
   removeItem,
-  handleChange: _handleChange,
-  ...otherProps
+  uischema,
+  rootSchema,
+  enabled,
 }: ControlProps & OwnPropsOfEnum & DispatchPropsOfMultiEnumControl) => {
-  const [focused, _onFocus, _onBlur] = useFocus();
+  const [focused, onFocus, onBlur] = useFocus();
   const isValid = errors.length === 0;
-  const appliedUiSchemaOptions = merge({}, config, otherProps.uischema.options);
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const showDescription = !isDescriptionHidden(
     visible,
     description,
@@ -83,7 +84,13 @@ export const EnumArrayRenderer = ({
             errors={errors}
             schema={schema}
             visible={visible}
-            {...otherProps}
+            rootSchema={rootSchema}
+            uischema={uischema}
+            enabled={enabled}
+            inputProps={{
+              onFocus,
+              onBlur,
+            }}
           />
         );
       })}

@@ -27,14 +27,19 @@ import { CellProps, OwnPropsOfEnum, WithClassname } from '@jsonforms/core';
 import { Radio } from 'antd';
 
 export const AntdRadioGroup = React.memo(function AntdRadioGroup(
-  props: CellProps & WithClassname & OwnPropsOfEnum
+  props: CellProps &
+    WithClassname &
+    OwnPropsOfEnum & {
+      inputProps?: React.ComponentProps<typeof Radio.Group>;
+    }
 ) {
-  const { data, options, handleChange, path } = props;
+  const { data, options, handleChange, path, inputProps } = props;
 
   return (
     <Radio.Group
       value={data ?? ''}
       onChange={(e: any) => handleChange(path, e.target.value)}
+      {...inputProps}
     >
       {(options || []).map((option) => (
         <Radio value={option.value} key={option.label}>

@@ -32,7 +32,9 @@ import { TranslateProps } from '@jsonforms/react';
 
 const { Option } = Select;
 export const AntdSelect = (
-  props: EnumCellProps & WithClassname & TranslateProps
+  props: EnumCellProps &
+    WithClassname &
+    TranslateProps & { inputProps?: React.ComponentProps<typeof Select> }
 ) => {
   const {
     data,
@@ -45,6 +47,7 @@ export const AntdSelect = (
     handleChange,
     options,
     config,
+    inputProps,
     t,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -65,6 +68,7 @@ export const AntdSelect = (
       onChange={(value) => handleChange(path, value || undefined)}
       style={selectStyle}
       allowClear={enabled}
+      {...inputProps}
     >
       {[
         <Option value={''} key='jsonforms.enum.none'>
