@@ -33,7 +33,7 @@ import DateTimeControl, {
   dateTimeControlTester,
 } from '../../src/controls/DateTimeControl';
 import dayjs from 'dayjs';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -151,7 +151,9 @@ describe('Material date time control', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -169,7 +171,9 @@ describe('Material date time control', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -184,7 +188,9 @@ describe('Material date time control', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -195,7 +201,9 @@ describe('Material date time control', () => {
   it('should render', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -211,7 +219,9 @@ describe('Material date time control', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -231,7 +241,9 @@ describe('Material date time control', () => {
   it('should update via action', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -239,7 +251,7 @@ describe('Material date time control', () => {
       ...core.data,
       foo: dayjs('1961-12-04 20:15').format(defaultDateTimeFormat),
     };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('1961-12-04 20:15');
@@ -248,12 +260,14 @@ describe('Material date time control', () => {
   it('should update with null value', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: null };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('');
@@ -262,12 +276,14 @@ describe('Material date time control', () => {
   it('should not update with undefined value', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: undefined };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('');
@@ -276,12 +292,14 @@ describe('Material date time control', () => {
   it('should not update with wrong ref', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, bar: 'Bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('1980-04-04 13:37');
@@ -290,12 +308,14 @@ describe('Material date time control', () => {
   it('should not update with null ref', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, null: '12.04.1961 20:15' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('1980-04-04 13:37');
@@ -304,12 +324,14 @@ describe('Material date time control', () => {
   it('should not update with undefined ref', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, undefined: '12.04.1961 20:15' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().value).toBe('1980-04-04 13:37');
@@ -318,7 +340,9 @@ describe('Material date time control', () => {
   it('can be disabled', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} enabled={false} />
       </JsonFormsStateProvider>
     );
@@ -329,7 +353,9 @@ describe('Material date time control', () => {
   it('should be enabled by default', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -340,7 +366,9 @@ describe('Material date time control', () => {
   it('should render input id', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl
           schema={schema}
           uischema={uischema}
@@ -356,7 +384,9 @@ describe('Material date time control', () => {
   it('should be hideable', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <DateTimeControl schema={schema} uischema={uischema} visible={false} />
       </JsonFormsStateProvider>
     );
@@ -372,7 +402,9 @@ describe('Material date time control', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;

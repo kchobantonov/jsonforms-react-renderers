@@ -26,7 +26,7 @@ import './MatchMediaMock';
 import { ControlElement, JsonSchema7 } from '@jsonforms/core';
 import * as React from 'react';
 
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import MaterialListWithDetailRenderer, {
   materialListWithDetailTester,
 } from '../../src/additional/MaterialListWithDetailRenderer';
@@ -131,7 +131,9 @@ describe('Material list with detail renderer', () => {
   it('should render two list entries', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -142,7 +144,9 @@ describe('Material list with detail renderer', () => {
   it('should render empty entries', () => {
     const core = initCore(schema, uischema, []);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -157,7 +161,9 @@ describe('Material list with detail renderer', () => {
   it('should be hideable', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer
           schema={schema}
           uischema={uischema}
@@ -173,7 +179,9 @@ describe('Material list with detail renderer', () => {
   it('select renders corresponding data in detail', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -195,7 +203,9 @@ describe('Material list with detail renderer', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer
           schema={schema}
           uischema={uischemaWithLabel}
@@ -214,7 +224,9 @@ describe('Material list with detail renderer', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer
           schema={titleSchema}
           uischema={uischema}
@@ -229,7 +241,9 @@ describe('Material list with detail renderer', () => {
   it('choose appropriate labels in nested schema', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -252,7 +266,9 @@ describe('Material list with detail renderer', () => {
 
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer
           schema={descriptionSchema}
           uischema={uischema}
@@ -277,7 +293,9 @@ describe('Material list with detail renderer', () => {
 
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer
           schema={descriptionSchema}
           uischema={uischema}
@@ -293,7 +311,9 @@ describe('Material list with detail renderer', () => {
   it('add data to the array', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -310,7 +330,9 @@ describe('Material list with detail renderer', () => {
   it('remove data from the array', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialListWithDetailRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );

@@ -28,7 +28,7 @@ import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
 import OneOfRadioGroupControl, {
   oneOfRadioGroupControlTester,
 } from '../../src/controls/OneOfRadioGroupControl';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { JsonFormsStateProvider } from '@jsonforms/react';
@@ -85,7 +85,9 @@ describe('Material oneof radio group control', () => {
     const core = initCore(oneOfSchema, uischema, { foo: 'B' });
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <OneOfRadioGroupControl schema={oneOfSchema} uischema={uischema} />
       </JsonFormsStateProvider>
     );

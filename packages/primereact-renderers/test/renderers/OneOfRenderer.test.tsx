@@ -29,7 +29,7 @@ import Dialog from '@mui/material/Dialog';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { ControlElement } from '@jsonforms/core';
-import { OneOfRenderer, antdRenderers } from '../../src';
+import { OneOfRenderer, primereactRenderers } from '../../src';
 import {
   JsonForms,
   JsonFormsDispatch,
@@ -104,7 +104,9 @@ describe('Material oneOf renderer', () => {
     };
     const core = initCore(schema, uischema, { data: undefined });
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <OneOfRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -144,7 +146,7 @@ describe('Material oneOf renderer', () => {
         data={data}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(OneOfRenderer).length).toBeTruthy();
@@ -192,7 +194,7 @@ describe('Material oneOf renderer', () => {
         data={data}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(OneOfRenderer).length).toBeTruthy();
@@ -240,7 +242,7 @@ describe('Material oneOf renderer', () => {
         data={data}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(OneOfRenderer).length).toBeTruthy();
@@ -280,7 +282,7 @@ describe('Material oneOf renderer', () => {
         data={undefined}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
         onChange={({ data }) => {
           onChangeData.data = data;
         }}
@@ -336,7 +338,9 @@ describe('Material oneOf renderer', () => {
     const core = initCore(schema, uischema, { data: {} });
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <JsonFormsDispatch schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -402,7 +406,9 @@ describe('Material oneOf renderer', () => {
     };
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -476,7 +482,9 @@ describe('Material oneOf renderer', () => {
     };
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -544,7 +552,7 @@ describe('Material oneOf renderer', () => {
         data={data}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(OneOfRenderer).length).toBeTruthy();
@@ -579,7 +587,9 @@ describe('Material oneOf renderer', () => {
     };
     const core = initCore(schema, uischema, { data: undefined });
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <OneOfRenderer schema={schema} uischema={uischema} visible={false} />
       </JsonFormsStateProvider>
     );

@@ -24,7 +24,7 @@
 */
 import './MatchMediaMock';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import * as React from 'react';
 import {
@@ -44,7 +44,7 @@ import {
 } from '@jsonforms/react';
 import { InputControl } from '../../src/controls/InputControl';
 import HorizontalLayoutRenderer from '../../src/layouts/HorizontalLayout';
-import { AntdInputText } from '../../src/antd-controls';
+import { PrimeInputText } from '../../src/prime-controls';
 import { initCore } from './util';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -64,7 +64,7 @@ const uischema: ControlElement = {
 };
 class TestControlInner extends Control<ControlProps, ControlState> {
   render() {
-    return <InputControl {...this.props} input={AntdInputText} />;
+    return <InputControl {...this.props} input={PrimeInputText} />;
   }
 }
 export const testControlTester: RankedTester = rankWith(1, isControl);
@@ -80,7 +80,9 @@ describe('Material input control', () => {
   it('render', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -107,7 +109,9 @@ describe('Material input control', () => {
     };
     const core = initCore(schema, uischema);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -129,7 +133,9 @@ describe('Material input control', () => {
   it('can be hidden', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} visible={false} />
       </JsonFormsStateProvider>
     );
@@ -140,7 +146,9 @@ describe('Material input control', () => {
   it('should be shown by default', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -151,13 +159,15 @@ describe('Material input control', () => {
   it('should display a single error', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
 
     core.data = { ...core.data, foo: 2 };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const validation = wrapper.find('p').first();
     expect(validation.text()).toBe('must be string');
@@ -166,12 +176,14 @@ describe('Material input control', () => {
   it('should display multiple errors', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: 3 };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const validation = wrapper.find('p').first();
     expect(validation.text()).toBe('must be string');
@@ -180,7 +192,9 @@ describe('Material input control', () => {
   it('should not show any errors', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -191,13 +205,15 @@ describe('Material input control', () => {
   it('should handle validation updates', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: 3 };
     core.data = { ...core.data, foo: 'bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const validation = wrapper.find('p').first();
     expect(validation.text()).toBe('');
@@ -251,7 +267,9 @@ describe('Material input control', () => {
     };
     const core = initCore(jsonSchema, layout, newData);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <HorizontalLayoutRenderer
           schema={jsonSchema}
           uischema={layout}
@@ -287,7 +305,9 @@ describe('Material input control', () => {
 
     const core = initCore(jsonSchema, control, {});
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={jsonSchema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -312,7 +332,9 @@ describe('Material input control', () => {
 
     const core = initCore(jsonSchema, control, {});
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={jsonSchema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -334,7 +356,9 @@ describe('Material input control', () => {
     };
     const core = initCore(jsonSchema, control, {});
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl schema={jsonSchema} uischema={control} />
       </JsonFormsStateProvider>
     );
@@ -355,7 +379,9 @@ describe('Material input control', () => {
     };
     const core = initCore(jsonSchema, control, {});
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestControl
           schema={jsonSchema}
           uischema={control}

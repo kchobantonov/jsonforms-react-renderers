@@ -32,7 +32,7 @@ import {
 import * as React from 'react';
 
 import ArrayControlRenderer from '../../src/complex/ArrayControlRenderer';
-import { antdCells, antdRenderers } from '../../src';
+import { primereactCells, primereactRenderers } from '../../src';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { JsonFormsStateProvider, StatelessRenderer } from '@jsonforms/react';
@@ -108,7 +108,9 @@ describe('Material array control', () => {
   it('should render', () => {
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture.schema}
           uischema={fixture.uischema}
@@ -124,7 +126,9 @@ describe('Material array control', () => {
   it('should render empty', () => {
     const core = initCore(fixture.schema, fixture.uischema);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture.schema}
           uischema={fixture.uischema}
@@ -159,7 +163,9 @@ describe('Material array control', () => {
     const core = initCore(schema, uischema, data);
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -202,7 +208,9 @@ describe('Material array control', () => {
     const core = initCore(schema, uischema, data);
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -235,7 +243,9 @@ describe('Material array control', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -267,7 +277,9 @@ describe('Material array control', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -285,7 +297,9 @@ describe('Material array control', () => {
 
     const core = initCore(descriptionSchema, fixture.uischema, fixture.data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={descriptionSchema}
           uischema={fixture.uischema}
@@ -307,7 +321,9 @@ describe('Material array control', () => {
 
     const core = initCore(descriptionSchema, fixture.uischema, fixture.data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={descriptionSchema}
           uischema={fixture.uischema}
@@ -324,7 +340,11 @@ describe('Material array control', () => {
     };
     wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, cells: antdCells, core }}
+        initState={{
+          renderers: primereactRenderers,
+          cells: primereactCells,
+          core,
+        }}
       >
         <TestEmitter
           onChange={({ data }) => {
@@ -382,7 +402,9 @@ describe('Material array control', () => {
     ];
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture.schema}
           uischema={fixture.uischema}
@@ -404,7 +426,9 @@ describe('Material array control', () => {
     };
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture.schema}
           uischema={fixture.uischema}
@@ -449,7 +473,9 @@ describe('Material array control', () => {
     };
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -504,7 +530,9 @@ describe('Material array control', () => {
     };
     const core = initCore(schema, uischema, {});
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={schema}
           uischema={uischema}
@@ -523,7 +551,9 @@ describe('Material array control', () => {
     const data = { test: ['foo'] };
     const core = initCore(fixture2.schema, fixture2.uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture2.schema}
           uischema={fixture2.uischema}
@@ -545,7 +575,9 @@ describe('Material array control', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -574,7 +606,9 @@ describe('Material array control', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -600,7 +634,9 @@ describe('Material array control', () => {
   it('should have up button disabled for first element', () => {
     const core = initCore(fixture2.schema, fixture2.uischema, fixture2.data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture2.schema}
           uischema={fixture2.uischema}
@@ -620,7 +656,11 @@ describe('Material array control', () => {
     const core = initCore(fixture2.schema, fixture2.uischema, fixture2.data);
     wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, cells: antdCells, core }}
+        initState={{
+          renderers: primereactRenderers,
+          cells: primereactCells,
+          core,
+        }}
       >
         <ArrayControlRenderer
           schema={fixture2.schema}
@@ -638,7 +678,11 @@ describe('Material array control', () => {
     const core = initCore(fixture2.schema, fixture2.uischema, fixture2.data);
     wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, cells: antdCells, core }}
+        initState={{
+          renderers: primereactRenderers,
+          cells: primereactCells,
+          core,
+        }}
       >
         <ArrayControlRenderer
           schema={fixture2.schema}
@@ -655,7 +699,9 @@ describe('Material array control', () => {
   it('should have down button disabled for last element', () => {
     const core = initCore(fixture2.schema, fixture2.uischema, fixture2.data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayControlRenderer
           schema={fixture2.schema}
           uischema={fixture2.uischema}

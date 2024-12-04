@@ -84,6 +84,14 @@ const config = {
           src: '../examples-react/src/logo.svg',
           dest: 'example/dist/assets',
         },
+        {
+          src: './node_modules/primereact/resources/themes/',
+          dest: 'example/dist/assets/',
+        },
+        {
+          src: './node_modules/primeicons/fonts/',
+          dest: 'example/dist/',
+        },
       ],
     }),
   ],

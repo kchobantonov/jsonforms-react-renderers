@@ -28,7 +28,7 @@ import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import { NativeControl } from '../../src/controls/NativeControl';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { ControlElement, ControlProps } from '@jsonforms/core';
-import { Input, InputProps } from 'antd';
+import { InputText, InputTextProps } from 'primereact/inputtext';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -77,6 +77,8 @@ describe('native control', () => {
   it('is disabled', () => {
     const props = defaultControlProps();
     wrapper = mount(createNativeControl(props));
-    expect((wrapper.find(Input).props() as InputProps).disabled).toEqual(true);
+    expect(
+      (wrapper.find(InputText).props() as InputTextProps).disabled
+    ).toEqual(true);
   });
 });

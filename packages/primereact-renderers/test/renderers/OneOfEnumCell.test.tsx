@@ -28,7 +28,7 @@ import { ControlElement } from '@jsonforms/core';
 import MaterialOneOfEnumCell, {
   materialOneOfEnumCellTester,
 } from '../../src/cells/MaterialOneOfEnumCell';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 
 import Enzyme, { mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -81,7 +81,9 @@ describe('Material enum cell', () => {
   it('should select an item from dropdown list', () => {
     const core = initCore(schema, uischema, data);
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialOneOfEnumCell
           schema={schema}
           uischema={uischema}

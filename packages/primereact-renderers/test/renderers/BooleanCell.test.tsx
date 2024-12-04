@@ -29,7 +29,7 @@ import BooleanCell, {
   materialBooleanCellTester,
 } from '../../src/cells/MaterialBooleanCell';
 import * as ReactDOM from 'react-dom';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -136,7 +136,9 @@ describe('Material boolean cell', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
@@ -154,7 +156,9 @@ describe('Material boolean cell', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
@@ -169,7 +173,9 @@ describe('Material boolean cell', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
@@ -180,7 +186,9 @@ describe('Material boolean cell', () => {
   it('should render', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
       </JsonFormsStateProvider>
     );
@@ -196,7 +204,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -217,7 +227,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -227,7 +239,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: false };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeFalsy();
@@ -240,7 +252,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -250,7 +264,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: undefined };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeFalsy();
@@ -262,7 +276,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -272,7 +288,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, foo: null };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeFalsy();
@@ -284,7 +300,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -294,7 +312,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, bar: 11 };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeTruthy();
   });
@@ -305,7 +323,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -315,7 +335,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, null: false };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeTruthy();
   });
@@ -326,7 +346,9 @@ describe('Material boolean cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -336,7 +358,7 @@ describe('Material boolean cell', () => {
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, undefined: false };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     const input = wrapper.find('input').first();
     expect(input.props().checked).toBeTruthy();
@@ -345,7 +367,9 @@ describe('Material boolean cell', () => {
   it('can be disabled', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell
           schema={schema}
           uischema={uischema}
@@ -361,7 +385,9 @@ describe('Material boolean cell', () => {
   it('should be enabled by default', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
       </JsonFormsStateProvider>
     );
@@ -372,7 +398,9 @@ describe('Material boolean cell', () => {
   it('id should be present in output', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <BooleanCell schema={schema} uischema={uischema} path='foo' id='myid' />
       </JsonFormsStateProvider>
     );

@@ -28,7 +28,7 @@ import React from 'react';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { ControlElement } from '@jsonforms/core';
-import { AnyOfRenderer, antdCells, antdRenderers } from '../../src';
+import { AnyOfRenderer, primereactCells, primereactRenderers } from '../../src';
 import { JsonForms, JsonFormsStateProvider } from '@jsonforms/react';
 import { initCore, TestEmitter } from './util';
 
@@ -87,7 +87,7 @@ describe('Material anyOf renderer', () => {
         data={undefined}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
         onChange={({ data }) => {
           onChangeData.data = data;
         }}
@@ -153,7 +153,9 @@ describe('Material anyOf renderer', () => {
     };
     const core = initCore(schema, uischema);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <AnyOfRenderer schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -225,7 +227,11 @@ describe('Material anyOf renderer', () => {
     const core = initCore(schema, uischema);
     wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, cells: antdCells, core }}
+        initState={{
+          renderers: primereactRenderers,
+          cells: primereactCells,
+          core,
+        }}
       >
         <TestEmitter
           onChange={({ data }) => {
@@ -291,7 +297,9 @@ describe('Material anyOf renderer', () => {
     };
     const core = initCore(schema, uischema);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <AnyOfRenderer schema={schema} uischema={uischema} visible={false} />
       </JsonFormsStateProvider>
     );

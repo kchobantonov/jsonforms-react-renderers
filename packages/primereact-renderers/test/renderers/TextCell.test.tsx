@@ -28,7 +28,7 @@ import { ControlElement, JsonSchema, NOT_APPLICABLE } from '@jsonforms/core';
 import TextCell, {
   materialTextCellTester,
 } from '../../src/cells/MaterialTextCell';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -151,7 +151,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(minLengthSchema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -167,7 +169,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={control} path={'name'} />
       </JsonFormsStateProvider>
     );
@@ -182,7 +186,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(minLengthSchema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -199,7 +205,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(minLengthSchema, uischema, { name: 'Foo' });
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={jsonSchema} uischema={uischema} path={'name'} />
       </JsonFormsStateProvider>
     );
@@ -214,7 +222,9 @@ describe('Material text cell', () => {
       data: undefined,
     };
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TestEmitter
           onChange={({ data }) => {
             onChangeData.data = data;
@@ -235,12 +245,14 @@ describe('Material text cell', () => {
   it('should update via action', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, name: 'Bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -252,12 +264,14 @@ describe('Material text cell', () => {
   it('should update with undefined value', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, name: undefined };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -269,12 +283,14 @@ describe('Material text cell', () => {
   it('should update with null value', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, name: null };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -286,12 +302,14 @@ describe('Material text cell', () => {
   it('should not update if wrong ref', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, firstname: 'Bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -303,12 +321,14 @@ describe('Material text cell', () => {
   it('should not update if null ref', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, null: 'Bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -320,12 +340,14 @@ describe('Material text cell', () => {
   it('should not update if undefined ref', (done) => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
     core.data = { ...core.data, undefined: 'Bar' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
     setTimeout(() => {
       const input = wrapper.find('input').first();
@@ -337,7 +359,9 @@ describe('Material text cell', () => {
   it('can be disabled', () => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell
           schema={minLengthSchema}
           uischema={uischema}
@@ -353,7 +377,9 @@ describe('Material text cell', () => {
   it('should be enabled by default', () => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={minLengthSchema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
@@ -372,7 +398,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(maxLengthSchema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={maxLengthSchema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -390,7 +418,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(maxLengthSchema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={maxLengthSchema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -413,7 +443,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(maxLengthSchema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={maxLengthSchema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -431,7 +463,9 @@ describe('Material text cell', () => {
   it('should not use maxLength by default', () => {
     const core = initCore(maxLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={schema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
@@ -457,7 +491,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={schema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -480,7 +516,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={schema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -503,7 +541,9 @@ describe('Material text cell', () => {
     };
     const core = initCore(schema, control, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={schema} uischema={control} path='name' />
       </JsonFormsStateProvider>
     );
@@ -521,7 +561,9 @@ describe('Material text cell', () => {
   it('should have default values for attributes', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell schema={schema} uischema={uischema} path='name' />
       </JsonFormsStateProvider>
     );
@@ -538,7 +580,9 @@ describe('Material text cell', () => {
   it('should be disabled', () => {
     const core = initCore(minLengthSchema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <TextCell
           schema={schema}
           uischema={uischema}

@@ -25,7 +25,7 @@
 import './MatchMediaMock';
 import React from 'react';
 import Enzyme, { mount } from 'enzyme';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import {
   ControlElement,
   Layout,
@@ -141,7 +141,7 @@ describe('Layout Tests', () => {
         data={data}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
   };
@@ -424,7 +424,7 @@ describe('Special Layout Tests', () => {
           data={data}
           schema={schema}
           uischema={uischema}
-          renderers={antdRenderers}
+          renderers={primereactRenderers}
         />
       );
       expect(wrapper.find('input[type="text"]').first().props().disabled).toBe(
@@ -442,7 +442,7 @@ describe('Special Layout Tests', () => {
           data={data}
           schema={schema}
           uischema={uischema}
-          renderers={antdRenderers}
+          renderers={primereactRenderers}
         />
       );
       expect(wrapper.find('input[type="text"]').first().props().disabled).toBe(
@@ -490,7 +490,7 @@ describe('Special Layout Tests', () => {
           data={data}
           schema={schema}
           uischema={uischema}
-          renderers={antdRenderers}
+          renderers={primereactRenderers}
         />
       );
       expect(wrapper.find('input[type="text"]').first().props().disabled).toBe(
@@ -510,7 +510,7 @@ describe('Special Layout Tests', () => {
           data={data}
           schema={schema}
           uischema={uischema}
-          renderers={antdRenderers}
+          renderers={primereactRenderers}
         />
       );
       expect(wrapper.find('input[type="text"]').first().props().disabled).toBe(

@@ -25,7 +25,7 @@
 import './MatchMediaMock';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
 import * as React from 'react';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import ObjectRenderer, {
   objectControlTester,
 } from '../../src/complex/ObjectRenderer';
@@ -128,7 +128,9 @@ describe('Material object control', () => {
   it('should render all children', () => {
     const core = initCore(schema, uischema1, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ObjectRenderer schema={schema} uischema={uischema1} />
       </JsonFormsStateProvider>
     );
@@ -144,7 +146,9 @@ describe('Material object control', () => {
   it('should render only itself', () => {
     const core = initCore(schema, uischema1, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ObjectRenderer schema={schema} uischema={uischema2} />
       </JsonFormsStateProvider>
     );
@@ -158,7 +162,9 @@ describe('Material object control', () => {
   it('should be enabled by default', () => {
     const core = initCore(schema, uischema2, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ObjectRenderer schema={schema} uischema={uischema2} />
       </JsonFormsStateProvider>
     );
@@ -169,7 +175,9 @@ describe('Material object control', () => {
   it('can be invisible', () => {
     const core = initCore(schema, uischema2, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ObjectRenderer schema={schema} uischema={uischema2} visible={false} />
       </JsonFormsStateProvider>
     );
@@ -180,7 +188,9 @@ describe('Material object control', () => {
   it('should be visible by default', () => {
     const core = initCore(schema, uischema2, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ObjectRenderer schema={schema} uischema={uischema2} />
       </JsonFormsStateProvider>
     );

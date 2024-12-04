@@ -31,7 +31,7 @@ import { ControlElement, JsonSchema } from '@jsonforms/core';
 import {
   AnyOfStringOrEnumControl,
   anyOfStringOrEnumControlTester,
-  antdRenderers,
+  primereactRenderers,
 } from '../../src';
 import { JsonForms } from '@jsonforms/react';
 
@@ -105,7 +105,7 @@ describe('Material any of string or enum control', () => {
         data={'foo'}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(AnyOfStringOrEnumControl).length).toBeTruthy();

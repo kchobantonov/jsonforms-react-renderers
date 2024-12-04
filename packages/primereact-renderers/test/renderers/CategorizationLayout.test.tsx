@@ -40,7 +40,7 @@ import Enzyme, { mount } from 'enzyme';
 import CategorizationLayoutRenderer, {
   categorizationTester,
 } from '../../src/layouts/CategorizationLayout';
-import { LayoutRenderer, antdRenderers } from '../../src';
+import { LayoutRenderer, primereactRenderers } from '../../src';
 import { Tab, Tabs } from '@mui/material';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { initCore } from './util';
@@ -238,7 +238,9 @@ describe('Material categorization layout', () => {
 
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -293,7 +295,9 @@ describe('Material categorization layout', () => {
     const core = initCore(fixture.schema, fixture.uischema, data);
 
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -315,7 +319,9 @@ describe('Material categorization layout', () => {
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
 
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -332,7 +338,9 @@ describe('Material categorization layout', () => {
   it('is shown by default', () => {
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -373,7 +381,9 @@ describe('Material categorization layout', () => {
     };
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -390,7 +400,9 @@ describe('Material categorization layout', () => {
     const core = initCore(fixture.schema, fixture.uischema, fixture.data);
     const renderers: any[] = [];
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -450,7 +462,9 @@ describe('Material categorization layout', () => {
     const core = initCore(fixture.schema, uischema, data);
 
     const wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <CategorizationLayoutRenderer
           {...testDefaultProps}
           schema={fixture.schema}
@@ -465,7 +479,7 @@ describe('Material categorization layout', () => {
     expect(isCategoryCshown).toBe(false);
 
     core.data = { ...core.data, name: 'Barr' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
 
     isCategoryCshown = wrapper.find('input[type="text"]').length > 0;

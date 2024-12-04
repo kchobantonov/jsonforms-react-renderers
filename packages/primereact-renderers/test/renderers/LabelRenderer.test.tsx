@@ -29,7 +29,7 @@ import '../../src/cells';
 import MaterialLabelRenderer, {
   materialLabelRendererTester,
 } from '../../src/additional/MaterialLabelRenderer';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { JsonForms, JsonFormsStateProvider } from '@jsonforms/react';
@@ -75,7 +75,7 @@ describe('Material Label Renderer', () => {
         data={undefined}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(MaterialLabelRenderer).length).toBeTruthy();
@@ -87,7 +87,9 @@ describe('Material Label Renderer', () => {
   it('can be hidden', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <MaterialLabelRenderer
           schema={schema}
           uischema={uischema}
@@ -105,7 +107,7 @@ describe('Material Label Renderer', () => {
         data={undefined}
         schema={schema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(wrapper.find(MaterialLabelRenderer).length).toBeTruthy();

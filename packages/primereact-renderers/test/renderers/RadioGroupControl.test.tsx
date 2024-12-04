@@ -28,7 +28,7 @@ import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
 import RadioGroupControl, {
   radioGroupControlTester,
 } from '../../src/controls/RadioGroupControl';
-import { antdRenderers } from '../../src';
+import { primereactRenderers } from '../../src';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { JsonFormsStateProvider } from '@jsonforms/react';
@@ -77,7 +77,9 @@ describe('Material radio group control', () => {
   it('should have option selected', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <RadioGroupControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -93,11 +95,13 @@ describe('Material radio group control', () => {
 
     core.data = { ...core.data, foo: 'A' };
     core.data = { ...core.data, foo: 'B' };
-    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
 
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <RadioGroupControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -109,7 +113,9 @@ describe('Material radio group control', () => {
   it('should be hideable ', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <RadioGroupControl
           schema={schema}
           uischema={uischema}

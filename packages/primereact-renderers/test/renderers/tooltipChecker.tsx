@@ -6,8 +6,8 @@ import {
   JsonSchema,
 } from '@jsonforms/core';
 import { JsonForms } from '@jsonforms/react';
-import { antdRenderers } from '../../src';
-import { Tooltip } from '@mui/material';
+import { primereactRenderers } from '../../src';
+import { Tooltip } from 'primereact/tooltip';
 import * as React from 'react';
 
 export const checkTooltip = (
@@ -26,7 +26,7 @@ export const checkTooltip = (
       data={data}
       schema={schema}
       uischema={uiSchema}
-      renderers={antdRenderers}
+      renderers={primereactRenderers}
     />
   );
 
@@ -56,7 +56,7 @@ export const checkTooltipTranslation = (
       data={data}
       schema={schema}
       uischema={uiSchema}
-      renderers={antdRenderers}
+      renderers={primereactRenderers}
       i18n={{ locale: 'en', translate: translate }}
     />
   );

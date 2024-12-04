@@ -30,7 +30,7 @@ import {
 } from '@jsonforms/core';
 import * as React from 'react';
 
-import { ArrayLayoutToolbar, antdRenderers } from '../../src';
+import { ArrayLayoutToolbar, primereactRenderers } from '../../src';
 import { ArrayLayout, arrayLayoutTester } from '../../src/layouts';
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -225,7 +225,9 @@ describe('array layout', () => {
   it('should render two by two children', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -238,7 +240,9 @@ describe('array layout', () => {
   it('should generate uischema when options.detail=GENERATE', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischemaOptions.generate} />
       </JsonFormsStateProvider>
     );
@@ -251,7 +255,9 @@ describe('array layout', () => {
   it('should use inline options.detail uischema', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischemaOptions.inline} />
       </JsonFormsStateProvider>
     );
@@ -264,7 +270,9 @@ describe('array layout', () => {
   it('should be hideable', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischema} visible={false} />
       </JsonFormsStateProvider>
     );
@@ -277,7 +285,9 @@ describe('array layout', () => {
   it('should have renderers prop via ownProps', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischema} renderers={[]} />
       </JsonFormsStateProvider>
     );
@@ -296,7 +306,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithLabel}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
 
@@ -313,7 +323,9 @@ describe('array layout', () => {
     };
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={titleSchema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
@@ -328,7 +340,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithSortOption}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
 
@@ -357,7 +369,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
         config={{ showSortButtons: true }}
       />
     );
@@ -391,7 +403,7 @@ describe('array layout', () => {
         schema={nestedSchema}
         uischema={uischema}
         config={{ showSortButtons: true }}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
         onChange={({ data }) => {
           onChangeData.data = data;
         }}
@@ -432,7 +444,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithSortOption}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
         onChange={({ data }) => {
           onChangeData.data = data;
         }}
@@ -470,7 +482,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithSortOption}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
 
@@ -490,7 +502,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithSortOption}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
 
@@ -513,7 +525,9 @@ describe('array layout', () => {
   it('should render first simple property as child label', () => {
     const core = initCore(schema, uischema, data);
     wrapper = mount(
-      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+      <JsonFormsStateProvider
+        initState={{ renderers: primereactRenderers, core }}
+      >
         <ArrayLayout schema={schema} uischema={uischemaWithSortOption} />
       </JsonFormsStateProvider>
     );
@@ -528,7 +542,7 @@ describe('array layout', () => {
         data={data}
         schema={nestedSchema}
         uischema={uischemaWithChildLabelProp}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
 
@@ -549,7 +563,7 @@ describe('array layout', () => {
         data={data}
         schema={descriptionSchema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(
@@ -572,7 +586,7 @@ describe('array layout', () => {
         data={data}
         schema={descriptionSchema}
         uischema={uischema}
-        renderers={antdRenderers}
+        renderers={primereactRenderers}
       />
     );
     expect(
@@ -585,7 +599,11 @@ describe('array layout', () => {
     const core = initCore(schema, uischema, emptyData);
     wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, core, i18n: { translate } }}
+        initState={{
+          renderers: primereactRenderers,
+          core,
+          i18n: { translate },
+        }}
       >
         <ArrayLayout schema={schema} uischema={uischemaOptions.inline} />
       </JsonFormsStateProvider>

@@ -25,7 +25,7 @@
 import './MatchMediaMock';
 import * as React from 'react';
 import { ControlElement } from '@jsonforms/core';
-import { antdRenderers, MuiSelect, EnumControl } from '../../src';
+import { primereactRenderers, MuiSelect, EnumControl } from '../../src';
 
 import Enzyme, { mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -54,7 +54,11 @@ describe('Material enum control', () => {
     const changedTranslate = () => 'OtherTranslation';
     const wrapper = mount(
       <JsonFormsStateProvider
-        initState={{ renderers: antdRenderers, core, i18n: { translate } }}
+        initState={{
+          renderers: primereactRenderers,
+          core,
+          i18n: { translate },
+        }}
       >
         <EnumControl schema={schema} uischema={uischema} path='nationality' />
       </JsonFormsStateProvider>
@@ -64,7 +68,7 @@ describe('Material enum control', () => {
 
     wrapper.setProps({
       initState: {
-        renderers: antdRenderers,
+        renderers: primereactRenderers,
         core,
         i18n: { translate: changedTranslate },
       },
