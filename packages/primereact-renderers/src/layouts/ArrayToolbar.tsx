@@ -22,9 +22,9 @@ const renderTitle = (
   errors: string,
   button: React.JSX.Element
 ) => (
-  <div className='grid'>
-    <div className='col'>{label}</div>
-    <div className='col-fixed' style={{ padding: '10px' }}>
+  <div className='flex align-items-center justify-content-center gap-2'>
+    <div className='flex-grow-1 p-text-ellipsis'>{label}</div>
+    <div style={{ padding: '10px' }}>
       <ValidationIcon id='tooltip-validation' errorMessages={errors} />
     </div>
     {button}
