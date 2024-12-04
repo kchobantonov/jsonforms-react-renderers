@@ -59,33 +59,33 @@ export const ListWithDetailMasterItem = ({
   return (
     <div
       key={index}
-      //      style={listItemStyle}
+      //style={listItemStyle}
       onClick={() => handleSelect(index)()}
-      className='p-d-flex p-ai-center p-jc-between'
+      className='flex align-items-center justify-content-center'
     >
-      <div className='p-d-flex p-ai-center'>
-        <Avatar label={(index + 1).toString()} />
-        <span className='p-text-ellipsis' style={{ marginLeft: '8px' }}>
-          {childLabel}
-        </span>
-      </div>
-      <div>
-        <Tooltip
-          target={`#remove-button-${index}`}
-          content={translations.removeTooltip}
-        />
-        <Button
-          id={`remove-button-${index}`}
-          icon='pi pi-trash'
-          className='p-button-rounded p-button-text p-button-danger'
-          disabled={!enabled || disableRemove}
-          aria-label={translations.removeAriaLabel}
-          onClick={(e) => {
-            e.stopPropagation();
-            removeItem(path, index)();
-          }}
-        />
-      </div>
+      <Avatar label={(index + 1).toString()} className='' />
+      <span
+        className='flex-grow-1 p-text-ellipsis'
+        style={{ marginLeft: '8px' }}
+      >
+        {childLabel}
+      </span>
+
+      <Tooltip
+        target={`#remove-button-${index}`}
+        content={translations.removeTooltip}
+      />
+      <Button
+        id={`remove-button-${index}`}
+        icon='pi pi-trash'
+        className='p-button-rounded p-button-text p-button-danger'
+        disabled={!enabled || disableRemove}
+        aria-label={translations.removeAriaLabel}
+        onClick={(e) => {
+          e.stopPropagation();
+          removeItem(path, index)();
+        }}
+      />
     </div>
   );
 };

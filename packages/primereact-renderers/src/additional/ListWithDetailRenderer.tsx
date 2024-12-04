@@ -138,7 +138,8 @@ export const ListWithDetailRenderer = ({
             <ListBox
               value={selectedIndex}
               options={range(data)}
-              itemTemplate={(_item, index) => (
+              listStyle={{ maxHeight: '350px' }}
+              itemTemplate={(index) => (
                 <ListWithDetailMasterItem
                   index={index}
                   path={path}
