@@ -40,16 +40,12 @@ import {
   JsonFormsStateContext,
   withJsonFormsContext,
 } from '@jsonforms/react';
-import { Avatar } from 'primereact/avatar';
-import { Button } from 'primereact/button';
-import {
-  Accordion,
-  AccordionTab,
-  AccordionTabChangeEvent,
-} from 'primereact/accordion';
 import map from 'lodash/map';
 import merge from 'lodash/merge';
 import range from 'lodash/range';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
 import React, { ComponentType, useCallback, useMemo, useState } from 'react';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
 
@@ -66,17 +62,12 @@ const ArrayLayoutComponent = (
       translations: ArrayTranslations;
     }
 ) => {
-  const [expanded, setExpanded] = useState<number | boolean>(false);
+  const [activeIndex, setActiveIndex] = useState<number | number[]>();
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
     [props.schema]
   );
-  const handleChange = useCallback(
-    (tab: number) => (_event: any, expandedPanel: boolean) => {
-      setExpanded(expandedPanel ? tab : false);
-    },
-    []
-  );
+
   const {
     enabled,
     data,
@@ -105,15 +96,6 @@ const ArrayLayoutComponent = (
   const showSortButtons =
     appliedUiSchemaOptions.showSortButtons ||
     appliedUiSchemaOptions.showArrayLayoutSortButtons;
-
-  const avatarStyle = useMemo(() => {
-    const style: React.CSSProperties = { marginRight: '10px' };
-
-    if (expanded) {
-      style.backgroundColor = 'red';
-    }
-    return style;
-  }, [expanded]);
 
   const getExtra = ({
     rowIndex,
@@ -232,10 +214,8 @@ const ArrayLayoutComponent = (
     >
       {data > 0 ? (
         <Accordion
-          activeIndex={data}
-          onTabChange={(e: AccordionTabChangeEvent) =>
-            handleChange(e.index as number)
-          }
+          activeIndex={activeIndex}
+          onTabChange={(e) => setActiveIndex(e.index)}
         >
           {map(range(data), (index) => {
             const childPath = composePaths(path, `${index}`);
@@ -245,11 +225,16 @@ const ArrayLayoutComponent = (
             return (
               <AccordionTab
                 header={
-                  <>
-                    <Avatar aria-label='Index' style={avatarStyle}>
+                  <div className='flex align-items-center justify-content-center'>
+                    <Avatar aria-label='Index' style={{ marginRight: '10px' }}>
                       {index + 1}
                     </Avatar>
-                    <span>{childLabel}</span>
+                    <span
+                      className='flex-grow-1 p-text-ellipsis'
+                      style={{ marginLeft: '8px' }}
+                    >
+                      {childLabel}
+                    </span>
                     <div>
                       {getExtra({
                         rowIndex: index,
@@ -259,7 +244,7 @@ const ArrayLayoutComponent = (
                         disableRemove: doDisableRemove,
                       })}
                     </div>
-                  </>
+                  </div>
                 }
                 key={String(index)}
               >

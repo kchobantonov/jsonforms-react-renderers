@@ -63,7 +63,7 @@ export const ListWithDetailMasterItem = ({
       onClick={() => handleSelect(index)()}
       className='flex align-items-center justify-content-center'
     >
-      <Avatar label={(index + 1).toString()} className='' />
+      <Avatar label={(index + 1).toString()} />
       <span
         className='flex-grow-1 p-text-ellipsis'
         style={{ marginLeft: '8px' }}
