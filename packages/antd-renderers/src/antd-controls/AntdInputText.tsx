@@ -25,6 +25,7 @@
 import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { AutoComplete, AutoCompleteProps, Input } from 'antd';
+import { PasswordProps } from 'antd/es/input';
 import every from 'lodash/every';
 import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
@@ -37,7 +38,6 @@ import React, {
   useState,
 } from 'react';
 import { useDebouncedChange, useFocus } from '../util';
-import { PasswordProps } from 'antd/es/input';
 
 const eventToValue = (ev: any) => {
   if (ev.target) {
@@ -62,9 +62,6 @@ export const AntdInputText = React.memo(function AntdInputText(
 ) {
   const [pointed, setPointed] = useState(false);
   const [focused, onFocus, onBlur] = useFocus();
-  const [filteredOptions, setFilteredOptions] = useState<AutoCompleteOption[]>(
-    []
-  );
 
   const {
     data,
@@ -101,16 +98,8 @@ export const AntdInputText = React.memo(function AntdInputText(
     );
     InputComponent = AutoComplete;
 
-    const search = (query: string) => {
-      console.log('query', query);
-      const filtered = options.filter((option) =>
-        option.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredOptions(filtered);
-    };
-
-    (specificProps as AutoCompleteProps).options = filteredOptions;
-    (specificProps as AutoCompleteProps).onSelect = search;
+    (specificProps as AutoCompleteProps).options = options;
+    (specificProps as AutoCompleteProps).filterOption = true;
     (specificProps as AutoCompleteProps).popupMatchSelectWidth = true;
   }
 
