@@ -64,6 +64,7 @@ export const PrimeSelect = (
       style={selectStyle}
       showClear={enabled}
       checkmark={true}
+      placeholder={appliedUiSchemaOptions.placeholder}
       options={options.map((optionValue) => ({
         value: optionValue.value,
         label: optionValue.label,

@@ -76,6 +76,7 @@ export const PrimeInputNumberFormat = (
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
+      placeholder={appliedUiSchemaOptions.placeholder}
       maxLength={maxLength}
       style={inputStyle}
       invalid={!!errors}

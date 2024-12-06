@@ -73,6 +73,7 @@ export const AntdInputNumberFormat = (
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
+      placeholder={appliedUiSchemaOptions.placeholder}
       maxLength={maxLength}
       style={inputStyle}
       {...inputProps}

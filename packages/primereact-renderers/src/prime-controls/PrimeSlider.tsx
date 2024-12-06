@@ -53,6 +53,7 @@ export const PrimeSlider = React.memo(function PrimeSlider(
         min={schema.minimum}
         max={schema.maximum}
         disabled={!enabled}
+        placeholder={appliedUiSchemaOptions.placeholder}
         onChange={(e) => handleChange(path, Number(e.value))}
         invalid={!!errors}
       />

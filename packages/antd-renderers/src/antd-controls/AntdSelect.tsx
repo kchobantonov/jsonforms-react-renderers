@@ -67,6 +67,7 @@ export const AntdSelect = (
       value={data !== undefined ? data : ''}
       onChange={(value) => handleChange(path, value || undefined)}
       style={selectStyle}
+      placeholder={appliedUiSchemaOptions.placeholder}
       allowClear={enabled}
       {...inputProps}
     >
