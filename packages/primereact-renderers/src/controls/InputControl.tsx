@@ -112,10 +112,12 @@ export const InputControl = (props: ControlProps & WithInput) => {
 
   return (
     <div className='flex flex-column gap-2' id={id} style={style}>
-      <label htmlFor={id + '-input'}>{label}</label>
+      {input !== PrimeCheckbox && (
+        <label htmlFor={id + '-input'}>{label}</label>
+      )}
       <InnerComponent
         {...props}
-        label={input === PrimeCheckbox ? ' ' : props.label}
+        label={label}
         id={id + '-input'}
         isValid={isValid}
         visible={visible}

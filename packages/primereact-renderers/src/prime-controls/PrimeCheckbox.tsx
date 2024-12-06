@@ -51,19 +51,20 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   return (
-    <TriStateCheckbox
-      value={data}
-      onChange={(e: any) =>
-        handleChange(path, e.value === '' ? undefined : e.value)
-      }
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={!!appliedUiSchemaOptions.focus}
-      invalid={!!errors}
-      {...inputProps}
-    >
-      {label}
-    </TriStateCheckbox>
+    <div className='field-checkbox m-0'>
+      <TriStateCheckbox
+        value={data}
+        onChange={(e: any) =>
+          handleChange(path, e.value === '' ? undefined : e.value)
+        }
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={!!appliedUiSchemaOptions.focus}
+        invalid={!!errors}
+        {...inputProps}
+      ></TriStateCheckbox>
+      {label && <label htmlFor={id}>{label}</label>}
+    </div>
   );
 });

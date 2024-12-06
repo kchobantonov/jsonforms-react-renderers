@@ -16,6 +16,8 @@ import {
 
 import { withJsonFormsMultiEnumProps } from '@jsonforms/react';
 import isEmpty from 'lodash/isEmpty';
+import merge from 'lodash/merge';
+import { classNames } from 'primereact/utils';
 import React from 'react';
 import { InputControl } from '../controls';
 import { PrimeCheckbox } from '../prime-controls/PrimeCheckbox';
@@ -36,42 +38,53 @@ export const EnumArrayRenderer = (
     uischema,
     rootSchema,
     enabled,
+    config,
   } = props;
 
   if (!visible) {
     return null;
   }
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   return (
     <InputControl
       {...props}
-      input={options.map((option: any, index: number) => {
-        const optionPath = Paths.compose(path, `${index}`);
-        const checkboxValue = data?.includes(option.value)
-          ? option.value
-          : undefined;
-        return (
-          <PrimeCheckbox
-            id={id + '-label-' + option.value}
-            key={option.value}
-            label={option.label}
-            isValid={isEmpty(errors)}
-            path={optionPath}
-            handleChange={(_childPath, newValue) =>
-              newValue
-                ? addItem(path, option.value)
-                : removeItem(path, option.value)
-            }
-            data={checkboxValue}
-            errors={errors}
-            schema={schema}
-            visible={visible}
-            uischema={uischema}
-            rootSchema={rootSchema}
-            enabled={enabled}
-          />
-        );
-      })}
+      input={() => (
+        <div
+          className={classNames('flex gap-2', {
+            'flex-column': appliedUiSchemaOptions.vertical,
+          })}
+        >
+          {options.map((option: any, index: number) => {
+            const optionPath = Paths.compose(path, `${index}`);
+            const checkboxValue = data?.includes(option.value) ? true : false;
+            return (
+              <PrimeCheckbox
+                id={id + '-label-' + option.value}
+                key={option.value}
+                label={option.label}
+                isValid={isEmpty(errors)}
+                path={optionPath}
+                handleChange={(_childPath, newValue) => {
+                  if (newValue === undefined) {
+                    newValue = !data?.includes(option.value);
+                  }
+                  newValue === true
+                    ? addItem(path, option.value)
+                    : removeItem(path, option.value);
+                }}
+                data={checkboxValue}
+                errors={errors}
+                schema={schema}
+                visible={visible}
+                uischema={uischema}
+                rootSchema={rootSchema}
+                enabled={enabled}
+              />
+            );
+          })}
+        </div>
+      )}
     ></InputControl>
   );
 };
