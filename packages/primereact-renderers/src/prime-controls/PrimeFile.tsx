@@ -22,37 +22,32 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { useState } from 'react';
 import {
   CellProps,
   JsonSchema,
   WithClassname,
-  //getI18nKey,
+  getI18nKey,
 } from '@jsonforms/core';
-import {
-  FileUpload,
-  FileUploadHandlerEvent,
-  FileUploadProgressEvent,
-  FileUploadSelectEvent,
-  ItemTemplateOptions,
-} from 'primereact/fileupload';
-import toNumber from 'lodash/toNumber';
 import { TranslateProps } from '@jsonforms/react';
-import { ProgressBar } from 'primereact/progressbar';
+import merge from 'lodash/merge';
+import toNumber from 'lodash/toNumber';
 import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
+import { FileUpload, FileUploadSelectEvent } from 'primereact/fileupload';
+import { InputText } from 'primereact/inputtext';
+import { ProgressBar } from 'primereact/progressbar';
+import React, { useRef, useState } from 'react';
 
-// const formatBytes = (bytes: number, decimals = 2) => {
-//   if (bytes === 0) return '0 Bytes';
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes';
 
-//   const k = 1024;
-//   const dm = decimals < 0 ? 0 : decimals;
-//   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-//   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-//   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-// };
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
 
 const toNonNegativeNumber = (param: any): number | undefined => {
   const result = param !== undefined ? toNumber(param) : undefined;
@@ -129,7 +124,7 @@ const getFileSize = (
 const toBase64 = (
   file: File,
   reader: FileReader,
-  onProgress: (event: FileUploadProgressEvent) => void,
+  onProgress: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null,
   schemaFormat?: string
 ) =>
   new Promise((resolve, reject) => {
@@ -151,22 +146,44 @@ const toBase64 = (
     };
     reader.onabort = (error) => reject(error);
     reader.onerror = (error) => reject(error);
-    reader.onprogress = (e) =>
-      onProgress({ progress: e.loaded / e.total, originalEvent: e as any });
+    reader.onprogress = onProgress;
     reader.readAsDataURL(file);
   });
 
 export const PrimeFile = React.memo(function PrimeFile(
   props: CellProps &
     WithClassname &
-    TranslateProps & { inputProps?: React.ComponentProps<typeof FileUpload> }
+    TranslateProps & { inputProps?: React.ComponentProps<typeof InputText> }
 ) {
-  const { schema, uischema, path, handleChange, enabled, inputProps } = props;
-  const [progress, setProgress] = useState(0);
+  const {
+    id,
+    errors,
+    schema,
+    uischema,
+    path,
+    handleChange,
+    enabled,
+    config,
+    inputProps,
+    t,
+  } = props;
 
-  const uploadImage = async (event: FileUploadHandlerEvent) => {
-    const { onProgress } = event.options.props;
+  const fileUploadRef = useRef<FileUpload>(null);
+
+  const [fileData, setFileData] = useState<{
+    name: string;
+    size: number;
+  }>({
+    name: '',
+    size: 0,
+  });
+  const [progress, setProgress] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
+  const [isEncoding, setIsEncoding] = useState<boolean>(false);
+
+  const handleFileSelect = async (event: FileUploadSelectEvent) => {
     const file = event.files[0];
+    if (!file) return;
 
     try {
       const [minFileSize, minFileSizeExclusive] = getFileSize(
@@ -185,24 +202,24 @@ export const PrimeFile = React.memo(function PrimeFile(
           ? file.size < maxFileSize
           : file.size <= maxFileSize;
         if (!maxFileSizeValid) {
-          // const key = getI18nKey(
-          //   schema,
-          //   uischema,
-          //   path,
-          //   maxFileSizeExclusive
-          //     ? 'error.formatExclusiveMaximum'
-          //     : 'error.formatMaximum'
-          // );
+          const key = getI18nKey(
+            schema,
+            uischema,
+            path,
+            maxFileSizeExclusive
+              ? 'error.formatExclusiveMaximum'
+              : 'error.formatMaximum'
+          );
 
-          // const formatSize = formatBytes(maxFileSize);
+          const formatSize = formatBytes(maxFileSize);
 
-          handleChange(path, undefined);
-          // onError({
-          //   message: t(key, `size should be less than ${formatSize}`, {
-          //     limitText: `${formatSize}`,
-          //     limit: `${maxFileSize}`,
-          //   }),
-          // });
+          setError(
+            t(key, `size should be less than ${formatSize}`, {
+              limitText: `${formatSize}`,
+              limit: `${maxFileSize}`,
+            })
+          );
+          clearFile();
           return;
         }
       }
@@ -212,169 +229,127 @@ export const PrimeFile = React.memo(function PrimeFile(
           ? file.size > minFileSize
           : file.size >= minFileSize;
         if (!minFileSizeValid) {
-          // const key = getI18nKey(
-          //   schema,
-          //   uischema,
-          //   path,
-          //   minFileSizeExclusive
-          //     ? 'error.formatExclusiveMinimum'
-          //     : 'error.formatMinimum'
-          // );
+          const key = getI18nKey(
+            schema,
+            uischema,
+            path,
+            minFileSizeExclusive
+              ? 'error.formatExclusiveMinimum'
+              : 'error.formatMinimum'
+          );
 
-          // const formatSize = formatBytes(minFileSize);
-          handleChange(path, undefined);
-          // onError({
-          //   message: t(key, `size should be greater than ${formatSize}`, {
-          //     limitText: `${formatSize}`,
-          //     limit: `${maxFileSize}`,
-          //   }),
-          // });
+          const formatSize = formatBytes(minFileSize);
+          setError(
+            t(key, `size should be greater than ${formatSize}`, {
+              limitText: `${formatSize}`,
+              limit: `${minFileSize}`,
+            })
+          );
+          clearFile();
           return;
         }
       }
 
-      // upload
+      // Clear previous error and set encoding state
+      setError(null);
+      setIsEncoding(true);
       setProgress(0);
+
       const base64 = await toBase64(
         file,
         new FileReader(),
-        onProgress,
+        (e) => {
+          if (e.lengthComputable) {
+            const percentComplete = Math.round((e.loaded / e.total) * 100);
+            setProgress(percentComplete);
+          }
+        },
         schema.format
       );
 
       handleChange(path, base64);
-      //onUpload({ xhr: { responseText: 'OK' }, files: [file] });
+      setFileData({
+        name: file.name,
+        size: file.size,
+      });
+      setIsEncoding(false);
     } catch (err) {
-      handleChange(path, undefined);
-      //onError({ message: err?.message ?? err });
+      setError(err?.message ?? err);
+      clearFile();
     }
   };
 
-  const onTemplateRemove = (_file, callback) => {
-    callback();
-  };
-
-  const itemTemplate = (file, props: ItemTemplateOptions) => {
-    return (
-      <div className='flex align-items-center flex-wrap'>
-        <div className='flex align-items-center' style={{ width: '40%' }}>
-          <img
-            alt={file.name}
-            role='presentation'
-            src={file.objectURL}
-            width={100}
-          />
-          <span className='flex flex-column text-left ml-3'>
-            {file.name}
-            <small>{new Date().toLocaleDateString()}</small>
-          </span>
-        </div>
-        <Tag
-          value={props.formatSize}
-          severity='warning'
-          className='px-3 py-2'
-        />
-        <Button
-          type='button'
-          icon='pi pi-times'
-          className='p-button-outlined p-button-rounded p-button-danger ml-auto'
-          onClick={() => onTemplateRemove(file, props.onRemove)}
-        />
-      </div>
-    );
-  };
-
-  const headerTemplate = (options) => {
-    const { className, chooseButton, uploadButton, cancelButton } = options;
-
-    return (
-      <div
-        className={className}
-        style={{
-          backgroundColor: 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {chooseButton}
-        {uploadButton}
-        {cancelButton}
-        <div className='flex align-items-center gap-3 ml-auto'>
-          <ProgressBar
-            value={progress}
-            showValue={false}
-            style={{ width: '10rem', height: '12px' }}
-          ></ProgressBar>
-        </div>
-      </div>
-    );
-  };
-
-  const emptyTemplate = () => {
-    return (
-      <div className='flex align-items-center flex-column'>
-        <i
-          className='pi pi-image mt-3 p-5'
-          style={{
-            fontSize: '5em',
-            borderRadius: '50%',
-            backgroundColor: 'var(--surface-b)',
-            color: 'var(--surface-d)',
-          }}
-        ></i>
-        <span
-          style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}
-          className='my-5'
-        >
-          Drag and Drop File Here
-        </span>
-      </div>
-    );
-  };
-
-  const onTemplateSelect = (_e: FileUploadSelectEvent) => {
+  const clearFile = () => {
     handleChange(path, undefined);
+    setProgress(0);
+    setIsEncoding(false);
+    setFileData({
+      name: '',
+      size: 0,
+    });
+    fileUploadRef.current?.clear();
   };
-
-  const onTemplateProgress = (e: FileUploadProgressEvent) => {
-    setProgress(e.progress);
-  };
-
-  const chooseOptions = {
-    icon: 'pi pi-fw pi-images',
-    iconOnly: true,
-    className: 'custom-choose-btn p-button-rounded p-button-outlined',
-  };
-  const uploadOptions = {
-    icon: 'pi pi-fw pi-cloud-upload',
-    iconOnly: true,
-    className:
-      'custom-upload-btn p-button-success p-button-rounded p-button-outlined',
-  };
-  const cancelOptions = {
-    icon: 'pi pi-fw pi-times',
-    iconOnly: true,
-    className:
-      'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined',
-  };
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   return (
-    <FileUpload
-      disabled={!enabled}
-      accept={(props.schema as any).contentMediaType}
-      customUpload
-      uploadHandler={uploadImage}
-      onSelect={onTemplateSelect}
-      itemTemplate={itemTemplate}
-      headerTemplate={headerTemplate}
-      emptyTemplate={emptyTemplate}
-      onProgress={onTemplateProgress}
-      chooseOptions={chooseOptions}
-      uploadOptions={uploadOptions}
-      cancelOptions={cancelOptions}
-      onError={() => handleChange(path, undefined)}
-      onClear={() => handleChange(path, undefined)}
-      {...inputProps}
-    ></FileUpload>
+    <div>
+      <FileUpload
+        ref={fileUploadRef}
+        mode='basic'
+        disabled={!enabled}
+        customUpload
+        uploadHandler={() => {
+          // Required for FileUpload but unused
+        }}
+        chooseLabel=''
+        onSelect={handleFileSelect}
+        accept={(props.schema as any).contentMediaType}
+        auto
+        multiple={false}
+        style={{ display: 'none' }}
+      />
+
+      <div className='p-inputgroup'>
+        <InputText
+          id={id}
+          disabled={!enabled}
+          placeholder={appliedUiSchemaOptions.placeholder}
+          value={
+            fileData.name
+              ? `${fileData.name} ${formatBytes(fileData.size)}`
+              : ''
+          }
+          readOnly
+          style={{ flex: 1 }}
+          invalid={!!errors}
+          {...inputProps}
+        />
+        <Button
+          disabled={!enabled || !fileData.name}
+          icon='pi pi-times'
+          onClick={clearFile}
+        />
+        <Button
+          icon='pi pi-upload'
+          disabled={!enabled || !!fileData.name}
+          onClick={() => fileUploadRef.current?.getInput()?.click()}
+        />
+      </div>
+
+      {isEncoding && (
+        <div style={{ marginTop: '1rem' }}>
+          <ProgressBar value={progress} />
+        </div>
+      )}
+
+      {(error || errors) && (
+        <small
+          className='p-error'
+          style={{ display: 'block', marginTop: '5px' }}
+        >
+          {error ?? errors}
+        </small>
+      )}
+    </div>
   );
 });
