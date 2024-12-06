@@ -26,14 +26,13 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import App from './App';
 import { RankedTester } from '@jsonforms/core';
-import { getExamples } from '@jsonforms/examples';
+import examples from './examples';
 
 export const renderExample = (
   renderers: { tester: RankedTester; renderer: any }[],
   cells: { tester: RankedTester; cell: any }[],
   Wrapper?: React.JSXElementConstructor<any>
 ) => {
-  const examples = getExamples();
   ReactDOM.render(
     <App
       examples={examples}
