@@ -72,7 +72,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     return null;
   }
 
-  const useFloatLabel = true;
+  const useFloatLabel = false;
 
   if (useFloatLabel) {
     return (
