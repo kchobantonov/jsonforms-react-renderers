@@ -49,7 +49,7 @@ export const EnumArrayRenderer = (
   return (
     <InputControl
       {...props}
-      input={() => (
+      input={(props) => (
         <div
           className={classNames('flex gap-2', {
             'flex-column': appliedUiSchemaOptions.vertical,
@@ -60,7 +60,7 @@ export const EnumArrayRenderer = (
             const checkboxValue = data?.includes(option.value) ? true : false;
             return (
               <PrimeCheckbox
-                id={id + '-label-' + option.value}
+                id={id + '-input-' + option.value}
                 key={option.value}
                 label={option.label}
                 isValid={isEmpty(errors)}
@@ -80,6 +80,7 @@ export const EnumArrayRenderer = (
                 uischema={uischema}
                 rootSchema={rootSchema}
                 enabled={enabled}
+                inputProps={props.inputProps}
               />
             );
           })}

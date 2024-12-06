@@ -77,7 +77,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       required={required}
       hasFeedback={!isValid}
       validateStatus={isValid ? 'success' : 'error'}
-      label={label}
+      label={input !== AntdCheckbox ? label : ''}
       help={help}
       style={style}
       htmlFor={id + '-input'}
@@ -85,7 +85,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     >
       <InnerComponent
         {...props}
-        label={input === AntdCheckbox ? ' ' : props.label}
+        label={label}
         inputProps={{
           onFocus,
           onBlur,
