@@ -115,11 +115,11 @@ importers:
         specifier: ^11.3.0
         version: 11.13.5(@emotion/react@11.13.5)(@types/react@17.0.83)(react@17.0.2)
       '@jsonforms/core':
-        specifier: 3.4.1
-        version: 3.4.1
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1
       '@jsonforms/react':
-        specifier: 3.4.1
-        version: 3.4.1(@jsonforms/core@3.4.1)(react@17.0.2)
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(react@17.0.2)
       '@rollup/plugin-commonjs':
         specifier: ^23.0.3
         version: 23.0.7(rollup@2.79.2)
@@ -256,14 +256,14 @@ importers:
   packages/examples-react:
     dependencies:
       '@jsonforms/core':
-        specifier: 3.4.1
-        version: 3.4.1
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1
       '@jsonforms/examples':
-        specifier: 3.4.1
-        version: 3.4.1(@jsonforms/core@3.4.1)(ajv@8.17.1)
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(ajv@8.17.1)
       '@jsonforms/react':
-        specifier: 3.4.1
-        version: 3.4.1(@jsonforms/core@3.4.1)(react@17.0.2)
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(react@17.0.2)
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.52.0)(react-dom@17.0.2)(react@17.0.2)
@@ -336,11 +336,11 @@ importers:
         specifier: ^11.3.0
         version: 11.13.5(@emotion/react@11.13.5)(@types/react@17.0.83)(react@17.0.2)
       '@jsonforms/core':
-        specifier: 3.4.1
-        version: 3.4.1
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1
       '@jsonforms/react':
-        specifier: 3.4.1
-        version: 3.4.1(@jsonforms/core@3.4.1)(react@17.0.2)
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(react@17.0.2)
       '@rollup/plugin-commonjs':
         specifier: ^23.0.3
         version: 23.0.7(rollup@2.79.2)
@@ -481,11 +481,11 @@ importers:
         specifier: ^11.3.0
         version: 11.13.5(@emotion/react@11.13.5)(@types/react@17.0.83)(react@17.0.2)
       '@jsonforms/core':
-        specifier: 3.4.1
-        version: 3.4.1
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1
       '@jsonforms/react':
-        specifier: 3.4.1
-        version: 3.4.1(@jsonforms/core@3.4.1)(react@17.0.2)
+        specifier: 3.5.0-beta.1
+        version: 3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(react@17.0.2)
       '@rollup/plugin-commonjs':
         specifier: ^23.0.3
         version: 23.0.7(rollup@2.79.2)
@@ -1768,33 +1768,33 @@ packages:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: true
 
-  /@jsonforms/core@3.4.1:
-    resolution: {integrity: sha512-4p0fu2g4HfjHu8LFAL2d78O+9okyyVU4wvKHAEXnM39Rv9Opj5Ih6OF4/xXwld8169ri5aJSLISi+/Bsc6Xc4g==}
+  /@jsonforms/core@3.5.0-beta.1:
+    resolution: {integrity: sha512-CuIRR/Ofn1xxREzftfEhifClZXO/FC9XB4Q8G7SuWE4+qnJj6jUsxLGG3eIHZqLT9t38U8qU2CJVnCAKWeTMLA==}
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       lodash: 4.17.21
 
-  /@jsonforms/examples@3.4.1(@jsonforms/core@3.4.1)(ajv@8.17.1):
-    resolution: {integrity: sha512-+kF1aCE+PK+EpS95njfm2tnGaWcXpq0hhgnFcexS8ZpLucTMHX02SDCQNOiY87p0Vp+8+RGnz+fXobwIk0sSjg==}
+  /@jsonforms/examples@3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(ajv@8.17.1):
+    resolution: {integrity: sha512-XBeuZtFJlakINekh9xrkjF4tP8HYCTn000jVrSbhAfXvEu9TLCdj4MbcvyEcHBtDH0yn8hXXpLLzqlmAhho4Aw==}
     peerDependencies:
-      '@jsonforms/core': 3.4.1
+      '@jsonforms/core': 3.5.0-beta.1
     dependencies:
-      '@jsonforms/core': 3.4.1
+      '@jsonforms/core': 3.5.0-beta.1
       ajv-i18n: 4.2.0(ajv@8.17.1)
       lodash: 4.17.21
     transitivePeerDependencies:
       - ajv
     dev: false
 
-  /@jsonforms/react@3.4.1(@jsonforms/core@3.4.1)(react@17.0.2):
-    resolution: {integrity: sha512-n7hkc7/sRBSwTSu10lM1UhiXyuc/7DuWHTTentk/5evqahE0BF4cmNXusWf7LNuan0OQx3ULoofvO1eXu97rNg==}
+  /@jsonforms/react@3.5.0-beta.1(@jsonforms/core@3.5.0-beta.1)(react@17.0.2):
+    resolution: {integrity: sha512-YUDtSXzP7Z7+goszXPxLjQakSX+0Nm4e6vaexWES8n3HRtsVdsBLeltWoOqfoCSV3du+r8x/UWvmwANLj6pr4g==}
     peerDependencies:
-      '@jsonforms/core': 3.4.1
+      '@jsonforms/core': 3.5.0-beta.1
       react: ^16.12.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@jsonforms/core': 3.4.1
+      '@jsonforms/core': 3.5.0-beta.1
       lodash: 4.17.21
       react: 17.0.2
 
