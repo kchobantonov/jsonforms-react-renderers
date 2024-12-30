@@ -69,6 +69,7 @@ const ArrayLayoutComponent = (
   );
 
   const {
+    arraySchema,
     enabled,
     data,
     path,
@@ -157,8 +158,6 @@ const ArrayLayoutComponent = (
       ),
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   );
-
-  const arraySchema = Resolve.schema(rootSchema, uischema.scope, rootSchema);
 
   const doDisableAdd =
     disableAdd ||
