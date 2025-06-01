@@ -86,8 +86,8 @@
   "peerDependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@jsonforms/core": "3.5.0-beta.1",
-    "@jsonforms/react": "3.5.0-beta.1",
+    "@jsonforms/core": "3.5.1",
+    "@jsonforms/react": "3.5.1",
     "primereact": "^10.6.3",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
@@ -96,8 +96,8 @@
   "devDependencies": {
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
-    "@jsonforms/core": "3.5.0-beta.1",
-    "@jsonforms/react": "3.5.0-beta.1",
+    "@jsonforms/core": "3.5.1",
+    "@jsonforms/react": "3.5.1",
     "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",

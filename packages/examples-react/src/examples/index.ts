@@ -1,7 +1,8 @@
 import { getExamples } from '@jsonforms/examples';
-import * as schema from './file';
+import * as file from './file';
+import * as templateLayout from './template-layout';
 
 const examples = getExamples();
 
-export { schema };
+export { file, templateLayout };
 export default examples;

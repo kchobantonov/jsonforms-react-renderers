@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Please enter your name",
+      "i18n": "name"
+    },
+    "birthDate": {
+      "type": "string",
+      "format": "date",
+      "i18n": "birth"
+    },
+    "nationality": {
+      "type": "string",
+      "enum": ["US", "BG", "DE", "JP", "RU", "Other"],
+      "i18n": "nationality"
+    }
+  },
+  "required": ["nationality"]
+}

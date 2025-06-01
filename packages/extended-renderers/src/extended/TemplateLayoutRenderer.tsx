@@ -69,27 +69,35 @@ export const TemplateLayoutRenderer = ({
     const elements = (uischema as Layout).elements ?? [];
     return elements.map((element, index) => {
       if ((element as any).name === undefined) {
-        (element as any).name = index;
+        (element as any).name = index.toString();
       }
+
+      (element as any).component = (
+        <JsonFormsDispatch
+          key={`${path}-${index}`}
+          uischema={element}
+          schema={schema}
+          path={path}
+          enabled={enabled}
+          renderers={renderers}
+          cells={cells}
+        />
+      );
       return element;
     });
   }, [uischema]);
 
-  const children = Object.fromEntries(
-    namedElements.map((element, index) => [
-      (element as any).name,
-
-      <JsonFormsDispatch
-        key={`${path}-${index}`}
-        uischema={element}
-        schema={schema}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-      />,
-    ])
-  );
+  const children = namedElements.map((element, index) => (
+    <JsonFormsDispatch
+      key={`${path}-${index}`}
+      uischema={element}
+      schema={schema}
+      path={path}
+      enabled={enabled}
+      renderers={renderers}
+      cells={cells}
+    />
+  ));
 
   return useMemo(() => {
     if (!visible) return null;

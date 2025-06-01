@@ -1,0 +1,38 @@
+{
+  "type": "TemplateLayout",
+  "template": "{children}",
+  "elements": [
+    {
+      "type": "TemplateLayout",
+      "template": "<div>{elements.find(el => el.name === 'header').component}</div>",
+      "elements": [
+        {
+          "name": "header",
+          "type": "TemplateLayout",
+          "template": "<div>Hello {data.name}</div><br/>"
+        }
+      ]
+    },
+    {
+      "type": "TemplateLayout",
+      "template": "<div style='display: flex; flex-direction: row; gap: 0.5rem;'>{elements.find(el => el.name === 'name').component}{elements.find(el => el.name === 'birthDate').component}</div><div>{elements.find(el => el.name === 'nationality').component}</div>",
+      "elements": [
+        {
+          "name": "name",
+          "type": "Control",
+          "scope": "#/properties/name"
+        },
+        {
+          "name": "birthDate",
+          "type": "Control",
+          "scope": "#/properties/birthDate"
+        },
+        {
+          "name": "nationality",
+          "type": "Control",
+          "scope": "#/properties/nationality"
+        }
+      ]
+    }
+  ]
+}
