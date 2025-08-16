@@ -22,9 +22,10 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { Checkbox } from 'primereact/checkbox';
 import merge from 'lodash/merge';
 
 type Props = {
@@ -50,20 +51,47 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
+  // Track if tri-state should be used initially
+  const [useTriState, setUseTriState] = useState(
+    data === undefined || data === null
+  );
+
+  // Update tri-state if data comes in as undefined/null from outside
+  useEffect(() => {
+    if (data === undefined || data === null) {
+      setUseTriState(true);
+    }
+  }, [data]);
+
+  const onChange = (value: boolean) => {
+    // Once user chooses true/false, switch to normal checkbox
+    setUseTriState(false);
+    handleChange(path, value);
+  };
+
   return (
     <div className='field-checkbox m-0'>
-      <TriStateCheckbox
-        value={data}
-        onChange={(e: any) =>
-          handleChange(path, e.value === '' ? undefined : e.value)
-        }
-        className={className}
-        id={id}
-        disabled={!enabled}
-        autoFocus={!!appliedUiSchemaOptions.focus}
-        invalid={!!errors}
-        {...inputProps}
-      ></TriStateCheckbox>
+      {useTriState ? (
+        <TriStateCheckbox
+          value={data}
+          onChange={(e: any) => onChange(e.value ?? false)}
+          className={className}
+          id={id}
+          disabled={!enabled}
+          autoFocus={!!appliedUiSchemaOptions.focus}
+          invalid={!!errors}
+          {...inputProps}
+        />
+      ) : (
+        <Checkbox
+          checked={!!data}
+          onChange={(e) => onChange(e.checked)}
+          className={className}
+          id={id}
+          disabled={!enabled}
+          {...inputProps}
+        />
+      )}
       {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
