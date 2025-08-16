@@ -62,7 +62,6 @@ export const ArrayControlRenderer = (
     removeItems(p, [rowData])();
     setOpen(false);
   }, [setOpen, path, rowData]);
-  const deleteClose = useCallback(() => setOpen(false), [setOpen]);
 
   if (!visible) {
     return null;
@@ -79,7 +78,6 @@ export const ArrayControlRenderer = (
         open={open}
         onCancel={deleteCancel}
         onConfirm={deleteConfirm}
-        onClose={deleteClose}
         acceptText={translations.deleteDialogAccept}
         declineText={translations.deleteDialogDecline}
         title={translations.deleteDialogTitle}

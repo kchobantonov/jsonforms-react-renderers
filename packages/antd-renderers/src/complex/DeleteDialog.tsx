@@ -27,7 +27,6 @@ import { Modal } from 'antd';
 
 export interface DeleteDialogProps {
   open: boolean;
-  onClose(): void;
   onConfirm(): void;
   onCancel(): void;
   title: string;
@@ -42,7 +41,6 @@ export interface WithDeleteDialogSupport {
 
 export const DeleteDialog = React.memo(function DeleteDialog({
   open,
-  onClose,
   onConfirm,
   onCancel,
   title,
@@ -54,7 +52,6 @@ export const DeleteDialog = React.memo(function DeleteDialog({
     <Modal
       title={title}
       open={open}
-      onClose={onClose}
       onOk={onConfirm}
       onCancel={onCancel}
       okText={acceptText}
