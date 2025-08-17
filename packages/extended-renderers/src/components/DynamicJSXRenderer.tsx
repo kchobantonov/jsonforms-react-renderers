@@ -1,4 +1,4 @@
-import * as Babel from '@babel/standalone';
+import * as Sucrase from 'sucrase';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { subscribe } from 'valtio';
@@ -278,8 +278,13 @@ export default function DynamicJSXRenderer({ jsxTemplate, props }) {
   const Component = useMemo(() => {
     try {
       // Compile JSX to JS code
-      const { code } = Babel.transform(jsxTemplate, {
-        presets: [['react', { runtime: 'classic', pragma: 'createElement' }]],
+      // const { code } = Babel.transform(jsxTemplate, {
+      //   presets: [['react', { runtime: 'classic', pragma: 'createElement' }]],
+      // });
+
+      const { code } = Sucrase.transform(jsxTemplate, {
+        transforms: ['jsx'],
+        jsxPragma: 'createElement',
       });
 
       // Create a new function that takes React and props as arguments
