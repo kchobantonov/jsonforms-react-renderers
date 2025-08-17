@@ -269,23 +269,21 @@ export const TemplateLayoutRenderer = ({
 
   // Dynamically destructure based on passed props
   const destructuringAssignment = `const { ${Object.keys(rendererProps)
-    .map((k) =>
-      k === 'data' || k === 'errors' || k === 'additionalErrors'
-        ? `${k}: _${k}`
-        : k
-    )
+    .filter((k) => !['data', 'errors', 'additionalErrors'].includes(k)) // remove these
     .join(', ')} } = props;`;
 
   const jsxTemplate = `
 function Template(props) {
   ${destructuringAssignment}
 
-  const data = useTrackedSnapshot(_data);
-  const errors = useTrackedSnapshot(_errors);
-  const additionalErrors = useTrackedSnapshot(_additionalErrors);
+  const data = useTrackedSnapshot(props.data);
+  const errors = useTrackedSnapshot(props.errors);
+  const additionalErrors = useTrackedSnapshot(props.additionalErrors);
 
   return (
-    ${template}
+    <React.Fragment>
+      ${template.replace(/<\s*\/\s*React\.Fragment\s*>/g, '')}
+    </React.Fragment>
   );
 }
 `;

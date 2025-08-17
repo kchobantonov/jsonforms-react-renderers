@@ -1,27 +1,27 @@
 {
   "type": "TemplateLayout",
-  "template": "<>{elements}</>",
+  "template": "{elements}",
   "name": "root",
   "elements": [
     {
       "type": "TemplateLayout",
-      "template": "<div>{elements['name']}</div>",
+      "template": "{elements['name']}",
       "name": "header",
       "elements": [
         {
           "type": "TemplateLayout",
           "name": "name",
-          "template": "<><div>Hello {data.firstName} {data.lastName}</div><br/></>"
+          "template": "<div>Hello {data.firstName} {data.lastName}</div>"
         }
       ]
     },
     {
       "type": "TemplateLayout",
-      "template": "<>{elements}</>",
+      "template": "{elements}",
       "elements": [
         {
           "type": "TemplateLayout",
-          "template": "<div>{errors.length > 0 && (<div> {errors.map((error, index) => { if (typeof Message !== 'undefined') { return <Message key={index} severity='error' text={error.message} />; } else if (typeof Alert !== 'undefined') { return <Alert key={index} message={error.message} type='error' />; } else { return null; } })} </div>)}</div>"
+          "template": "<div>{errors.length > 0 && (<div> {errors.map((error, index) => { if (typeof Message !== 'undefined') { return <div><Message key={index} severity='error' text={error.message} /></div>; } else if (typeof Alert !== 'undefined') { return <div><Alert key={index} message={error.message} type='error' /></div>; } else { return null; } })} </div>)}</div>"
         },
         {
           "type": "VerticalLayout",
