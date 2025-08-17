@@ -5,7 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 const packageJson = require('./package.json');
 
 const baseConfig = {
-  input: 'src/index.ts',
+  input: 'src/index.tsx',
   external: [
     ...Object.keys(packageJson.dependencies),
     ...Object.keys(packageJson.peerDependencies),

@@ -1,4 +1,5 @@
 {
-  "name": "John Doe",
+  "firstName": "John",
+  "lastName": "Doe",
   "birthDate": "1985-06-02"
 }

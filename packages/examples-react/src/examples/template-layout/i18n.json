@@ -1,8 +1,12 @@
 {
   "en": {
-    "name": {
-      "label": "Name",
-      "description": "The name of the person"
+    "firstName": {
+      "label": "First Name",
+      "description": "The first name of the person"
+    },
+    "lastName": {
+      "label": "Last Name",
+      "description": "The last name of the person"
     },
     "vegetarian": {
       "label": "Vegetarian",

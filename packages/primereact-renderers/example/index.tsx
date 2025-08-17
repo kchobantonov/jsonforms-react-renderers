@@ -27,7 +27,7 @@ import { PrimeReactProvider } from 'primereact/api';
 import { Card } from 'primereact/card';
 import React, { useState } from 'react';
 import { renderExample } from '../../examples-react/src/index';
-import { extendedRenderers } from '../../extended-renderers/src/index';
+import { createExtendedRenderers } from '../../extended-renderers/src/index';
 import { primereactCells, primereactRenderers } from '../src';
 
 import 'primeflex/primeflex.css';
@@ -36,6 +36,7 @@ import 'primereact/resources/primereact.min.css';
 import { AppContentContextProvider } from './AppContentContext';
 import Config from './Config';
 import Header from './Header';
+import { Message } from 'primereact/message';
 
 const PrimeReactWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   const [configActive, setConfigActive] = useState(false);
@@ -55,7 +56,7 @@ const PrimeReactWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
 };
 
 renderExample(
-  primereactRenderers.concat(extendedRenderers),
+  primereactRenderers.concat(createExtendedRenderers({ Message })),
   primereactCells,
   PrimeReactWrapper
 );

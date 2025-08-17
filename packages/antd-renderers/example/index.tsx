@@ -35,10 +35,11 @@ import {
   theme as antTheme,
   Card,
   Space,
+  Alert,
 } from 'antd';
 import { renderExample } from '../../examples-react/src/index';
 import { antdRenderers, antdCells } from '../src';
-import { extendedRenderers } from '../../extended-renderers/src/index';
+import { createExtendedRenderers } from '../../extended-renderers/src/index';
 
 const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   const [mode, setMode] = React.useState<'dark' | 'light'>('light');
@@ -46,7 +47,9 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   const [variant, setVariant] =
     React.useState<InputProps['variant']>('outlined');
 
-  const handleVariantChange = (value: 'outlined' | 'borderless' | 'filled') => {
+  const handleVariantChange = (
+    value: 'outlined' | 'borderless' | 'filled' | 'underlined'
+  ) => {
     setVariant(value);
   };
 
@@ -104,4 +107,8 @@ const AntdWrapper = ({ children }: React.PropsWithChildren<unknown>) => {
   );
 };
 
-renderExample(antdRenderers.concat(extendedRenderers), antdCells, AntdWrapper);
+renderExample(
+  antdRenderers.concat(createExtendedRenderers({ Alert })),
+  antdCells,
+  AntdWrapper
+);

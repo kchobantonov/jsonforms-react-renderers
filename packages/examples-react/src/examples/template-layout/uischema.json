@@ -1,36 +1,53 @@
 {
   "type": "TemplateLayout",
-  "template": "{children}",
+  "template": "<>{elements}</>",
+  "name": "root",
   "elements": [
     {
       "type": "TemplateLayout",
-      "template": "<div>{elements.find(el => el.name === 'header').component}</div>",
+      "template": "<div>{elements['name']}</div>",
+      "name": "header",
       "elements": [
         {
-          "name": "header",
           "type": "TemplateLayout",
-          "template": "<div>Hello {data.name}</div><br/>"
+          "name": "name",
+          "template": "<><div>Hello {data.firstName} {data.lastName}</div><br/></>"
         }
       ]
     },
     {
       "type": "TemplateLayout",
-      "template": "<div style='display: flex; flex-direction: row; gap: 0.5rem;'>{elements.find(el => el.name === 'name').component}{elements.find(el => el.name === 'birthDate').component}</div><div>{elements.find(el => el.name === 'nationality').component}</div>",
+      "template": "<>{elements}</>",
       "elements": [
         {
-          "name": "name",
-          "type": "Control",
-          "scope": "#/properties/name"
+          "type": "TemplateLayout",
+          "template": "<div>{errors.length > 0 && (<div> {errors.map((error, index) => { if (typeof Message !== 'undefined') { return <Message key={index} severity='error' text={error.message} />; } else if (typeof Alert !== 'undefined') { return <Alert key={index} message={error.message} type='error' />; } else { return null; } })} </div>)}</div>"
         },
         {
-          "name": "birthDate",
-          "type": "Control",
-          "scope": "#/properties/birthDate"
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName"
+            }
+          ]
         },
         {
-          "name": "nationality",
-          "type": "Control",
-          "scope": "#/properties/nationality"
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/birthDate"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/nationality"
+            }
+          ]
         }
       ]
     }
