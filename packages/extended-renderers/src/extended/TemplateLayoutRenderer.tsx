@@ -295,8 +295,6 @@ export const TemplateLayoutRenderer = ({
 function Template(props) {
   ${destructuringAssignment}
 
-  console.log("Template render", uischema.name);
-
   const data = useTrackedSnapshot(props.data);
   const errors = useTrackedSnapshot(props.errors);
   const additionalErrors = useTrackedSnapshot(props.additionalErrors);
