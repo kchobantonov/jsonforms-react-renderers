@@ -36,10 +36,10 @@ import {
   withJsonFormsLayoutProps,
 } from '@jsonforms/react';
 import React, { useEffect, useMemo, useRef } from 'react';
+import { proxy } from 'valtio';
 import DynamicJSXRenderer, {
   ElementRender,
 } from '../components/DynamicJSXRenderer';
-import { proxy } from 'valtio';
 
 export interface TemplateLayoutProps extends LayoutProps {
   uischema: UISchemaElement & { template: string; name?: string };
@@ -55,13 +55,6 @@ export const templateRendererTester: RankedTester = rankWith(
   uiTypeIs('TemplateLayout')
 );
 
-/**
- * Wrap any value (object, array, primitive) into a safe proxy container.
- */
-function createSafeProxy<T>(value: T) {
-  if (value && typeof value === 'object' && '__val__' in value) return value;
-  return proxy({ __val__: value });
-}
 /**
  * Default renderer for a template layout.
  */
@@ -147,86 +140,112 @@ export const TemplateLayoutRenderer = ({
 
   // Create a stable proxy that gets updated with new data
   const { dataProxy, errorsProxy, additionalErrorsProxy } = useMemo(() => {
-    const dataProxy = createSafeProxy(ctx.core?.data);
-    const errorsProxy = createSafeProxy(ctx.core?.errors);
-    const additionalErrorsProxy = createSafeProxy(ctx.core?.additionalErrors);
+    const dataProxy = proxy({ __val__: ctx.core?.data });
+    const errorsProxy = proxy({ __val__: ctx.core?.errors });
+    const additionalErrorsProxy = proxy({
+      __val__: ctx.core?.additionalErrors,
+    });
     return { dataProxy, errorsProxy, additionalErrorsProxy };
   }, []);
 
   // Update proxies efficiently
   useEffect(() => {
     const updateProxy = (proxyTarget: any, newValue: any) => {
-      if (!proxyTarget || !('__val__' in proxyTarget)) return;
-
-      const current = proxyTarget.__val__;
-      const isCurrentArray = Array.isArray(current);
-      const isNewArray = Array.isArray(newValue);
-      const isCurrentObject =
-        current && typeof current === 'object' && !isCurrentArray;
-      const isNewObject =
-        newValue && typeof newValue === 'object' && !isNewArray;
-
-      // Case 1: Both are arrays.
-      if (isCurrentArray && isNewArray) {
-        // Update or add elements.
-        for (let i = 0; i < newValue.length; i++) {
-          const newElement = newValue[i];
-          const currentElement = current[i];
-          const isCurrentElementObject =
-            currentElement && typeof currentElement === 'object';
-          const isNewElementObject =
-            newElement && typeof newElement === 'object';
-
-          if (
-            i < current.length &&
-            isCurrentElementObject &&
-            isNewElementObject
-          ) {
-            // If element exists and both are objects/arrays, recursively update.
-            updateProxy(currentElement, newElement);
-          } else {
-            // Otherwise, update or add the new element.
-            current[i] = newElement;
-          }
-        }
-
-        // Remove excess elements.
-        if (current.length > newValue.length) {
-          current.splice(newValue.length);
-        }
-      }
-      // Case 2: Both are objects.
-      else if (isCurrentObject && isNewObject) {
-        // 1. Remove keys from the current object that no longer exist in the new one.
-        Object.keys(current).forEach((k) => {
-          if (!(k in newValue)) {
-            delete current[k];
-          }
-        });
-
-        // 2. Recursively update existing and add new properties.
-        Object.keys(newValue).forEach((k) => {
-          const newProp = newValue[k];
-          const currentProp = current[k];
-
-          const isCurrentPropObject =
-            currentProp && typeof currentProp === 'object';
-          const isNewPropObject = newProp && typeof newProp === 'object';
-
-          // Check if both properties are objects.
-          if (isCurrentPropObject && isNewPropObject) {
-            // If so, make a recursive call to update the nested object.
-            updateProxy(currentProp, newProp);
-          } else {
-            // Otherwise, directly assign the value.
-            current[k] = newProp;
-          }
-        });
-      }
-      // Case 3: The type has changed (e.g., array to object, or object to primitive).
-      else {
-        // Directly replace the internal value with the new value.
+      if (newValue === null || newValue === undefined) {
         proxyTarget.__val__ = newValue;
+        return;
+      }
+
+      if (proxyTarget.__val__ === null || proxyTarget.__val__ === undefined) {
+        proxyTarget.__val__ = newValue;
+        return;
+      }
+
+      const deepMerge = (target: any, source: any) => {
+        if (source === null || source === undefined) {
+          return;
+        }
+
+        if (Array.isArray(source)) {
+          if (!Array.isArray(target)) {
+            // Replace with new array if target isn't an array
+            return source;
+          }
+          // For arrays, properly merge without initially truncating
+          source.forEach((item: any, index: number) => {
+            if (item && typeof item === 'object' && !Array.isArray(item)) {
+              // For objects in arrays, preserve existing object if it exists and is an object
+              if (
+                !target[index] ||
+                typeof target[index] !== 'object' ||
+                Array.isArray(target[index])
+              ) {
+                target[index] = {};
+              }
+              const result = deepMerge(target[index], item);
+              if (result !== undefined) {
+                target[index] = result;
+              }
+            } else if (Array.isArray(item)) {
+              // For nested arrays, preserve existing array if it exists and is an array
+              if (!Array.isArray(target[index])) {
+                target[index] = [];
+              }
+              const result = deepMerge(target[index], item);
+              if (result !== undefined) {
+                target[index] = result;
+              }
+            } else {
+              // For primitives, just assign
+              target[index] = item;
+            }
+          });
+
+          // Remove extra items from target array to match source length
+          if (target.length > source.length) {
+            target.splice(source.length);
+          }
+          return;
+        }
+
+        if (typeof source === 'object' && !Array.isArray(source)) {
+          if (typeof target !== 'object' || Array.isArray(target)) {
+            // Replace with new object if target isn't an object
+            return source;
+          }
+
+          Object.keys(source).forEach((key) => {
+            if (
+              source[key] &&
+              typeof source[key] === 'object' &&
+              !Array.isArray(source[key])
+            ) {
+              // Preserve existing object if it exists and is an object (not array)
+              if (
+                !target[key] ||
+                typeof target[key] !== 'object' ||
+                Array.isArray(target[key])
+              ) {
+                target[key] = {};
+              }
+              const result = deepMerge(target[key], source[key]);
+              if (result !== undefined) {
+                target[key] = result;
+              }
+            } else {
+              target[key] = source[key];
+            }
+          });
+          return;
+        }
+
+        // For primitives, just return the new value
+        return source;
+      };
+
+      const result = deepMerge(proxyTarget.__val__, newValue);
+      if (result !== undefined) {
+        proxyTarget.__val__ = result;
       }
     };
 
@@ -275,6 +294,8 @@ export const TemplateLayoutRenderer = ({
   const jsxTemplate = `
 function Template(props) {
   ${destructuringAssignment}
+
+  console.log("Template render", uischema.name);
 
   const data = useTrackedSnapshot(props.data);
   const errors = useTrackedSnapshot(props.errors);
