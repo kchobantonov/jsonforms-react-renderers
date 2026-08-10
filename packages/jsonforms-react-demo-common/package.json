@@ -1,0 +1,35 @@
+{
+  "name": "@chobantonov/jsonforms-react-demo-common",
+  "version": "3.7.0-alpha.1",
+  "private": true,
+  "dependencies": {
+    "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
+    "@jsonforms/core": "3.8.0",
+    "@jsonforms/examples": "3.8.0",
+    "@jsonforms/react": "3.8.0",
+    "@monaco-editor/react": "^4.6.0",
+    "json-refs": "3.0.15",
+    "lodash": "^4.17.21",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "prettier": "^2.8.4",
+    "tslib": "^2.5.0"
+  },
+  "scripts": {
+    "build": "echo 'Nothing to do'",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "echo 'Nothing to do'"
+  }
+}

@@ -1,0 +1,144 @@
+.ark-jsonforms-root,
+.ark-jsonforms-layout {
+  box-sizing: border-box;
+}
+
+.ark-jsonforms-layout {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.ark-jsonforms-layout-column {
+  flex-direction: column;
+}
+
+.ark-jsonforms-layout-row {
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ark-jsonforms-field {
+  display: grid;
+  gap: 5px;
+  min-width: 220px;
+}
+
+.ark-jsonforms-label {
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ark-jsonforms-input {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--ark-jsonforms-radius, 6px);
+  color: #111827;
+  font: inherit;
+  min-height: 36px;
+  padding: 7px 10px;
+}
+
+.ark-jsonforms-input:focus {
+  border-color: var(--ark-jsonforms-accent, #2563eb);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--ark-jsonforms-accent, #2563eb) 18%, transparent);
+  outline: none;
+}
+
+.ark-jsonforms-description {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.ark-jsonforms-error {
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+.ark-jsonforms-checkbox {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.ark-jsonforms-group,
+.ark-jsonforms-array,
+.ark-jsonforms-object {
+  border: 1px solid #e2e8f0;
+  border-radius: var(--ark-jsonforms-radius, 6px);
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.ark-jsonforms-group > legend,
+.ark-jsonforms-array h3,
+.ark-jsonforms-object h3 {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.ark-jsonforms-array-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ark-jsonforms-array-item {
+  border-top: 1px solid #e2e8f0;
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.ark-jsonforms-button,
+.ark-jsonforms-tab {
+  background: var(--ark-jsonforms-accent, #2563eb);
+  border: 0;
+  border-radius: var(--ark-jsonforms-radius, 6px);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  min-height: 34px;
+  padding: 7px 12px;
+}
+
+.ark-jsonforms-button:disabled,
+.ark-jsonforms-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ark-jsonforms-button-danger {
+  background: #dc2626;
+  justify-self: flex-start;
+}
+
+.ark-jsonforms-tabs {
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.ark-jsonforms-tab {
+  background: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  color: #475569;
+}
+
+.ark-jsonforms-tab[data-active] {
+  background: var(--ark-jsonforms-accent, #2563eb);
+  color: #fff;
+}
+
+.ark-jsonforms-static-label {
+  color: #334155;
+  font-weight: 600;
+}
