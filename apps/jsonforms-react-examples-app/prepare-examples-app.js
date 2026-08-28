@@ -23,7 +23,6 @@ const examples = {
     'example',
     'dist'
   ),
-  'react-ark': join(packagesDir, 'jsonforms-react-ark-demo', 'example', 'dist'),
   'react-shadcn': join(
     packagesDir,
     'jsonforms-react-shadcn-demo',

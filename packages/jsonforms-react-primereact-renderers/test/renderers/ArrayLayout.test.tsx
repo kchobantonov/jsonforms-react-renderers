@@ -134,11 +134,12 @@ const uischemaWithSortOption: ControlElement = {
   },
 };
 
-const uischemaWithChildLabelProp: ControlElement = {
+const uischemaWithElementLabelProp: ControlElement = {
   type: 'Control',
   scope: '#',
   options: {
     elementLabelProp: 'message2',
+    childLabelProp: 'message',
   },
 };
 
@@ -536,12 +537,12 @@ describe('array layout', () => {
     expect(getChildLabel(wrapper, 1)).toBe('Yolo');
   });
 
-  it('should render configured child label property as child label', () => {
+  it('should prefer elementLabelProp over childLabelProp for the child label', () => {
     wrapper = mount(
       <JsonForms
         data={data}
         schema={nestedSchema}
-        uischema={uischemaWithChildLabelProp}
+        uischema={uischemaWithElementLabelProp}
         renderers={primereactRenderers}
       />
     );

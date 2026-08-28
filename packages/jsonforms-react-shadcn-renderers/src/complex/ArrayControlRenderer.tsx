@@ -1,14 +1,17 @@
 import {
   ArrayLayoutProps,
   composePaths,
+  createDefaultValue,
   Generate,
+  getFirstPrimitiveProp,
   isObjectArrayControl,
   isPrimitiveArrayControl,
   or,
   RankedTester,
   rankWith,
+  Resolve,
 } from '@jsonforms/core';
-import { JsonFormsDispatch } from '@jsonforms/react';
+import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React from 'react';
 
 export const ShadcnArrayRenderer = ({
@@ -20,18 +23,38 @@ export const ShadcnArrayRenderer = ({
   path,
   removeItems,
   renderers,
+  rootSchema,
   schema,
   uischema,
   visible,
 }: ArrayLayoutProps) => {
-  const items = Array.isArray(data) ? data : [];
+  const ctx = useJsonForms();
   if (!visible) return null;
-  const itemSchema = Array.isArray(schema.items)
-    ? schema.items[0]
-    : schema.items;
   const detail =
     (uischema.options?.detail as any) ??
-    Generate.uiSchema(itemSchema as any, 'VerticalLayout', undefined, schema);
+    Generate.uiSchema(schema, 'VerticalLayout', undefined, rootSchema);
+  const childLabelProp =
+    uischema.options?.elementLabelProp ??
+    uischema.options?.childLabelProp ??
+    getFirstPrimitiveProp(schema);
+
+  const childLabelForIndex = (childPath: string, index: number) => {
+    if (!childLabelProp) {
+      return `${index}`;
+    }
+    const labelValue = Resolve.data(
+      ctx.core.data,
+      composePaths(childPath, childLabelProp)
+    );
+    if (
+      labelValue === undefined ||
+      labelValue === null ||
+      Number.isNaN(labelValue)
+    ) {
+      return '';
+    }
+    return `${labelValue}`;
+  };
 
   return (
     <div className='shadcn-jsonforms-array'>
@@ -41,17 +64,23 @@ export const ShadcnArrayRenderer = ({
           className='shadcn-jsonforms-button'
           type='button'
           disabled={!enabled}
-          onClick={addItem(path, itemSchema)}
+          onClick={addItem(path, createDefaultValue(schema, rootSchema))}
         >
           Add
         </button>
       </div>
-      {items.map((_item, index) => {
+      {Array.from({ length: data }, (_, index) => {
         const childPath = composePaths(path, `${index}`);
+        const childLabel = childLabelForIndex(childPath, index);
         return (
           <div className='shadcn-jsonforms-array-item' key={childPath}>
+            {childLabel ? (
+              <h4 className='shadcn-jsonforms-array-item-label'>
+                {childLabel}
+              </h4>
+            ) : null}
             <JsonFormsDispatch
-              schema={itemSchema as any}
+              schema={schema}
               uischema={detail}
               path={childPath}
               enabled={enabled}

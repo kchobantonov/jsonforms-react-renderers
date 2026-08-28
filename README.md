@@ -13,7 +13,6 @@
 - Clean generated package output: `pnpm run clean`
 - Run React Ant Design examples: `pnpm run example:antd:dev`
 - Run React PrimeReact examples: `pnpm run example:primereact:dev`
-- Run React Ark UI examples: `pnpm run example:ark:dev`
 - Run React Shadcn UI examples: `pnpm run example:shadcn:dev`
 - Run React MUI examples: `pnpm run example:mui:dev`
 - Build examples app: `pnpm run examples-app:build`
@@ -26,10 +25,6 @@
 - `packages/jsonforms-react-primereact-renderers` - PrimeReact renderer set.
 - `packages/jsonforms-react-primereact-extended-renderers` - optional advanced PrimeReact renderers.
 - `packages/jsonforms-react-primereact-webcomponent` - PrimeReact custom element.
-- `packages/jsonforms-react-ark-renderers` - Ark UI renderer set.
-- `packages/jsonforms-react-ark-extended-renderers` - optional advanced Ark UI renderers.
-- `packages/jsonforms-react-ark-webcomponent` - Ark UI custom element.
-- `packages/jsonforms-react-ark-demo` - Ark UI demo app package.
 - `packages/jsonforms-react-shadcn-renderers` - Shadcn UI renderer set.
 - `packages/jsonforms-react-shadcn-extended-renderers` - optional advanced Shadcn UI renderers.
 - `packages/jsonforms-react-shadcn-webcomponent` - Shadcn UI custom element.

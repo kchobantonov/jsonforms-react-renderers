@@ -96,6 +96,13 @@
   padding-top: 12px;
 }
 
+.shadcn-jsonforms-array-item-label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
 .shadcn-jsonforms-button,
 .shadcn-jsonforms-tab {
   background: var(--shadcn-jsonforms-accent, #2563eb);

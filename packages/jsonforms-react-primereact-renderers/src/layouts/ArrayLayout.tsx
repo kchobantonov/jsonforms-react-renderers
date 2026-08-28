@@ -177,7 +177,9 @@ const ArrayLayoutComponent = (
 
   const childLabelForIndex = (childPath: string, index: number) => {
     const childLabelProp =
-      uischema.options?.childLabelProp ?? getFirstPrimitiveProp(schema);
+      uischema.options?.elementLabelProp ??
+      uischema.options?.childLabelProp ??
+      getFirstPrimitiveProp(schema);
     if (!childLabelProp) {
       return `${index}`;
     }
