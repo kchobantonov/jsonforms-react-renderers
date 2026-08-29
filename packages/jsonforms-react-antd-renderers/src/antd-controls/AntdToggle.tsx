@@ -33,6 +33,7 @@ export const AntdToggle = React.memo(function AntdToggle(
 ) {
   const {
     data,
+    id,
     className,
     enabled,
     uischema,
@@ -46,6 +47,7 @@ export const AntdToggle = React.memo(function AntdToggle(
 
   return (
     <Switch
+      id={id}
       checked={checked}
       onChange={(isChecked) => handleChange(path, isChecked)}
       className={className}

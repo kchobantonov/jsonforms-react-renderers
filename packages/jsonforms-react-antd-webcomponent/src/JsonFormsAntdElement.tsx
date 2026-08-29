@@ -1,13 +1,7 @@
 import { JsonForms } from '@jsonforms/react';
 import type { ValidationMode } from '@jsonforms/core';
-import {
-  antdCells,
-  antdRenderers,
-} from '@chobantonov/jsonforms-react-antd-renderers';
-import {
-  antdExtendedRenderers,
-  HandleActionContext,
-} from '@chobantonov/jsonforms-react-antd-extended-renderers';
+import { HandleActionContext } from '@chobantonov/jsonforms-react-antd-extended-renderers';
+import { antdWebcomponentCells, antdWebcomponentRenderers } from './renderers';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
@@ -238,8 +232,8 @@ export class JsonFormsAntdElement extends HTMLElement {
                 translate,
               }}
               additionalErrors={parseJson(this.state.additionalErrors) as any}
-              renderers={[...antdRenderers, ...antdExtendedRenderers]}
-              cells={antdCells}
+              renderers={antdWebcomponentRenderers}
+              cells={antdWebcomponentCells}
               onChange={(event) => this.dispatch('change', event)}
             />
           </HandleActionContext.Provider>

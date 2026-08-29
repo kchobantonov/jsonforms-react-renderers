@@ -1,20 +1,21 @@
 import { JsonForms } from '@jsonforms/react';
 import type { ValidationMode } from '@jsonforms/core';
 import {
-  shadcnCells,
-  shadcnRenderers,
-} from '@chobantonov/jsonforms-react-shadcn-renderers';
-import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
-  shadcnExtendedRenderers,
 } from '@chobantonov/jsonforms-react-shadcn-extended-renderers';
 import {
   ActionEvent,
   HandleActionContext,
 } from '@chobantonov/jsonforms-react-extended-renderers';
+import { ShadcnComponentsProvider } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
+import {
+  shadcnWebcomponentCells,
+  shadcnWebcomponentRenderers,
+} from './renderers';
+import { shadcnComponents } from './components/jsonforms';
 
 export const JSON_FORMS_SHADCN_TAG = 'jsonforms-react-shadcn';
 
@@ -168,6 +169,36 @@ const baseStyle = `
 .shadcn-jsonforms-tab[data-active] { background: var(--shadcn-jsonforms-accent, #2563eb); color: #fff; }
 .shadcn-jsonforms-static-label { color: #334155; font-weight: 600; }
 .shadcn-jsonforms-alert { border: 1px solid #bfdbfe; border-radius: var(--shadcn-jsonforms-radius, 6px); padding: 10px 12px; }
+.shadcn-jsonforms-checkbox-label, .shadcn-jsonforms-color-control, .shadcn-jsonforms-duration-control, .shadcn-jsonforms-file-control, .shadcn-jsonforms-grid-actions { align-items: center; display: flex; gap: 8px; }
+.shadcn-jsonforms-checkbox-control { align-items: center; background: #fff; border: 1px solid #94a3b8; border-radius: 4px; color: #fff; display: inline-flex; height: 18px; justify-content: center; padding: 0; width: 18px; }
+.shadcn-jsonforms-checkbox-control[data-state='checked'], .shadcn-jsonforms-checkbox-control[data-state='indeterminate'] { background: var(--shadcn-jsonforms-accent); border-color: var(--shadcn-jsonforms-accent); }
+.shadcn-jsonforms-checkbox-control svg { height: 14px; width: 14px; }
+.shadcn-jsonforms-select { align-items: center; display: inline-flex; justify-content: space-between; min-width: 180px; }
+.shadcn-jsonforms-select svg { height: 16px; width: 16px; }
+.shadcn-jsonforms-select-content { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 8px 24px #0f172a26; color: #111827; min-width: var(--radix-select-trigger-width); overflow: hidden; z-index: 50; }
+.shadcn-jsonforms-select-item { align-items: center; cursor: default; display: flex; gap: 8px; justify-content: space-between; outline: 0; padding: 7px 10px; }
+.shadcn-jsonforms-select-item[data-highlighted] { background: #e2e8f0; }
+.shadcn-jsonforms-tab[data-state='active'] { background: var(--shadcn-jsonforms-accent); color: #fff; }
+.shadcn-jsonforms-button-secondary { background: #475569; }
+.shadcn-jsonforms-button-outline { background: transparent; border: 1px solid #cbd5e1; color: #0f172a; }
+.shadcn-jsonforms-button-ghost { background: transparent; color: #334155; }
+.shadcn-jsonforms-button-sm { min-height: 30px; padding: 4px 9px; }
+.shadcn-jsonforms-button-lg { min-height: 42px; padding: 9px 16px; }
+.shadcn-jsonforms-button-icon { height: 34px; padding: 0; width: 34px; }
+.shadcn-jsonforms-alert-destructive { border-color: #fecaca; color: #b91c1c; }
+.shadcn-jsonforms-color-control > .shadcn-jsonforms-input:first-child, .shadcn-jsonforms-duration-control > .shadcn-jsonforms-input { flex: 1; }
+.shadcn-jsonforms-color-picker { min-width: 44px; padding: 3px; width: 44px; }
+.shadcn-jsonforms-duration-picker { border: 1px solid #e2e8f0; border-radius: 6px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); padding: 10px; }
+.shadcn-jsonforms-duration-picker label { display: grid; font-size: 12px; gap: 3px; text-transform: capitalize; }
+.shadcn-jsonforms-duration-actions { display: flex; gap: 6px; grid-column: 1 / -1; }
+.shadcn-jsonforms-split { display: flex; overflow: hidden; width: 100%; }
+.shadcn-jsonforms-split-horizontal { flex-direction: row; }
+.shadcn-jsonforms-split-vertical { flex-direction: column; min-height: 240px; }
+.shadcn-jsonforms-split-pane { flex-grow: 1; min-height: 0; min-width: 0; overflow: auto; padding: 8px; }
+.shadcn-jsonforms-split-handle { background: #e2e8f0; flex: 0 0 5px; touch-action: none; }
+.shadcn-jsonforms-split-horizontal > .shadcn-jsonforms-split-handle { cursor: col-resize; }
+.shadcn-jsonforms-split-vertical > .shadcn-jsonforms-split-handle { cursor: row-resize; }
+.shadcn-jsonforms-grid-actions { margin-bottom: 8px; }
 `;
 
 export class JsonFormsShadcnElement extends HTMLElement {
@@ -313,10 +344,11 @@ export class JsonFormsShadcnElement extends HTMLElement {
           style={style}
         >
           <slot name='form-header' />
-          <HandleActionContext.Provider
-            value={(event) => this.emitAction(event)}
-          >
-            <JsonForms
+          <ShadcnComponentsProvider components={shadcnComponents}>
+            <HandleActionContext.Provider
+              value={(event) => this.emitAction(event)}
+            >
+              <JsonForms
               data={parseJson(this.state.data)}
               schema={parseJson(this.state.schema) as any}
               uischema={parseJson(this.state.uischema) as any}
@@ -328,8 +360,8 @@ export class JsonFormsShadcnElement extends HTMLElement {
               }}
               readonly={parseBoolean(this.state.readonly)}
               validationMode={this.state.validationMode}
-              renderers={shadcnRenderers.concat(shadcnExtendedRenderers)}
-              cells={shadcnCells}
+              renderers={shadcnWebcomponentRenderers}
+              cells={shadcnWebcomponentCells}
               additionalErrors={parseJson(this.state.additionalErrors) as any}
               i18n={{
                 locale: this.state.locale,
@@ -339,8 +371,9 @@ export class JsonFormsShadcnElement extends HTMLElement {
                 ),
               }}
               onChange={({ data, errors }) => this.emitChange(data, errors)}
-            />
-          </HandleActionContext.Provider>
+              />
+            </HandleActionContext.Provider>
+          </ShadcnComponentsProvider>
           <slot name='form-footer' />
         </div>
       </>

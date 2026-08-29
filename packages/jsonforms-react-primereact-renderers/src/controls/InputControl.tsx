@@ -64,6 +64,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
   //   : null;
   // const secondFormHelperText = showDescription && !isValid ? errors : null;
   const help = !isValid ? errors : showDescription ? description : null;
+  const helpId = help ? `${id}-input-help` : undefined;
 
   const InnerComponent = input;
   const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
@@ -94,12 +95,14 @@ export const InputControl = (props: ControlProps & WithInput) => {
               required: required,
               onFocus,
               onBlur,
+              'aria-describedby': helpId,
             }}
           />
           <label htmlFor={id + '-input'}>{label}</label>
         </FloatLabel>
         {help && (
           <small
+            id={helpId}
             className={!isValid ? 'p-error' : 'p-description'}
             style={{ display: 'block', marginTop: '5px' }}
           >
@@ -127,10 +130,12 @@ export const InputControl = (props: ControlProps & WithInput) => {
         inputProps={{
           onFocus,
           onBlur,
+          'aria-describedby': helpId,
         }}
       />
       {help && (
         <small
+          id={helpId}
           className={!isValid ? 'p-error' : 'p-description'}
           style={{ display: 'block', marginTop: '5px' }}
         >

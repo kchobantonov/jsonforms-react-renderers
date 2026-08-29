@@ -29,7 +29,7 @@ import SliderControl, {
   sliderControlTester,
 } from '../../src/controls/SliderControl';
 import { antdRenderers } from '../../src';
-import { Slider } from '@mui/material';
+import { Slider } from 'antd';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
@@ -58,7 +58,7 @@ const uischema: ControlElement = {
   },
 };
 
-describe('Material slider tester', () => {
+describe('Ant Design slider tester', () => {
   it('should fail', () => {
     expect(sliderControlTester(undefined, undefined, undefined)).toBe(
       NOT_APPLICABLE
@@ -216,7 +216,7 @@ describe('Material slider tester', () => {
   });
 });
 
-describe('Material slider control', () => {
+describe('Ant Design slider control', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());

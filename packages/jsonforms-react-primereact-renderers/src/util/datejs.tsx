@@ -57,21 +57,15 @@ export const createOnBlurHandler =
   };
 
 export const formatDate = (date: dayjs.Dayjs, saveFormat: string) => {
-  let formatedDate = date.format(saveFormat);
-  // Workaround to address a bug in Dayjs, neglecting leading 0 (https://github.com/iamkun/dayjs/issues/1849)
-  const indexOfYear = saveFormat.indexOf('YYYY');
-  if (date.year() < 1000 && indexOfYear !== -1) {
-    const stringUpToYear = formatedDate.slice(0, indexOfYear);
-    const stringFromYear = formatedDate.slice(indexOfYear);
-    if (date.year() >= 100) {
-      formatedDate = [stringUpToYear, 0, stringFromYear].join('');
-    } else if (date.year() >= 10) {
-      formatedDate = [stringUpToYear, 0, 0, stringFromYear].join('');
-    } else if (date.year() >= 1) {
-      formatedDate = [stringUpToYear, 0, 0, 0, stringFromYear].join('');
-    }
-  }
-  return formatedDate;
+  const yearToken = '__JSONFORMS_FOUR_DIGIT_YEAR__';
+  const formatWithYearPlaceholder = saveFormat.replace(
+    /YYYY/g,
+    `[${yearToken}]`
+  );
+
+  return date
+    .format(formatWithYearPlaceholder)
+    .replace(new RegExp(yearToken, 'g'), String(date.year()).padStart(4, '0'));
 };
 
 export const getData = (

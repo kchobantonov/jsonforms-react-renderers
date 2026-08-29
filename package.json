@@ -4,6 +4,11 @@
     "node": "^18.19.0",
     "pnpm": ">=7.13.4"
   },
+  "pnpm": {
+    "overrides": {
+      "enzyme>cheerio": "1.0.0-rc.12"
+    }
+  },
   "scripts": {
     "lerna": "lerna",
     "preparePublish": "git clean -dfx && pnpm i --frozen-lockfile && pnpm run clean && pnpm run build && pnpm run doc && pnpm run test",
@@ -37,11 +42,9 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5",
     "@babel/plugin-proposal-optional-chaining": "^7.16.5",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.149",
     "ajv": "^8.20.0",
     "ajv-formats": "^2.1.0",
-    "ava": "~2.4.0",
     "core-js": "^3.9.1",
     "coveralls": "^3.0.9",
     "cross-env": "^7.0.2",

@@ -1,5 +1,6 @@
 import { ControlProps } from '@jsonforms/core';
 import React from 'react';
+import { useShadcnComponents } from '../components';
 
 export const toStringValue = (value: unknown) =>
   value === undefined ? '' : String(value);
@@ -49,6 +50,7 @@ export const ShadcnInputControl = ({
   visible,
   type = 'text',
 }: ControlProps & { type?: string }) => {
+  const { Input } = useShadcnComponents();
   if (!visible) return null;
   const id = makeId(path, label);
   const inputType = uischema.options?.format ?? type;
@@ -61,7 +63,7 @@ export const ShadcnInputControl = ({
       description={description}
       errors={errors}
     >
-      <input
+      <Input
         id={id}
         className='shadcn-jsonforms-input'
         type={inputType}
@@ -78,6 +80,7 @@ export const ShadcnInputControl = ({
 export const ShadcnNumberControl = (
   props: ControlProps & { integer?: boolean }
 ) => {
+  const { Input } = useShadcnComponents();
   const { data, enabled, handleChange, path, visible } = props;
   if (!visible) return null;
   const id = makeId(path, props.label);
@@ -90,7 +93,7 @@ export const ShadcnNumberControl = (
       description={props.description}
       errors={props.errors}
     >
-      <input
+      <Input
         id={id}
         className='shadcn-jsonforms-input'
         type='number'

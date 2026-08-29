@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "dist",
+    "paths": {
+      "@/*": ["./example/*"]
+    },
     "sourceMap": true
   },
   "exclude": ["node_modules"],

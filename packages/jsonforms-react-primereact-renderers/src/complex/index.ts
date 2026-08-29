@@ -33,6 +33,7 @@ import EnumArrayRenderer, {
 import ObjectRenderer, { objectControlTester } from './ObjectRenderer';
 import OneOfRenderer, { oneOfControlTester } from './OneOfRenderer';
 import OneOfTabRenderer, { oneOfTabControlTester } from './OneOfTabRenderer';
+export * from './MixedRenderer';
 
 export {
   allOfControlTester,

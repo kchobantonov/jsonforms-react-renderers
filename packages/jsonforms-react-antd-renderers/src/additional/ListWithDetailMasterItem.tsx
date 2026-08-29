@@ -25,9 +25,17 @@
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
 import type { StatePropsOfMasterItem } from '@jsonforms/core';
 import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
-import { Avatar, Button, List, Tooltip, theme as antdTheme } from 'antd';
-import Text from 'antd/es/typography/Text';
+import {
+  Avatar,
+  Button,
+  List,
+  Tooltip,
+  Typography,
+  theme as antdTheme,
+} from 'antd';
 import React, { useMemo } from 'react';
+
+const { Text } = Typography;
 
 export const ListWithDetailMasterItem = ({
   index,

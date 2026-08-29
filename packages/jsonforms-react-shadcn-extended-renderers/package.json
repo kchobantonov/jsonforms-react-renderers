@@ -30,7 +30,9 @@
     "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "test": "echo 'Nothing to do'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test-cov": "vitest run --coverage",
     "doc": "typedoc --name 'JSON Forms React Shadcn Extended Renderers' --excludeExternals --out docs src",
     "tsc": "tsc --build tsconfig.json"
   },
@@ -39,6 +41,8 @@
     "@chobantonov/jsonforms-react-shadcn-renderers": "0.0.1",
     "@jsonforms/core": "3.8.0",
     "@jsonforms/react": "3.8.0",
+    "ag-grid-community": "^36.1.0",
+    "ag-grid-react": "^36.1.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
@@ -47,6 +51,8 @@
     "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "3.8.0",
     "@jsonforms/react": "3.8.0",
+    "ag-grid-community": "36.1.0",
+    "ag-grid-react": "36.1.0",
     "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
@@ -55,10 +61,12 @@
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
+    "@vitest/coverage-v8": "2.1.9",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "jsdom": "^22.0.0",
     "prettier": "^2.8.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -69,6 +77,8 @@
     "rollup-plugin-visualizer": "^5.4.1",
     "tslib": "^2.5.0",
     "typedoc": "~0.25.3",
-    "typescript": "~4.9.5"
+    "typescript": "~4.9.5",
+    "vite": "^5.4.11",
+    "vitest": "2.1.9"
   }
 }

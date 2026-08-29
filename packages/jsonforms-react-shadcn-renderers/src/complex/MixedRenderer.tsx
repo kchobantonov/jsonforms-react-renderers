@@ -21,6 +21,7 @@ import {
   withJsonFormsControlProps,
 } from '@jsonforms/react';
 import React, { useMemo } from 'react';
+import { useShadcnComponents } from '../components';
 
 type JsonDataType =
   | 'array'
@@ -145,6 +146,7 @@ export const MixedRendererComponent = ({
   uischema,
   visible,
 }: ControlProps) => {
+  const { Select } = useShadcnComponents();
   const jsonforms = useJsonForms();
   const uischemas = jsonforms.uischemas ?? [];
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
@@ -170,35 +172,47 @@ export const MixedRendererComponent = ({
     return null;
   }
 
+  const renderedControl = (
+    <JsonFormsDispatch
+      schema={selectedSchema}
+      uischema={detailUiSchema}
+      path={path}
+      enabled={enabled}
+      renderers={renderers}
+      cells={cells}
+      readonly={readonly}
+    />
+  );
+  const isStructuredType =
+    selectedType === 'object' || selectedType === 'array';
+
   return (
     <div className='jsonforms-mixed-renderer'>
       <label className='jsonforms-mixed-renderer-type'>
         {label ? <span>{label}</span> : null}
-        <select
+        <Select
           disabled={!enabled}
           value={selectedType}
-          onChange={(event) => {
-            const nextType = event.currentTarget.value as JsonDataType;
+          options={types.map((type) => ({ label: type, value: type }))}
+          onValueChange={(value) => {
+            const nextType = value as JsonDataType;
             const nextSchema = schemaForType(schema, nextType, rootSchema);
             handleChange(path, createDefaultValue(nextSchema, rootSchema));
           }}
-        >
-          {types.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+        />
       </label>
-      <JsonFormsDispatch
-        schema={selectedSchema}
-        uischema={detailUiSchema}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-        readonly={readonly}
-      />
+      {isStructuredType ? (
+        <details
+          className='jsonforms-mixed-renderer-detail'
+          key={selectedType}
+          open
+        >
+          <summary>{selectedType}</summary>
+          {renderedControl}
+        </details>
+      ) : (
+        renderedControl
+      )}
     </div>
   );
 };

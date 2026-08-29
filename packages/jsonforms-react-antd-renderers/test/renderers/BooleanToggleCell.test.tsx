@@ -30,16 +30,17 @@ import {
   UISchemaElement,
 } from '@jsonforms/core';
 import BooleanToggleCell, {
-  materialBooleanToggleCellTester,
-} from '../../src/cells/MaterialBooleanToggleCell';
+  booleanToggleCellTester,
+} from '../../src/cells/BooleanToggleCell';
 import * as ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import { antdRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { JsonFormsStateProvider } from '@jsonforms/react';
 import { initCore, TestEmitter } from './util';
-import { Switch } from '@mui/material';
+import { Switch } from 'antd';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -55,7 +56,7 @@ const uischema: ControlElement = {
   },
 };
 
-describe('Material boolean toggle cell tester', () => {
+describe('Ant Design boolean toggle cell tester', () => {
   const control: ControlElement = {
     type: 'Control',
     scope: '#/properties/foo',
@@ -65,20 +66,20 @@ describe('Material boolean toggle cell tester', () => {
   };
 
   it('should fail', () => {
-    expect(
-      materialBooleanToggleCellTester(undefined, undefined, undefined)
-    ).toBe(NOT_APPLICABLE);
-    expect(materialBooleanToggleCellTester(null, undefined, undefined)).toBe(
+    expect(booleanToggleCellTester(undefined, undefined, undefined)).toBe(
+      NOT_APPLICABLE
+    );
+    expect(booleanToggleCellTester(null, undefined, undefined)).toBe(
+      NOT_APPLICABLE
+    );
+    expect(booleanToggleCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
       NOT_APPLICABLE
     );
     expect(
-      materialBooleanToggleCellTester({ type: 'Foo' }, undefined, undefined)
+      booleanToggleCellTester({ type: 'Control' }, undefined, undefined)
     ).toBe(NOT_APPLICABLE);
     expect(
-      materialBooleanToggleCellTester({ type: 'Control' }, undefined, undefined)
-    ).toBe(NOT_APPLICABLE);
-    expect(
-      materialBooleanToggleCellTester(
+      booleanToggleCellTester(
         control,
         {
           type: 'object',
@@ -88,7 +89,7 @@ describe('Material boolean toggle cell tester', () => {
       )
     ).toBe(NOT_APPLICABLE);
     expect(
-      materialBooleanToggleCellTester(
+      booleanToggleCellTester(
         control,
         {
           type: 'object',
@@ -107,7 +108,7 @@ describe('Material boolean toggle cell tester', () => {
 
     // Not applicable for boolean cell if toggle option is false
     expect(
-      materialBooleanToggleCellTester(
+      booleanToggleCellTester(
         {
           type: 'Control',
           scope: '#/properties/foo',
@@ -129,7 +130,7 @@ describe('Material boolean toggle cell tester', () => {
 
     // Not applicable for boolean cell if toggle option is not given
     expect(
-      materialBooleanToggleCellTester(
+      booleanToggleCellTester(
         {
           type: 'Control',
           scope: '#/properties/foo',
@@ -149,7 +150,7 @@ describe('Material boolean toggle cell tester', () => {
 
   it('should succeed', () => {
     expect(
-      materialBooleanToggleCellTester(
+      booleanToggleCellTester(
         control,
         {
           type: 'object',
@@ -165,7 +166,7 @@ describe('Material boolean toggle cell tester', () => {
   });
 });
 
-describe('Material boolean toggle cell', () => {
+describe('Ant Design boolean toggle cell', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());
@@ -193,7 +194,7 @@ describe('Material boolean toggle cell', () => {
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeTruthy();
   });
 
@@ -212,7 +213,7 @@ describe('Material boolean toggle cell', () => {
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBe(false);
   });
 
@@ -230,7 +231,7 @@ describe('Material boolean toggle cell', () => {
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeFalsy();
   });
 
@@ -245,8 +246,7 @@ describe('Material boolean toggle cell', () => {
     // Make sure a toggle is rendered by checking for the thumb element
     expect(wrapper.find(Switch)).toHaveLength(1);
 
-    const input = wrapper.find('input').first();
-    expect(input.props().type).toBe('checkbox');
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -266,8 +266,9 @@ describe('Material boolean toggle cell', () => {
       </JsonFormsStateProvider>
     );
 
-    const input = wrapper.find('input');
-    input.simulate('change', { target: { value: false } });
+    const input = wrapper.find(Switch);
+    act(() => (input.props().onChange as any)(false));
+    wrapper.update();
     expect(onChangeData.data.foo).toBeFalsy();
   });
 
@@ -289,7 +290,7 @@ describe('Material boolean toggle cell', () => {
     core.data = { ...core.data, foo: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
     expect(onChangeData.data.foo).toBeFalsy();
   });
@@ -312,7 +313,7 @@ describe('Material boolean toggle cell', () => {
     core.data = { ...core.data, foo: undefined };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
   });
 
@@ -334,7 +335,7 @@ describe('Material boolean toggle cell', () => {
     core.data = { ...core.data, foo: null };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
   });
 
@@ -355,7 +356,7 @@ describe('Material boolean toggle cell', () => {
     );
     core.data = { ...core.data, bar: 11 };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -376,7 +377,7 @@ describe('Material boolean toggle cell', () => {
     );
     core.data = { ...core.data, null: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -398,7 +399,7 @@ describe('Material boolean toggle cell', () => {
     core.data = { ...core.data, undefined: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -414,7 +415,7 @@ describe('Material boolean toggle cell', () => {
         />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeTruthy();
   });
 
@@ -425,7 +426,7 @@ describe('Material boolean toggle cell', () => {
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeFalsy();
   });
 
@@ -441,7 +442,7 @@ describe('Material boolean toggle cell', () => {
         />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input');
+    const input = wrapper.find(Switch);
     expect(input.props().id).toBe('myid');
   });
 });

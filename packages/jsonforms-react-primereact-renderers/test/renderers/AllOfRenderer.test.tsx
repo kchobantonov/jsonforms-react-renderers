@@ -34,7 +34,7 @@ import { initCore } from './util';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Material allOf renderer', () => {
+describe('PrimeReact allOf renderer', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());

@@ -1,13 +1,10 @@
 import { JsonForms } from '@jsonforms/react';
 import type { ValidationMode } from '@jsonforms/core';
+import { HandleActionContext } from '@chobantonov/jsonforms-react-primereact-extended-renderers';
 import {
-  primereactCells,
-  primereactRenderers,
-} from '@chobantonov/jsonforms-react-primereact-renderers';
-import {
-  HandleActionContext,
-  primereactExtendedRenderers,
-} from '@chobantonov/jsonforms-react-primereact-extended-renderers';
+  primereactWebcomponentCells,
+  primereactWebcomponentRenderers,
+} from './renderers';
 import { PrimeReactProvider } from 'primereact/api';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
@@ -233,11 +230,8 @@ export class JsonFormsPrimeReactElement extends HTMLElement {
                 translate,
               }}
               additionalErrors={parseJson(this.state.additionalErrors) as any}
-              renderers={[
-                ...primereactRenderers,
-                ...primereactExtendedRenderers,
-              ]}
-              cells={primereactCells}
+              renderers={primereactWebcomponentRenderers}
+              cells={primereactWebcomponentCells}
               onChange={(event) => this.dispatch('change', event)}
             />
           </HandleActionContext.Provider>

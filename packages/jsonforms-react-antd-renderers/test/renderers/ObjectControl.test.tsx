@@ -63,7 +63,7 @@ const uischema2: ControlElement = {
   scope: '#/properties/foo',
 };
 
-describe('Material object renderer tester', () => {
+describe('Ant Design object renderer tester', () => {
   test('should fail', () => {
     expect(objectControlTester(undefined, undefined, undefined)).toBe(
       NOT_APPLICABLE
@@ -74,9 +74,9 @@ describe('Material object renderer tester', () => {
     expect(objectControlTester({ type: 'Foo' }, undefined, undefined)).toBe(
       NOT_APPLICABLE
     );
-    expect(
-      objectControlTester({ type: 'Control' }, undefined, undefined)
-    ).toBe(NOT_APPLICABLE);
+    expect(objectControlTester({ type: 'Control' }, undefined, undefined)).toBe(
+      NOT_APPLICABLE
+    );
     expect(
       objectControlTester(
         uischema2,
@@ -120,7 +120,7 @@ describe('Material object renderer tester', () => {
   });
 });
 
-describe('Material object control', () => {
+describe('Ant Design object control', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());

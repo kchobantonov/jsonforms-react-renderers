@@ -7,6 +7,8 @@ import {
   templateRendererTester,
 } from './renderers/TemplateLayoutRenderer';
 import { ButtonRenderer, buttonRendererTester } from './renderers/ButtonRenderer';
+import { TemplateRenderer, namedTemplateTester } from './renderers/TemplateRenderer';
+import { SlotRenderer, slotRendererTester } from './renderers/SlotRenderer';
 
 export type CreateExtendedRenderersOptions = {
   components?: Record<string, React.ComponentType<any>>;
@@ -48,6 +50,14 @@ export const createExtendedRenderers = (
     {
       tester: templateRendererTester,
       renderer: WrappedTemplateLayoutRenderer,
+    },
+    {
+      tester: namedTemplateTester,
+      renderer: TemplateRenderer,
+    },
+    {
+      tester: slotRendererTester,
+      renderer: SlotRenderer,
     },
   ];
 };

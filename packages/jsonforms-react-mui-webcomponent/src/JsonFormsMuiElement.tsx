@@ -3,18 +3,14 @@ import createCache, { EmotionCache } from '@emotion/cache';
 import { JsonForms } from '@jsonforms/react';
 import type { ValidationMode } from '@jsonforms/core';
 import {
-  materialCells,
-  materialRenderers,
-} from '@jsonforms/material-renderers';
-import {
   createJsonFormsMuiTheme,
   HandleActionContext,
-  muiExtendedRenderers,
   MuiRendererSettings,
 } from '@chobantonov/jsonforms-react-mui-extended-renderers';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
+import { muiWebcomponentCells, muiWebcomponentRenderers } from './renderers';
 
 export const JSON_FORMS_MUI_TAG = 'jsonforms-react-mui';
 
@@ -311,8 +307,8 @@ export class JsonFormsMuiElement extends HTMLElement {
                   translate,
                 }}
                 additionalErrors={parseJson(this.state.additionalErrors) as any}
-                renderers={[...materialRenderers, ...muiExtendedRenderers]}
-                cells={materialCells}
+                renderers={muiWebcomponentRenderers}
+                cells={muiWebcomponentCells}
                 onChange={(event) => this.dispatch('change', event)}
               />
             </HandleActionContext.Provider>

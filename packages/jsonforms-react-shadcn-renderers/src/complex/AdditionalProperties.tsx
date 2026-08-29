@@ -15,6 +15,7 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
 import React, { useMemo, useState } from 'react';
+import { useShadcnComponents } from '../components';
 
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
@@ -243,6 +244,7 @@ export const AdditionalProperties = ({
   schema,
   uischema,
 }: AdditionalPropertiesProps) => {
+  const { Button, Input } = useShadcnComponents();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
@@ -371,7 +373,7 @@ export const AdditionalProperties = ({
   return (
     <div className='jsonforms-additional-properties'>
       <div className='jsonforms-additional-properties-add'>
-        <input
+        <Input
           aria-label={label ? `Add property to ${label}` : 'Add property'}
           disabled={!enabled || readonly}
           placeholder='Property name'
@@ -384,13 +386,13 @@ export const AdditionalProperties = ({
             }
           }}
         />
-        <button
+        <Button
           disabled={addPropertyDisabled}
           type='button'
           onClick={addProperty}
         >
           Add
-        </button>
+        </Button>
       </div>
       {propertyNameError ? (
         <div className='jsonforms-additional-properties-error'>
@@ -434,7 +436,7 @@ export const AdditionalProperties = ({
                 <div className='jsonforms-additional-property-actions'>
                   {isRenaming ? (
                     <>
-                      <input
+                      <Input
                         aria-label={`Rename ${item.propertyName}`}
                         autoFocus
                         disabled={readonly}
@@ -452,14 +454,15 @@ export const AdditionalProperties = ({
                           }
                         }}
                       />
-                      <button
+                      <Button
                         disabled={renameDisabled}
                         type='button'
                         onClick={() => renameProperty(item.propertyName)}
                       >
                         Save
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant='ghost'
                         type='button'
                         onClick={() => {
                           setRenamingPropertyName(null);
@@ -467,7 +470,7 @@ export const AdditionalProperties = ({
                         }}
                       >
                         Cancel
-                      </button>
+                      </Button>
                       {renameError ? (
                         <div className='jsonforms-additional-properties-error'>
                           {renameError}
@@ -476,7 +479,8 @@ export const AdditionalProperties = ({
                     </>
                   ) : (
                     <>
-                      <button
+                      <Button
+                        variant='outline'
                         disabled={readonly}
                         type='button'
                         onClick={() => {
@@ -485,14 +489,15 @@ export const AdditionalProperties = ({
                         }}
                       >
                         Rename
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant='destructive'
                         disabled={removePropertyDisabled}
                         type='button'
                         onClick={() => removeProperty(item.propertyName)}
                       >
                         Delete
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>

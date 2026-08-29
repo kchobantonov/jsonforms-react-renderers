@@ -23,7 +23,7 @@ export default [
       sourcemap: true,
     },
     plugins: [
-      typescript(),
+      typescript({ clean: true }),
       cleanup({ extensions: ['js', 'ts', 'jsx', 'tsx'] }),
       visualizer({ open: false }),
     ],
@@ -37,6 +37,7 @@ export default [
     },
     plugins: [
       typescript({
+        clean: true,
         tsconfigOverride: {
           compilerOptions: {
             target: 'ES5',

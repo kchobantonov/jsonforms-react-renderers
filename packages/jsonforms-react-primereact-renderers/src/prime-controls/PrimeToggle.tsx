@@ -33,6 +33,7 @@ export const PrimeToggle = React.memo(function PrimeToggle(
 ) {
   const {
     data,
+    id,
     className,
     enabled,
     uischema,
@@ -47,6 +48,7 @@ export const PrimeToggle = React.memo(function PrimeToggle(
 
   return (
     <InputSwitch
+      inputId={id}
       checked={checked}
       onChange={(e) => handleChange(path, e.value)}
       className={className}

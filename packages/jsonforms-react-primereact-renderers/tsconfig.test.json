@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "ES5"
-  }
+    "types": ["vitest/globals"]
+  },
+  "include": ["test/**/*.ts", "test/**/*.tsx"]
 }

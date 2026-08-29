@@ -29,12 +29,17 @@ import CategorizationLayout, {
   categorizationTester,
 } from './CategorizationLayout';
 import ArrayLayout, { arrayLayoutTester } from './ArrayLayoutRenderer';
+import CategorizationStepperLayout, {
+  categorizationStepperTester,
+} from './CategorizationStepperLayout';
 
 export {
   ArrayLayout,
   arrayLayoutTester,
   CategorizationLayout,
   categorizationTester,
+  CategorizationStepperLayout,
+  categorizationStepperTester,
   GroupLayout,
   antdGroupTester,
   HorizontalLayout,

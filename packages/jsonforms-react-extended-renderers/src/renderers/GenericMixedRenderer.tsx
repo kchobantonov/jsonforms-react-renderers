@@ -170,6 +170,20 @@ export const GenericMixedRendererComponent = ({
     return null;
   }
 
+  const renderedControl = (
+    <JsonFormsDispatch
+      schema={selectedSchema}
+      uischema={detailUiSchema}
+      path={path}
+      enabled={enabled}
+      renderers={renderers}
+      cells={cells}
+      readonly={readonly}
+    />
+  );
+  const isStructuredType =
+    selectedType === 'object' || selectedType === 'array';
+
   return (
     <div className='jsonforms-mixed-renderer'>
       <label className='jsonforms-mixed-renderer-type'>
@@ -190,15 +204,18 @@ export const GenericMixedRendererComponent = ({
           ))}
         </select>
       </label>
-      <JsonFormsDispatch
-        schema={selectedSchema}
-        uischema={detailUiSchema}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-        readonly={readonly}
-      />
+      {isStructuredType ? (
+        <details
+          className='jsonforms-mixed-renderer-detail'
+          key={selectedType}
+          open
+        >
+          <summary>{selectedType}</summary>
+          {renderedControl}
+        </details>
+      ) : (
+        renderedControl
+      )}
     </div>
   );
 };
@@ -232,7 +249,9 @@ export const isMixedSchema = (
         schemaPath,
         context?.rootSchema
       );
-      return Array.isArray((currentDataSchema as JsonSchema7 | undefined)?.type);
+      return Array.isArray(
+        (currentDataSchema as JsonSchema7 | undefined)?.type
+      );
     }
   }
 

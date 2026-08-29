@@ -72,14 +72,14 @@ export function useTrackedSnapshot(proxy: any) {
     const unsubscribe = subscribe(proxy, () => {
       let hasRelevantChange = false;
 
-      for (const path of accessedKeys.current) {
+      accessedKeys.current.forEach((path) => {
         const currentValue = getValueAtPath(proxy.__val__, path);
         const previousValue = previousValues.current.get(path);
         if (currentValue !== previousValue) {
           hasRelevantChange = true;
           previousValues.current.set(path, currentValue);
         }
-      }
+      });
 
       if (hasRelevantChange) forceUpdate({});
     });

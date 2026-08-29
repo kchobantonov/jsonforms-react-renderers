@@ -33,13 +33,14 @@ import BooleanToggleControl, {
   booleanToggleControlTester,
 } from '../../src/controls/BooleanToggleControl';
 import * as ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import { primereactRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { JsonFormsStateProvider } from '@jsonforms/react';
 import { initCore, TestEmitter } from './util';
-import { Switch } from '@mui/material';
+import { InputSwitch as Switch } from 'primereact/inputswitch';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -61,7 +62,7 @@ const uischema: ControlElement = {
   },
 };
 
-describe('Material boolean toggle control tester', () => {
+describe('PrimeReact boolean toggle control tester', () => {
   const control: ControlElement = {
     type: 'Control',
     scope: '#/properties/foo',
@@ -171,7 +172,7 @@ describe('Material boolean toggle control tester', () => {
   });
 });
 
-describe('Material boolean toggle control', () => {
+describe('PrimeReact boolean toggle control', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());
@@ -201,7 +202,7 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeTruthy();
   });
 
@@ -222,7 +223,7 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBe(false);
   });
 
@@ -242,7 +243,7 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={control} />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeFalsy();
   });
 
@@ -259,8 +260,7 @@ describe('Material boolean toggle control', () => {
     // Make sure a toggle is rendered by checking for the thumb element
     expect(wrapper.find(Switch)).toHaveLength(1);
 
-    const input = wrapper.find('input').first();
-    expect(input.props().type).toBe('checkbox');
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -282,8 +282,9 @@ describe('Material boolean toggle control', () => {
       </JsonFormsStateProvider>
     );
 
-    const input = wrapper.find('input');
-    input.simulate('change', { target: { value: false } });
+    const input = wrapper.find(Switch);
+    act(() => (input.props().onChange as any)({ value: false }));
+    wrapper.update();
     expect(onChangeData.data.foo).toBeFalsy();
   });
 
@@ -307,7 +308,7 @@ describe('Material boolean toggle control', () => {
     core.data = { ...core.data, foo: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
     expect(onChangeData.data.foo).toBeFalsy();
   });
@@ -332,7 +333,7 @@ describe('Material boolean toggle control', () => {
     core.data = { ...core.data, foo: undefined };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
   });
 
@@ -356,7 +357,7 @@ describe('Material boolean toggle control', () => {
     core.data = { ...core.data, foo: null };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeFalsy();
   });
 
@@ -379,7 +380,7 @@ describe('Material boolean toggle control', () => {
     );
     core.data = { ...core.data, bar: 11 };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -402,7 +403,7 @@ describe('Material boolean toggle control', () => {
     );
     core.data = { ...core.data, null: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -426,7 +427,7 @@ describe('Material boolean toggle control', () => {
     core.data = { ...core.data, undefined: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
     wrapper.update();
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().checked).toBeTruthy();
   });
 
@@ -443,7 +444,7 @@ describe('Material boolean toggle control', () => {
         />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeTruthy();
   });
 
@@ -456,7 +457,7 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={uischema} />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input').first();
+    const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeFalsy();
   });
 
@@ -469,8 +470,8 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input');
-    expect(input.props().id).toBe('myid-input');
+    const input = wrapper.find(Switch);
+    expect(input.props().inputId).toBe('myid-input');
   });
 
   it('unfocused description displays and is referenced by aria-describedby', () => {
@@ -487,9 +488,9 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input');
-    expect(input.props()['aria-describedby']).toBe('myid-help1');
-    const description = wrapper.find('#myid-help1').first();
+    const input = wrapper.find(Switch);
+    expect(input.props()['aria-describedby']).toBe('myid-input-help');
+    const description = wrapper.find('#myid-input-help').first();
     expect(description.text()).toBe('My description');
   });
 
@@ -502,7 +503,7 @@ describe('Material boolean toggle control', () => {
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
       </JsonFormsStateProvider>
     );
-    const input = wrapper.find('input');
-    expect(input.props()['aria-describedby']).toBe('myid-tip');
+    const input = wrapper.find(Switch);
+    expect(input.props()['aria-describedby']).toBeUndefined();
   });
 });

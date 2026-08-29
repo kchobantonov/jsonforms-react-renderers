@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ShadcnComponentsProvider,
   shadcnCells,
   shadcnRenderers,
 } from '../../jsonforms-react-shadcn-renderers/src/index';
@@ -9,7 +10,7 @@ import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
   defaultShadcnRendererSettings,
-  shadcnExtendedRenderers,
+  createShadcnExtendedRenderers,
 } from '../../jsonforms-react-shadcn-extended-renderers/src/index';
 import {
   JSON_FORMS_SHADCN_TAG,
@@ -20,7 +21,10 @@ import {
   DemoShellProps,
   ProviderSettingsProps,
 } from '../../jsonforms-react-demo-common/src/App';
+import './styles/globals.css';
 import { shadcnDemoUi } from './DemoUi';
+import { shadcnComponents } from './components/jsonforms';
+import './components/jsonforms/styles.css';
 
 const ShadcnDemoShell = ({
   brand,
@@ -130,7 +134,9 @@ const ShadcnDemoShell = ({
         !sidebarOpen || formOnly ? ' no-sidebar' : ''
       }`}
     >
-      {children}
+      <ShadcnComponentsProvider components={shadcnComponents}>
+        {children}
+      </ShadcnComponentsProvider>
     </main>
 
     {settingsOpen && (
@@ -248,8 +254,12 @@ const ShadcnSettings = ({ settings, setSettings }: ProviderSettingsProps) => {
 
 registerJsonFormsShadcn();
 
+const shadcnDemoExtendedRenderers = createShadcnExtendedRenderers({
+  components: shadcnComponents,
+});
+
 renderExample(
-  shadcnRenderers.concat(shadcnExtendedRenderers),
+  shadcnRenderers.concat(shadcnDemoExtendedRenderers),
   shadcnCells,
   ShadcnWrapper,
   {

@@ -64,6 +64,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
   //   : null;
   // const secondFormHelperText = showDescription && !isValid ? errors : null;
   const help = !isValid ? errors : showDescription ? description : null;
+  const helpId = help ? `${id}-input-help` : undefined;
 
   const InnerComponent = input;
   const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
@@ -78,7 +79,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       hasFeedback={!isValid}
       validateStatus={isValid ? 'success' : 'error'}
       label={input !== AntdCheckbox ? label : ''}
-      help={help}
+      help={help ? <span id={helpId}>{help}</span> : null}
       style={style}
       htmlFor={id + '-input'}
       id={id}
@@ -89,6 +90,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
         inputProps={{
           onFocus,
           onBlur,
+          'aria-describedby': helpId,
         }}
         id={id + '-input'}
         isValid={isValid}

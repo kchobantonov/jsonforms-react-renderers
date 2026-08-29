@@ -56,7 +56,7 @@ const uischema: ControlElement = {
   },
 };
 
-describe('Material oneof radio group tester', () => {
+describe('Ant Design oneof radio group tester', () => {
   it('should return valid rank for oneof enums with radio format', () => {
     const rank = oneOfRadioGroupControlTester(uischema, oneOfSchema, undefined);
     expect(rank).not.toBe(NOT_APPLICABLE);
@@ -76,7 +76,7 @@ describe('Material oneof radio group tester', () => {
   });
 });
 
-describe('Material oneof radio group control', () => {
+describe('Ant Design oneof radio group control', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());

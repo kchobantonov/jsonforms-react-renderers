@@ -13,6 +13,7 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React from 'react';
+import { useShadcnComponents } from '../components';
 
 export const ShadcnArrayRenderer = ({
   addItem,
@@ -28,6 +29,7 @@ export const ShadcnArrayRenderer = ({
   uischema,
   visible,
 }: ArrayLayoutProps) => {
+  const { Button } = useShadcnComponents();
   const ctx = useJsonForms();
   if (!visible) return null;
   const detail =
@@ -60,14 +62,14 @@ export const ShadcnArrayRenderer = ({
     <div className='shadcn-jsonforms-array'>
       <div className='shadcn-jsonforms-array-header'>
         <h3>{label}</h3>
-        <button
+        <Button
           className='shadcn-jsonforms-button'
           type='button'
           disabled={!enabled}
           onClick={addItem(path, createDefaultValue(schema, rootSchema))}
         >
           Add
-        </button>
+        </Button>
       </div>
       {Array.from({ length: data }, (_, index) => {
         const childPath = composePaths(path, `${index}`);
@@ -87,14 +89,15 @@ export const ShadcnArrayRenderer = ({
               renderers={renderers}
               cells={cells}
             />
-            <button
+            <Button
               className='shadcn-jsonforms-button shadcn-jsonforms-button-danger'
+              variant='destructive'
               type='button'
               disabled={!enabled}
               onClick={removeItems(path, [index])}
             >
               Remove
-            </button>
+            </Button>
           </div>
         );
       })}

@@ -7,7 +7,7 @@ import {
 } from '@jsonforms/core';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers } from '../../src';
-import { Tooltip } from '@mui/material';
+import { Tooltip } from 'antd';
 import * as React from 'react';
 
 export const checkTooltip = (

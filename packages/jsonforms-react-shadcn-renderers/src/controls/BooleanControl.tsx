@@ -6,6 +6,7 @@ import {
 } from '@jsonforms/core';
 import React from 'react';
 import { InputShell, makeId } from './InputControl';
+import { useShadcnComponents } from '../components';
 
 export const ShadcnBooleanControl = ({
   data,
@@ -18,6 +19,7 @@ export const ShadcnBooleanControl = ({
   required,
   visible,
 }: ControlProps) => {
+  const { Checkbox } = useShadcnComponents();
   if (!visible) return null;
   const id = makeId(path, label);
 
@@ -30,12 +32,11 @@ export const ShadcnBooleanControl = ({
       errors={errors}
     >
       <label className='shadcn-jsonforms-checkbox'>
-        <input
+        <Checkbox
           id={id}
-          type='checkbox'
           disabled={!enabled}
           checked={Boolean(data)}
-          onChange={(event) => handleChange(path, event.currentTarget.checked)}
+          onCheckedChange={(checked) => handleChange(path, checked)}
         />
         <span>{Boolean(data) ? 'Yes' : 'No'}</span>
       </label>

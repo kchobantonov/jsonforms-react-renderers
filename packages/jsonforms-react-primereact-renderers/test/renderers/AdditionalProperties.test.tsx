@@ -77,7 +77,7 @@ describe('AdditionalProperties', () => {
         <AdditionalProperties
           data={{}}
           enabled
-          handleChange={jest.fn()}
+          handleChange={vi.fn()}
           label='Map'
           path='additionalPropertiesMap'
           rootSchema={rootSchema}

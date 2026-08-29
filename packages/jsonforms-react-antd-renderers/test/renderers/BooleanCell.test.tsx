@@ -25,9 +25,7 @@
 import './MatchMediaMock';
 import * as React from 'react';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
-import BooleanCell, {
-  materialBooleanCellTester,
-} from '../../src/cells/MaterialBooleanCell';
+import BooleanCell, { booleanCellTester } from '../../src/cells/BooleanCell';
 import * as ReactDOM from 'react-dom';
 import { antdRenderers } from '../../src';
 
@@ -47,27 +45,25 @@ const uischema: ControlElement = {
   scope: '#/properties/foo',
 };
 
-describe('Material boolean cell tester', () => {
+describe('Ant Design boolean cell tester', () => {
   const control: ControlElement = {
     type: 'Control',
     scope: '#/properties/foo',
   };
 
   it('should fail', () => {
-    expect(materialBooleanCellTester(undefined, undefined, undefined)).toBe(
+    expect(booleanCellTester(undefined, undefined, undefined)).toBe(
       NOT_APPLICABLE
     );
-    expect(materialBooleanCellTester(null, undefined, undefined)).toBe(
+    expect(booleanCellTester(null, undefined, undefined)).toBe(NOT_APPLICABLE);
+    expect(booleanCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
+      NOT_APPLICABLE
+    );
+    expect(booleanCellTester({ type: 'Control' }, undefined, undefined)).toBe(
       NOT_APPLICABLE
     );
     expect(
-      materialBooleanCellTester({ type: 'Foo' }, undefined, undefined)
-    ).toBe(NOT_APPLICABLE);
-    expect(
-      materialBooleanCellTester({ type: 'Control' }, undefined, undefined)
-    ).toBe(NOT_APPLICABLE);
-    expect(
-      materialBooleanCellTester(
+      booleanCellTester(
         control,
         {
           type: 'object',
@@ -77,7 +73,7 @@ describe('Material boolean cell tester', () => {
       )
     ).toBe(NOT_APPLICABLE);
     expect(
-      materialBooleanCellTester(
+      booleanCellTester(
         control,
         {
           type: 'object',
@@ -97,7 +93,7 @@ describe('Material boolean cell tester', () => {
 
   it('should succeed', () => {
     expect(
-      materialBooleanCellTester(
+      booleanCellTester(
         control,
         {
           type: 'object',
@@ -113,7 +109,7 @@ describe('Material boolean cell tester', () => {
   });
 });
 
-describe('Material boolean cell', () => {
+describe('Ant Design boolean cell', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());

@@ -22,7 +22,7 @@ export default [
     },
     external,
     plugins: [
-      typescript(),
+      typescript({ clean: true }),
       cleanup({ extensions: ['js', 'ts', 'jsx', 'tsx'] }),
       visualizer({ open: false }),
     ],
@@ -36,7 +36,7 @@ export default [
     },
     external,
     plugins: [
-      typescript(),
+      typescript({ clean: true }),
       cleanup({ extensions: ['js', 'ts', 'jsx', 'tsx'] }),
     ],
   },

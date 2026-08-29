@@ -1,5 +1,12 @@
 import { defineJsonFormsExampleConfig } from '../../vite/example-config.mjs';
+import { fileURLToPath, URL } from 'node:url';
 
-export default defineJsonFormsExampleConfig({
+const config = defineJsonFormsExampleConfig({
   packageUrl: import.meta.url,
 });
+
+config.resolve.alias = {
+  '@': fileURLToPath(new URL('./example', import.meta.url)),
+};
+
+export default config;

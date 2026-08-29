@@ -8,6 +8,7 @@ import {
 import { TranslateProps } from '@jsonforms/react';
 import React from 'react';
 import { InputShell, makeId, toStringValue } from './InputControl';
+import { useShadcnComponents } from '../components';
 
 export const ShadcnEnumControl = ({
   data,
@@ -21,6 +22,7 @@ export const ShadcnEnumControl = ({
   required,
   visible,
 }: ControlProps & OwnPropsOfEnum & TranslateProps) => {
+  const { Select } = useShadcnComponents();
   if (!visible) return null;
   const id = makeId(path, label);
 
@@ -32,22 +34,18 @@ export const ShadcnEnumControl = ({
       description={description}
       errors={errors}
     >
-      <select
+      <Select
         id={id}
         className='shadcn-jsonforms-input'
         disabled={!enabled}
         value={toStringValue(data)}
-        onChange={(event) =>
-          handleChange(path, event.currentTarget.value || undefined)
-        }
-      >
-        <option value=''>Select...</option>
-        {options?.map((option) => (
-          <option key={String(option.value)} value={String(option.value)}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        placeholder='Select...'
+        options={(options ?? []).map((option) => ({
+          label: option.label,
+          value: String(option.value),
+        }))}
+        onValueChange={(value) => handleChange(path, value || undefined)}
+      />
     </InputShell>
   );
 };
