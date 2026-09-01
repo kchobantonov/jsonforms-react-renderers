@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { copySync } from 'fs-extra/esm';
-import { copyFileSync, existsSync, mkdirSync, rmdirSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, rmSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -9,33 +9,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const distDir = join(__dirname, 'dist');
-const packagesDir = join(__dirname, '..', '..', 'packages');
+const appsDir = join(__dirname, '..');
 const examples = {
-  'react-antd': join(
-    packagesDir,
-    'jsonforms-react-antd-renderers',
-    'example',
-    'dist'
-  ),
-  'react-primereact': join(
-    packagesDir,
-    'jsonforms-react-primereact-renderers',
-    'example',
-    'dist'
-  ),
-  'react-shadcn': join(
-    packagesDir,
-    'jsonforms-react-shadcn-demo',
-    'example',
-    'dist'
-  ),
-  'react-mui': join(packagesDir, 'jsonforms-react-mui-demo', 'example', 'dist'),
+  'react-antd': join(appsDir, 'jsonforms-react-antd-demo', 'dist'),
+  'react-primereact': join(appsDir, 'jsonforms-react-primereact-demo', 'dist'),
+  'react-shadcn': join(appsDir, 'jsonforms-react-shadcn-demo', 'dist'),
+  'react-mui': join(appsDir, 'jsonforms-react-mui-demo', 'dist'),
 };
 
 // Clean and recreate dist dir
 if (existsSync(distDir)) {
   console.log('Remove existing dist dir...');
-  rmdirSync(distDir, { recursive: true, force: true });
+  rmSync(distDir, { recursive: true, force: true });
 }
 console.log('Create dist dir...');
 mkdirSync(distDir, { recursive: true });

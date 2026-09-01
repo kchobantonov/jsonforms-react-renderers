@@ -1,19 +1,19 @@
 import {
+  and,
   ArrayLayoutProps,
   composePaths,
   createDefaultValue,
   Generate,
   getFirstPrimitiveProp,
-  isObjectArrayControl,
-  isPrimitiveArrayControl,
-  or,
+  schemaTypeIs,
+  uiTypeIs,
   RankedTester,
   rankWith,
   Resolve,
 } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React from 'react';
-import { useShadcnComponents } from '../components';
+import { Button } from '../components/ui/button';
 
 export const ShadcnArrayRenderer = ({
   addItem,
@@ -29,7 +29,6 @@ export const ShadcnArrayRenderer = ({
   uischema,
   visible,
 }: ArrayLayoutProps) => {
-  const { Button } = useShadcnComponents();
   const ctx = useJsonForms();
   if (!visible) return null;
   const detail =
@@ -107,5 +106,5 @@ export const ShadcnArrayRenderer = ({
 
 export const arrayControlTester: RankedTester = rankWith(
   3,
-  or(isObjectArrayControl, isPrimitiveArrayControl)
+  and(uiTypeIs('Control'), schemaTypeIs('array'))
 );

@@ -64,24 +64,18 @@ export const AntdSelect = (
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
-      value={data !== undefined ? data : ''}
-      onChange={(value) => handleChange(path, value || undefined)}
+      value={data}
+      onChange={(value) => handleChange(path, value)}
       style={selectStyle}
-      placeholder={appliedUiSchemaOptions.placeholder}
+      placeholder={appliedUiSchemaOptions.placeholder ?? noneOptionLabel}
       allowClear={enabled}
       {...inputProps}
     >
-      {[
-        <Option value={''} key='jsonforms.enum.none'>
-          <em>{noneOptionLabel}</em>
-        </Option>,
-      ].concat(
-        options.map((optionValue) => (
+      {options.map((optionValue) => (
           <Option value={optionValue.value} key={optionValue.value}>
             {optionValue.label}
           </Option>
-        ))
-      )}
+        ))}
     </Select>
   );
 };

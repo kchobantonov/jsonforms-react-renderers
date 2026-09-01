@@ -7,7 +7,7 @@ export type ShadcnRendererSettings = {
 };
 
 export const defaultShadcnRendererSettings: ShadcnRendererSettings = {
-  accentColor: '#2563eb',
+  accentColor: '#0f172a',
   borderRadius: 6,
   density: 'comfortable',
 };
@@ -16,8 +16,14 @@ export const createShadcnRendererStyle = (
   settings: ShadcnRendererSettings = defaultShadcnRendererSettings,
   dark = false
 ) => {
-  const radius = settings.borderRadius ?? defaultShadcnRendererSettings.borderRadius;
-  const accent = settings.accentColor ?? defaultShadcnRendererSettings.accentColor;
+  const radius =
+    settings.borderRadius ?? defaultShadcnRendererSettings.borderRadius;
+  const configuredAccent =
+    settings.accentColor ?? defaultShadcnRendererSettings.accentColor;
+  const accent =
+    dark && configuredAccent === defaultShadcnRendererSettings.accentColor
+      ? '#f8fafc'
+      : configuredAccent;
   const compact = settings.density === 'compact';
 
   return {

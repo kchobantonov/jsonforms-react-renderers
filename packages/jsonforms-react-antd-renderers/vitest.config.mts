@@ -31,6 +31,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['./test/renderers/MatchMediaMock.ts'],
     include: ['test/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',

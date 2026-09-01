@@ -25,6 +25,10 @@
   min-width: 220px;
 }
 
+.shadcn-jsonforms-layout-row > .shadcn-jsonforms-field {
+  flex: 1 1 220px;
+}
+
 .shadcn-jsonforms-label {
   color: #1f2937;
   font-size: 13px;
@@ -42,9 +46,9 @@
 }
 
 .shadcn-jsonforms-input:focus {
-  border-color: var(--shadcn-jsonforms-accent, #2563eb);
+  border-color: var(--shadcn-jsonforms-accent, #0f172a);
   box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--shadcn-jsonforms-accent, #2563eb) 18%, transparent);
+    color-mix(in srgb, var(--shadcn-jsonforms-accent, #0f172a) 18%, transparent);
   outline: none;
 }
 
@@ -105,7 +109,7 @@
 
 .shadcn-jsonforms-button,
 .shadcn-jsonforms-tab {
-  background: var(--shadcn-jsonforms-accent, #2563eb);
+  background: var(--shadcn-jsonforms-accent, #0f172a);
   border: 0;
   border-radius: var(--shadcn-jsonforms-radius, 6px);
   color: #fff;
@@ -141,11 +145,38 @@
 }
 
 .shadcn-jsonforms-tab[data-active] {
-  background: var(--shadcn-jsonforms-accent, #2563eb);
+  background: var(--shadcn-jsonforms-accent, #0f172a);
   color: #fff;
 }
 
 .shadcn-jsonforms-static-label {
   color: #334155;
   font-weight: 600;
+}
+
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-label,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-group > legend,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array h3,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-object h3,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item-label,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-static-label {
+  color: hsl(var(--foreground));
+}
+
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-input {
+  background: hsl(var(--background));
+  border-color: hsl(var(--input));
+  color: hsl(var(--foreground));
+}
+
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-description {
+  color: hsl(var(--muted-foreground));
+}
+
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-group,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-object,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item,
+.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-tabs {
+  border-color: hsl(var(--border));
 }

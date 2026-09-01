@@ -29,6 +29,7 @@ import { PrimeIcons } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
 import React, { useCallback } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
+import { PrimeClearValueButton } from './PrimeClearValueButton';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -76,26 +77,34 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
   ]);
 
   return (
-    <Calendar
-      value={value as any}
-      selectionMode='single'
-      onChange={onChange}
-      showTime={true}
-      showSeconds={format.includes('s')}
-      formatDateTime={(date) => formatDate(dayjs(date), format)}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
-      style={TIME_PICKER_STYLE}
-      timeOnly
-      showButtonBar
-      showIcon
-      icon={PrimeIcons.CLOCK}
-      invalid={!!errors}
-      {...inputProps}
-    />
+    <span style={{ display: 'block', position: 'relative' }}>
+      <Calendar
+        value={value as any}
+        selectionMode='single'
+        onChange={onChange}
+        showTime={true}
+        showSeconds={format.includes('s')}
+        formatDateTime={(date) => formatDate(dayjs(date), format)}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
+        style={TIME_PICKER_STYLE}
+        timeOnly
+        showButtonBar
+        showIcon
+        icon={PrimeIcons.CLOCK}
+        invalid={!!errors}
+        {...inputProps}
+      />
+      <PrimeClearValueButton
+        clearable={appliedUiSchemaOptions.clearable !== false}
+        data={data}
+        enabled={enabled}
+        onClear={() => handleChange(path, undefined)}
+      />
+    </span>
   );
 });

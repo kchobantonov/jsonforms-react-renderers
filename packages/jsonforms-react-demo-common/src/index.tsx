@@ -28,6 +28,10 @@ import App, { DemoShell, DemoUi, ProviderSettingsProps } from './App';
 import { RankedTester } from '@jsonforms/core';
 import examples from './examples';
 
+export * from './App';
+export * from './DemoSplitter';
+export * from './editorModels';
+
 export const renderExample = (
   renderers: { tester: RankedTester; renderer: any }[],
   cells: { tester: RankedTester; cell: any }[],
@@ -41,6 +45,7 @@ export const renderExample = (
     Ui?: DemoUi;
     ProviderSettings?: React.ComponentType<ProviderSettingsProps>;
     initialProviderSettings?: Record<string, any>;
+    initialLayout?: 'default' | 'demo-and-data';
   } = {}
 ) => {
   const root = createRoot(document.getElementById('root') as HTMLElement);
@@ -58,6 +63,7 @@ export const renderExample = (
       webComponentTag={options.webComponentTag}
       ProviderSettings={options.ProviderSettings}
       initialProviderSettings={options.initialProviderSettings}
+      initialLayout={options.initialLayout}
     />
   );
 };

@@ -1,6 +1,13 @@
 import react from '@vitejs/plugin-react';
 import { createReadStream, cpSync, existsSync, statSync } from 'node:fs';
-import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path';
+import {
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
@@ -60,7 +67,7 @@ const exampleAssets = (packageDir, { staticMounts = [] } = {}) => ({
     }
   },
   writeBundle() {
-    const assetsDir = join(packageDir, 'example', 'dist', 'assets');
+    const assetsDir = join(packageDir, 'dist', 'assets');
     cpSync(logoPath, join(assetsDir, 'logo.svg'));
 
     for (const { directory, buildTarget } of staticMounts) {
@@ -78,22 +85,26 @@ export const defineJsonFormsExampleConfig = ({
     ? [
         {
           mount: '/assets/themes',
-          directory: join(packageDir, 'node_modules', 'primereact', 'resources', 'themes'),
+          directory: join(
+            packageDir,
+            'node_modules',
+            'primereact',
+            'resources',
+            'themes'
+          ),
           buildTarget: 'themes',
         },
       ]
     : [];
 
   return defineConfig({
-    root: 'example',
+    root: packageDir,
     base: './',
     plugins: [react(), exampleAssets(packageDir, { staticMounts })],
     resolve: {
       dedupe: ['react', 'react-dom'],
     },
     server: {
-      host: '127.0.0.1',
-      port: 8080,
       fs: {
         allow: [repoRoot],
       },

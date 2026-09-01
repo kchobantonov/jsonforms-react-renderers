@@ -4,13 +4,19 @@ import {
   MixedRenderer,
   mixedControlTester,
 } from '../../src';
-import { antdExtendedRenderers } from '../../../jsonforms-react-antd-extended-renderers/src';
+import {
+  antdButtonRendererTester,
+  antdColorControlTester,
+  antdDurationControlTester,
+  antdExtendedRenderers,
+  antdNullControlTester,
+  antdSplitLayoutTester,
+} from '../../../jsonforms-react-antd-extended-renderers/src';
 import {
   antdWebcomponentCells,
   antdWebcomponentRenderers,
 } from '../../../jsonforms-react-antd-webcomponent/src/renderers';
 import {
-  buttonRendererTester,
   namedTemplateTester,
   slotRendererTester,
   templateRendererTester,
@@ -26,7 +32,11 @@ describe('Ant Design renderer registries', () => {
 
   it('contains the complete extended renderer set', () => {
     expect(antdExtendedRenderers.map(({ tester }) => tester)).toEqual([
-      buttonRendererTester,
+      antdButtonRendererTester,
+      antdColorControlTester,
+      antdDurationControlTester,
+      antdNullControlTester,
+      antdSplitLayoutTester,
       templateRendererTester,
       namedTemplateTester,
       slotRendererTester,

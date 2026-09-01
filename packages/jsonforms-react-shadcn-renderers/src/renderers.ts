@@ -10,7 +10,11 @@ import {
 import { ShadcnLabelRenderer, labelRendererTester } from './additional';
 import { shadcnCells } from './cells';
 import {
+  allOfControlTester,
+  anyOfControlTester,
   MixedRenderer,
+  ShadcnAllOfControl,
+  ShadcnAnyOfControl,
   ShadcnArrayRenderer,
   ShadcnObjectRenderer,
   arrayControlTester,
@@ -53,6 +57,8 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: allOfControlTester, renderer: ShadcnAllOfControl },
+  { tester: anyOfControlTester, renderer: ShadcnAnyOfControl },
   { tester: mixedControlTester, renderer: MixedRenderer },
   {
     tester: arrayControlTester,

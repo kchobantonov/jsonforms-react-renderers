@@ -5,5 +5,5 @@
     "sourceMap": true
   },
   "exclude": ["node_modules"],
-  "files": ["./src/index.tsx", "./src/register.ts"]
+  "files": ["./src/index.tsx", "./src/register.ts", "./src/vite-env.d.ts"]
 }

@@ -22,7 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import {
   CombinatorRendererProps,
@@ -53,9 +53,13 @@ export const AnyOfRenderer = ({
   id,
   data,
 }: CombinatorRendererProps) => {
-  const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema || 0);
+  const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema ?? -1);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    setSelectedAnyOf(indexOfFittingSchema ?? -1);
+  }, [indexOfFittingSchema]);
 
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
@@ -118,7 +122,7 @@ export const AnyOfRenderer = ({
         rootSchema={rootSchema}
       />
       <Tabs
-        defaultActiveKey={selectedAnyOf.toString()}
+        activeKey={selectedAnyOf >= 0 ? selectedAnyOf.toString() : ''}
         onChange={handleTabChange}
         items={anyOfRenderInfos.map(
           (anyOfRenderInfo, anyOfIndex) =>

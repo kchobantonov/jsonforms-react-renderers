@@ -1,0 +1,615 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.shadcn-jsonforms-root.app-dark .demo-home-logo {
+  filter: invert(1);
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.shadcn-jsonforms-root.app-shell {
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(circle at 20% 20%, hsl(var(--muted) / 0.28), transparent 32%),
+    radial-gradient(circle at 80% 0%, hsl(var(--muted) / 0.18), transparent 28%);
+  color: hsl(var(--foreground));
+}
+
+.shadcn-demo-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: 4rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(16px);
+}
+
+.shadcn-demo-header-inner {
+  display: flex;
+  width: min(80rem, 100%);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.shadcn-demo-brand-group,
+.shadcn-demo-toolbar,
+.shadcn-demo-brand {
+  display: flex;
+  align-items: center;
+}
+
+.shadcn-demo-brand-group {
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.shadcn-demo-brand {
+  min-width: 0;
+  gap: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.shadcn-demo-brand strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shadcn-demo-brand-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  transition: transform 180ms ease;
+}
+
+.shadcn-demo-brand:hover .shadcn-demo-brand-icon {
+  transform: rotate(-10deg);
+}
+
+.shadcn-demo-brand-icon .shadcn-logo {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.shadcn-demo-toolbar {
+  margin-inline-start: auto;
+  gap: 0.1rem;
+}
+
+.shadcn-demo-toolbar button,
+.shadcn-demo-brand-group > button {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.shadcn-demo-toolbar svg,
+.shadcn-demo-brand-group > button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.shadcn-demo-sidebar {
+  position: fixed;
+  z-index: 40;
+  inset-block: 4rem 0;
+  inset-inline-start: 0;
+  width: 16rem;
+  overflow: hidden;
+  border-inline-end: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  padding: 1rem 0.75rem 1.5rem;
+}
+
+.shadcn-demo-search {
+  position: relative;
+  margin: 0.25rem 0.25rem 1rem;
+}
+
+.shadcn-demo-search > svg {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-start: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--muted-foreground));
+  transform: translateY(-50%);
+}
+
+.shadcn-demo-search input {
+  height: 2.5rem;
+  padding-inline-start: 2.25rem;
+}
+
+.shadcn-demo-nav {
+  display: grid;
+  max-height: calc(100vh - 8.5rem);
+  gap: 0.5rem;
+  overflow-y: auto;
+  padding: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.shadcn-demo-nav button {
+  justify-content: flex-start;
+  min-height: 2.75rem;
+  height: auto;
+  padding: 0.65rem 0.75rem;
+  text-align: start;
+  white-space: normal;
+}
+
+.shadcn-demo-nav p {
+  padding: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.shadcn-demo-sidebar-backdrop {
+  display: none;
+}
+
+.shadcn-demo-main {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 5.5rem 2rem 2rem;
+  transition: margin 180ms ease;
+}
+
+.shadcn-demo-main.with-sidebar {
+  margin-inline-start: 16rem;
+}
+
+.shadcn-demo-main.home {
+  padding-bottom: 0;
+}
+
+.shadcn-jsonforms-root .workspace-title {
+  margin: 0 auto 1.5rem;
+}
+
+.shadcn-jsonforms-root .workspace-title h1 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.shadcn-jsonforms-root .demo-tabs {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card, var(--background)));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+}
+
+.shadcn-jsonforms-root .demo-tabs > [data-orientation='horizontal'] {
+  overflow-x: auto;
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 1.25rem 1.25rem 0;
+}
+
+.shadcn-demo-tabs-list {
+  display: flex;
+  width: 100%;
+  min-width: max-content;
+  height: auto;
+  justify-content: flex-start;
+  gap: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.shadcn-demo-tabs-list button {
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: hsl(var(--muted-foreground));
+  padding: 0.65rem 0.75rem;
+}
+
+.shadcn-demo-tabs-list button:nth-child(2) {
+  margin-inline-start: auto;
+}
+
+.shadcn-demo-tabs-list button[data-state='active'] {
+  border-bottom-color: hsl(var(--foreground));
+  color: hsl(var(--foreground));
+}
+
+.shadcn-jsonforms-root .panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 1.25rem;
+}
+
+.shadcn-jsonforms-root .jsonform-toolbar {
+  margin-bottom: 1.25rem;
+}
+
+.shadcn-jsonforms-root .jsonform-toolbar h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.demo-data-layout {
+  min-width: 0;
+}
+
+.demo-data-layout-default,
+.demo-data-layout-stacked {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(18rem, 1fr);
+  gap: 0;
+}
+
+.demo-data-splitter {
+  overflow: visible;
+}
+
+.demo-data-splitter-handle {
+  background: hsl(var(--border));
+}
+
+.demo-data-pane {
+  min-width: 0;
+}
+
+.demo-data-pane > h3,
+.demo-data-pane .editor-heading h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.demo-form-pane {
+  padding-inline-end: 1rem;
+}
+
+.demo-editor-pane {
+  border-inline-start: 1px solid hsl(var(--border));
+  padding-inline-start: 1rem;
+}
+
+.shadcn-jsonforms-root .form-card {
+  margin-top: 1rem;
+  border-color: hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card, var(--background)));
+  color: hsl(var(--foreground));
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.shadcn-jsonforms-root .form-card.standalone {
+  max-width: none;
+  margin: 0;
+}
+
+.demo-editor-pane .editor-heading {
+  min-height: 2.25rem;
+  margin: 0;
+}
+
+.demo-editor-pane .action-row button {
+  width: 2.25rem;
+  padding: 0;
+}
+
+.demo-editor-pane .action-row button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.data-editor-frame {
+  overflow: hidden;
+  margin-top: 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--background));
+}
+
+.shadcn-demo-settings-layer {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+}
+
+.shadcn-demo-settings-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgb(0 0 0 / 0.48);
+}
+
+.shadcn-demo-settings {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-end: 0;
+  box-sizing: border-box;
+  width: min(28rem, 100vw);
+  overflow: hidden;
+  border-inline-start: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  box-shadow: -12px 0 40px rgb(0 0 0 / 0.18);
+}
+
+.shadcn-demo-settings-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1rem;
+}
+
+.shadcn-demo-settings-heading h2,
+.shadcn-demo-settings-heading p {
+  margin: 0;
+}
+
+.shadcn-demo-settings-heading h2 {
+  font-size: 1.125rem;
+}
+
+.shadcn-demo-settings-heading p {
+  margin-top: 0.35rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.shadcn-demo-settings-content {
+  height: calc(100vh - 6.5rem);
+  overflow-y: auto;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.shadcn-jsonforms-root .demo-settings {
+  gap: 1.5rem;
+}
+
+.demo-setting-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.demo-setting-label,
+.shadcn-jsonforms-root .demo-ui-field > span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.demo-segmented-control {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+}
+
+.demo-segmented-control button {
+  border-radius: 0;
+}
+
+.demo-segmented-control button:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.demo-segmented-control button:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+[dir='rtl'] .demo-segmented-control button:first-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+[dir='rtl'] .demo-segmented-control button:last-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.demo-settings-separator {
+  height: 1px;
+  background: hsl(var(--border));
+}
+
+.demo-settings-section-title {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.shadcn-demo-option {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.shadcn-demo-option > button {
+  margin-top: 0.15rem;
+}
+
+.shadcn-demo-option strong,
+.shadcn-demo-option small {
+  display: block;
+}
+
+.shadcn-demo-option strong {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.shadcn-demo-option small,
+.shadcn-jsonforms-root .demo-ui-field small {
+  margin-top: 0.2rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.shadcn-jsonforms-root .demo-ui-field input {
+  width: 100%;
+  height: 2.5rem;
+  box-sizing: border-box;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 0 0.75rem;
+}
+
+.shadcn-jsonforms-root .provider-settings {
+  border-color: hsl(var(--border));
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.shadcn-jsonforms-root .demo-home {
+  min-height: calc(100vh - 4rem);
+}
+
+@media (max-width: 1100px) {
+  .demo-data-layout-default,
+  .demo-data-layout-stacked {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .demo-form-pane {
+    padding-inline-end: 0;
+  }
+
+  .demo-editor-pane {
+    border-inline-start: 0;
+    border-top: 1px solid hsl(var(--border));
+    padding: 1.5rem 0 0;
+  }
+}
+
+@media (max-width: 1279px) {
+  .shadcn-demo-sidebar-backdrop {
+    position: fixed;
+    z-index: 35;
+    inset: 4rem 0 0;
+    display: block;
+    width: 100%;
+    border: 0;
+    background: rgb(0 0 0 / 0.45);
+  }
+
+  .shadcn-demo-main.with-sidebar {
+    margin-inline-start: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .shadcn-demo-header-inner {
+    padding: 0 0.5rem;
+  }
+
+  .shadcn-demo-brand strong {
+    display: none;
+  }
+
+  .shadcn-demo-toolbar {
+    gap: 0;
+  }
+
+  .shadcn-demo-toolbar button,
+  .shadcn-demo-brand-group > button {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .shadcn-demo-main {
+    padding: 5rem 1rem 1rem;
+  }
+
+  .shadcn-jsonforms-root .panel,
+  .shadcn-jsonforms-root .form-card {
+    padding: 1rem;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark,
+  .app-dark {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 22%;
+    --ring: 0 0% 83%;
+  }
+
+  * {
+    @apply border-border;
+  }
+}

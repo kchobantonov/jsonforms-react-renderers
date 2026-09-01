@@ -28,6 +28,7 @@ import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
 import React, { useCallback } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
+import { PrimeClearValueButton } from './PrimeClearValueButton';
 
 const JSON_SCHEMA_DATE_FORMATS = ['YYYY-MM-DD'];
 const DATE_PICKER_STYLE = {
@@ -75,22 +76,30 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
   }
 
   return (
-    <Calendar
-      value={value as any}
-      selectionMode='single'
-      onChange={onChange}
-      formatDateTime={(date) => formatDate(dayjs(date), format)}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      style={DATE_PICKER_STYLE}
-      showButtonBar
-      showIcon
-      view={view}
-      invalid={!!errors}
-      {...inputProps}
-    />
+    <span style={{ display: 'block', position: 'relative' }}>
+      <Calendar
+        value={value as any}
+        selectionMode='single'
+        onChange={onChange}
+        formatDateTime={(date) => formatDate(dayjs(date), format)}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        style={DATE_PICKER_STYLE}
+        showButtonBar
+        showIcon
+        view={view}
+        invalid={!!errors}
+        {...inputProps}
+      />
+      <PrimeClearValueButton
+        clearable={appliedUiSchemaOptions.clearable !== false}
+        data={data}
+        enabled={enabled}
+        onClear={() => handleChange(path, undefined)}
+      />
+    </span>
   );
 });

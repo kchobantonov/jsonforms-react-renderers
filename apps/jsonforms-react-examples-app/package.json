@@ -4,9 +4,23 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "build": "node prepare-examples-app.js",
+    "dev": "vite dist",
+    "preview": "vite preview --outDir dist",
+    "clean": "rimraf dist",
+    "test": "echo 'Nothing to do'"
+  },
+  "dependencies": {
+    "jsonforms-react-antd-demo": "workspace:*",
+    "jsonforms-react-mui-demo": "workspace:*",
+    "jsonforms-react-primereact-demo": "workspace:*",
+    "jsonforms-react-shadcn-demo": "workspace:*"
+  },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
-    "fs-extra": "^11.1.0"
+    "fs-extra": "^11.1.0",
+    "rimraf": "^3.0.2",
+    "vite": "^5.4.11"
   }
 }

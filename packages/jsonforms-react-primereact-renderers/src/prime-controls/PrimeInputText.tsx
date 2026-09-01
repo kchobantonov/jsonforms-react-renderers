@@ -33,6 +33,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Password, PasswordProps } from 'primereact/password';
 import React, { CSSProperties, useState } from 'react';
 import { useDebouncedChange } from '../util';
+import { PrimeClearValueButton } from './PrimeClearValueButton';
 
 const eventToValue = (ev: any) =>
   ev.target.value === '' ? undefined : ev.target.value;
@@ -65,7 +66,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
 
-  const [inputText, onChange, _onClear] = useDebouncedChange(
+  const [inputText, onChange, onClear] = useDebouncedChange(
     handleChange,
     '',
     data,
@@ -117,19 +118,27 @@ export const PrimeInputText = React.memo(function PrimeInputText(
   }
 
   return (
-    <InputComponent
-      value={inputText}
-      onChange={onChange}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      style={inputStyle}
-      maxLength={maxLength}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      {...specificProps}
-      invalid={!!errors}
-      {...inputProps}
-    />
+    <span style={{ display: 'block', position: 'relative' }}>
+      <InputComponent
+        value={inputText}
+        onChange={onChange}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        style={inputStyle}
+        maxLength={maxLength}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        {...specificProps}
+        invalid={!!errors}
+        {...inputProps}
+      />
+      <PrimeClearValueButton
+        clearable={appliedUiSchemaOptions.clearable !== false}
+        data={data}
+        enabled={enabled}
+        onClear={onClear}
+      />
+    </span>
   );
 });

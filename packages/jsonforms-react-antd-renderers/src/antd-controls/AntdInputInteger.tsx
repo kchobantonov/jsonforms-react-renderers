@@ -27,6 +27,7 @@ import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputNumber } from 'antd';
 import { useDebouncedChange } from '../util';
+import { AntdClearableInput } from './AntdClearableInput';
 
 const toNumber = (value: string) =>
   value === '' ? undefined : parseInt(value, 10);
@@ -50,7 +51,7 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
-  const [inputValue, onChange] = useDebouncedChange(
+  const [inputValue, onChange, onClear] = useDebouncedChange(
     handleChange,
     '',
     data,
@@ -59,16 +60,23 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
   );
 
   return (
-    <InputNumber
-      value={inputValue}
-      onChange={onChange}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      style={inputStyle}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      {...inputProps}
-    />
+    <AntdClearableInput
+      clearable={appliedUiSchemaOptions.clearable !== false}
+      data={data}
+      enabled={enabled}
+      onClear={onClear}
+    >
+      <InputNumber
+        value={inputValue}
+        onChange={onChange}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        style={inputStyle}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        {...inputProps}
+      />
+    </AntdClearableInput>
   );
 });

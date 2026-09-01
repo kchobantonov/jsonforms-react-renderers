@@ -2,9 +2,10 @@ import { JsonForms } from '@jsonforms/react';
 import type { ValidationMode } from '@jsonforms/core';
 import { HandleActionContext } from '@chobantonov/jsonforms-react-antd-extended-renderers';
 import { antdWebcomponentCells, antdWebcomponentRenderers } from './renderers';
-import { ConfigProvider, theme as antdTheme } from 'antd';
+import { ConfigProvider, Form, InputProps, theme as antdTheme } from 'antd';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
+import { StyleProvider } from '@ant-design/cssinjs';
 
 export const JSON_FORMS_ANTD_TAG = 'jsonforms-react-antd';
 
@@ -37,6 +38,7 @@ export const parseMode = (value: JsonInput) =>
     : 'system';
 
 export const createTranslator = (translations: JsonInput, locale = 'en') => {
+  if (typeof translations === 'function') return translations as any;
   const dictionary = parseJson(translations) as any;
   return (id: string, defaultMessage: string | undefined) => {
     const value = dictionary?.[locale]?.[id] ?? dictionary?.[id];
@@ -61,6 +63,7 @@ type ElementState = {
   mode?: JsonInput;
   rtl?: JsonInput;
   customStyle?: string;
+  rendererSettings?: JsonInput;
 };
 
 const observedAttributes = [
@@ -78,6 +81,7 @@ const observedAttributes = [
   'mode',
   'rtl',
   'custom-style',
+  'renderer-settings',
 ];
 
 export class JsonFormsAntdElement extends HTMLElement {
@@ -86,6 +90,7 @@ export class JsonFormsAntdElement extends HTMLElement {
   }
 
   private root?: Root;
+  private colorScheme?: MediaQueryList;
   private state: ElementState = {
     validationMode: 'ValidateAndShow',
     locale: 'en',
@@ -102,13 +107,22 @@ export class JsonFormsAntdElement extends HTMLElement {
   connectedCallback() {
     if (!this.shadowRoot) return;
     this.root = createRoot(this.shadowRoot);
+    this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    this.colorScheme.addEventListener('change', this.handleColorSchemeChange);
     this.render();
   }
 
   disconnectedCallback() {
     this.root?.unmount();
+    this.colorScheme?.removeEventListener(
+      'change',
+      this.handleColorSchemeChange
+    );
+    this.colorScheme = undefined;
     this.root = undefined;
   }
+
+  private handleColorSchemeChange = () => this.render();
 
   attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
     this.setValue(name, newValue);
@@ -156,6 +170,9 @@ export class JsonFormsAntdElement extends HTMLElement {
   set customStyle(value: string) {
     this.setValue('customStyle', value);
   }
+  set rendererSettings(value: JsonInput) {
+    this.setValue('rendererSettings', value);
+  }
 
   private setValue(name: string, value: JsonInput) {
     const key = name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
@@ -180,8 +197,11 @@ export class JsonFormsAntdElement extends HTMLElement {
     if (!this.root) return;
 
     const readonly = parseBoolean(this.state.readonly) ?? false;
+    const selectedMode = parseMode(this.state.mode);
     const dark =
-      parseBoolean(this.state.dark) ?? parseMode(this.state.mode) === 'dark';
+      parseBoolean(this.state.dark) ??
+      (selectedMode === 'dark' ||
+        (selectedMode === 'system' && Boolean(this.colorScheme?.matches)));
     const rtl = parseBoolean(this.state.rtl) ?? false;
     const config = parseJson(this.state.config) as
       | Record<string, unknown>
@@ -189,57 +209,76 @@ export class JsonFormsAntdElement extends HTMLElement {
     const translate = this.state.translations
       ? createTranslator(this.state.translations, this.state.locale)
       : undefined;
+    const rendererSettings =
+      (parseJson(this.state.rendererSettings) as Record<string, unknown>) ?? {};
 
     this.root.render(
-      <ConfigProvider
-        direction={rtl ? 'rtl' : 'ltr'}
-        theme={{
-          algorithm: dark
-            ? antdTheme.darkAlgorithm
-            : antdTheme.defaultAlgorithm,
-        }}
-      >
-        <div
-          className={
-            dark ? 'jsonforms-react-antd dark' : 'jsonforms-react-antd'
+      <StyleProvider container={this.shadowRoot ?? undefined}>
+        <ConfigProvider
+          direction={rtl ? 'rtl' : 'ltr'}
+          getPopupContainer={() =>
+            (this.shadowRoot?.querySelector(
+              '.jsonforms-react-antd'
+            ) as HTMLElement | null) ?? this
           }
-          dir={rtl ? 'rtl' : 'ltr'}
+          theme={{
+            algorithm: dark
+              ? antdTheme.darkAlgorithm
+              : antdTheme.defaultAlgorithm,
+          }}
         >
-          <style>{`
+          <div
+            className={
+              dark ? 'jsonforms-react-antd dark' : 'jsonforms-react-antd'
+            }
+            dir={rtl ? 'rtl' : 'ltr'}
+          >
+            <style>{`
             :host { display: block; color-scheme: light dark; }
             .jsonforms-react-antd { box-sizing: border-box; min-width: 0; background: #fff; color: rgba(0, 0, 0, 0.88); }
             .jsonforms-react-antd.dark { color-scheme: dark; background: #141414; color: rgba(255, 255, 255, 0.88); }
             ${this.state.customStyle ?? ''}
           `}</style>
-          <slot name='styles' />
-          <slot name='form-header' />
-          <HandleActionContext.Provider
-            value={(event) => this.dispatch('handle-action', event)}
-          >
-            <JsonForms
-              data={parseJson(this.state.data)}
-              schema={parseJson(this.state.schema)}
-              uischema={parseJson(this.state.uischema)}
-              uischemas={parseJson(this.state.uischemas) as any}
-              config={{
-                ...config,
-                readonly,
-              }}
-              readonly={readonly}
-              validationMode={this.state.validationMode}
-              i18n={{
-                locale: this.state.locale,
-                translate,
-              }}
-              additionalErrors={parseJson(this.state.additionalErrors) as any}
-              renderers={antdWebcomponentRenderers}
-              cells={antdWebcomponentCells}
-              onChange={(event) => this.dispatch('change', event)}
-            />
-          </HandleActionContext.Provider>
-          <slot name='form-footer' />
-        </div>
-      </ConfigProvider>
+            <slot name='styles' />
+            <slot name='form-header' />
+            <Form
+              layout='vertical'
+              variant={
+                (rendererSettings.inputVariant ??
+                  'outlined') as InputProps['variant']
+              }
+            >
+              <HandleActionContext.Provider
+                value={(event) => this.dispatch('handle-action', event)}
+              >
+                <JsonForms
+                  data={parseJson(this.state.data)}
+                  schema={parseJson(this.state.schema)}
+                  uischema={parseJson(this.state.uischema)}
+                  uischemas={parseJson(this.state.uischemas) as any}
+                  config={{
+                    ...config,
+                    readonly,
+                  }}
+                  readonly={readonly}
+                  validationMode={this.state.validationMode}
+                  i18n={{
+                    locale: this.state.locale,
+                    translate,
+                  }}
+                  additionalErrors={
+                    parseJson(this.state.additionalErrors) as any
+                  }
+                  renderers={antdWebcomponentRenderers}
+                  cells={antdWebcomponentCells}
+                  onChange={(event) => this.dispatch('change', event)}
+                />
+              </HandleActionContext.Provider>
+            </Form>
+            <slot name='form-footer' />
+          </div>
+        </ConfigProvider>
+      </StyleProvider>
     );
   }
 }

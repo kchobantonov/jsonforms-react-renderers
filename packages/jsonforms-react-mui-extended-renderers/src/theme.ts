@@ -24,14 +24,44 @@ export const defaultMuiRendererSettings: Required<MuiRendererSettings> = {
 
 export const normalizeMuiRendererSettings = (
   settings: MuiRendererSettings = {}
-): Required<MuiRendererSettings> => ({
-  ...defaultMuiRendererSettings,
-  ...settings,
-  borderRadius: Number.isFinite(Number(settings.borderRadius))
-    ? Number(settings.borderRadius)
-    : defaultMuiRendererSettings.borderRadius,
-  disableAnimations: Boolean(settings.disableAnimations),
-});
+): Required<MuiRendererSettings> => {
+  const runtimeSettings =
+    settings && typeof settings === 'object' ? settings : {};
+  const inputVariant = ['outlined', 'filled', 'standard'].includes(
+    runtimeSettings.inputVariant ?? ''
+  )
+    ? runtimeSettings.inputVariant
+    : defaultMuiRendererSettings.inputVariant;
+  const density = ['comfortable', 'compact'].includes(
+    runtimeSettings.density ?? ''
+  )
+    ? runtimeSettings.density
+    : defaultMuiRendererSettings.density;
+  const primaryColor =
+    typeof runtimeSettings.primaryColor === 'string' &&
+    runtimeSettings.primaryColor.trim() !== ''
+      ? runtimeSettings.primaryColor
+      : defaultMuiRendererSettings.primaryColor;
+  const fontFamily =
+    typeof runtimeSettings.fontFamily === 'string' &&
+    runtimeSettings.fontFamily.trim() !== ''
+      ? runtimeSettings.fontFamily
+      : defaultMuiRendererSettings.fontFamily;
+
+  return {
+    inputVariant: inputVariant as MuiInputVariant,
+    density: density as MuiDensity,
+    primaryColor,
+    borderRadius: Number.isFinite(Number(runtimeSettings.borderRadius))
+      ? Number(runtimeSettings.borderRadius)
+      : defaultMuiRendererSettings.borderRadius,
+    fontFamily,
+    disableAnimations:
+      typeof runtimeSettings.disableAnimations === 'boolean'
+        ? runtimeSettings.disableAnimations
+        : defaultMuiRendererSettings.disableAnimations,
+  };
+};
 
 export const createJsonFormsMuiTheme = (
   settings: MuiRendererSettings = {},

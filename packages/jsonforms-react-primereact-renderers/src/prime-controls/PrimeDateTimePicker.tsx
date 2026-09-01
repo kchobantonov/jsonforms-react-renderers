@@ -32,6 +32,7 @@ import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
 import React, { useCallback } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
+import { PrimeClearValueButton } from './PrimeClearValueButton';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
   'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -78,24 +79,32 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
   ]);
 
   return (
-    <Calendar
-      value={value as any}
-      selectionMode='single'
-      onChange={onChange}
-      formatDateTime={(date) => formatDate(dayjs(date), format)}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      showTime={true}
-      hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
-      style={DATE_PICKER_STYLE}
-      showButtonBar
-      showIcon
-      icon={<i className='pi pi-calendar-clock' />}
-      invalid={!!errors}
-      {...inputProps}
-    />
+    <span style={{ display: 'block', position: 'relative' }}>
+      <Calendar
+        value={value as any}
+        selectionMode='single'
+        onChange={onChange}
+        formatDateTime={(date) => formatDate(dayjs(date), format)}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        showTime={true}
+        hourFormat={appliedUiSchemaOptions.ampm ? '12' : '24'}
+        style={DATE_PICKER_STYLE}
+        showButtonBar
+        showIcon
+        icon={<i className='pi pi-calendar-clock' />}
+        invalid={!!errors}
+        {...inputProps}
+      />
+      <PrimeClearValueButton
+        clearable={appliedUiSchemaOptions.clearable !== false}
+        data={data}
+        enabled={enabled}
+        onClear={() => handleChange(path, undefined)}
+      />
+    </span>
   );
 });

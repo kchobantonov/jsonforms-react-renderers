@@ -23,6 +23,7 @@
   THE SOFTWARE.
 */
 export * from './PrimeCheckbox';
+export * from './PrimeClearValueButton';
 export * from './PrimeDatePicker';
 export * from './PrimeFile';
 export * from './PrimeDateTimePicker';

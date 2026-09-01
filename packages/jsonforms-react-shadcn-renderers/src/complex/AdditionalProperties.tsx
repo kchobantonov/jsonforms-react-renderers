@@ -14,8 +14,19 @@ import {
   UISchemaElement,
 } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
-import { useShadcnComponents } from '../components';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
 
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
@@ -244,13 +255,17 @@ export const AdditionalProperties = ({
   schema,
   uischema,
 }: AdditionalPropertiesProps) => {
-  const { Button, Input } = useShadcnComponents();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
   >(null);
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
+  const additionalPropertiesTitle =
+    typeof objectSchema.additionalProperties === 'object' &&
+    typeof objectSchema.additionalProperties.title === 'string'
+      ? objectSchema.additionalProperties.title
+      : undefined;
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
   const objectData =
     typeof data === 'object' && data !== null && !Array.isArray(data)
@@ -350,12 +365,12 @@ export const AdditionalProperties = ({
       rootSchema,
       propertyToRename
     );
-    if (
-      renameError ||
-      !trimmed ||
-      trimmed === propertyToRename ||
-      !objectData
-    ) {
+    if (trimmed === propertyToRename) {
+      setRenamingPropertyName(null);
+      setRenameValue('');
+      return;
+    }
+    if (renameError || !trimmed || !objectData) {
       return;
     }
 
@@ -370,58 +385,120 @@ export const AdditionalProperties = ({
     setRenameValue('');
   };
 
-  return (
-    <div className='jsonforms-additional-properties'>
-      <div className='jsonforms-additional-properties-add'>
-        <Input
-          aria-label={label ? `Add property to ${label}` : 'Add property'}
-          disabled={!enabled || readonly}
-          placeholder='Property name'
-          type='text'
-          value={newPropertyName}
-          onChange={(event) => setNewPropertyName(event.currentTarget.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              addProperty();
-            }
-          }}
-        />
-        <Button
-          disabled={addPropertyDisabled}
-          type='button'
-          onClick={addProperty}
-        >
-          Add
-        </Button>
-      </div>
-      {propertyNameError ? (
-        <div className='jsonforms-additional-properties-error'>
-          {propertyNameError}
-        </div>
-      ) : null}
-      <div className='jsonforms-additional-properties-list'>
-        {additionalPropertyItems.map((item) => {
-          const isRenaming = renamingPropertyName === item.propertyName;
-          const renameError = validatePropertyName(
-            renameValue.trim(),
-            data,
-            schema,
-            rootSchema,
-            item.propertyName
-          );
-          const renameDisabled =
-            !enabled ||
-            readonly ||
-            Boolean(renameError) ||
-            !renameValue.trim() ||
-            renameValue.trim() === item.propertyName;
+  const closeRenameDialog = () => {
+    setRenamingPropertyName(null);
+    setRenameValue('');
+  };
 
-          return (
-            <div
-              className='jsonforms-additional-property'
-              key={item.propertyName}
-            >
-              <div className='jsonforms-additional-property-control'>
+  const renameError = renamingPropertyName
+    ? validatePropertyName(
+        renameValue.trim(),
+        data,
+        schema,
+        rootSchema,
+        renamingPropertyName
+      )
+    : undefined;
+  const renameDisabled =
+    !enabled || readonly || Boolean(renameError) || !renameValue.trim();
+
+  return (
+    <>
+      <Card className='jsonforms-additional-properties my-1 min-w-full'>
+        <div className='px-4 py-2'>
+          <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
+            {additionalPropertiesTitle ? (
+              <div className='md:flex md:h-10 md:items-center md:pt-6'>
+                <span className='text-sm text-foreground'>
+                  {additionalPropertiesTitle}
+                </span>
+              </div>
+            ) : null}
+            <div className='min-w-0 flex-1'>
+              <label
+                className='mb-1 block text-sm font-medium text-foreground'
+                htmlFor='shadcn-additional-property-name'
+              >
+                Property Name
+              </label>
+              <div className='relative pr-12'>
+                <Input
+                  id='shadcn-additional-property-name'
+                  className='shadcn-jsonforms-input'
+                  aria-label={
+                    label ? `Add property to ${label}` : 'Add property'
+                  }
+                  aria-invalid={Boolean(propertyNameError)}
+                  disabled={!enabled || readonly}
+                  type='text'
+                  value={newPropertyName}
+                  onChange={(event) =>
+                    setNewPropertyName(event.currentTarget.value)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      addProperty();
+                    }
+                  }}
+                />
+                <Button
+                  className='absolute right-0 top-0 h-10 w-10 shrink-0'
+                  disabled={addPropertyDisabled}
+                  size='icon'
+                  type='button'
+                  aria-label='Add property'
+                  title='Add property'
+                  onClick={addProperty}
+                >
+                  <Plus className='h-4 w-4' />
+                </Button>
+              </div>
+              {propertyNameError ? (
+                <div
+                  className='jsonforms-additional-properties-error mt-1 text-sm text-destructive'
+                  role='alert'
+                >
+                  {propertyNameError}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+        <div className='jsonforms-additional-properties-list flex flex-col gap-2 px-4 pb-4'>
+          {additionalPropertyItems.map((item) => (
+            <div className='jsonforms-additional-property relative' key={item.propertyName}>
+              {enabled ? (
+                <div className='jsonforms-additional-property-actions absolute right-1 top-0 z-20 flex items-center gap-0.5'>
+                  <Button
+                    className='h-7 w-7 text-muted-foreground'
+                    variant='ghost'
+                    size='icon'
+                    disabled={readonly}
+                    type='button'
+                    aria-label={`Rename ${item.propertyName}`}
+                    title={`Rename ${item.propertyName}`}
+                    onClick={() => {
+                      setRenamingPropertyName(item.propertyName);
+                      setRenameValue(item.propertyName);
+                    }}
+                  >
+                    <Pencil className='h-4 w-4' />
+                  </Button>
+                  <Button
+                    className='h-7 w-7'
+                    variant='destructive'
+                    size='icon'
+                    disabled={removePropertyDisabled}
+                    type='button'
+                    aria-label={`Delete ${item.propertyName}`}
+                    title={`Delete ${item.propertyName}`}
+                    onClick={() => removeProperty(item.propertyName)}
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </div>
+              ) : null}
+              <div className='jsonforms-additional-property-control min-w-0'>
                 <JsonFormsDispatch
                   schema={item.schema}
                   uischema={item.uischema}
@@ -432,80 +509,62 @@ export const AdditionalProperties = ({
                   readonly={readonly}
                 />
               </div>
-              {enabled ? (
-                <div className='jsonforms-additional-property-actions'>
-                  {isRenaming ? (
-                    <>
-                      <Input
-                        aria-label={`Rename ${item.propertyName}`}
-                        autoFocus
-                        disabled={readonly}
-                        type='text'
-                        value={renameValue}
-                        onChange={(event) =>
-                          setRenameValue(event.currentTarget.value)
-                        }
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            renameProperty(item.propertyName);
-                          } else if (event.key === 'Escape') {
-                            setRenamingPropertyName(null);
-                            setRenameValue('');
-                          }
-                        }}
-                      />
-                      <Button
-                        disabled={renameDisabled}
-                        type='button'
-                        onClick={() => renameProperty(item.propertyName)}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        variant='ghost'
-                        type='button'
-                        onClick={() => {
-                          setRenamingPropertyName(null);
-                          setRenameValue('');
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      {renameError ? (
-                        <div className='jsonforms-additional-properties-error'>
-                          {renameError}
-                        </div>
-                      ) : null}
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant='outline'
-                        disabled={readonly}
-                        type='button'
-                        onClick={() => {
-                          setRenamingPropertyName(item.propertyName);
-                          setRenameValue(item.propertyName);
-                        }}
-                      >
-                        Rename
-                      </Button>
-                      <Button
-                        variant='destructive'
-                        disabled={removePropertyDisabled}
-                        type='button'
-                        onClick={() => removeProperty(item.propertyName)}
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  )}
-                </div>
-              ) : null}
             </div>
-          );
-        })}
-      </div>
-    </div>
+          ))}
+        </div>
+      </Card>
+
+      <Dialog
+        open={renamingPropertyName !== null}
+        onOpenChange={(dialogOpen) => {
+          if (!dialogOpen) closeRenameDialog();
+        }}
+      >
+        <DialogContent className='max-w-sm'>
+          <DialogHeader>
+            <DialogTitle>Rename property</DialogTitle>
+            <DialogDescription>
+              Change the property name without changing its value.
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (renamingPropertyName) {
+                renameProperty(renamingPropertyName);
+              }
+            }}
+          >
+            <label
+              className='mb-2 block text-sm font-medium'
+              htmlFor='shadcn-rename-property'
+            >
+              Property Name
+            </label>
+            <Input
+              id='shadcn-rename-property'
+              autoFocus
+              disabled={readonly}
+              value={renameValue}
+              aria-invalid={Boolean(renameError)}
+              onChange={(event) => setRenameValue(event.currentTarget.value)}
+            />
+            {renameError ? (
+              <p className='mt-2 text-sm text-destructive' role='alert'>
+                {renameError}
+              </p>
+            ) : null}
+            <DialogFooter className='mt-4'>
+              <Button type='button' variant='outline' onClick={closeRenameDialog}>
+                Cancel
+              </Button>
+              <Button type='submit' disabled={renameDisabled}>
+                Rename
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

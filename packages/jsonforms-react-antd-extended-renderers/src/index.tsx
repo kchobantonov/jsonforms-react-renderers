@@ -1,14 +1,21 @@
+import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import {
-  JsonFormsRendererRegistryEntry,
-  RankedTester,
-} from '@jsonforms/core';
-import {
-  createButtonRenderer,
   createExtendedRenderers,
-  buttonRendererTester,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { Alert, Button } from 'antd';
 import React from 'react';
+import {
+  AntdButtonRenderer,
+  AntdColorControlRenderer,
+  AntdDurationControlRenderer,
+  AntdNullControlRenderer,
+  AntdSplitLayoutRenderer,
+  antdButtonRendererTester,
+  antdColorControlTester,
+  antdDurationControlTester,
+  antdNullControlTester,
+  antdSplitLayoutTester,
+} from './renderers';
 
 export type AntdExtendedRendererOptions = {
   components?: Record<string, React.ComponentType<any>>;
@@ -17,19 +24,15 @@ export type AntdExtendedRendererOptions = {
 export const createAntdExtendedRenderers = (
   options: AntdExtendedRendererOptions = {}
 ): JsonFormsRendererRegistryEntry[] => {
-  const buttonRenderer = createButtonRenderer({
-    ButtonComponent: Button,
-    buttonProps: {
-      type: 'primary',
-      htmlType: 'button',
-    },
-  });
-
   return [
     {
-      tester: buttonRendererTester as RankedTester,
-      renderer: buttonRenderer,
+      tester: antdButtonRendererTester,
+      renderer: AntdButtonRenderer,
     },
+    { tester: antdColorControlTester, renderer: AntdColorControlRenderer },
+    { tester: antdDurationControlTester, renderer: AntdDurationControlRenderer },
+    { tester: antdNullControlTester, renderer: AntdNullControlRenderer },
+    { tester: antdSplitLayoutTester, renderer: AntdSplitLayoutRenderer },
     ...createExtendedRenderers({
       components: {
         Alert,
@@ -45,3 +48,4 @@ export const antdExtendedRenderers = createAntdExtendedRenderers();
 export const advancedAntdRenderers = antdExtendedRenderers;
 
 export * from '@chobantonov/jsonforms-react-extended-renderers';
+export * from './renderers';

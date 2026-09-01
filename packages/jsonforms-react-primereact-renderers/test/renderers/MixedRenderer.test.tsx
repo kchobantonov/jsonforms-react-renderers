@@ -9,10 +9,11 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import {
   MixedRenderer,
   mixedControlTester,
+  schemaForType,
 } from '../../src/complex/MixedRenderer';
 
 const schema: JsonSchema = {
-  type: ['object', 'array', 'string'],
+  type: ['object', 'array', 'string', 'null'],
   additionalProperties: true,
   items: { type: 'string' },
 };
@@ -47,5 +48,34 @@ describe('MixedRenderer', () => {
     expect(renderMixedValue('value')).not.toContain(
       'jsonforms-mixed-renderer-detail'
     );
+  });
+
+  it('does not render a value control for null', () => {
+    const html = renderMixedValue(null);
+
+    expect(html).toContain('<option value="null" selected="">null</option>');
+    expect(html).not.toContain('No applicable renderer found');
+  });
+
+  it('does not render a value control before a type is selected', () => {
+    const html = renderMixedValue(undefined);
+
+    expect(html).toContain('Select a type');
+    expect(html).not.toContain('jsonforms-mixed-renderer-detail');
+  });
+
+  it('removes constraints that are invalid for the selected type', () => {
+    expect(
+      schemaForType(
+        {
+          type: ['array', 'string'],
+          items: { type: 'number' },
+          minItems: 2,
+          minLength: 4,
+        },
+        'string',
+        {}
+      )
+    ).toEqual({ type: 'string', minLength: 4 });
   });
 });

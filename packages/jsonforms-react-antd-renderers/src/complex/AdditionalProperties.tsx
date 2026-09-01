@@ -13,8 +13,22 @@ import {
   resolveSchema,
   UISchemaElement,
 } from '@jsonforms/core';
-import { JsonFormsDispatch } from '@jsonforms/react';
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
+import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
+import {
+  Button,
+  Card,
+  Col,
+  Flex,
+  Form,
+  Input,
+  Row,
+  Tooltip,
+  Typography,
+} from 'antd';
 import React, { useMemo, useState } from 'react';
+import { AntdAdditionalPropertyActions } from './additionalProperties/AntdAdditionalPropertyActions';
+import { AntdAdditionalPropertyRenameDialog } from './additionalProperties/AntdAdditionalPropertyRenameDialog';
 
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
@@ -74,12 +88,11 @@ const getMatchingAdditionalPropertySchema = (
   let propSchema: JsonSchema | undefined;
 
   if (objectSchema.patternProperties) {
-    const matchedPattern = Object.keys(objectSchema.patternProperties).find(
-      (pattern) => new RegExp(pattern).test(propName)
-    );
-    if (matchedPattern) {
-      propSchema = objectSchema.patternProperties[matchedPattern];
-    }
+    const matchingSchemas = Object.entries(objectSchema.patternProperties)
+      .filter(([pattern]) => new RegExp(pattern).test(propName))
+      .map(([, candidate]) => candidate);
+    if (matchingSchemas.length === 1) propSchema = matchingSchemas[0];
+    if (matchingSchemas.length > 1) propSchema = { allOf: matchingSchemas };
   }
 
   if (
@@ -243,6 +256,7 @@ export const AdditionalProperties = ({
   schema,
   uischema,
 }: AdditionalPropertiesProps) => {
+  const context = useJsonForms();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
@@ -250,6 +264,7 @@ export const AdditionalProperties = ({
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const restrict = appliedOptions.restrict !== false;
   const objectData =
     typeof data === 'object' && data !== null && !Array.isArray(data)
       ? data
@@ -284,12 +299,29 @@ export const AdditionalProperties = ({
   }
 
   const propertyName = newPropertyName.trim();
-  const propertyNameError = validatePropertyName(
-    propertyName,
-    data,
-    schema,
-    rootSchema
-  );
+  const validateName = (name: string, currentName?: string) => {
+    const basicError = validatePropertyName(
+      name,
+      data,
+      schema,
+      rootSchema,
+      currentName
+    );
+    if (basicError) return basicError;
+    let propertyNames = objectSchema.propertyNames as JsonSchema7 | undefined;
+    if (propertyNames?.$ref) {
+      propertyNames =
+        (resolveSchema(rootSchema, propertyNames.$ref, rootSchema) as
+          | JsonSchema7
+          | undefined) ?? propertyNames;
+    }
+    const ajv = context.core?.ajv;
+    if (propertyNames && ajv && !ajv.validate(propertyNames, name)) {
+      return ajv.errorsText(ajv.errors) || 'The property name is invalid.';
+    }
+    return undefined;
+  };
+  const propertyNameError = validateName(propertyName);
   const maxPropertiesReached =
     objectSchema.maxProperties !== undefined &&
     objectData &&
@@ -301,11 +333,11 @@ export const AdditionalProperties = ({
   const addPropertyDisabled =
     !enabled ||
     readonly ||
-    (appliedOptions.restrict && maxPropertiesReached) ||
+    (restrict && maxPropertiesReached) ||
     Boolean(propertyNameError) ||
     !propertyName;
   const removePropertyDisabled =
-    !enabled || readonly || (appliedOptions.restrict && minPropertiesReached);
+    !enabled || readonly || (restrict && minPropertiesReached);
 
   const addProperty = () => {
     if (addPropertyDisabled) {
@@ -319,10 +351,7 @@ export const AdditionalProperties = ({
       rootSchema,
       allowIfMissing
     );
-    const updatedData =
-      objectData
-        ? { ...objectData }
-        : {};
+    const updatedData = objectData ? { ...objectData } : {};
 
     updatedData[propertyName] = createDefaultValue(
       additionalProperty.schema,
@@ -344,13 +373,7 @@ export const AdditionalProperties = ({
 
   const renameProperty = (propertyToRename: string) => {
     const trimmed = renameValue.trim();
-    const renameError = validatePropertyName(
-      trimmed,
-      data,
-      schema,
-      rootSchema,
-      propertyToRename
-    );
+    const renameError = validateName(trimmed, propertyToRename);
     if (
       renameError ||
       !trimmed ||
@@ -371,139 +394,136 @@ export const AdditionalProperties = ({
     setRenameValue('');
   };
 
-  return (
-    <div className='jsonforms-additional-properties'>
-      <div className='jsonforms-additional-properties-add'>
-        <input
-          aria-label={label ? `Add property to ${label}` : 'Add property'}
-          disabled={!enabled || readonly}
-          placeholder='Property name'
-          type='text'
-          value={newPropertyName}
-          onChange={(event) => setNewPropertyName(event.currentTarget.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              addProperty();
-            }
-          }}
-        />
-        <button
-          disabled={addPropertyDisabled}
-          type='button'
-          onClick={addProperty}
-        >
-          Add
-        </button>
-      </div>
-      {propertyNameError ? (
-        <div className='jsonforms-additional-properties-error'>
-          {propertyNameError}
-        </div>
-      ) : null}
-      <div className='jsonforms-additional-properties-list'>
-        {additionalPropertyItems.map((item) => {
-          const isRenaming = renamingPropertyName === item.propertyName;
-          const renameError = validatePropertyName(
-            renameValue.trim(),
-            data,
-            schema,
-            rootSchema,
-            item.propertyName
-          );
-          const renameDisabled =
-            !enabled ||
-            readonly ||
-            Boolean(renameError) ||
-            !renameValue.trim() ||
-            renameValue.trim() === item.propertyName;
+  const renameError = renamingPropertyName
+    ? validateName(renameValue.trim(), renamingPropertyName)
+    : undefined;
+  const closeRename = () => {
+    setRenamingPropertyName(null);
+    setRenameValue('');
+  };
 
-          return (
-            <div
-              className='jsonforms-additional-property'
-              key={item.propertyName}
+  return (
+    <Card className='jsonforms-additional-properties' size='small'>
+      <Flex vertical gap='middle'>
+        <Row align='bottom' gutter={[12, 8]}>
+          <Col md={5} xs={24}>
+            <Typography.Text>Additional Properties</Typography.Text>
+          </Col>
+          <Col md={18} xs={20}>
+            <Form.Item
+              label='Property Name'
+              validateStatus={
+                newPropertyName && propertyNameError ? 'error' : undefined
+              }
+              style={{ marginBottom: 0 }}
             >
-              <div className='jsonforms-additional-property-control'>
-                <JsonFormsDispatch
-                  schema={item.schema}
-                  uischema={item.uischema}
-                  path={item.path}
-                  enabled={enabled}
-                  renderers={renderers}
-                  cells={cells}
-                  readonly={readonly}
-                />
-              </div>
-              {enabled ? (
-                <div className='jsonforms-additional-property-actions'>
-                  {isRenaming ? (
-                    <>
-                      <input
-                        aria-label={`Rename ${item.propertyName}`}
-                        autoFocus
-                        disabled={readonly}
-                        type='text'
-                        value={renameValue}
-                        onChange={(event) =>
-                          setRenameValue(event.currentTarget.value)
-                        }
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            renameProperty(item.propertyName);
-                          } else if (event.key === 'Escape') {
-                            setRenamingPropertyName(null);
-                            setRenameValue('');
-                          }
-                        }}
-                      />
-                      <button
-                        disabled={renameDisabled}
-                        type='button'
-                        onClick={() => renameProperty(item.propertyName)}
-                      >
-                        Save
-                      </button>
-                      <button
-                        type='button'
-                        onClick={() => {
-                          setRenamingPropertyName(null);
-                          setRenameValue('');
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      {renameError ? (
-                        <div className='jsonforms-additional-properties-error'>
-                          {renameError}
-                        </div>
-                      ) : null}
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        disabled={readonly}
-                        type='button'
-                        onClick={() => {
-                          setRenamingPropertyName(item.propertyName);
-                          setRenameValue(item.propertyName);
-                        }}
-                      >
-                        Rename
-                      </button>
-                      <button
-                        disabled={removePropertyDisabled}
-                        type='button'
-                        onClick={() => removeProperty(item.propertyName)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
+              <Input
+                aria-label={label ? `Add property to ${label}` : 'Add property'}
+                disabled={!enabled || readonly}
+                placeholder='Property name'
+                value={newPropertyName}
+                onChange={(event) =>
+                  setNewPropertyName(event.currentTarget.value)
+                }
+                onPressEnter={addProperty}
+              />
+            </Form.Item>
+          </Col>
+          <Col md={1} xs={4}>
+            <Tooltip title='Add property'>
+              <Button
+                aria-label='Add property'
+                disabled={addPropertyDisabled}
+                icon={<PlusOutlined />}
+                onClick={addProperty}
+                shape='circle'
+                size='small'
+              />
+            </Tooltip>
+          </Col>
+        </Row>
+        {newPropertyName && propertyNameError ? (
+          <Typography.Text
+            className='jsonforms-additional-properties-error'
+            type='danger'
+          >
+            {propertyNameError}
+          </Typography.Text>
+        ) : null}
+        <Flex
+          className='jsonforms-additional-properties-list'
+          vertical
+          gap='middle'
+        >
+          {additionalPropertyItems.map((item) => {
+            return (
+              <Flex
+                align='start'
+                className='jsonforms-additional-property'
+                key={item.propertyName}
+                vertical
+              >
+                <Flex
+                  align='center'
+                  justify='space-between'
+                  style={{ width: '100%' }}
+                >
+                  <Typography.Text strong>{item.propertyName}</Typography.Text>
+                  {enabled ? (
+                    <AntdAdditionalPropertyActions
+                      deleteDisabled={
+                        removePropertyDisabled ||
+                        Boolean(
+                          restrict &&
+                            objectSchema.required?.includes(item.propertyName)
+                        )
+                      }
+                      name={item.propertyName}
+                      onDelete={() => removeProperty(item.propertyName)}
+                      onRename={() => {
+                        setRenamingPropertyName(item.propertyName);
+                        setRenameValue(item.propertyName);
+                      }}
+                      readonly={readonly}
+                    />
+                  ) : null}
+                </Flex>
+                <div
+                  className='jsonforms-additional-property-control'
+                  style={{ width: '100%' }}
+                >
+                  <JsonFormsDispatch
+                    schema={item.schema}
+                    uischema={item.uischema}
+                    path={item.path}
+                    enabled={enabled}
+                    renderers={renderers}
+                    cells={cells}
+                    readonly={readonly}
+                  />
                 </div>
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+              </Flex>
+            );
+          })}
+        </Flex>
+      </Flex>
+      <AntdAdditionalPropertyRenameDialog
+        disabled={
+          !enabled ||
+          Boolean(readonly) ||
+          Boolean(renameError) ||
+          !renameValue.trim() ||
+          renameValue.trim() === renamingPropertyName
+        }
+        error={renameError}
+        oldName={renamingPropertyName}
+        onCancel={closeRename}
+        onChange={setRenameValue}
+        onRename={() => {
+          if (renamingPropertyName) renameProperty(renamingPropertyName);
+        }}
+        value={renameValue}
+      />
+    </Card>
   );
 };

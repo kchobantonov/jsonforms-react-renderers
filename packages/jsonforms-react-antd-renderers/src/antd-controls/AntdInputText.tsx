@@ -22,7 +22,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { AutoComplete, AutoCompleteProps, Input } from 'antd';
 import { PasswordProps } from 'antd/es/input';
@@ -30,14 +29,9 @@ import every from 'lodash/every';
 import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { CSSProperties } from 'react';
 import { useDebouncedChange, useFocus } from '../util';
+import { AntdClearableInput } from './AntdClearableInput';
 
 const eventToValue = (ev: any) => {
   if (ev.target) {
@@ -60,7 +54,6 @@ export const AntdInputText = React.memo(function AntdInputText(
       >;
     }
 ) {
-  const [pointed, setPointed] = useState(false);
   const [focused, onFocus, onBlur] = useFocus();
 
   const {
@@ -78,7 +71,7 @@ export const AntdInputText = React.memo(function AntdInputText(
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
-  const [inputText, onChange, _onClear] = useDebouncedChange(
+  const [inputText, onChange, onClear] = useDebouncedChange(
     handleChange,
     '',
     data,
@@ -123,52 +116,31 @@ export const AntdInputText = React.memo(function AntdInputText(
     (specificProps as PasswordProps).visibilityToggle = true; // be able to display the password as plain text
   }
 
-  const onMouseOver = useCallback(() => setPointed(true), []);
-  const onMouseLeave = useCallback(() => setPointed(false), []);
-
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    const inputWrapper =
-      inputRef.current?.input?.parentElement ||
-      inputRef.current?.textarea?.parentElement;
-
-    if (inputWrapper) {
-      inputWrapper.addEventListener('mouseover', onMouseOver);
-      inputWrapper.addEventListener('mouseleave', onMouseLeave);
-    }
-
-    return () => {
-      if (inputWrapper) {
-        inputWrapper.removeEventListener('mouseover', onMouseOver);
-        inputWrapper.removeEventListener('mouseleave', onMouseLeave);
-      }
-    };
-  }, [inputRef]);
-
   return (
-    <InputComponent
-      ref={inputRef}
-      value={inputText}
-      onChange={onChange}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      style={inputStyle}
-      maxLength={maxLength}
-      allowClear={{
-        clearIcon:
-          enabled && pointed && inputText ? <CloseCircleFilled /> : <></>,
-      }}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      count={
-        maxLength !== undefined ? { max: maxLength, show: focused } : undefined
-      }
-      {...specificProps}
-      {...inputProps}
-    />
+    <AntdClearableInput
+      clearable={appliedUiSchemaOptions.clearable !== false}
+      data={data}
+      enabled={enabled}
+      onClear={onClear}
+    >
+      <InputComponent
+        value={inputText}
+        onChange={onChange}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        style={inputStyle}
+        maxLength={maxLength}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        count={
+          maxLength !== undefined ? { max: maxLength, show: focused } : undefined
+        }
+        {...specificProps}
+        {...inputProps}
+      />
+    </AntdClearableInput>
   );
 });

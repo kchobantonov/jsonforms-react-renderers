@@ -266,6 +266,7 @@ export class JsonFormsMuiElement extends HTMLElement {
     const translate = this.state.translations
       ? createTranslator(this.state.translations, this.state.locale)
       : undefined;
+    const schema = parseJson(this.state.schema);
     const theme = createJsonFormsMuiTheme(this.getMuiSettings(), dark, rtl);
 
     this.root.render(
@@ -291,26 +292,30 @@ export class JsonFormsMuiElement extends HTMLElement {
             <HandleActionContext.Provider
               value={(event) => this.dispatch('handle-action', event)}
             >
-              <JsonForms
-                data={parseJson(this.state.data)}
-                schema={parseJson(this.state.schema)}
-                uischema={parseJson(this.state.uischema)}
-                uischemas={parseJson(this.state.uischemas) as any}
-                config={{
-                  ...config,
-                  readonly,
-                }}
-                readonly={readonly}
-                validationMode={this.state.validationMode}
-                i18n={{
-                  locale: this.state.locale,
-                  translate,
-                }}
-                additionalErrors={parseJson(this.state.additionalErrors) as any}
-                renderers={muiWebcomponentRenderers}
-                cells={muiWebcomponentCells}
-                onChange={(event) => this.dispatch('change', event)}
-              />
+              {schema !== undefined && schema !== null ? (
+                <JsonForms
+                  data={parseJson(this.state.data)}
+                  schema={schema}
+                  uischema={parseJson(this.state.uischema)}
+                  uischemas={parseJson(this.state.uischemas) as any}
+                  config={{
+                    ...config,
+                    readonly,
+                  }}
+                  readonly={readonly}
+                  validationMode={this.state.validationMode}
+                  i18n={{
+                    locale: this.state.locale,
+                    translate,
+                  }}
+                  additionalErrors={
+                    parseJson(this.state.additionalErrors) as any
+                  }
+                  renderers={muiWebcomponentRenderers}
+                  cells={muiWebcomponentCells}
+                  onChange={(event) => this.dispatch('change', event)}
+                />
+              ) : null}
             </HandleActionContext.Provider>
             <slot name='form-footer' />
           </Box>

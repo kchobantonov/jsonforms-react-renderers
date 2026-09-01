@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "dist",
     "sourceMap": true
   },
   "exclude": ["node_modules"],

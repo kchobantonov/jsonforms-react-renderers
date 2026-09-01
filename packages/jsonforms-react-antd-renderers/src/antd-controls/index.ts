@@ -23,6 +23,8 @@
   THE SOFTWARE.
 */
 export * from './AntdCheckbox';
+export * from './AntdClearValueButton';
+export * from './AntdClearableInput';
 export * from './AntdDatePicker';
 export * from './AntdFile';
 export * from './AntdDateTimePicker';

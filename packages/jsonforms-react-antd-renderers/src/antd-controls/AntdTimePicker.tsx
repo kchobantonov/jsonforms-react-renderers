@@ -52,6 +52,7 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
     path,
     handleChange,
     config,
+    isValid,
     inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -85,6 +86,7 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
       placeholder={appliedUiSchemaOptions.placeholder}
       use12Hours={!!appliedUiSchemaOptions.ampm}
       style={TIME_PICKER_STYLE}
+      status={isValid ? undefined : 'error'}
       {...inputProps}
     />
   );

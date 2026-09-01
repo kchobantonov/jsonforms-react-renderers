@@ -6,7 +6,22 @@ JSON Forms eliminates the tedious task of writing fully-featured forms by hand b
 
 ## React Examples App
 
-This package aggregates JSON Forms React examples and makes them reachable via single `index.html` file.
+This project is the selector shell for all JSON Forms React renderer demos. It
+aggregates the independently built Ant Design, Material UI, PrimeReact, and
+Shadcn applications and makes them reachable from one page.
 
-Aggregating the examples assumes that packages were built and their examples bundled.
-Afterwards, the examples app can be aggregated with [prepare-examples-app.js](./prepare-examples-app.js) into folder `dist`.
+From the repository root, build and start the selector with:
+
+```sh
+pnpm run examples-app:dev
+```
+
+The aggregate production output can be created with:
+
+```sh
+pnpm run examples-app:build
+```
+
+The build is written to `dist`. Each renderer remains its own application and
+is copied into a separate subdirectory by
+[prepare-examples-app.js](./prepare-examples-app.js).

@@ -27,6 +27,7 @@ import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputNumber, InputNumberChangeEvent } from 'primereact/inputnumber';
 import { useDebouncedChange } from '../util';
+import { PrimeClearValueButton } from './PrimeClearValueButton';
 
 const eventToValue = (e: InputNumberChangeEvent) =>
   e.value === null ? undefined : e.value;
@@ -50,7 +51,7 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
 
-  const [inputValue, onChange] = useDebouncedChange(
+  const [inputValue, onChange, onClear] = useDebouncedChange(
     handleChange,
     null,
     data,
@@ -59,18 +60,26 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
   );
 
   return (
-    <InputNumber
-      value={inputValue}
-      onChange={onChange}
-      className={className}
-      id={id}
-      disabled={!enabled}
-      autoFocus={appliedUiSchemaOptions.focus}
-      style={inputStyle}
-      placeholder={appliedUiSchemaOptions.placeholder}
-      maxFractionDigits={0}
-      invalid={!!errors}
-      {...inputProps}
-    />
+    <span style={{ display: 'block', position: 'relative' }}>
+      <InputNumber
+        value={inputValue}
+        onChange={onChange}
+        className={className}
+        id={id}
+        disabled={!enabled}
+        autoFocus={appliedUiSchemaOptions.focus}
+        style={inputStyle}
+        placeholder={appliedUiSchemaOptions.placeholder}
+        maxFractionDigits={0}
+        invalid={!!errors}
+        {...inputProps}
+      />
+      <PrimeClearValueButton
+        clearable={appliedUiSchemaOptions.clearable !== false}
+        data={data}
+        enabled={enabled}
+        onClear={onClear}
+      />
+    </span>
   );
 });

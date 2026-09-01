@@ -21,7 +21,13 @@ import {
   withJsonFormsControlProps,
 } from '@jsonforms/react';
 import React, { useMemo } from 'react';
-import { useShadcnComponents } from '../components';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 type JsonDataType =
   | 'array'
@@ -41,6 +47,44 @@ const ANY_TYPES: JsonDataType[] = [
   'object',
   'string',
 ];
+
+const ARRAY_KEYWORDS = [
+  'items',
+  'maxItems',
+  'minItems',
+  'uniqueItems',
+] as const;
+const OBJECT_KEYWORDS = [
+  'additionalProperties',
+  'dependencies',
+  'dependentRequired',
+  'dependentSchemas',
+  'maxProperties',
+  'minProperties',
+  'patternProperties',
+  'properties',
+  'propertyNames',
+  'required',
+] as const;
+const STRING_KEYWORDS = [
+  'contentEncoding',
+  'contentMediaType',
+  'format',
+  'maxLength',
+  'minLength',
+  'pattern',
+] as const;
+const NUMBER_KEYWORDS = [
+  'exclusiveMaximum',
+  'exclusiveMinimum',
+  'maximum',
+  'minimum',
+  'multipleOf',
+] as const;
+const removeKeywords = (schema: JsonSchema7, keywords: readonly string[]) =>
+  keywords.forEach(
+    (keyword) => delete (schema as Record<string, unknown>)[keyword]
+  );
 
 const getJsonDataType = (value: any): JsonDataType | null => {
   if (typeof value === 'string') {
@@ -81,7 +125,7 @@ const getSchemaTypes = (schema: JsonSchema): JsonDataType[] => {
   return ANY_TYPES;
 };
 
-const schemaForType = (
+export const schemaForType = (
   schema: JsonSchema,
   type: JsonDataType,
   rootSchema: JsonSchema
@@ -90,6 +134,15 @@ const schemaForType = (
     ...(typeof schema === 'object' ? (schema as JsonSchema7) : {}),
     type,
   };
+  delete nextSchema.anyOf;
+  delete nextSchema.oneOf;
+  delete nextSchema.allOf;
+  if (type !== 'array') removeKeywords(nextSchema, ARRAY_KEYWORDS);
+  if (type !== 'object') removeKeywords(nextSchema, OBJECT_KEYWORDS);
+  if (type !== 'string') removeKeywords(nextSchema, STRING_KEYWORDS);
+  if (type !== 'integer' && type !== 'number') {
+    removeKeywords(nextSchema, NUMBER_KEYWORDS);
+  }
 
   if (type === 'object') {
     nextSchema.additionalProperties =
@@ -146,25 +199,34 @@ export const MixedRendererComponent = ({
   uischema,
   visible,
 }: ControlProps) => {
-  const { Select } = useShadcnComponents();
   const jsonforms = useJsonForms();
   const uischemas = jsonforms.uischemas ?? [];
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
+  const dataType = getJsonDataType(data);
   const selectedType =
-    getJsonDataType(data) ?? types.find((type) => type !== 'null') ?? types[0];
+    dataType && types.includes(dataType)
+      ? dataType
+      : dataType === 'integer' && types.includes('number')
+      ? 'number'
+      : null;
   const selectedSchema = useMemo(
-    () => schemaForType(schema, selectedType, rootSchema),
+    () =>
+      selectedType
+        ? schemaForType(schema, selectedType, rootSchema)
+        : undefined,
     [rootSchema, schema, selectedType]
   );
   const detailUiSchema = useMemo(
     () =>
-      findDetailUiSchema(
-        selectedSchema,
-        uischema,
-        path,
-        rootSchema,
-        uischemas ?? []
-      ),
+      selectedSchema
+        ? findDetailUiSchema(
+            selectedSchema,
+            uischema,
+            path,
+            rootSchema,
+            uischemas ?? []
+          )
+        : undefined,
     [path, rootSchema, selectedSchema, uischema, uischemas]
   );
 
@@ -172,17 +234,21 @@ export const MixedRendererComponent = ({
     return null;
   }
 
-  const renderedControl = (
-    <JsonFormsDispatch
-      schema={selectedSchema}
-      uischema={detailUiSchema}
-      path={path}
-      enabled={enabled}
-      renderers={renderers}
-      cells={cells}
-      readonly={readonly}
-    />
-  );
+  const renderedControl =
+    selectedType !== 'null' && selectedSchema && detailUiSchema ? (
+      <JsonFormsDispatch
+        schema={selectedSchema}
+        uischema={{
+          ...detailUiSchema,
+          options: { ...detailUiSchema.options, clearable: false },
+        }}
+        path={path}
+        enabled={enabled}
+        renderers={renderers}
+        cells={cells}
+        readonly={readonly}
+      />
+    ) : null;
   const isStructuredType =
     selectedType === 'object' || selectedType === 'array';
 
@@ -192,14 +258,28 @@ export const MixedRendererComponent = ({
         {label ? <span>{label}</span> : null}
         <Select
           disabled={!enabled}
-          value={selectedType}
-          options={types.map((type) => ({ label: type, value: type }))}
+          value={selectedType ?? undefined}
           onValueChange={(value) => {
             const nextType = value as JsonDataType;
             const nextSchema = schemaForType(schema, nextType, rootSchema);
             handleChange(path, createDefaultValue(nextSchema, rootSchema));
           }}
-        />
+        >
+          <SelectTrigger className='shadcn-jsonforms-input shadcn-jsonforms-select'>
+            <SelectValue placeholder='Select a type' />
+          </SelectTrigger>
+          <SelectContent className='shadcn-jsonforms-select-content'>
+            {types.map((type) => (
+              <SelectItem
+                className='shadcn-jsonforms-select-item'
+                key={type}
+                value={type}
+              >
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
       {isStructuredType ? (
         <details

@@ -1,18 +1,94 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>JSON Forms Examples</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Forms React Demos</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --background: #f5f7fb;
+        --card: #ffffff;
+        --text: #172554;
+        --subtle: #475569;
+        --border: #cbd5e1;
+        --link-background: #0f172a;
+        --link-text: #f8fafc;
+      }
 
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        display: grid;
+        place-items: center;
+        color: var(--text);
+        background: radial-gradient(
+          circle at top right,
+          #dbeafe 0%,
+          var(--background) 42%
+        );
+        font-family: "Segoe UI", Roboto, sans-serif;
+      }
+
+      main {
+        width: min(760px, 100%);
+        padding: 28px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--card);
+        box-shadow: 0 12px 32px rgba(2, 6, 23, 0.08);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
+      }
+
+      p {
+        margin: 0;
+        color: var(--subtle);
+      }
+
+      nav {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      a {
+        display: block;
+        padding: 12px 16px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        color: var(--link-text);
+        background: var(--link-background);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      a:hover,
+      a:focus-visible {
+        border-color: #64748b;
+        outline: none;
+      }
+    </style>
+  </head>
   <body>
-    <h1>JSON Forms Examples</h1>
-    <ul>
-      <li><a href="react-antd">React Ant Design Renderers</a></li>
-      <li><a href="react-primereact">React PrimeReact Renderers</a></li>
-      <li><a href="react-shadcn">React Shadcn UI Renderers</a></li>
-      <li><a href="react-mui">React MUI Renderers</a></li>
-    </ul>
+    <main>
+      <h1>JSON Forms React Demos</h1>
+      <p>Select the renderer demo you want to open:</p>
+
+      <nav aria-label="Renderer demos">
+        <a href="./react-antd/">Open Ant Design Demo</a>
+        <a href="./react-mui/">Open Material UI Demo</a>
+        <a href="./react-primereact/">Open PrimeReact Demo</a>
+        <a href="./react-shadcn/">Open Shadcn Demo</a>
+      </nav>
+    </main>
   </body>
 </html>

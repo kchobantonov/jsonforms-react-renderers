@@ -20,9 +20,22 @@ import {
   useJsonForms,
   withJsonFormsControlProps,
 } from '@jsonforms/react';
-import React, { useMemo } from 'react';
+import { Breadcrumb, Collapse, Flex, Typography } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AntdMixedNavigationContext } from './mixed/AntdMixedNavigationContext';
+import { AntdMixedSplitPane } from './mixed/AntdMixedSplitPane';
+import { AntdMixedTree } from './mixed/AntdMixedTree';
+import { AntdMixedTypeSelector } from './mixed/AntdMixedTypeSelector';
+import { AntdNestedMixedNavigation } from './mixed/AntdNestedMixedNavigation';
+import {
+  buildMixedTree,
+  findMixedTreeNode,
+  MixedTreeNode,
+  MixedTreePath,
+  mixedTreeLabel,
+} from './mixed/mixedTree';
 
-type JsonDataType =
+export type JsonDataType =
   | 'array'
   | 'boolean'
   | 'integer'
@@ -40,6 +53,45 @@ const ANY_TYPES: JsonDataType[] = [
   'object',
   'string',
 ];
+
+const ARRAY_KEYWORDS = [
+  'items',
+  'maxItems',
+  'minItems',
+  'uniqueItems',
+] as const;
+const OBJECT_KEYWORDS = [
+  'additionalProperties',
+  'dependencies',
+  'dependentRequired',
+  'dependentSchemas',
+  'maxProperties',
+  'minProperties',
+  'patternProperties',
+  'properties',
+  'propertyNames',
+  'required',
+] as const;
+const STRING_KEYWORDS = [
+  'contentEncoding',
+  'contentMediaType',
+  'format',
+  'maxLength',
+  'minLength',
+  'pattern',
+] as const;
+const NUMBER_KEYWORDS = [
+  'exclusiveMaximum',
+  'exclusiveMinimum',
+  'maximum',
+  'minimum',
+  'multipleOf',
+] as const;
+
+const removeKeywords = (schema: JsonSchema7, keywords: readonly string[]) =>
+  keywords.forEach(
+    (keyword) => delete (schema as Record<string, unknown>)[keyword]
+  );
 
 const getJsonDataType = (value: any): JsonDataType | null => {
   if (typeof value === 'string') {
@@ -80,7 +132,7 @@ const getSchemaTypes = (schema: JsonSchema): JsonDataType[] => {
   return ANY_TYPES;
 };
 
-const schemaForType = (
+export const schemaForType = (
   schema: JsonSchema,
   type: JsonDataType,
   rootSchema: JsonSchema
@@ -89,6 +141,15 @@ const schemaForType = (
     ...(typeof schema === 'object' ? (schema as JsonSchema7) : {}),
     type,
   };
+  delete nextSchema.anyOf;
+  delete nextSchema.oneOf;
+  delete nextSchema.allOf;
+  if (type !== 'array') removeKeywords(nextSchema, ARRAY_KEYWORDS);
+  if (type !== 'object') removeKeywords(nextSchema, OBJECT_KEYWORDS);
+  if (type !== 'string') removeKeywords(nextSchema, STRING_KEYWORDS);
+  if (type !== 'integer' && type !== 'number') {
+    removeKeywords(nextSchema, NUMBER_KEYWORDS);
+  }
 
   if (type === 'object') {
     nextSchema.additionalProperties =
@@ -134,11 +195,14 @@ const findDetailUiSchema = (
 export const MixedRendererComponent = ({
   cells,
   data,
+  description,
   enabled,
+  errors,
   handleChange,
   label,
   path,
   renderers,
+  required,
   readonly,
   rootSchema,
   schema,
@@ -146,77 +210,209 @@ export const MixedRendererComponent = ({
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
+  const parentNavigation = React.useContext(AntdMixedNavigationContext);
   const uischemas = jsonforms.uischemas ?? [];
+  const [expanded, setExpanded] = useState(true);
+  const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
+  const dataType = getJsonDataType(data);
   const selectedType =
-    getJsonDataType(data) ?? types.find((type) => type !== 'null') ?? types[0];
+    dataType && types.includes(dataType)
+      ? dataType
+      : dataType === 'integer' && types.includes('number')
+      ? 'number'
+      : null;
   const selectedSchema = useMemo(
-    () => schemaForType(schema, selectedType, rootSchema),
+    () =>
+      selectedType
+        ? schemaForType(schema, selectedType, rootSchema)
+        : undefined,
     [rootSchema, schema, selectedType]
   );
   const detailUiSchema = useMemo(
     () =>
-      findDetailUiSchema(
-        selectedSchema,
-        uischema,
-        path,
-        rootSchema,
-        uischemas ?? []
-      ),
+      selectedSchema
+        ? findDetailUiSchema(
+            selectedSchema,
+            uischema,
+            path,
+            rootSchema,
+            uischemas ?? []
+          )
+        : undefined,
     [path, rootSchema, selectedSchema, uischema, uischemas]
   );
+  const tree = useMemo(
+    () =>
+      selectedSchema &&
+      (selectedType === 'object' || selectedType === 'array')
+        ? buildMixedTree(data, selectedSchema, rootSchema, label || 'Value')
+        : undefined,
+    [data, label, rootSchema, selectedSchema, selectedType]
+  );
+  const selectedNode = tree
+    ? findMixedTreeNode(tree, selectedPath) ?? tree
+    : undefined;
+
+  useEffect(() => {
+    if (tree && !findMixedTreeNode(tree, selectedPath)) setSelectedPath([]);
+  }, [tree, selectedPath]);
 
   if (!visible) {
     return null;
   }
 
-  const renderedControl = (
-    <JsonFormsDispatch
-      schema={selectedSchema}
-      uischema={detailUiSchema}
-      path={path}
-      enabled={enabled}
-      renderers={renderers}
-      cells={cells}
-      readonly={readonly}
-    />
-  );
+  const renderNodeControl = (node?: MixedTreeNode) => {
+    if (!node || node.type === 'null') return null;
+    const nodePath = [path, ...node.path]
+      .filter((segment) => segment !== '')
+      .join('.');
+    return (
+      <JsonFormsDispatch
+        schema={node.schema}
+        uischema={
+          node.path.length === 0 && detailUiSchema
+            ? detailUiSchema
+            : { type: 'Control', scope: '#' }
+        }
+        path={nodePath}
+        enabled={enabled}
+        renderers={renderers}
+        cells={cells}
+        readonly={readonly}
+      />
+    );
+  };
+  const renderedControl =
+    selectedType !== 'null' && selectedSchema && detailUiSchema ? (
+      <JsonFormsDispatch
+        schema={selectedSchema}
+        uischema={detailUiSchema}
+        path={path}
+        enabled={enabled}
+        renderers={renderers}
+        cells={cells}
+        readonly={readonly}
+      />
+    ) : null;
   const isStructuredType =
     selectedType === 'object' || selectedType === 'array';
 
-  return (
-    <div className='jsonforms-mixed-renderer'>
-      <label className='jsonforms-mixed-renderer-type'>
-        {label ? <span>{label}</span> : null}
-        <select
-          disabled={!enabled}
-          value={selectedType}
-          onChange={(event) => {
-            const nextType = event.currentTarget.value as JsonDataType;
-            const nextSchema = schemaForType(schema, nextType, rootSchema);
-            handleChange(path, createDefaultValue(nextSchema, rootSchema));
-          }}
-        >
-          {types.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </label>
+  const changeType = (nextType: JsonDataType) => {
+    const nextSchema = schemaForType(schema, nextType, rootSchema);
+    handleChange(path, createDefaultValue(nextSchema, rootSchema));
+    setSelectedPath([]);
+    if (nextType === 'object' || nextType === 'array') setExpanded(true);
+  };
+  const selector = (
+    <AntdMixedTypeSelector
+      disabled={!enabled || Boolean(readonly)}
+      error={!selectedType ? errors : undefined}
+      onChange={(value) => changeType(value as JsonDataType)}
+      required={required}
+      types={types}
+      value={selectedType}
+    />
+  );
+  const navigation = useMemo(
+    () => ({
+      selectPath: (targetPath: string) => {
+        if (!tree) return;
+        const findByDataPath = (node: MixedTreeNode): MixedTreeNode | undefined => {
+          const nodePath = [path, ...node.path]
+            .filter((segment) => segment !== '')
+            .join('.');
+          if (nodePath === targetPath) return node;
+          for (const child of node.children) {
+            const found = findByDataPath(child);
+            if (found) return found;
+          }
+          return undefined;
+        };
+        const target = findByDataPath(tree);
+        if (target) {
+          setSelectedPath(target.path);
+          setExpanded(true);
+        }
+      },
+    }),
+    [path, tree]
+  );
+
+  if (parentNavigation && isStructuredType) {
+    return (
+      <AntdNestedMixedNavigation
+        description={description}
+        label={label}
+        onView={() => parentNavigation.selectPath(path)}
+        selector={selector}
+      />
+    );
+  }
+
+  const content = (
+    <Flex className='jsonforms-mixed-renderer' vertical gap='small'>
       {isStructuredType ? (
-        <details
-          className='jsonforms-mixed-renderer-detail'
-          key={selectedType}
-          open
-        >
-          <summary>{selectedType}</summary>
-          {renderedControl}
-        </details>
+        <Collapse
+          activeKey={expanded ? ['value'] : []}
+          onChange={(keys) => setExpanded(keys.includes('value'))}
+          items={[
+            {
+              key: 'value',
+              label: (
+                <Flex align='center' gap='middle' onClick={(event) => event.stopPropagation()}>
+                  {selector}
+                  {label ? <Typography.Text>{label}</Typography.Text> : null}
+                </Flex>
+              ),
+              children:
+                tree && selectedNode ? (
+                  <AntdMixedSplitPane
+                    tree={
+                      <AntdMixedTree
+                        onSelect={(node) => setSelectedPath(node.path)}
+                        root={tree}
+                        selectedPath={selectedNode.path}
+                      />
+                    }
+                    detail={
+                      <Flex vertical gap='small'>
+                        <Breadcrumb
+                          items={[
+                            { title: mixedTreeLabel(tree), onClick: () => setSelectedPath([]) },
+                            ...selectedNode.path.map((segment, index) => ({
+                              title: typeof segment === 'number' ? `Item ${segment}` : segment,
+                              onClick: () =>
+                                setSelectedPath(selectedNode.path.slice(0, index + 1)),
+                            })),
+                          ]}
+                        />
+                        {renderNodeControl(selectedNode)}
+                      </Flex>
+                    }
+                  />
+                ) : null,
+            },
+          ]}
+        />
       ) : (
-        renderedControl
+        <>
+          {label ? <Typography.Text>{label}</Typography.Text> : null}
+          <Flex align='start' gap='small'>
+            {selector}
+            <div style={{ flex: 1, minWidth: 0 }}>{renderedControl}</div>
+          </Flex>
+        </>
       )}
-    </div>
+      {description ? (
+        <Typography.Text type='secondary'>{description}</Typography.Text>
+      ) : null}
+    </Flex>
+  );
+  return parentNavigation ? content : (
+    <AntdMixedNavigationContext.Provider value={navigation}>
+      {content}
+    </AntdMixedNavigationContext.Provider>
   );
 };
 
@@ -234,7 +430,18 @@ export const isMixedSchema = (
   }
 
   if (Array.isArray(schema.type)) {
-    return true;
+    return schema.type.length > 1;
+  }
+
+  if (
+    schema.allOf ||
+    schema.anyOf ||
+    schema.oneOf ||
+    schema.properties ||
+    schema.patternProperties ||
+    schema.additionalProperties !== undefined
+  ) {
+    return false;
   }
 
   if (schema.type === undefined && isControl(uischema)) {

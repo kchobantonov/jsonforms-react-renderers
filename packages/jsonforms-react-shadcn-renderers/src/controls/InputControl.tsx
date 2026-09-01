@@ -1,6 +1,7 @@
 import { ControlProps } from '@jsonforms/core';
 import React from 'react';
-import { useShadcnComponents } from '../components';
+import { ClearValueButton } from '../components/ClearValueButton';
+import { Input } from '../components/ui/input';
 
 export const toStringValue = (value: unknown) =>
   value === undefined ? '' : String(value);
@@ -39,6 +40,7 @@ export const InputShell = ({
 
 export const ShadcnInputControl = ({
   data,
+  config,
   description,
   enabled,
   errors,
@@ -46,11 +48,11 @@ export const ShadcnInputControl = ({
   label,
   path,
   required,
+  readonly,
   uischema,
   visible,
   type = 'text',
 }: ControlProps & { type?: string }) => {
-  const { Input } = useShadcnComponents();
   if (!visible) return null;
   const id = makeId(path, label);
   const inputType = uischema.options?.format ?? type;
@@ -63,16 +65,25 @@ export const ShadcnInputControl = ({
       description={description}
       errors={errors}
     >
-      <Input
-        id={id}
-        className='shadcn-jsonforms-input'
-        type={inputType}
-        disabled={!enabled}
-        value={toStringValue(data)}
-        onChange={(event) =>
-          handleChange(path, event.currentTarget.value || undefined)
-        }
-      />
+      <div className='group relative w-full'>
+        <Input
+          id={id}
+          className='shadcn-jsonforms-input pr-10'
+          type={inputType}
+          disabled={!enabled}
+          value={toStringValue(data)}
+          onChange={(event) =>
+            handleChange(path, event.currentTarget.value || undefined)
+          }
+        />
+        <ClearValueButton
+          clearable={uischema.options?.clearable ?? config?.clearable ?? true}
+          data={data}
+          enabled={enabled}
+          readonly={readonly}
+          onClear={() => handleChange(path, undefined)}
+        />
+      </div>
     </InputShell>
   );
 };
@@ -80,8 +91,16 @@ export const ShadcnInputControl = ({
 export const ShadcnNumberControl = (
   props: ControlProps & { integer?: boolean }
 ) => {
-  const { Input } = useShadcnComponents();
-  const { data, enabled, handleChange, path, visible } = props;
+  const {
+    config,
+    data,
+    enabled,
+    handleChange,
+    path,
+    readonly,
+    uischema,
+    visible,
+  } = props;
   if (!visible) return null;
   const id = makeId(path, props.label);
 
@@ -93,25 +112,34 @@ export const ShadcnNumberControl = (
       description={props.description}
       errors={props.errors}
     >
-      <Input
-        id={id}
-        className='shadcn-jsonforms-input'
-        type='number'
-        step={props.integer ? 1 : 'any'}
-        disabled={!enabled}
-        value={toStringValue(data)}
-        onChange={(event) => {
-          const value = event.currentTarget.value;
-          handleChange(
-            path,
-            value === ''
-              ? undefined
-              : props.integer
-              ? parseInt(value, 10)
-              : Number(value)
-          );
-        }}
-      />
+      <div className='group relative w-full'>
+        <Input
+          id={id}
+          className='shadcn-jsonforms-input pr-10'
+          type='number'
+          step={props.integer ? 1 : 'any'}
+          disabled={!enabled}
+          value={toStringValue(data)}
+          onChange={(event) => {
+            const value = event.currentTarget.value;
+            handleChange(
+              path,
+              value === ''
+                ? undefined
+                : props.integer
+                ? parseInt(value, 10)
+                : Number(value)
+            );
+          }}
+        />
+        <ClearValueButton
+          clearable={uischema.options?.clearable ?? config?.clearable ?? true}
+          data={data}
+          enabled={enabled}
+          readonly={readonly}
+          onClear={() => handleChange(path, undefined)}
+        />
+      </div>
     </InputShell>
   );
 };

@@ -8,14 +8,14 @@ import {
   ActionEvent,
   HandleActionContext,
 } from '@chobantonov/jsonforms-react-extended-renderers';
-import { ShadcnComponentsProvider } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import {
   shadcnWebcomponentCells,
   shadcnWebcomponentRenderers,
 } from './renderers';
-import { shadcnComponents } from './components/jsonforms';
+import rendererStyles from '../../jsonforms-react-shadcn-renderers/src/styles.css?inline';
+import webcomponentStyles from './styles.css?inline';
 
 export const JSON_FORMS_SHADCN_TAG = 'jsonforms-react-shadcn';
 
@@ -96,110 +96,6 @@ const observedAttributes = [
   'border-radius',
   'density',
 ];
-
-const baseStyle = `
-:host { display: block; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-*, *::before, *::after { box-sizing: border-box; }
-.shadcn-jsonforms-host { display: grid; gap: 12px; --shadcn-jsonforms-radius: 6px; --shadcn-jsonforms-accent: #2563eb; }
-.shadcn-jsonforms-host[data-dark='true'] { background: #0f172a; color: #e2e8f0; }
-.shadcn-jsonforms-root,
-.shadcn-jsonforms-layout { box-sizing: border-box; }
-.shadcn-jsonforms-layout { display: flex; gap: 12px; width: 100%; }
-.shadcn-jsonforms-layout-column { flex-direction: column; }
-.shadcn-jsonforms-layout-row { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
-.shadcn-jsonforms-field { display: grid; gap: 5px; min-width: 220px; }
-.shadcn-jsonforms-label { color: #1f2937; font-size: 13px; font-weight: 600; }
-.shadcn-jsonforms-input {
-  background: #fff;
-  border: 1px solid #cbd5e1;
-  border-radius: var(--shadcn-jsonforms-radius, 6px);
-  color: #111827;
-  font: inherit;
-  min-height: 36px;
-  padding: 7px 10px;
-}
-.shadcn-jsonforms-input:focus {
-  border-color: var(--shadcn-jsonforms-accent, #2563eb);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--shadcn-jsonforms-accent, #2563eb) 18%, transparent);
-  outline: none;
-}
-.shadcn-jsonforms-description { color: #64748b; font-size: 12px; }
-.shadcn-jsonforms-error { color: #b91c1c; font-size: 12px; }
-.shadcn-jsonforms-checkbox { align-items: center; display: inline-flex; gap: 8px; }
-.shadcn-jsonforms-group,
-.shadcn-jsonforms-array,
-.shadcn-jsonforms-object {
-  border: 1px solid #e2e8f0;
-  border-radius: var(--shadcn-jsonforms-radius, 6px);
-  display: grid;
-  gap: 12px;
-  padding: 14px;
-}
-.shadcn-jsonforms-group > legend,
-.shadcn-jsonforms-array h3,
-.shadcn-jsonforms-object h3 {
-  color: #0f172a;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0;
-}
-.shadcn-jsonforms-array-header { align-items: center; display: flex; justify-content: space-between; }
-.shadcn-jsonforms-array-item { border-top: 1px solid #e2e8f0; display: grid; gap: 10px; padding-top: 12px; }
-.shadcn-jsonforms-button,
-.shadcn-jsonforms-tab {
-  background: var(--shadcn-jsonforms-accent, #2563eb);
-  border: 0;
-  border-radius: var(--shadcn-jsonforms-radius, 6px);
-  color: #fff;
-  cursor: pointer;
-  font: inherit;
-  min-height: 34px;
-  padding: 7px 12px;
-}
-.shadcn-jsonforms-button:disabled,
-.shadcn-jsonforms-tab:disabled { cursor: not-allowed; opacity: 0.5; }
-.shadcn-jsonforms-button-danger { background: #dc2626; justify-self: flex-start; }
-.shadcn-jsonforms-tabs { border-bottom: 1px solid #e2e8f0; display: flex; gap: 6px; margin-bottom: 12px; }
-.shadcn-jsonforms-tab {
-  background: transparent;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  color: #475569;
-}
-.shadcn-jsonforms-tab[data-active] { background: var(--shadcn-jsonforms-accent, #2563eb); color: #fff; }
-.shadcn-jsonforms-static-label { color: #334155; font-weight: 600; }
-.shadcn-jsonforms-alert { border: 1px solid #bfdbfe; border-radius: var(--shadcn-jsonforms-radius, 6px); padding: 10px 12px; }
-.shadcn-jsonforms-checkbox-label, .shadcn-jsonforms-color-control, .shadcn-jsonforms-duration-control, .shadcn-jsonforms-file-control, .shadcn-jsonforms-grid-actions { align-items: center; display: flex; gap: 8px; }
-.shadcn-jsonforms-checkbox-control { align-items: center; background: #fff; border: 1px solid #94a3b8; border-radius: 4px; color: #fff; display: inline-flex; height: 18px; justify-content: center; padding: 0; width: 18px; }
-.shadcn-jsonforms-checkbox-control[data-state='checked'], .shadcn-jsonforms-checkbox-control[data-state='indeterminate'] { background: var(--shadcn-jsonforms-accent); border-color: var(--shadcn-jsonforms-accent); }
-.shadcn-jsonforms-checkbox-control svg { height: 14px; width: 14px; }
-.shadcn-jsonforms-select { align-items: center; display: inline-flex; justify-content: space-between; min-width: 180px; }
-.shadcn-jsonforms-select svg { height: 16px; width: 16px; }
-.shadcn-jsonforms-select-content { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 8px 24px #0f172a26; color: #111827; min-width: var(--radix-select-trigger-width); overflow: hidden; z-index: 50; }
-.shadcn-jsonforms-select-item { align-items: center; cursor: default; display: flex; gap: 8px; justify-content: space-between; outline: 0; padding: 7px 10px; }
-.shadcn-jsonforms-select-item[data-highlighted] { background: #e2e8f0; }
-.shadcn-jsonforms-tab[data-state='active'] { background: var(--shadcn-jsonforms-accent); color: #fff; }
-.shadcn-jsonforms-button-secondary { background: #475569; }
-.shadcn-jsonforms-button-outline { background: transparent; border: 1px solid #cbd5e1; color: #0f172a; }
-.shadcn-jsonforms-button-ghost { background: transparent; color: #334155; }
-.shadcn-jsonforms-button-sm { min-height: 30px; padding: 4px 9px; }
-.shadcn-jsonforms-button-lg { min-height: 42px; padding: 9px 16px; }
-.shadcn-jsonforms-button-icon { height: 34px; padding: 0; width: 34px; }
-.shadcn-jsonforms-alert-destructive { border-color: #fecaca; color: #b91c1c; }
-.shadcn-jsonforms-color-control > .shadcn-jsonforms-input:first-child, .shadcn-jsonforms-duration-control > .shadcn-jsonforms-input { flex: 1; }
-.shadcn-jsonforms-color-picker { min-width: 44px; padding: 3px; width: 44px; }
-.shadcn-jsonforms-duration-picker { border: 1px solid #e2e8f0; border-radius: 6px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); padding: 10px; }
-.shadcn-jsonforms-duration-picker label { display: grid; font-size: 12px; gap: 3px; text-transform: capitalize; }
-.shadcn-jsonforms-duration-actions { display: flex; gap: 6px; grid-column: 1 / -1; }
-.shadcn-jsonforms-split { display: flex; overflow: hidden; width: 100%; }
-.shadcn-jsonforms-split-horizontal { flex-direction: row; }
-.shadcn-jsonforms-split-vertical { flex-direction: column; min-height: 240px; }
-.shadcn-jsonforms-split-pane { flex-grow: 1; min-height: 0; min-width: 0; overflow: auto; padding: 8px; }
-.shadcn-jsonforms-split-handle { background: #e2e8f0; flex: 0 0 5px; touch-action: none; }
-.shadcn-jsonforms-split-horizontal > .shadcn-jsonforms-split-handle { cursor: col-resize; }
-.shadcn-jsonforms-split-vertical > .shadcn-jsonforms-split-handle { cursor: row-resize; }
-.shadcn-jsonforms-grid-actions { margin-bottom: 8px; }
-`;
 
 export class JsonFormsShadcnElement extends HTMLElement {
   static get observedAttributes() {
@@ -332,23 +228,30 @@ export class JsonFormsShadcnElement extends HTMLElement {
       density: this.state.density,
     } as ShadcnRendererSettings;
     const style = createShadcnRendererStyle(rendererSettings, dark);
+    const translate = this.state.translations
+      ? createTranslator(this.state.translations, this.state.locale)
+      : undefined;
 
     this.root.render(
       <>
-        <style>{baseStyle}</style>
+        <style>{rendererStyles}</style>
+        <style>{webcomponentStyles}</style>
         <style>{this.state.customStyle ?? ''}</style>
         <div
-          className='shadcn-jsonforms-host'
+          className={
+            dark
+              ? 'shadcn-jsonforms-host shadcn-jsonforms-root app-dark dark'
+              : 'shadcn-jsonforms-host shadcn-jsonforms-root'
+          }
           data-dark={dark ? 'true' : 'false'}
           dir={parseBoolean(this.state.rtl) ? 'rtl' : undefined}
           style={style}
         >
           <slot name='form-header' />
-          <ShadcnComponentsProvider components={shadcnComponents}>
-            <HandleActionContext.Provider
-              value={(event) => this.emitAction(event)}
-            >
-              <JsonForms
+          <HandleActionContext.Provider
+            value={(event) => this.emitAction(event)}
+          >
+            <JsonForms
               data={parseJson(this.state.data)}
               schema={parseJson(this.state.schema) as any}
               uischema={parseJson(this.state.uischema) as any}
@@ -365,15 +268,11 @@ export class JsonFormsShadcnElement extends HTMLElement {
               additionalErrors={parseJson(this.state.additionalErrors) as any}
               i18n={{
                 locale: this.state.locale,
-                translate: createTranslator(
-                  this.state.translations,
-                  this.state.locale
-                ),
+                translate,
               }}
               onChange={({ data, errors }) => this.emitChange(data, errors)}
-              />
-            </HandleActionContext.Provider>
-          </ShadcnComponentsProvider>
+            />
+          </HandleActionContext.Provider>
           <slot name='form-footer' />
         </div>
       </>
