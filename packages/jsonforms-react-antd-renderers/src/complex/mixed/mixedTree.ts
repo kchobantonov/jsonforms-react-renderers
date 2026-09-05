@@ -28,6 +28,10 @@ const childSchema = (
   key: string | number,
   rootSchema: JsonSchema
 ): { dynamic: boolean; schema: JsonSchema } => {
+  const resolveChild = (candidate: JsonSchema): JsonSchema =>
+    typeof candidate === 'object' && candidate.$ref
+      ? resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate
+      : candidate;
   const resolved =
     typeof schema === 'object' && schema.$ref
       ? resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema
@@ -37,13 +41,18 @@ const childSchema = (
     const items = resolved.items;
     return {
       dynamic: false,
-      schema: Array.isArray(items)
-        ? items[key] ?? {}
-        : (items as JsonSchema | undefined) ?? {},
+      schema: resolveChild(
+        Array.isArray(items)
+          ? items[key] ?? {}
+          : (items as JsonSchema | undefined) ?? {}
+      ),
     };
   }
   if (resolved.properties?.[key]) {
-    return { dynamic: false, schema: resolved.properties[key] };
+    return {
+      dynamic: false,
+      schema: resolveChild(resolved.properties[key]),
+    };
   }
   const matches = Object.entries(resolved.patternProperties ?? {})
     .filter(([pattern]) => {
@@ -53,16 +62,21 @@ const childSchema = (
         return false;
       }
     })
-    .map(([, value]) => value);
-  if (matches.length > 1)
-    return { dynamic: true, schema: { allOf: matches } };
-  if (matches.length === 1) return { dynamic: true, schema: matches[0] };
+    .map(([, value]) => resolveChild(value));
+  if (matches.length > 1) {
+    return { dynamic: true, schema: { allOf: matches } as JsonSchema };
+  }
+  if (matches.length === 1) {
+    return { dynamic: true, schema: matches[0] };
+  }
   return {
     dynamic: true,
     schema:
       resolved.additionalProperties === false
         ? {}
-        : (resolved.additionalProperties as JsonSchema | undefined) ?? {},
+        : resolveChild(
+            (resolved.additionalProperties as JsonSchema | undefined) ?? {}
+          ),
   };
 };
 
@@ -120,3 +134,65 @@ export const mixedTreeLabel = (node: MixedTreeNode) =>
       ? '{}'
       : node.label
     : node.label;
+
+const updateMixedParent = (
+  data: unknown,
+  parentPath: MixedTreePath,
+  update: (parent: unknown) => unknown
+): unknown => {
+  if (parentPath.length === 0) return update(data);
+  const [segment, ...remaining] = parentPath;
+  if (Array.isArray(data) && typeof segment === 'number') {
+    const next = [...data];
+    next[segment] = updateMixedParent(next[segment], remaining, update);
+    return next;
+  }
+  if (data && typeof data === 'object' && typeof segment === 'string') {
+    const next = { ...(data as Record<string, unknown>) };
+    next[segment] = updateMixedParent(next[segment], remaining, update);
+    return next;
+  }
+  return data;
+};
+
+export const deleteMixedTreeNode = (
+  data: unknown,
+  path: MixedTreePath
+): unknown => {
+  if (path.length === 0) return data;
+  const parentPath = path.slice(0, -1);
+  const segment = path[path.length - 1];
+  return updateMixedParent(data, parentPath, (parent) => {
+    if (Array.isArray(parent) && typeof segment === 'number') {
+      return parent.filter((_, index) => index !== segment);
+    }
+    if (parent && typeof parent === 'object' && typeof segment === 'string') {
+      return Object.fromEntries(
+        Object.entries(parent).filter(([key]) => key !== segment)
+      );
+    }
+    return parent;
+  });
+};
+
+export const renameMixedTreeNode = (
+  data: unknown,
+  path: MixedTreePath,
+  nextName: string
+): unknown => {
+  if (path.length === 0) return data;
+  const parentPath = path.slice(0, -1);
+  const segment = path[path.length - 1];
+  if (typeof segment !== 'string') return data;
+  return updateMixedParent(data, parentPath, (parent) => {
+    if (!parent || typeof parent !== 'object' || Array.isArray(parent)) {
+      return parent;
+    }
+    return Object.fromEntries(
+      Object.entries(parent).map(([key, value]) => [
+        key === segment ? nextName : key,
+        value,
+      ])
+    );
+  });
+};

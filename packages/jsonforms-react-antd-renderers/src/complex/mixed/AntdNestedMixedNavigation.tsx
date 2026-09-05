@@ -13,7 +13,7 @@ export const AntdNestedMixedNavigation = ({
   onView: () => void;
   selector: React.ReactNode;
 }) => (
-  <Flex vertical gap={4}>
+  <Flex className='jsonforms-mixed-nested-navigation' vertical gap={4}>
     {label ? <Typography.Text>{label}</Typography.Text> : null}
     <Flex align='center' gap='small'>
       {selector}

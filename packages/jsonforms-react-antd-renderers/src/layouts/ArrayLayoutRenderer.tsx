@@ -25,10 +25,14 @@
 import React, { useCallback } from 'react';
 
 import {
+  and,
   ArrayLayoutProps,
+  isControl,
   isObjectArrayWithNesting,
+  or,
   RankedTester,
   rankWith,
+  schemaMatches,
 } from '@jsonforms/core';
 import {
   withArrayTranslationProps,
@@ -56,7 +60,17 @@ export const ArrayLayoutRenderer = ({
 
 export const arrayLayoutTester: RankedTester = rankWith(
   4,
-  isObjectArrayWithNesting
+  or(
+    isObjectArrayWithNesting,
+    and(
+      isControl,
+      schemaMatches(
+        (schema) =>
+          schema.type === 'array' &&
+          (schema as unknown as { items?: unknown }).items === true
+      )
+    )
+  )
 );
 export default withJsonFormsArrayLayoutProps(
   withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer))

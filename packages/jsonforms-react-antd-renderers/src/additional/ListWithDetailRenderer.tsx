@@ -30,9 +30,9 @@ import {
   computeLabel,
   createDefaultValue,
   findUISchema,
-  isObjectArray,
   RankedTester,
   rankWith,
+  schemaTypeIs,
   uiTypeIs,
 } from '@jsonforms/core';
 import {
@@ -45,32 +45,36 @@ import { Col, Empty, List, Row } from 'antd';
 
 import range from 'lodash/range';
 import React, { useCallback, useMemo, useState } from 'react';
+import { ArrayLayoutRenderer } from '../layouts/ArrayLayoutRenderer';
 import { ArrayLayoutToolbar } from '../layouts/ArrayToolbar';
 import ListWithDetailMasterItem from './ListWithDetailMasterItem';
 import merge from 'lodash/merge';
 
-export const ListWithDetailRenderer = ({
-  uischemas,
-  schema,
-  uischema,
-  path,
-  enabled,
-  errors,
-  visible,
-  label,
-  required,
-  removeItems,
-  addItem,
-  data,
-  renderers,
-  cells,
-  config,
-  rootSchema,
-  description,
-  disableAdd,
-  disableRemove,
-  translations,
-}: ArrayLayoutProps & { translations: ArrayTranslations }) => {
+export const ListWithDetailRenderer = (
+  props: ArrayLayoutProps & { translations: ArrayTranslations }
+) => {
+  const {
+    uischemas,
+    schema,
+    uischema,
+    path,
+    enabled,
+    errors,
+    visible,
+    label,
+    required,
+    removeItems,
+    addItem,
+    data,
+    renderers,
+    cells,
+    config,
+    rootSchema,
+    description,
+    disableAdd,
+    disableRemove,
+    translations,
+  } = props;
   const [selectedIndex, setSelectedIndex] = useState(undefined);
   const handleRemoveItem = useCallback(
     (p: string, value: any) => () => {
@@ -114,6 +118,12 @@ export const ListWithDetailRenderer = ({
 
   if (!visible) {
     return null;
+  }
+
+  // Primitive list-with-detail examples use the same accordion presentation
+  // as other primitive arrays. Object arrays retain the master/detail layout.
+  if (schema.type !== 'object') {
+    return <ArrayLayoutRenderer {...props} />;
   }
 
   return (
@@ -179,7 +189,7 @@ export const ListWithDetailRenderer = ({
 
 export const listWithDetailTester: RankedTester = rankWith(
   4,
-  and(uiTypeIs('ListWithDetail'), isObjectArray)
+  and(uiTypeIs('ListWithDetail'), schemaTypeIs('array'))
 );
 
 export default withJsonFormsArrayLayoutProps(

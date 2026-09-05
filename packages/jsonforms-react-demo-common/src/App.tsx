@@ -20,11 +20,26 @@ import {
 import { LaptopMinimalCheck, Moon, RotateCcw, Save, Sun } from 'lucide-react';
 import { DefaultDemoSplitter, DemoSplitterProps } from './DemoSplitter';
 import {
-  EditorKey,
   EditorModels,
   reloadOriginalEditorModel,
   stringifyEditorValue,
 } from './editorModels';
+import {
+  DemoLayout,
+  DemoMode,
+  DemoQueryKey,
+  DemoSettingsStorage,
+  DemoTab,
+  PersistedDemoSettings,
+  demoSettingsStorageKey,
+  encodeDemoHashRoute,
+  getWebDemoSettingsStorage,
+  readDemoQueryState,
+  readPersistedDemoSettings,
+  splitDemoHash,
+  writeDemoQueryValue,
+  writePersistedDemoSettings,
+} from './demoPreferences';
 import './App.css';
 
 export type ProviderSettingsProps = {
@@ -131,9 +146,9 @@ type AppProps = {
   ProviderSettings?: React.ComponentType<ProviderSettingsProps>;
   initialProviderSettings?: Record<string, any>;
   initialLayout?: DemoLayout;
+  settingsStorage?: DemoSettingsStorage | null;
+  settingsStorageKey?: string;
 };
-
-type DemoLayout = 'default' | 'demo-and-data';
 
 type Action = {
   label: string;
@@ -159,7 +174,7 @@ const parseEditorValue = (value: string) =>
   value.trim() === '' ? undefined : JSON.parse(value);
 
 const routeFromLocation = (examples: ExampleDescription[]) => {
-  const hash = window.location.hash.slice(1);
+  const hash = splitDemoHash(window.location.hash).route;
   const index = examples.findIndex((example) => example.name === hash);
   return { index: index === -1 ? 0 : index, isHome: index === -1 };
 };
@@ -474,10 +489,44 @@ const App = ({
   ProviderSettings,
   initialProviderSettings = {},
   initialLayout = 'default',
+  settingsStorage,
+  settingsStorageKey,
   Wrapper,
   Shell = DefaultDemoShell,
   Ui = defaultDemoUi,
 }: AppProps) => {
+  const initialProviderSettingsRef = useRef(initialProviderSettings).current;
+  const defaultDrawer = useRef(
+    window.matchMedia('(min-width: 1280px)').matches
+  ).current;
+  const queryDefaults = useRef({
+    readonly: false,
+    formOnly: false,
+    activeTab: 'demo' as DemoTab,
+    useWebComponent: false,
+    drawer: defaultDrawer,
+  }).current;
+  const initialQuery = useRef(
+    readDemoQueryState(window.location, queryDefaults)
+  ).current;
+  const preferenceStorage = useMemo(
+    () =>
+      settingsStorage === undefined
+        ? getWebDemoSettingsStorage()
+        : settingsStorage ?? undefined,
+    [settingsStorage]
+  );
+  const preferenceStorageKey =
+    settingsStorageKey ?? demoSettingsStorageKey(rendererName);
+  const initialPersistedRead = useMemo(
+    () => readPersistedDemoSettings(preferenceStorage, preferenceStorageKey),
+    [preferenceStorage, preferenceStorageKey]
+  );
+  const initialPersisted =
+    initialPersistedRead &&
+    typeof (initialPersistedRead as Promise<unknown>).then !== 'function'
+      ? (initialPersistedRead as Partial<PersistedDemoSettings>)
+      : undefined;
   const initialRoute = routeFromLocation(examples);
   const [currentIndex, setIndex] = useState(initialRoute.index);
   const [isHome, setIsHome] = useState(initialRoute.isHome);
@@ -492,27 +541,46 @@ const App = ({
     i18n: stringifyEditorValue(examples[initialRoute.index].i18n),
     config: stringifyEditorValue(examples[initialRoute.index].config),
   });
-  const [activeTab, setActiveTab] = useState<'demo' | EditorKey>('demo');
+  const [activeTab, setActiveTab] = useState<DemoTab>(initialQuery.activeTab);
   const [search, setSearch] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(
-    () => window.matchMedia('(min-width: 1280px)').matches
-  );
+  const [sidebarOpen, setSidebarOpen] = useState(initialQuery.drawer);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [formOnly, setFormOnly] = useState(false);
-  const [useWebComponent, setUseWebComponent] = useState(false);
-  const [mode, setMode] = useState<'system' | 'light' | 'dark'>('system');
+  const [formOnly, setFormOnly] = useState(initialQuery.formOnly);
+  const [useWebComponent, setUseWebComponent] = useState(
+    initialQuery.useWebComponent
+  );
+  const [mode, setMode] = useState<DemoMode>(
+    initialPersisted?.mode === 'light' || initialPersisted?.mode === 'dark'
+      ? initialPersisted.mode
+      : 'system'
+  );
   const [rtl, setRtl] = useState(false);
-  const [readonly, setReadonly] = useState(false);
-  const [locale, setLocale] = useState('en');
+  const [readonly, setReadonly] = useState(initialQuery.readonly);
+  const [locale, setLocale] = useState(
+    typeof initialPersisted?.locale === 'string'
+      ? initialPersisted.locale
+      : 'en'
+  );
   const [validationMode, setValidationMode] =
     useState<ValidationMode>('ValidateAndShow');
-  const [layout, setLayout] = useState<DemoLayout>(initialLayout);
+  const [layout, setLayout] = useState<DemoLayout>(
+    initialPersisted?.layout === 'default' ||
+      initialPersisted?.layout === 'demo-and-data'
+      ? initialPersisted.layout
+      : initialLayout
+  );
   const [configOptions, setConfigOptions] = useState<Record<string, any>>({
     restrict: true,
   });
   const [errors, setErrors] = useState<any[]>([]);
   const [rendererSettings, setRendererSettings] = useState<Record<string, any>>(
-    initialProviderSettings
+    {
+      ...initialProviderSettingsRef,
+      ...(initialPersisted?.rendererSettings ?? {}),
+    }
+  );
+  const [preferencesHydrated, setPreferencesHydrated] = useState(
+    initialPersistedRead === undefined || initialPersisted !== undefined
   );
   const systemDark = useSystemDark();
 
@@ -527,6 +595,79 @@ const App = ({
     Tabs: UiTabs,
     Toggle: UiToggle,
   } = Ui;
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.resolve(initialPersistedRead).then((persisted) => {
+      if (cancelled || initialPersisted !== undefined) return;
+      if (persisted) {
+        if (
+          persisted.mode === 'system' ||
+          persisted.mode === 'light' ||
+          persisted.mode === 'dark'
+        ) {
+          setMode(persisted.mode);
+        }
+        if (typeof persisted.locale === 'string') setLocale(persisted.locale);
+        if (
+          persisted.layout === 'default' ||
+          persisted.layout === 'demo-and-data'
+        ) {
+          setLayout(persisted.layout);
+        }
+        if (
+          persisted.rendererSettings &&
+          typeof persisted.rendererSettings === 'object' &&
+          !Array.isArray(persisted.rendererSettings)
+        ) {
+          setRendererSettings({
+            ...initialProviderSettingsRef,
+            ...persisted.rendererSettings,
+          });
+        }
+      }
+      setPreferencesHydrated(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [initialPersisted, initialPersistedRead, initialProviderSettingsRef]);
+
+  useEffect(() => {
+    if (!preferencesHydrated) return;
+    writePersistedDemoSettings(preferenceStorage, preferenceStorageKey, {
+      version: 1,
+      mode,
+      locale,
+      layout,
+      rendererSettings,
+    });
+  }, [
+    layout,
+    locale,
+    mode,
+    preferenceStorage,
+    preferenceStorageKey,
+    preferencesHydrated,
+    rendererSettings,
+  ]);
+
+  const setQueryOption = useCallback(
+    <T extends boolean | DemoTab>(
+      key: DemoQueryKey,
+      value: T,
+      defaultValue: T
+    ) => {
+      writeDemoQueryValue(
+        window.location,
+        window.history,
+        key,
+        value,
+        defaultValue
+      );
+    },
+    []
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
@@ -552,12 +693,12 @@ const App = ({
   }, []);
 
   const loadExample = useCallback(
-    (index: number) => {
+    (index: number, resetActiveTab = true) => {
       const example = examples[index];
       setIndex(index);
       setExampleProps(getProps(example, cells, renderers));
       updateModels(example);
-      setActiveTab('demo');
+      if (resetActiveTab) setActiveTab('demo');
       setIsHome(false);
     },
     [cells, examples, renderers, updateModels]
@@ -566,10 +707,17 @@ const App = ({
   useEffect(() => {
     const syncRoute = () => {
       const route = routeFromLocation(examples);
+      const query = readDemoQueryState(window.location, queryDefaults);
+      setReadonly(query.readonly);
+      setFormOnly(query.formOnly);
+      setActiveTab(query.activeTab);
+      setUseWebComponent(query.useWebComponent);
+      setSidebarOpen(query.drawer);
       if (route.isHome) {
         setIsHome(true);
       } else {
-        loadExample(route.index);
+        loadExample(route.index, false);
+        setActiveTab(query.activeTab);
       }
     };
     window.addEventListener('hashchange', syncRoute);
@@ -578,17 +726,22 @@ const App = ({
       window.removeEventListener('hashchange', syncRoute);
       window.removeEventListener('popstate', syncRoute);
     };
-  }, [examples, loadExample]);
+  }, [examples, loadExample, queryDefaults]);
 
   const changeExample = (exampleName: string) => {
     const index = examples.findIndex((example) => example.name === exampleName);
     if (index === -1) return;
     loadExample(index);
-    if (window.location.hash.slice(1) !== exampleName) {
-      window.location.hash = exampleName;
+    setQueryOption('active-tab', 'demo', 'demo');
+    const currentHash = splitDemoHash(window.location.hash);
+    if (currentHash.route !== exampleName) {
+      window.location.hash = `${encodeDemoHashRoute(exampleName)}${
+        currentHash.query ? `?${currentHash.query}` : ''
+      }`;
     }
     if (!window.matchMedia('(min-width: 1280px)').matches) {
       setSidebarOpen(false);
+      setQueryOption('drawer', false, defaultDrawer);
     }
   };
 
@@ -601,6 +754,23 @@ const App = ({
     setIsHome(true);
     setFormOnly(false);
   };
+
+  const changeActiveTab = (value: DemoTab) => {
+    setActiveTab(value);
+    setQueryOption('active-tab', value, 'demo');
+  };
+
+  const changeReadonly = (value: boolean) => {
+    setReadonly(value);
+    setQueryOption('read-only', value, false);
+  };
+
+  useEffect(() => {
+    if (layout === 'demo-and-data' && activeTab === 'data') {
+      setActiveTab('demo');
+      setQueryOption('active-tab', 'demo', 'demo');
+    }
+  }, [activeTab, layout, setQueryOption]);
 
   const filteredExamples = useMemo(() => {
     const needle = search.trim().toLowerCase();
@@ -782,7 +952,7 @@ const App = ({
         checked={readonly}
         label='Read-Only'
         description='Set all controls to read-only.'
-        onChange={setReadonly}
+        onChange={changeReadonly}
       />
       <UiToggle
         checked={Boolean(configOptions.collapseNewItems)}
@@ -914,7 +1084,7 @@ const App = ({
                     ? 'Internationalization'
                     : tab[0].toUpperCase() + tab.slice(1),
               }))}
-            onChange={(value) => setActiveTab(value as typeof activeTab)}
+            onChange={(value) => changeActiveTab(value as DemoTab)}
           />
 
           {activeTab === 'demo' ? (
@@ -1081,9 +1251,21 @@ const App = ({
       onHome={goHome}
       onSelectExample={changeExample}
       onSearch={setSearch}
-      onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-      onToggleFormOnly={() => setFormOnly(!formOnly)}
-      onToggleWebComponent={() => setUseWebComponent(!useWebComponent)}
+      onToggleSidebar={() => {
+        const value = !sidebarOpen;
+        setSidebarOpen(value);
+        setQueryOption('drawer', value, defaultDrawer);
+      }}
+      onToggleFormOnly={() => {
+        const value = !formOnly;
+        setFormOnly(value);
+        setQueryOption('form-only', value, false);
+      }}
+      onToggleWebComponent={() => {
+        const value = !useWebComponent;
+        setUseWebComponent(value);
+        setQueryOption('use-webcomponent', value, false);
+      }}
       onOpenSettings={() => setSettingsOpen(true)}
       onCloseSettings={() => setSettingsOpen(false)}
     >

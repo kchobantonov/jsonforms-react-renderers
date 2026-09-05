@@ -29,8 +29,10 @@ import { InputNumber } from 'antd';
 import { useDebouncedChange } from '../util';
 import { AntdClearableInput } from './AntdClearableInput';
 
-const toNumber = (value: string) =>
-  value === '' ? undefined : parseInt(value, 10);
+const toNumber = (value: string | number | null | undefined) =>
+  value === '' || value === null || value === undefined
+    ? undefined
+    : parseInt(String(value), 10);
 const eventToValue = (value: any) => toNumber(value);
 
 export const AntdInputInteger = React.memo(function AntdInputInteger(

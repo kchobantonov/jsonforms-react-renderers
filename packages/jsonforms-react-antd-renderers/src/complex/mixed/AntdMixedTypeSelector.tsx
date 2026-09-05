@@ -2,29 +2,42 @@ import { Select, Typography } from 'antd';
 import React from 'react';
 
 export interface AntdMixedTypeSelectorProps {
+  clearable?: boolean;
   disabled: boolean;
   error?: string;
-  onChange: (value: string) => void;
+  fullWidth?: boolean;
+  onChange: (value: string | undefined) => void;
   required?: boolean;
   types: string[];
   value: string | null;
 }
 
 export const AntdMixedTypeSelector = ({
+  clearable = true,
   disabled,
   error,
+  fullWidth = false,
   onChange,
   required,
   types,
   value,
 }: AntdMixedTypeSelectorProps) => (
-  <div style={{ minWidth: 140 }}>
+  <div
+    className={
+      fullWidth
+        ? 'jsonforms-mixed-type-selector jsonforms-mixed-type-selector-full-width'
+        : 'jsonforms-mixed-type-selector'
+    }
+    style={{ minWidth: 140, width: fullWidth ? '100%' : undefined }}
+  >
     <Select
+      allowClear={clearable}
       aria-label='Value type'
       disabled={disabled}
       onChange={onChange}
       options={types.map((type) => ({ label: type, value: type }))}
       placeholder='Select a type'
+      popupMatchSelectWidth={false}
       status={error ? 'error' : undefined}
       value={value ?? undefined}
       style={{ width: '100%' }}

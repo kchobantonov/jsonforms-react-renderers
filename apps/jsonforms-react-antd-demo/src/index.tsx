@@ -30,7 +30,6 @@ import {
   MenuOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Box } from 'lucide-react';
 import {
   Button,
   ConfigProvider,
@@ -64,6 +63,7 @@ import {
   registerJsonFormsAntd,
 } from '@chobantonov/jsonforms-react-antd-webcomponent';
 import { antdDemoUi } from './DemoUi';
+import { WebComponentLogo } from './WebComponentLogo';
 
 const ANTD_LOGO =
   'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg';
@@ -173,12 +173,7 @@ const AntdDemoShell = ({
                   }
                   aria-pressed={useWebComponent}
                   icon={
-                    <Box
-                      aria-hidden='true'
-                      className={`renderer-demo-webcomponent-icon${
-                        useWebComponent ? ' active' : ''
-                      }`}
-                    />
+                    <WebComponentLogo active={useWebComponent} dark={dark} />
                   }
                   type={useWebComponent ? 'primary' : 'text'}
                   onClick={onToggleWebComponent}
@@ -210,23 +205,28 @@ const AntdDemoShell = ({
           </Space>
         </Layout.Header>
 
-        {!formOnly && sidebarOpen && desktop && (
-          <Layout.Sider
-            className='renderer-demo-sidebar'
-            theme={dark ? 'dark' : 'light'}
-            width={272}
-          >
-            {navigation}
-          </Layout.Sider>
-        )}
-
-        <Layout.Content
-          className={`renderer-demo-main${
-            !sidebarOpen || formOnly || !desktop ? ' no-sidebar' : ''
-          }`}
+        <Layout
+          className='renderer-demo-body'
+          hasSider={!formOnly && sidebarOpen && desktop}
         >
-          {children}
-        </Layout.Content>
+          {!formOnly && sidebarOpen && desktop && (
+            <Layout.Sider
+              className='renderer-demo-sidebar'
+              theme={dark ? 'dark' : 'light'}
+              width={272}
+            >
+              {navigation}
+            </Layout.Sider>
+          )}
+
+          <Layout.Content
+            className={`renderer-demo-main${
+              !sidebarOpen || formOnly || !desktop ? ' no-sidebar' : ''
+            }`}
+          >
+            {children}
+          </Layout.Content>
+        </Layout>
 
         <Drawer
           title='Settings'
@@ -241,7 +241,7 @@ const AntdDemoShell = ({
           open={!formOnly && sidebarOpen && !desktop}
           placement={rtl ? 'right' : 'left'}
           title='Examples'
-          width={300}
+          size={300}
         >
           {navigation}
         </Drawer>

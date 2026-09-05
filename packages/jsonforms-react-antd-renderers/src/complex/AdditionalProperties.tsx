@@ -10,6 +10,7 @@ import {
   JsonFormsUISchemaRegistryEntry,
   JsonSchema,
   JsonSchema7,
+  isControl,
   resolveSchema,
   UISchemaElement,
 } from '@jsonforms/core';
@@ -29,6 +30,7 @@ import {
 import React, { useMemo, useState } from 'react';
 import { AntdAdditionalPropertyActions } from './additionalProperties/AntdAdditionalPropertyActions';
 import { AntdAdditionalPropertyRenameDialog } from './additionalProperties/AntdAdditionalPropertyRenameDialog';
+import { PRESERVE_DYNAMIC_PROPERTY_OPTION } from '../util/dynamicProperties';
 
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
@@ -165,6 +167,16 @@ const toAdditionalPropertyItem = (
     } else if (propSchema.type === 'array') {
       propSchema.items = propSchema.items ?? {};
     }
+  }
+
+  if (isControl(propUiSchema)) {
+    propUiSchema = {
+      ...propUiSchema,
+      options: {
+        ...(propUiSchema.options ?? {}),
+        [PRESERVE_DYNAMIC_PROPERTY_OPTION]: true,
+      },
+    };
   }
 
   return {
@@ -456,38 +468,60 @@ export const AdditionalProperties = ({
           gap='middle'
         >
           {additionalPropertyItems.map((item) => {
+            const rendersOwnHeading = !(
+              typeof item.schema === 'object' && item.schema.type === 'object'
+            );
+            const actions = enabled ? (
+              <AntdAdditionalPropertyActions
+                deleteDisabled={
+                  removePropertyDisabled ||
+                  Boolean(
+                    restrict &&
+                      objectSchema.required?.includes(item.propertyName)
+                  )
+                }
+                name={item.propertyName}
+                onDelete={() => removeProperty(item.propertyName)}
+                onRename={() => {
+                  setRenamingPropertyName(item.propertyName);
+                  setRenameValue(item.propertyName);
+                }}
+                readonly={readonly}
+              />
+            ) : null;
             return (
               <Flex
                 align='start'
                 className='jsonforms-additional-property'
                 key={item.propertyName}
+                style={{ position: 'relative', width: '100%' }}
                 vertical
               >
-                <Flex
-                  align='center'
-                  justify='space-between'
-                  style={{ width: '100%' }}
-                >
-                  <Typography.Text strong>{item.propertyName}</Typography.Text>
-                  {enabled ? (
-                    <AntdAdditionalPropertyActions
-                      deleteDisabled={
-                        removePropertyDisabled ||
-                        Boolean(
-                          restrict &&
-                            objectSchema.required?.includes(item.propertyName)
-                        )
-                      }
-                      name={item.propertyName}
-                      onDelete={() => removeProperty(item.propertyName)}
-                      onRename={() => {
-                        setRenamingPropertyName(item.propertyName);
-                        setRenameValue(item.propertyName);
+                {rendersOwnHeading ? (
+                  actions ? (
+                    <div
+                      style={{
+                        insetInlineEnd: 0,
+                        position: 'absolute',
+                        top: 0,
+                        zIndex: 1,
                       }}
-                      readonly={readonly}
-                    />
-                  ) : null}
-                </Flex>
+                    >
+                      {actions}
+                    </div>
+                  ) : null
+                ) : (
+                  <Flex
+                    align='center'
+                    justify='space-between'
+                    style={{ width: '100%' }}
+                  >
+                    <Typography.Text strong>
+                      {item.propertyName}
+                    </Typography.Text>
+                    {actions}
+                  </Flex>
+                )}
                 <div
                   className='jsonforms-additional-property-control'
                   style={{ width: '100%' }}

@@ -243,7 +243,7 @@ const ArrayLayoutComponent = (
       {data > 0 ? (
         <Collapse
           accordion
-          expandIconPosition='end'
+          expandIconPlacement='end'
           onChange={(value: any) => handleChange(value)}
           items={map(range(data), (index) => {
             const childPath = composePaths(path, `${index}`);

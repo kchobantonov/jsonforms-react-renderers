@@ -24,11 +24,15 @@
 */
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
 import { Form } from 'antd';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import merge from 'lodash/merge';
 import { AntdCheckbox } from '../antd-controls';
 import { useFocus } from '../util';
+import {
+  clearedDynamicPropertyValue,
+  PRESERVE_DYNAMIC_PROPERTY_OPTION,
+} from '../util/dynamicProperties';
 
 export interface WithInput {
   input: any;
@@ -49,6 +53,24 @@ export const InputControl = (props: ControlProps & WithInput) => {
   } = props;
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const preserveDynamicPropertyKey =
+    appliedUiSchemaOptions[PRESERVE_DYNAMIC_PROPERTY_OPTION] === true;
+  const handleInputChange = useCallback(
+    (changedPath: string, value: unknown) => {
+      props.handleChange(
+        changedPath,
+        preserveDynamicPropertyKey && value === undefined
+          ? clearedDynamicPropertyValue(props.schema, props.rootSchema)
+          : value
+      );
+    },
+    [
+      preserveDynamicPropertyKey,
+      props.handleChange,
+      props.rootSchema,
+      props.schema,
+    ]
+  );
 
   const showDescription = !isDescriptionHidden(
     visible,
@@ -86,6 +108,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     >
       <InnerComponent
         {...props}
+        handleChange={handleInputChange}
         label={label}
         inputProps={{
           onFocus,

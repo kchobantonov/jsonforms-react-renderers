@@ -90,7 +90,7 @@ export const ListWithDetailMasterItem = ({
             {index + 1}
           </Avatar>
         }
-        title={<Text ellipsis={true}>{childLabel}</Text>}
+        title={<Text ellipsis={true}>{childLabel ?? index}</Text>}
       />
     </List.Item>
   );

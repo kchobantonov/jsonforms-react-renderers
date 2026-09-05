@@ -174,7 +174,11 @@ The header MUST provide, in this logical order:
 4. Theme customization/settings entry points.
 
 The React/Web Component toggle is a top-level application action. It MUST NOT
-also appear in the settings panel.
+also appear in the settings panel. It MUST use the Web Components logo rather
+than a generic package, cube, or framework icon. The logo's foreground MUST
+remain legible in light and dark themes, and it SHOULD use the same Y-axis spin
+animation as the Svelte reference demo while Web Component mode is active.
+Reduced-motion preferences MUST disable that animation.
 
 Each icon-only action MUST have an accessible name, tooltip or title, pressed
 state where applicable, and visible keyboard focus.
@@ -326,6 +330,67 @@ algorithm.
 - They MUST affect React and Web Component views equivalently.
 - Defaults MUST produce a recognizable standard theme for that library.
 - Customization MUST not alter schema semantics or data.
+
+### 8.3 Settings persistence
+
+The demo host MUST remember the settings that describe a user's durable visual
+preferences:
+
+- mode (`system`, `light`, or `dark`);
+- locale;
+- demo layout (`default` or `demo-and-data`); and
+- renderer-specific provider or design-system settings.
+
+Persistence MUST be exposed through a small platform storage abstraction and
+MUST NOT be coupled directly to a browser API inside renderer components. The
+web demo uses `localStorage` by default. Android, iOS, desktop, and other hosts
+MAY provide their platform preference store instead; such hosts are not
+required or expected to emulate `localStorage`. Both synchronous web storage
+and asynchronous native storage adapters SHOULD be supported. Missing,
+blocked, unavailable, or corrupt storage MUST fall back to defaults without
+preventing the form from rendering.
+
+Direction, validation mode, and the generic JSON Forms configuration toggles
+are session settings and are not persisted by default. Read-only state and
+top-level view state are represented in the URL as described below. A host MAY
+persist additional settings only when its product requirements explicitly call
+for that behavior.
+
+Storage keys MUST be scoped by renderer demo so UI-library-specific settings
+cannot leak into another renderer set. Stored data SHOULD carry a schema
+version so future implementations can migrate or safely discard old values.
+
+### 8.4 URL query contract
+
+Demo URLs MUST support these query parameters:
+
+| Parameter          | Values                                                                              | Default/behavior                                                 |
+| ------------------ | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `read-only`        | `true`, `false`                                                                     | `false`; controls JSON Forms read-only mode.                     |
+| `form-only`        | `true`, `false`                                                                     | `false`; switches the top-level form-only view.                  |
+| `active-tab`       | `demo`, `schema`, `uiSchema`, `uiSchemas`, `internationalization`, `config`, `data` | `demo`; selects the workspace tab.                               |
+| `use-webcomponent` | `true`, `false`                                                                     | `false`; selects the Web Component host when one is available.   |
+| `drawer`           | `true`, `false`                                                                     | Viewport-dependent; controls whether the example drawer is open. |
+
+For compatibility with different routers, implementations MUST read supported
+parameters from either the normal URL query or the query portion following the
+example hash. Hash-query values take precedence when both are present. Web
+demos that use the hash as the example route SHOULD write the canonical form:
+
+```text
+/#mixed?form-only=true&active-tab=schema
+```
+
+Writers SHOULD omit values equal to their defaults, preserve unrelated query
+parameters, and normalize a supported parameter to one location when the user
+changes it. Only the literal value `true` enables a Boolean parameter. Browser
+back/forward navigation and direct URL loading MUST update the corresponding
+view without resetting the selected example or its data.
+
+Example hash routes MUST be percent-encoded when written and decoded before
+matching an example name. Labels or legacy example identifiers containing
+spaces or other reserved URL characters MUST therefore open on the first
+selection and remain selected after `hashchange` or browser navigation.
 
 ## 9. Renderer behavior contract
 
@@ -504,6 +569,10 @@ syntax without changing the option names.
 ### 9.5 Arrays
 
 - Arrays MUST display a clear title and add action.
+- Arrays whose item schema is unrestricted (`items: true`) MUST render through
+  the normal array presentation. Each added or existing item MUST dispatch to
+  the mixed-type renderer; the array control itself MUST NOT report that no
+  applicable renderer exists. This includes JSON Schema `examples` arrays.
 - Array items MUST have stable paths and keys.
 - Add MUST create a schema-valid default item of the correct type.
 - Remove MUST target the intended indexes and respect `minItems` when
@@ -513,6 +582,11 @@ syntax without changing the option names.
   property is configured.
 - Detail, list-with-detail, table/grid, and primitive-array presentations MUST
   preserve identical array data semantics.
+- A `ListWithDetail` UI Schema MUST support primitive item schemas as well as
+  object item schemas; it MUST NOT fall through to a missing-renderer message.
+  Primitive list-with-detail arrays SHOULD use the renderer set's normal
+  library-native accordion/detail-item presentation, with an expandable row
+  and regular dispatched value control for each item.
 - Collapse and summary-validation options MUST behave consistently.
 
 ### 9.6 Dynamic object properties
@@ -608,6 +682,12 @@ discarding, or replacing the existing value.
 
 - Add MUST preserve the new key even when its schema-valid default is empty or
   undefined according to the renderer's normal initialization rules.
+- Clearing a dynamic property's value control MUST preserve the property key
+  and reset its value to the schema-derived default (including an explicit
+  schema `default`; otherwise `""` for strings, `0` for numbers/integers,
+  `false` for booleans, `[]` for arrays, `{}` for objects, and `null` for the
+  null type). Only the property's explicit Delete action may remove that key
+  from the object.
 - Rename MUST preserve the property's value and object-key ordering as far as
   JavaScript object semantics allow. It MUST be atomic: validation failure
   leaves the original key and value unchanged.
@@ -665,18 +745,32 @@ accepting integer data. Selecting a different type MUST replace the value with
 a schema-valid default of that type. A registered per-type detail UI Schema, such as
 `object-detail` or `array-detail`, MUST be honored.
 
+When deriving that value, a schema `default` MUST be used only when its runtime
+JSON type is compatible with the newly selected type (`integer` is compatible
+with `number`). An incompatible default from another allowed branch MUST be
+ignored. For example, changing a schema with `type: ['object', 'boolean']` and
+`default: true` to `object` must create the schema-derived object default rather
+than immediately restoring `true` and switching the selector back to boolean.
+
 #### 9.8.1 Primitive presentation
 
 When the selected value is a primitive or `null`, the mixed renderer MUST look
 and behave like a normal one-line form control:
 
 - A compact type-selection dropdown appears at the inline-start of the row.
-- The type selector MUST NOT add a separate Clear value action. Type changes
-  are made through the selector; an initially absent value remains unselected.
+- The type selector MUST NOT add a separate Clear value button. For an ordinary
+  mixed field, it SHOULD expose the UI library's native integrated clear
+  affordance; clearing leaves the value absent and the selector unselected.
+  Dynamic-property values remain subject to the explicit-delete rule in
+  Section 9.6.3 and MUST NOT disappear through this affordance.
 - The control for the selected primitive appears beside it in the remaining
   width and SHOULD have the same visual height as the dropdown.
 - The active value control MUST be rendered through the normal renderer and
   cell registries rather than through a mixed-renderer-specific imitation.
+- The mixed field label MUST appear exactly once above the selector/value row.
+  The embedded primitive control MUST suppress its own duplicate label so its
+  input aligns directly beside the type selector. This rule also applies to
+  primitive values of dynamic `additionalProperties` and `patternProperties`.
 - Label, description, required, validation, focus, enabled, disabled, and
   read-only behavior MUST follow the common control contract.
 - Choosing `null` or having no selected type MUST not leave a stale primitive
@@ -686,6 +780,11 @@ and behave like a normal one-line form control:
   the first allowed type automatically, including when the field is required;
   the required error remains visible until a type/value is explicitly chosen
   or supplied by the data model.
+- While no type is selected, the type selector and its validation feedback MUST
+  use the full width normally available to the selector/value row; the layout
+  MUST NOT reserve an empty value-control column. After a primitive type is
+  selected, the selector returns to its compact inline-start column and the
+  value control occupies the remaining width.
 
 #### 9.8.2 Object and array presentation
 
@@ -700,27 +799,84 @@ The expanded panel MUST contain two resizable panes, initially approximately
 1. The inline-start pane is a searchable, expandable tree of the current data.
 2. The inline-end pane renders the control for the selected tree node.
 
+The collapse/expand action SHOULD be positioned at the inline-end of the
+header. The selected type MUST NOT be repeated as a second header label (for
+example, `array` followed by another `array`); only a distinct field label may
+follow the type selector.
+
 The tree and detail panes MUST provide the following behavior:
 
 - The tree root represents the mixed control itself. It MUST use the
-  library's JSON object/array icon or an equivalent `{}`/`[]` mark instead of
-  a generic `Value` label. Objects and arrays are always shown hierarchically;
+  same JSON object/array type-icon slot used by descendant nodes, or an
+  equivalent `{}`/`[]` mark, instead of a generic `Value` label. The root MUST
+  NOT render the mark as plain label text or duplicate it in both the icon and
+  label positions. Objects and arrays are always shown hierarchically;
   primitive children MAY be hidden initially.
 - Show/Hide primitives MUST be an eye/eye-off icon action on the root tree
   row, with a tooltip and accessible name. It MUST NOT consume a separate row
   as a text button.
-- Tree nodes SHOULD show their JSON type, selected state, expansion state, and
-  a concise label. Array elements SHOULD use labels such as `Item 0` rather
-  than exposing JSON Forms path syntax.
+- Tree nodes MUST show a stable, recognizable icon or compact glyph for their
+  actual JSON type: `[]` for arrays, a check mark for booleans, `#` for integer
+  and number values, a prohibited/null mark for `null`, `{}` for objects, and a
+  text-lines mark for strings. The root object or array uses its `{}` or `[]`
+  mark in the same type-icon slot and MUST NOT repeat the mark as label text.
+  Sibling rows MUST share one indentation level regardless of their value type.
+  The selected state and expansion state MUST remain visually distinct. Array
+  elements MUST use labels such as `Item 0` rather than exposing JSON Forms
+  path syntax. Row actions MUST occupy the inline-end of the full tree row and
+  MUST NOT squeeze, offset, or change the indentation of the label.
 - Search MUST retain matching descendants and their ancestors and expand the
   matching branches sufficiently to make results visible.
+- The root node SHOULD be expanded initially, but descendant object and array
+  branches MUST NOT all be expanded by default. Selecting or navigating to a
+  descendant MUST expand its ancestors; search MAY temporarily expand only the
+  branches required to reveal its matches.
+- The tree and detail panes MUST have bounded, independent overflow when the
+  selected detail is tall. Any horizontal tree scrollbar MUST remain directly
+  below the visible tree viewport instead of being pushed to the bottom of the
+  detail form or full page.
 - Selecting a node MUST show its regular dispatched JSON Forms control in the
-  detail pane. Breadcrumbs SHOULD identify the selected path and allow
-  navigation to its ancestors.
+  detail pane. The node schema MUST first resolve applicable `$ref` values,
+  including schemas inherited through `properties`, `patternProperties`,
+  `additionalProperties`, array `items`, and recursive references. Registered
+  detail UI Schemas MUST be matched against that resolved node schema and path;
+  map entries such as JSON Schema's `properties.name` MUST therefore render the
+  registered meta-schema detail rather than a generic mixed-object fallback.
+  Breadcrumbs SHOULD identify the selected path and allow navigation to its
+  ancestors. The unlabeled root structured segment MUST use
+  the same JSON object/array type icon as the tree without duplicating `{}` or
+  `[]` as label text. Every descendant segment MUST use only its property or
+  `Item N` path label; it MUST NOT add a redundant type icon. Every ancestor
+  segment MUST use the UI library's native interactive breadcrumb/link behavior,
+  including pointer cursor, hover, focus, and keyboard affordances. The current
+  segment MUST remain non-interactive and use the default cursor.
+- The detail pane for every selected non-root node MUST begin with a compact
+  type selector derived from that node's resolved schema. This applies equally
+  to primitive, `null`, object, and array nodes, so all permitted type changes
+  are available from one consistent position. For primitive nodes, the compact
+  selector MUST appear at the inline-start of the same row as the value control,
+  matching the presentation of ordinary mixed primitive fields; the value
+  control fills the remaining width. On narrow screens this row MUST stack with
+  the selector above the value control. For `null`, only the selector is shown.
+  For object and array nodes, the selector remains above the complex detail
+  renderer so that the renderer receives the full pane width. The root node
+  MUST NOT repeat this selector because its selector is already present in the
+  outer mixed panel header. Selecting another type MUST replace only the
+  selected node with that type's schema-derived default and keep the node
+  selected.
 - A nested mixed value whose selected type is an object or array MUST NOT
   recursively create another tree/detail editor inside the detail pane. It
   MUST render only its compact type selector and a library-native View/eye
-  icon action with a tooltip and accessible name.
+  icon action with a tooltip and accessible name. This also applies when the
+  nested value is rendered as a child row by the regular object or array
+  renderer: the child row keeps the selector and View icon instead of embedding
+  another object/array editor or collapsible mixed panel. The field's control
+  wrapper MUST own the label and the complete selector/View row: the selector
+  and View action are sibling controls in one horizontal, cross-axis-centered
+  container beneath that shared label. Implementations MUST NOT place the View
+  action outside the labeled control wrapper or align it with fixed padding,
+  margin, or another estimate of label height. Description and validation
+  feedback belong below the complete row.
 - Activating the nested View action MUST select that object or array in the
   existing root tree, expand its ancestor tree nodes, and render the selected
   object's or array's regular control in the existing right-hand detail pane.
@@ -742,6 +898,63 @@ The tree and detail panes MUST provide the following behavior:
 - Structural external changes MUST rebuild the tree without losing the active
   path when it remains valid. Value-only changes SHOULD preserve expansion,
   selection, and editor interaction state.
+
+#### 9.8.3 Visual acceptance layout
+
+At desktop widths, implementations SHOULD match the following composition.
+The notation describes placement, not literal text or a required visual style:
+
+```text
+Primitive value
+Field label
+[ compact type selector ][ value control fills remaining width ]
+
+Absent value
+Field label
+[ full-width type selector                                      ]
+[ validation feedback                                           ]
+
+Object or array value
+[ compact root type selector ][ distinct field label ] [ collapse action ]
+┌───────────────────────── resizable split ──────────────────────────────┐
+│ Search tree...          │ [root type icon] / Property / Item N         │
+│ root type icon   [eye]  │                                             │
+│   child type icon Label │ selected primitive:                         │
+│   child type icon Label │ [ compact type selector ][ value control ]  │
+│                         │                                             │
+│                         │ selected object/array:                      │
+│                         │ [ compact type selector ]                   │
+│                         │ [ regular object/array detail renderer ]    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+The structured root occupies the tree's type-icon position and has no `Value`,
+`{}`, or `[]` text label beside it. Only the root breadcrumb uses a type icon,
+because it has no path label. All later breadcrumb segments use only their
+property name or `Item N` label. Clickable ancestors use the UI library's link
+cursor and interaction states; the current segment does not.
+
+Within a regular object or array renderer, a nested mixed object or array is a
+compact control with this structure:
+
+```text
+Field label
+[ compact type selector ][ View icon ]
+[ description or validation feedback    ]
+```
+
+The label and feedback wrap the complete row, while the selector and View icon
+are flex/grid siblings aligned by the row itself. Their alignment MUST remain
+correct when labels wrap, typography changes, feedback appears, or a host
+supplies a custom control wrapper. The control does not embed another mixed
+tree/detail panel. A dynamic property is laid out as one property label with
+its Rename/Delete icon actions, followed by the same aligned mixed-value row;
+the primitive input MUST NOT introduce a second copy of the property label.
+
+At narrow widths, selector/value rows stack to one column with the type selector
+above the value control. Implementations MAY stack the tree and detail panes or
+provide another platform-native responsive presentation, but all navigation,
+selection, editing, and action behavior MUST remain available.
 
 The tree MUST use appropriate `tree`, `treeitem`, expansion, and selection
 semantics. Tree rows, disclosure controls, type selection, breadcrumbs, and
@@ -915,6 +1128,9 @@ renderer implementation.
   library's controls.
 - Light/dark tokens, dimensions, typography, validation states, descriptions,
   and spacing MUST match React mode.
+- The Shadow DOM host's CSS `color-scheme` MUST explicitly match the selected
+  light or dark mode so native scrollbars and other browser controls do not use
+  an unrelated operating-system preference.
 - Translation fallback MUST use JSON Forms defaults; untranslated internal
   keys such as `property.description` or `property.error.required` MUST NOT be
   visible.
