@@ -91,6 +91,8 @@ export class JsonFormsAntdElement extends HTMLElement {
 
   private root?: Root;
   private colorScheme?: MediaQueryList;
+  private renderQueued = false;
+  private connectionVersion = 0;
   private state: ElementState = {
     validationMode: 'ValidateAndShow',
     locale: 'en',
@@ -106,23 +108,36 @@ export class JsonFormsAntdElement extends HTMLElement {
 
   connectedCallback() {
     if (!this.shadowRoot) return;
-    this.root = createRoot(this.shadowRoot);
+    this.connectionVersion += 1;
+    this.root ??= createRoot(this.shadowRoot);
     this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
     this.colorScheme.addEventListener('change', this.handleColorSchemeChange);
-    this.render();
+    this.scheduleRender();
   }
 
   disconnectedCallback() {
-    this.root?.unmount();
+    const connectionVersion = ++this.connectionVersion;
+    const root = this.root;
     this.colorScheme?.removeEventListener(
       'change',
       this.handleColorSchemeChange
     );
     this.colorScheme = undefined;
-    this.root = undefined;
+
+    queueMicrotask(() => {
+      if (
+        this.isConnected ||
+        connectionVersion !== this.connectionVersion ||
+        root !== this.root
+      ) {
+        return;
+      }
+      root?.unmount();
+      if (root === this.root) this.root = undefined;
+    });
   }
 
-  private handleColorSchemeChange = () => this.render();
+  private handleColorSchemeChange = () => this.scheduleRender();
 
   attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
     this.setValue(name, newValue);
@@ -180,7 +195,16 @@ export class JsonFormsAntdElement extends HTMLElement {
       ...this.state,
       [key]: value,
     };
-    this.render();
+    this.scheduleRender();
+  }
+
+  private scheduleRender() {
+    if (this.renderQueued) return;
+    this.renderQueued = true;
+    queueMicrotask(() => {
+      this.renderQueued = false;
+      if (this.isConnected) this.render();
+    });
   }
 
   private dispatch(name: string, detail: unknown) {
@@ -195,6 +219,10 @@ export class JsonFormsAntdElement extends HTMLElement {
 
   private render() {
     if (!this.root) return;
+
+    const schema = parseJson(this.state.schema);
+    const data = parseJson(this.state.data);
+    if (schema === undefined && (data === undefined || data === null)) return;
 
     const readonly = parseBoolean(this.state.readonly) ?? false;
     const selectedMode = parseMode(this.state.mode);
@@ -234,8 +262,8 @@ export class JsonFormsAntdElement extends HTMLElement {
             dir={rtl ? 'rtl' : 'ltr'}
           >
             <style>{`
-            :host { display: block; color-scheme: light dark; }
-            .jsonforms-react-antd { box-sizing: border-box; min-width: 0; background: #fff; color: rgba(0, 0, 0, 0.88); }
+            :host { display: block; color-scheme: ${dark ? 'dark' : 'light'}; }
+            .jsonforms-react-antd { box-sizing: border-box; min-width: 0; color-scheme: light; background: #fff; color: rgba(0, 0, 0, 0.88); }
             .jsonforms-react-antd.dark { color-scheme: dark; background: #141414; color: rgba(255, 255, 255, 0.88); }
             ${this.state.customStyle ?? ''}
           `}</style>
@@ -252,8 +280,8 @@ export class JsonFormsAntdElement extends HTMLElement {
                 value={(event) => this.dispatch('handle-action', event)}
               >
                 <JsonForms
-                  data={parseJson(this.state.data)}
-                  schema={parseJson(this.state.schema)}
+                  data={data}
+                  schema={schema}
                   uischema={parseJson(this.state.uischema)}
                   uischemas={parseJson(this.state.uischemas) as any}
                   config={{
