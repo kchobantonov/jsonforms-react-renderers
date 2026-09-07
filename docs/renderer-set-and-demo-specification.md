@@ -758,11 +758,18 @@ When the selected value is a primitive or `null`, the mixed renderer MUST look
 and behave like a normal one-line form control:
 
 - A compact type-selection dropdown appears at the inline-start of the row.
-- The type selector MUST NOT add a separate Clear value button. For an ordinary
-  mixed field, it SHOULD expose the UI library's native integrated clear
-  affordance; clearing leaves the value absent and the selector unselected.
+- A populated, editable type-selection dropdown MUST provide a Clear value
+  button by default. It MAY use the UI library's integrated clear affordance
+  or a separate compact, library-styled icon button beside or within the
+  dropdown wrapper. The action MUST follow Section 9.1.1, including accessible
+  naming, hover/focus visibility, disabled/read-only behavior, and support for
+  disabling clearability through the applied `clearable` option. Activating it
+  MUST NOT open the dropdown. For an ordinary mixed field, clearing leaves the
+  value absent and the selector unselected. This requirement also applies to
+  type selectors in structured mixed-value headers and tree-node details.
   Dynamic-property values remain subject to the explicit-delete rule in
-  Section 9.6.3 and MUST NOT disappear through this affordance.
+  Section 9.6.3: clearing MUST preserve the key and reset its value to the
+  schema-derived default, rather than remove the property.
 - The control for the selected primitive appears beside it in the remaining
   width and SHOULD have the same visual height as the dropdown.
 - For a boolean value, the checkbox or switch MUST retain its native size and
