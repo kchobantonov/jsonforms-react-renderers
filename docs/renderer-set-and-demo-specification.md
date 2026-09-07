@@ -765,6 +765,13 @@ and behave like a normal one-line form control:
   Section 9.6.3 and MUST NOT disappear through this affordance.
 - The control for the selected primitive appears beside it in the remaining
   width and SHOULD have the same visual height as the dropdown.
+- For a boolean value, the checkbox or switch MUST retain its native size and
+  be vertically centered against the type selector's visible input box. The
+  selector and boolean control MUST share a row that aligns their centers;
+  labels, descriptions, and validation feedback MUST sit outside that row so
+  they do not shift the alignment. Implementations MUST NOT approximate this
+  with fixed top padding. This applies to checked, unchecked, disabled, and
+  invalid states, including nested mixed values, in every renderer set.
 - The active value control MUST be rendered through the normal renderer and
   cell registries rather than through a mixed-renderer-specific imitation.
 - The mixed field label MUST appear exactly once above the selector/value row.
