@@ -77,7 +77,7 @@ export const createButtonRenderer = ({
           handleAction?.({
             action,
             label,
-            uischema,
+            element: uischema,
           })
         }
       >

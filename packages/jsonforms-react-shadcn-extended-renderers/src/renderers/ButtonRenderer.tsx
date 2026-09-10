@@ -59,7 +59,7 @@ export const ShadcnButtonRenderer = ({
         setLoading(true);
         try {
           if (configuredAction && handleAction) {
-            await handleAction({ action, label, params, uischema });
+            await handleAction({ action, label, params, element: uischema });
           } else if (script) {
             const AsyncFunction = Object.getPrototypeOf(
               async function () {}
@@ -68,10 +68,10 @@ export const ShadcnButtonRenderer = ({
               action,
               context: jsonforms,
               params: params ? { ...params } : {},
-              uischema,
+              element: uischema,
             });
           } else if (handleAction) {
-            await handleAction({ action, label, params, uischema });
+            await handleAction({ action, label, params, element: uischema });
           }
         } finally {
           setLoading(false);

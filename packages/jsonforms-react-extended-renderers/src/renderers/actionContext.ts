@@ -5,7 +5,8 @@ export type ActionEvent = {
   action: string;
   label: string;
   params?: Record<string, unknown>;
-  uischema: UISchemaElement;
+  /** The UI schema element that triggered the action. */
+  element: UISchemaElement;
 };
 
 export type HandleAction = (event: ActionEvent) => void | Promise<void>;
