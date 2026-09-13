@@ -17,6 +17,7 @@ import {
   antdWebcomponentRenderers,
 } from '../../../jsonforms-react-antd-webcomponent/src/renderers';
 import {
+  sharedSplitLayoutTester,
   horizontalColumnsLayoutTester,
   spacerRendererTester,
   imageViewRendererTester,
@@ -41,6 +42,7 @@ describe('Ant Design renderer registries', () => {
       antdDurationControlTester,
       antdNullControlTester,
       antdSplitLayoutTester,
+      sharedSplitLayoutTester,
       horizontalColumnsLayoutTester,
       spacerRendererTester,
       imageViewRendererTester,

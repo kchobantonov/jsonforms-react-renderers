@@ -1,3 +1,4 @@
+import { PrimeSplitLayoutRenderer, primeSplitLayoutTester } from './renderers/SplitLayoutRenderer';
 import {
   JsonFormsRendererRegistryEntry,
   RankedTester,
@@ -27,6 +28,7 @@ export const createPrimeReactExtendedRenderers = (
   });
 
   return [
+    { tester: primeSplitLayoutTester, renderer: PrimeSplitLayoutRenderer },
     {
       tester: buttonRendererTester as RankedTester,
       renderer: buttonRenderer,
@@ -46,3 +48,5 @@ export const primereactExtendedRenderers = createPrimeReactExtendedRenderers();
 export const advancedPrimeReactRenderers = primereactExtendedRenderers;
 
 export * from '@chobantonov/jsonforms-react-extended-renderers';
+
+export * from './renderers/SplitLayoutRenderer';

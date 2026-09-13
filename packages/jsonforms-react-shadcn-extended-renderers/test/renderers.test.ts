@@ -16,7 +16,7 @@ const rank = (tester: any, uischema: any, schema: any) =>
 
 describe('Shadcn extended renderer registry', () => {
   test('includes the extended and shared presentation renderers', () => {
-    expect(createShadcnExtendedRenderers()).toHaveLength(14);
+    expect(createShadcnExtendedRenderers()).toHaveLength(15);
   });
 
   test('selects each specialized renderer only for its contract', () => {

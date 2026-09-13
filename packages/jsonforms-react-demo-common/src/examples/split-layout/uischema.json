@@ -1,0 +1,46 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "options": {
+        "variant": "splitter"
+      },
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/firstName"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/lastName"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/email"
+        }
+      ]
+    },
+    {
+      "type": "VerticalLayout",
+      "options": {
+        "variant": "splitter",
+        "height": "26rem"
+      },
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/role"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/newsletter"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/timeZone"
+        }
+      ]
+    }
+  ]
+}

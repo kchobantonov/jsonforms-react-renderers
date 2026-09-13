@@ -10,3 +10,5 @@ export * from './ImageViewRenderer';
 export * from './SeparatorRenderer';
 export * from './horizontalLayout';
 export * from './HorizontalLayoutRenderer';
+
+export * from './SplitLayoutRenderer';

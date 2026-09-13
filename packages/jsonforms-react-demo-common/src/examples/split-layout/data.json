@@ -1,0 +1,8 @@
+{
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
+  "role": "Developer",
+  "newsletter": true,
+  "timeZone": "Europe/Sofia"
+}

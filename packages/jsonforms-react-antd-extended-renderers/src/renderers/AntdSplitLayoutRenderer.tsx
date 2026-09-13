@@ -1,3 +1,4 @@
+import { splitCssSize } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
   and,
   Layout,
@@ -27,14 +28,29 @@ export const AntdSplitLayout = (props: LayoutProps) => {
   if (!props.visible) return null;
   const layout = props.uischema as Layout;
   const vertical = layout.type === 'VerticalLayout';
+  const options = { ...props.config, ...layout.options };
   return (
     <Splitter
-      layout={vertical ? 'vertical' : 'horizontal'}
-      style={{ minHeight: vertical ? Number(layout.options?.minHeight ?? 320) : 200 }}
+      orientation={vertical ? 'vertical' : 'horizontal'}
+      style={{
+        height: vertical ? splitCssSize(options.height) ?? '20rem' : undefined,
+        minHeight: vertical ? splitCssSize(options.minHeight) : undefined,
+      }}
     >
       {layout.elements.map((element, index) => (
-        <Splitter.Panel defaultSize={`${100 / layout.elements.length}%`} key={index} min='10%'>
-          <div style={{ height: '100%', minWidth: 0, overflow: 'auto', padding: 12 }}>
+        <Splitter.Panel
+          defaultSize={`${100 / layout.elements.length}%`}
+          key={index}
+          min='10%'
+        >
+          <div
+            style={{
+              height: '100%',
+              minWidth: 0,
+              overflow: 'auto',
+              padding: 12,
+            }}
+          >
             <JsonFormsDispatch
               cells={props.cells}
               enabled={props.enabled}
@@ -50,4 +66,5 @@ export const AntdSplitLayout = (props: LayoutProps) => {
   );
 };
 
-export const AntdSplitLayoutRenderer = withJsonFormsLayoutProps(AntdSplitLayout);
+export const AntdSplitLayoutRenderer =
+  withJsonFormsLayoutProps(AntdSplitLayout);

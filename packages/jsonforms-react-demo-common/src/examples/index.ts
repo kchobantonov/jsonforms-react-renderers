@@ -5,6 +5,7 @@ import * as presentation from './presentation';
 import * as horizontalSizing from './horizontal-sizing';
 import * as presentationRenderers from './presentation-renderers';
 import './collapsible-groups';
+import './split-layout';
 
 const examples = getExamples();
 

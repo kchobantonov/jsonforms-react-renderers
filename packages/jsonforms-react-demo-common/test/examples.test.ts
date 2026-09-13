@@ -1,8 +1,14 @@
 import { describe, expect, test } from 'vitest';
 import examples from '../src/examples';
 import uischema from '../src/examples/presentation-renderers/uischema.json';
+import splitUiSchema from '../src/examples/split-layout/uischema.json';
 
 describe('shared demo examples', () => {
+  test('registers the Svelte horizontal and vertical Split Layout example', () => {
+    const example = examples.find(({ name }) => name === 'split-layout');
+    expect(example?.label).toBe('Split Layout');
+    expect(example?.uischema).toEqual(splitUiSchema);
+  });
   test('makes the Svelte Presentation Renderers example discoverable in the menu', () => {
     const matches = examples.filter((example) =>
       example.label.toLowerCase().includes('presentation')

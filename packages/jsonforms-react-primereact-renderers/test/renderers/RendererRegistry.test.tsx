@@ -1,3 +1,4 @@
+import { primeSplitLayoutTester } from '../../../jsonforms-react-primereact-extended-renderers/src';
 import {
   MixedRenderer,
   mixedControlTester,
@@ -11,6 +12,7 @@ import {
 } from '../../../jsonforms-react-primereact-webcomponent/src/renderers';
 import {
   buttonRendererTester,
+  sharedSplitLayoutTester,
   horizontalColumnsLayoutTester,
   spacerRendererTester,
   imageViewRendererTester,
@@ -30,7 +32,9 @@ describe('PrimeReact renderer registries', () => {
 
   it('contains the complete extended renderer set', () => {
     expect(primereactExtendedRenderers.map(({ tester }) => tester)).toEqual([
+      primeSplitLayoutTester,
       buttonRendererTester,
+      sharedSplitLayoutTester,
       horizontalColumnsLayoutTester,
       spacerRendererTester,
       imageViewRendererTester,

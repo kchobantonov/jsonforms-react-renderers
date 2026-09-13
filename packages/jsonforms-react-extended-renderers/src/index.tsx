@@ -1,3 +1,4 @@
+import { SharedSplitLayoutRenderer, sharedSplitLayoutTester } from './renderers/SplitLayoutRenderer';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
 import React from 'react';
@@ -43,6 +44,7 @@ export const createExtendedRenderers = (
   );
 
   return [
+    { tester: sharedSplitLayoutTester, renderer: SharedSplitLayoutRenderer },
     { tester: horizontalColumnsLayoutTester, renderer: HorizontalColumnsLayoutRenderer },
     { tester: spacerRendererTester, renderer: SpacerRenderer },
     { tester: imageViewRendererTester, renderer: ImageViewRenderer },

@@ -83,6 +83,16 @@ and do not affect vertical or split layouts.
 
 Select **Horizontal Layout Sizing** in any demo to explore the Svelte examples.
 
+### Split layouts
+
+Select **Split Layout** (or open `#split-layout`) in any React demo for the
+same horizontal and vertical split-pane example as Svelte. Set
+`options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
+Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.
+Ant Design and PrimeReact use their native splitters; Shadcn and MUI use the
+shared draggable splitter with arrow-key resizing. Resizing preserves form data
+and does not change `options.columns`.
+
 ### Collapsible groups
 
 Groups in Ant Design, PrimeReact, Shadcn, and the MUI extended set support

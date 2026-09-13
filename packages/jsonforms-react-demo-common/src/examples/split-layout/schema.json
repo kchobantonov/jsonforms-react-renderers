@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "title": "First Name"
+    },
+    "lastName": {
+      "type": "string",
+      "title": "Last Name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+    },
+    "role": {
+      "type": "string",
+      "title": "Role",
+      "enum": ["Developer", "QA", "Product Manager", "Designer"]
+    },
+    "newsletter": {
+      "type": "boolean",
+      "title": "Newsletter"
+    },
+    "timeZone": {
+      "type": "string",
+      "title": "Time Zone"
+    }
+  },
+  "required": ["firstName", "email"]
+}
