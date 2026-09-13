@@ -66,6 +66,72 @@ describe('MUI clear value behavior', () => {
     expect(hasClearableValue(data)).toBe(false);
   });
 
+  it.each(['MuiInputBase-root', 'MuiPickersInputBase-root'])(
+    'centers Clear on %s independently of labels and helper text',
+    async (inputClass) => {
+      let inputTop = 124;
+      let inputHeight = 40;
+      let resize: () => void = () => {};
+      const disconnect = vi.fn();
+      vi.stubGlobal(
+        'ResizeObserver',
+        class {
+          constructor(callback: () => void) {
+            resize = callback;
+          }
+          observe() {}
+          unobserve() {}
+          disconnect = disconnect;
+        }
+      );
+      const bounds = vi
+        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+        .mockImplementation(function (this: HTMLElement) {
+          return {
+            top: this.classList.contains(inputClass) ? inputTop : 100,
+            height: this.classList.contains(inputClass) ? inputHeight : 160,
+          } as DOMRect;
+        });
+      let cleanup: (() => Promise<void>) | undefined;
+      try {
+        const view = await render(
+          <MuiClearableControl
+            {...controlProps('value')}
+            Renderer={() => (
+              <div>
+                <label>Label</label>
+                <div className={inputClass}>
+                  <input />
+                </div>
+                <p>Validation helper text</p>
+              </div>
+            )}
+          />
+        );
+        cleanup = view.cleanup;
+        const button = view.container.querySelector<HTMLElement>(
+          '[aria-label="Clear value"]'
+        )!;
+        expect(getComputedStyle(button).top).toBe('44px');
+        expect(getComputedStyle(button).transform).toBe('translateY(-50%)');
+        inputTop = 116;
+        inputHeight = 56;
+        await act(async () => resize());
+        expect(getComputedStyle(button).top).toBe('44px');
+        inputTop = 100;
+        await act(async () => resize());
+        expect(getComputedStyle(button).top).toBe('28px');
+        await cleanup();
+        cleanup = undefined;
+        expect(disconnect).toHaveBeenCalled();
+      } finally {
+        await cleanup?.();
+        bounds.mockRestore();
+        vi.unstubAllGlobals();
+      }
+    }
+  );
+
   it('emits undefined through the JSON Forms path', async () => {
     const handleChange = vi.fn();
     const { container, cleanup } = await render(
@@ -141,4 +207,80 @@ describe('MUI clearable renderer registry', () => {
     ).not.toBeNull();
     await cleanup();
   });
+});
+
+describe('nested MUI clearable controls', () => {
+  it.each([
+    ['enum', { type: 'string', enum: ['Ada', 'Grace'] }],
+    [
+      'oneOf',
+      {
+        oneOf: [
+          { const: 'Ada', title: 'Ada' },
+          { const: 'Grace', title: 'Grace' },
+        ],
+      },
+    ],
+    ['text', { type: 'string' }],
+  ])(
+    'preserves %s values, paths and additional errors',
+    async (_kind, valueSchema) => {
+      const onChange = vi.fn();
+      const { container, cleanup } = await render(
+        <JsonForms
+          cells={materialCells}
+          data={{ name: 'Ada' }}
+          onChange={onChange}
+          additionalErrors={[
+            {
+              instancePath: '/name',
+              schemaPath: '',
+              keyword: 'external',
+              params: {},
+              message: 'Name is already taken',
+            },
+          ]}
+          renderers={[...materialRenderers, ...muiExtendedRenderers]}
+          schema={{
+            type: 'object',
+            properties: { name: valueSchema as JsonSchema },
+          }}
+          uischema={{ type: 'Control', scope: '#/properties/name' }}
+        />
+      );
+      try {
+        expect(container.querySelector('input')?.value).toBe('Ada');
+        expect(container.textContent).toContain('Name is already taken');
+        if (_kind !== 'text') {
+          await act(async () => {
+            container
+              .querySelector<HTMLButtonElement>('[aria-label="Open"]')!
+              .click();
+          });
+          const option = Array.from(
+            document.querySelectorAll<HTMLElement>('[role="option"]')
+          ).find((option) => option.textContent === 'Grace');
+          expect(option).toBeDefined();
+          await act(async () => option!.click());
+          await vi.waitFor(() =>
+            expect(onChange.mock.calls.at(-1)?.[0].data).toEqual({
+              name: 'Grace',
+            })
+          );
+        }
+        await act(async () => {
+          container
+            .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
+            .click();
+        });
+        await vi.waitFor(() =>
+          expect(onChange.mock.calls.at(-1)?.[0].data).toEqual({
+            name: undefined,
+          })
+        );
+      } finally {
+        await cleanup();
+      }
+    }
+  );
 });

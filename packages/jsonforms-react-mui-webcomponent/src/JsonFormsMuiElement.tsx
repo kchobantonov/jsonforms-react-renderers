@@ -269,6 +269,35 @@ export class JsonFormsMuiElement extends HTMLElement {
     const schema = parseJson(this.state.schema);
     const theme = createJsonFormsMuiTheme(this.getMuiSettings(), dark, rtl);
 
+    // Emotion styles live in this shadow root. Portals must stay in the same
+    // themed, direction-aware container instead of escaping to document.body.
+    const portalContainer = () =>
+      this.shadowRoot!.querySelector<HTMLElement>('.jsonforms-react-mui')!;
+    theme.components = {
+      ...theme.components,
+      MuiPopper: {
+        ...theme.components?.MuiPopper,
+        defaultProps: {
+          ...theme.components?.MuiPopper?.defaultProps,
+          container: portalContainer,
+        },
+      },
+      MuiPopover: {
+        ...theme.components?.MuiPopover,
+        defaultProps: {
+          ...theme.components?.MuiPopover?.defaultProps,
+          container: portalContainer,
+        },
+      },
+      MuiModal: {
+        ...theme.components?.MuiModal,
+        defaultProps: {
+          ...theme.components?.MuiModal?.defaultProps,
+          container: portalContainer,
+        },
+      },
+    };
+
     this.root.render(
       <CacheProvider value={this.cache}>
         <ThemeProvider theme={theme}>

@@ -1,18 +1,20 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { ControlProps } from '@jsonforms/core';
+import { ControlProps, OwnPropsOfControl } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 
 export const hasClearableValue = (data: unknown) =>
   data !== undefined && data !== null && data !== '';
 
 type MuiClearableControlProps = ControlProps & {
   Renderer: React.ComponentType<any>;
+  rendererProps?: OwnPropsOfControl;
 };
 
 export const MuiClearableControl = ({
   Renderer,
+  rendererProps,
   config,
   data,
   enabled,
@@ -22,12 +24,53 @@ export const MuiClearableControl = ({
   uischema,
   ...props
 }: MuiClearableControlProps) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [inputCenter, setInputCenter] = useState<number>();
+  useLayoutEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    let input: HTMLElement | null = null;
+    const measure = () => {
+      const next = wrapper.querySelector<HTMLElement>(
+        '.MuiInputBase-root, .MuiPickersInputBase-root'
+      );
+      if (input !== next) {
+        if (input) resizeObserver?.unobserve(input);
+        input = next;
+        if (input) resizeObserver?.observe(input);
+      }
+      if (!input) {
+        setInputCenter(undefined);
+        return;
+      }
+      const bounds = input.getBoundingClientRect();
+      setInputCenter(
+        bounds.top - wrapper.getBoundingClientRect().top + bounds.height / 2
+      );
+    };
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined'
+        ? undefined
+        : new ResizeObserver(measure);
+    resizeObserver?.observe(wrapper);
+    // Date pickers can replace their input when committing typed values.
+    const mutations = new MutationObserver(measure);
+    mutations.observe(wrapper, { childList: true, subtree: true });
+    measure();
+    window.addEventListener('resize', measure);
+    return () => {
+      resizeObserver?.disconnect();
+      mutations.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
   const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
   const showClear =
     clearable && enabled && !readonly && hasClearableValue(data);
 
   return (
     <Box
+      ref={wrapperRef}
       className='jsonforms-mui-clearable-control'
       sx={{
         position: 'relative',
@@ -43,14 +86,16 @@ export const MuiClearableControl = ({
       }}
     >
       <Renderer
-        {...props}
-        config={config}
-        data={data}
-        enabled={enabled}
-        handleChange={handleChange}
-        path={path}
-        readonly={readonly}
-        uischema={uischema}
+        {...(rendererProps ?? {
+          ...props,
+          config,
+          data,
+          enabled,
+          handleChange,
+          path,
+          readonly,
+          uischema,
+        })}
       />
       {showClear ? (
         <Tooltip title='Clear value'>
@@ -65,7 +110,8 @@ export const MuiClearableControl = ({
             onPointerDown={(event) => event.preventDefault()}
             size='small'
             sx={{
-              insetBlockStart: 8,
+              top: inputCenter ?? '50%',
+              transform: 'translateY(-50%)',
               insetInlineEnd: 36,
               opacity: 0,
               position: 'absolute',
@@ -84,7 +130,17 @@ export const MuiClearableControl = ({
   );
 };
 
-export const createMuiClearableControl = (Renderer: React.ComponentType<any>) =>
-  withJsonFormsControlProps((props: ControlProps) => (
-    <MuiClearableControl {...props} Renderer={Renderer} />
-  ));
+export const createMuiClearableControl = (
+  Renderer: React.ComponentType<any>
+) => {
+  const Clearable = withJsonFormsControlProps(
+    (props: ControlProps & { rendererProps: OwnPropsOfControl }) => (
+      <MuiClearableControl {...props} Renderer={Renderer} />
+    )
+  );
+  // Material renderers are already connected. Give them the original schema and
+  // parent path so that they resolve the control exactly once.
+  return (props: OwnPropsOfControl) => (
+    <Clearable {...{ ...props, rendererProps: props }} />
+  );
+};

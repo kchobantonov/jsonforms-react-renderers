@@ -147,6 +147,79 @@ describe('MUI additional properties in the complete Material registry', () => {
     expect(container.textContent).toContain('dynamic');
   });
 
+  it.each([
+    ['string', 'value', ''],
+    ['number', 12, 0],
+  ])(
+    'keeps a cleared dynamic %s field until Delete is clicked',
+    async (type, value, empty) => {
+      const changed = await renderForm(
+        { type: 'object', additionalProperties: { type } } as JsonSchema,
+        { dynamic: value, sibling: value }
+      );
+      const row = () =>
+        container.querySelector<HTMLElement>(
+          '.jsonforms-mui-additional-property'
+        )!;
+      await act(async () =>
+        row()
+          .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
+          .click()
+      );
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 30));
+      });
+      expect(changed.mock.calls.at(-1)?.[0].data).toEqual({
+        dynamic: empty,
+        sibling: value,
+      });
+      expect(
+        container.querySelector('[aria-label="Rename dynamic"]')
+      ).not.toBeNull();
+      expect(row().querySelector('input')?.value).toBe(String(empty));
+      const actions = row().querySelector<HTMLElement>(
+        '.jsonforms-mui-additional-property-actions'
+      )!;
+      expect(getComputedStyle(actions).flexDirection).toBe('column');
+      await act(async () => {
+        row()
+          .querySelector<HTMLButtonElement>(
+            'button[aria-label="Delete dynamic"]'
+          )!
+          .click();
+      });
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 30));
+      });
+      await vi.waitFor(() =>
+        expect(changed.mock.calls.at(-1)?.[0].data).toEqual({ sibling: value })
+      );
+      expect(
+        container.querySelector('[aria-label="Rename dynamic"]')
+      ).toBeNull();
+    }
+  );
+
+  it('keeps a dynamic text property when its last character is erased', async () => {
+    const changed = await renderForm(
+      { type: 'object', additionalProperties: { type: 'string' } },
+      { dynamic: 'x' }
+    );
+    const input = container.querySelector<HTMLInputElement>(
+      '.jsonforms-mui-additional-property input'
+    )!;
+    await setInputValue(input, '');
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 30));
+    });
+    await vi.waitFor(() =>
+      expect(changed.mock.calls.at(-1)?.[0].data).toEqual({ dynamic: '' })
+    );
+    expect(
+      container.querySelector('[aria-label="Delete dynamic"]')
+    ).not.toBeNull();
+  });
+
   it('adds a schema-typed dynamic property', async () => {
     const schema = {
       type: 'object',
