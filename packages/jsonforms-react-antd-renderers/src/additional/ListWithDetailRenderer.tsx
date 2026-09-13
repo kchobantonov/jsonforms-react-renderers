@@ -29,6 +29,7 @@ import {
   composePaths,
   computeLabel,
   createDefaultValue,
+  deriveTypes,
   findUISchema,
   RankedTester,
   rankWith,
@@ -122,7 +123,10 @@ export const ListWithDetailRenderer = (
 
   // Primitive list-with-detail examples use the same accordion presentation
   // as other primitive arrays. Object arrays retain the master/detail layout.
-  if (schema.type !== 'object') {
+  // Object items may infer their type from properties or use allOf/$ref,
+  // as in Huge Test. Only known non-object items use the accordion fallback.
+  const itemTypes = deriveTypes(schema);
+  if (itemTypes.length > 0 && !itemTypes.includes('object')) {
     return <ArrayLayoutRenderer {...props} />;
   }
 
