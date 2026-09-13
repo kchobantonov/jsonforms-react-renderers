@@ -1,3 +1,7 @@
+import {
+  MuiFileRenderer,
+  muiFileRendererTester,
+} from './renderers/MuiFileRenderer';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { createExtendedRenderers } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
@@ -65,6 +69,7 @@ export const createMuiExtendedRenderers = (
   options: MuiExtendedRendererOptions = {}
 ): JsonFormsRendererRegistryEntry[] => {
   return [
+    { tester: muiFileRendererTester, renderer: MuiFileRenderer },
     { tester: muiGroupTester, renderer: MuiGroupRenderer },
     {
       tester: muiClearableDateControlTester,
@@ -145,3 +150,5 @@ export * from './renderers/controls/MuiClearableOneOfEnumControl';
 export * from './renderers/controls/MuiClearableTextControl';
 export * from './renderers/controls/MuiClearableTimeControl';
 export * from '@chobantonov/jsonforms-react-extended-renderers';
+
+export * from './renderers/MuiFileRenderer';

@@ -110,3 +110,26 @@ See [Renderer Set and Demo Application Specification](docs/renderer-set-and-demo
 for the required demo layout, settings, renderer behavior, Web Component
 parity, project structure, and acceptance checklist for new UI-library
 renderer sets.
+
+
+### MUI file controls
+
+The MUI extended registry (including the MUI web component) supports string schemas
+with `contentEncoding: "base64"`, `format: "binary"`, or `format: "byte"`.
+The **File** demo exercises all three encodings:
+
+- `format: "uri"` with base64 encoding stores the complete data URI.
+- `format: "binary"` stores a data URI with a percent-encoded `filename` parameter.
+- Other base64/byte strings store only the base64 payload.
+
+`contentMediaType` supplies the file chooser's MIME filter; `options.accept` is the
+fallback. `formatMinimum`, `formatMaximum`, `formatExclusiveMinimum`, and
+`formatExclusiveMaximum` accept nonnegative numbers or numeric strings, in bytes.
+Schema limits take precedence over UI options; UI options override form config.
+Invalid selections leave the current value intact. Reading shows a cancellable
+MUI progress dialog and does not upload files to a server.
+
+The renderer honors visibility, read-only/disabled state, `clearable`, `focus`,
+`placeholder`, descriptions, and validation errors. File messages use the same
+translation keys as the Svelte implementation. Clearing dynamic properties keeps
+their key; canceling the chooser or an in-progress read preserves existing data.
