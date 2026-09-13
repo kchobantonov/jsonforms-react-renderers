@@ -213,7 +213,7 @@ input {
 .sidebar input,
 .settings-panel select,
 .demo-settings select,
-.demo-settings input[type='number'] {
+.demo-settings input[type='number']:not(.MuiInputBase-input) {
   box-sizing: border-box;
   width: 100%;
   border: 1px solid #c9d2df;
@@ -422,7 +422,7 @@ input {
   gap: 1rem;
 }
 
-.demo-settings label,
+.demo-settings label:not(.MuiFormLabel-root):not(.MuiFormControlLabel-root),
 .demo-ui-field {
   display: grid;
   gap: 0.35rem;
@@ -453,7 +453,7 @@ input {
   font-size: 0.95rem;
 }
 
-.provider-settings input[type='color'] {
+.provider-settings input[type='color']:not(.MuiInputBase-input) {
   width: 4rem;
   height: 2.25rem;
   padding: 0.1rem;

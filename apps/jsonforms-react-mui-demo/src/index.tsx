@@ -309,12 +309,17 @@ const MuiSettings = ({ settings, setSettings }: ProviderSettingsProps) => {
         </Select>
       </FormControl>
       <TextField
+        fullWidth
+        size='small'
+        slotProps={{ inputLabel: { shrink: true } }}
         type='color'
         label='Primary color'
         value={typedSettings.primaryColor ?? '#1976d2'}
         onChange={(event) => setValue('primaryColor')(event.target.value)}
       />
       <TextField
+        fullWidth
+        size='small'
         type='number'
         label='Border radius'
         slotProps={{ htmlInput: { min: 0, max: 24 } }}
