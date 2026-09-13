@@ -11,6 +11,10 @@ import {
 } from '../../../jsonforms-react-primereact-webcomponent/src/renderers';
 import {
   buttonRendererTester,
+  horizontalColumnsLayoutTester,
+  spacerRendererTester,
+  imageViewRendererTester,
+  separatorRendererTester,
   namedTemplateTester,
   slotRendererTester,
   templateRendererTester,
@@ -27,6 +31,10 @@ describe('PrimeReact renderer registries', () => {
   it('contains the complete extended renderer set', () => {
     expect(primereactExtendedRenderers.map(({ tester }) => tester)).toEqual([
       buttonRendererTester,
+      horizontalColumnsLayoutTester,
+      spacerRendererTester,
+      imageViewRendererTester,
+      separatorRendererTester,
       templateRendererTester,
       namedTemplateTester,
       slotRendererTester,

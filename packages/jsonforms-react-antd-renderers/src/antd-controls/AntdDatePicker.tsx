@@ -59,18 +59,18 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
     [path, handleChange, saveFormat]
   );
 
-  const value = getData(data, [
-    saveFormat,
-    format,
-    ...JSON_SCHEMA_DATE_FORMATS,
-  ]);
+  // Keep the controlled value stable while the popup holds an unconfirmed selection.
+  const value = useMemo(
+    () => getData(data, [saveFormat, format, ...JSON_SCHEMA_DATE_FORMATS]),
+    [data, saveFormat, format]
+  );
 
-  let mode: 'date' | 'month' | 'year' = 'date';
+  let picker: 'date' | 'month' | 'year' = 'date';
   if (!saveFormat.includes('D')) {
-    mode = 'month';
+    picker = 'month';
   }
   if (!saveFormat.includes('M')) {
-    mode = 'year';
+    picker = 'year';
   }
 
   return (
@@ -85,7 +85,7 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
       autoFocus={appliedUiSchemaOptions.focus}
       placeholder={appliedUiSchemaOptions.placeholder}
       style={DATE_PICKER_STYLE}
-      mode={mode}
+      picker={picker}
       status={isValid ? undefined : 'error'}
       {...inputProps}
     />

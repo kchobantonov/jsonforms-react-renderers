@@ -30,7 +30,7 @@ import {
 import dayjs from 'dayjs';
 import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
 import { PrimeClearValueButton } from './PrimeClearValueButton';
 
@@ -67,7 +67,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
   const saveFormat =
     appliedUiSchemaOptions.dateTimeSaveFormat ?? defaultDateTimeFormat;
 
-  const onChange = useCallback(
+  const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
     [path, handleChange, saveFormat]
   );

@@ -27,7 +27,7 @@ import dayjs from 'dayjs';
 import merge from 'lodash/merge';
 import { PrimeIcons } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
 import { PrimeClearValueButton } from './PrimeClearValueButton';
 
@@ -65,7 +65,7 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
     (appliedUiSchemaOptions.ampm === true ? 'hh:mm a' : 'HH:mm');
   const saveFormat = appliedUiSchemaOptions.timeSaveFormat ?? defaultTimeFormat;
 
-  const onChange = useCallback(
+  const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
     [path, handleChange, saveFormat]
   );

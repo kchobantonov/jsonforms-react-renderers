@@ -26,7 +26,7 @@ import { CellProps, WithClassname, defaultDateFormat } from '@jsonforms/core';
 import dayjs from 'dayjs';
 import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
 import { PrimeClearValueButton } from './PrimeClearValueButton';
 
@@ -56,7 +56,7 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
   const format: string = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
   const saveFormat = appliedUiSchemaOptions.dateSaveFormat ?? defaultDateFormat;
 
-  const onChange = useCallback(
+  const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
     [path, handleChange, saveFormat]
   );

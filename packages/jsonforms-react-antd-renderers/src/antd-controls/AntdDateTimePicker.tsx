@@ -70,11 +70,11 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
     [path, handleChange, saveFormat]
   );
 
-  const value = getData(data, [
-    saveFormat,
-    format,
-    ...JSON_SCHEMA_DATE_TIME_FORMATS,
-  ]);
+  // Keep the controlled value stable while the popup holds an unconfirmed selection.
+  const value = useMemo(
+    () => getData(data, [saveFormat, format, ...JSON_SCHEMA_DATE_TIME_FORMATS]),
+    [data, saveFormat, format]
+  );
 
   return (
     <DatePicker
