@@ -133,3 +133,11 @@ The renderer honors visibility, read-only/disabled state, `clearable`, `focus`,
 `placeholder`, descriptions, and validation errors. File messages use the same
 translation keys as the Svelte implementation. Clearing dynamic properties keeps
 their key; canceling the chooser or an in-progress read preserves existing data.
+
+### MUI password controls
+
+The MUI extended registry renders string fields with schema `format: "password"`
+or UI schema `options.format: "password"` as masked inputs with show/hide and clear
+buttons. It supports `clearable`, `placeholder`, `focus`, `restrict` (schema
+`maxLength`), `trim`, and `autoComplete` (defaults to `current-password`), along
+with standard JSON Forms labels, descriptions, validation, and read-only rules.

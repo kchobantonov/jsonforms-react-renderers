@@ -292,3 +292,63 @@ describe('MUI mixed renderer in the complete Material registry', () => {
     container.remove();
   });
 });
+
+describe('MUI mixed boolean layout', () => {
+  it.each([
+    [false, false, false],
+    [true, false, false],
+    [false, true, false],
+    [true, false, true],
+  ])(
+    'uses a centered native boolean row (value=%s, readonly=%s, toggle=%s)',
+    async (value, readonly, toggle) => {
+      const container = document.createElement('div');
+      document.body.append(container);
+      const root = createRoot(container);
+      try {
+        await act(async () =>
+          root.render(
+            <JsonForms
+              schema={{
+                type: ['boolean', 'string'],
+                description: 'Choose a value',
+                not: { const: false },
+              }}
+              uischema={{
+                type: 'Control',
+                scope: '#',
+                label: 'Mixed value',
+                options: { toggle, showUnfocusedDescription: true },
+              }}
+              data={value}
+              readonly={readonly}
+              renderers={[...materialRenderers, ...muiExtendedRenderers]}
+            />
+          )
+        );
+        const row = container.querySelector<HTMLElement>(
+          '[data-mixed-boolean-row]'
+        )!;
+        expect(row).not.toBeNull();
+        expect(getComputedStyle(row).display).toBe('grid');
+        expect(getComputedStyle(row).alignItems).toBe('center');
+        const booleanLabel = row.querySelector<HTMLElement>(
+          '.MuiFormControlLabel-root'
+        )!;
+        expect(getComputedStyle(booleanLabel).gridRow).toBe('1');
+        const checkbox = booleanLabel.querySelector<HTMLInputElement>('input')!;
+        expect(checkbox.checked).toBe(value);
+        expect(checkbox.disabled).toBe(readonly);
+        expect(booleanLabel.textContent).toBe('');
+        const feedback = row.querySelector<HTMLElement>(
+          '.mixed-value > .MuiFormHelperText-root'
+        )!;
+        expect(feedback).not.toBeNull();
+        expect(getComputedStyle(feedback).gridColumn).toBe('2');
+      } finally {
+        await act(async () => root.unmount());
+        container.remove();
+      }
+    }
+  );
+});

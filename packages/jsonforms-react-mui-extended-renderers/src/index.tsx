@@ -1,4 +1,8 @@
 import {
+  MuiPasswordControl,
+  muiPasswordControlTester,
+} from './renderers/controls/MuiPasswordControl';
+import {
   MuiFileRenderer,
   muiFileRendererTester,
 } from './renderers/MuiFileRenderer';
@@ -69,6 +73,7 @@ export const createMuiExtendedRenderers = (
   options: MuiExtendedRendererOptions = {}
 ): JsonFormsRendererRegistryEntry[] => {
   return [
+    { tester: muiPasswordControlTester, renderer: MuiPasswordControl },
     { tester: muiFileRendererTester, renderer: MuiFileRenderer },
     { tester: muiGroupTester, renderer: MuiGroupRenderer },
     {
@@ -152,3 +157,5 @@ export * from './renderers/controls/MuiClearableTimeControl';
 export * from '@chobantonov/jsonforms-react-extended-renderers';
 
 export * from './renderers/MuiFileRenderer';
+
+export * from './renderers/controls/MuiPasswordControl';

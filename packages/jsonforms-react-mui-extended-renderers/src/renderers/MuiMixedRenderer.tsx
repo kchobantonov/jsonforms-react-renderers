@@ -219,7 +219,8 @@ export const MuiMixedRendererComponent = ({
         uischema={{
           type: 'Control',
           scope: '#',
-          options: { clearable: false },
+          label: false,
+          options: { ...uischema.options, clearable: false },
         }}
       />
     ) : null;
@@ -276,9 +277,35 @@ export const MuiMixedRendererComponent = ({
               {required ? ' *' : ''}
             </Typography>
           ) : null}
-          <Box sx={{ alignItems: 'flex-start', display: 'flex', gap: 1 }}>
+          <Box
+            data-mixed-boolean-row={selectedType === 'boolean' ? '' : undefined}
+            sx={
+              selectedType === 'boolean'
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'auto minmax(0, 1fr)',
+                    alignItems: 'center',
+                    columnGap: 1,
+                    '& > .MuiFormControl-root': { gridColumn: 1, gridRow: 1 },
+                    // Keep the native boolean input in row 1 and its helper text below.
+                    '& > .mixed-value': { display: 'contents' },
+                    '& > .mixed-value > .MuiFormControlLabel-root': {
+                      gridColumn: 2,
+                      gridRow: 1,
+                      justifySelf: 'start',
+                      m: 0,
+                    },
+                    '& > .mixed-value > .MuiFormHelperText-root': {
+                      gridColumn: 2,
+                    },
+                  }
+                : { alignItems: 'flex-start', display: 'flex', gap: 1 }
+            }
+          >
             {selector}
-            <Box sx={{ flex: 1, minWidth: 0 }}>{primitive}</Box>
+            <Box className='mixed-value' sx={{ flex: 1, minWidth: 0 }}>
+              {primitive}
+            </Box>
           </Box>
         </>
       ) : (
