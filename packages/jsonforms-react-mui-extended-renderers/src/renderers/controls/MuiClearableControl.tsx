@@ -16,10 +16,12 @@ export const hasClearableValue = (data: unknown) =>
 type MuiClearableControlProps = ControlProps & {
   Renderer: React.ComponentType<any>;
   rendererProps?: OwnPropsOfControl;
+  nativeClear?: 'text' | 'autocomplete';
 };
 
 export const MuiClearableControl = ({
   Renderer,
+  nativeClear,
   rendererProps,
   config,
   data,
@@ -30,6 +32,14 @@ export const MuiClearableControl = ({
   uischema,
   ...props
 }: MuiClearableControlProps) => {
+  const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
+  const showClear =
+    clearable && enabled && !readonly && hasClearableValue(data);
+  const useNativeClear =
+    nativeClear === 'text' ||
+    (nativeClear === 'autocomplete' &&
+      (uischema.options?.autocomplete ?? config?.autocomplete) !== false);
+  const showCustomClear = showClear && !useNativeClear;
   const theme = useTheme();
   const clearableTheme = useMemo(
     () => ({
@@ -40,16 +50,18 @@ export const MuiClearableControl = ({
           ...theme.components?.MuiAutocomplete,
           defaultProps: {
             ...theme.components?.MuiAutocomplete?.defaultProps,
-            disableClearable: true,
+            disableClearable: !(useNativeClear && showClear),
+            clearText: 'Clear value',
           },
         },
       },
     }),
-    [theme]
+    [theme, useNativeClear, showClear]
   );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [inputCenter, setInputCenter] = useState<number>();
   useLayoutEffect(() => {
+    if (useNativeClear) return;
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
     let input: HTMLElement | null = null;
@@ -86,10 +98,7 @@ export const MuiClearableControl = ({
       mutations.disconnect();
       window.removeEventListener('resize', measure);
     };
-  }, []);
-  const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
-  const showClear =
-    clearable && enabled && !readonly && hasClearableValue(data);
+  }, [useNativeClear]);
 
   return (
     <Box
@@ -99,7 +108,25 @@ export const MuiClearableControl = ({
         position: 'relative',
         '&:hover .jsonforms-mui-clear-value, &:focus-within .jsonforms-mui-clear-value':
           { opacity: 1 },
-        ...(showClear
+        ...(nativeClear === 'text'
+          ? {
+              // Upstream provides the adornment and click handler. Apply our policy
+              // and keyboard-focus visibility, preserving its native positioning and padding.
+              '& .MuiInputAdornment-root:has(button[aria-label="Clear input field"])':
+                {
+                  display: 'none !important',
+                },
+              ...(showClear
+                ? {
+                    '&:hover .MuiInputAdornment-root:has(button[aria-label="Clear input field"]), &:focus-within .MuiInputAdornment-root:has(button[aria-label="Clear input field"])':
+                      {
+                        display: 'flex !important',
+                      },
+                  }
+                : {}),
+            }
+          : {}),
+        ...(showCustomClear
           ? {
               '& .MuiInputBase-root': {
                 paddingInlineEnd: '4.5rem !important',
@@ -108,7 +135,7 @@ export const MuiClearableControl = ({
           : {}),
       }}
     >
-      {/* The wrapper owns clearing; suppress Autocomplete's duplicate action. */}
+      {/* Keep native clear actions where available and apply the shared policy. */}
       <ThemeProvider theme={clearableTheme}>
         <Renderer
           {...(rendererProps ?? {
@@ -123,7 +150,7 @@ export const MuiClearableControl = ({
           })}
         />
       </ThemeProvider>
-      {showClear ? (
+      {showCustomClear ? (
         <Tooltip title='Clear value'>
           <IconButton
             aria-label='Clear value'
@@ -157,11 +184,16 @@ export const MuiClearableControl = ({
 };
 
 export const createMuiClearableControl = (
-  Renderer: React.ComponentType<any>
+  Renderer: React.ComponentType<any>,
+  nativeClear?: 'text' | 'autocomplete'
 ) => {
   const Clearable = withJsonFormsControlProps(
     (props: ControlProps & { rendererProps: OwnPropsOfControl }) => (
-      <MuiClearableControl {...props} Renderer={Renderer} />
+      <MuiClearableControl
+        {...props}
+        Renderer={Renderer}
+        nativeClear={nativeClear}
+      />
     )
   );
   // Material renderers are already connected. Give them the original schema and

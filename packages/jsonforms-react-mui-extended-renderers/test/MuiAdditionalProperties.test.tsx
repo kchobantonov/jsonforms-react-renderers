@@ -163,7 +163,9 @@ describe('MUI additional properties in the complete Material registry', () => {
         )!;
       await act(async () =>
         row()
-          .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
+          .querySelector<HTMLButtonElement>(
+            ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
+          )!
           .click()
       );
       await act(async () => {

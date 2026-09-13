@@ -6,7 +6,8 @@ import {
 import { createMuiClearableControl } from './MuiClearableControl';
 
 export const MuiClearableOneOfEnumControl = createMuiClearableControl(
-  MaterialOneOfEnumControl
+  MaterialOneOfEnumControl,
+  'autocomplete'
 );
 export const muiClearableOneOfEnumControlTester = rankWith(
   6,

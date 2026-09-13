@@ -110,7 +110,7 @@ describe('MUI clear value behavior', () => {
         );
         cleanup = view.cleanup;
         const button = view.container.querySelector<HTMLElement>(
-          '[aria-label="Clear value"]'
+          ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
         )!;
         expect(getComputedStyle(button).top).toBe('44px');
         expect(getComputedStyle(button).transform).toBe('translateY(-50%)');
@@ -143,7 +143,9 @@ describe('MUI clear value behavior', () => {
 
     await act(async () => {
       container
-        .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')
+        .querySelector<HTMLButtonElement>(
+          ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
+        )
         ?.click();
     });
 
@@ -172,7 +174,11 @@ describe('MUI clear value behavior', () => {
       />
     );
 
-    expect(container.querySelector('[aria-label="Clear value"]')).toBeNull();
+    expect(
+      container.querySelector(
+        ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
+      )
+    ).toBeNull();
     await cleanup();
   });
 });
@@ -203,7 +209,9 @@ describe('MUI clearable renderer registry', () => {
     );
 
     expect(
-      container.querySelector('[aria-label="Clear value"]')
+      container.querySelector(
+        ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
+      )
     ).not.toBeNull();
     await cleanup();
   });
@@ -250,6 +258,15 @@ describe('nested MUI clearable controls', () => {
       );
       try {
         expect(container.querySelector('input')?.value).toBe('Ada');
+        expect(
+          container.querySelector('.jsonforms-mui-clear-value')
+        ).toBeNull();
+        if (_kind === 'text') {
+          const native = container.querySelector(
+            'button[aria-label="Clear input field"]'
+          )!;
+          expect(native.closest('.MuiInputBase-root')).not.toBeNull();
+        }
         expect(container.textContent).toContain('Name is already taken');
         if (_kind !== 'text') {
           await act(async () => {
@@ -270,7 +287,9 @@ describe('nested MUI clearable controls', () => {
         }
         await act(async () => {
           container
-            .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
+            .querySelector<HTMLButtonElement>(
+              ':is([aria-label="Clear value"], [aria-label="Clear input field"])'
+            )!
             .click();
         });
         await vi.waitFor(() =>
@@ -286,6 +305,30 @@ describe('nested MUI clearable controls', () => {
 });
 
 describe('MUI dropdown clear actions', () => {
+  it('adds a clear action when autocomplete is explicitly disabled', async () => {
+    const { container, cleanup } = await render(
+      <JsonForms
+        data='Ada'
+        schema={{ type: 'string', enum: ['Ada', 'Grace'] }}
+        uischema={{
+          type: 'Control',
+          scope: '#',
+          options: { autocomplete: false },
+        }}
+        renderers={[...materialRenderers, ...muiExtendedRenderers]}
+        cells={materialCells}
+      />
+    );
+    try {
+      expect(container.querySelector('.MuiAutocomplete-root')).toBeNull();
+      expect(
+        container.querySelectorAll('.jsonforms-mui-clear-value')
+      ).toHaveLength(1);
+    } finally {
+      await cleanup();
+    }
+  });
+
   it.each([
     ['enum', { type: 'string', enum: ['Ada', 'Grace'] }],
     [
@@ -298,7 +341,7 @@ describe('MUI dropdown clear actions', () => {
       },
     ],
   ])(
-    'exposes only the wrapper clear action for %s dropdowns',
+    'uses only the native clear action for %s dropdowns',
     async (_kind, schema) => {
       for (const clearable of [true, false]) {
         const { container, cleanup } = await render(
@@ -314,10 +357,15 @@ describe('MUI dropdown clear actions', () => {
           const nativeClear = container.querySelector<HTMLElement>(
             '.MuiAutocomplete-clearIndicator'
           )!;
-          expect(nativeClear).toBeNull();
+          expect(Boolean(nativeClear)).toBe(clearable);
+          expect(
+            container.querySelector('.jsonforms-mui-clear-value')
+          ).toBeNull();
 
           expect(
-            container.querySelectorAll('button[aria-label="Clear value"]')
+            container.querySelectorAll(
+              'button:is([aria-label="Clear value"], [aria-label="Clear input field"])'
+            )
           ).toHaveLength(clearable ? 1 : 0);
           expect(
             container.querySelector('button[aria-label="Open"]')
@@ -326,8 +374,8 @@ describe('MUI dropdown clear actions', () => {
             container.querySelector<HTMLInputElement>('input')!.focus()
           );
           expect(
-            container.querySelector('.MuiAutocomplete-clearIndicator')
-          ).toBeNull();
+            Boolean(container.querySelector('.MuiAutocomplete-clearIndicator'))
+          ).toBe(clearable);
         } finally {
           await cleanup();
         }

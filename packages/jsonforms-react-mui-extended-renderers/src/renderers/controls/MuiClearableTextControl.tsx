@@ -5,8 +5,10 @@ import {
 } from '@jsonforms/material-renderers';
 import { createMuiClearableControl } from './MuiClearableControl';
 
-export const MuiClearableTextControl =
-  createMuiClearableControl(MaterialTextControl);
+export const MuiClearableTextControl = createMuiClearableControl(
+  MaterialTextControl,
+  'text'
+);
 export const muiClearableTextControlTester = rankWith(
   2,
   (uischema, schema, context) =>
