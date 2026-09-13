@@ -1,8 +1,24 @@
-import { PrimeSplitLayoutRenderer, primeSplitLayoutTester } from './renderers/SplitLayoutRenderer';
+import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { PrimeAgGridControlRenderer } from './renderers/PrimeAgGridControlRenderer';
+import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { PrimeMonacoControlRenderer } from './renderers/PrimeMonacoControlRenderer';
 import {
-  JsonFormsRendererRegistryEntry,
-  RankedTester,
-} from '@jsonforms/core';
+  PrimeNullControlRenderer,
+  primeNullControlTester,
+} from './renderers/PrimeNullControlRenderer';
+import {
+  PrimeDurationControlRenderer,
+  primeDurationControlTester,
+} from './renderers/PrimeDurationControlRenderer';
+import {
+  PrimeColorControlRenderer,
+  primeColorControlTester,
+} from './renderers/PrimeColorControlRenderer';
+import {
+  PrimeSplitLayoutRenderer,
+  primeSplitLayoutTester,
+} from './renderers/SplitLayoutRenderer';
+import { JsonFormsRendererRegistryEntry, RankedTester } from '@jsonforms/core';
 import {
   createButtonRenderer,
   createExtendedRenderers,
@@ -28,6 +44,14 @@ export const createPrimeReactExtendedRenderers = (
   });
 
   return [
+    { tester: extendedAgGridTester, renderer: PrimeAgGridControlRenderer },
+    { tester: monacoControlTester, renderer: PrimeMonacoControlRenderer },
+    { tester: primeNullControlTester, renderer: PrimeNullControlRenderer },
+    {
+      tester: primeDurationControlTester,
+      renderer: PrimeDurationControlRenderer,
+    },
+    { tester: primeColorControlTester, renderer: PrimeColorControlRenderer },
     { tester: primeSplitLayoutTester, renderer: PrimeSplitLayoutRenderer },
     {
       tester: buttonRendererTester as RankedTester,
@@ -50,3 +74,13 @@ export const advancedPrimeReactRenderers = primereactExtendedRenderers;
 export * from '@chobantonov/jsonforms-react-extended-renderers';
 
 export * from './renderers/SplitLayoutRenderer';
+
+export * from './renderers/PrimeColorControlRenderer';
+
+export * from './renderers/PrimeDurationControlRenderer';
+
+export * from './renderers/PrimeNullControlRenderer';
+
+export * from './renderers/PrimeMonacoControlRenderer';
+
+export * from './renderers/PrimeAgGridControlRenderer';

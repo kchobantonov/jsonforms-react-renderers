@@ -36,7 +36,10 @@
   "dependencies": {
     "@babel/standalone": "^7.28.3",
     "sucrase": "^3.35.0",
-    "valtio": "^1.11.2"
+    "valtio": "^1.11.2",
+    "@monaco-editor/react": "^4.6.0",
+    "ag-grid-community": "36.1.0",
+    "ag-grid-react": "36.1.0"
   },
   "peerDependencies": {
     "@jsonforms/core": "3.8.0",

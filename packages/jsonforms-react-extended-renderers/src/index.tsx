@@ -1,4 +1,7 @@
-import { SharedSplitLayoutRenderer, sharedSplitLayoutTester } from './renderers/SplitLayoutRenderer';
+import {
+  SharedSplitLayoutRenderer,
+  sharedSplitLayoutTester,
+} from './renderers/SplitLayoutRenderer';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
 import React from 'react';
@@ -7,13 +10,31 @@ import {
   TemplateLayoutRenderer,
   templateRendererTester,
 } from './renderers/TemplateLayoutRenderer';
-import { ButtonRenderer, buttonRendererTester } from './renderers/ButtonRenderer';
-import { TemplateRenderer, namedTemplateTester } from './renderers/TemplateRenderer';
+import {
+  ButtonRenderer,
+  buttonRendererTester,
+} from './renderers/ButtonRenderer';
+import {
+  TemplateRenderer,
+  namedTemplateTester,
+} from './renderers/TemplateRenderer';
 import { SlotRenderer, slotRendererTester } from './renderers/SlotRenderer';
-import { SpacerRenderer, spacerRendererTester } from './renderers/SpacerRenderer';
-import { ImageViewRenderer, imageViewRendererTester } from './renderers/ImageViewRenderer';
-import { SeparatorRenderer, separatorRendererTester } from './renderers/SeparatorRenderer';
-import { HorizontalColumnsLayoutRenderer, horizontalColumnsLayoutTester } from './renderers/HorizontalLayoutRenderer';
+import {
+  SpacerRenderer,
+  spacerRendererTester,
+} from './renderers/SpacerRenderer';
+import {
+  ImageViewRenderer,
+  imageViewRendererTester,
+} from './renderers/ImageViewRenderer';
+import {
+  SeparatorRenderer,
+  separatorRendererTester,
+} from './renderers/SeparatorRenderer';
+import {
+  HorizontalColumnsLayoutRenderer,
+  horizontalColumnsLayoutTester,
+} from './renderers/HorizontalLayoutRenderer';
 
 export type CreateExtendedRenderersOptions = {
   components?: Record<string, React.ComponentType<any>>;
@@ -45,7 +66,10 @@ export const createExtendedRenderers = (
 
   return [
     { tester: sharedSplitLayoutTester, renderer: SharedSplitLayoutRenderer },
-    { tester: horizontalColumnsLayoutTester, renderer: HorizontalColumnsLayoutRenderer },
+    {
+      tester: horizontalColumnsLayoutTester,
+      renderer: HorizontalColumnsLayoutRenderer,
+    },
     { tester: spacerRendererTester, renderer: SpacerRenderer },
     { tester: imageViewRendererTester, renderer: ImageViewRenderer },
     { tester: separatorRendererTester, renderer: SeparatorRenderer },
@@ -72,3 +96,10 @@ export const createExtendedRenderers = (
   ];
 };
 export * from './renderers';
+
+export * from './util/extendedControls';
+export * from './util/useDurationControl';
+export * from './util/editorControls';
+export * from './renderers/EditorControlFrame';
+export * from './renderers/MonacoControlRenderer';
+export * from './renderers/AgGridControlRenderer';

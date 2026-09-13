@@ -1,7 +1,10 @@
+import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { ShadcnAgGridControlRenderer } from './renderers/ShadcnAgGridControlRenderer';
+import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { ShadcnMonacoControlRenderer } from './renderers/ShadcnMonacoControlRenderer';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { createExtendedRenderers } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
-  AgGridArrayControlRenderer,
   ShadcnButtonRendererWithProps,
   ColorControlRenderer,
   DurationControlRenderer,
@@ -14,12 +17,13 @@ import {
   fileControlTester,
   nullControlTester,
   splitLayoutTester,
-  agGridArrayTester,
 } from './renderers';
 
 export const createShadcnExtendedRenderers =
   (): JsonFormsRendererRegistryEntry[] => {
     return [
+      { tester: extendedAgGridTester, renderer: ShadcnAgGridControlRenderer },
+      { tester: monacoControlTester, renderer: ShadcnMonacoControlRenderer },
       {
         tester: shadcnButtonRendererTester,
         renderer: ShadcnButtonRendererWithProps,
@@ -28,7 +32,6 @@ export const createShadcnExtendedRenderers =
       { tester: durationControlTester, renderer: DurationControlRenderer },
       { tester: fileControlTester, renderer: FileControlRenderer },
       { tester: nullControlTester, renderer: NullControlRenderer },
-      { tester: agGridArrayTester, renderer: AgGridArrayControlRenderer },
       { tester: splitLayoutTester, renderer: SplitLayoutRenderer },
       ...createExtendedRenderers({
         components: undefined,
@@ -43,3 +46,7 @@ export const advancedShadcnRenderers = shadcnExtendedRenderers;
 export * from './theme';
 export * from './renderers';
 export * from '@chobantonov/jsonforms-react-extended-renderers';
+
+export * from './renderers/ShadcnMonacoControlRenderer';
+
+export * from './renderers/ShadcnAgGridControlRenderer';

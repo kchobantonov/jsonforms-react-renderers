@@ -4,6 +4,15 @@ import uischema from '../src/examples/presentation-renderers/uischema.json';
 import splitUiSchema from '../src/examples/split-layout/uischema.json';
 
 describe('shared demo examples', () => {
+  test.each([
+    'extended-color',
+    'extended-duration',
+    'extended-null',
+    'extended-monaco',
+    'extended-ag-grid',
+  ])('registers %s once', (name) => {
+    expect(examples.filter((example) => example.name === name)).toHaveLength(1);
+  });
   test('registers the Svelte horizontal and vertical Split Layout example', () => {
     const example = examples.find(({ name }) => name === 'split-layout');
     expect(example?.label).toBe('Split Layout');

@@ -1,3 +1,4 @@
+import './extended-controls';
 import { getExamples } from '@jsonforms/examples';
 import * as file from './file';
 import * as templateLayout from './template-layout';

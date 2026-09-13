@@ -15,35 +15,24 @@ import {
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import React from 'react';
 import {
-  DurationParts,
-  EMPTY_DURATION_PARTS,
-  formatDurationIso,
-  parseDuration,
-} from './duration';
+  useDurationControl,
+  durationFields,
+  durationFieldMax,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 
 export const durationControlTester: RankedTester = rankWith(
   2,
   and(isStringControl, formatIs('duration'))
 );
-const fields: Array<keyof DurationParts> = [
-  'weeks',
-  'years',
-  'months',
-  'days',
-  'hours',
-  'minutes',
-  'seconds',
-];
+const fields = durationFields;
 
 export const ShadcnDurationControl = (props: ControlProps) => {
-  const [open, setOpen] = React.useState(false);
-  const [parts, setParts] = React.useState<DurationParts>(
-    () => parseDuration(props.data) ?? EMPTY_DURATION_PARTS
-  );
+  const state = useDurationControl(props);
+  const { open, draft: parts } = state;
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
-  const value = typeof props.data === 'string' ? props.data : '';
-  const valid = !value || parseDuration(value) !== null;
+  const value = state.value;
+  const valid = !state.error;
 
   return (
     <InputShell
@@ -62,8 +51,9 @@ export const ShadcnDurationControl = (props: ControlProps) => {
           className='shadcn-jsonforms-input'
           id={id}
           value={value}
-          placeholder='P1DT2H'
-          disabled={!props.enabled}
+          placeholder={state.options.placeholder ?? 'P1DT2H'}
+          autoFocus={state.options.focus}
+          disabled={state.disabled}
           onChange={(event) =>
             props.handleChange(
               props.path,
@@ -75,11 +65,10 @@ export const ShadcnDurationControl = (props: ControlProps) => {
           className='shadcn-jsonforms-button shadcn-jsonforms-button-outline shadcn-jsonforms-button-sm'
           variant='outline'
           size='sm'
-          disabled={!props.enabled}
+          disabled={state.disabled}
           aria-expanded={open}
           onClick={() => {
-            setParts(parseDuration(value) ?? EMPTY_DURATION_PARTS);
-            setOpen((current) => !current);
+            open ? state.close() : state.openPicker();
           }}
         >
           Duration
@@ -95,36 +84,35 @@ export const ShadcnDurationControl = (props: ControlProps) => {
                 type='number'
                 min={0}
                 value={parts[field]}
-                disabled={field !== 'weeks' && parts.weeks > 0}
+                disabled={state.fieldDisabled(field)}
+                max={durationFieldMax[field]}
                 onChange={(event) =>
-                  setParts((current) => ({
-                    ...current,
-                    [field]: Number(event.currentTarget.value),
-                  }))
+                  state.changePart(field, Number(event.currentTarget.value))
                 }
               />
             </label>
           ))}
-          <div className='shadcn-jsonforms-duration-actions'>
-            <Button
-              className='shadcn-jsonforms-button shadcn-jsonforms-button-sm'
-              size='sm'
-              onClick={() => {
-                props.handleChange(props.path, formatDurationIso(parts));
-                setOpen(false);
-              }}
-            >
-              Apply
-            </Button>
-            <Button
-              className='shadcn-jsonforms-button shadcn-jsonforms-button-ghost shadcn-jsonforms-button-sm'
-              variant='ghost'
-              size='sm'
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-          </div>
+          {state.showActions && (
+            <div className='shadcn-jsonforms-duration-actions'>
+              <Button
+                className='shadcn-jsonforms-button shadcn-jsonforms-button-sm'
+                size='sm'
+                onClick={() => {
+                  state.apply();
+                }}
+              >
+                {state.options.okLabel ?? 'Apply'}
+              </Button>
+              <Button
+                className='shadcn-jsonforms-button shadcn-jsonforms-button-ghost shadcn-jsonforms-button-sm'
+                variant='ghost'
+                size='sm'
+                onClick={() => state.close()}
+              >
+                {state.options.cancelLabel ?? 'Cancel'}
+              </Button>
+            </div>
+          )}
         </div>
       ) : null}
     </InputShell>

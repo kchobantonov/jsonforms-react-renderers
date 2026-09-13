@@ -141,3 +141,43 @@ or UI schema `options.format: "password"` as masked inputs with show/hide and cl
 buttons. It supports `clearable`, `placeholder`, `focus`, `restrict` (schema
 `maxLength`), `trim`, and `autoComplete` (defaults to `current-password`), along
 with standard JSON Forms labels, descriptions, validation, and read-only rules.
+
+### Extended control availability
+
+| Renderer | MUI | Ant Design | PrimeReact | Shadcn |
+| --- | --- | --- | --- | --- |
+| Button actions | Yes | Yes | Yes | Yes |
+| Color, Duration, Null | Yes | Yes | Yes | Yes |
+| File | Yes | Yes (base set) | Yes (base set) | Yes |
+| Monaco editor | Yes | Yes | Yes | Yes |
+| AG Grid arrays | Yes | Yes | Yes | Yes |
+| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes | Yes | Yes | Yes |
+
+The shared demos include **Color**, **Duration**, **Null**, **Monaco Editor**, and
+**AG Grid**. Use string schema `format: "color"` or `format: "duration"`, or
+schema `type: "null"` for those controls. MUI and PrimeReact also accept the color
+and duration format in UI schema `options.format`. MUI composes its color field
+from a TextField and browser color input; it does not require a third-party MUI
+color picker.
+
+Duration pickers support weeks or year/month/day/time components, `showActions`
+(default `true`), `okLabel`, `cancelLabel`, `placeholder`, and `focus`. With
+`showActions: false`, component edits apply immediately. Weeks cannot be combined
+with the other components. MUI and PrimeReact also expose `clearable` (default
+`true`). Null controls distinguish explicit `null` from an absent value.
+
+Monaco is selected with `options: { format: "code", language: "javascript" }`.
+Use `language: "json", convertJson: true` to edit JSON values; incomplete JSON
+remains in the editor without replacing the last valid form value. `:language`
+reads a language from a root-data path. `monaco.rows`, `monaco.autoGrow`,
+`monaco.minRows`, `monaco.maxRows`, `monaco.options`, and `monaco.initActions`
+configure the editor. Maximize/restore and Escape are supported. The integration
+uses `@monaco-editor/react`'s loader; applications can configure that loader for
+self-hosted Monaco assets as usual.
+
+AG Grid is selected with `options: { variant: "ag-grid", height: 400 }` on an
+array control. It supports object and primitive rows, native cell editing,
+selection, sorting, filtering, adding and removing rows, and read-only mode.
+Schema `minItems`/`maxItems` restrict removal/addition unless `restrict: false`.
+The React implementation uses AG Grid Community; it does not claim parity with
+Svelte's advanced grid-specific features or enterprise options.

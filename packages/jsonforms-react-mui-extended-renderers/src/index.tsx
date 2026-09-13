@@ -1,3 +1,19 @@
+import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { MuiAgGridControlRenderer } from './renderers/MuiAgGridControlRenderer';
+import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import { MuiMonacoControlRenderer } from './renderers/MuiMonacoControlRenderer';
+import {
+  MuiNullControlRenderer,
+  muiNullControlTester,
+} from './renderers/MuiNullControlRenderer';
+import {
+  MuiDurationControlRenderer,
+  muiDurationControlTester,
+} from './renderers/MuiDurationControlRenderer';
+import {
+  MuiColorControlRenderer,
+  muiColorControlTester,
+} from './renderers/MuiColorControlRenderer';
 import {
   MuiPasswordControl,
   muiPasswordControlTester,
@@ -73,6 +89,11 @@ export const createMuiExtendedRenderers = (
   options: MuiExtendedRendererOptions = {}
 ): JsonFormsRendererRegistryEntry[] => {
   return [
+    { tester: extendedAgGridTester, renderer: MuiAgGridControlRenderer },
+    { tester: monacoControlTester, renderer: MuiMonacoControlRenderer },
+    { tester: muiNullControlTester, renderer: MuiNullControlRenderer },
+    { tester: muiDurationControlTester, renderer: MuiDurationControlRenderer },
+    { tester: muiColorControlTester, renderer: MuiColorControlRenderer },
     { tester: muiPasswordControlTester, renderer: MuiPasswordControl },
     { tester: muiFileRendererTester, renderer: MuiFileRenderer },
     { tester: muiGroupTester, renderer: MuiGroupRenderer },
@@ -159,3 +180,13 @@ export * from '@chobantonov/jsonforms-react-extended-renderers';
 export * from './renderers/MuiFileRenderer';
 
 export * from './renderers/controls/MuiPasswordControl';
+
+export * from './renderers/MuiColorControlRenderer';
+
+export * from './renderers/MuiDurationControlRenderer';
+
+export * from './renderers/MuiNullControlRenderer';
+
+export * from './renderers/MuiMonacoControlRenderer';
+
+export * from './renderers/MuiAgGridControlRenderer';

@@ -16,17 +16,55 @@ const rank = (tester: any, uischema: any, schema: any) =>
 
 describe('Shadcn extended renderer registry', () => {
   test('includes the extended and shared presentation renderers', () => {
-    expect(createShadcnExtendedRenderers()).toHaveLength(15);
+    expect(createShadcnExtendedRenderers()).toHaveLength(16);
   });
 
   test('selects each specialized renderer only for its contract', () => {
-    expect(rank(colorControlTester, { type: 'Control', scope: '#/properties/value' }, { type: 'string', format: 'color' })).toBe(2);
-    expect(rank(durationControlTester, { type: 'Control', scope: '#/properties/value' }, { type: 'string', format: 'duration' })).toBe(2);
-    expect(rank(fileControlTester, { type: 'Control', scope: '#' }, { type: 'string', contentEncoding: 'base64' })).toBe(2);
-    expect(rank(fileControlTester, { type: 'Control', scope: '#' }, { type: 'string' })).toBe(-1);
-    expect(rank(nullControlTester, { type: 'Control', scope: '#' }, { type: 'null' })).toBe(2);
-    expect(rank(splitLayoutTester, { type: 'HorizontalLayout', options: { variant: 'splitter' } }, {})).toBe(5);
-    expect(rank(agGridArrayTester, { type: 'Control', scope: '#', options: { variant: 'ag-grid' } }, { type: 'array' })).toBe(10);
+    expect(
+      rank(
+        colorControlTester,
+        { type: 'Control', scope: '#/properties/value' },
+        { type: 'string', format: 'color' }
+      )
+    ).toBe(2);
+    expect(
+      rank(
+        durationControlTester,
+        { type: 'Control', scope: '#/properties/value' },
+        { type: 'string', format: 'duration' }
+      )
+    ).toBe(2);
+    expect(
+      rank(
+        fileControlTester,
+        { type: 'Control', scope: '#' },
+        { type: 'string', contentEncoding: 'base64' }
+      )
+    ).toBe(2);
+    expect(
+      rank(
+        fileControlTester,
+        { type: 'Control', scope: '#' },
+        { type: 'string' }
+      )
+    ).toBe(-1);
+    expect(
+      rank(nullControlTester, { type: 'Control', scope: '#' }, { type: 'null' })
+    ).toBe(2);
+    expect(
+      rank(
+        splitLayoutTester,
+        { type: 'HorizontalLayout', options: { variant: 'splitter' } },
+        {}
+      )
+    ).toBe(5);
+    expect(
+      rank(
+        agGridArrayTester,
+        { type: 'Control', scope: '#', options: { variant: 'ag-grid' } },
+        { type: 'array' }
+      )
+    ).toBe(25);
   });
 });
 

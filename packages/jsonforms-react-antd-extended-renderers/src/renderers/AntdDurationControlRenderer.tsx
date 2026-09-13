@@ -8,31 +8,26 @@ import {
 } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import { Button, Flex, Form, Input, InputNumber, Popover } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  DurationParts,
-  EMPTY_DURATION,
-  formatDuration,
-  parseDuration,
-} from './duration';
+  useDurationControl,
+  durationFields,
+  durationFieldMax,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 
 export const antdDurationControlTester: RankedTester = rankWith(
   3,
   and(isStringControl, formatIs('duration'))
 );
 
-const fields = Object.keys(EMPTY_DURATION) as Array<keyof DurationParts>;
+const fields = durationFields;
 
 export const AntdDurationControl = (props: ControlProps) => {
-  const [open, setOpen] = useState(false);
-  const [parts, setParts] = useState<DurationParts>(
-    () => parseDuration(props.data) ?? EMPTY_DURATION
-  );
+  const state = useDurationControl(props);
+  const { open, draft: parts } = state;
   if (!props.visible) return null;
-  const value = typeof props.data === 'string' ? props.data : '';
-  const localError = value && !parseDuration(value)
-    ? 'Enter an ISO 8601 duration, for example P2DT3H.'
-    : '';
+  const value = state.value;
+  const localError = state.error;
   const picker = (
     <Flex vertical gap='small' style={{ width: 280 }}>
       {fields.map((field) => (
@@ -40,25 +35,28 @@ export const AntdDurationControl = (props: ControlProps) => {
           <span style={{ textTransform: 'capitalize' }}>{field}</span>
           <InputNumber
             min={0}
-            onChange={(next) =>
-              setParts((current) => ({ ...current, [field]: Number(next ?? 0) }))
-            }
+            max={durationFieldMax[field]}
+            disabled={state.fieldDisabled(field)}
+            onChange={(next) => state.changePart(field, Number(next ?? 0))}
             value={parts[field]}
           />
         </Flex>
       ))}
-      <Flex justify='end' gap='small'>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
-        <Button
-          onClick={() => {
-            props.handleChange(props.path, formatDuration(parts));
-            setOpen(false);
-          }}
-          type='primary'
-        >
-          Apply
-        </Button>
-      </Flex>
+      {state.showActions && (
+        <Flex justify='end' gap='small'>
+          <Button onClick={() => state.close()}>
+            {state.options.cancelLabel ?? 'Cancel'}
+          </Button>
+          <Button
+            onClick={() => {
+              state.apply();
+            }}
+            type='primary'
+          >
+            {state.options.okLabel ?? 'Apply'}
+          </Button>
+        </Flex>
+      )}
     </Flex>
   );
   return (
@@ -69,31 +67,31 @@ export const AntdDurationControl = (props: ControlProps) => {
     >
       <Flex gap='small'>
         <Input
-          disabled={!props.enabled}
+          disabled={state.disabled}
           onChange={(event) =>
-            props.handleChange(props.path, event.currentTarget.value || undefined)
+            props.handleChange(
+              props.path,
+              event.currentTarget.value || undefined
+            )
           }
-          placeholder='P1DT2H'
+          placeholder={state.options.placeholder ?? 'P1DT2H'}
+          autoFocus={state.options.focus}
           status={localError || props.errors ? 'error' : undefined}
           value={value}
         />
         <Popover
           content={picker}
-          onOpenChange={(next) => {
-            if (next) setParts(parseDuration(value) ?? EMPTY_DURATION);
-            setOpen(next);
-          }}
+          onOpenChange={(next) => (next ? state.openPicker() : state.close())}
           open={open}
           placement='bottomRight'
           trigger='click'
         >
-          <Button disabled={!props.enabled}>Duration</Button>
+          <Button disabled={state.disabled}>Duration</Button>
         </Popover>
       </Flex>
     </Form.Item>
   );
 };
 
-export const AntdDurationControlRenderer = withJsonFormsControlProps(
-  AntdDurationControl
-);
+export const AntdDurationControlRenderer =
+  withJsonFormsControlProps(AntdDurationControl);
