@@ -1,8 +1,14 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { ControlProps, OwnPropsOfControl } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
-import { Box, IconButton, Tooltip } from '@mui/material';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import {
+  Box,
+  IconButton,
+  Tooltip,
+  ThemeProvider,
+  useTheme,
+} from '@mui/material';
+import React, { useLayoutEffect, useRef, useState, useMemo } from 'react';
 
 export const hasClearableValue = (data: unknown) =>
   data !== undefined && data !== null && data !== '';
@@ -24,6 +30,23 @@ export const MuiClearableControl = ({
   uischema,
   ...props
 }: MuiClearableControlProps) => {
+  const theme = useTheme();
+  const clearableTheme = useMemo(
+    () => ({
+      ...theme,
+      components: {
+        ...theme.components,
+        MuiAutocomplete: {
+          ...theme.components?.MuiAutocomplete,
+          defaultProps: {
+            ...theme.components?.MuiAutocomplete?.defaultProps,
+            disableClearable: true,
+          },
+        },
+      },
+    }),
+    [theme]
+  );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [inputCenter, setInputCenter] = useState<number>();
   useLayoutEffect(() => {
@@ -85,18 +108,21 @@ export const MuiClearableControl = ({
           : {}),
       }}
     >
-      <Renderer
-        {...(rendererProps ?? {
-          ...props,
-          config,
-          data,
-          enabled,
-          handleChange,
-          path,
-          readonly,
-          uischema,
-        })}
-      />
+      {/* The wrapper owns clearing; suppress Autocomplete's duplicate action. */}
+      <ThemeProvider theme={clearableTheme}>
+        <Renderer
+          {...(rendererProps ?? {
+            ...props,
+            config,
+            data,
+            enabled,
+            handleChange,
+            path,
+            readonly,
+            uischema,
+          })}
+        />
+      </ThemeProvider>
       {showClear ? (
         <Tooltip title='Clear value'>
           <IconButton

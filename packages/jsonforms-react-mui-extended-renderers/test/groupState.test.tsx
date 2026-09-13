@@ -90,17 +90,22 @@ describe('Group collapse and data indicator', () => {
       const content = document.getElementById(
         toggle().getAttribute('aria-controls')!
       )!;
-      expect(content.hidden).toBe(true);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
       expect(toggle().getAttribute('aria-label')).toBe('Details');
+      expect(toggle().classList.contains('MuiAccordionSummary-root')).toBe(
+        true
+      );
+      expect(content.getAttribute('role')).toBe('region');
+      expect(content.getAttribute('aria-labelledby')).toBe(toggle().id);
       expect(container.querySelector('[data-group-indicator]')).not.toBeNull();
       await act(async () => toggle().click());
-      expect(content.hidden).toBe(false);
+      expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       input.value = 'local edit';
       await render(group, false);
-      expect(content.hidden).toBe(false);
+      expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       expect(container.querySelector('[data-group-indicator]')).not.toBeNull();
       await act(async () => toggle().click());
-      expect(content.hidden).toBe(true);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
       expect(container.querySelector('input')).toBe(input);
       expect(input.value).toBe('local edit');
       await render(group, '  ');
@@ -109,21 +114,21 @@ describe('Group collapse and data indicator', () => {
         ...group,
         options: { ...group.options, collapsed: false },
       });
-      expect(content.hidden).toBe(false);
+      expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       await render({ ...group, options: { collapsed: true } });
       expect(toggle()).toBeNull();
-      expect(content.hidden).toBe(false);
+      expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       await render({ ...group, options: {} }, 0, {
         collapsible: true,
         collapsed: true,
       });
-      expect(content.hidden).toBe(true);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
       await render({
         ...group,
         options: { collapsible: 'true', collapsed: true },
       });
       expect(toggle()).toBeNull();
-      expect(content.hidden).toBe(false);
+      expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       await render({
         ...group,
         rule: {

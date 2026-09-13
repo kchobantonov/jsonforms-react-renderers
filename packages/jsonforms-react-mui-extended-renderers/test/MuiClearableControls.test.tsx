@@ -284,3 +284,54 @@ describe('nested MUI clearable controls', () => {
     }
   );
 });
+
+describe('MUI dropdown clear actions', () => {
+  it.each([
+    ['enum', { type: 'string', enum: ['Ada', 'Grace'] }],
+    [
+      'oneOf',
+      {
+        oneOf: [
+          { const: 'Ada', title: 'Ada' },
+          { const: 'Grace', title: 'Grace' },
+        ],
+      },
+    ],
+  ])(
+    'exposes only the wrapper clear action for %s dropdowns',
+    async (_kind, schema) => {
+      for (const clearable of [true, false]) {
+        const { container, cleanup } = await render(
+          <JsonForms
+            data='Ada'
+            schema={schema as JsonSchema}
+            uischema={{ type: 'Control', scope: '#', options: { clearable } }}
+            renderers={[...materialRenderers, ...muiExtendedRenderers]}
+            cells={materialCells}
+          />
+        );
+        try {
+          const nativeClear = container.querySelector<HTMLElement>(
+            '.MuiAutocomplete-clearIndicator'
+          )!;
+          expect(nativeClear).toBeNull();
+
+          expect(
+            container.querySelectorAll('button[aria-label="Clear value"]')
+          ).toHaveLength(clearable ? 1 : 0);
+          expect(
+            container.querySelector('button[aria-label="Open"]')
+          ).not.toBeNull();
+          await act(async () =>
+            container.querySelector<HTMLInputElement>('input')!.focus()
+          );
+          expect(
+            container.querySelector('.MuiAutocomplete-clearIndicator')
+          ).toBeNull();
+        } finally {
+          await cleanup();
+        }
+      }
+    }
+  );
+});

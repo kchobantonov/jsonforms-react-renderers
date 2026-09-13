@@ -10,6 +10,8 @@ import {
   useJsonForms,
 } from '@jsonforms/react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import React, { useCallback, useMemo } from 'react';
 import { MuiAdditionalPropertyItem } from './additionalPropertyUtils';
 
@@ -94,8 +96,9 @@ export const MuiAdditionalPropertyRow = ({
               disabled={!enabled || readonly}
               onClick={onRename}
               size='small'
+              sx={{ width: 28, height: 28, flexShrink: 0 }}
             >
-              ✎
+              <EditIcon fontSize='small' />
             </IconButton>
           </span>
         </Tooltip>
@@ -107,8 +110,9 @@ export const MuiAdditionalPropertyRow = ({
               disabled={deleteDisabled}
               onClick={onDelete}
               size='small'
+              sx={{ width: 28, height: 28, flexShrink: 0 }}
             >
-              ×
+              <DeleteIcon fontSize='small' />
             </IconButton>
           </span>
         </Tooltip>
