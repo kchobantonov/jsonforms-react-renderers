@@ -1,6 +1,10 @@
 import React from 'react';
 import {
+  Box,
   Button,
+  Divider,
+  IconButton,
+  FormHelperText,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -20,6 +24,9 @@ import {
   DemoToggleProps,
   DemoUi,
 } from '@chobantonov/jsonforms-react-demo-common';
+import { MuiDemoTypography } from './MuiDemoTypography';
+import { MuiDemoTextInput } from './MuiDemoTextInput';
+import { MuiDemoSegmentedControl } from './MuiDemoSegmentedControl';
 import { MuiDemoSplitter } from './MuiDemoSplitter';
 
 const DemoButton = ({
@@ -31,13 +38,23 @@ const DemoButton = ({
   onClick,
   children,
 }: DemoButtonProps) => {
-  const button = (
+  const button = iconOnly ? (
+    <IconButton
+      aria-label={ariaLabel ?? tooltip}
+      aria-pressed={active}
+      color={active ? 'primary' : 'default'}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </IconButton>
+  ) : (
     <Button
       aria-label={ariaLabel}
       variant={active ? 'contained' : 'outlined'}
       disabled={disabled}
       onClick={onClick}
-      sx={iconOnly ? { minWidth: 40, px: 1 } : undefined}
+      aria-pressed={active}
     >
       {children}
     </Button>
@@ -46,11 +63,26 @@ const DemoButton = ({
   return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
 };
 
-const DemoPanel = ({ className, children }: DemoPanelProps) => (
-  <Paper className={className} variant='outlined'>
-    {children}
-  </Paper>
-);
+const DemoPanel = ({ className, children }: DemoPanelProps) => {
+  if (className?.split(/\s+/).includes('form-card')) {
+    return (
+      <Box
+        className={className}
+        sx={{
+          '&&': { border: 0, borderRadius: 0, background: 'transparent', p: 0 },
+          minWidth: 0,
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+  return (
+    <Paper className={className} variant='outlined'>
+      {children}
+    </Paper>
+  );
+};
 
 const DemoSelect = ({ label, options, value, onChange }: DemoSelectProps) => (
   <FormControl fullWidth size='small'>
@@ -81,19 +113,31 @@ const DemoTabs = ({ items, value, onChange }: DemoTabsProps) => (
   </Tabs>
 );
 
-const DemoToggle = ({ checked, label, onChange }: DemoToggleProps) => (
-  <FormControlLabel
-    label={label}
-    control={
-      <Switch
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-      />
-    }
-  />
+const DemoToggle = ({
+  checked,
+  label,
+  description,
+  onChange,
+}: DemoToggleProps) => (
+  <FormControl>
+    <FormControlLabel
+      label={label}
+      control={
+        <Switch
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+        />
+      }
+    />
+    {description && <FormHelperText>{description}</FormHelperText>}
+  </FormControl>
 );
 
 export const muiDemoUi: DemoUi = {
+  Typography: MuiDemoTypography,
+  TextInput: MuiDemoTextInput,
+  SegmentedControl: MuiDemoSegmentedControl,
+  Divider,
   Button: DemoButton,
   Panel: DemoPanel,
   Select: DemoSelect,

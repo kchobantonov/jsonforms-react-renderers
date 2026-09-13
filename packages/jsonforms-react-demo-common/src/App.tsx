@@ -41,6 +41,8 @@ import {
   writePersistedDemoSettings,
 } from './demoPreferences';
 import './App.css';
+import { DefaultDemoTypography } from './DefaultDemoTypography';
+import { DefaultDemoTextInput } from './DefaultDemoTextInput';
 
 export type ProviderSettingsProps = {
   settings: Record<string, any>;
@@ -123,7 +125,25 @@ export type DemoToggleProps = {
   onChange: (checked: boolean) => void;
 };
 
+export type DemoTextInputProps = {
+  label: string;
+  value: string;
+  placeholder?: string;
+  description?: string;
+  onChange: (value: string) => void;
+};
+
+export type DemoTypographyProps = React.PropsWithChildren<{
+  component: 'h1' | 'h2' | 'h3' | 'p';
+  className?: string;
+}>;
+
 export type DemoUi = {
+  Typography?: React.ComponentType<DemoTypographyProps>;
+  TextInput?: React.ComponentType<DemoTextInputProps>;
+  SegmentedControl?: React.ComponentType<DemoSelectProps>;
+  Divider?: React.ComponentType;
+
   Button: React.ComponentType<DemoButtonProps>;
   Panel: React.ComponentType<DemoPanelProps>;
   Select: React.ComponentType<DemoSelectProps>;
@@ -594,6 +614,10 @@ const App = ({
     Splitter: UiSplitter = DefaultDemoSplitter,
     Tabs: UiTabs,
     Toggle: UiToggle,
+    Typography: UiTypography = DefaultDemoTypography,
+    TextInput: UiTextInput = DefaultDemoTextInput,
+    SegmentedControl: UiSegmentedControl,
+    Divider: UiDivider,
   } = Ui;
 
   useEffect(() => {
@@ -865,39 +889,64 @@ const App = ({
 
   const settings = (
     <div className='demo-settings'>
-      <div className='demo-setting-field'>
-        <span className='demo-setting-label'>Mode</span>
-        <div className='demo-segmented-control'>
-          {(['system', 'light', 'dark'] as const).map((value) => (
-            <UiButton
-              key={value}
-              active={mode === value}
-              onClick={() => setMode(value)}
-            >
-              {value === 'system' ? (
-                <LaptopMinimalCheck aria-hidden='true' />
-              ) : value === 'light' ? (
-                <Sun aria-hidden='true' />
-              ) : (
-                <Moon aria-hidden='true' />
-              )}
-              {value[0].toUpperCase() + value.slice(1)}
+      {UiSegmentedControl ? (
+        <UiSegmentedControl
+          label='Mode'
+          value={mode}
+          options={[
+            { value: 'system', label: 'System' },
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+          ]}
+          onChange={(value) => setMode(value as DemoMode)}
+        />
+      ) : (
+        <div className='demo-setting-field'>
+          <span className='demo-setting-label'>Mode</span>
+          <div className='demo-segmented-control'>
+            {(['system', 'light', 'dark'] as const).map((value) => (
+              <UiButton
+                key={value}
+                active={mode === value}
+                onClick={() => setMode(value)}
+              >
+                {value === 'system' ? (
+                  <LaptopMinimalCheck aria-hidden='true' />
+                ) : value === 'light' ? (
+                  <Sun aria-hidden='true' />
+                ) : (
+                  <Moon aria-hidden='true' />
+                )}
+                {value[0].toUpperCase() + value.slice(1)}
+              </UiButton>
+            ))}
+          </div>
+        </div>
+      )}
+      {UiSegmentedControl ? (
+        <UiSegmentedControl
+          label='Direction'
+          value={rtl ? 'rtl' : 'ltr'}
+          options={[
+            { value: 'ltr', label: 'LTR' },
+            { value: 'rtl', label: 'RTL' },
+          ]}
+          onChange={(value) => setRtl(value === 'rtl')}
+        />
+      ) : (
+        <div className='demo-setting-field'>
+          <span className='demo-setting-label'>Direction</span>
+          <div className='demo-segmented-control'>
+            <UiButton active={!rtl} onClick={() => setRtl(false)}>
+              LTR
             </UiButton>
-          ))}
+            <UiButton active={rtl} onClick={() => setRtl(true)}>
+              RTL
+            </UiButton>
+          </div>
         </div>
-      </div>
-      <div className='demo-setting-field'>
-        <span className='demo-setting-label'>Direction</span>
-        <div className='demo-segmented-control'>
-          <UiButton active={!rtl} onClick={() => setRtl(false)}>
-            LTR
-          </UiButton>
-          <UiButton active={rtl} onClick={() => setRtl(true)}>
-            RTL
-          </UiButton>
-        </div>
-      </div>
-      <div className='demo-settings-separator' />
+      )}
+      {UiDivider ? <UiDivider /> : <div className='demo-settings-separator' />}
       <UiSelect
         label='Locale'
         value={locale}
@@ -928,8 +977,10 @@ const App = ({
         ]}
         onChange={(value) => setLayout(value as DemoLayout)}
       />
-      <div className='demo-settings-separator' />
-      <h3 className='demo-settings-section-title'>Options</h3>
+      {UiDivider ? <UiDivider /> : <div className='demo-settings-separator' />}
+      <UiTypography component='h3' className='demo-settings-section-title'>
+        Options
+      </UiTypography>
       <UiToggle
         checked={Boolean(configOptions.hideRequiredAsterisk)}
         label='Hide Required Asterisk'
@@ -988,25 +1039,21 @@ const App = ({
           setConfigOption('enableFilterErrorsBeforeTouch', value)
         }
       />
-      <label className='demo-ui-field'>
-        <span>Filter Error Keywords Before Touch</span>
-        <input
-          value={(configOptions.filterErrorKeywordsBeforeTouch ?? []).join(
-            ', '
-          )}
-          placeholder='required, minLength'
-          onChange={(event) =>
-            setConfigOption(
-              'filterErrorKeywordsBeforeTouch',
-              event.target.value
-                .split(',')
-                .map((value) => value.trim())
-                .filter(Boolean)
-            )
-          }
-        />
-        <small>Separate AJV keywords with commas.</small>
-      </label>
+      <UiTextInput
+        label='Filter Error Keywords Before Touch'
+        value={(configOptions.filterErrorKeywordsBeforeTouch ?? []).join(', ')}
+        placeholder='required, minLength'
+        description='Separate AJV keywords with commas.'
+        onChange={(value) =>
+          setConfigOption(
+            'filterErrorKeywordsBeforeTouch',
+            value
+              .split(',')
+              .map((keyword) => keyword.trim())
+              .filter(Boolean)
+          )
+        }
+      />
       <UiToggle
         checked={Boolean(configOptions.allowAdditionalPropertiesIfMissing)}
         label='Allow Additional Properties By Default'
@@ -1036,9 +1083,15 @@ const App = ({
       ) : (
         <div className='demo-home-mark'>{brand[0]}</div>
       )}
-      <p className='demo-home-eyebrow'>JSON Forms renderer set</p>
-      <h1>Welcome to JSON Forms React {rendererName}</h1>
-      <p className='demo-home-tagline'>More Forms. Less Code.</p>
+      <UiTypography component='p' className='demo-home-eyebrow'>
+        JSON Forms renderer set
+      </UiTypography>
+      <UiTypography component='h1'>
+        Welcome to JSON Forms React {rendererName}
+      </UiTypography>
+      <UiTypography component='p' className='demo-home-tagline'>
+        More Forms. Less Code.
+      </UiTypography>
       <UiButton onClick={() => changeExample(examples[0].name)}>
         Open Demo
       </UiButton>
@@ -1047,7 +1100,7 @@ const App = ({
     <section className={formOnly ? 'workspace form-only' : 'workspace'}>
       {!formOnly && (
         <div className='workspace-title'>
-          <h1>{currentExample.label}</h1>
+          <UiTypography component='h1'>{currentExample.label}</UiTypography>
         </div>
       )}
 
@@ -1090,7 +1143,7 @@ const App = ({
           {activeTab === 'demo' ? (
             <UiPanel className='panel'>
               <div className='jsonform-toolbar'>
-                <h2>JSON Forms</h2>
+                <UiTypography component='h2'>JSON Forms</UiTypography>
                 <div className='action-row'>
                   {actions.map((action) => (
                     <UiButton
@@ -1110,14 +1163,14 @@ const App = ({
                 <UiSplitter
                   form={
                     <section className='demo-data-pane demo-form-pane'>
-                      <h3>Demo</h3>
+                      <UiTypography component='h3'>Demo</UiTypography>
                       <UiPanel className='form-card'>{renderForm()}</UiPanel>
                     </section>
                   }
                   data={
                     <section className='demo-data-pane demo-editor-pane'>
                       <div className='editor-heading'>
-                        <h3>Data</h3>
+                        <UiTypography component='h3'>Data</UiTypography>
                         <div className='action-row'>
                           <UiButton
                             ariaLabel='Reload original example data'
@@ -1175,7 +1228,7 @@ const App = ({
           ) : (
             <UiPanel className='editor-panel panel'>
               <div className='editor-heading'>
-                <h2>{activeTab}</h2>
+                <UiTypography component='h2'>{activeTab}</UiTypography>
                 <div className='action-row'>
                   <UiButton
                     ariaLabel='Reload original example value'

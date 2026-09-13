@@ -254,17 +254,7 @@ const MuiWrapper = ({
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          p: 2,
-          border: 1,
-          borderColor: 'divider',
-        }}
-      >
-        <Box>{children}</Box>
-      </Paper>
+      <Box sx={{ width: '100%', minWidth: 0 }}>{children}</Box>
     </ThemeProvider>
   );
 };
