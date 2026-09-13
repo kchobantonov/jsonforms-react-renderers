@@ -9,6 +9,10 @@ import {
 import { ButtonRenderer, buttonRendererTester } from './renderers/ButtonRenderer';
 import { TemplateRenderer, namedTemplateTester } from './renderers/TemplateRenderer';
 import { SlotRenderer, slotRendererTester } from './renderers/SlotRenderer';
+import { SpacerRenderer, spacerRendererTester } from './renderers/SpacerRenderer';
+import { ImageViewRenderer, imageViewRendererTester } from './renderers/ImageViewRenderer';
+import { SeparatorRenderer, separatorRendererTester } from './renderers/SeparatorRenderer';
+import { HorizontalColumnsLayoutRenderer, horizontalColumnsLayoutTester } from './renderers/HorizontalLayoutRenderer';
 
 export type CreateExtendedRenderersOptions = {
   components?: Record<string, React.ComponentType<any>>;
@@ -39,6 +43,10 @@ export const createExtendedRenderers = (
   );
 
   return [
+    { tester: horizontalColumnsLayoutTester, renderer: HorizontalColumnsLayoutRenderer },
+    { tester: spacerRendererTester, renderer: SpacerRenderer },
+    { tester: imageViewRendererTester, renderer: ImageViewRenderer },
+    { tester: separatorRendererTester, renderer: SeparatorRenderer },
     ...(includeButtonRenderer
       ? [
           {

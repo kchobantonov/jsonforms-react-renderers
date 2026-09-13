@@ -15,8 +15,8 @@ const rank = (tester: any, uischema: any, schema: any) =>
   tester(uischema, schema, undefined);
 
 describe('Shadcn extended renderer registry', () => {
-  test('contains the same ten renderer entries as Svelte Shadcn extended', () => {
-    expect(createShadcnExtendedRenderers()).toHaveLength(10);
+  test('includes the extended and shared presentation renderers', () => {
+    expect(createShadcnExtendedRenderers()).toHaveLength(14);
   });
 
   test('selects each specialized renderer only for its contract', () => {

@@ -1,0 +1,54 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Image View with alternative text"
+    },
+    {
+      "type": "ImageView",
+      "options": {
+        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgNjQwIDEyMCI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIxMjAiIHJ4PSIxMiIgZmlsbD0iIzMzNDE1NSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjI4IiBmaWxsPSIjMzhiZGY4Ii8+PHRleHQgeD0iMTEwIiB5PSI3MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIj5QcmVzZW50YXRpb24gcmVuZGVyZXJzPC90ZXh0Pjwvc3ZnPg==",
+        "alt": "Blue circle beside the words Presentation renderers"
+      }
+    },
+    {
+      "type": "Spacer"
+    },
+    {
+      "type": "Label",
+      "text": "Default Spacer above: 32 pixels"
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/name"
+    },
+    {
+      "type": "Spacer",
+      "options": {
+        "height": 64
+      }
+    },
+    {
+      "type": "Label",
+      "text": "Custom Spacer above: 64 pixels"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/notes",
+      "options": {
+        "multi": true
+      }
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Separators, spacers and images are presentation-only elements."
+    }
+  ]
+}

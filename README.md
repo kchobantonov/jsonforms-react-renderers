@@ -39,6 +39,50 @@
 - `apps/jsonforms-react-mui-demo` - MUI demo app.
 - `apps/jsonforms-react-examples-app` - aggregated React examples app.
 
+### Presentation renderers
+
+All four extended React renderer sets include the shared Svelte-compatible
+presentation elements. They honor JSON Forms visibility rules and accept defaults
+from the form configuration, with UI Schema options taking precedence.
+
+```json
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Spacer", "options": { "height": 32 } },
+    { "type": "Separator" },
+    { "type": "ImageView", "options": { "src": "/image.png", "alt": "Description" } }
+  ]
+}
+```
+
+`Spacer` uses a height in pixels (default 32, negative values clamped to zero).
+`ImageView` preserves aspect ratio, fits its container, and omits images without a
+nonempty string source. `Separator` renders a horizontal rule. The shared demo
+includes **Presentation Renderers**, matching Svelte's image banner, default and
+custom spacers, separators, and input fields. Search for **Presentation** in the
+example menu or open `#presentation-renderers` in any demo.
+There are also individual **Spacer**, **ImageView**, and **Separator** examples, plus
+the combined **Spacer, ImageView and Separator** example.
+
+### Horizontal layout columns
+
+All four extended React sets support Svelte's 16-column allocation on each
+direct child of a `HorizontalLayout`:
+
+- `options.columns`: an integer from 2 through 16 reserves that fraction of the row.
+- Omitted, `null`, or `"auto"`: shares the row's remaining space equally.
+- Invalid values fall back to Auto and expose a `data-columns-diagnostic` attribute.
+
+For example, children with columns `4, "auto", "auto"` receive `4, 6, 6`.
+Fixed-only rows leave unused space; `12, 8, "auto"` forms rows `12` and `8, 8`.
+All-Auto layouts stay in one equally divided row. A `1rem` gap is included in
+the width calculation. Hidden children release their space; disabled children
+keep it. Columns apply to controls, presentation elements, and nested layouts,
+and do not affect vertical or split layouts.
+
+Select **Horizontal Layout Sizing** in any demo to explore the Svelte examples.
+
 ### Implementation specification
 
 See [Renderer Set and Demo Application Specification](docs/renderer-set-and-demo-specification.md)

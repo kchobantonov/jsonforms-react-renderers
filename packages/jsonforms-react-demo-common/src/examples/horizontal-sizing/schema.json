@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "showDetails": {
+      "type": "boolean"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

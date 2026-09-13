@@ -1,0 +1,214 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/showDetails"
+    },
+    {
+      "type": "Group",
+      "label": "One quarter, unused space",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed plus Auto",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 4
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed plus two Auto",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 4
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed widths leave unused space",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 4
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName",
+              "options": {
+                "columns": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Overflow wraps in order",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 12
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName",
+              "options": {
+                "columns": 8
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "All Auto, equal thirds",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Presentation and nested layout",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "Quarter-width label",
+              "options": {
+                "columns": 4
+              }
+            },
+            {
+              "type": "Group",
+              "label": "Nested group",
+              "options": {
+                "columns": 8
+              },
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/notes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Hidden field releases its slot",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/firstName",
+              "options": {
+                "columns": 4
+              },
+              "rule": {
+                "effect": "SHOW",
+                "condition": {
+                  "scope": "#/properties/showDetails",
+                  "schema": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/lastName"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
