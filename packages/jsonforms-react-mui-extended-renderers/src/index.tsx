@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { MuiGroupRenderer, muiGroupTester } from './renderers/MuiGroupRenderer';
 import {
   MuiAdditionalPropertiesObjectRenderer,
   muiAdditionalPropertiesObjectTester,
@@ -64,6 +65,7 @@ export const createMuiExtendedRenderers = (
   options: MuiExtendedRendererOptions = {}
 ): JsonFormsRendererRegistryEntry[] => {
   return [
+    { tester: muiGroupTester, renderer: MuiGroupRenderer },
     {
       tester: muiClearableDateControlTester,
       renderer: MuiClearableDateControl,
@@ -129,6 +131,7 @@ export const muiExtendedRenderers = createMuiExtendedRenderers();
 export const advancedMuiRenderers = muiExtendedRenderers;
 
 export * from './theme';
+export * from './renderers/MuiGroupRenderer';
 export * from './renderers/MuiAdditionalPropertiesObjectRenderer';
 export * from './renderers/MuiButtonRenderer';
 export * from './renderers/MuiMixedRenderer';

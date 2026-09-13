@@ -45,7 +45,6 @@ export const horizontalLayoutWidths = (
           (indices.length - 1) * fraction
         })`,
         minWidth: 0,
-        overflowWrap: 'anywhere',
       };
       return {
         row,

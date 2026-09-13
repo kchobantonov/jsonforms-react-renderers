@@ -23,7 +23,7 @@
   THE SOFTWARE.
 */
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Collapse } from 'antd';
 import {
   GroupLayout,
   LayoutProps,
@@ -32,64 +32,58 @@ import {
   uiTypeIs,
   withIncreasedRank,
 } from '@jsonforms/core';
-import {
-  AntdLabelableLayoutRendererProps,
-  AntdLayoutRenderer,
-} from '../util/layout';
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
+import { AntdLayoutRenderer } from '../util/layout';
+import { useGroupState } from '../util/groupState';
 
 export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
-const style: { [x: string]: any } = { marginBottom: '10px', width: '100%' };
 
-const GroupComponent = React.memo(function GroupComponent({
-  visible,
-  enabled,
-  uischema,
-  label,
-  ...props
-}: AntdLabelableLayoutRendererProps) {
-  const groupLayout = uischema as GroupLayout;
-  return (
-    <Card hidden={!visible} title={label} style={style}>
-      <AntdLayoutRenderer
-        {...props}
-        visible={visible}
-        enabled={enabled}
-        elements={groupLayout.elements}
-      />
-    </Card>
-  );
-});
-
-export const GroupLayoutRenderer = ({
-  uischema,
-  schema,
-  path,
-  visible,
-  enabled,
-  renderers,
-  cells,
-  direction,
-  label,
-}: LayoutProps) => {
-  const groupLayout = uischema as GroupLayout;
-
-  return (
-    <GroupComponent
-      elements={groupLayout.elements}
-      schema={schema}
-      path={path}
-      direction={direction}
-      visible={visible}
-      enabled={enabled}
-      uischema={uischema}
-      renderers={renderers}
-      cells={cells}
-      label={label}
+export const GroupLayoutRenderer = (props: LayoutProps) => {
+  const group = useGroupState(props.uischema, props.path, props.config);
+  const layout = props.uischema as GroupLayout;
+  if (!props.visible) return null;
+  const indicator = group.hasData ? (
+    <span role='img' aria-label='Contains data' data-group-indicator>
+      ●
+    </span>
+  ) : undefined;
+  const content = (
+    <AntdLayoutRenderer
+      {...props}
+      direction='column'
+      elements={layout.elements}
     />
+  );
+  const style = { marginBottom: '10px', width: '100%' };
+
+  if (group.collapsible) {
+    return (
+      <Collapse
+        style={style}
+        activeKey={group.collapsed ? [] : ['group']}
+        onChange={(keys) => {
+          if (keys.includes('group') === group.collapsed) group.toggle();
+        }}
+        destroyOnHidden={false}
+        items={[
+          {
+            key: 'group',
+            label: props.label || 'Group',
+            extra: indicator,
+            forceRender: true,
+            children: content,
+          },
+        ]}
+      />
+    );
+  }
+
+  return (
+    <Card title={props.label || undefined} extra={indicator} style={style}>
+      {content}
+    </Card>
   );
 };
 
 export default withJsonFormsLayoutProps(GroupLayoutRenderer);
-
 export const antdGroupTester: RankedTester = withIncreasedRank(1, groupTester);

@@ -83,6 +83,17 @@ and do not affect vertical or split layouts.
 
 Select **Horizontal Layout Sizing** in any demo to explore the Svelte examples.
 
+### Collapsible groups
+
+Groups in Ant Design, PrimeReact, Shadcn, and the MUI extended set support
+Svelte's `options.collapsible`, `options.collapsed`, and
+`options.showDataIndicator` (all opt-in with `true`). Collapsed content stays
+mounted, preserving edits. The accessible data indicator checks bound descendant
+controls, including hidden controls and nested paths; `false` and `0` count as
+data, while blank strings and empty containers do not. Form configuration can
+provide defaults, overridden by UI Schema options. Try **Collapsible Groups** in
+the example menu.
+
 ### Implementation specification
 
 See [Renderer Set and Demo Application Specification](docs/renderer-set-and-demo-specification.md)

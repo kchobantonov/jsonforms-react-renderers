@@ -49,8 +49,14 @@ export const AntdSlider = React.memo(function AntdSlider(
   };
 
   const marks = {
-    [schema.minimum!]: schema.minimum,
-    [schema.maximum!]: schema.maximum,
+    [schema.minimum!]: {
+      label: schema.minimum,
+      style: { whiteSpace: 'nowrap' as const },
+    },
+    [schema.maximum!]: {
+      label: schema.maximum,
+      style: { whiteSpace: 'nowrap' as const },
+    },
   };
 
   return (

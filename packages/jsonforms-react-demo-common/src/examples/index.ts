@@ -4,6 +4,7 @@ import * as templateLayout from './template-layout';
 import * as presentation from './presentation';
 import * as horizontalSizing from './horizontal-sizing';
 import * as presentationRenderers from './presentation-renderers';
+import './collapsible-groups';
 
 const examples = getExamples();
 
