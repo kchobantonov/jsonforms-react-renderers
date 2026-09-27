@@ -85,7 +85,9 @@ describe('ListWithDetailRenderer object schemas', () => {
           renderers={antdRenderers}
         />
       );
-      expect(html).toContain('ant-list-item');
+      expect(html).toContain('jsonforms-list-detail-item');
+      expect(html).toContain('ant-listy');
+      expect(html).not.toContain('ant-list-item');
       expect(html).toContain('Ada');
       expect(html).toContain('Grace');
       expect(html).not.toContain('ant-collapse');
@@ -142,15 +144,24 @@ it('opens the selected composed item in the detail pane', async () => {
         />
       )
     );
-    const items = container.querySelectorAll<HTMLElement>('.ant-list-item');
+    const items = container.querySelectorAll<HTMLElement>(
+      '.jsonforms-list-detail-item'
+    );
     expect(items).toHaveLength(2);
-    await act(async () => items[0].click());
+    const selectButtons = container.querySelectorAll<HTMLButtonElement>(
+      '.jsonforms-list-detail-item button[aria-pressed]'
+    );
+    expect(selectButtons).toHaveLength(2);
+    await act(async () => selectButtons[0].click());
+    expect(selectButtons[0].getAttribute('aria-pressed')).toBe('true');
     expect(
       Array.from(container.querySelectorAll('input')).map(
         (input) => input.value
       )
     ).toContain('Ada');
-    await act(async () => items[1].click());
+    await act(async () => selectButtons[1].click());
+    expect(selectButtons[0].getAttribute('aria-pressed')).toBe('false');
+    expect(selectButtons[1].getAttribute('aria-pressed')).toBe('true');
     const values = Array.from(container.querySelectorAll('input')).map(
       (input) => input.value
     );

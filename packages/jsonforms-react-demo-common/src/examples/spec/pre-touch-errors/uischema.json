@@ -1,0 +1,29 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Every error below is visible. Turn on Enable Filter Errors Before Touch to hide only the required ones."
+    },
+    { "type": "Control", "scope": "#/properties/legalName" },
+    { "type": "Control", "scope": "#/properties/contactEmail" },
+    { "type": "Control", "scope": "#/properties/dotNumber" },
+    { "type": "Separator" },
+    {
+      "type": "Label",
+      "text": "This one opts out, so its required error stays visible either way."
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/internalCode",
+      "options": { "enableFilterErrorsBeforeTouch": false }
+    },
+    { "type": "Separator" },
+    { "type": "Label", "text": "Errors that are not required errors" },
+    { "type": "Control", "scope": "#/properties/notes" },
+    { "type": "Control", "scope": "#/properties/insuranceExpiry" },
+    { "type": "Separator" },
+    { "type": "Label", "text": "A summary over children that can be touched" },
+    { "type": "Control", "scope": "#/properties/terminals" }
+  ]
+}

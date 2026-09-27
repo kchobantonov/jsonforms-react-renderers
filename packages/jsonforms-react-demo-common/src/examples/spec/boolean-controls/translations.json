@@ -1,0 +1,16 @@
+{
+  "en": {
+    "boolean.notSet": "Not set",
+    "boolean.invalid": "Not a true or false value",
+    "error.required": "Choose yes or no.",
+    "error.type": "This value is not a true or false value.",
+    "error.const": "You must accept to continue."
+  },
+  "bg": {
+    "boolean.notSet": "Не е зададено",
+    "boolean.invalid": "Стойността не е да или не",
+    "error.required": "Изберете да или не.",
+    "error.type": "Стойността не е да или не.",
+    "error.const": "Трябва да приемете, за да продължите."
+  }
+}

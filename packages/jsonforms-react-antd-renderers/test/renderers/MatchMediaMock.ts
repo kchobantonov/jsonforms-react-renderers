@@ -1,36 +1,21 @@
 /*
-  The MIT License
+  A plain function, not a `vi.fn()`.
 
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
+  As a mock it was restorable, and `vi.restoreAllMocks()` in any test file's
+  `afterEach` reset its implementation to `undefined` - so the *next* test in
+  that file died inside antd's responsive observer with
+  "Cannot read properties of undefined (reading 'addEventListener')", nowhere
+  near what it was testing. Three files had grown comments explaining how to
+  avoid it. Nothing asserts on matchMedia calls, so nothing needs it to be a
+  mock.
 */
-window.matchMedia = vi.fn().mockImplementation((query) => {
-  return {
-    matches: true,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  };
-});
+window.matchMedia = ((query: string) => ({
+  matches: true,
+  media: query,
+  onchange: null,
+  addListener: () => undefined,
+  removeListener: () => undefined,
+  addEventListener: () => undefined,
+  removeEventListener: () => undefined,
+  dispatchEvent: () => false,
+})) as typeof window.matchMedia;

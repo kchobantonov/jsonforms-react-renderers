@@ -21,8 +21,8 @@
     "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-webcomponent": "workspace:*",
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
     "lucide-react": "1.37.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

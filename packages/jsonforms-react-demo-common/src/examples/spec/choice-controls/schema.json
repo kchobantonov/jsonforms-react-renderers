@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Delivery options",
+  "required": [
+    "shipping"
+  ],
+  "properties": {
+    "shipping": {
+      "type": "string",
+      "title": "Shipping speed",
+      "enum": [
+        "Standard",
+        "Express",
+        "Overnight"
+      ],
+      "description": "A plain enum, laid out in a row."
+    },
+    "packaging": {
+      "type": "string",
+      "title": "Packaging",
+      "enum": [
+        "Box",
+        "Envelope",
+        "Crate",
+        "Pallet",
+        "Bulk container"
+      ],
+      "description": "The same control stacked, for longer labels."
+    },
+    "department": {
+      "type": "string",
+      "title": "Billing department",
+      "oneOf": [
+        {
+          "const": "eng",
+          "title": "Engineering"
+        },
+        {
+          "const": "fin",
+          "title": "Finance"
+        }
+      ],
+      "description": "Labels come from branch titles; the stored value stays the constant."
+    },
+    "priority": {
+      "type": "integer",
+      "title": "Priority",
+      "enum": [
+        1,
+        2,
+        3
+      ],
+      "description": "Numeric choices keep their JSON type; 1 is never stored as \"1\"."
+    },
+    "region": {
+      "type": "string",
+      "title": "Region",
+      "enum": [
+        "London",
+        "Manchester"
+      ],
+      "description": "Unselected on purpose: mounting must not choose the first option."
+    },
+    "carrier": {
+      "type": "string",
+      "title": "Carrier",
+      "enum": [
+        "Air",
+        "Sea"
+      ],
+      "description": "Holds a value outside the permitted set, preserved for correction."
+    },
+    "origin": {
+      "type": "string",
+      "title": "Origin depot",
+      "enum": [
+        "Portland",
+        "Salem",
+        "Seattle",
+        "Spokane",
+        "Sacramento",
+        "San Jose"
+      ],
+      "description": "Long enough to be worth searching; autocomplete is opt-in here."
+    },
+    "handler": {
+      "type": "string",
+      "title": "Handling team",
+      "oneOf": [
+        {
+          "const": "eng",
+          "title": "Engineering"
+        },
+        {
+          "const": "fin",
+          "title": "Finance"
+        },
+        {
+          "const": "ops",
+          "title": "Operations"
+        }
+      ],
+      "description": "Searching matches the visible label, not the stored constant."
+    }
+  }
+}

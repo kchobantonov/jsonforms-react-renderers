@@ -1,27 +1,3 @@
-/*
-  The MIT License
-  
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import {
   ControlElement,
   encode,
@@ -31,9 +7,8 @@ import {
   Resolve,
 } from '@jsonforms/core';
 import { DispatchCell } from '@jsonforms/react';
-import { Form } from 'antd';
-import isEmpty from 'lodash/isEmpty';
 import React from 'react';
+import { CellFrame } from '../util/cellFrame';
 
 export interface DataCellProps {
   path: string;
@@ -44,12 +19,21 @@ export interface DataCellProps {
   enabled: boolean;
   renderers?: JsonFormsRendererRegistryEntry[];
   cells?: JsonFormsCellRendererRegistryEntry[];
+  /** Per-column options from the array uischema's `cells` entry. */
+  cellOptions?: Record<string, unknown>;
 }
 
-const controlWithoutLabel = (scope: string): ControlElement => ({
+const controlWithoutLabel = (
+  scope: string,
+  options?: Record<string, unknown>
+): ControlElement => ({
   type: 'Control',
   scope: scope,
   label: false,
+  // `cells: { <prop>: { summary, detail } }` from the array's uischema reaches
+  // the cell here, which is how composite columns know how to summarise
+  // themselves and what to show in their detail dialog.
+  options,
 });
 
 const DataCell = ({
@@ -61,16 +45,10 @@ const DataCell = ({
   enabled,
   renderers,
   cells,
+  cellOptions,
 }: DataCellProps) => {
-  const isValid = isEmpty(errors);
-
   return (
-    <Form.Item
-      hasFeedback={!isValid}
-      validateStatus={isValid ? 'success' : 'error'}
-      help={errors}
-      style={{ marginBottom: 0 }}
-    >
+    <CellFrame errors={errors}>
       {schema.properties ? (
         <DispatchCell
           schema={Resolve.schema(
@@ -78,7 +56,10 @@ const DataCell = ({
             `#/properties/${encode(propName)}`,
             rootSchema
           )}
-          uischema={controlWithoutLabel(`#/properties/${encode(propName)}`)}
+          uischema={controlWithoutLabel(
+            `#/properties/${encode(propName)}`,
+            cellOptions
+          )}
           path={path}
           enabled={enabled}
           renderers={renderers}
@@ -87,14 +68,14 @@ const DataCell = ({
       ) : (
         <DispatchCell
           schema={schema}
-          uischema={controlWithoutLabel('#')}
+          uischema={controlWithoutLabel('#', cellOptions)}
           path={path}
           enabled={enabled}
           renderers={renderers}
           cells={cells}
         />
       )}
-    </Form.Item>
+    </CellFrame>
   );
 };
 

@@ -1,0 +1,108 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Positional arrays. Each position is its own editor; the array is one value."
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/coordinates",
+      "options": {
+        "showBorder": false
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/dimensions",
+      "options": {
+        "variant": "tuple",
+        "vertical": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/survey",
+      "options": {
+        "detail": {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Group",
+              "label": "Ground position",
+              "elements": [
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "scope": "#/items/1"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/items/0"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Control",
+              "scope": "#/items/2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Missing positions, and trailing values"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/orderLine"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/inspection"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/flexible"
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Complex positions, and values that do not fit"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/pickupContact",
+      "options": {
+        "showEmptyButton": true,
+        "okLabel": "tuple.save",
+        "cancelLabel": "tuple.discard"
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/handoffContacts"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/legacyRoute"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/misconfigured",
+      "options": {
+        "variant": "tuple"
+      }
+    }
+  ]
+}

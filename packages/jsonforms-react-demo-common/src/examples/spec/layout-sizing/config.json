@@ -1,0 +1,10 @@
+{
+  "showUnfocusedDescription": true,
+  "jsonformsExtended": {
+    "layoutDefaults": {
+      "gridColumns": 16,
+      "gap": "1rem",
+      "wrap": false
+    }
+  }
+}

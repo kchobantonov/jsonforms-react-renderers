@@ -1,0 +1,98 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Checkbox: the default boolean presentation"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/notifications"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/newsletter"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/handbookAccepted"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/payrollOptOut"
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Switch: options.toggle, not a new variant"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/remoteWorker",
+      "options": {
+        "toggle": true
+      }
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Values that are not booleans at all"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/legacyFlag"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/importedCount",
+      "options": {
+        "toggle": true
+      }
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Checkbox group: membership of an array, horizontal by default"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/channels"
+    },
+    {
+      "type": "Label",
+      "text": "The same group with options.vertical: true"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/escalation",
+      "options": {
+        "vertical": true
+      }
+    },
+    {
+      "type": "Separator"
+    },
+    {
+      "type": "Label",
+      "text": "Boolean cells: checkbox and switch in a table"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/team",
+      "options": {
+        "table": true,
+        "cells": {
+          "onCall": {
+            "toggle": true
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-import { registerExamples } from '@jsonforms/examples';
+import { registerProjectExamples } from './registry';
 
-registerExamples([
+registerProjectExamples([
   {
     name: 'collapsible-groups',
     label: 'Collapsible Groups',

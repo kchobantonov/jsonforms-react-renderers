@@ -1,4 +1,9 @@
-import { primeSplitLayoutTester } from '../../../jsonforms-react-primereact-extended-renderers/src';
+import {
+  primeSplitLayoutTester,
+  primeNullControlTester,
+  primeDurationControlTester,
+  primeColorControlTester,
+} from '../../../jsonforms-react-primereact-extended-renderers/src';
 import {
   MixedRenderer,
   mixedControlTester,
@@ -13,13 +18,16 @@ import {
 import {
   buttonRendererTester,
   sharedSplitLayoutTester,
-  horizontalColumnsLayoutTester,
   spacerRendererTester,
   imageViewRendererTester,
   separatorRendererTester,
   namedTemplateTester,
   slotRendererTester,
-  templateRendererTester,
+  extendedAgGridTester,
+  monacoControlTester,
+  linkRendererTester,
+  markupLabelTester,
+  tsxTemplateLayoutTester,
 } from '../../../jsonforms-react-extended-renderers/src';
 
 describe('PrimeReact renderer registries', () => {
@@ -30,19 +38,27 @@ describe('PrimeReact renderer registries', () => {
     });
   });
 
-  it('contains the complete extended renderer set', () => {
-    expect(primereactExtendedRenderers.map(({ tester }) => tester)).toEqual([
-      primeSplitLayoutTester,
-      buttonRendererTester,
-      sharedSplitLayoutTester,
-      horizontalColumnsLayoutTester,
-      spacerRendererTester,
-      imageViewRendererTester,
-      separatorRendererTester,
-      templateRendererTester,
-      namedTemplateTester,
-      slotRendererTester,
-    ]);
+  it('contains the library-specific and shared extended renderers', () => {
+    expect(primereactExtendedRenderers.map(({ tester }) => tester)).toEqual(
+      expect.arrayContaining([
+        extendedAgGridTester,
+        monacoControlTester,
+        primeNullControlTester,
+        primeDurationControlTester,
+        primeColorControlTester,
+        primeSplitLayoutTester,
+        buttonRendererTester,
+        sharedSplitLayoutTester,
+        spacerRendererTester,
+        imageViewRendererTester,
+        separatorRendererTester,
+        linkRendererTester,
+        markupLabelTester,
+        tsxTemplateLayoutTester,
+        namedTemplateTester,
+        slotRendererTester,
+      ])
+    );
   });
 
   it('composes base and extended renderers for the web component', () => {

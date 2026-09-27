@@ -1,0 +1,20 @@
+{
+  "en": {
+    "password.show": "Show password",
+    "password.hide": "Hide password",
+    "control.clearValue": "Clear value",
+    "error.minLength": "Use at least {limit} characters.",
+    "error.required": "This field is required.",
+    "error.maxLength": "Use at most {limit} characters.",
+    "error.pattern": "Use digits only."
+  },
+  "bg": {
+    "password.show": "Покажи паролата",
+    "password.hide": "Скрий паролата",
+    "control.clearValue": "Изчисти стойността",
+    "error.minLength": "Използвайте поне {limit} символа.",
+    "error.required": "Полето е задължително.",
+    "error.maxLength": "Използвайте най-много {limit} символа.",
+    "error.pattern": "Използвайте само цифри."
+  }
+}

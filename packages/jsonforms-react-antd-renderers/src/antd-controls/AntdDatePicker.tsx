@@ -1,32 +1,20 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2021 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import { CellProps, WithClassname, defaultDateFormat } from '@jsonforms/core';
+import { CellProps, WithClassname } from '@jsonforms/core';
 import { DatePicker } from 'antd';
 import merge from 'lodash/merge';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { createOnChangeHandler, getData } from '../util';
+import { useJsonForms } from '@jsonforms/react';
+import {
+  datePickerMode,
+  specDateSaveFormat,
+  warnOnSaveFormat,
+} from '../util/temporalFormats';
+import {
+  disabledDateFor,
+  effectiveRestrict,
+  resolveDataBounds,
+  temporalBounds,
+} from '../util/temporalBounds';
 
 const JSON_SCHEMA_DATE_FORMATS = ['YYYY-MM-DD'];
 const DATE_PICKER_STYLE = {
@@ -48,11 +36,32 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
     config,
     isValid,
     inputProps,
-  } = props;
+    schema,
+  } = props as typeof props & { schema?: Record<string, unknown> };
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  /*
+    A `$data` bound points at another part of the form - the other end of a
+    date range, typically - so the bounds have to be recomputed as that value
+    changes, not once at mount.
+  */
+  const rootData = useJsonForms().core?.data;
+  const boundsSchema = useMemo(
+    () => resolveDataBounds(schema, path, rootData),
+    [schema, path, rootData]
+  );
 
   const format = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
-  const saveFormat = appliedUiSchemaOptions.dateSaveFormat ?? defaultDateFormat;
+  const saveFormat =
+    appliedUiSchemaOptions.dateSaveFormat ?? specDateSaveFormat;
+
+  /*
+    A save format the schema's own `format` would reject is an authoring
+    mistake that shows up as an unfixable validation error, so it is reported
+    where the author will see it.
+  */
+  useEffect(() => {
+    warnOnSaveFormat(schema?.format, saveFormat);
+  }, [schema?.format, saveFormat]);
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
@@ -65,13 +74,27 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
     [data, saveFormat, format]
   );
 
-  let picker: 'date' | 'month' | 'year' = 'date';
-  if (!saveFormat.includes('D')) {
-    picker = 'month';
-  }
-  if (!saveFormat.includes('M')) {
-    picker = 'year';
-  }
+  /*
+    Section 18's format bounds, "following effective `restrict`". They govern
+    what the picker offers; an existing value outside them is left alone and
+    reported by the validator, since the section is explicit that a bound
+    "does not authorize clamping existing data".
+  */
+  const restrict = effectiveRestrict(uischema.options, config);
+  const disabledDate = useMemo(() => {
+    if (!restrict) {
+      return undefined;
+    }
+    return disabledDateFor(
+      temporalBounds(
+        boundsSchema,
+        [saveFormat, format, ...JSON_SCHEMA_DATE_FORMATS],
+        'day'
+      )
+    );
+  }, [restrict, schema, saveFormat, format]);
+
+  const picker = datePickerMode(appliedUiSchemaOptions.views, saveFormat);
 
   return (
     <DatePicker
@@ -86,6 +109,7 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
       placeholder={appliedUiSchemaOptions.placeholder}
       style={DATE_PICKER_STYLE}
       picker={picker}
+      disabledDate={disabledDate}
       status={isValid ? undefined : 'error'}
       {...inputProps}
     />

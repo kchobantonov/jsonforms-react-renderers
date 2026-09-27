@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "title": "Order intake",
+  "properties": {
+    "reference": {
+      "type": "string",
+      "title": "Reference"
+    },
+    "carrier": {
+      "type": "string",
+      "title": "Carrier"
+    },
+    "weightKg": {
+      "type": "number",
+      "title": "Weight (kg)"
+    },
+    "origin": {
+      "type": "string",
+      "title": "Origin"
+    },
+    "destination": {
+      "type": "string",
+      "title": "Destination"
+    },
+    "priority": {
+      "type": "string",
+      "title": "Priority"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    },
+    "hazmat": {
+      "type": "boolean",
+      "title": "Hazardous goods"
+    },
+    "unCode": {
+      "type": "string",
+      "title": "UN code"
+    },
+    "showLane": {
+      "type": "boolean",
+      "title": "Show lane"
+    },
+    "bookedBy": {
+      "type": "string",
+      "title": "Booked by"
+    },
+    "laneName": {
+      "type": "string",
+      "title": "Lane"
+    },
+    "approvedBy": {
+      "type": "string",
+      "title": "Approved by"
+    }
+  }
+}

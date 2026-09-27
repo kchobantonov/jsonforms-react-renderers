@@ -1,31 +1,43 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import React from 'react';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { Slider } from 'antd';
 import merge from 'lodash/merge';
+import { useI18n } from '../util/translate';
+
+/**
+ * A slider position for a value, or the fallback when there is nothing usable.
+ *
+ * Type-checked rather than truthy: `0` is a real value and must survive.
+ * `Number(data || schema.default)` turned a committed `0` into the default -
+ * the data said 0 while the knob sat at 10 - which section 18 forbids:
+ * "Zero is a real current value and must not be replaced by a default through
+ * a truthiness fallback."
+ *
+ * Strings are tolerated so incoming `"25"` still positions the thumb, but an
+ * empty or unparseable one falls back rather than becoming `Number('')` = 0.
+ */
+export const resolveSliderValue = (
+  value: unknown,
+  fallback: number
+): number => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return fallback;
+};
+
+/** Whether the control holds a value at all, as opposed to showing a fallback. */
+export const hasSliderValue = (value: unknown): boolean =>
+  (typeof value === 'number' && Number.isFinite(value)) ||
+  (typeof value === 'string' &&
+    value.trim() !== '' &&
+    Number.isFinite(Number(value)));
 
 export const AntdSlider = React.memo(function AntdSlider(
   props: CellProps &
@@ -42,11 +54,20 @@ export const AntdSlider = React.memo(function AntdSlider(
     schema,
     inputProps,
   } = props;
+  const t = useI18n();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const sliderStyle: { [x: string]: any } = {
     marginTop: '7px',
   };
+
+  // data -> schema.default -> schema.minimum -> 0, each checked rather than
+  // trusted: the range tester requires a default, but not that it is a number.
+  const committed = hasSliderValue(data);
+  const effectiveValue = resolveSliderValue(
+    data,
+    resolveSliderValue(schema.default, schema.minimum ?? 0)
+  );
 
   const marks = {
     [schema.minimum!]: {
@@ -66,7 +87,21 @@ export const AntdSlider = React.memo(function AntdSlider(
       min={schema.minimum}
       max={schema.maximum}
       marks={marks}
-      value={Number(data || schema.default) as any}
+      value={effectiveValue as any}
+      /*
+        Missing data may borrow the default's position, but the spec requires
+        it to be "visibly and accessibly identified as Not set until edited",
+        so it must not be announced as a committed number.
+
+        Through antd's own prop, not `aria-valuetext`: the announcement
+        belongs on the **handle**, which is what carries `aria-valuenow`, and
+        antd does not forward the bare attribute to it. Set as an attribute on
+        the control it never reached the DOM at all, so the number was
+        announced unqualified.
+      */
+      ariaValueTextFormatterForHandle={
+        committed ? undefined : () => t('control.notSet')
+      }
       onChange={(value: any) => {
         handleChange(path, Number(value));
       }}

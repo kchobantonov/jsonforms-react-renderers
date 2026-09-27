@@ -1,0 +1,8 @@
+{
+  "en": {
+    "error.required": "This field is required."
+  },
+  "bg": {
+    "error.required": "Полето е задължително."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "policy": "{\n  \"allow\": [\"deploy\"],\n  \"deny\": [,]\n}",
+  "quiet": "{\n  \"draft\": true,\n}",
+  "language": "json",
+  "snippet": "{\n  \"retries\": 3\n}",
+  "summary": "Ready",
+  "contact": {
+    "email": "ada@example.com",
+    "phone": "555 0100"
+  }
+}

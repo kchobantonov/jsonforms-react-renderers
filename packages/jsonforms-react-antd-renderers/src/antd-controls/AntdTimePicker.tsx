@@ -1,32 +1,20 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2021 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import { CellProps, WithClassname, defaultTimeFormat } from '@jsonforms/core';
+import { CellProps, WithClassname } from '@jsonforms/core';
 import { TimePicker } from 'antd';
 import merge from 'lodash/merge';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { createOnChangeHandler, getData } from '../util';
+import { useJsonForms } from '@jsonforms/react';
+import {
+  specTimeSaveFormat,
+  timePickerColumns,
+  warnOnSaveFormat,
+} from '../util/temporalFormats';
+import {
+  disabledTimeFor,
+  effectiveRestrict,
+  resolveDataBounds,
+  temporalBounds,
+} from '../util/temporalBounds';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -54,13 +42,58 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
     config,
     isValid,
     inputProps,
-  } = props;
+    schema,
+  } = props as typeof props & { schema?: Record<string, unknown> };
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  /*
+    A `$data` bound points at another part of the form - the other end of a
+    date range, typically - so the bounds have to be recomputed as that value
+    changes, not once at mount.
+  */
+  const rootData = useJsonForms().core?.data;
+  const boundsSchema = useMemo(
+    () => resolveDataBounds(schema, path, rootData),
+    [schema, path, rootData]
+  );
 
   const format =
     appliedUiSchemaOptions.timeFormat ??
     (appliedUiSchemaOptions.ampm === true ? 'hh:mm a' : 'HH:mm');
-  const saveFormat = appliedUiSchemaOptions.timeSaveFormat ?? defaultTimeFormat;
+  const saveFormat =
+    appliedUiSchemaOptions.timeSaveFormat ?? specTimeSaveFormat;
+
+  /*
+    Bounds on a bare time are clock values: both ends are placed on one
+    arbitrary day so they compare, rather than inventing a reference date.
+    Seconds are only offered when the display format asks for them, so the
+    precision follows it.
+  */
+  const restrict = effectiveRestrict(uischema.options, config);
+  const disabledTime = useMemo(() => {
+    if (!restrict) {
+      return undefined;
+    }
+    const precision = format.includes('s') ? 'second' : 'minute';
+    return disabledTimeFor(
+      temporalBounds(
+        boundsSchema,
+        [saveFormat, format, ...JSON_SCHEMA_TIME_FORMATS],
+        precision,
+        true
+      ),
+      true,
+      precision
+    );
+  }, [restrict, schema, saveFormat, format]);
+
+  /*
+    A save format the schema's own `format` would reject is an authoring
+    mistake that shows up as an unfixable validation error, so it is reported
+    where the author will see it.
+  */
+  useEffect(() => {
+    warnOnSaveFormat(schema?.format, saveFormat);
+  }, [schema?.format, saveFormat]);
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
@@ -78,12 +111,15 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
       value={value}
       onChange={onChange}
       format={format}
+      disabledTime={disabledTime}
       allowClear={enabled}
       className={className}
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
       placeholder={appliedUiSchemaOptions.placeholder}
+      // `views` picks the columns; absent, the display format still decides.
+      {...timePickerColumns(appliedUiSchemaOptions.views)}
       use12Hours={!!appliedUiSchemaOptions.ampm}
       style={TIME_PICKER_STYLE}
       status={isValid ? undefined : 'error'}

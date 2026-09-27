@@ -1,7 +1,26 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "noEmit": true,
+    // The tests import sibling packages' sources directly, so rootDir must span the
+    // whole packages/ directory. Without it TypeScript infers rootDir from the
+    // included files (test/) and reports TS6059 for every cross-package import.
+    "rootDir": "..",
+    "declaration": false,
+    "composite": false,
+    "baseUrl": ".",
+    // Mirrors the aliases in vitest.config.mts: tests resolve sibling packages from
+    // src, not from built lib/, so type-checking does not depend on build order.
+    "paths": {
+      "@chobantonov/jsonforms-react-antd-renderers": ["./src"],
+      "@chobantonov/jsonforms-react-antd-extended-renderers": [
+        "../jsonforms-react-antd-extended-renderers/src"
+      ],
+      "@chobantonov/jsonforms-react-extended-renderers": [
+        "../jsonforms-react-extended-renderers/src"
+      ]
+    }
   },
   "include": ["test/**/*.ts", "test/**/*.tsx"]
 }

@@ -20,11 +20,13 @@ const { Title } = Typography;
 
 const renderTitle = (label: string, errors: string, description: string) => (
   <>
-    <Row>
+    <Row align='middle'>
       <Col>
-        <Title level={3}>{label}</Title>
+        <Title level={5} style={{ marginBottom: 0 }}>
+          {label}
+        </Title>
       </Col>
-      <Col style={{ padding: '10px' }}>
+      <Col style={{ paddingLeft: 8 }}>
         <ValidationIcon id='tooltip-validation' errorMessages={errors} />
       </Col>
     </Row>

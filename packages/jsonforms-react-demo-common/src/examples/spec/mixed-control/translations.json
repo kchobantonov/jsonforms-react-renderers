@@ -1,0 +1,22 @@
+{
+  "en": {
+    "mixed.typeLabel": "Value type",
+    "mixed.typePlaceholder": "Select a type",
+    "mixed.required": "Required",
+    "mixed.treeLabel": "Value structure",
+    "mixed.rename": "Rename",
+    "mixed.delete": "Delete",
+    "control.clearValue": "Clear value",
+    "error.type": "This value does not match any type this field allows."
+  },
+  "bg": {
+    "mixed.typeLabel": "Тип на стойността",
+    "mixed.typePlaceholder": "Изберете тип",
+    "mixed.required": "Задължително",
+    "mixed.treeLabel": "Структура на стойността",
+    "mixed.rename": "Преименуване",
+    "mixed.delete": "Изтриване",
+    "control.clearValue": "Изчистване на стойността",
+    "error.type": "Тази стойност не съответства на нито един позволен тип."
+  }
+}

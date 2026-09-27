@@ -4,6 +4,7 @@ import {
   JsonSchema,
   rankWith,
 } from '@jsonforms/core';
+import { booleanItemsSchema } from './booleanItemsSchema';
 import { JsonForms } from '@jsonforms/react';
 import React, { act } from 'react';
 import { createRoot, Root } from 'react-dom/client';
@@ -206,7 +207,7 @@ describe('AntdMixedTree', () => {
   it('uses aligned Svelte-style type marks for every JSON value type', () => {
     const tree = buildMixedTree(
       [[], false, 0, null, 0.5, {}, ''],
-      { type: 'array', items: true },
+      booleanItemsSchema({ type: 'array', items: true }),
       {}
     );
 
@@ -286,7 +287,7 @@ describe('AntdMixedTree', () => {
   it('expands only the root tree level initially', () => {
     const tree = buildMixedTree(
       [{ nested: { deep: true } }],
-      { type: 'array', items: true },
+      booleanItemsSchema({ type: 'array', items: true }),
       {}
     );
 
@@ -315,7 +316,7 @@ describe('AntdMixedTree', () => {
       root.render(
         <JsonForms
           data={[{}]}
-          schema={{
+          schema={booleanItemsSchema({
             type: [
               'array',
               'boolean',
@@ -326,7 +327,7 @@ describe('AntdMixedTree', () => {
               'string',
             ],
             items: true,
-          }}
+          })}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
         />
@@ -380,7 +381,8 @@ describe('AntdMixedTree', () => {
           uischemas={[
             {
               tester: (candidate, _schemaPath, path) =>
-                candidate.$id === 'https://example.com/recursive-meta-schema' &&
+                (candidate as { $id?: string }).$id ===
+                  'https://example.com/recursive-meta-schema' &&
                 candidate.type === 'object' &&
                 path === 'properties.name'
                   ? 10
@@ -424,7 +426,7 @@ describe('AntdMixedTree', () => {
       root.render(
         <JsonForms
           data={['text']}
-          schema={{
+          schema={booleanItemsSchema({
             type: [
               'array',
               'boolean',
@@ -435,7 +437,7 @@ describe('AntdMixedTree', () => {
               'string',
             ],
             items: true,
-          }}
+          })}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
         />
@@ -479,7 +481,7 @@ describe('AntdMixedTree', () => {
         root.render(
           <JsonForms
             data={data}
-            schema={{
+            schema={booleanItemsSchema({
               type: [
                 'array',
                 'boolean',
@@ -490,7 +492,7 @@ describe('AntdMixedTree', () => {
                 'string',
               ],
               items: true,
-            }}
+            })}
             uischema={{ type: 'Control', scope: '#' }}
             renderers={antdRenderers}
           />

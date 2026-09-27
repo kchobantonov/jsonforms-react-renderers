@@ -1,39 +1,12 @@
-/*
-  The MIT License
-  
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import React from 'react';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputNumber } from 'antd';
-import { useDebouncedChange } from '../util';
+import { toCommittableNumber, useDebouncedChange } from '../util';
 import { AntdClearableInput } from './AntdClearableInput';
+import { CLEAR_OFFSET_WITH_HANDLES } from './AntdClearValueButton';
 
-const toNumber = (value: string | number | null | undefined) =>
-  value === '' || value === null || value === undefined
-    ? undefined
-    : parseFloat(String(value));
-const eventToValue = (value: any) => toNumber(value);
+const eventToValue = (value: any) => toCommittableNumber(value);
 
 export const AntdInputNumber = React.memo(function AntdInputNumber(
   props: CellProps &
@@ -51,7 +24,7 @@ export const AntdInputNumber = React.memo(function AntdInputNumber(
     inputProps,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const inputStyle = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
+  const inputStyle = { width: '100%' };
 
   const [inputValue, onChange, onClear] = useDebouncedChange(
     handleChange,
@@ -60,17 +33,28 @@ export const AntdInputNumber = React.memo(function AntdInputNumber(
     path,
     eventToValue
   );
-
   return (
+    // The clear button sits over the control rather than in antd's suffix,
+    // because `Form.Item` feedback replaces that slot instead of composing with
+    // it - so an errored field would lose its clear button. The wider offset
+    // keeps it clear of the stepper handles antd reveals on hover.
     <AntdClearableInput
       clearable={appliedUiSchemaOptions.clearable !== false}
       data={data}
       enabled={enabled}
+      offset={CLEAR_OFFSET_WITH_HANDLES}
       onClear={onClear}
     >
       <InputNumber
         value={inputValue}
-        onChange={onChange}
+        // antd reports a cleared field as null. Routing that through onClear
+        // rather than the debounced path commits it at once and cancels any
+        // queued keystroke, so an old callback cannot restore the value.
+        onChange={(value) =>
+          value === null || value === undefined
+            ? onClear()
+            : onChange(value as never)
+        }
         className={className}
         id={id}
         disabled={!enabled}

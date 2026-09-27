@@ -2,6 +2,9 @@ import * as Sucrase from 'sucrase';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { subscribe } from 'valtio';
+import { ElementRender } from './elementRender';
+import { sanitizeUrlProps } from '../util/templateUrls';
+import { UrlPolicy, defaultUrlPolicy } from '../util/urlPolicy';
 
 /**
  * Unwrap the proxy container for templates
@@ -107,12 +110,47 @@ export function useTrackedSnapshot(proxy: any) {
 /**
  * Custom createElement: calls .render() if any child object has it
  */
-export const ElementRender = Symbol.for('jsonforms.element.render');
+// Re-exported for compatibility; defined apart so importing it does not pull
+// Sucrase into the initial bundle. See ./elementRender.
+export { ElementRender } from './elementRender';
 
 /**
- * Custom createElement: automatically renders objects with [ElementRender]
+ * Builds the JSX pragma, bound to a URL policy.
+ *
+ * A factory rather than a module-level "current policy" cell, because two
+ * templates with different `config` can be on screen at once and a shared cell
+ * would hand one of them the other's policy. Reading through `getPolicy` also
+ * means the pragma itself stays identity-stable, so the compiled component is
+ * not rebuilt - and the controls it slots are not remounted - when config
+ * changes.
+ */
+export const makeCreateElement = (getPolicy: () => UrlPolicy) =>
+  function createElement(type: any, props: any, ...children: any[]) {
+    return createElementWithPolicy(getPolicy(), type, props, ...children);
+  };
+
+/**
+ * Custom createElement: automatically renders objects with [ElementRender],
+ * and applies the URL policy to whatever the template produced.
  */
 export function createElement(type: any, props: any, ...children: any[]) {
+  return createElementWithPolicy(defaultUrlPolicy, type, props, ...children);
+}
+
+function createElementWithPolicy(
+  policy: UrlPolicy,
+  type: any,
+  props: any,
+  ...children: any[]
+) {
+  /*
+    Section 12's policy, applied here rather than in the engine: every element
+    a template produces passes through this pragma, so an `href`, `src` or
+    `srcSet` carrying `javascript:` is dropped before the element exists.
+    Doing it per engine would mean doing it three times, and forgetting it
+    once.
+  */
+  props = sanitizeUrlProps(type, props, policy) as any;
   // Recursively process children
   function processChild(child: any, fallbackKey?: string | number): any {
     if (Array.isArray(child)) {
@@ -208,7 +246,21 @@ class TemplateErrorBoundary extends React.Component<
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
+  /*
+    `componentDidCatch` alone is not a boundary. Without this, `hasError` was
+    never set, so `render` went on returning the same children that had just
+    thrown; React retried, they threw again, and the error escaped to whatever
+    boundary sat above - which is how a template that threw while React was
+    reconciling its children reported itself as "The template engine could not
+    be loaded."
+  */
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
   componentDidCatch(error, errorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('template.renderError:', error, errorInfo);
     this.setState({
       error: error,
       errorInfo: errorInfo,
@@ -273,7 +325,19 @@ class TemplateErrorBoundary extends React.Component<
 }
 
 // Define the type for the props received by the dynamic component
-export default function DynamicJSXRenderer({ jsxTemplate, props }) {
+export default function DynamicJSXRenderer({
+  jsxTemplate,
+  props,
+  urlPolicy,
+}: any) {
+  /*
+    Refreshed on every render, not captured once: `config` can change, and a
+    policy captured at mount would go on permitting what the host has since
+    forbidden. The pragma below reads through the ref, so it stays stable.
+  */
+  const policyRef = useRef<UrlPolicy>(urlPolicy ?? defaultUrlPolicy);
+  policyRef.current = urlPolicy ?? defaultUrlPolicy;
+  const pragma = useMemo(() => makeCreateElement(() => policyRef.current), []);
   // Compile once when jsxTemplate changes
   const Component = useMemo(() => {
     try {
@@ -340,7 +404,7 @@ export default function DynamicJSXRenderer({ jsxTemplate, props }) {
         `
       );
 
-      const TemplateComponent = fn(React, createElement, useTrackedSnapshot);
+      const TemplateComponent = fn(React, pragma, useTrackedSnapshot);
 
       // Wrap in memo so React handles props changes
       if (typeof TemplateComponent !== 'function') {
@@ -428,7 +492,7 @@ export default function DynamicJSXRenderer({ jsxTemplate, props }) {
         </div>
       ));
     }
-  }, [jsxTemplate]);
+  }, [jsxTemplate, pragma]);
 
   return (
     <TemplateErrorBoundary

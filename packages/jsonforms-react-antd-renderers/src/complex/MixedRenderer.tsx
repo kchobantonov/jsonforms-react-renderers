@@ -24,6 +24,9 @@ import { Breadcrumb, Collapse, Flex, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AntdMixedNavigationContext } from './mixed/AntdMixedNavigationContext';
 import { AntdMixedSplitPane } from './mixed/AntdMixedSplitPane';
+import get from 'lodash/get';
+import { useConfirmation } from '../util/useConfirmation';
+import { useI18n } from '../util/translate';
 import { AntdMixedTree } from './mixed/AntdMixedTree';
 import { AntdMixedTypeSelector } from './mixed/AntdMixedTypeSelector';
 import { AntdNestedMixedNavigation } from './mixed/AntdNestedMixedNavigation';
@@ -220,6 +223,8 @@ export const MixedRendererComponent = ({
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
+  const t = useI18n();
+  const confirmation = useConfirmation();
   const parentNavigation = React.useContext(AntdMixedNavigationContext);
   const uischemas = jsonforms.uischemas ?? [];
   const [expanded, setExpanded] = useState(true);
@@ -378,20 +383,61 @@ export const MixedRendererComponent = ({
   const isStructuredType =
     selectedType === 'object' || selectedType === 'array';
 
+  /*
+    An array element's type cannot be cleared. Clearing dispatches `undefined`,
+    and core unsets an array element by deleting it in place rather than
+    compacting the array - so what is left is a hole, which serializes to
+    `null`. The value would disappear from the structure view while the array
+    kept a slot for it.
+
+    There is nothing to put there either: a mixed value with no type has no
+    representation, and `""` or `0` would be inventing one. Removing an element
+    belongs to the array, not to this selector.
+  */
+  const arrayElement = isArrayElementPath(jsonforms.core?.data, path);
+  /*
+    A type change discards whatever the old type held, so it goes through the
+    shared policy - whose documented fallback here is `complex`, not `always`:
+    swapping one scalar for another loses little, replacing a populated object
+    loses a lot. Clearing the selection follows the same operation, which
+    section 14 states directly.
+
+    Re-selecting the current type is not a change and never prompts.
+  */
+  const requestTypeChange = (run: () => void) =>
+    confirmation.request({
+      operation: 'typeChange',
+      catalogId: 'mixed',
+      discarded: [data],
+      options: uischema?.options,
+      config,
+      perform: run,
+    });
+
   const changeType = (nextType?: JsonDataType) => {
     if (!nextType) {
-      handleChange(path, undefined);
-      setSelectedPath([]);
+      if (arrayElement) {
+        return;
+      }
+      requestTypeChange(() => {
+        handleChange(path, undefined);
+        setSelectedPath([]);
+      });
+      return;
+    }
+    if (nextType === selectedType) {
       return;
     }
     const nextSchema = schemaForType(schema, nextType, rootSchema);
-    handleChange(path, createDefaultValue(nextSchema, rootSchema));
-    setSelectedPath([]);
-    if (nextType === 'object' || nextType === 'array') setExpanded(true);
+    requestTypeChange(() => {
+      handleChange(path, createDefaultValue(nextSchema, rootSchema));
+      setSelectedPath([]);
+      if (nextType === 'object' || nextType === 'array') setExpanded(true);
+    });
   };
   const selector = (
     <AntdMixedTypeSelector
-      clearable={!preserveDynamicPropertyKey}
+      clearable={!preserveDynamicPropertyKey && !arrayElement}
       disabled={!enabled || Boolean(readonly)}
       error={!selectedType ? errors : undefined}
       fullWidth={!selectedType}
@@ -473,16 +519,16 @@ export const MixedRendererComponent = ({
   const validateNodeRename = (node: MixedTreeNode, nextName: string) => {
     const oldName = node.path[node.path.length - 1];
     const parent = parentNode(node);
-    if (!nextName) return 'Property name is required.';
+    if (!nextName) return t('additionalProperties.nameRequired');
     if (!parent || typeof oldName !== 'string' || !canRenameNode(node)) {
-      return 'This property cannot be renamed.';
+      return t('mixed.renameBlocked');
     }
     if (
       nextName.includes('.') ||
       nextName.includes('[') ||
       nextName.includes(']')
     ) {
-      return `Property name '${nextName}' is invalid.`;
+      return t('additionalProperties.nameInvalid', { name: nextName });
     }
     if (
       parent.data &&
@@ -490,7 +536,7 @@ export const MixedRendererComponent = ({
       nextName !== oldName &&
       Object.prototype.hasOwnProperty.call(parent.data, nextName)
     ) {
-      return `Property '${nextName}' already exists.`;
+      return t('additionalProperties.nameTaken', { name: nextName });
     }
     const parentSchema = schemaForType(
       parent.schema,
@@ -506,7 +552,17 @@ export const MixedRendererComponent = ({
     }
     const ajv = jsonforms.core?.ajv;
     if (propertyNames && ajv && !ajv.validate(propertyNames, nextName)) {
-      return ajv.errorsText(ajv.errors) || 'The property name is invalid.';
+      /*
+        ajv's own text where it has some - it names the constraint that
+        failed, which is more use than any fixed sentence - and the
+        translated message where it does not. ajv's text follows the
+        validator's locale, not the form's; see the ajv localizers in the
+        extended package.
+      */
+      return (
+        ajv.errorsText(ajv.errors) ||
+        t('additionalProperties.nameInvalid', { name: nextName })
+      );
     }
     if (
       parentSchema.additionalProperties === false &&
@@ -519,14 +575,30 @@ export const MixedRendererComponent = ({
         }
       })
     ) {
-      return 'The property name does not match an allowed pattern.';
+      return t('additionalProperties.namePattern');
     }
     return undefined;
   };
   const deleteNode = (node: MixedTreeNode) => {
     if (!canDeleteNode(node)) return;
-    handleChange(path, deleteMixedTreeNode(data, node.path));
-    setSelectedPath(node.path.slice(0, -1));
+    /*
+      "Tree Delete in the mixed workspace uses mixed" - the owner of the action,
+      not whichever renderer happens to draw the row. Fallback `always`.
+    */
+    confirmation.request({
+      operation: 'delete',
+      catalogId: 'mixed',
+      discarded: [node.data],
+      options: uischema?.options,
+      config,
+      perform: () => {
+        // Re-checked after confirmation: the guard, and the node still being
+        // there, are both current rather than remembered.
+        if (!canDeleteNode(node)) return;
+        handleChange(path, deleteMixedTreeNode(data, node.path));
+        setSelectedPath(node.path.slice(0, -1));
+      },
+    });
   };
   const renameNode = (node: MixedTreeNode, nextName: string) => {
     if (validateNodeRename(node, nextName)) return;
@@ -547,6 +619,7 @@ export const MixedRendererComponent = ({
 
   const content = (
     <Flex className='jsonforms-mixed-renderer' vertical gap='small'>
+      {confirmation.dialog}
       <style>{`
         .jsonforms-mixed-renderer-primitive,
         .jsonforms-mixed-renderer-detail-primitive {
@@ -695,17 +768,76 @@ export const MixedRendererComponent = ({
   );
 };
 
-export const isMixedSchema = (
+/**
+ * Whether the value at `path` is an element of an array.
+ *
+ * Read from the data rather than from the schema, because it is the data's
+ * shape that decides what unsetting the path will do: core deletes an array
+ * element in place and leaves a hole, whatever the schema says the container
+ * ought to be.
+ */
+export const isArrayElementPath = (data: unknown, path: string): boolean => {
+  if (!path) {
+    return false;
+  }
+  const separator = path.lastIndexOf('.');
+  const parent =
+    separator < 0 ? data : get(data, path.slice(0, separator).split('.'));
+  return Array.isArray(parent);
+};
+
+/**
+ * The schema this control actually edits.
+ *
+ * A tester is handed the schema of the dispatch it sits in, which at the top of
+ * a form is the **root** - so a Control scoped at `#/properties/setting` is
+ * asked about the whole document, not about `setting`. The specification is
+ * explicit that selection is on "a Control with a **resolved** schema whose
+ * type is an array of permitted JSON types", so the scope is resolved first.
+ *
+ * Without this, a declared property with a union type never matched: the root
+ * carries `properties`, which the checks below reject, and the field fell
+ * through to the plain text control. A `["string", "number"]` property became a
+ * text box, and a number typed into it was stored as a string.
+ */
+const resolveScopedSchema = (
   uischema: UISchemaElement & Scopable,
   schema: JsonSchema,
   context: TesterContext
+): JsonSchema => {
+  const scope = uischema?.scope;
+  if (!scope) {
+    return schema;
+  }
+  try {
+    return (
+      (resolveSchema(schema, scope, context?.rootSchema ?? schema) as
+        | JsonSchema
+        | undefined) ?? schema
+    );
+  } catch {
+    // An unresolvable scope is not this tester's problem to report.
+    return schema;
+  }
+};
+
+export const isMixedSchema = (
+  uischema: UISchemaElement & Scopable,
+  rawSchema: JsonSchema,
+  context: TesterContext
 ) => {
-  if (schema && typeof schema === 'boolean') {
+  if (rawSchema && typeof rawSchema === 'boolean') {
     return true;
   }
 
-  if (!schema || typeof schema !== 'object') {
+  if (!rawSchema || typeof rawSchema !== 'object') {
     return false;
+  }
+
+  const schema = resolveScopedSchema(uischema, rawSchema, context);
+
+  if (typeof schema === 'boolean') {
+    return Boolean(schema);
   }
 
   if (Array.isArray(schema.type)) {
@@ -723,22 +855,10 @@ export const isMixedSchema = (
     return false;
   }
 
+  // An unconstrained schema: the specification admits it to this renderer, and
+  // nothing else would know what editor to offer.
   if (schema.type === undefined && isControl(uischema)) {
     return true;
-  }
-
-  if (schema.type === 'object') {
-    const schemaPath = uischema.scope;
-    if (schemaPath) {
-      const currentDataSchema = resolveSchema(
-        schema,
-        schemaPath,
-        context?.rootSchema
-      );
-      return Array.isArray(
-        (currentDataSchema as JsonSchema7 | undefined)?.type
-      );
-    }
   }
 
   return false;

@@ -1,0 +1,18 @@
+{
+  "en": {
+    "control.clearValue": "Clear value",
+    "error.pattern": "Check the format of this value.",
+    "error.minLength": "Enter at least {limit} characters.",
+    "error.required": "This field is required.",
+    "gateCode.error.pattern": "The gate code is four digits; this one is incomplete.",
+    "legacyReference.error.pattern": "Imported without a booking reference. Enter the six-digit reference from the paperwork."
+  },
+  "bg": {
+    "control.clearValue": "Изчистване на стойността",
+    "error.pattern": "Проверете формата на тази стойност.",
+    "error.minLength": "Въведете поне {limit} знака.",
+    "error.required": "Полето е задължително.",
+    "gateCode.error.pattern": "Кодът за портала е от четири цифри; този е непълен.",
+    "legacyReference.error.pattern": "Импортирано без номер на заявка. Въведете шестцифрения номер от документите."
+  }
+}

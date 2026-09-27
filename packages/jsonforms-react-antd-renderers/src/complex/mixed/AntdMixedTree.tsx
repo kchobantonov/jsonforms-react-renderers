@@ -2,8 +2,9 @@ import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
-import { Button, Flex, Input, Modal, Tooltip, Tree, Typography } from 'antd';
+import { Button, Flex, Input, Tooltip, Tree, Typography } from 'antd';
 import type { DataNode } from 'antd/es/tree';
+import { useI18n } from '../../util/translate';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AntdAdditionalPropertyRenameDialog } from '../additionalProperties/AntdAdditionalPropertyRenameDialog';
 import { AntdJsonTypeIcon } from './AntdJsonTypeIcon';
@@ -39,6 +40,7 @@ export const AntdMixedTree = ({
   selectedPath,
   validateRename,
 }: AntdMixedTreeProps) => {
+  const t = useI18n();
   const [search, setSearch] = useState('');
   const [showPrimitives, setShowPrimitives] = useState(false);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([
@@ -46,7 +48,6 @@ export const AntdMixedTree = ({
   ]);
   const [renamingNode, setRenamingNode] = useState<MixedTreeNode | null>(null);
   const [renameValue, setRenameValue] = useState('');
-  const [deletingNode, setDeletingNode] = useState<MixedTreeNode | null>(null);
   const normalizedSearch = search.trim().toLowerCase();
   const nodeMap = useMemo(() => new Map<string, MixedTreeNode>(), [root]);
   const renameError = renamingNode
@@ -119,12 +120,18 @@ export const AntdMixedTree = ({
           >
             {rootNode ? (
               <Tooltip
-                title={showPrimitives ? 'Hide primitives' : 'Show primitives'}
+                title={t(
+                  showPrimitives
+                    ? 'mixed.hidePrimitives'
+                    : 'mixed.showPrimitives'
+                )}
               >
                 <Button
-                  aria-label={
-                    showPrimitives ? 'Hide primitives' : 'Show primitives'
-                  }
+                  aria-label={t(
+                    showPrimitives
+                      ? 'mixed.hidePrimitives'
+                      : 'mixed.showPrimitives'
+                  )}
                   icon={
                     showPrimitives ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
@@ -138,7 +145,7 @@ export const AntdMixedTree = ({
               </Tooltip>
             ) : null}
             {renameable ? (
-              <Tooltip title='Rename'>
+              <Tooltip title={t('mixed.rename')}>
                 <Button
                   aria-label={`Rename ${mixedTreeLabel(node)}`}
                   icon={<EditOutlined />}
@@ -153,18 +160,22 @@ export const AntdMixedTree = ({
               </Tooltip>
             ) : null}
             {deletable ? (
-              <Tooltip title='Delete'>
+              <Tooltip title={t('mixed.delete')}>
                 <Button
                   aria-label={`Delete ${mixedTreeLabel(node)}`}
                   danger
                   icon={<DeleteOutlined />}
                   onClick={(event) => {
                     event.stopPropagation();
-                    if (structured && node.children.length > 0) {
-                      setDeletingNode(node);
-                    } else {
-                      onDelete(node);
-                    }
+                    /*
+                      Every node goes through the host's `onDelete`, including a
+                      structured one with children. This used to raise its own
+                      modal for that case, which is now a second prompt on top
+                      of the shared section 14 one - and an unconfigurable one,
+                      so `confirmation: { delete: "never" }` could not silence
+                      it.
+                    */
+                    onDelete(node);
                   }}
                   size='small'
                   type='text'
@@ -205,13 +216,13 @@ export const AntdMixedTree = ({
       `}</style>
       <Input.Search
         allowClear
-        aria-label='Search value tree'
+        aria-label={t('mixed.searchLabel')}
         onChange={(event) => setSearch(event.currentTarget.value)}
-        placeholder='Search tree...'
+        placeholder={t('mixed.searchPlaceholder')}
         value={search}
       />
       <Tree
-        aria-label='Value structure'
+        aria-label={t('mixed.treeLabel')}
         autoExpandParent={Boolean(normalizedSearch)}
         blockNode
         expandedKeys={normalizedSearch ? searchExpandedKeys : expandedKeys}
@@ -247,20 +258,6 @@ export const AntdMixedTree = ({
         }}
         value={renameValue}
       />
-      <Modal
-        okButtonProps={{ danger: true }}
-        okText='Delete'
-        onCancel={() => setDeletingNode(null)}
-        onOk={() => {
-          if (deletingNode) onDelete(deletingNode);
-          setDeletingNode(null);
-        }}
-        open={Boolean(deletingNode)}
-        title='Confirm delete'
-      >
-        Delete {deletingNode ? mixedTreeLabel(deletingNode) : 'this item'} and
-        all of its nested content?
-      </Modal>
     </Flex>
   );
 };

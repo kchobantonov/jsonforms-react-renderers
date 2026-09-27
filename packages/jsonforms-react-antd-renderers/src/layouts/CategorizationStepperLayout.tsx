@@ -1,28 +1,4 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import merge from 'lodash/merge';
 import { Button, Steps } from 'antd';
 import {
@@ -31,7 +7,6 @@ import {
   categorizationHasCategory,
   Category,
   deriveLabelForUISchemaElement,
-  isVisible,
   optionIs,
   RankedTester,
   rankWith,
@@ -43,6 +18,9 @@ import {
   withJsonFormsLayoutProps,
   withTranslateProps,
 } from '@jsonforms/react';
+import { CategoryHeader } from './CategoryHeader';
+import { useCategorySelection } from '../util/categoryState';
+import { useI18n } from '../util/translate';
 import {
   AjvProps,
   AntdLayoutRenderer,
@@ -73,12 +51,9 @@ export interface CategorizationStepperLayoutRendererProps
 export const CategorizationStepperLayoutRenderer = (
   props: CategorizationStepperLayoutRendererProps
 ) => {
-  const [activeCategory, setActiveCategory] = useState<number>(0);
-
-  const handleStep = (step: number) => {
-    setActiveCategory(step);
-  };
-
+  // The `t` from props is core's Translator, which returns undefined for a
+  // key with no fallback; useI18n always supplies the default.
+  const label = useI18n();
   const {
     data,
     path,
@@ -104,15 +79,23 @@ export const CategorizationStepperLayoutRenderer = (
   const buttonStyle = {
     marginRight: '1em',
   };
-  const categories = useMemo(
-    () =>
-      categorization.elements.filter((category: Category) =>
-        isVisible(category, data, undefined, ajv, config)
-      ),
-    [categorization, data, ajv, config]
-  );
+  // Section 8's navigation contract, shared with the tabs and accordion
+  // presentations: visibility, `options.initial`, and what happens when the
+  // current category is hidden.
+  const {
+    categories,
+    active: activeCategory,
+    select,
+  } = useCategorySelection(categorization, data, ajv, config);
+  const handleStep = (step: number) => {
+    // "Previous/Next actions operate on visible categories and stop at the
+    // first/last visible category."
+    select(Math.min(Math.max(step, 0), categories.length - 1));
+  };
   const childProps: AntdLayoutRendererProps = {
-    elements: categories[activeCategory].elements,
+    // A Categorization whose categories are all hidden has "no active category
+    // or stale active panel"; indexing blindly here threw instead.
+    elements: categories[activeCategory]?.elements ?? [],
     schema,
     path,
     direction: 'column',
@@ -131,10 +114,17 @@ export const CategorizationStepperLayoutRenderer = (
   return (
     <>
       <Steps
-        current={activeCategory}
-        items={categories.map((_: Category, idx: number) => ({
+        current={activeCategory < 0 ? 0 : activeCategory}
+        items={categories.map((category: Category, idx: number) => ({
           key: tabLabels[idx],
-          title: tabLabels[idx],
+          title: (
+            <CategoryHeader
+              category={category}
+              label={tabLabels[idx]}
+              path={path}
+              config={config}
+            />
+          ),
         }))}
         onChange={handleStep}
         style={{ marginBottom: '10px' }}
@@ -150,7 +140,7 @@ export const CategorizationStepperLayoutRenderer = (
             disabled={activeCategory >= categories.length - 1}
             onClick={() => handleStep(activeCategory + 1)}
           >
-            Next
+            {label('categorization.next')}
           </Button>
           <Button
             style={buttonStyle}
@@ -158,7 +148,7 @@ export const CategorizationStepperLayoutRenderer = (
             disabled={activeCategory <= 0}
             onClick={() => handleStep(activeCategory - 1)}
           >
-            Previous
+            {label('categorization.previous')}
           </Button>
         </div>
       ) : (

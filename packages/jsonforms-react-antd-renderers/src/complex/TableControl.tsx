@@ -1,27 +1,3 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
@@ -51,15 +27,19 @@ import TableToolbar from './TableToolbar';
 
 const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
   const { path, schema, enabled, cells } = props;
+  const cellOptions = (props.uischema as ControlElement)?.options?.cells as
+    | Record<string, Record<string, unknown>>
+    | undefined;
 
   if (schema.type === 'object') {
-    return getValidColumnProps(schema).map((prop) => {
+    return getValidColumnProps(schema, cellOptions).map((prop) => {
       const props = {
         propName: prop,
         schema,
         title: schema.properties?.[prop]?.title ?? startCase(prop),
         enabled,
         cells,
+        cellOptions: cellOptions?.[prop],
       };
       return {
         dataIndex: props.propName,
@@ -97,13 +77,20 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
   }
 };
 
-const getValidColumnProps = (scopedSchema: JsonSchema) => {
+const getValidColumnProps = (
+  scopedSchema: JsonSchema,
+  cellOptions?: Record<string, unknown>
+) => {
   if (
     scopedSchema.type === 'object' &&
     typeof scopedSchema.properties === 'object'
   ) {
     return Object.keys(scopedSchema.properties).filter(
-      (prop) => scopedSchema.properties[prop].type !== 'array'
+      (prop) =>
+        // Array columns are skipped by default because a plain cell cannot show
+        // them, but a `cells` entry says how to summarise one, so keep it.
+        scopedSchema.properties[prop].type !== 'array' ||
+        Boolean(cellOptions?.[prop])
     );
   }
   // primitives
@@ -117,6 +104,8 @@ interface RowDataCellProps {
   enabled: boolean;
   renderers?: JsonFormsRendererRegistryEntry[];
   cells?: JsonFormsCellRendererRegistryEntry[];
+  /** The array uischema's `cells` entry for this column. */
+  cellOptions?: Record<string, unknown>;
 }
 
 const ctxToDataCellProps = (
@@ -144,6 +133,7 @@ const ctxToDataCellProps = (
     enabled: ownProps.enabled,
     cells: ownProps.cells || ctx.cells,
     renderers: ownProps.renderers || ctx.renderers,
+    cellOptions: ownProps.cellOptions,
   };
 };
 
@@ -345,6 +335,9 @@ export class TableControl extends React.Component<
           dataSource={dataSource}
           showHeader={isObjectSchema}
           columns={columns}
+          // compact density: default padding makes every row markedly taller
+          // than the control it holds
+          size='small'
           pagination={{ hideOnSinglePage: true }}
         ></Table>
       </TableToolbar>

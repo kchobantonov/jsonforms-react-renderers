@@ -1,0 +1,153 @@
+import type { RendererLocaleCatalog } from '../util/rendererLocale';
+
+/**
+ * Bulgarian for the renderer set's own strings.
+ *
+ * Register it once, the way antd's own bundles are handed to `ConfigProvider`:
+ *
+ * ```ts
+ * import { registerRendererLocale, bgRendererLocale } from '@chobantonov/jsonforms-react-antd-renderers';
+ * registerRendererLocale('bg', bgRendererLocale);
+ * ```
+ *
+ * Every key is optional: a bundle that omits one falls through to English, so
+ * a new key never breaks a translated form.
+ */
+export const bgRendererLocale: RendererLocaleCatalog = {
+  'enum.none': 'Няма',
+  'enum.noMatches': 'Няма съвпадения',
+  'chips.addPlaceholder': 'Въведете стойност и натиснете Enter',
+  'group.dataIndicator': 'Секцията съдържа данни',
+  'validation.containerError': '{count} грешка в тази секция',
+  'validation.containerErrors': '{count} грешки в тази секция',
+  'validation.containerHasErrors': 'Тази секция съдържа грешки',
+  'file.rejected': '„{name}“ не беше прикачен: {reason}',
+  'file.select': 'Изберете файл',
+  'control.clearValue': 'Изчистване на стойността',
+  'control.notSet': 'Не е зададено',
+  'password.show': 'Показване на паролата',
+  'password.hide': 'Скриване на паролата',
+  'boolean.notSet': 'Не е зададено',
+  'boolean.invalid': 'Стойността не е „да“ или „не“',
+  'array.indexLabel': 'Номер',
+  'categorization.next': 'Напред',
+  'categorization.previous': 'Назад',
+  'confirm.delete.title': 'Изтриване на стойността?',
+  'confirm.delete.message':
+    'Стойността ще бъде премахната. Действието не може да бъде отменено оттук.',
+  'confirm.typeChange.title': 'Промяна на типа?',
+  'confirm.typeChange.message':
+    'Текущата стойност не отговаря на новия тип и ще бъде отхвърлена.',
+  'confirm.branchChange.title': 'Промяна на избора?',
+  'confirm.branchChange.message':
+    'Данните, които новият избор не описва, ще бъдат отхвърлени.',
+  'confirm.accept': 'Да',
+  'confirm.decline': 'Не',
+  'combinator.clearFormTitle': 'Изчистване на формуляра?',
+  'combinator.clearFormMessage':
+    'Данните ви ще бъдат изчистени, ако напуснете този раздел. Желаете ли да продължите?',
+  'combinator.clearFormConfirm': 'Да',
+  'combinator.clearFormDecline': 'Не',
+  'combinator.cancel': 'Отказ',
+  'additionalProperties.title': 'Допълнителни свойства',
+  'additionalProperties.namePlaceholder': 'Име на свойството',
+  'additionalProperties.add': 'Добавяне на свойство',
+  'additionalProperties.addTo': 'Добавяне на свойство към {label}',
+  'additionalProperties.rename': 'Преименуване на свойството',
+  'additionalProperties.renameNamed': 'Преименуване на {name}',
+  'additionalProperties.renameTitle': 'Преименуване на свойството',
+  'additionalProperties.renameConfirm': 'Преименуване',
+  'additionalProperties.delete': 'Изтриване на свойството',
+  'additionalProperties.deleteNamed': 'Изтриване на {name}',
+  'additionalProperties.deleteBlocked': 'Схемата изисква това свойство.',
+  'additionalProperties.nameRequired': 'Въведете име на свойството.',
+  'additionalProperties.nameTaken': '„{name}“ вече е дефинирано.',
+  'additionalProperties.nameInvalid': '„{name}“ не е допустимо име тук.',
+  'additionalProperties.namePattern':
+    'Името на свойството не съответства на разрешен шаблон.',
+  'mixed.typeLabel': 'Тип на стойността',
+  'mixed.typePlaceholder': 'Изберете тип',
+  'mixed.required': 'Задължително',
+  'mixed.treeLabel': 'Структура на стойността',
+  'mixed.searchLabel': 'Търсене в структурата',
+  'mixed.searchPlaceholder': 'Търсене...',
+  'mixed.showPrimitives': 'Показване на простите стойности',
+  'mixed.hidePrimitives': 'Скриване на простите стойности',
+  'mixed.rename': 'Преименуване',
+  'mixed.renameBlocked': 'Това свойство не може да бъде преименувано.',
+  'mixed.delete': 'Изтриване',
+  'cron.expression': 'Израз',
+  'cron.choose': 'Изберете график',
+  'cron.ok': 'Прилагане',
+  'cron.cancel': 'Отказ',
+  'cron.repeats': 'Повтаря се',
+  'cron.chooseRepeats': 'Изберете колко често',
+  'cron.period.second': 'Всяка секунда',
+  'cron.period.minute': 'Всяка минута',
+  'cron.period.hour': 'На всеки час',
+  'cron.period.day': 'Всеки ден',
+  'cron.period.week': 'Всяка седмица',
+  'cron.period.month': 'Всеки месец',
+  'cron.period.year': 'Всяка година',
+  'cron.second': 'Секунди',
+  'cron.minute': 'Минути',
+  'cron.hour': 'Часове',
+  'cron.dayOfMonth': 'Дни от месеца',
+  'cron.month': 'Месеци',
+  'cron.dayOfWeek': 'Дни от седмицата',
+  'cron.every': 'Всяка стойност',
+  'cron.advanced':
+    'Редактира се като текст: полето използва синтаксис, който не може да се изрази със списък.',
+  'cron.error.sixFields':
+    'Графикът има шест полета: секунда, минута, час, ден от месеца, месец, ден от седмицата.',
+  'cron.error.second': 'Полето за секунди не е валидно (0-59).',
+  'cron.error.minute': 'Полето за минути не е валидно (0-59).',
+  'cron.error.hour': 'Полето за часове не е валидно (0-23).',
+  'cron.error.dayOfMonth': 'Полето за ден от месеца не е валидно (1-31).',
+  'cron.error.month': 'Полето за месец не е валидно (1-12 или JAN-DEC).',
+  'cron.error.dayOfWeek': 'Полето за ден от седмицата не е валидно (0-7 или SUN-SAT).',
+
+  'duration.weeks': 'Седмици',
+  'duration.years': 'Години',
+  'duration.months': 'Месеци',
+  'duration.days': 'Дни',
+  'duration.hours': 'Часове',
+  'duration.minutes': 'Минути',
+  'duration.seconds': 'Секунди',
+  'duration.addUnit': 'Добавяне на единица',
+  'duration.removeUnit': 'Премахване на „{unit}“',
+  'duration.modeComponents': 'От години до секунди',
+  'duration.modeWeeks': 'Седмици',
+  'duration.ok': 'Прилагане',
+  'duration.cancel': 'Отказ',
+  'tuple.position': 'Елемент {position}',
+  'tuple.additionalItems': 'Допълнителни елементи',
+  'tuple.add': 'Добавяне на елемент',
+  'tuple.delete': 'Изтриване на {label}',
+  'tuple.configuration':
+    'Представянето като кортеж изисква схеми по позиции или равни неотрицателни minItems и maxItems на масива.',
+  'tuple.forbidden': 'На тази позиция не се допуска стойност.',
+  'tuple.missingPosition': 'Първо въведете елемент {position}.',
+  'tuple.valueRequired': 'Въведете стойност за тази позиция.',
+  'tuple.initialType':
+    'Допълнителният елемент се нуждае от изрична стойност по подразбиране или тип.',
+  'composite.summary.item': '{count} елемент',
+  'composite.summary.items': '{count} елемента',
+  'composite.summary.details': 'Преглед на детайлите',
+  'composite.summary.unset': 'Не е зададено',
+  'composite.summary.more': '(+още {count})',
+  'composite.edit': 'Редактиране на {label}',
+  'composite.remove': 'Премахване на {label}',
+  'composite.detailsTitle': 'Детайли',
+  'composite.itemsLabel': 'елемента',
+  'composite.detailsLabel': 'детайли',
+  'composite.empty': 'Изчистване',
+  'composite.emptyTooltip':
+    'Изчиства съдържанието, като запазва обекта или масива.',
+  'composite.cancel': 'Отказ',
+  'composite.cancelTooltip': 'Отхвърля промените и затваря.',
+  'composite.apply': 'Прилагане',
+  'composite.applyTooltip': 'Прилага промените и затваря.',
+  'composite.applyConflict':
+    'Стойността беше променена другаде, докато диалогът беше отворен. Откажете и го отворете отново.',
+};

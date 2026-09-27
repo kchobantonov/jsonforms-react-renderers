@@ -1,0 +1,29 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Dynamic properties: what a key may be called, and how each one is edited."
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/labels",
+      "options": { "allowEmptyPropertyNames": true }
+    },
+    { "type": "Control", "scope": "#/properties/telemetry" },
+    { "type": "Control", "scope": "#/properties/headers" },
+    { "type": "Separator" },
+    { "type": "Label", "text": "Keys that arrived from elsewhere" },
+    { "type": "Control", "scope": "#/properties/annotations" },
+    { "type": "Separator" },
+    {
+      "type": "Label",
+      "text": "An element option overriding the global default"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/quota",
+      "options": { "allowEmptyPropertyNames": false }
+    }
+  ]
+}

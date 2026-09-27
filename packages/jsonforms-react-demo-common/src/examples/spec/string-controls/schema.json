@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "properties": {
+    "driverName": {
+      "type": "string",
+      "title": "Driver name",
+      "description": "Name as it appears on the carrier's licence.",
+      "minLength": 2
+    },
+    "pickupCity": {
+      "type": "string",
+      "title": "Pickup city",
+      "description": "Start typing; the suggestions are hints, not a fixed list."
+    },
+    "deliveryNotes": {
+      "type": "string",
+      "title": "Delivery notes",
+      "description": "Anything the receiving yard needs to know."
+    },
+    "bookingReference": {
+      "type": "string",
+      "title": "Booking reference",
+      "description": "Six digits. Stored without the separator.",
+      "pattern": "^[0-9]{6}$",
+      "maxLength": 6
+    },
+    "contactPhone": {
+      "type": "string",
+      "title": "Contact phone",
+      "description": "Stored exactly as displayed, separators included.",
+      "pattern": "^\\+1 \\([0-9]{3}\\) [0-9]{3}-[0-9]{4}$"
+    },
+    "accountNumber": {
+      "type": "string",
+      "title": "Account number",
+      "description": "Eight digits for a depot account, twelve for a carrier account.",
+      "pattern": "^([0-9]{8}|[0-9]{12})$"
+    },
+    "deckPosition": {
+      "type": "string",
+      "title": "Deck position",
+      "description": "Deck A to C, then the bay number.",
+      "pattern": "^[A-C][0-9]{2}$"
+    },
+    "gateCode": {
+      "type": "string",
+      "title": "Gate code",
+      "description": "Four digits.",
+      "pattern": "^[0-9]{4}$"
+    },
+    "bayLabel": {
+      "type": "string",
+      "title": "Bay label",
+      "description": "Up to four letters, in any alphabet.",
+      "maxLength": 4
+    },
+    "legacyReference": {
+      "type": "string",
+      "title": "Legacy reference",
+      "description": "Imported from the previous dispatch system.",
+      "pattern": "^[0-9]{6}$"
+    },
+    "scheduledPickup": {
+      "type": "string",
+      "format": "date",
+      "title": "Scheduled pickup"
+    }
+  },
+  "required": ["driverName", "bookingReference"]
+}

@@ -1,37 +1,14 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CellProps,
   JsonSchema,
   WithClassname,
   getI18nKey,
 } from '@jsonforms/core';
-import { Upload } from 'antd';
+import { Typography, Upload } from 'antd';
 import toNumber from 'lodash/toNumber';
 import { TranslateProps } from '@jsonforms/react';
+import { useI18nDefault } from '../util/translate';
 
 interface UploadProgressEvent extends Partial<ProgressEvent> {
   percent?: number;
@@ -159,102 +136,155 @@ export const AntdFile = React.memo(function AntdFile(
 ) {
   const { schema, uischema, path, handleChange, enabled, t, inputProps } =
     props;
+  /*
+    The default message carries the locale bundle (§6.5), so it must not be
+    read straight out of the English table.
+  */
+  const d = useI18nDefault();
+  const [rejection, setRejection] = useState<string | undefined>(undefined);
 
-  const uploadImage = async (options) => {
+  /** Why a selection breaks its size bounds, or undefined if it passes. */
+  const sizeRejection = (file: { size: number }): string | undefined => {
+    const [minFileSize, minFileSizeExclusive] = getFileSize(
+      schema as any,
+      uischema.options as any,
+      'min'
+    );
+    const [maxFileSize, maxFileSizeExclusive] = getFileSize(
+      schema as any,
+      uischema.options as any,
+      'max'
+    );
+
+    if (maxFileSize) {
+      const valid = maxFileSizeExclusive
+        ? file.size < maxFileSize
+        : file.size <= maxFileSize;
+      if (!valid) {
+        const key = getI18nKey(
+          schema,
+          uischema,
+          path,
+          maxFileSizeExclusive
+            ? 'error.formatExclusiveMaximum'
+            : 'error.formatMaximum'
+        );
+        const formatSize = formatBytes(maxFileSize);
+        return t(key, `size should be less than ${formatSize}`, {
+          limitText: `${formatSize}`,
+          limit: `${maxFileSize}`,
+        });
+      }
+    }
+
+    if (minFileSize) {
+      const valid = minFileSizeExclusive
+        ? file.size > minFileSize
+        : file.size >= minFileSize;
+      if (!valid) {
+        const key = getI18nKey(
+          schema,
+          uischema,
+          path,
+          minFileSizeExclusive
+            ? 'error.formatExclusiveMinimum'
+            : 'error.formatMinimum'
+        );
+        const formatSize = formatBytes(minFileSize);
+        return t(key, `size should be greater than ${formatSize}`, {
+          limitText: `${formatSize}`,
+          limit: `${minFileSize}`,
+        });
+      }
+    }
+    return undefined;
+  };
+
+  /**
+   * The message shown when a selection is refused.
+   *
+   * It names the file. The previously committed attachment is still listed
+   * above this message, so a bare "size should be less than 1 MB" reads as an
+   * error about *that* file; naming the one that was turned away removes the
+   * ambiguity. Falls back to the bare reason when the platform gives no name.
+   */
+  const rejectionMessage = (file: {
+    size: number;
+    name?: string;
+  }): string | undefined => {
+    const reason = sizeRejection(file);
+    if (!reason || !file.name) {
+      return reason;
+    }
+    return t('file.rejected', d('file.rejected'), {
+      name: file.name,
+      reason,
+    })
+      .replace('{name}', file.name)
+      .replace('{reason}', reason);
+  };
+
+  /**
+   * Size is checked here, before anything else happens to the selection.
+   *
+   * `Upload.LIST_IGNORE` drops the rejected file without adding it to the
+   * list, so `customRequest` never runs: nothing is read, nothing is
+   * converted, and - the point of doing it here - **the value already
+   * committed is left alone**. Rejecting inside `customRequest` meant writing
+   * `undefined` to the form first, so choosing an oversized file destroyed a
+   * perfectly good attachment.
+   */
+  const beforeUpload = (file: { size: number; name?: string }) => {
+    const message = rejectionMessage(file);
+    setRejection(message);
+    return message ? Upload.LIST_IGNORE : true;
+  };
+
+  const uploadImage = async (options: any) => {
     const { onSuccess, onError, file, onProgress } = options;
-
     try {
-      const [minFileSize, minFileSizeExclusive] = getFileSize(
-        schema as any,
-        uischema.options as any,
-        'min'
-      );
-      const [maxFileSize, maxFileSizeExclusive] = getFileSize(
-        schema as any,
-        uischema.options as any,
-        'max'
-      );
-
-      if (maxFileSize) {
-        const maxFileSizeValid = maxFileSizeExclusive
-          ? file.size < maxFileSize
-          : file.size <= maxFileSize;
-        if (!maxFileSizeValid) {
-          const key = getI18nKey(
-            schema,
-            uischema,
-            path,
-            maxFileSizeExclusive
-              ? 'error.formatExclusiveMaximum'
-              : 'error.formatMaximum'
-          );
-
-          const formatSize = formatBytes(maxFileSize);
-
-          handleChange(path, undefined);
-          onError({
-            message: t(key, `size should be less than ${formatSize}`, {
-              limitText: `${formatSize}`,
-              limit: `${maxFileSize}`,
-            }),
-          });
-          return;
-        }
-      }
-
-      if (minFileSize) {
-        const minFileSizeValid = minFileSizeExclusive
-          ? file.size > minFileSize
-          : file.size >= minFileSize;
-        if (!minFileSizeValid) {
-          const key = getI18nKey(
-            schema,
-            uischema,
-            path,
-            minFileSizeExclusive
-              ? 'error.formatExclusiveMinimum'
-              : 'error.formatMinimum'
-          );
-
-          const formatSize = formatBytes(minFileSize);
-          handleChange(path, undefined);
-          onError({
-            message: t(key, `size should be greater than ${formatSize}`, {
-              limitText: `${formatSize}`,
-              limit: `${minFileSize}`,
-            }),
-          });
-          return;
-        }
-      }
-
-      // upload
       const base64 = await toBase64(
         file,
         new FileReader(),
         onProgress,
         schema.format
       );
-
+      setRejection(undefined);
       handleChange(path, base64);
       onSuccess('Ok');
-    } catch (err) {
-      handleChange(path, undefined);
-      onError({ message: err?.message ?? err });
+    } catch (err: any) {
+      // A failed read of a *new* file is not a reason to discard the value
+      // that is already committed, for the same reason a size rejection is
+      // not. Report it and leave the form data untouched.
+      const message = err?.message ?? String(err);
+      setRejection(message);
+      onError({ message });
     }
   };
 
   return (
-    <Upload.Dragger
-      disabled={!enabled}
-      accept={(props.schema as any).contentMediaType}
-      customRequest={uploadImage}
-      listType='picture'
-      maxCount={1}
-      onRemove={() => handleChange(path, undefined)}
-      {...inputProps}
-    >
-      {t('Select File', 'Select File')}
-    </Upload.Dragger>
+    <>
+      <Upload.Dragger
+        disabled={!enabled}
+        accept={(props.schema as any).contentMediaType}
+        beforeUpload={beforeUpload}
+        customRequest={uploadImage}
+        listType='picture'
+        maxCount={1}
+        onRemove={() => {
+          // An explicit removal is the one case that should clear the value.
+          setRejection(undefined);
+          handleChange(path, undefined);
+        }}
+        {...inputProps}
+      >
+        {t('file.select', d('file.select'))}
+      </Upload.Dragger>
+      {rejection ? (
+        <Typography.Text type='danger' role='alert' data-file-rejection>
+          {rejection}
+        </Typography.Text>
+      ) : null}
+    </>
   );
 });

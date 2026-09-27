@@ -1,0 +1,59 @@
+{
+  "type": "VerticalLayout",
+  "options": { "gap": "1rem" },
+  "elements": [
+    { "type": "Label", "i18n": "intro" },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "errors",
+          "i18n": "errorsTab",
+          "label": "Errors",
+          "elements": [
+            { "type": "Label", "i18n": "errors" },
+            { "type": "Control", "scope": "#/properties/fullName" },
+            { "type": "Control", "scope": "#/properties/email" },
+            { "type": "Control", "scope": "#/properties/seats" },
+            { "type": "Control", "scope": "#/properties/reference" }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "transform",
+          "i18n": "transformTab",
+          "label": "transform",
+          "elements": [
+            { "type": "Label", "i18n": "transform" },
+            { "type": "Control", "scope": "#/properties/tidy" }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "defaults",
+          "i18n": "defaultsTab",
+          "label": "Defaults",
+          "elements": [
+            { "type": "Label", "i18n": "defaults" },
+            { "type": "Control", "scope": "#/properties/defaults" },
+            { "type": "Label", "i18n": "request" },
+            { "type": "Control", "scope": "#/properties/request" },
+            { "type": "Label", "i18n": "computed" },
+            { "type": "Control", "scope": "#/properties/computed" }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "messages",
+          "i18n": "messagesTab",
+          "label": "Messages in the schema",
+          "elements": [
+            { "type": "Label", "i18n": "messages" },
+            { "type": "Control", "scope": "#/properties/spoken" }
+          ]
+        }
+      ]
+    }
+  ]
+}

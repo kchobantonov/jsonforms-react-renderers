@@ -1,41 +1,31 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
-import type { StatePropsOfMasterItem } from '@jsonforms/core';
+import type {
+  OwnPropsOfMasterListItem,
+  StatePropsOfMasterItem,
+} from '@jsonforms/core';
 import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
 import {
   Avatar,
   Button,
-  List,
+  Flex,
   Tooltip,
   Typography,
   theme as antdTheme,
 } from 'antd';
-import React, { useMemo } from 'react';
+import React from 'react';
+
+import { useI18n } from '../util/translate';
 
 const { Text } = Typography;
+
+const SR_ONLY: React.CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  overflow: 'hidden',
+  clip: 'rect(0 0 0 0)',
+  whiteSpace: 'nowrap',
+};
 
 export const ListWithDetailMasterItem = ({
   index,
@@ -47,53 +37,88 @@ export const ListWithDetailMasterItem = ({
   path,
   translations,
   disableRemove,
-}: StatePropsOfMasterItem) => {
+  hideAvatar,
+}: StatePropsOfMasterItem & { hideAvatar?: boolean }) => {
+  const t = useI18n();
   const { useToken } = antdTheme;
   const { token: theme } = useToken();
 
-  const avatarStyle = useMemo(
-    () => (selected ? { background: theme.colorPrimary } : {}),
-    [selected]
-  );
-
-  const listItemStyle = useMemo(
-    () =>
-      selected
-        ? {
-            background: theme.controlItemBgActive,
-            borderRadius: '5px',
-          }
-        : {},
-    [selected]
-  );
-
   return (
-    <List.Item
-      key={index}
+    <Flex
+      align='center'
+      gap={theme.marginXS}
+      className='jsonforms-list-detail-item'
       onClick={handleSelect(index)}
-      style={listItemStyle}
-      actions={[
-        <Tooltip title={translations.removeTooltip} key='action_remove'>
-          <Button
-            disabled={!enabled || disableRemove}
-            aria-label={translations.removeAriaLabel}
-            icon={<DeleteFilled rev={undefined} />}
-            onClick={removeItem(path, index)}
-          />
-        </Tooltip>,
-      ]}
+      style={{
+        paddingBlock: theme.paddingSM,
+        paddingInline: theme.paddingXS,
+        background: selected ? theme.controlItemBgActive : undefined,
+        borderRadius: theme.borderRadius,
+      }}
     >
-      <List.Item.Meta
-        style={{ marginLeft: '8px' }}
-        avatar={
-          <Avatar aria-label='Index' style={avatarStyle} size={'small'}>
+      <Button
+        type='text'
+        aria-pressed={selected}
+        onClick={(event) => {
+          event.stopPropagation();
+          handleSelect(index)();
+        }}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          height: 'auto',
+          justifyContent: 'flex-start',
+        }}
+      >
+        {hideAvatar ? (
+          <span style={SR_ONLY}>
+            {t('array.indexLabel')} {index + 1}
+          </span>
+        ) : (
+          <Avatar
+            aria-label={t('array.indexLabel')}
+            style={
+              selected
+                ? { background: theme.colorPrimary, flexShrink: 0 }
+                : { flexShrink: 0 }
+            }
+            size='small'
+          >
             {index + 1}
           </Avatar>
-        }
-        title={<Text ellipsis={true}>{childLabel ?? index}</Text>}
-      />
-    </List.Item>
+        )}
+        <Text ellipsis>{childLabel ?? index}</Text>
+      </Button>
+      <Tooltip title={translations.removeTooltip} key='action_remove'>
+        <Button
+          disabled={!enabled || disableRemove}
+          aria-label={translations.removeAriaLabel}
+          icon={<DeleteFilled rev={undefined} />}
+          onClick={(event) => {
+            /*
+                The whole row selects on click, and this button is inside it.
+                Without this, pressing Delete on one entry while reading
+                another also navigates to the one being deleted - and then
+                asks about it, so declining could not put the selection back:
+                the move had already happened on the way in.
+
+                The array layout and the mixed tree stop propagation on their
+                row actions for the same reason.
+              */
+            event.stopPropagation();
+            removeItem(path, index)();
+          }}
+        />
+      </Tooltip>
+    </Flex>
   );
 };
 
-export default withJsonFormsMasterListItemProps(ListWithDetailMasterItem);
+/*
+  `hideAvatar` is an own prop the renderer passes straight through, but the
+  HOC's own-props type is fixed by JSON Forms, so the connected component is
+  re-typed here rather than at each call site.
+*/
+export default withJsonFormsMasterListItemProps(
+  ListWithDetailMasterItem
+) as React.ComponentType<OwnPropsOfMasterListItem & { hideAvatar?: boolean }>;

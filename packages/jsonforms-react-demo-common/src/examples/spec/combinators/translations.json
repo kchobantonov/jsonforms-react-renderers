@@ -1,0 +1,22 @@
+{
+  "en": {
+    "combinator.clearFormTitle": "Change the contact method?",
+    "combinator.clearFormMessage": "The email address will be discarded. The contact name is kept.",
+    "combinator.clearFormConfirm": "Yes",
+    "combinator.clearFormDecline": "No",
+    "error.required": "Required for an urgent request.",
+    "error.anyOf": "Enter up to 12 attendees, or 50 and over.",
+    "error.oneOf": "Enter a multiple of three or of five, but not of both.",
+    "neededByUnruled.label": "Needed by (no rule)"
+  },
+  "bg": {
+    "combinator.clearFormTitle": "Смяна на начина за връзка?",
+    "combinator.clearFormMessage": "Имейл адресът ще бъде премахнат. Името за контакт се запазва.",
+    "combinator.clearFormConfirm": "Да",
+    "combinator.clearFormDecline": "Не",
+    "error.required": "Задължително при спешна заявка.",
+    "error.anyOf": "Въведете до 12 участници или 50 и повече.",
+    "error.oneOf": "Въведете число, кратно на три или на пет, но не и на двете.",
+    "neededByUnruled.label": "Необходимо до (без правило)"
+  }
+}

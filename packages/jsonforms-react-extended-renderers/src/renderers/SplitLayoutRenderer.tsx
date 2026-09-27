@@ -2,12 +2,18 @@ import {
   Layout,
   LayoutProps,
   RankedTester,
+  UISchemaElement,
   and,
+  isVisible,
   or,
   rankWith,
   uiTypeIs,
 } from '@jsonforms/core';
-import { JsonFormsDispatch, withJsonFormsLayoutProps } from '@jsonforms/react';
+import {
+  JsonFormsDispatch,
+  useJsonForms,
+  withJsonFormsLayoutProps,
+} from '@jsonforms/react';
 import React from 'react';
 
 export const sharedSplitLayoutTester: RankedTester = rankWith(
@@ -25,15 +31,60 @@ export const splitCssSize = (value: unknown): string | undefined =>
     ? value.trim()
     : undefined;
 
+/**
+ * The initial share of each pane.
+ *
+ * "Initial sizes use normal sizing" - so a pane's `options.layout.weight`
+ * decides its share, exactly as it would in an ordinary layout, and equal
+ * shares are what Auto produces rather than a rule of their own.
+ *
+ * "Span SHOULD NOT be used" with a splitter, so it is ignored here; a pane
+ * asking for one falls back to Auto rather than being sized against a grid
+ * that a draggable pane does not have.
+ */
+export const initialSplitSizes = (elements: UISchemaElement[]): number[] => {
+  const weights = elements.map((element) => {
+    const weight = (element as any)?.options?.layout?.weight;
+    return typeof weight === 'number' && Number.isFinite(weight) && weight > 0
+      ? weight
+      : 1;
+  });
+  const total = weights.reduce((sum, weight) => sum + weight, 0);
+  return weights.map((weight) => (weight / total) * 100);
+};
+
 export const SharedSplitLayout = (props: LayoutProps) => {
   const layout = props.uischema as Layout;
   const horizontal = layout.type === 'HorizontalLayout';
-  const count = layout.elements.length;
+  /*
+    "Only effective visible UI-schema children participate. Hidden children
+    leave layout." A hidden pane used to keep its share and its separator.
+  */
+  const ctx = useJsonForms();
+  const elements = (layout.elements ?? []).filter((element) => {
+    const ajv = ctx.core?.ajv;
+    try {
+      return ajv
+        ? isVisible(element, ctx.core?.data, props.path, ajv, props.config)
+        : true;
+    } catch {
+      // A malformed rule is the author's problem, not a reason to drop a pane.
+      return true;
+    }
+  });
+  const count = elements.length;
   const [stored, setSizes] = React.useState<number[]>([]);
-  const sizes =
-    stored.length === count
-      ? stored
-      : Array.from({ length: count }, () => 100 / count);
+  const sizes = stored.length === count ? stored : initialSplitSizes(elements);
+  /* "`resizable` defaults true"; false disables dragging without hiding panes. */
+  const resizable =
+    ({ ...props.config, ...layout.options } as any).resizable !== false;
+  /*
+    "splitter+wrap unsupported". Panes divide a single axis and a separator
+    sits between neighbours, so there is no meaningful second row to wrap on
+    to. Reported rather than ignored, because the author asked for something
+    that will not happen.
+  */
+  const wrapRequested = (layout.options as any)?.wrap === true;
   const drag = React.useRef<{
     index: number;
     start: number;
@@ -55,6 +106,12 @@ export const SharedSplitLayout = (props: LayoutProps) => {
   if (!props.visible) return null;
   return (
     <div
+      {...(wrapRequested
+        ? {
+            'data-layout-diagnostic':
+              '`wrap` is not supported together with the splitter variant; ignored.',
+          }
+        : {})}
       style={{
         display: 'flex',
         flexDirection: horizontal ? 'row' : 'column',
@@ -66,10 +123,12 @@ export const SharedSplitLayout = (props: LayoutProps) => {
         minHeight: horizontal ? undefined : splitCssSize(options.minHeight),
       }}
     >
-      {layout.elements.map((element, index) => (
+      {elements.map((element, index) => (
         <React.Fragment key={index}>
           <div
+            /* See the antd splitter: padding outside the basis overflows. */
             style={{
+              boxSizing: 'border-box',
               flex: `${sizes[index]} 1 0`,
               minWidth: 0,
               minHeight: 0,
@@ -89,7 +148,12 @@ export const SharedSplitLayout = (props: LayoutProps) => {
           {index < count - 1 && (
             <div
               role='separator'
-              tabIndex={0}
+              /*
+                "`resizable` defaults true." When false the separator still
+                marks the boundary - it is a real separator either way - but it
+                stops being focusable and stops responding to keys or pointers.
+              */
+              {...(resizable ? { tabIndex: 0 } : { 'aria-disabled': true })}
               aria-label={`Resize pane ${index + 1}`}
               aria-orientation={horizontal ? 'vertical' : 'horizontal'}
               aria-valuemin={1}
@@ -98,10 +162,15 @@ export const SharedSplitLayout = (props: LayoutProps) => {
               style={{
                 flex: '0 0 6px',
                 background: 'rgba(128,128,128,0.3)',
-                cursor: horizontal ? 'col-resize' : 'row-resize',
+                cursor: resizable
+                  ? horizontal
+                    ? 'col-resize'
+                    : 'row-resize'
+                  : 'default',
                 touchAction: 'none',
               }}
               onKeyDown={(event) => {
+                if (!resizable) return;
                 const delta =
                   event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')
                     ? 2
@@ -114,6 +183,7 @@ export const SharedSplitLayout = (props: LayoutProps) => {
                 }
               }}
               onPointerDown={(event) => {
+                if (!resizable) return;
                 const rect =
                   event.currentTarget.parentElement!.getBoundingClientRect();
                 const total = horizontal ? rect.width : rect.height;

@@ -1,0 +1,290 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Every control below stores a string. Which renderer appears, and what validates it, are two different questions."
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "schemaBased",
+          "label": "Selected by the schema",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "The schema's format keyword picks the renderer AND gives the validator something to check."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/date"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/time"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/timeWithSeconds",
+              "options": {
+                "timeFormat": "HH:mm:ss"
+              }
+            },
+            {
+              "type": "Label",
+              "text": "Same keyword, same storage. timeFormat adds the seconds column - and seconds you cannot see are zeroed by the next edit."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/datetime"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/duration"
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "text": "Defaults, unset here: YYYY-MM-DD, HH:mm:ssZ and YYYY-MM-DDTHH:mm:ssZ. Each satisfies the format that selected it."
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "uiSchemaBased",
+          "label": "Selected by the UI schema",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "The schema says only 'string'. options.format picks the renderer; nothing validates the shape but pattern."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/month",
+              "label": "Year and month picker",
+              "options": {
+                "format": "date",
+                "views": [
+                  "year",
+                  "month"
+                ],
+                "dateFormat": "YYYY.MM",
+                "dateSaveFormat": "YYYY-MM"
+              }
+            },
+            {
+              "type": "Label",
+              "text": "views picks the calendar granularity; dateSaveFormat is a separate setting, and pattern is what validates it."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/time",
+              "options": {
+                "format": "time",
+                "ampm": true,
+                "timeSaveFormat": "HH:mm",
+                "placeholder": "hh:mm am"
+              }
+            },
+            {
+              "type": "Label",
+              "text": "ampm is presentation only. A bare HH:mm is storable here precisely because no format keyword judges it."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/timeSeconds",
+              "options": {
+                "format": "time",
+                "timeFormat": "HH:mm:ss",
+                "timeSaveFormat": "HH:mm:ss"
+              }
+            },
+            {
+              "type": "Label",
+              "text": "The same control with seconds, stored as HH:mm:ss."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/coarseTime",
+              "options": {
+                "format": "time",
+                "timeFormat": "HH:mm:ss",
+                "timeSaveFormat": "HH:mm:ss",
+                "views": [
+                  "hours",
+                  "minutes"
+                ]
+              }
+            },
+            {
+              "type": "Label",
+              "text": "The same seconds-bearing format, with views naming only hours and minutes: the picker drops its seconds column while the stored value keeps them. views chooses the panels, never the storage."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/datetimeSeconds",
+              "label": "Published at, chosen to the minute",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "DD-MM-YY hh:mm:ss a",
+                "dateTimeSaveFormat": "YYYY/MM/DD h:mm:ss a",
+                "ampm": true,
+                "views": [
+                  "year",
+                  "day",
+                  "hours",
+                  "minutes"
+                ]
+              }
+            },
+            {
+              "type": "Label",
+              "text": "A date-time control takes both halves of views. Only the time half is applied: a date-time picker always offers a full date, so narrowing the calendar would leave it unable to express a value it must store."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/datetime",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "DD-MM-YY hh:mm a",
+                "dateTimeSaveFormat": "YYYY/MM/DD h:mm a",
+                "ampm": true
+              }
+            },
+            {
+              "type": "Label",
+              "text": "Displayed one way, stored another - and the stored spelling is nobody's standard but this form's."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/uiSchemaBased/properties/datetimeSeconds",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "DD-MM-YY hh:mm:ss a",
+                "dateTimeSaveFormat": "YYYY/MM/DD h:mm:ss a",
+                "ampm": true
+              }
+            },
+            {
+              "type": "Label",
+              "text": "And with seconds, in the same house format."
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "bounds",
+          "label": "Restricting the range",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "formatMinimum and formatMaximum limit what the picker offers. Open each one."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/bounded/properties/bookingDate"
+            },
+            {
+              "type": "Label",
+              "text": "October only. The bounds themselves are selectable."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/bounded/properties/notBefore"
+            },
+            {
+              "type": "Label",
+              "text": "formatExclusiveMinimum: the 19th is not offered, so the first selectable day is the 20th."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/bounded/properties/officeHours"
+            },
+            {
+              "type": "Label",
+              "text": "Hours outside 09:00 to 17:00 are not offered."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/bounded/properties/slot"
+            },
+            {
+              "type": "Label",
+              "text": "A date-time bound narrows the hours on the first and last day only."
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/bounded/properties/unrestricted",
+              "options": {
+                "restrict": false
+              }
+            },
+            {
+              "type": "Label",
+              "text": "The same bounds with restrict off: the picker offers everything, and validation still objects."
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "composed",
+          "label": "In other structures",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "The same controls reached through a $ref, inside a tuple, and inside a mixed type."
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/composed/properties/bookingPeriod"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/composed/properties/reportPeriod"
+            },
+            {
+              "type": "Label",
+              "text": "One $defs definition, two properties. formatMinimum uses $data to hold To at or after From - try inverting one."
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/composed/properties/tupleRange"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/composed/properties/legacyTupleRange"
+            },
+            {
+              "type": "Label",
+              "text": "prefixItems and the draft-07 items array describe the same pair of positions."
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/composed/properties/maybeDate"
+            },
+            {
+              "type": "Label",
+              "text": "A mixed type: pick string to get the date picker, null to clear it."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

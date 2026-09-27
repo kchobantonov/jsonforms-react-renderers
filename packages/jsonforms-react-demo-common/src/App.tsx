@@ -5,25 +5,36 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { JsonForms, JsonFormsInitStateProps } from '@jsonforms/react';
+import { createFormsAjv } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  createAdditionalErrorStore,
+  createAjvErrorTranslator,
+} from '@chobantonov/jsonforms-react-extended-renderers';
+import { ajvLocalizers } from '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers';
+import type { JsonFormsI18nState } from '@jsonforms/core';
 import { ExampleDescription } from '@jsonforms/examples';
+import {
+  TranslationCatalogs,
+  exampleTranslations,
+  i18nEditorValue,
+  translatorFor,
+} from './i18nCatalogs';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
   ValidationMode,
 } from '@jsonforms/core';
-import Editor from '@monaco-editor/react';
+import { ActionEvent } from '@chobantonov/jsonforms-react-extended-renderers';
+import { DemoFormPanel } from './app/DemoFormPanel';
+import { DemoHome } from './app/DemoHome';
+import { useMonacoSchema } from './app/useMonacoSchema';
 import {
-  ActionEvent,
-  HandleActionContext,
-} from '@chobantonov/jsonforms-react-extended-renderers';
-import { LaptopMinimalCheck, Moon, RotateCcw, Save, Sun } from 'lucide-react';
-import { DefaultDemoSplitter, DemoSplitterProps } from './DemoSplitter';
-import {
-  EditorModels,
-  reloadOriginalEditorModel,
-  stringifyEditorValue,
-} from './editorModels';
+  useDemoPreferencePersistence,
+  useDocumentChrome,
+} from './app/useDemoChrome';
+import { DemoWorkspace } from './app/DemoWorkspace';
+import { DemoSettingsPanel } from './app/DemoSettings';
+import { EditorModels, stringifyEditorValue } from './editorModels';
 import {
   DemoLayout,
   DemoMode,
@@ -38,119 +49,11 @@ import {
   readPersistedDemoSettings,
   splitDemoHash,
   writeDemoQueryValue,
-  writePersistedDemoSettings,
 } from './demoPreferences';
 import './App.css';
-import { DefaultDemoTypography } from './DefaultDemoTypography';
-import { DefaultDemoTextInput } from './DefaultDemoTextInput';
 
-export type ProviderSettingsProps = {
-  settings: Record<string, any>;
-  setSettings: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  dark: boolean;
-  mode: string;
-  rtl: boolean;
-};
-
-export type DemoWrapperProps = React.PropsWithChildren<{
-  rendererSettings: Record<string, any>;
-  dark: boolean;
-  mode: string;
-  rtl: boolean;
-}>;
-
-export type DemoShellProps = React.PropsWithChildren<{
-  brand: string;
-  rendererName: string;
-  logoSrc?: string;
-  dark: boolean;
-  rtl: boolean;
-  isHome: boolean;
-  formOnly: boolean;
-  sidebarOpen: boolean;
-  settingsOpen: boolean;
-  useWebComponent: boolean;
-  webComponentAvailable: boolean;
-  search: string;
-  examples: Array<{ name: string; label: string }>;
-  currentExampleName?: string;
-  settings: React.ReactNode;
-  onHome: () => void;
-  onSelectExample: (name: string) => void;
-  onSearch: (value: string) => void;
-  onToggleSidebar: () => void;
-  onToggleFormOnly: () => void;
-  onToggleWebComponent: () => void;
-  onOpenSettings: () => void;
-  onCloseSettings: () => void;
-}>;
-
-export type DemoShell = React.ComponentType<DemoShellProps>;
-
-export type DemoOption = {
-  label: string;
-  value: string;
-};
-
-export type DemoButtonProps = React.PropsWithChildren<{
-  active?: boolean;
-  ariaLabel?: string;
-  disabled?: boolean;
-  iconOnly?: boolean;
-  tooltip?: string;
-  onClick: () => void;
-}>;
-
-export type DemoPanelProps = React.PropsWithChildren<{
-  className?: string;
-}>;
-
-export type DemoTabsProps = {
-  items: DemoOption[];
-  value: string;
-  onChange: (value: string) => void;
-};
-
-export type DemoSelectProps = {
-  label: string;
-  options: DemoOption[];
-  value: string;
-  onChange: (value: string) => void;
-};
-
-export type DemoToggleProps = {
-  checked: boolean;
-  label: string;
-  description?: string;
-  onChange: (checked: boolean) => void;
-};
-
-export type DemoTextInputProps = {
-  label: string;
-  value: string;
-  placeholder?: string;
-  description?: string;
-  onChange: (value: string) => void;
-};
-
-export type DemoTypographyProps = React.PropsWithChildren<{
-  component: 'h1' | 'h2' | 'h3' | 'p';
-  className?: string;
-}>;
-
-export type DemoUi = {
-  Typography?: React.ComponentType<DemoTypographyProps>;
-  TextInput?: React.ComponentType<DemoTextInputProps>;
-  SegmentedControl?: React.ComponentType<DemoSelectProps>;
-  Divider?: React.ComponentType;
-
-  Button: React.ComponentType<DemoButtonProps>;
-  Panel: React.ComponentType<DemoPanelProps>;
-  Select: React.ComponentType<DemoSelectProps>;
-  Splitter?: React.ComponentType<DemoSplitterProps>;
-  Tabs: React.ComponentType<DemoTabsProps>;
-  Toggle: React.ComponentType<DemoToggleProps>;
-};
+export * from './app/types';
+import type { DemoShell, DemoUi, ProviderSettingsProps } from './app/types';
 
 type AppProps = {
   brand: string;
@@ -190,9 +93,6 @@ const getProps = (
   i18n: example.i18n,
 });
 
-const parseEditorValue = (value: string) =>
-  value.trim() === '' ? undefined : JSON.parse(value);
-
 const routeFromLocation = (examples: ExampleDescription[]) => {
   const hash = splitDemoHash(window.location.hash).route;
   const index = examples.findIndex((example) => example.name === hash);
@@ -214,288 +114,66 @@ const useSystemDark = () => {
   return systemDark;
 };
 
-const WebComponentHost = ({
-  tagName,
-  props,
-  dark,
-  mode,
-  rtl,
-  locale,
-  validationMode,
-  rendererSettings,
-  onChange,
-  onAction,
-}: {
-  tagName: string;
-  props: JsonFormsInitStateProps;
-  dark: boolean;
-  mode: string;
-  rtl: boolean;
-  locale: string;
-  validationMode: ValidationMode;
-  rendererSettings: Record<string, any>;
-  onChange: (data: unknown) => void;
-  onAction: (event: ActionEvent) => void;
-}) => {
-  const ref = useRef<HTMLElement>();
+export { WebComponentHost } from './app/WebComponentHost';
+export { defaultDemoUi } from './app/defaultUi';
+export { DefaultDemoShell } from './app/DefaultDemoShell';
+import { defaultDemoUi } from './app/defaultUi';
+import { DefaultDemoShell } from './app/DefaultDemoShell';
 
-  useEffect(() => {
-    const element = ref.current as any;
-    if (!element) return;
+/**
+ * The validator the spec examples are written against.
+ *
+ * One instance for the whole demo: Ajv caches compiled schemas, and a fresh
+ * one per render would recompile on every keystroke.
+ *
+ * The `temporal-controls` fixture needs it specifically. Its `$data` bound is
+ * rejected by JSON Forms' plain `createAjv()` at **compile** time - "formatMinimum
+ * value must be [\"string\"]" - which is thrown inside `coreReducer` while the
+ * store initialises, so the whole demo fails to mount rather than the one
+ * example misbehaving.
+ */
+/**
+ * What the validator is told about the form's language.
+ *
+ * A module-level cell rather than a prop, because `demoAjv` is created once
+ * (Ajv caches compiled schemas, and a fresh instance per render would
+ * recompile on every keystroke) while the locale changes many times. The
+ * factory reads it through a getter at validation time, so a locale switch
+ * needs no new validator - and JSON Forms revalidates on an i18n change, so
+ * the messages follow immediately.
+ */
+let demoI18n: JsonFormsI18nState | undefined;
 
-    element.data = props.data;
-    element.schema = props.schema;
-    element.uischema = props.uischema;
-    element.uischemas = props.uischemas;
-    element.config = props.config;
-    element.readonly = props.readonly;
-    element.validationMode = validationMode;
-    element.locale = locale;
-    element.translations = props.i18n?.translate;
-    element.additionalErrors = props.additionalErrors;
-    element.dark = dark;
-    element.mode = mode;
-    element.rtl = rtl;
-    element.rendererSettings = rendererSettings;
-  }, [props, dark, mode, rtl, locale, validationMode, rendererSettings]);
+/**
+ * Whether the example on screen has granted script evaluation.
+ *
+ * Same arrangement as `demoI18n`, and for the same reason: the permission is a
+ * property of a *form's* config, and one validator serves every example. Read
+ * when a schema compiles, which is after this is assigned below.
+ */
+let demoAllowScriptEvaluation = false;
 
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
+const demoAjv = createFormsAjv({
+  i18n: () => demoI18n,
+  allowScriptEvaluation: () => demoAllowScriptEvaluation,
+  /*
+    Deliberately **not** `localizers`. Ajv's own messages are localized at
+    render time instead, through `demoErrorTranslator` below: core does not
+    revalidate when the locale changes, so translating during validation would
+    leave the previous language on screen until the data happened to change.
+  */
+});
 
-    const handleChange = (event: Event) =>
-      onChange((event as CustomEvent).detail?.data);
-    const handleAction = (event: Event) =>
-      onAction((event as CustomEvent).detail);
-
-    element.addEventListener('change', handleChange);
-    element.addEventListener('handle-action', handleAction);
-    return () => {
-      element.removeEventListener('change', handleChange);
-      element.removeEventListener('handle-action', handleAction);
-    };
-  }, [onAction, onChange]);
-
-  return React.createElement(
-    tagName,
-    { ref },
-    <div slot='form-header' className='webcomponent-form-header'>
-      Web component mode
-    </div>,
-    <div slot='form-footer' className='webcomponent-form-footer' />
-  );
-};
-
-const DefaultButton = ({
-  active,
-  ariaLabel,
-  disabled,
-  iconOnly,
-  tooltip,
-  onClick,
-  children,
-}: DemoButtonProps) => (
-  <button
-    aria-label={ariaLabel}
-    className={`demo-button${active ? ' active' : ''}${
-      iconOnly ? ' icon-only' : ''
-    }`}
-    type='button'
-    disabled={disabled}
-    title={tooltip}
-    onClick={onClick}
-  >
-    {children}
-  </button>
-);
-
-const DefaultPanel = ({ className = '', children }: DemoPanelProps) => (
-  <div className={className}>{children}</div>
-);
-
-const DefaultSelect = ({
-  label,
-  options,
-  value,
-  onChange,
-}: DemoSelectProps) => (
-  <label>
-    {label}
-    <select value={value} onChange={(event) => onChange(event.target.value)}>
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-  </label>
-);
-
-const DefaultTabs = ({ items, value, onChange }: DemoTabsProps) => (
-  <div className='tab-list'>
-    {items.map((item) => (
-      <DefaultButton
-        key={item.value}
-        active={item.value === value}
-        onClick={() => onChange(item.value)}
-      >
-        {item.label}
-      </DefaultButton>
-    ))}
-  </div>
-);
-
-const DefaultToggle = ({
-  checked,
-  label,
-  description,
-  onChange,
-}: DemoToggleProps) => (
-  <label className='checkbox-row'>
-    <input
-      type='checkbox'
-      checked={checked}
-      onChange={(event) => onChange(event.target.checked)}
-    />
-    <span>
-      <strong>{label}</strong>
-      {description && <small>{description}</small>}
-    </span>
-  </label>
-);
-
-export const defaultDemoUi: DemoUi = {
-  Button: DefaultButton,
-  Panel: DefaultPanel,
-  Select: DefaultSelect,
-  Tabs: DefaultTabs,
-  Toggle: DefaultToggle,
-};
-
-const DefaultDemoShell = ({
-  brand,
-  rendererName,
-  logoSrc,
-  dark,
-  rtl,
-  formOnly,
-  sidebarOpen,
-  settingsOpen,
-  useWebComponent,
-  webComponentAvailable,
-  search,
-  examples,
-  currentExampleName,
-  settings,
-  onHome,
-  onSelectExample,
-  onSearch,
-  onToggleSidebar,
-  onToggleFormOnly,
-  onToggleWebComponent,
-  onOpenSettings,
-  onCloseSettings,
-  children,
-}: DemoShellProps) => (
-  <div
-    className={dark ? 'app-shell app-dark' : 'app-shell'}
-    dir={rtl ? 'rtl' : 'ltr'}
-  >
-    <header className='topbar'>
-      <button
-        className='demo-button icon-button'
-        type='button'
-        aria-label='Toggle navigation'
-        onClick={onToggleSidebar}
-      >
-        Menu
-      </button>
-      <button className='brand' type='button' onClick={onHome}>
-        {logoSrc ? (
-          <img className='brand-logo' src={logoSrc} alt={`${brand} logo`} />
-        ) : (
-          <span className='brand-mark'>{brand[0]}</span>
-        )}
-        <span>
-          <strong>JSON Forms</strong>
-          <small>React · {rendererName}</small>
-        </span>
-      </button>
-      <div className='topbar-actions'>
-        <button
-          className='demo-button'
-          type='button'
-          onClick={onToggleFormOnly}
-        >
-          {formOnly ? 'Full App' : 'Form Only'}
-        </button>
-        {webComponentAvailable && (
-          <button
-            className={`demo-button${useWebComponent ? ' active' : ''}`}
-            type='button'
-            aria-pressed={useWebComponent}
-            onClick={onToggleWebComponent}
-          >
-            Web Component
-          </button>
-        )}
-        <button className='demo-button' type='button' onClick={onOpenSettings}>
-          Settings
-        </button>
-      </div>
-    </header>
-
-    {!formOnly && sidebarOpen && (
-      <aside className='sidebar'>
-        <input
-          value={search}
-          placeholder='Search examples'
-          onChange={(event) => onSearch(event.target.value)}
-        />
-        <nav>
-          {examples.map((example) => (
-            <button
-              type='button'
-              key={example.name}
-              className={`demo-button${
-                example.name === currentExampleName ? ' active' : ''
-              }`}
-              onClick={() => onSelectExample(example.name)}
-            >
-              {example.label}
-            </button>
-          ))}
-        </nav>
-      </aside>
-    )}
-
-    <main
-      className={`demo-main${!sidebarOpen || formOnly ? ' no-sidebar' : ''}`}
-    >
-      {children}
-    </main>
-
-    {settingsOpen && (
-      <div className='settings-backdrop' onClick={onCloseSettings}>
-        <aside
-          className='settings-panel'
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className='settings-heading'>
-            <h2>Settings</h2>
-            <button
-              className='demo-button'
-              type='button'
-              onClick={onCloseSettings}
-            >
-              Close
-            </button>
-          </div>
-          {settings}
-        </aside>
-      </div>
-    )}
-  </div>
+/**
+ * Ajv's own wording, localized when an error is rendered.
+ *
+ * The demo carries every language `ajv-i18n` ships, being an application
+ * rather than a distributable; a shipped bundle should pass only what it
+ * ships. Reads the locale through the same cell as the validator.
+ */
+const demoErrorTranslator = createAjvErrorTranslator(
+  ajvLocalizers,
+  () => demoI18n?.locale
 );
 
 const App = ({
@@ -558,9 +236,11 @@ const App = ({
     schema: stringifyEditorValue(examples[initialRoute.index].schema),
     uischema: stringifyEditorValue(examples[initialRoute.index].uischema),
     uischemas: stringifyEditorValue(examples[initialRoute.index].uischemas),
-    i18n: stringifyEditorValue(examples[initialRoute.index].i18n),
+    i18n: stringifyEditorValue(i18nEditorValue(examples[initialRoute.index])),
     config: stringifyEditorValue(examples[initialRoute.index].config),
   });
+  useMonacoSchema(models.schema);
+
   const [activeTab, setActiveTab] = useState<DemoTab>(initialQuery.activeTab);
   const [search, setSearch] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(initialQuery.drawer);
@@ -581,6 +261,12 @@ const App = ({
       ? initialPersisted.locale
       : 'en'
   );
+  // Catalogs live outside `exampleProps.i18n` because `translate` is a function:
+  // it cannot be serialized for the editor, and it cannot follow the locale
+  // switcher. Holding the raw catalogs lets both work.
+  const [translations, setTranslations] = useState<
+    TranslationCatalogs | undefined
+  >(() => exampleTranslations(examples[initialRoute.index]));
   const [validationMode, setValidationMode] =
     useState<ValidationMode>('ValidateAndShow');
   const [layout, setLayout] = useState<DemoLayout>(
@@ -607,19 +293,6 @@ const App = ({
   const currentExample = examples[currentIndex];
   const dark = mode === 'dark' || (mode === 'system' && systemDark);
   const actions: Action[] = currentExample.actions ?? [];
-  const {
-    Button: UiButton,
-    Panel: UiPanel,
-    Select: UiSelect,
-    Splitter: UiSplitter = DefaultDemoSplitter,
-    Tabs: UiTabs,
-    Toggle: UiToggle,
-    Typography: UiTypography = DefaultDemoTypography,
-    TextInput: UiTextInput = DefaultDemoTextInput,
-    SegmentedControl: UiSegmentedControl,
-    Divider: UiDivider,
-  } = Ui;
-
   useEffect(() => {
     let cancelled = false;
     Promise.resolve(initialPersistedRead).then((persisted) => {
@@ -657,24 +330,12 @@ const App = ({
     };
   }, [initialPersisted, initialPersistedRead, initialProviderSettingsRef]);
 
-  useEffect(() => {
-    if (!preferencesHydrated) return;
-    writePersistedDemoSettings(preferenceStorage, preferenceStorageKey, {
-      version: 1,
-      mode,
-      locale,
-      layout,
-      rendererSettings,
-    });
-  }, [
-    layout,
-    locale,
-    mode,
+  useDemoPreferencePersistence(
     preferenceStorage,
     preferenceStorageKey,
     preferencesHydrated,
-    rendererSettings,
-  ]);
+    { mode, locale, layout, rendererSettings }
+  );
 
   const setQueryOption = useCallback(
     <T extends boolean | DemoTab>(
@@ -693,17 +354,7 @@ const App = ({
     []
   );
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
-    document.documentElement.dataset.mode = mode;
-    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
-
-    return () => {
-      document.documentElement.classList.remove('dark');
-      delete document.documentElement.dataset.mode;
-      document.documentElement.removeAttribute('dir');
-    };
-  }, [dark, mode, rtl]);
+  useDocumentChrome(dark, mode, rtl);
 
   const updateModels = useCallback((example: ExampleDescription) => {
     setModels({
@@ -711,7 +362,7 @@ const App = ({
       schema: stringifyEditorValue(example.schema),
       uischema: stringifyEditorValue(example.uischema),
       uischemas: stringifyEditorValue(example.uischemas),
-      i18n: stringifyEditorValue(example.i18n),
+      i18n: stringifyEditorValue(i18nEditorValue(example)),
       config: stringifyEditorValue(example.config),
     });
   }, []);
@@ -721,6 +372,7 @@ const App = ({
       const example = examples[index];
       setIndex(index);
       setExampleProps(getProps(example, cells, renderers));
+      setTranslations(exampleTranslations(example));
       updateModels(example);
       if (resetActiveTab) setActiveTab('demo');
       setIsHome(false);
@@ -817,15 +469,54 @@ const App = ({
       readonly,
       validationMode,
       i18n: {
-        ...(exampleProps.i18n ?? {}),
-        locale,
+        ...(translations
+          ? { locale, translate: translatorFor(translations, locale) }
+          : { ...(exampleProps.i18n ?? {}), locale }),
+        translateError: demoErrorTranslator,
       },
     }),
-    [configOptions, exampleProps, locale, readonly, validationMode]
+    [
+      configOptions,
+      exampleProps,
+      locale,
+      readonly,
+      translations,
+      validationMode,
+    ]
   );
+
+  /*
+    Errors that are not the schema's: what a renderer publishes - the Monaco
+    editor, when `propagateErrors` is on - and what the demo's `reportServer`
+    action publishes to stand in for a rejected submit.
+
+    One store per mounted demo, because it is delivered through middleware and
+    a middleware belongs to one form.
+  */
+  const errorStore = useRef(createAdditionalErrorStore()).current;
 
   const setConfigOption = (key: string, value: unknown) =>
     setConfigOptions((current) => ({ ...current, [key]: value }));
+
+  /**
+   * What the form is actually using for an option.
+   *
+   * The example's own `config` is merged *under* these toggles, so an option
+   * the example sets is in effect until the user touches the corresponding
+   * switch. Reading only `configOptions` made a toggle sit at off while the
+   * behaviour it names was on - and flipping it twice was the only way to make
+   * the two agree.
+   */
+  /*
+    The keyword list needs the same fallback for the same reason - an example
+    that ships `filterErrorKeywordsBeforeTouch` would otherwise show an empty
+    box while the form filtered on it.
+  */
+  const effectiveConfigOption = (key: string): boolean =>
+    Boolean(
+      configOptions[key] ??
+        (exampleProps.config as Record<string, unknown> | undefined)?.[key]
+    );
 
   const setData = useCallback((data: unknown) => {
     setExampleProps((oldProps) => ({ ...oldProps, data }));
@@ -835,453 +526,135 @@ const App = ({
     }));
   }, []);
 
-  const handleAction = useCallback((event: ActionEvent) => {
-    setErrors((oldErrors) => [
-      ...oldErrors,
-      { message: `Action handled: ${event.label}` },
-    ]);
-  }, []);
+  /*
+    The host's side of section 14's action path.
 
-  const renderForm = () => {
-    if (webComponentTag && useWebComponent) {
-      return (
-        <WebComponentHost
-          tagName={webComponentTag}
-          props={jsonFormsProps}
-          dark={dark}
-          mode={mode}
-          rtl={rtl}
-          locale={locale}
-          validationMode={validationMode}
-          rendererSettings={rendererSettings}
-          onChange={setData}
-          onAction={handleAction}
-        />
-      );
-    }
+    A Button hands over an `ActionEvent` and awaits the result; what the
+    command means is the application's business, not the renderer's. The one
+    command understood here changes the form's language, which is the clearest
+    demonstration that `params` carry the argument - `setLocale` with
+    `{ "locale": "bg" }`, rather than one action per language.
+  */
+  const handleAction = useCallback(
+    async (event: ActionEvent) => {
+      const next = (event.params as { locale?: unknown } | undefined)?.locale;
+      if (event.action === 'setLocale' && typeof next === 'string') {
+        setLocale(next);
+        return;
+      }
+      /*
+      A deliberately slow command, so the button-actions example can show what
+      section 14 asks for: pending covers the whole promise, and a second
+      press while it is outstanding is refused.
+    */
+      if (event.action === 'slowExample') {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
+      /*
+      Stands in for a submit the server rejected. A real host would publish
+      whatever came back from it; the shape is the same, and so is everything
+      after: the errors appear under the named fields, and each clears when
+      that field is edited.
+    */
+      if (event.action === 'reportServer') {
+        const reported = (event.params as { errors?: unknown } | undefined)
+          ?.errors;
+        errorStore.publish(
+          'server',
+          Array.isArray(reported) ? (reported as never[]) : []
+        );
+        return;
+      }
+      if (event.action === 'clearServer') {
+        errorStore.clear('server');
+        return;
+      }
+      setErrors((oldErrors) => [
+        ...oldErrors,
+        { message: `Action handled: ${event.label}` },
+      ]);
+    },
+    [errorStore]
+  );
 
-    const content = (
-      <HandleActionContext.Provider value={handleAction}>
-        <JsonForms
-          key={currentIndex}
-          {...jsonFormsProps}
-          onChange={({ data, errors: nextErrors }) => {
-            setData(data);
-            setErrors(nextErrors ?? []);
-          }}
-        />
-      </HandleActionContext.Provider>
-    );
-
-    return Wrapper ? (
-      <Wrapper
-        rendererSettings={rendererSettings}
-        dark={dark}
-        mode={mode}
-        rtl={rtl}
-      >
-        {content}
-      </Wrapper>
-    ) : (
-      content
-    );
-  };
+  const renderForm = () => (
+    <DemoFormPanel
+      jsonFormsProps={jsonFormsProps}
+      formKey={currentIndex}
+      ajv={demoAjv}
+      errorStore={errorStore}
+      onAction={handleAction}
+      setData={setData}
+      setErrors={setErrors}
+      Wrapper={Wrapper}
+      webComponentTag={webComponentTag}
+      useWebComponent={useWebComponent}
+      dark={dark}
+      mode={mode}
+      rtl={rtl}
+      locale={locale}
+      validationMode={validationMode}
+      rendererSettings={rendererSettings}
+      onFormContext={(i18n, allowScriptEvaluation) => {
+        demoI18n = i18n;
+        demoAllowScriptEvaluation = allowScriptEvaluation;
+      }}
+    />
+  );
 
   const settings = (
-    <div className='demo-settings'>
-      {UiSegmentedControl ? (
-        <UiSegmentedControl
-          label='Mode'
-          value={mode}
-          options={[
-            { value: 'system', label: 'System' },
-            { value: 'light', label: 'Light' },
-            { value: 'dark', label: 'Dark' },
-          ]}
-          onChange={(value) => setMode(value as DemoMode)}
-        />
-      ) : (
-        <div className='demo-setting-field'>
-          <span className='demo-setting-label'>Mode</span>
-          <div className='demo-segmented-control'>
-            {(['system', 'light', 'dark'] as const).map((value) => (
-              <UiButton
-                key={value}
-                active={mode === value}
-                onClick={() => setMode(value)}
-              >
-                {value === 'system' ? (
-                  <LaptopMinimalCheck aria-hidden='true' />
-                ) : value === 'light' ? (
-                  <Sun aria-hidden='true' />
-                ) : (
-                  <Moon aria-hidden='true' />
-                )}
-                {value[0].toUpperCase() + value.slice(1)}
-              </UiButton>
-            ))}
-          </div>
-        </div>
-      )}
-      {UiSegmentedControl ? (
-        <UiSegmentedControl
-          label='Direction'
-          value={rtl ? 'rtl' : 'ltr'}
-          options={[
-            { value: 'ltr', label: 'LTR' },
-            { value: 'rtl', label: 'RTL' },
-          ]}
-          onChange={(value) => setRtl(value === 'rtl')}
-        />
-      ) : (
-        <div className='demo-setting-field'>
-          <span className='demo-setting-label'>Direction</span>
-          <div className='demo-segmented-control'>
-            <UiButton active={!rtl} onClick={() => setRtl(false)}>
-              LTR
-            </UiButton>
-            <UiButton active={rtl} onClick={() => setRtl(true)}>
-              RTL
-            </UiButton>
-          </div>
-        </div>
-      )}
-      {UiDivider ? <UiDivider /> : <div className='demo-settings-separator' />}
-      <UiSelect
-        label='Locale'
-        value={locale}
-        options={[
-          { value: 'en', label: 'English' },
-          { value: 'de', label: 'German' },
-          { value: 'bg', label: 'Bulgarian' },
-          { value: navigator.language, label: 'Browser language' },
-        ]}
-        onChange={setLocale}
-      />
-      <UiSelect
-        label='Validation'
-        value={validationMode}
-        options={[
-          { value: 'ValidateAndShow', label: 'Validate and show' },
-          { value: 'ValidateAndHide', label: 'Validate and hide' },
-          { value: 'NoValidation', label: 'No validation' },
-        ]}
-        onChange={(value) => setValidationMode(value as ValidationMode)}
-      />
-      <UiSelect
-        label='Demo Layout'
-        value={layout}
-        options={[
-          { value: 'default', label: 'Default' },
-          { value: 'demo-and-data', label: 'Demo and Data' },
-        ]}
-        onChange={(value) => setLayout(value as DemoLayout)}
-      />
-      {UiDivider ? <UiDivider /> : <div className='demo-settings-separator' />}
-      <UiTypography component='h3' className='demo-settings-section-title'>
-        Options
-      </UiTypography>
-      <UiToggle
-        checked={Boolean(configOptions.hideRequiredAsterisk)}
-        label='Hide Required Asterisk'
-        description='Hide asterisks in labels for required fields.'
-        onChange={(value) => setConfigOption('hideRequiredAsterisk', value)}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.showUnfocusedDescription)}
-        label='Show Unfocused Description'
-        description='Keep input descriptions visible while controls are unfocused.'
-        onChange={(value) => setConfigOption('showUnfocusedDescription', value)}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.restrict)}
-        label='Restrict'
-        description='Enforce schema length and array size restrictions.'
-        onChange={(value) => setConfigOption('restrict', value)}
-      />
-      <UiToggle
-        checked={readonly}
-        label='Read-Only'
-        description='Set all controls to read-only.'
-        onChange={changeReadonly}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.collapseNewItems)}
-        label='Collapse new array items'
-        description='Do not expand newly added array items.'
-        onChange={(value) => setConfigOption('collapseNewItems', value)}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.hideArraySummaryValidation)}
-        label='Hide array summary validation'
-        description='Hide validation summaries in array headers.'
-        onChange={(value) =>
-          setConfigOption('hideArraySummaryValidation', value)
-        }
-      />
-      <UiToggle
-        checked={Boolean(configOptions.initCollapsed)}
-        label='Collapse arrays initially'
-        description='Start array accordions collapsed.'
-        onChange={(value) => setConfigOption('initCollapsed', value)}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.hideAvatar)}
-        label='Hide Array Item Avatar'
-        description='Hide array index avatars.'
-        onChange={(value) => setConfigOption('hideAvatar', value)}
-      />
-      <UiToggle
-        checked={Boolean(configOptions.enableFilterErrorsBeforeTouch)}
-        label='Enable Filter Errors Before Touch'
-        description='Hide selected validation errors until a control is touched.'
-        onChange={(value) =>
-          setConfigOption('enableFilterErrorsBeforeTouch', value)
-        }
-      />
-      <UiTextInput
-        label='Filter Error Keywords Before Touch'
-        value={(configOptions.filterErrorKeywordsBeforeTouch ?? []).join(', ')}
-        placeholder='required, minLength'
-        description='Separate AJV keywords with commas.'
-        onChange={(value) =>
-          setConfigOption(
-            'filterErrorKeywordsBeforeTouch',
-            value
-              .split(',')
-              .map((keyword) => keyword.trim())
-              .filter(Boolean)
-          )
-        }
-      />
-      <UiToggle
-        checked={Boolean(configOptions.allowAdditionalPropertiesIfMissing)}
-        label='Allow Additional Properties By Default'
-        description='Allow properties when the schema does not explicitly configure them.'
-        onChange={(value) =>
-          setConfigOption('allowAdditionalPropertiesIfMissing', value)
-        }
-      />
-      {ProviderSettings && (
-        <div className='provider-settings'>
-          <ProviderSettings
-            settings={rendererSettings}
-            setSettings={setRendererSettings}
-            dark={dark}
-            mode={mode}
-            rtl={rtl}
-          />
-        </div>
-      )}
-    </div>
+    <DemoSettingsPanel
+      Ui={Ui}
+      ProviderSettings={ProviderSettings}
+      mode={mode}
+      setMode={setMode}
+      rtl={rtl}
+      setRtl={setRtl}
+      locale={locale}
+      setLocale={setLocale}
+      validationMode={validationMode}
+      setValidationMode={setValidationMode}
+      layout={layout}
+      setLayout={setLayout}
+      readonly={readonly}
+      changeReadonly={changeReadonly}
+      configOptions={configOptions}
+      setConfigOption={setConfigOption}
+      effectiveConfigOption={effectiveConfigOption}
+      rendererSettings={rendererSettings}
+      setRendererSettings={setRendererSettings}
+      dark={dark}
+      exampleConfig={exampleProps.config as Record<string, unknown> | undefined}
+    />
   );
 
   const content = isHome ? (
-    <section className='demo-home'>
-      {logoSrc ? (
-        <img className='demo-home-logo' src={logoSrc} alt={`${brand} logo`} />
-      ) : (
-        <div className='demo-home-mark'>{brand[0]}</div>
-      )}
-      <UiTypography component='p' className='demo-home-eyebrow'>
-        JSON Forms renderer set
-      </UiTypography>
-      <UiTypography component='h1'>
-        Welcome to JSON Forms React {rendererName}
-      </UiTypography>
-      <UiTypography component='p' className='demo-home-tagline'>
-        More Forms. Less Code.
-      </UiTypography>
-      <UiButton onClick={() => changeExample(examples[0].name)}>
-        Open Demo
-      </UiButton>
-    </section>
+    <DemoHome
+      Ui={Ui}
+      brand={brand}
+      rendererName={rendererName}
+      logoSrc={logoSrc}
+      examples={examples}
+      changeExample={changeExample}
+    />
   ) : (
-    <section className={formOnly ? 'workspace form-only' : 'workspace'}>
-      {!formOnly && (
-        <div className='workspace-title'>
-          <UiTypography component='h1'>{currentExample.label}</UiTypography>
-        </div>
-      )}
-
-      {formOnly ? (
-        <UiPanel className='form-card standalone'>{renderForm()}</UiPanel>
-      ) : (
-        <div className='demo-tabs'>
-          <UiTabs
-            value={activeTab}
-            items={(
-              [
-                'demo',
-                'schema',
-                'uischema',
-                'uischemas',
-                'i18n',
-                'config',
-                'data',
-              ] as const
-            )
-              .filter((tab) => layout !== 'demo-and-data' || tab !== 'data')
-              .map((tab) => ({
-                value: tab,
-                label:
-                  tab === 'demo'
-                    ? `${
-                        layout === 'demo-and-data' ? 'Demo and Data' : 'Demo'
-                      }${errors.length ? ` (${errors.length})` : ''}`
-                    : tab === 'uischema'
-                    ? 'UI Schema'
-                    : tab === 'uischemas'
-                    ? 'UI Schemas'
-                    : tab === 'i18n'
-                    ? 'Internationalization'
-                    : tab[0].toUpperCase() + tab.slice(1),
-              }))}
-            onChange={(value) => changeActiveTab(value as DemoTab)}
-          />
-
-          {activeTab === 'demo' ? (
-            <UiPanel className='panel'>
-              <div className='jsonform-toolbar'>
-                <UiTypography component='h2'>JSON Forms</UiTypography>
-                <div className='action-row'>
-                  {actions.map((action) => (
-                    <UiButton
-                      key={action.label}
-                      onClick={() =>
-                        setExampleProps((oldProps: JsonFormsInitStateProps) =>
-                          action.apply(oldProps)
-                        )
-                      }
-                    >
-                      {action.label}
-                    </UiButton>
-                  ))}
-                </div>
-              </div>
-              {layout === 'demo-and-data' ? (
-                <UiSplitter
-                  form={
-                    <section className='demo-data-pane demo-form-pane'>
-                      <UiTypography component='h3'>Demo</UiTypography>
-                      <UiPanel className='form-card'>{renderForm()}</UiPanel>
-                    </section>
-                  }
-                  data={
-                    <section className='demo-data-pane demo-editor-pane'>
-                      <div className='editor-heading'>
-                        <UiTypography component='h3'>Data</UiTypography>
-                        <div className='action-row'>
-                          <UiButton
-                            ariaLabel='Reload original example data'
-                            iconOnly
-                            tooltip='Reload original example data'
-                            onClick={() =>
-                              setModels((current) =>
-                                reloadOriginalEditorModel(
-                                  current,
-                                  'data',
-                                  currentExample.data
-                                )
-                              )
-                            }
-                          >
-                            <RotateCcw aria-hidden='true' />
-                            <span className='sr-only'>
-                              Reload original example data
-                            </span>
-                          </UiButton>
-                          <UiButton
-                            ariaLabel='Apply data changes'
-                            iconOnly
-                            tooltip='Apply data changes'
-                            onClick={() =>
-                              setData(parseEditorValue(models.data))
-                            }
-                          >
-                            <Save aria-hidden='true' />
-                            <span className='sr-only'>Apply data changes</span>
-                          </UiButton>
-                        </div>
-                      </div>
-                      <div className='data-editor-frame'>
-                        <Editor
-                          height='calc(100vh - 19rem)'
-                          defaultLanguage='json'
-                          theme={dark ? 'vs-dark' : 'light'}
-                          value={models.data}
-                          onChange={(value) =>
-                            setModels((current) => ({
-                              ...current,
-                              data: value ?? '',
-                            }))
-                          }
-                        />
-                      </div>
-                    </section>
-                  }
-                />
-              ) : (
-                <UiPanel className='form-card'>{renderForm()}</UiPanel>
-              )}
-            </UiPanel>
-          ) : (
-            <UiPanel className='editor-panel panel'>
-              <div className='editor-heading'>
-                <UiTypography component='h2'>{activeTab}</UiTypography>
-                <div className='action-row'>
-                  <UiButton
-                    ariaLabel='Reload original example value'
-                    iconOnly
-                    tooltip='Reload original example value'
-                    onClick={() =>
-                      setModels((oldModels) =>
-                        reloadOriginalEditorModel(
-                          oldModels,
-                          activeTab,
-                          currentExample[activeTab]
-                        )
-                      )
-                    }
-                  >
-                    <RotateCcw aria-hidden='true' />
-                    <span className='sr-only'>
-                      Reload original example value
-                    </span>
-                  </UiButton>
-                  <UiButton
-                    ariaLabel='Apply editor changes'
-                    iconOnly
-                    tooltip='Apply editor changes'
-                    onClick={() =>
-                      setExampleProps((oldProps) => ({
-                        ...oldProps,
-                        [activeTab]: parseEditorValue(models[activeTab]),
-                      }))
-                    }
-                  >
-                    <Save aria-hidden='true' />
-                    <span className='sr-only'>Apply editor changes</span>
-                  </UiButton>
-                </div>
-              </div>
-              <Editor
-                height='68vh'
-                defaultLanguage='json'
-                theme={dark ? 'vs-dark' : 'light'}
-                value={models[activeTab]}
-                onChange={(value) =>
-                  setModels((oldModels) => ({
-                    ...oldModels,
-                    [activeTab]: value ?? '',
-                  }))
-                }
-              />
-            </UiPanel>
-          )}
-        </div>
-      )}
-    </section>
+    <DemoWorkspace
+      Ui={Ui}
+      currentExample={currentExample}
+      actions={actions}
+      setExampleProps={setExampleProps}
+      activeTab={activeTab}
+      changeActiveTab={changeActiveTab}
+      layout={layout}
+      formOnly={formOnly}
+      errors={errors}
+      models={models}
+      setModels={setModels}
+      setTranslations={setTranslations}
+      dark={dark}
+      setData={setData}
+      renderForm={renderForm}
+    />
   );
 
   return (

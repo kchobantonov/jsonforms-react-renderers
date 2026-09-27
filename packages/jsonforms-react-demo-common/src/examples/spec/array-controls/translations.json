@@ -1,0 +1,34 @@
+{
+  "en": {
+    "intro.text": "One schema, five presentations. Which one you get is decided by the item shape and by explicit options - not by the data.",
+    "tableTab.label": "Table",
+    "expandableTab.label": "Expandable",
+    "listTab.label": "List with detail",
+    "gridTab.label": "AG Grid",
+    "boundsTab.label": "Add, remove and bounds",
+    "table.text": "Sessions have a nested Room, which would normally select expandable item forms. options.table keeps it in a column, and cells.room gives that column a one-line summary and a detail dialog.",
+    "expandable.text": "Speakers contain a nested array, so the expandable form is selected without asking. Headers take their label from elementLabelProp.",
+    "expandableOptions.text": "The same renderer with the options inverted: everything starts closed, a new item stays closed, the index marker is hidden, and the child-error summary is suppressed - validation is not.",
+    "list.text": "ListWithDetail is chosen by element type, not by a Control option. Pick an item on the left; the form on the right edits that item's own path.",
+    "grid.text": "An explicit variant: ag-grid. Sorting and filtering change the view, never the stored order - and while a column is sorted, row dragging is withdrawn rather than left ambiguous.",
+    "bounds.text": "Review rounds allow one to three. With restrict, Add stops at three and Delete stops at one. Add also shows initialization: a new round arrives as {\"active\": true}, and its missing name stays an error.",
+    "disabled.text": "The opening checklist is fixed: disableAdd and disableRemove take the buttons away, and every field stays editable.",
+    "contains.text": "The reviewers array must contain a lead. That failure belongs to the array, not to any one reviewer - and it is reported even when the array is empty."
+  },
+  "bg": {
+    "intro.text": "Една схема, пет представяния. Кое от тях получавате зависи от формата на елемента и от изрични опции - не от данните.",
+    "tableTab.label": "Таблица",
+    "expandableTab.label": "Разгъваеми",
+    "listTab.label": "Списък с детайли",
+    "gridTab.label": "AG Grid",
+    "boundsTab.label": "Добавяне, премахване и граници",
+    "table.text": "Сесиите имат вложена Зала, което обикновено избира разгъваеми формуляри. options.table я задържа в колона, а cells.room ѝ дава едноредово обобщение и диалог за детайли.",
+    "expandable.text": "Лекторите съдържат вложен масив, затова разгъваемата форма се избира без питане. Заглавията взимат надписа си от elementLabelProp.",
+    "expandableOptions.text": "Същият визуализатор с обърнати опции: всичко започва затворено, новият елемент остава затворен, индексът е скрит, а обобщението на грешките е потиснато - валидирането не е.",
+    "list.text": "ListWithDetail се избира по тип на елемента, а не по опция на Control. Изберете елемент отляво; формулярът отдясно редактира неговия собствен път.",
+    "grid.text": "Изрично variant: ag-grid. Сортирането и филтрирането променят изгледа, но никога съхранения ред - а докато колона е сортирана, влаченето на редове се отнема, вместо да остане двусмислено.",
+    "bounds.text": "Кръговете за преглед допускат от един до три. С restrict добавянето спира на три, а изтриването - на един. Добавянето показва и инициализацията: нов кръг пристига като {\"active\": true}, а липсващото име остава грешка.",
+    "disabled.text": "Списъкът за откриване е фиксиран: disableAdd и disableRemove премахват бутоните, а всички полета остават редактируеми.",
+    "contains.text": "Масивът с рецензенти трябва да съдържа водещ. Тази грешка принадлежи на масива, а не на конкретен рецензент - и се съобщава дори когато масивът е празен."
+  }
+}

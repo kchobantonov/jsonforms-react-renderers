@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "fullName": {
+      "type": "string",
+      "title": "Full name"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email address"
+    },
+    "newsletter": {
+      "type": "boolean",
+      "title": "Send me the newsletter"
+    }
+  },
+  "required": [
+    "fullName"
+  ]
+}

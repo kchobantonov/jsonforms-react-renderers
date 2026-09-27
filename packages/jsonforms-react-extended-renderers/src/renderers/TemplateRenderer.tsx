@@ -1,8 +1,27 @@
-import { LayoutProps, RankedTester, UISchemaElement, and, rankWith, uiTypeIs } from '@jsonforms/core';
-import { JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
+import {
+  LayoutProps,
+  RankedTester,
+  UISchemaElement,
+  and,
+  rankWith,
+  uiTypeIs,
+} from '@jsonforms/core';
+import {
+  JsonFormsDispatch,
+  useJsonForms,
+  withJsonFormsLayoutProps,
+} from '@jsonforms/react';
 import React from 'react';
+import type { ExtendedUISchemaElement } from '../core/uiSchema';
 
-export type NamedElement = UISchemaElement & { name?: string; elements?: UISchemaElement[] };
+/**
+ * Kept as an alias so existing imports still resolve; the type itself is the
+ * project-wide one, since `name` belongs to every element rather than to
+ * templates. See `core/uiSchema`.
+ */
+export type NamedElement = ExtendedUISchemaElement & {
+  elements?: UISchemaElement[];
+};
 export type TemplateSlots = Record<string, UISchemaElement>;
 export const TemplateSlotsContext = React.createContext<TemplateSlots>({});
 
@@ -35,9 +54,18 @@ export const TemplateRendererComponent = (props: LayoutProps) => {
   if (!props.visible || !template) return null;
   return (
     <TemplateSlotsContext.Provider value={slots}>
-      <JsonFormsDispatch schema={props.schema} uischema={template} path={props.path} enabled={props.enabled} renderers={props.renderers} cells={props.cells} />
+      <JsonFormsDispatch
+        schema={props.schema}
+        uischema={template}
+        path={props.path}
+        enabled={props.enabled}
+        renderers={props.renderers}
+        cells={props.cells}
+      />
     </TemplateSlotsContext.Provider>
   );
 };
 
-export const TemplateRenderer = withJsonFormsLayoutProps(TemplateRendererComponent);
+export const TemplateRenderer = withJsonFormsLayoutProps(
+  TemplateRendererComponent
+);

@@ -1,0 +1,14 @@
+{
+  "reference": "CN-88213",
+  "carrier": "Cascade Supplies",
+  "weightKg": 1240,
+  "origin": "Portland",
+  "destination": "Salem",
+  "priority": "Standard",
+  "notes": "Deliver to dock 3.",
+  "hazmat": false,
+  "showLane": true,
+  "bookedBy": "A. Ferreira",
+  "laneName": "PDX-SLE nightly",
+  "approvedBy": "M. Todorova"
+}

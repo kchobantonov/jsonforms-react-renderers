@@ -1,34 +1,10 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2021 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
-import { Form } from 'antd';
 import React, { useCallback } from 'react';
 
 import merge from 'lodash/merge';
 import { AntdCheckbox } from '../antd-controls';
-import { useFocus } from '../util';
+import { ControlFormItem, useCellMode } from '../util';
+import { usePreTouchErrors } from '../util/preTouchErrors';
 import {
   clearedDynamicPropertyValue,
   PRESERVE_DYNAMIC_PROPERTY_OPTION,
@@ -39,18 +15,21 @@ export interface WithInput {
 }
 
 export const InputControl = (props: ControlProps & WithInput) => {
-  const [focused, onFocus, onBlur] = useFocus();
-  const {
-    id,
-    description,
-    errors,
-    label,
-    uischema,
-    visible,
-    required,
+  const cell = useCellMode();
+  const { id, description, label, uischema, visible, required, config, input } =
+    props;
+  /*
+    Replaces `useFocus`: the same focus state, plus the touch state pre-touch
+    error filtering needs, and the filtered message. With filtering off this
+    returns `props.errors` unchanged.
+  */
+  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({
+    errors: props.errors,
+    path: props.path,
+    schema: props.schema,
+    uischema: props.uischema as any,
     config,
-    input,
-  } = props;
+  });
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const preserveDynamicPropertyKey =
@@ -89,17 +68,16 @@ export const InputControl = (props: ControlProps & WithInput) => {
   const helpId = help ? `${id}-input-help` : undefined;
 
   const InnerComponent = input;
-  const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
+  const style = { width: '100%' };
 
   if (!visible) {
     return null;
   }
 
   return (
-    <Form.Item
+    <ControlFormItem
       required={required}
-      hasFeedback={!isValid}
-      validateStatus={isValid ? 'success' : 'error'}
+      errors={isValid ? undefined : errors}
       label={input !== AntdCheckbox ? label : ''}
       help={help ? <span id={helpId}>{help}</span> : null}
       style={style}
@@ -109,7 +87,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       <InnerComponent
         {...props}
         handleChange={handleInputChange}
-        label={label}
+        label={cell ? '' : label}
         inputProps={{
           onFocus,
           onBlur,
@@ -119,6 +97,6 @@ export const InputControl = (props: ControlProps & WithInput) => {
         isValid={isValid}
         visible={visible}
       />
-    </Form.Item>
+    </ControlFormItem>
   );
 };

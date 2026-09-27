@@ -25,34 +25,38 @@
   "module": "lib/jsonforms-react-antd-extended.esm.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
     "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "vitest run",
     "test:watch": "vitest",
     "doc": "typedoc --name 'JSON Forms React Ant Design Extended Renderers' --excludeExternals --out docs src",
-    "tsc": "tsc --build tsconfig.json"
+    "tsc": "tsc --build tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
   },
   "peerDependencies": {
+    "@ant-design/icons": "6.3.2",
     "@chobantonov/jsonforms-react-antd-renderers": "0.0.1",
     "@chobantonov/jsonforms-react-extended-renderers": "0.0.1",
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
-    "antd": "6.5.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
+    "antd": "6.6.5",
     "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@ant-design/icons": "6.3.2",
     "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
+    "@monaco-editor/react": "^4.6.0",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@vitest/coverage-v8": "2.1.9",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "antd": "6.5.0",
+    "@vitest/coverage-v8": "2.1.9",
+    "antd": "6.6.5",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -67,5 +71,8 @@
     "typescript": "~4.9.5",
     "vite": "^5.4.11",
     "vitest": "2.1.9"
+  },
+  "dependencies": {
+    "maska": "^3.2.1"
   }
 }

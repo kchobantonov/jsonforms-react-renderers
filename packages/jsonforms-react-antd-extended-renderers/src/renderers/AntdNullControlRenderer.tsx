@@ -1,4 +1,8 @@
 import {
+  ControlFormItem,
+  usePreTouchErrors,
+} from '@chobantonov/jsonforms-react-antd-renderers';
+import {
   and,
   ControlProps,
   JsonSchema,
@@ -8,7 +12,7 @@ import {
   uiTypeIs,
 } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
-import { Checkbox, Form } from 'antd';
+import { Checkbox } from 'antd';
 import React from 'react';
 
 export const antdNullControlTester: RankedTester = rankWith(
@@ -20,25 +24,47 @@ export const antdNullControlTester: RankedTester = rankWith(
 );
 
 export const AntdNullControl = (props: ControlProps) => {
+  // See `usePreTouchErrors`; unchanged unless filtering is on.
+  const { errors, onFocus, onBlur } = usePreTouchErrors({
+    errors: props.errors,
+    path: props.path,
+    schema: props.schema,
+    uischema: props.uischema as any,
+    config: props.config,
+  });
   if (!props.visible) return null;
   return (
-    <Form.Item
-      help={props.errors || props.description}
-      validateStatus={props.errors ? 'error' : undefined}
+    <ControlFormItem
+      errors={errors || undefined}
+      help={errors || props.description}
     >
       <Checkbox
         checked={props.data === null}
         disabled={!props.enabled}
-        indeterminate={props.data !== null}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        /*
+          Indeterminate means "neither of the two states this control has" -
+          a value that is not `null` and is not absent either. It used to be
+          `data !== null`, which made an absent property indeterminate too: the
+          commonest state of all, nothing recorded yet, was drawn as though the
+          data were broken. Section 19 wants the genuinely out-of-domain value
+          marked, not the empty one.
+        */
+        indeterminate={props.data !== null && props.data !== undefined}
         onChange={(event) =>
-          props.handleChange(props.path, event.target.checked ? null : undefined)
+          props.handleChange(
+            props.path,
+            event.target.checked ? null : undefined
+          )
         }
       >
         {props.label}
         {props.required ? ' *' : ''}
       </Checkbox>
-    </Form.Item>
+    </ControlFormItem>
   );
 };
 
-export const AntdNullControlRenderer = withJsonFormsControlProps(AntdNullControl);
+export const AntdNullControlRenderer =
+  withJsonFormsControlProps(AntdNullControl);

@@ -1,0 +1,158 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "i18n": "intro"
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "server",
+          "i18n": "serverTab",
+          "label": "From the server",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "server"
+            },
+            {
+              "type": "HorizontalLayout",
+              "options": {
+                "gap": "0.5rem"
+              },
+              "elements": [
+                {
+                  "type": "Button",
+                  "label": "Submit (rejected)",
+                  "color": "primary",
+                  "action": "reportServer",
+                  "params": {
+                    "errors": [
+                      {
+                        "instancePath": "/contact/email",
+                        "schemaPath": "",
+                        "keyword": "server",
+                        "message": "That address is already registered.",
+                        "params": {}
+                      },
+                      {
+                        "instancePath": "/contact/phone",
+                        "schemaPath": "",
+                        "keyword": "server",
+                        "message": "We could not reach this number.",
+                        "params": {}
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "Button",
+                  "label": "Clear them",
+                  "color": "secondary",
+                  "action": "clearServer"
+                }
+              ]
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/contact"
+            },
+            {
+              "type": "Label",
+              "i18n": "serverClear"
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "reported",
+          "i18n": "reportedTab",
+          "label": "Reported",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "reported"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/policy",
+              "options": {
+                "format": "code",
+                "language": "json",
+                "propagateErrors": true,
+                "monaco": {
+                  "rows": 8
+                }
+              }
+            },
+            {
+              "type": "Label",
+              "i18n": "compare"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/summary"
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "quiet",
+          "i18n": "quietTab",
+          "label": "Not reported",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "quiet"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/quiet",
+              "options": {
+                "format": "code",
+                "language": "json",
+                "monaco": {
+                  "rows": 8
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "language",
+          "i18n": "languageTab",
+          "label": "Language",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "language"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/language"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/snippet",
+              "options": {
+                "format": "code",
+                ":language": "language",
+                "propagateErrors": true,
+                "monaco": {
+                  "rows": 8
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

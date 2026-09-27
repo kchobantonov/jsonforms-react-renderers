@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "title": "Event registration",
+  "properties": {
+    "customerName": {
+      "type": "string",
+      "title": "Customer"
+    },
+    "priority": {
+      "type": "boolean",
+      "title": "Priority booking"
+    },
+    "contacts": {
+      "type": "array",
+      "title": "Contacts",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        }
+      }
+    },
+    "jsxNote": {
+      "type": "string",
+      "title": "Note (slotted into the jsx template)"
+    },
+    "ractiveNote": {
+      "type": "string",
+      "title": "Note (slotted into the ractive template)"
+    },
+    "reference": {
+      "type": "string",
+      "title": "Reference"
+    },
+    "copies": {
+      "type": "integer",
+      "title": "Copies"
+    },
+    "nativeNote": {
+      "type": "string",
+      "title": "Note (slotted into the native template)"
+    }
+  }
+}

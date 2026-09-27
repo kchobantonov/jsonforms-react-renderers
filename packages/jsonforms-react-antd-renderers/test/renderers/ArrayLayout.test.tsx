@@ -2,6 +2,7 @@ import { JsonForms } from '@jsonforms/react';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { antdRenderers, arrayLayoutTester } from '../../src';
+import { booleanItemsSchema } from './booleanItemsSchema';
 import { runRendererContract } from './rendererContract';
 
 runRendererContract('ArrayLayout', arrayLayoutTester);
@@ -11,7 +12,7 @@ describe('ArrayLayout unrestricted items', () => {
     expect(
       arrayLayoutTester(
         { type: 'Control', scope: '#' },
-        { type: 'array', items: true },
+        booleanItemsSchema({ type: 'array', items: true }),
         undefined
       )
     ).toBe(4);
@@ -21,14 +22,14 @@ describe('ArrayLayout unrestricted items', () => {
     const html = renderToStaticMarkup(
       <JsonForms
         data={{ readOnly: false, writeOnly: false, examples: [] }}
-        schema={{
+        schema={booleanItemsSchema({
           type: 'object',
           properties: {
             readOnly: { type: 'boolean' },
             writeOnly: { type: 'boolean' },
             examples: { type: 'array', items: true },
           },
-        }}
+        })}
         renderers={antdRenderers}
       />
     );

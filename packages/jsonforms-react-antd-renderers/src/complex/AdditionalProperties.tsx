@@ -28,6 +28,17 @@ import {
   Typography,
 } from 'antd';
 import React, { useMemo, useState } from 'react';
+import { useI18n } from '../util/translate';
+import {
+  AdditionalPropertyNameError,
+  AdditionalPropertyNameResult,
+  assignOwnProperty,
+  needsIsolatedEditor,
+  validateAdditionalPropertyName,
+} from '../util/additionalPropertyName';
+import { AntdIsolatedPropertyEditor } from './additionalProperties/AntdIsolatedPropertyEditor';
+import { useConfirmation } from '../util/useConfirmation';
+import { literalPropertySchema } from '../util/literalPropertySchema';
 import { AntdAdditionalPropertyActions } from './additionalProperties/AntdAdditionalPropertyActions';
 import { AntdAdditionalPropertyRenameDialog } from './additionalProperties/AntdAdditionalPropertyRenameDialog';
 import { PRESERVE_DYNAMIC_PROPERTY_OPTION } from '../util/dynamicProperties';
@@ -187,73 +198,6 @@ const toAdditionalPropertyItem = (
   };
 };
 
-const getPropertyNamePattern = (
-  schema: JsonSchema,
-  rootSchema: JsonSchema
-): string | undefined => {
-  const objectSchema = toObjectSchema(schema);
-  let propertyNames = objectSchema.propertyNames as JsonSchema7 | undefined;
-  if (
-    typeof propertyNames === 'object' &&
-    typeof propertyNames.$ref === 'string'
-  ) {
-    propertyNames =
-      (resolveSchema(rootSchema, propertyNames.$ref, rootSchema) as
-        | JsonSchema7
-        | undefined) ?? propertyNames;
-  }
-
-  if (typeof propertyNames === 'object' && propertyNames.pattern) {
-    return propertyNames.pattern;
-  }
-
-  if (
-    objectSchema.additionalProperties === false &&
-    objectSchema.patternProperties
-  ) {
-    const patterns = Object.keys(objectSchema.patternProperties);
-    return patterns.length > 0 ? patterns.join('|') : undefined;
-  }
-
-  return undefined;
-};
-
-const validatePropertyName = (
-  propertyName: string,
-  data: any,
-  schema: JsonSchema,
-  rootSchema: JsonSchema,
-  currentPropertyName?: string
-): string | undefined => {
-  if (!propertyName) {
-    return undefined;
-  }
-
-  if (
-    typeof data === 'object' &&
-    data !== null &&
-    Object.prototype.hasOwnProperty.call(data, propertyName) &&
-    propertyName !== currentPropertyName
-  ) {
-    return `Property '${propertyName}' already defined`;
-  }
-
-  if (
-    propertyName.includes('[') ||
-    propertyName.includes(']') ||
-    propertyName.includes('.')
-  ) {
-    return `Property name '${propertyName}' is invalid`;
-  }
-
-  const pattern = getPropertyNamePattern(schema, rootSchema);
-  if (pattern && !new RegExp(pattern).test(propertyName)) {
-    return `Property name must match pattern: ${pattern}`;
-  }
-
-  return undefined;
-};
-
 export const AdditionalProperties = ({
   cells,
   config,
@@ -273,10 +217,20 @@ export const AdditionalProperties = ({
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
   >(null);
+  const t = useI18n();
+  const confirmation = useConfirmation();
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
   const restrict = appliedOptions.restrict !== false;
+  /*
+    Section 18: defaults to false, available in global config and
+    `uischema.options`, and "an explicitly supplied UI-schema option overrides
+    global config, including `false` overriding `true`" - which the element-over
+    -config spread above already gives, because only `undefined` falls through.
+  */
+  const allowEmptyPropertyNames =
+    appliedOptions.allowEmptyPropertyNames === true;
   const objectData =
     typeof data === 'object' && data !== null && !Array.isArray(data)
       ? data
@@ -310,30 +264,59 @@ export const AdditionalProperties = ({
     return null;
   }
 
-  const propertyName = newPropertyName.trim();
+  // Exactly as typed. Trimming here would store `"a"` for `"  a  "`, and with
+  // empty names permitted it would erase a whitespace-only key entirely.
+  const propertyName = newPropertyName;
+  /*
+    One message per reason, all through the translator.
+
+    Only the schema refuses a name now. A dot or an empty name is accepted and
+    routed to an isolated editor rather than rejected, because a property that
+    no data path can address is still perfectly legal data - see Adjustment 14.
+  */
+  const nameMessage = (
+    error: AdditionalPropertyNameError,
+    name: string
+  ): string => {
+    switch (error) {
+      case 'required':
+        return t('additionalProperties.nameRequired');
+      case 'already-defined':
+        return t('additionalProperties.nameTaken', { name });
+      default:
+        return t('additionalProperties.nameInvalid', { name });
+    }
+  };
+  const ajv = context.core?.ajv;
   const validateName = (name: string, currentName?: string) => {
-    const basicError = validatePropertyName(
-      name,
-      data,
-      schema,
-      rootSchema,
-      currentName
+    const result: AdditionalPropertyNameResult = validateAdditionalPropertyName(
+      {
+        name,
+        schema,
+        rootSchema,
+        data,
+        currentName,
+        disallowedNames: reservedPropertyNames,
+        allowEmptyName: allowEmptyPropertyNames,
+        validate: ajv
+          ? (nameSchema, value) => ajv.validate(nameSchema, value)
+          : undefined,
+      }
     );
-    if (basicError) return basicError;
-    let propertyNames = objectSchema.propertyNames as JsonSchema7 | undefined;
-    if (propertyNames?.$ref) {
-      propertyNames =
-        (resolveSchema(rootSchema, propertyNames.$ref, rootSchema) as
-          | JsonSchema7
-          | undefined) ?? propertyNames;
-    }
-    const ajv = context.core?.ajv;
-    if (propertyNames && ajv && !ajv.validate(propertyNames, name)) {
-      return ajv.errorsText(ajv.errors) || 'The property name is invalid.';
-    }
-    return undefined;
+    return result.error === undefined
+      ? undefined
+      : nameMessage(result.error, result.name);
   };
   const propertyNameError = validateName(propertyName);
+  /*
+    Section 18's draft rule: an exactly empty name input "must not show inline
+    name-validation errors on initial load or after it is cleared or reset,
+    including an empty-name collision when `allowEmptyPropertyNames` is
+    enabled". Suppressing the message must not suppress the judgement, so Add
+    still consults `propertyNameError` below.
+  */
+  const showPropertyNameError =
+    newPropertyName !== '' && Boolean(propertyNameError);
   const maxPropertiesReached =
     objectSchema.maxProperties !== undefined &&
     objectData &&
@@ -346,8 +329,7 @@ export const AdditionalProperties = ({
     !enabled ||
     readonly ||
     (restrict && maxPropertiesReached) ||
-    Boolean(propertyNameError) ||
-    !propertyName;
+    Boolean(propertyNameError);
   const removePropertyDisabled =
     !enabled || readonly || (restrict && minPropertiesReached);
 
@@ -365,9 +347,10 @@ export const AdditionalProperties = ({
     );
     const updatedData = objectData ? { ...objectData } : {};
 
-    updatedData[propertyName] = createDefaultValue(
-      additionalProperty.schema,
-      rootSchema
+    assignOwnProperty(
+      updatedData,
+      propertyName,
+      createDefaultValue(additionalProperty.schema, rootSchema)
     );
     handleChange(path, updatedData);
     setNewPropertyName('');
@@ -377,38 +360,54 @@ export const AdditionalProperties = ({
     if (removePropertyDisabled || !objectData) {
       return;
     }
-
-    const updatedData = { ...objectData };
-    delete updatedData[propertyToRemove];
-    handleChange(path, updatedData);
+    /*
+      "Dynamic-property Delete uses additionalProperties" - the owner of the
+      action. Fallback `always`, so this used to remove a property silently.
+    */
+    confirmation.request({
+      operation: 'delete',
+      catalogId: 'additionalProperties',
+      discarded: [objectData[propertyToRemove]],
+      options: uischema.options as Record<string, unknown> | undefined,
+      config,
+      perform: () => {
+        // The guard is rechecked, not remembered.
+        if (removePropertyDisabled || !objectData) {
+          return;
+        }
+        const updatedData = { ...objectData };
+        delete updatedData[propertyToRemove];
+        handleChange(path, updatedData);
+      },
+    });
   };
 
   const renameProperty = (propertyToRename: string) => {
-    const trimmed = renameValue.trim();
-    const renameError = validateName(trimmed, propertyToRename);
-    if (
-      renameError ||
-      !trimmed ||
-      trimmed === propertyToRename ||
-      !objectData
-    ) {
+    const nextName = renameValue;
+    const renameError = validateName(nextName, propertyToRename);
+    if (renameError || nextName === propertyToRename || !objectData) {
       return;
     }
 
-    const updatedData = Object.fromEntries(
-      Object.entries(objectData).map(([key, value]) => [
-        key === propertyToRename ? trimmed : key,
-        value,
-      ])
+    // Rebuilt in order, so renaming does not move the property to the end.
+    const updatedData = Object.entries(objectData).reduce(
+      (result, [key, value]) =>
+        assignOwnProperty(
+          result,
+          key === propertyToRename ? nextName : key,
+          value
+        ),
+      {} as Record<string, unknown>
     );
     handleChange(path, updatedData);
     setRenamingPropertyName(null);
     setRenameValue('');
   };
 
-  const renameError = renamingPropertyName
-    ? validateName(renameValue.trim(), renamingPropertyName)
-    : undefined;
+  const renameError =
+    renamingPropertyName === null
+      ? undefined
+      : validateName(renameValue, renamingPropertyName);
   const closeRename = () => {
     setRenamingPropertyName(null);
     setRenameValue('');
@@ -416,23 +415,26 @@ export const AdditionalProperties = ({
 
   return (
     <Card className='jsonforms-additional-properties' size='small'>
+      {confirmation.dialog}
       <Flex vertical gap='middle'>
         <Row align='bottom' gutter={[12, 8]}>
           <Col md={5} xs={24}>
-            <Typography.Text>Additional Properties</Typography.Text>
+            <Typography.Text>{t('additionalProperties.title')}</Typography.Text>
           </Col>
           <Col md={18} xs={20}>
             <Form.Item
-              label='Property Name'
-              validateStatus={
-                newPropertyName && propertyNameError ? 'error' : undefined
-              }
+              label={t('additionalProperties.namePlaceholder')}
+              validateStatus={showPropertyNameError ? 'error' : undefined}
               style={{ marginBottom: 0 }}
             >
               <Input
-                aria-label={label ? `Add property to ${label}` : 'Add property'}
+                aria-label={
+                  label
+                    ? t('additionalProperties.addTo', { label })
+                    : t('additionalProperties.add')
+                }
                 disabled={!enabled || readonly}
-                placeholder='Property name'
+                placeholder={t('additionalProperties.namePlaceholder')}
                 value={newPropertyName}
                 onChange={(event) =>
                   setNewPropertyName(event.currentTarget.value)
@@ -442,9 +444,9 @@ export const AdditionalProperties = ({
             </Form.Item>
           </Col>
           <Col md={1} xs={4}>
-            <Tooltip title='Add property'>
+            <Tooltip title={t('additionalProperties.add')}>
               <Button
-                aria-label='Add property'
+                aria-label={t('additionalProperties.add')}
                 disabled={addPropertyDisabled}
                 icon={<PlusOutlined />}
                 onClick={addProperty}
@@ -454,7 +456,7 @@ export const AdditionalProperties = ({
             </Tooltip>
           </Col>
         </Row>
-        {newPropertyName && propertyNameError ? (
+        {showPropertyNameError ? (
           <Typography.Text
             className='jsonforms-additional-properties-error'
             type='danger'
@@ -468,9 +470,17 @@ export const AdditionalProperties = ({
           gap='middle'
         >
           {additionalPropertyItems.map((item) => {
-            const rendersOwnHeading = !(
-              typeof item.schema === 'object' && item.schema.type === 'object'
-            );
+            /*
+              A name a data path cannot address - empty, or containing a dot -
+              is edited in a form of its own. The row keeps the heading and the
+              actions in that case, because the isolated editor draws no label.
+            */
+            const isolated = needsIsolatedEditor(item.propertyName);
+            const rendersOwnHeading =
+              !isolated &&
+              !(
+                typeof item.schema === 'object' && item.schema.type === 'object'
+              );
             const actions = enabled ? (
               <AntdAdditionalPropertyActions
                 deleteDisabled={
@@ -516,8 +526,18 @@ export const AdditionalProperties = ({
                     justify='space-between'
                     style={{ width: '100%' }}
                   >
-                    <Typography.Text strong>
-                      {item.propertyName}
+                    {/*
+                      Section 18: an empty name "has a visually blank label. Do
+                      not display the literal text `""` as a substitute name."
+                      The non-breaking space keeps the row its normal height so
+                      Rename and Delete stay above the value input rather than
+                      dropping into a row of their own.
+                    */}
+                    <Typography.Text
+                      strong
+                      data-property-name={item.propertyName}
+                    >
+                      {item.propertyName === '' ? '\u00a0' : item.propertyName}
                     </Typography.Text>
                     {actions}
                   </Flex>
@@ -526,15 +546,53 @@ export const AdditionalProperties = ({
                   className='jsonforms-additional-property-control'
                   style={{ width: '100%' }}
                 >
-                  <JsonFormsDispatch
-                    schema={item.schema}
-                    uischema={item.uischema}
-                    path={item.path}
-                    enabled={enabled}
-                    renderers={renderers}
-                    cells={cells}
-                    readonly={readonly}
-                  />
+                  {isolated ? (
+                    <AntdIsolatedPropertyEditor
+                      cells={cells}
+                      enabled={Boolean(enabled)}
+                      onChange={(next) =>
+                        handleChange(
+                          path,
+                          assignOwnProperty(
+                            { ...(objectData ?? {}) },
+                            item.propertyName,
+                            next
+                          )
+                        )
+                      }
+                      readonly={readonly}
+                      renderers={renderers}
+                      /*
+                        Rebundled, so a local `$ref` inside this property's
+                        schema still resolves once the value is its own
+                        document. See `literalPropertySchema`.
+                      */
+                      schema={literalPropertySchema(
+                        item.schema as JsonSchema,
+                        rootSchema
+                      )}
+                      uischema={{ type: 'Control', scope: '#', label: false }}
+                      value={
+                        objectData &&
+                        Object.prototype.hasOwnProperty.call(
+                          objectData,
+                          item.propertyName
+                        )
+                          ? objectData[item.propertyName]
+                          : undefined
+                      }
+                    />
+                  ) : (
+                    <JsonFormsDispatch
+                      schema={item.schema}
+                      uischema={item.uischema}
+                      path={item.path}
+                      enabled={enabled}
+                      renderers={renderers}
+                      cells={cells}
+                      readonly={readonly}
+                    />
+                  )}
                 </div>
               </Flex>
             );

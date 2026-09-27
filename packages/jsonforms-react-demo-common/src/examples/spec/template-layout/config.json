@@ -1,0 +1,9 @@
+{
+  "showUnfocusedDescription": true,
+  "jsonformsExtended": {
+    "security": {
+      "allowScriptEvaluation": true
+    },
+    "defaultTemplateLang": "ractive"
+  }
+}

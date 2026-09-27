@@ -2,7 +2,12 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
 import { GroupLayout, RuleEffect } from '@jsonforms/core';
-import { groupHasData, hasGroupValue } from '../src/util/groupState';
+import {
+  boundDataPaths,
+  collectBoundPaths,
+  groupHasData,
+  hasGroupValue,
+} from '../src/util/groupState';
 import { GroupLayoutRenderer as GroupComponent } from '../src/layouts/GroupLayout';
 
 const group: GroupLayout = {
@@ -152,5 +157,79 @@ describe('Group collapse and data indicator', () => {
       container.remove();
       vi.unstubAllGlobals();
     }
+  });
+});
+
+describe('bound-path collection', () => {
+  const nested: GroupLayout = {
+    type: 'Group',
+    elements: [
+      {
+        type: 'VerticalLayout',
+        elements: [
+          { type: 'Control', scope: '#/properties/a' },
+          {
+            type: 'HorizontalLayout',
+            elements: [
+              { type: 'Control', scope: '#/properties/b/properties/c' },
+            ],
+          },
+        ],
+      },
+      { type: 'Label', text: 'not bound' } as any,
+    ],
+  };
+
+  it('collects every bound descendant through intervening layouts', () => {
+    expect(collectBoundPaths(nested).map((p) => p.segments)).toEqual([
+      ['a'],
+      ['b', 'c'],
+    ]);
+  });
+
+  it('serves both indicators from one traversal', () => {
+    // The data indicator resolves `segments` against the container context;
+    // an error indicator looks the absolute paths up in an error index. Same
+    // walk, same cache.
+    const paths = collectBoundPaths(nested);
+    expect(paths.map((p) => p.relative)).toEqual(['a', 'b.c']);
+    expect(boundDataPaths(nested)).toEqual(['a', 'b.c']);
+    expect(boundDataPaths(nested, 'items.3')).toEqual([
+      'items.3.a',
+      'items.3.b.c',
+    ]);
+  });
+
+  it('gives an error index the paths it needs, boundaries included', () => {
+    // An ancestor index built from /items/10/a contains items, items.10 and
+    // items.10.a - never items.1 - so a sibling item cannot match.
+    const index = new Set(['', 'items', 'items.10', 'items.10.a']);
+    expect(boundDataPaths(nested, 'items.10').some((p) => index.has(p))).toBe(
+      true
+    );
+    expect(boundDataPaths(nested, 'items.1').some((p) => index.has(p))).toBe(
+      false
+    );
+  });
+
+  it('splits each scope once and reuses the result', () => {
+    // Identity, not equality: the scope strings are static, so re-splitting
+    // them on every render was pure waste.
+    expect(collectBoundPaths(nested)).toBe(collectBoundPaths(nested));
+  });
+
+  it('caches per element, so a different element is collected separately', () => {
+    const other: GroupLayout = {
+      type: 'Group',
+      elements: [{ type: 'Control', scope: '#/properties/z' }],
+    };
+    expect(collectBoundPaths(other).map((p) => p.segments)).toEqual([['z']]);
+    expect(collectBoundPaths(other)).not.toBe(collectBoundPaths(nested));
+  });
+
+  it('resolves the item context once for a group inside an array', () => {
+    const data = { items: [{ a: '' }, { a: 'filled' }] };
+    expect(groupHasData(nested, data, 'items.0')).toBe(false);
+    expect(groupHasData(nested, data, 'items.1')).toBe(true);
   });
 });

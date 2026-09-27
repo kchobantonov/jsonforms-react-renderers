@@ -1,29 +1,5 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-
 import React from 'react';
+import { useAntdLocale } from '@chobantonov/jsonforms-react-antd-renderers';
 import {
   GithubOutlined,
   FullscreenOutlined,
@@ -57,7 +33,10 @@ import {
   antdRenderers,
   antdCells,
 } from '@chobantonov/jsonforms-react-antd-renderers';
-import { antdExtendedRenderers } from '@chobantonov/jsonforms-react-antd-extended-renderers';
+import {
+  antdExtendedCells,
+  antdExtendedRenderers,
+} from '@chobantonov/jsonforms-react-antd-extended-renderers';
 import {
   JSON_FORMS_ANTD_TAG,
   registerJsonFormsAntd,
@@ -65,8 +44,7 @@ import {
 import { antdDemoUi } from './DemoUi';
 import { WebComponentLogo } from './WebComponentLogo';
 
-const ANTD_LOGO =
-  'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg';
+const ANTD_LOGO = new URL('./antd-logo.svg', import.meta.url).href;
 
 const createTheme = (dark: boolean): ThemeConfig => ({
   algorithm: dark ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
@@ -188,7 +166,7 @@ const AntdDemoShell = ({
                   window.open(
                     'https://github.com/kchobantonov/jsonforms-react-renderers',
                     '_blank',
-                    'noopener,noreferrer'
+                    'noopener,noreferrer',
                   )
                 }
                 type='text'
@@ -250,13 +228,26 @@ const AntdDemoShell = ({
   );
 };
 
+/*
+  Where the demo's language reaches antd.
+
+  JSON Forms translates the strings the renderers own; antd owns a second set -
+  month and weekday names, "Today", a select's empty text - that stay English
+  unless its locale is set. The chunk for a language is fetched the first time
+  it is chosen, so switching language in the sidebar loads ~5 KB.
+*/
 const AntdWrapper = ({
   children,
   rendererSettings,
   dark,
   rtl,
+  locale,
 }: DemoWrapperProps) => (
-  <ConfigProvider direction={rtl ? 'rtl' : 'ltr'} theme={createTheme(dark)}>
+  <ConfigProvider
+    direction={rtl ? 'rtl' : 'ltr'}
+    theme={createTheme(dark)}
+    locale={useAntdLocale(locale)}
+  >
     <Form
       layout='vertical'
       variant={
@@ -293,7 +284,10 @@ registerJsonFormsAntd();
 
 renderExample(
   antdRenderers.concat(antdExtendedRenderers),
-  antdCells,
+  // Extended cells too, or the AG Grid and table examples show their colour
+  // and duration columns as plain text - those controls are only in the
+  // renderer registry, and a column dispatches through the cells registry.
+  antdCells.concat(antdExtendedCells),
   AntdWrapper,
   {
     brand: 'Ant Design',
@@ -304,5 +298,5 @@ renderExample(
     Ui: antdDemoUi,
     ProviderSettings: AntdSettings,
     initialProviderSettings: { inputVariant: 'outlined' },
-  }
+  },
 );

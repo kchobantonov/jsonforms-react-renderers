@@ -1,0 +1,9 @@
+{
+  "restrict": true,
+  "showUnfocusedDescription": true,
+  "hideRequiredAsterisk": false,
+
+  "jsonformsExtended": {
+    "showValidationIndicator": true
+  }
+}

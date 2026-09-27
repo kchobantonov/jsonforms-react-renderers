@@ -82,9 +82,16 @@ export const MuiDurationControl = (props: ControlProps) => {
               type='number'
               label={field[0].toUpperCase() + field.slice(1)}
               value={state.draft[field]}
-              disabled={state.fieldDisabled(field)}
+              disabled={
+                state.disabled ||
+                (field === 'weeks'
+                  ? durationFields.some(
+                      (part) => part !== 'weeks' && state.draft[part] > 0
+                    )
+                  : state.draft.weeks > 0)
+              }
               slotProps={{
-                htmlInput: { min: 0, max: durationFieldMax[field], step: 1 },
+                htmlInput: { min: 0, max: durationFieldMax, step: 1 },
               }}
               onChange={(event) =>
                 state.changePart(field, Number(event.target.value))

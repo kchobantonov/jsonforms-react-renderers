@@ -1,0 +1,9 @@
+{
+  "shipping": "Express",
+  "packaging": "Crate",
+  "department": "fin",
+  "priority": 2,
+  "carrier": "Rail",
+  "origin": "Salem",
+  "handler": "ops"
+}

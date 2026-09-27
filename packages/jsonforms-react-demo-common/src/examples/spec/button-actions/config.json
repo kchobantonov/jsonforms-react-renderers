@@ -1,0 +1,7 @@
+{
+  "jsonformsExtended": {
+    "security": {
+      "allowScriptEvaluation": true
+    }
+  }
+}

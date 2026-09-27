@@ -1,27 +1,3 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import './MatchMediaMock';
 import * as React from 'react';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
@@ -33,6 +9,7 @@ import Enzyme, { mount, ReactWrapper } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { JsonFormsStateProvider } from '@jsonforms/react';
 import { initCore } from './util';
+import { AntdRadioGroup } from '../../src/antd-controls/AntdRadioGroup';
 Enzyme.configure({ adapter: new Adapter() });
 
 const data = { foo: 'D' };
@@ -120,5 +97,60 @@ describe('Ant Design radio group control', () => {
 
     const radioButtons = wrapper.find('input[type="radio"]');
     expect(radioButtons.length).toBe(0);
+  });
+
+  it('is not operable when disabled', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <RadioGroupControl
+          schema={schema}
+          uischema={uischema}
+          enabled={false}
+        />
+      </JsonFormsStateProvider>
+    );
+
+    const radioButtons = wrapper.find('input[type="radio"]');
+    expect(radioButtons.length).toBe(4);
+    radioButtons.forEach((radio) => expect(radio.props().disabled).toBe(true));
+  });
+
+  it('is operable when enabled', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <RadioGroupControl schema={schema} uischema={uischema} enabled={true} />
+      </JsonFormsStateProvider>
+    );
+
+    wrapper
+      .find('input[type="radio"]')
+      .forEach((radio) => expect(radio.props().disabled).toBe(false));
+  });
+
+  it('refuses a change dispatched while disabled', () => {
+    // The handler is guarded as well as the widget: a keyboard path, or a
+    // caller overriding `disabled` through inputProps, must not be able to
+    // commit a change to a read-only control.
+    const handleChange = vi.fn();
+    const group = mount(
+      <AntdRadioGroup
+        data='D'
+        enabled={false}
+        handleChange={handleChange}
+        path='foo'
+        schema={schema.properties.foo as any}
+        uischema={uischema}
+        options={[{ label: 'A', value: 'A' }]}
+        inputProps={{ disabled: false }}
+        {...({} as any)}
+      />
+    );
+    group.find('input[type="radio"]').simulate('change', {
+      target: { value: 'A' },
+    });
+    expect(handleChange).not.toHaveBeenCalled();
+    group.unmount();
   });
 });

@@ -1,0 +1,139 @@
+{
+  "type": "object",
+  "title": "Course enrolment",
+  "properties": {
+    "fullName": {
+      "type": "string",
+      "title": "Full name",
+      "minLength": 3
+    },
+    "email": {
+      "type": "string",
+      "title": "Email",
+      "format": "email"
+    },
+    "seats": {
+      "type": "integer",
+      "title": "Seats",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "reference": {
+      "type": "string",
+      "title": "Reference",
+      "pattern": "^[A-Z]{2}-[0-9]{4}$"
+    },
+    "tidy": {
+      "type": "object",
+      "title": "Normalised on validation",
+      "properties": {
+        "code": {
+          "type": "string",
+          "title": "Code (trimmed, upper-cased)",
+          "transform": ["trim", "toUpperCase"]
+        },
+        "town": {
+          "type": "string",
+          "title": "Town (start case)",
+          "transform": ["trim", "startCase"]
+        },
+        "note": {
+          "type": "string",
+          "title": "Note (capitalized)",
+          "transform": ["trim", "capitalize"]
+        },
+        "level": {
+          "type": "string",
+          "title": "Level (matched to a choice)",
+          "transform": ["trim", "toEnumCase"],
+          "enum": ["Beginner", "Intermediate", "Advanced"]
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "title": "Filled in before you arrive",
+      "default": {},
+      "properties": {
+        "currency": {
+          "type": "string",
+          "title": "Currency (a plain default)",
+          "default": "EUR"
+        },
+        "confirmed": {
+          "type": "boolean",
+          "title": "Confirmed (a false default, preserved)",
+          "default": false
+        },
+        "opensOn": { "type": "string", "title": "Opens (today)" },
+        "closesOn": { "type": "string", "title": "Closes (in two weeks)" },
+        "requestedAt": { "type": "string", "title": "Requested at" },
+        "year": { "type": "integer", "title": "Year" }
+      },
+      "dynamicDefaults": {
+        "opensOn": { "func": "date", "args": {} },
+        "closesOn": { "func": "date", "args": { "duration": "P14D" } },
+        "requestedAt": { "func": "datetime", "args": {} },
+        "year": { "func": "dateUnit", "args": { "unit": "year" } }
+      }
+    },
+    "request": {
+      "type": "object",
+      "title": "Taken from the page address",
+      "default": {},
+      "properties": {
+        "ref": { "type": "string", "title": "ref" },
+        "campaign": { "type": "string", "title": "campaign" },
+        "source": { "type": "string", "title": "source" }
+      },
+      "dynamicDefaults": {
+        "ref": { "func": "searchParams", "args": { "param": "ref" } },
+        "campaign": {
+          "func": "searchParams",
+          "args": { "param": "campaign" }
+        },
+        "source": { "func": "searchParams", "args": { "param": "source" } }
+      }
+    },
+    "computed": {
+      "type": "object",
+      "title": "Computed by a function in the schema",
+      "default": {},
+      "properties": {
+        "greeting": { "type": "string", "title": "Greeting" }
+      },
+      "dynamicDefaults": {
+        "greeting": {
+          "func": "dynamic",
+          "args": {
+            "who": "student",
+            "func": "(args) => `Welcome, ${args.who}.`"
+          }
+        }
+      }
+    },
+    "spoken": {
+      "type": "object",
+      "title": "Messages written into the schema",
+      "properties": {
+        "nickname": { "type": "string", "title": "Nickname", "minLength": 2 },
+        "age": { "type": "integer", "title": "Age", "minimum": 16 },
+        "postcode": {
+          "type": "string",
+          "title": "Postcode",
+          "pattern": "^[0-9]{4}$"
+        }
+      },
+      "required": ["nickname"],
+      "errorMessage": {
+        "required": { "nickname": "nicknameRequired" },
+        "properties": {
+          "nickname": "nicknameTooShort",
+          "age": "tooYoung",
+          "postcode": "A postcode is four digits, like 1010."
+        }
+      }
+    }
+  },
+  "required": ["fullName"]
+}

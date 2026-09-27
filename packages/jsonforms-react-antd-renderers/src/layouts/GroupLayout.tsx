@@ -1,29 +1,5 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import React from 'react';
-import { Card, Collapse } from 'antd';
+import { Card, Collapse, theme as antTheme } from 'antd';
 import {
   GroupLayout,
   LayoutProps,
@@ -35,18 +11,72 @@ import {
 import { withJsonFormsLayoutProps } from '@jsonforms/react';
 import { AntdLayoutRenderer } from '../util/layout';
 import { useGroupState } from '../util/groupState';
+import { useI18n } from '../util/translate';
+import { useContainerValidation } from '../util/validationIndicator';
+import { ContainerIndicator, DataDotIcon } from './ContainerIndicator';
+import { ContainerValidationIndicator } from './ValidationIndicator';
 
 export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
 
 export const GroupLayoutRenderer = (props: LayoutProps) => {
+  /*
+    `useI18n`, not the raw translator from context.
+
+    It used to call `translate?.(key, i18nDefaults[key])`, which supplies the
+    **English** string as the default message - and the default message is
+    exactly where the locale bundle is delivered (§6.5). So the indicator
+    stayed English in every language whose catalog did not happen to define
+    `group.dataIndicator`, which is the usual case: a form's catalog is
+    written for its own labels.
+  */
+  const { token } = antTheme.useToken();
+  const t = useI18n();
   const group = useGroupState(props.uischema, props.path, props.config);
+  // Default false for a Group: no indicator exists today, so defaulting to
+  // true would change every existing form's appearance.
+  const validation = useContainerValidation(
+    props.uischema,
+    props.path,
+    props.config,
+    false
+  );
   const layout = props.uischema as GroupLayout;
   if (!props.visible) return null;
+  // One string for the tooltip and the accessible name, so the two cannot
+  // drift apart.
+  const indicatorLabel = t('group.dataIndicator');
   const indicator = group.hasData ? (
-    <span role='img' aria-label='Contains data' data-group-indicator>
-      ●
-    </span>
+    <ContainerIndicator
+      label={indicatorLabel}
+      color={token.colorTextTertiary}
+      marker={{ 'data-group-indicator': true }}
+    >
+      <DataDotIcon />
+    </ContainerIndicator>
   ) : undefined;
+  // Two different signals, deliberately side by side: the dot says data is
+  // present, the error marker says something below needs fixing.
+  const extra =
+    validation.show || indicator ? (
+      // One flex row so the two markers share a centre line and a gap,
+      // whichever of them is present.
+      <span
+        data-group-indicators
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: token.marginXS,
+          // The row must not add leading of its own either, or the header
+          // grows by the difference between its line box and the icons'.
+          lineHeight: 0,
+        }}
+      >
+        {validation.show ? (
+          <ContainerValidationIndicator count={validation.count} />
+        ) : null}
+        {indicator}
+      </span>
+    ) : undefined;
   const content = (
     <AntdLayoutRenderer
       {...props}
@@ -69,7 +99,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
           {
             key: 'group',
             label: props.label || 'Group',
-            extra: indicator,
+            extra,
             forceRender: true,
             children: content,
           },
@@ -79,7 +109,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   }
 
   return (
-    <Card title={props.label || undefined} extra={indicator} style={style}>
+    <Card title={props.label || undefined} extra={extra} style={style}>
       {content}
     </Card>
   );

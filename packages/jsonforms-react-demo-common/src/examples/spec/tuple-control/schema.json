@@ -1,0 +1,218 @@
+{
+  "type": "object",
+  "properties": {
+    "coordinates": {
+      "type": "array",
+      "title": "Drop-off coordinates",
+      "items": [
+        {
+          "type": "number",
+          "title": "X",
+          "i18n": "coordinates.x"
+        },
+        {
+          "type": "number",
+          "title": "Y",
+          "i18n": "coordinates.y"
+        }
+      ],
+      "minItems": 2,
+      "additionalItems": false
+    },
+    "dimensions": {
+      "type": "array",
+      "title": "Crate dimensions in centimetres",
+      "items": {
+        "type": "number",
+        "minimum": 0
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "survey": {
+      "type": "array",
+      "title": "Survey point",
+      "description": "Its positions are placed by options.layout, not by the default row.",
+      "items": [
+        {
+          "type": "number",
+          "title": "Latitude"
+        },
+        {
+          "type": "number",
+          "title": "Longitude"
+        },
+        {
+          "type": "number",
+          "title": "Elevation (m)"
+        }
+      ],
+      "minItems": 3,
+      "additionalItems": false
+    },
+    "orderLine": {
+      "type": "array",
+      "title": "Order line",
+      "items": [
+        {
+          "type": "string",
+          "title": "Product code"
+        },
+        {
+          "type": "integer",
+          "title": "Quantity",
+          "minimum": 1
+        }
+      ],
+      "additionalItems": false
+    },
+    "inspection": {
+      "type": "array",
+      "title": "Inspection record",
+      "items": [
+        {
+          "type": "string",
+          "title": "Inspector",
+          "default": "Unassigned"
+        },
+        {
+          "type": "boolean",
+          "title": "Approved"
+        }
+      ],
+      "additionalItems": {
+        "type": "string",
+        "title": "Note"
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "flexible": {
+      "type": "array",
+      "title": "Carrier reference and free values",
+      "items": [
+        {
+          "type": "string",
+          "title": "Carrier"
+        }
+      ],
+      "additionalItems": true,
+      "maxItems": 3
+    },
+    "pickupContact": {
+      "type": "array",
+      "title": "Pickup contact",
+      "items": [
+        {
+          "type": "object",
+          "title": "Address",
+          "properties": {
+            "street": {
+              "type": "string",
+              "title": "Street"
+            },
+            "city": {
+              "type": "string",
+              "title": "City",
+              "default": "Portland"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "title": "Phone numbers",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "additionalItems": false
+    },
+    "handoffContacts": {
+      "type": "array",
+      "title": "Handoff contacts",
+      "description": "Four complex positions, each with a different registry entry.",
+      "items": [
+        {
+          "type": "object",
+          "title": "Both",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "desk": {
+              "type": "string",
+              "title": "Desk"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "DetailOnly",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "desk": {
+              "type": "string",
+              "title": "Desk"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "LayoutEntry",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "desk": {
+              "type": "string",
+              "title": "Desk"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "NoEntry",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "desk": {
+              "type": "string",
+              "title": "Desk"
+            }
+          }
+        }
+      ],
+      "additionalItems": false
+    },
+    "legacyRoute": {
+      "type": "array",
+      "title": "Imported route leg",
+      "items": [
+        {
+          "type": "string",
+          "title": "Leg code"
+        },
+        {
+          "type": "integer",
+          "title": "Sequence"
+        }
+      ],
+      "additionalItems": false
+    },
+    "misconfigured": {
+      "type": "array",
+      "title": "Asked for a tuple it cannot be",
+      "items": {
+        "type": "number"
+      }
+    }
+  }
+}

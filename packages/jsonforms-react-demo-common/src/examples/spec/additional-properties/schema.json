@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "labels": {
+      "type": "object",
+      "title": "Inventory labels",
+      "description": "Free-form key/value labels attached to the inventory.",
+      "additionalProperties": { "type": "string" },
+      "maxProperties": 8
+    },
+    "telemetry": {
+      "type": "object",
+      "title": "Telemetry readings",
+      "description": "Sensor identifiers are constrained by propertyNames.",
+      "additionalProperties": { "type": "number" },
+      "propertyNames": { "pattern": "^sensor-", "minLength": 9 }
+    },
+    "headers": {
+      "type": "object",
+      "title": "Carrier headers",
+      "description": "Only the names the patterns admit; nothing else is allowed.",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-carrier-": { "type": "string" },
+        "^x-trace-": { "type": "string" }
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "title": "Imported annotations",
+      "description": "Keys as the upstream system wrote them.",
+      "additionalProperties": { "type": "string" }
+    },
+    "quota": {
+      "type": "object",
+      "title": "Required quota entries",
+      "description": "minProperties keeps at least two entries under restrict.",
+      "additionalProperties": { "type": "integer" },
+      "minProperties": 2
+    }
+  }
+}

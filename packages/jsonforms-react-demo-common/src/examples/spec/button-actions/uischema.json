@@ -1,0 +1,166 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "i18n": "intro"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/fullName"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/email"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/newsletter"
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "action",
+          "i18n": "actionTab",
+          "label": "Action",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "locale"
+            },
+            {
+              "type": "HorizontalLayout",
+              "options": {
+                "gap": "0.5rem"
+              },
+              "elements": [
+                {
+                  "type": "Button",
+                  "label": "English",
+                  "action": "setLocale",
+                  "params": {
+                    "locale": "en"
+                  },
+                  "color": "secondary"
+                },
+                {
+                  "type": "Button",
+                  "label": "Български",
+                  "action": "setLocale",
+                  "params": {
+                    "locale": "bg"
+                  },
+                  "color": "secondary"
+                }
+              ]
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "i18n": "colours"
+            },
+            {
+              "type": "HorizontalLayout",
+              "options": {
+                "gap": "0.5rem"
+              },
+              "elements": [
+                {
+                  "type": "Button",
+                  "i18n": "submit",
+                  "label": "Submit",
+                  "action": "submit",
+                  "color": "primary"
+                },
+                {
+                  "type": "Button",
+                  "i18n": "reset",
+                  "label": "Reset",
+                  "action": "reset",
+                  "color": "secondary"
+                },
+                {
+                  "type": "Button",
+                  "i18n": "discard",
+                  "label": "Discard",
+                  "action": "discard",
+                  "color": "error"
+                }
+              ]
+            },
+            {
+              "type": "Label",
+              "i18n": "disabled"
+            },
+            {
+              "type": "Button",
+              "label": "Unavailable",
+              "action": "submit",
+              "options": {
+                "disabled": true
+              }
+            },
+            {
+              "type": "Label",
+              "i18n": "slow"
+            },
+            {
+              "type": "Button",
+              "label": "Submit slowly",
+              "action": "slowExample",
+              "color": "primary"
+            },
+            {
+              "type": "Label",
+              "i18n": "neither"
+            },
+            {
+              "type": "Button",
+              "label": "Declares neither",
+              "color": "secondary"
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "script",
+          "i18n": "scriptTab",
+          "label": "Script",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "script"
+            },
+            {
+              "type": "Button",
+              "label": "Log the form data",
+              "color": "alternative",
+              "script": "console.log(this.context.core.data);"
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "i18n": "conflict"
+            },
+            {
+              "type": "Button",
+              "label": "Declares both",
+              "action": "submit",
+              "script": "console.log('never runs');",
+              "color": "warning"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

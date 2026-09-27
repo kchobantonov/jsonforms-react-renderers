@@ -1,0 +1,36 @@
+{
+  "en": {
+    "group.selectedBySchema.label": "Selected by the schema",
+    "group.selectedByUiSchema.label": "Selected by the UI schema",
+    "group.rejected.label": "Not this dialect",
+    "cron.choose": "Choose a schedule",
+    "cron.repeats": "Repeats",
+    "cron.chooseRepeats": "Choose how often",
+    "cron.every": "Every",
+    "cron.expression": "Expression",
+    "cron.advanced": "Edited as text: this field uses syntax a list cannot state.",
+    "cron.error.sixFields": "A schedule has six fields: second, minute, hour, day of month, month, day of week.",
+    "control.clearValue": "Clear value",
+    "error.format": "This is not a schedule the scheduler can run.",
+    "error.pattern": "Six fields separated by single spaces.",
+    "error.required": "Give the job a name.",
+    "error.minLength": "At least three characters."
+  },
+  "bg": {
+    "group.selectedBySchema.label": "Избрано от схемата",
+    "group.selectedByUiSchema.label": "Избрано от UI схемата",
+    "group.rejected.label": "Не е този диалект",
+    "cron.choose": "Изберете график",
+    "cron.repeats": "Повтаря се",
+    "cron.chooseRepeats": "Изберете колко често",
+    "cron.every": "Всяка стойност",
+    "cron.expression": "Израз",
+    "cron.advanced": "Редактира се като текст: полето използва синтаксис, който не може да се изрази със списък.",
+    "cron.error.sixFields": "Графикът има шест полета: секунда, минута, час, ден от месеца, месец, ден от седмицата.",
+    "control.clearValue": "Изчистване на стойността",
+    "error.format": "Това не е график, който планировчикът може да изпълни.",
+    "error.pattern": "Шест полета, разделени с по един интервал.",
+    "error.required": "Дайте име на задачата.",
+    "error.minLength": "Поне три знака."
+  }
+}

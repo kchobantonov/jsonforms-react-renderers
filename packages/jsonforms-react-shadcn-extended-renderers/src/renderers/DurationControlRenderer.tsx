@@ -84,8 +84,15 @@ export const ShadcnDurationControl = (props: ControlProps) => {
                 type='number'
                 min={0}
                 value={parts[field]}
-                disabled={state.fieldDisabled(field)}
-                max={durationFieldMax[field]}
+                disabled={
+                  state.disabled ||
+                  (field === 'weeks'
+                    ? durationFields.some(
+                        (part) => part !== 'weeks' && state.draft[part] > 0
+                      )
+                    : state.draft.weeks > 0)
+                }
+                max={durationFieldMax}
                 onChange={(event) =>
                   state.changePart(field, Number(event.currentTarget.value))
                 }

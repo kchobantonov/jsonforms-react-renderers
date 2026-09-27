@@ -1,27 +1,3 @@
-/*
-  The MIT License
-  
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import isEmpty from 'lodash/isEmpty';
 import {
   ControlProps,
@@ -40,6 +16,10 @@ import {
 } from '@jsonforms/react';
 import React, { useMemo } from 'react';
 import { AdditionalProperties } from './AdditionalProperties';
+import {
+  UiSchemaCycleProvider,
+  useUiSchemaCycleGuard,
+} from '../util/uiSchemaCycle';
 
 const withoutGroupFrame = (uischema: UISchemaElement): UISchemaElement => {
   if (uischema.type !== 'Group') {
@@ -70,6 +50,23 @@ export const ObjectRenderer = ({
 }: ControlProps) => {
   const jsonforms = useJsonForms();
   const uischemas = jsonforms.uischemas ?? [];
+
+  /*
+    The layout this renderer would draw with no registry entry at all. Named,
+    rather than inlined into `findUISchema`, because the cycle guard below
+    needs the same thing when it refuses what the registry returned.
+  */
+  const generated = useMemo(
+    () =>
+      isEmpty(path)
+        ? Generate.uiSchema(schema, 'VerticalLayout', undefined, rootSchema)
+        : {
+            ...Generate.uiSchema(schema, 'Group', undefined, rootSchema),
+            label,
+          },
+    [schema, path, label, rootSchema]
+  );
+
   const detailUiSchema = useMemo(
     () =>
       findUISchema(
@@ -77,22 +74,33 @@ export const ObjectRenderer = ({
         schema,
         uischema.scope,
         path,
-        () =>
-          isEmpty(path)
-            ? Generate.uiSchema(schema, 'VerticalLayout', undefined, rootSchema)
-            : {
-                ...Generate.uiSchema(schema, 'Group', undefined, rootSchema),
-                label,
-              },
+        () => generated,
         uischema,
         rootSchema
       ),
-    [uischemas, schema, uischema.scope, path, label, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, generated, uischema, rootSchema]
   );
-  const dispatchUiSchema = useMemo(
+  const resolved = useMemo(
     () => (isEmpty(path) ? detailUiSchema : withoutGroupFrame(detailUiSchema)),
     [detailUiSchema, path]
   );
+
+  /*
+    A registry entry that is a Control matching this object's schema resolves
+    to itself: dispatching it selects this renderer again, which asks the
+    registry the same question. Nothing throws - React builds the tree until
+    the heap runs out - so the guard has to notice rather than catch.
+  */
+  const { cycle, stack } = useUiSchemaCycleGuard(
+    resolved,
+    path,
+    'the object renderer'
+  );
+  const dispatchUiSchema = cycle
+    ? isEmpty(path)
+      ? generated
+      : withoutGroupFrame(generated as UISchemaElement)
+    : resolved;
 
   if (!visible) {
     return null;
@@ -100,16 +108,18 @@ export const ObjectRenderer = ({
 
   return (
     <>
-      <JsonFormsDispatch
-        visible={visible}
-        enabled={enabled}
-        schema={schema}
-        uischema={dispatchUiSchema}
-        path={path}
-        renderers={renderers}
-        cells={cells}
-        readonly={readonly}
-      />
+      <UiSchemaCycleProvider stack={stack}>
+        <JsonFormsDispatch
+          visible={visible}
+          enabled={enabled}
+          schema={schema}
+          uischema={dispatchUiSchema}
+          path={path}
+          renderers={renderers}
+          cells={cells}
+          readonly={readonly}
+        />
+      </UiSchemaCycleProvider>
       <AdditionalProperties
         cells={cells}
         config={config}

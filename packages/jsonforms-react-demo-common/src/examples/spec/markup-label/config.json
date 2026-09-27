@@ -1,0 +1,16 @@
+{
+  "jsonformsExtended": {
+    "markup": {
+      "markdown": {
+        "enabled": true,
+        "profile": "basic"
+      }
+    },
+    "security": {
+      "urlPolicy": {
+        "allowedSchemes": ["https", "mailto"],
+        "allowRelative": false
+      }
+    }
+  }
+}

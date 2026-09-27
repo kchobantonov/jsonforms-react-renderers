@@ -44,6 +44,7 @@ export const EnumArrayRenderer = ({
   const [focused, onFocus, onBlur] = useFocus();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const vertical = appliedUiSchemaOptions.vertical === true;
   const showDescription = !isDescriptionHidden(
     visible,
     description,
@@ -63,7 +64,19 @@ export const EnumArrayRenderer = ({
       label={label}
       help={!isValid ? errors : showDescription ? description : null}
     >
-      <Flex gap={2} vertical={appliedUiSchemaOptions.vertical}>
+      {/*
+        Same orientation encoding as the radio group: `vertical` false (the
+        default) lays the choices out in a wrapping row, true stacks them.
+        The checkboxes are individual controls rather than an antd
+        Checkbox.Group, so the group role and orientation are declared here.
+      */}
+      <Flex
+        aria-orientation={vertical ? 'vertical' : 'horizontal'}
+        gap={vertical ? 4 : 8}
+        role='group'
+        vertical={vertical}
+        wrap={!vertical}
+      >
         {options.map((option: any, index: number) => {
           const optionPath = Paths.compose(path, `${index}`);
           const checkboxValue = data?.includes(option.value) ? true : false;

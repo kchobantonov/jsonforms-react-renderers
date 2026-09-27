@@ -1,0 +1,10 @@
+{
+  "en": {
+    "error.required": "Record this before dispatch.",
+    "error.type": "This field records only \"explicitly nothing\"; it cannot hold text."
+  },
+  "bg": {
+    "error.required": "Отбележете това преди изпращане.",
+    "error.type": "Това поле записва само „изрично нищо“; не може да съдържа текст."
+  }
+}

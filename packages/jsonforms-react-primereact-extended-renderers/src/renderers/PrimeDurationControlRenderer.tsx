@@ -67,9 +67,16 @@ export const PrimeDurationControl = (props: ControlProps) => {
               <InputNumber
                 inputId={`${props.id}-${field}`}
                 value={state.draft[field]}
-                disabled={state.fieldDisabled(field)}
+                disabled={
+                  state.disabled ||
+                  (field === 'weeks'
+                    ? durationFields.some(
+                        (part) => part !== 'weeks' && state.draft[part] > 0
+                      )
+                    : state.draft.weeks > 0)
+                }
                 min={0}
-                max={durationFieldMax[field]}
+                max={durationFieldMax}
                 maxFractionDigits={0}
                 onValueChange={(event) =>
                   state.changePart(field, event.value ?? 0)

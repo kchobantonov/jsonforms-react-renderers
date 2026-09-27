@@ -1,29 +1,6 @@
-/*
-  The MIT License
-  
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
+import { shouldConfirm } from '../util/confirmation';
 
 import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
 
@@ -43,7 +20,7 @@ import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
 import CombinatorProperties from './CombinatorProperties';
 import merge from 'lodash/merge';
 import { useFocus } from '../util';
-const { Option } = Select;
+import { branchChangeData, discardedByBranchChange } from '../util/combinators';
 
 export interface OwnOneOfProps extends OwnPropsOfControl {
   indexOfFittingSchema?: number;
@@ -78,6 +55,34 @@ export const OneOfRenderer = ({
       : null
   );
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
+
+  /*
+    The displayed branch follows the data until the user picks one.
+
+    Section 18 asks the form to show the branch that fits the existing value -
+    "if the value matches a later oneOf branch, display that branch" - and the
+    selection was derived once, at mount, and never again. A discriminated
+    oneOf therefore went stale the moment its discriminator changed: choosing
+    "Post" left the collection-point field on screen, which is the whole
+    mechanism by which a schema, with no UI rule, decides which fields exist.
+
+    Once the user selects a branch themselves the choice is theirs, and the
+    write that selection makes puts the data on the branch anyway. A value
+    that fits *nothing* leaves the display where it is: section 18 keeps a
+    fallback branch on screen "alongside validation errors, while retaining
+    the incoming data for correction", and blanking the form mid-edit would
+    hide the very field the correction needs.
+  */
+  const chosen = useRef(false);
+  useEffect(() => {
+    if (
+      !chosen.current &&
+      indexOfFittingSchema !== null &&
+      indexOfFittingSchema !== undefined
+    ) {
+      setSelectedIndex(indexOfFittingSchema);
+    }
+  }, [indexOfFittingSchema]);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
     [setConfirmDialogOpen]
@@ -94,34 +99,65 @@ export const OneOfRenderer = ({
     uischemas
   );
 
+  /*
+    A branch change initializes from the new branch's generated defaults and
+    carries the enclosing schema's own properties across. It used to write the
+    generated defaults alone, which silently dropped every enclosing value -
+    `name` in the specification's worked example - on every switch, and on a
+    clear.
+  */
   const openNewTab = (newIndex: number | null) => {
-    handleChange(
-      path,
+    const defaults =
       newIndex !== null
         ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
-        : undefined
-    );
+        : undefined;
+    handleChange(path, branchChangeData(data, defaults, schema));
     setSelectedIndex(newIndex);
   };
 
   const confirm = useCallback(() => {
     openNewTab(newSelectedIndex);
     setConfirmDialogOpen(false);
-  }, [handleChange, createDefaultValue, newSelectedIndex]);
+  }, [handleChange, createDefaultValue, newSelectedIndex, data, schema]);
 
   const handleTabChange = useCallback(
     (value: string | null) => {
       const newOneOfIndex =
         value === null || value === undefined ? null : parseInt(value, 10);
 
-      setNewSelectedIndex(newOneOfIndex);
-      if (isEmpty(data)) {
-        openNewTab(newOneOfIndex);
-      } else {
-        setConfirmDialogOpen(true);
+      // Re-selecting the branch already in use is not a change.
+      if (newOneOfIndex === selectedIndex) {
+        return;
       }
+      chosen.current = true;
+
+      setNewSelectedIndex(newOneOfIndex);
+      /*
+        Was `!isEmpty(data)`, which is close to `always` but not the policy:
+        it could not be configured, and lodash's `isEmpty` calls `0` and `false`
+        empty - values section 14 explicitly counts as existing. Clearing the
+        selection (`null`) is a branchChange too, and used to skip the prompt
+        entirely.
+      */
+      if (
+        shouldConfirm(
+          {
+            options: uischema.options as Record<string, unknown> | undefined,
+            config,
+            catalogId: 'oneOf',
+            operation: 'branchChange',
+          },
+          // Only what the switch actually discards: the enclosing properties
+          // survive it, so they are not values being thrown away.
+          [discardedByBranchChange(data, schema)]
+        )
+      ) {
+        setConfirmDialogOpen(true);
+        return;
+      }
+      openNewTab(newOneOfIndex);
     },
-    [setConfirmDialogOpen, setSelectedIndex, data]
+    [config, data, schema, selectedIndex, uischema]
   );
 
   const [focused, onFocus, onBlur] = useFocus();
@@ -136,7 +172,7 @@ export const OneOfRenderer = ({
   );
 
   const help = !isValid ? errors : showDescription ? description : null;
-  const style = !appliedUiSchemaOptions.trim ? { width: '100%' } : {};
+  const style = { width: '100%' };
 
   if (!visible) {
     return null;
@@ -170,13 +206,11 @@ export const OneOfRenderer = ({
           value={selectedIndex?.toString()}
           onChange={handleTabChange}
           allowClear={enabled}
-        >
-          {oneOfRenderInfos.map((oneOfRenderInfo, idx) => (
-            <Option value={String(idx)} key={String(idx)}>
-              {oneOfRenderInfo.label}
-            </Option>
-          ))}
-        </Select>
+          options={oneOfRenderInfos.map((info, idx) => ({
+            value: String(idx),
+            label: info.label,
+          }))}
+        />
       </Form.Item>
 
       {selectedIndex !== undefined && selectedIndex !== null && (

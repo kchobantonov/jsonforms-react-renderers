@@ -1,0 +1,25 @@
+{
+  "labels": {
+    "destination": "Portland",
+    "items[0]": "crate",
+    "2024": "season",
+    "": "unnamed label",
+    "  spaced  ": "kept exactly"
+  },
+  "telemetry": {
+    "sensor-deck-a": 4.5,
+    "sensor-x": 9.1
+  },
+  "headers": {
+    "x-carrier-id": "CAS-1",
+    "x-trace-id": "b17f"
+  },
+  "annotations": {
+    "legacy.key": "written by the old dispatch system",
+    "notes/1": "a slash is an ordinary character in a key"
+  },
+  "quota": {
+    "weekly": 40,
+    "daily": 8
+  }
+}

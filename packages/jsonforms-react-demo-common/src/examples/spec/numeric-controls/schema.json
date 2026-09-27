@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Warehouse stock line",
+  "properties": {
+    "quantity": {
+      "type": "integer",
+      "title": "Quantity",
+      "minimum": 0,
+      "description": "Whole units only. Typing 1.9 must not silently become 1."
+    },
+    "palletCount": {
+      "type": "integer",
+      "title": "Pallets",
+      "minimum": 1,
+      "maximum": 40,
+      "multipleOf": 2,
+      "description": "Shipped in pairs, so valid values are 2, 4, 6 ... 40."
+    },
+    "unitPrice": {
+      "type": "number",
+      "title": "Unit price",
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "description": "Currency, so two decimal places."
+    },
+    "weightKg": {
+      "type": "number",
+      "title": "Weight (kg)",
+      "exclusiveMinimum": 0,
+      "maximum": 1200,
+      "description": "Must be greater than zero, never exactly zero."
+    },
+    "discountPercent": {
+      "type": "number",
+      "title": "Discount",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 10,
+      "multipleOf": 5,
+      "description": "Rendered as a slider; the range tester needs minimum, maximum and default."
+    },
+    "toleranceMm": {
+      "type": "number",
+      "title": "Tolerance (mm)",
+      "minimum": -5,
+      "maximum": 5,
+      "description": "Negative values are ordinary data, not an empty field."
+    }
+  },
+  "required": ["quantity", "unitPrice"]
+}

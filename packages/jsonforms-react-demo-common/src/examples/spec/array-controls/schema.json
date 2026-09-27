@@ -1,0 +1,172 @@
+{
+  "type": "object",
+  "title": "Conference programme",
+  "properties": {
+    "sessions": {
+      "type": "array",
+      "title": "Sessions",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "title": "Title", "minLength": 3 },
+          "track": {
+            "type": "string",
+            "title": "Track",
+            "oneOf": [
+              { "const": "eng", "title": "Engineering" },
+              { "const": "des", "title": "Design" },
+              { "const": "ops", "title": "Operations" }
+            ]
+          },
+          "minutes": {
+            "type": "integer",
+            "title": "Minutes",
+            "minimum": 15,
+            "maximum": 120
+          },
+          "room": {
+            "type": "object",
+            "title": "Room",
+            "properties": {
+              "name": { "type": "string", "title": "Name" },
+              "floor": { "type": "integer", "title": "Floor" }
+            }
+          }
+        }
+      }
+    },
+    "speakers": {
+      "type": "array",
+      "title": "Speakers",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "title": "Name", "minLength": 2 },
+          "track": {
+            "type": "string",
+            "title": "Track",
+            "oneOf": [
+              { "const": "eng", "title": "Engineering" },
+              { "const": "des", "title": "Design" },
+              { "const": "ops", "title": "Operations" }
+            ]
+          },
+          "bio": { "type": "string", "title": "Biography" },
+          "links": {
+            "type": "array",
+            "title": "Links",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "announcements": {
+      "type": "array",
+      "title": "Announcements",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string", "title": "Text" },
+          "audience": {
+            "type": "object",
+            "title": "Audience",
+            "properties": {
+              "role": { "type": "string", "title": "Role" },
+              "region": { "type": "string", "title": "Region" }
+            }
+          }
+        }
+      }
+    },
+    "sponsors": {
+      "type": "array",
+      "title": "Sponsors",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "title": "Name", "minLength": 2 },
+          "tier": {
+            "type": "string",
+            "title": "Tier",
+            "oneOf": [
+              { "const": "gold", "title": "Gold" },
+              { "const": "silver", "title": "Silver" }
+            ]
+          },
+          "notes": { "type": "string", "title": "Notes" }
+        }
+      }
+    },
+    "tickets": {
+      "type": "array",
+      "title": "Tickets",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "title": "Code" },
+          "price": { "type": "number", "title": "Price", "minimum": 0 },
+          "holder": {
+            "type": "object",
+            "title": "Holder",
+            "properties": {
+              "name": { "type": "string", "title": "Name" },
+              "email": { "type": "string", "title": "Email" }
+            }
+          }
+        }
+      }
+    },
+    "rounds": {
+      "type": "array",
+      "title": "Review rounds",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "title": "Name", "minLength": 1 },
+          "active": { "type": "boolean", "title": "Active", "default": true },
+          "window": {
+            "type": "object",
+            "title": "Window",
+            "properties": {
+              "opens": { "type": "string", "title": "Opens" },
+              "closes": { "type": "string", "title": "Closes" }
+            }
+          }
+        }
+      }
+    },
+    "checklist": {
+      "type": "array",
+      "title": "Opening checklist",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": { "type": "string", "title": "Step" },
+          "done": { "type": "boolean", "title": "Done" }
+        }
+      }
+    },
+    "reviewers": {
+      "type": "array",
+      "title": "Reviewers",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "lead": { "type": "boolean", "title": "Lead" }
+        }
+      },
+      "contains": {
+        "type": "object",
+        "required": ["lead"],
+        "properties": { "lead": { "const": true } }
+      }
+    }
+  }
+}

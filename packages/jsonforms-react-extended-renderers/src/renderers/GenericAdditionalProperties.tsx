@@ -14,6 +14,10 @@ import {
   UISchemaElement,
 } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
+import { useExtendedTranslator } from '../util/useExtendedTranslator';
+
+/** The translator `useExtendedTranslator` returns. */
+type ExtendedTranslator = ReturnType<typeof useExtendedTranslator>;
 import React, { useMemo, useState } from 'react';
 
 const ANY_TYPE: JsonSchema7['type'] = [
@@ -193,7 +197,13 @@ const getPropertyNamePattern = (
   return undefined;
 };
 
+/*
+  Takes the translator rather than calling the hook: it is a plain function,
+  used twice per render (the add box and the row being renamed), and a hook
+  cannot be called from either position.
+*/
 const validatePropertyName = (
+  t: ExtendedTranslator,
   propertyName: string,
   data: any,
   schema: JsonSchema,
@@ -210,7 +220,7 @@ const validatePropertyName = (
     Object.prototype.hasOwnProperty.call(data, propertyName) &&
     propertyName !== currentPropertyName
   ) {
-    return `Property '${propertyName}' already defined`;
+    return t('additionalProperties.nameTaken', { name: propertyName });
   }
 
   if (
@@ -218,12 +228,12 @@ const validatePropertyName = (
     propertyName.includes(']') ||
     propertyName.includes('.')
   ) {
-    return `Property name '${propertyName}' is invalid`;
+    return t('additionalProperties.nameInvalid', { name: propertyName });
   }
 
   const pattern = getPropertyNamePattern(schema, rootSchema);
   if (pattern && !new RegExp(pattern).test(propertyName)) {
-    return `Property name must match pattern: ${pattern}`;
+    return t('additionalProperties.namePattern', { pattern });
   }
 
   return undefined;
@@ -243,6 +253,7 @@ export const GenericAdditionalProperties = ({
   schema,
   uischema,
 }: GenericAdditionalPropertiesProps) => {
+  const t = useExtendedTranslator();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
@@ -285,6 +296,7 @@ export const GenericAdditionalProperties = ({
 
   const propertyName = newPropertyName.trim();
   const propertyNameError = validatePropertyName(
+    t,
     propertyName,
     data,
     schema,
@@ -319,10 +331,7 @@ export const GenericAdditionalProperties = ({
       rootSchema,
       allowIfMissing
     );
-    const updatedData =
-      objectData
-        ? { ...objectData }
-        : {};
+    const updatedData = objectData ? { ...objectData } : {};
 
     updatedData[propertyName] = createDefaultValue(
       additionalProperty.schema,
@@ -345,6 +354,7 @@ export const GenericAdditionalProperties = ({
   const renameProperty = (propertyToRename: string) => {
     const trimmed = renameValue.trim();
     const renameError = validatePropertyName(
+      t,
       trimmed,
       data,
       schema,
@@ -375,9 +385,13 @@ export const GenericAdditionalProperties = ({
     <div className='jsonforms-additional-properties'>
       <div className='jsonforms-additional-properties-add'>
         <input
-          aria-label={label ? `Add property to ${label}` : 'Add property'}
+          aria-label={
+            label
+              ? t('additionalProperties.addTo', { label })
+              : t('additionalProperties.addLabel')
+          }
           disabled={!enabled || readonly}
-          placeholder='Property name'
+          placeholder={t('additionalProperties.namePlaceholder')}
           type='text'
           value={newPropertyName}
           onChange={(event) => setNewPropertyName(event.currentTarget.value)}
@@ -392,7 +406,7 @@ export const GenericAdditionalProperties = ({
           type='button'
           onClick={addProperty}
         >
-          Add
+          {t('additionalProperties.add')}
         </button>
       </div>
       {propertyNameError ? (
@@ -404,6 +418,7 @@ export const GenericAdditionalProperties = ({
         {additionalPropertyItems.map((item) => {
           const isRenaming = renamingPropertyName === item.propertyName;
           const renameError = validatePropertyName(
+            t,
             renameValue.trim(),
             data,
             schema,
@@ -438,7 +453,9 @@ export const GenericAdditionalProperties = ({
                   {isRenaming ? (
                     <>
                       <input
-                        aria-label={`Rename ${item.propertyName}`}
+                        aria-label={t('additionalProperties.renameNamed', {
+                          name: item.propertyName,
+                        })}
                         autoFocus
                         disabled={readonly}
                         type='text'
@@ -460,7 +477,7 @@ export const GenericAdditionalProperties = ({
                         type='button'
                         onClick={() => renameProperty(item.propertyName)}
                       >
-                        Save
+                        {t('additionalProperties.save')}
                       </button>
                       <button
                         type='button'
@@ -469,7 +486,7 @@ export const GenericAdditionalProperties = ({
                           setRenameValue('');
                         }}
                       >
-                        Cancel
+                        {t('additionalProperties.cancel')}
                       </button>
                       {renameError ? (
                         <div className='jsonforms-additional-properties-error'>
@@ -487,14 +504,14 @@ export const GenericAdditionalProperties = ({
                           setRenameValue(item.propertyName);
                         }}
                       >
-                        Rename
+                        {t('additionalProperties.rename')}
                       </button>
                       <button
                         disabled={removePropertyDisabled}
                         type='button'
                         onClick={() => removeProperty(item.propertyName)}
                       >
-                        Delete
+                        {t('additionalProperties.delete')}
                       </button>
                     </>
                   )}

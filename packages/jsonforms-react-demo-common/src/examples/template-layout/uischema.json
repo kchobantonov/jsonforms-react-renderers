@@ -1,15 +1,18 @@
 {
   "type": "TemplateLayout",
+  "lang": "jsx",
   "template": "{elements}",
   "name": "root",
   "elements": [
     {
       "type": "TemplateLayout",
+      "lang": "jsx",
       "template": "{elements['name']}",
       "name": "header",
       "elements": [
         {
           "type": "TemplateLayout",
+          "lang": "jsx",
           "name": "name",
           "template": "<div>Hello {data.firstName} {data.lastName}</div>"
         }
@@ -17,10 +20,12 @@
     },
     {
       "type": "TemplateLayout",
+      "lang": "jsx",
       "template": "{elements}",
       "elements": [
         {
           "type": "TemplateLayout",
+          "lang": "jsx",
           "template": "<div>{errors.length > 0 && (<div> {errors.map((error, index) => { if (typeof Message !== 'undefined') { return <div key={index}><Message severity='error' text={error.message} /></div>; } else if (typeof Alert !== 'undefined') { return <div key={index}><Alert message={error.message} type='error' /></div>; } else { return null; } })} </div>)}</div>"
         },
         {

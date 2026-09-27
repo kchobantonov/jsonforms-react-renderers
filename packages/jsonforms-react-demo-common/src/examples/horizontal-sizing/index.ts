@@ -1,9 +1,9 @@
-import { registerExamples } from '@jsonforms/examples';
+import { registerProjectExamples } from '../registry';
 import schema from './schema.json';
 import data from './data.json';
 import uischema from './uischema.json';
 
-registerExamples([
+registerProjectExamples([
   {
     name: 'horizontal-sizing',
     label: 'Horizontal Layout Sizing',

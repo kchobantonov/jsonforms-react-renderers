@@ -1,0 +1,10 @@
+{
+  "channels": ["Email"],
+  "alerts": ["Email", "Post"],
+  "teams": ["ops"],
+  "tags": ["oversize", "refrigerated"],
+  "scans": ["A-117", "A-117", "B-204"],
+  "labels": ["Fragile"],
+  "bonded": ["Dover"],
+  "imported": ["Email", "Carrier pigeon"]
+}

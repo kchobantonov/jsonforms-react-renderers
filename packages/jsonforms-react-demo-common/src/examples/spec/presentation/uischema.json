@@ -1,0 +1,169 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Presentation elements read nothing and write nothing."
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "image",
+          "label": "ImageView",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "A static image: src and alt are top-level fields."
+            },
+            {
+              "type": "ImageView",
+              "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgNjQwIDEyMCI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIxMjAiIHJ4PSIxMiIgZmlsbD0iIzMzNDE1NSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjI4IiBmaWxsPSIjMzhiZGY4Ii8+PHRleHQgeD0iMTEwIiB5PSI3MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIj5Db3Vyc2UgaGFuZGJvb2s8L3RleHQ+PC9zdmc+",
+              "alt": "Blue circle beside the words Course handbook",
+              "rule": {
+                "effect": "SHOW",
+                "condition": {
+                  "scope": "#/properties/showBanner",
+                  "schema": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/showBanner"
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "text": "A data-bound image: scope resolves against the form data. Clear the field and the image goes, quietly."
+            },
+            {
+              "type": "ImageView",
+              "scope": "#/properties/badgeImage",
+              "alt": "Course completion badge"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/badgeImage"
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "text": "Decorative: alt is empty on purpose, so a screen reader skips it."
+            },
+            {
+              "type": "ImageView",
+              "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgNjQwIDEyMCI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIxMjAiIHJ4PSIxMiIgZmlsbD0iIzMzNDE1NSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjI4IiBmaWxsPSIjMzhiZGY4Ii8+PHRleHQgeD0iMTEwIiB5PSI3MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIj5Db3Vyc2UgaGFuZGJvb2s8L3RleHQ+PC9zdmc+",
+              "alt": ""
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "link",
+          "label": "Link",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "Navigation. A Button invokes a command; a Link goes somewhere."
+            },
+            {
+              "type": "Link",
+              "label": "Course catalogue",
+              "href": "https://example.com/courses"
+            },
+            {
+              "type": "Link",
+              "label": "Opens in a new tab",
+              "href": "https://example.com/courses",
+              "target": "_blank"
+            },
+            {
+              "type": "Label",
+              "text": "An empty href renders plain text rather than inventing a destination."
+            },
+            {
+              "type": "Link",
+              "label": "Not yet published",
+              "href": ""
+            },
+            {
+              "type": "Label",
+              "text": "A scheme the URL policy refuses stays readable and stays inert."
+            },
+            {
+              "type": "Link",
+              "label": "Refused by policy",
+              "href": "javascript:alert(1)"
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "spacing",
+          "label": "Spacer and Separator",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "Above this control: the default 32 pixel Spacer."
+            },
+            {
+              "type": "Spacer"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/courseName"
+            },
+            {
+              "type": "Spacer",
+              "size": 64
+            },
+            {
+              "type": "Label",
+              "text": "Above this label: a 64 pixel Spacer, set by the top-level size field."
+            },
+            {
+              "type": "Separator"
+            },
+            {
+              "type": "Label",
+              "text": "A horizontal Separator sits above. Below, a vertical one divides a row."
+            },
+            {
+              "type": "HorizontalLayout",
+              "options": {
+                "gap": "1rem"
+              },
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/courseName"
+                },
+                {
+                  "type": "Separator",
+                  "options": {
+                    "vertical": true
+                  }
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/notes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

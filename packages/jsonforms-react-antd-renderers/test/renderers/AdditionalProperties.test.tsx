@@ -106,10 +106,16 @@ describe('AdditionalProperties', () => {
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
 
+    /*
+      The `$ref`'d propertyNames schema is resolved and applied - that is what
+      this test is for. The message names the rejected value and goes through
+      the translator, rather than printing the raw regular expression at the
+      reader as it used to.
+    */
     expect(
       container.querySelector('.jsonforms-additional-properties-error')
         ?.textContent
-    ).toBe('Property name must match pattern: ^[A-Za-z_][A-Za-z0-9_]*$');
+    ).toBe("'invalid-name' is not a permitted property name here.");
     expect(
       (container.querySelector('button') as HTMLButtonElement).disabled
     ).toBe(true);

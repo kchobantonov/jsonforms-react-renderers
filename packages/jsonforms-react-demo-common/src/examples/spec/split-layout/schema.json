@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "title": "Dispatch board",
+  "properties": {
+    "queue": {
+      "type": "string",
+      "title": "Queue"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    },
+    "detail": {
+      "type": "string",
+      "title": "Leg detail"
+    },
+    "mapNote": {
+      "type": "string",
+      "title": "Map note"
+    },
+    "summary": {
+      "type": "string",
+      "title": "Summary"
+    },
+    "showAudit": {
+      "type": "boolean",
+      "title": "Show audit pane"
+    },
+    "audit": {
+      "type": "string",
+      "title": "Audit"
+    },
+    "showLanePane": {
+      "type": "boolean",
+      "title": "Show lane pane"
+    },
+    "bookedBy": {
+      "type": "string",
+      "title": "Booked by"
+    },
+    "laneName": {
+      "type": "string",
+      "title": "Lane"
+    },
+    "approvedBy": {
+      "type": "string",
+      "title": "Approved by"
+    }
+  }
+}

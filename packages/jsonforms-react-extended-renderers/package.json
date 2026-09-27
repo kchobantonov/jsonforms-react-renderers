@@ -35,28 +35,40 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "@babel/standalone": "^7.28.3",
-    "sucrase": "^3.35.0",
-    "valtio": "^1.11.2",
+    "@marcbachmann/cel-js": "^8.0.0",
     "@monaco-editor/react": "^4.6.0",
     "ag-grid-community": "36.1.0",
-    "ag-grid-react": "36.1.0"
+    "ag-grid-react": "36.1.0",
+    "ajv": "^8.6.1",
+    "ajv-errors": "^3.0.0",
+    "ajv-i18n": "^4.2.0",
+    "ajv-keywords": "^5.1.0",
+    "dayjs": "^1.11.11",
+    "lodash": "^4.18.1",
+    "markdown-it": "^14.1.0",
+    "ractive": "^1.4.4",
+    "sucrase": "^3.35.0",
+    "valtio": "^1.11.2"
   },
   "peerDependencies": {
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
     "react": "^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@cfaester/enzyme-adapter-react-18": "^0.8.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
     "@types/enzyme": "^3.10.3",
+    "@types/lodash": "^4.14.178",
+    "@types/markdown-it": "^14.1.2",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "@cfaester/enzyme-adapter-react-18": "^0.8.0",
+    "@vitest/coverage-v8": "2.1.9",
     "enzyme": "^3.11.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.7.0",
@@ -72,12 +84,35 @@
     "tslib": "^2.5.0",
     "typedoc": "~0.25.3",
     "typescript": "~4.9.5",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vitest": "2.1.9"
   },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "test": "echo 'Nothing to do'"
+    "test": "vitest run",
+    "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/jsonforms-react-extended.esm.js",
+      "require": "./lib/jsonforms-react-extended.cjs.js"
+    },
+    "./ajv-localizers": {
+      "types": "./lib/core/ajvI18n/localizers.d.ts",
+      "import": "./lib/ajv-localizers.esm.js",
+      "require": "./lib/ajv-localizers.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "ajv-localizers": [
+        "lib/core/ajvI18n/localizers.d.ts"
+      ]
+    }
   }
 }

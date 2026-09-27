@@ -1,59 +1,96 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import isEmpty from 'lodash/isEmpty';
 import React, { ComponentType } from 'react';
 import Ajv from 'ajv';
 import type { UISchemaElement } from '@jsonforms/core';
 import {
   getAjv,
+  isVisible,
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
   JsonSchema,
   OwnPropsOfRenderer,
 } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
-import { Col, Row } from 'antd';
+import {
+  containerStyle,
+  itemSizing,
+  legacySizingDiagnostics,
+  resolveGap,
+  resolveGridColumns,
+  type LayoutContainerOptions,
+} from './layoutSizing';
 
 export interface AntdLayoutRendererProps extends OwnPropsOfRenderer {
   elements: UISchemaElement[];
   direction: 'row' | 'column';
+  /** The layout element's own flat options - the container half of the model. */
+  layoutOptions?: LayoutContainerOptions;
+  config?: unknown;
 }
 
-export const renderColumnLayoutElements = (
+/**
+ * Children that take part in layout.
+ *
+ * "Only effective visible UI-schema children participate. Hidden children
+ * leave layout." The count matters as well as the rendering: a hidden child
+ * must not consume a share or contribute a gap, which is what the previous
+ * `24 / elements.length` did.
+ */
+export const useEffectiveElements = (
+  elements: UISchemaElement[],
+  path: string,
+  config?: unknown
+): UISchemaElement[] => {
+  const ctx = useJsonForms();
+  const data = ctx.core?.data;
+  const ajv = ctx.core?.ajv;
+  return (elements ?? []).filter((element) => {
+    if (!element) return false;
+    try {
+      return ajv ? isVisible(element, data, path, ajv, config) : true;
+    } catch {
+      // A malformed rule is the author's problem, not a reason to drop a child.
+      return true;
+    }
+  });
+};
+
+export const renderLayoutElements = (
   elements: UISchemaElement[],
   schema: JsonSchema,
   path: string,
   enabled: boolean,
+  direction: 'row' | 'column',
+  layoutOptions: LayoutContainerOptions | undefined,
+  config: unknown,
   renderers?: JsonFormsRendererRegistryEntry[],
   cells?: JsonFormsCellRendererRegistryEntry[]
 ) => {
+  const grid = resolveGridColumns(layoutOptions, config);
+  const gap = resolveGap(layoutOptions, config, direction);
   return (
-    <>
-      {elements.map((child, index) => (
-        <Row key={`${path}-${index}`}>
-          <Col span={24}>
+    <div
+      data-layout={direction}
+      style={{
+        ...containerStyle(layoutOptions, config, direction),
+        width: '100%',
+      }}
+    >
+      {elements.map((child, index) => {
+        const { style, diagnostics } = itemSizing(
+          child,
+          direction,
+          grid,
+          gap,
+          layoutOptions?.minItemWidth
+        );
+        const all = [...diagnostics, ...legacySizingDiagnostics(child)];
+        return (
+          <div
+            key={`${path}-${index}`}
+            style={style}
+            {...(all.length ? { 'data-layout-diagnostic': all.join(' ') } : {})}
+          >
             <JsonFormsDispatch
               uischema={child}
               schema={schema}
@@ -62,36 +99,10 @@ export const renderColumnLayoutElements = (
               renderers={renderers}
               cells={cells}
             />
-          </Col>
-        </Row>
-      ))}
-    </>
-  );
-};
-
-export const renderRowLayoutElements = (
-  elements: UISchemaElement[],
-  schema: JsonSchema,
-  path: string,
-  enabled: boolean,
-  renderers?: JsonFormsRendererRegistryEntry[],
-  cells?: JsonFormsCellRendererRegistryEntry[]
-) => {
-  return (
-    <Row gutter={8} style={{ width: '100%' }}>
-      {elements.map((child, index) => (
-        <Col key={`${path}-${index}`} span={Math.floor(24 / elements.length)}>
-          <JsonFormsDispatch
-            uischema={child}
-            schema={schema}
-            path={path}
-            enabled={enabled}
-            renderers={renderers}
-            cells={cells}
-          />
-        </Col>
-      ))}
-    </Row>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
@@ -102,31 +113,26 @@ const AntdLayoutRendererComponent = ({
   path,
   enabled,
   direction,
+  layoutOptions,
+  config,
   renderers,
   cells,
 }: AntdLayoutRendererProps) => {
-  if (isEmpty(elements) || !visible) {
+  const effective = useEffectiveElements(elements, path, config);
+  if (isEmpty(effective) || !visible) {
     return null;
-  } else {
-    if (direction === 'column') {
-      return renderColumnLayoutElements(
-        elements,
-        schema,
-        path,
-        enabled,
-        renderers,
-        cells
-      );
-    }
-    return renderRowLayoutElements(
-      elements,
-      schema,
-      path,
-      enabled,
-      renderers,
-      cells
-    );
   }
+  return renderLayoutElements(
+    effective,
+    schema,
+    path,
+    enabled,
+    direction,
+    layoutOptions,
+    config,
+    renderers,
+    cells
+  );
 };
 export const AntdLayoutRenderer = React.memo(AntdLayoutRendererComponent);
 

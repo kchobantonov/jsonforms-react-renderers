@@ -1,0 +1,67 @@
+{
+  "sessions": [
+    {
+      "title": "Designing for the second read",
+      "track": "des",
+      "minutes": 45,
+      "room": { "name": "Aurora", "floor": 2 }
+    },
+    {
+      "title": "Budgets that survive contact",
+      "track": "ops",
+      "minutes": 30,
+      "room": { "name": "Beacon", "floor": 1 }
+    }
+  ],
+  "speakers": [
+    {
+      "name": "Rosa Iqbal",
+      "track": "des",
+      "bio": "Writes about interfaces that explain themselves.",
+      "links": ["https://example.com/rosa"]
+    },
+    { "name": "Tomas Lind", "track": "ops", "bio": "", "links": [] }
+  ],
+  "announcements": [
+    {
+      "text": "Doors open at 08:30.",
+      "audience": { "role": "all", "region": "north" }
+    },
+    {
+      "text": "Lunch is in the atrium.",
+      "audience": { "role": "all", "region": "north" }
+    }
+  ],
+  "sponsors": [
+    {
+      "name": "Meridian Press",
+      "tier": "gold",
+      "notes": "Stand by the doors."
+    },
+    { "name": "Calder Coffee", "tier": "silver", "notes": "" }
+  ],
+  "tickets": [
+    {
+      "code": "EARLY-1",
+      "price": 120,
+      "holder": { "name": "Ines Roy", "email": "ines@example.com" }
+    },
+    {
+      "code": "EARLY-2",
+      "price": 120,
+      "holder": { "name": "Kai Osei", "email": "kai@example.com" }
+    }
+  ],
+  "rounds": [
+    {
+      "name": "First pass",
+      "active": true,
+      "window": { "opens": "Monday", "closes": "Friday" }
+    }
+  ],
+  "checklist": [
+    { "step": "Unlock the hall", "done": true },
+    { "step": "Test the microphones", "done": false }
+  ],
+  "reviewers": [{ "name": "Ada Fenn", "lead": false }]
+}

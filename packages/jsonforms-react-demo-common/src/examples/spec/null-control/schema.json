@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "noSurcharge": {
+      "type": "null",
+      "title": "No surcharge applies",
+      "description": "Tick to record explicitly that no surcharge was assessed."
+    },
+    "hazardsChecked": {
+      "type": "null",
+      "title": "No hazardous materials declared",
+      "description": "Must be recorded before dispatch."
+    },
+    "legacyClearance": {
+      "type": "null",
+      "title": "Customs clearance not required",
+      "description": "Imported from a system that stored text here."
+    },
+    "handlingNote": {
+      "type": "string",
+      "title": "Handling note",
+      "description": "An empty string is a note that says nothing, not an absent note."
+    },
+    "sealNumber": {
+      "type": "string",
+      "title": "Seal number",
+      "description": "Absent: nobody has recorded one."
+    },
+    "inspectionRemark": {
+      "type": ["string", "null"],
+      "title": "Inspection remark",
+      "description": "A union, so this is the mixed control rather than the null control."
+    }
+  },
+  "required": ["hazardsChecked"]
+}

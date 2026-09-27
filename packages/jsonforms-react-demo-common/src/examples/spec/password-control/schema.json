@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Account credentials",
+  "required": [
+    "password"
+  ],
+  "properties": {
+    "username": {
+      "type": "string",
+      "title": "Username",
+      "minLength": 3
+    },
+    "password": {
+      "type": "string",
+      "format": "password",
+      "minLength": 8,
+      "title": "Password",
+      "description": "Selected by the schema format. Length is an ordinary constraint, not something the presentation imposes."
+    },
+    "recoveryPhrase": {
+      "type": "string",
+      "title": "Recovery phrase",
+      "description": "A plain string selected by options.format instead, with no schema format."
+    },
+    "verificationCode": {
+      "type": "string",
+      "format": "password",
+      "minLength": 6,
+      "maxLength": 6,
+      "pattern": "^[0-9]*$",
+      "title": "Verification code",
+      "description": "A fixed-length code: options.variant otp, with the length fixed by the schema."
+    },
+    "backupCode": {
+      "type": "string",
+      "format": "password",
+      "title": "Backup code",
+      "description": "Asks for the same variant, but the schema does not bound its length."
+    },
+    "hint": {
+      "type": "string",
+      "title": "Password hint",
+      "description": "An ordinary string beside it, for contrast."
+    },
+    "serviceAccounts": {
+      "type": "array",
+      "title": "Service accounts",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "token": {
+            "type": "string",
+            "format": "password",
+            "title": "Token"
+          }
+        }
+      }
+    }
+  }
+}

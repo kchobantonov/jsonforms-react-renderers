@@ -1,29 +1,4 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import {
-  Layout,
   LayoutProps,
   RankedTester,
   rankWith,
@@ -37,12 +12,36 @@ import {
 } from '@jsonforms/react';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { proxy } from 'valtio';
-import DynamicJSXRenderer, {
-  ElementRender,
-} from '../components/DynamicJSXRenderer';
+import type { ExtendedUISchemaElement } from '../core/uiSchema';
+import { resolveChildNames } from '../util/childNames';
+import { buildFormContext } from '../util/formContext';
+import {
+  TemplateLayoutElement,
+  resolveTemplateEngine,
+} from '../util/templateLang';
+import { TemplateDiagnostic } from './templateEngines';
+import { ElementRender } from '../components/elementRender';
+import { createLazyTemplate } from '../util/lazyTemplate';
+import { UrlPolicy, resolveUrlPolicy } from '../util/urlPolicy';
+
+/*
+  The JSX engine is behind its own chunk: `DynamicJSXRenderer` imports Sucrase
+  at module scope, and a form with no jsx template should not download a
+  compiler. Only the marker symbol is imported eagerly, which is why it lives
+  in a module of its own.
+*/
+const DynamicJSXRenderer = createLazyTemplate<{
+  jsxTemplate: string;
+  props: Record<string, unknown>;
+  urlPolicy: UrlPolicy;
+}>(async () => (await import('../components/DynamicJSXRenderer')).default, {
+  loading: 'template.loading',
+  error: 'template.loadError',
+  renderError: 'template.renderError',
+});
 
 export interface TemplateLayoutProps extends LayoutProps {
-  uischema: UISchemaElement & { template: string; name?: string };
+  uischema: TemplateLayoutElement;
   components?: Record<string, React.ComponentType<any>>;
 }
 
@@ -73,8 +72,21 @@ export const TemplateLayoutRenderer = ({
   visible,
   renderers,
   cells,
+  config,
   components = {}, // Default to an empty object
 }: TemplateLayoutProps) => {
+  /*
+    The `lang: "jsx"` profile. It compiles the template with Sucrase and
+    evaluates it through `new Function`, which the portable contract calls
+    string evaluation - so it runs only when the host has permitted it:
+    "String evaluation requires
+    jsonformsExtended.security.allowScriptEvaluation=true."
+
+    Reported rather than silently skipped, because a blank region where a
+    template should be is indistinguishable from a broken template.
+  */
+  const engine = resolveTemplateEngine(uischema, config);
+
   if (!visible) return null;
 
   const template = uischema.template;
@@ -83,16 +95,53 @@ export const TemplateLayoutRenderer = ({
     {}
   );
 
+  const { names: childNames, diagnostics: nameDiagnostics } = useMemo(
+    () => resolveChildNames(uischema.elements),
+    [uischema.elements]
+  );
+
+  useEffect(() => {
+    for (const diagnostic of nameDiagnostics) {
+      // eslint-disable-next-line no-console
+      console.warn(diagnostic);
+    }
+  }, [nameDiagnostics.join('\u0000')]);
+
+  /*
+    The array a template receives as `elements`.
+
+    Its items are the **elements themselves**, not wrappers. A template may
+    render the whole array - `{elements}` mounts every child in order - so an
+    item has to be something the JSX engine's `createElement` can process,
+    which means the object carrying `[ElementRender]`. Returning
+    `{ element, name }` here instead made `{elements}` throw "Objects are not
+    valid as a React child", and the name belongs beside the array anyway
+    because `childNames` already holds it positionally.
+  */
   const namedElements = useMemo(() => {
-    const elements: (UISchemaElement & { name?: string })[] =
-      (uischema as Layout).elements ?? [];
+    const elements: ExtendedUISchemaElement[] = uischema.elements ?? [];
 
     return elements.map((element, index) => {
-      if (!element.name) element.name = index.toString();
+      /*
+        The name is computed, never written back. This used to do
+        `element.name = index.toString()`, which mutates the **authored** UI
+        schema - section 22 forbids that, and because JSON Forms holds one
+        element object, a second form sharing the same schema inherited the
+        first one's generated names.
+      */
+      const name = childNames[index];
 
-      if (!renderablesRef.current[element.name]) {
+      /*
+        A child with no resolvable name is unaddressable, not unrenderable: it
+        still has a position, so `{elements}` must mount it. The renderable is
+        therefore keyed by something unique per position, and only a real name
+        reaches `elementsByName` below.
+      */
+      const key = name ?? `\u0000unnamed:${index}`;
+
+      if (!renderablesRef.current[key]) {
         // Memoized component for this element
-        renderablesRef.current[element.name] = React.memo(
+        renderablesRef.current[key] = React.memo(
           ({
             schema,
             path,
@@ -116,10 +165,14 @@ export const TemplateLayoutRenderer = ({
         );
       }
 
-      // Attach render function to the original element
+      /*
+        The render function still rides on the element, because that is how a
+        template reaches it through `elements['name']`. Recorded as a known
+        mutation in its own right; the *name* no longer is one.
+      */
       (element as any)[ElementRender] = () => {
         const Renderable = renderablesRef.current[
-          element.name
+          key
         ] as React.ComponentType<RenderableElementProps>;
         return (
           <Renderable
@@ -134,13 +187,18 @@ export const TemplateLayoutRenderer = ({
 
       return element;
     });
-  }, [cells, enabled, renderers, schema, uischema]);
+  }, [cells, enabled, renderers, schema, uischema, childNames]);
 
   const elementsByName = useMemo(() => {
     const map: Record<string, any> = {};
-    namedElements.forEach((el) => (map[el.name] = el));
+    namedElements.forEach((element, index) => {
+      const name = childNames[index];
+      if (name !== undefined) {
+        map[name] = element;
+      }
+    });
     return map;
-  }, [namedElements]);
+  }, [namedElements, childNames]);
 
   const proxyElements = useMemo(() => {
     return new Proxy(namedElements, {
@@ -288,6 +346,9 @@ export const TemplateLayoutRenderer = ({
       additionalErrors: additionalErrorsProxy,
       translate: ctx.i18n?.translate,
       locale: ctx.i18n?.locale,
+      // Section 13's `context (extended FormContext)`, which this profile was
+      // not exposing at all. The flat `locale` stays for templates using it.
+      context: buildFormContext({ ctx: ctx as any, schema, uischema }),
       // Pass the generic components prop to the renderer
       ...components,
     }),
@@ -324,7 +385,28 @@ function Template(props) {
 }
 `;
 
-  return <DynamicJSXRenderer jsxTemplate={jsxTemplate} props={rendererProps} />;
+  if (engine.diagnostic) {
+    return (
+      <TemplateDiagnostic
+        uischema={uischema}
+        config={config}
+        visible={visible}
+      />
+    );
+  }
+
+  return (
+    <DynamicJSXRenderer
+      jsxTemplate={jsxTemplate}
+      props={rendererProps}
+      /*
+        Section 12's policy, resolved from the form's config and handed to the
+        pragma. A template's `href={data.url}` is a URL-bearing value like any
+        other; it was the one that had never been checked.
+      */
+      urlPolicy={resolveUrlPolicy(config)}
+    />
+  );
 };
 
 export default withJsonFormsLayoutProps(TemplateLayoutRenderer);

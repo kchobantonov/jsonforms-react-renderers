@@ -1,36 +1,11 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import React, { useMemo } from 'react';
 import { EnumCellProps, WithClassname } from '@jsonforms/core';
 
 import { Select } from 'antd';
 import merge from 'lodash/merge';
-import { i18nDefaults } from '../util';
+import { useI18nDefault } from '../util';
 import { TranslateProps } from '@jsonforms/react';
 
-const { Option } = Select;
 export const AntdSelect = (
   props: EnumCellProps &
     WithClassname &
@@ -51,12 +26,29 @@ export const AntdSelect = (
     t,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  /*
+    The default message carries the locale bundle (§6.5), so it must not be
+    read straight out of the English table.
+  */
+  const d = useI18nDefault();
   const noneOptionLabel = useMemo(
-    () => t('enum.none', i18nDefaults['enum.none'], { schema, uischema, path }),
-    [t, schema, uischema, path]
+    () => t('enum.none', d('enum.none'), { schema, uischema, path }),
+    [t, d, schema, uischema, path]
   );
 
-  const selectStyle = appliedUiSchemaOptions.trim ? {} : { width: '100%' };
+  const selectStyle = { width: '100%' };
+
+  /*
+    `options.autocomplete` is the portable encoding for searchable finite
+    choices. **This family defaults to off**, which the specification permits -
+    "preserves the renderer family's documented default. No universal default
+    is imposed" - and which differs from Material, where searching is the
+    default. See Adjustment 16.
+
+    Only `true` turns it on, so `false` and absence behave alike; the
+    distinction matters only against a global config that switched it on.
+  */
+  const searchable = appliedUiSchemaOptions.autocomplete === true;
 
   return (
     <Select
@@ -69,13 +61,41 @@ export const AntdSelect = (
       style={selectStyle}
       placeholder={appliedUiSchemaOptions.placeholder ?? noneOptionLabel}
       allowClear={enabled}
+      /*
+        The specification requires a searchable renderer to say how the query
+        filters: here, a case-insensitive substring of the **label** - what the
+        reader can actually see, which for a constant-based `oneOf` is the
+        branch title rather than the stored constant. Matching the value would
+        mean searching for `eng` to find "Engineering".
+
+        Configured through the `showSearch` object; antd 6 deprecated the flat
+        `optionFilterProp` / `filterOption` props in favour of it.
+      */
+      showSearch={
+        searchable
+          ? {
+              optionFilterProp: 'label',
+              filterOption: (input, option) =>
+                String(option?.label ?? '')
+                  .toLowerCase()
+                  .includes(input.toLowerCase()),
+            }
+          : false
+      }
+      notFoundContent={
+        searchable
+          ? t('enum.noMatches', d('enum.noMatches'), {
+              schema,
+              uischema,
+              path,
+            })
+          : undefined
+      }
+      // `options` rather than `<Select.Option>` children: the component form is
+      // deprecated in antd 6, and it also keyed each entry by its value, which
+      // collides when two choices share one.
+      options={options.map(({ value, label }) => ({ value, label }))}
       {...inputProps}
-    >
-      {options.map((optionValue) => (
-          <Option value={optionValue.value} key={optionValue.value}>
-            {optionValue.label}
-          </Option>
-        ))}
-    </Select>
+    />
   );
 };

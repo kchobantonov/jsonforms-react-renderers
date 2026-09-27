@@ -1,8 +1,25 @@
 import { RefObject, useEffect, useState } from 'react';
 
+export type EditorAppearance = {
+  /** Resolved light/dark for the control, whatever the source. */
+  isDark: boolean;
+  /**
+   * A theme name the uischema supplied verbatim (i.e. not light/dark/system).
+   * Only meaningful to renderers that understand named themes, such as Monaco.
+   */
+  customTheme?: string;
+};
+
 export const useEditorAppearance = (
   ref: RefObject<HTMLElement>,
-  explicitTheme?: string
+  explicitTheme?: string,
+  /**
+   * Authoritative light/dark from the host design system (e.g. antd's active
+   * theme algorithm). When supplied it wins over the DOM luminance heuristic
+   * below, which only guesses and silently falls back to prefers-color-scheme
+   * when no ancestor paints an opaque background.
+   */
+  isDark?: boolean
 ) => {
   const [dark, setDark] = useState(false);
   useEffect(() => {
@@ -49,13 +66,21 @@ export const useEditorAppearance = (
       media?.removeEventListener('change', update);
     };
   }, [ref]);
-  return explicitTheme && !['light', 'dark', 'system'].includes(explicitTheme)
-    ? explicitTheme
-    : explicitTheme === 'dark'
-    ? 'vs-dark'
-    : explicitTheme === 'light'
-    ? 'vs'
-    : dark
-    ? 'vs-dark'
-    : 'vs';
+  // Precedence: explicit uischema theme > host design system > DOM heuristic.
+  // 'system' deliberately skips the design system and follows the environment.
+  const named = ['light', 'dark', 'system'];
+  return {
+    customTheme:
+      explicitTheme && !named.includes(explicitTheme)
+        ? explicitTheme
+        : undefined,
+    isDark:
+      explicitTheme === 'dark'
+        ? true
+        : explicitTheme === 'light'
+        ? false
+        : explicitTheme !== 'system' && isDark !== undefined
+        ? isDark
+        : dark,
+  };
 };

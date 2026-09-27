@@ -1,0 +1,9 @@
+{
+  "jsonformsExtended": {
+    "security": {
+      "urlPolicy": {
+        "allowImageDataUrls": true
+      }
+    }
+  }
+}

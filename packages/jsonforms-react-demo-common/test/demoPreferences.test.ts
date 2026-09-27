@@ -83,7 +83,9 @@ describe('demo preferences', () => {
     const values = new Map<string, string>();
     const storage = {
       getItem: (key: string) => values.get(key) ?? null,
-      setItem: (key: string, value: string) => values.set(key, value),
+      setItem: (key: string, value: string) => {
+          values.set(key, value);
+        },
     };
     const settings = {
       version: 1 as const,

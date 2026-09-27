@@ -1,0 +1,13 @@
+{
+  "label": "Priority handling",
+  "quantity": 42,
+  "surcharge": null,
+  "priority": true,
+  "payload": {
+    "carrier": "Cascade Supplies",
+    "stops": ["Portland", "Salem"],
+    "verified": false
+  },
+  "anything": { "note": "anything at all" },
+  "route": ["Portland", 2, true]
+}

@@ -1,0 +1,9 @@
+{
+  "showUnfocusedDescription": true,
+  "restrict": true,
+  "jsonformsExtended": {
+    "security": {
+      "allowScriptEvaluation": true
+    }
+  }
+}

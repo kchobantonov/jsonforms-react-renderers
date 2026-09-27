@@ -1,0 +1,10 @@
+{
+  "en": {
+    "group.dataIndicator": "Contains data",
+    "control.clearValue": "Clear value"
+  },
+  "bg": {
+    "group.dataIndicator": "Съдържа данни",
+    "control.clearValue": "Изчистване на стойността"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "notifications": false,
+  "remoteWorker": true,
+  "handbookAccepted": false,
+  "payrollOptOut": null,
+  "legacyFlag": "false",
+  "importedCount": 0,
+  "channels": [
+    "SMS"
+  ],
+  "team": [
+    {
+      "name": "Jane Doe",
+      "active": true,
+      "onCall": false
+    },
+    {
+      "name": "Richard Roe",
+      "active": "false",
+      "onCall": true
+    }
+  ],
+  "escalation": [
+    "Email",
+    "Push"
+  ]
+}

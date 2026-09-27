@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18n } from '../util/translate';
 
 import { Modal } from 'antd';
 
@@ -16,22 +17,20 @@ export const TabSwitchConfirmDialog = ({
   confirm,
   cancel,
 }: TabSwitchConfirmDialogProps) => {
+  const t = useI18n();
   return (
     <Modal
-      title={'Clear form?'}
+      title={t('combinator.clearFormTitle')}
       open={open}
       afterClose={handleClose}
       onOk={confirm}
       onCancel={cancel}
-      okText={'Yes'}
-      cancelText={'No'}
+      okText={t('combinator.clearFormConfirm')}
+      cancelText={t('combinator.clearFormDecline')}
       aria-labelledby='alert-dialog-title'
       aria-describedby='alert-dialog-description'
     >
-      <p>
-        Your data will be cleared if you navigate away from this tab. Do you
-        want to proceed?
-      </p>
+      <p>{t('combinator.clearFormMessage')}</p>
     </Modal>
   );
 };

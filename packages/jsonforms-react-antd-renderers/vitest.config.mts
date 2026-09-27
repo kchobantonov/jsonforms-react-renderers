@@ -1,7 +1,8 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
-const fromPackage = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+const fromPackage = (path: string) =>
+  fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
   resolve: {
@@ -12,7 +13,22 @@ export default defineConfig({
       },
       {
         find: '@chobantonov/jsonforms-react-antd-extended-renderers',
-        replacement: fromPackage('../jsonforms-react-antd-extended-renderers/src'),
+        replacement: fromPackage(
+          '../jsonforms-react-antd-extended-renderers/src'
+        ),
+      },
+      {
+        /*
+          Before the bare-name alias, because vite matches in order and
+          `@chobantonov/.../ajv-localizers` would otherwise be rewritten to
+          `src/ajv-localizers`, which does not exist. The published package
+          resolves this subpath through its `exports` map; the alias is what
+          reproduces that when tests run against source.
+        */
+        find: '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers',
+        replacement: fromPackage(
+          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers'
+        ),
       },
       {
         find: '@chobantonov/jsonforms-react-extended-renderers',
@@ -20,7 +36,9 @@ export default defineConfig({
       },
       {
         find: /^@rc-component\/pagination\/(.*)$/,
-        replacement: fromPackage('./node_modules/@rc-component/pagination/lib/$1'),
+        replacement: fromPackage(
+          './node_modules/@rc-component/pagination/lib/$1'
+        ),
       },
       {
         find: /^@rc-component\/picker\/(.*)$/,
@@ -31,7 +49,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./test/renderers/MatchMediaMock.ts'],
+    setupFiles: [
+      './test/renderers/MatchMediaMock.ts',
+      './test/setup/jsdomShims.ts',
+    ],
     include: ['test/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',

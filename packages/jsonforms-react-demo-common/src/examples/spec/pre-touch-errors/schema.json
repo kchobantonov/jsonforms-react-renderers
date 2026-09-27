@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "title": "Carrier onboarding",
+  "required": ["legalName", "contactEmail", "dotNumber", "internalCode"],
+  "properties": {
+    "legalName": {
+      "type": "string",
+      "title": "Legal name",
+      "description": "Required and absent: the only error on it is a required one.",
+      "minLength": 2
+    },
+    "contactEmail": {
+      "type": "string",
+      "format": "email",
+      "title": "Contact email",
+      "description": "Also required and absent."
+    },
+    "dotNumber": {
+      "type": "string",
+      "title": "DOT number",
+      "description": "Required and present, but malformed: a pattern error, not a required one.",
+      "pattern": "^[0-9]{7}$"
+    },
+    "internalCode": {
+      "type": "string",
+      "title": "Internal code",
+      "description": "Required and absent, with filtering switched off on the control itself."
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes",
+      "description": "Not required. Too short, so it carries a minLength error.",
+      "minLength": 10
+    },
+    "insuranceExpiry": {
+      "type": "string",
+      "format": "date",
+      "title": "Insurance expiry",
+      "description": "Not required and absent: no error at all."
+    },
+    "terminals": {
+      "type": "array",
+      "title": "Terminals",
+      "description": "Two are required, and the one present is missing its city.",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["city"],
+        "properties": {
+          "city": { "type": "string", "title": "City" },
+          "code": { "type": "string", "title": "Code" }
+        }
+      }
+    }
+  }
+}

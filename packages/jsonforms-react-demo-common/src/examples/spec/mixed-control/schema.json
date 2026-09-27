@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": ["string", "number", "boolean", "null"],
+      "title": "Label",
+      "description": "The selector starts on the type the value already has."
+    },
+    "quantity": {
+      "type": ["number", "boolean", "null"],
+      "title": "Quantity",
+      "description": "An integer is admissible under number."
+    },
+    "surcharge": {
+      "type": ["string", "number", "boolean", "null"],
+      "title": "Surcharge",
+      "description": "Explicit JSON null, which is not the same as no selection."
+    },
+    "reference": {
+      "type": ["string", "number", "null"],
+      "title": "Reference",
+      "description": "Absent: no type is selected and no value editor is shown."
+    },
+    "priority": {
+      "type": ["string", "number"],
+      "title": "Priority",
+      "description": "Holds a value the schema does not admit."
+    },
+    "payload": {
+      "type": ["object", "array", "string", "null"],
+      "title": "Payload",
+      "description": "Object and array values open the structure workspace.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean", "object", "array", "null"]
+      }
+    },
+    "anything": {
+      "title": "Anything",
+      "description": "An unconstrained schema: every JSON type is offered."
+    },
+    "route": {
+      "type": "array",
+      "title": "Route legs",
+      "description": "A tuple with an open tail; trailing values are mixed.",
+      "items": [{ "type": "string", "title": "Origin" }],
+      "additionalItems": true
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { createMonacoControlRenderer } from '@chobantonov/jsonforms-react-extended-renderers';
-import { Button } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { ShadcnEditorButton } from './ShadcnEditorButton';
 import { ShadcnEditorFrame } from './ShadcnEditorFrame';
 export const ShadcnMonacoControlRenderer = createMonacoControlRenderer({
   Frame: ShadcnEditorFrame,
-  Button,
+  Button: ShadcnEditorButton,
 });

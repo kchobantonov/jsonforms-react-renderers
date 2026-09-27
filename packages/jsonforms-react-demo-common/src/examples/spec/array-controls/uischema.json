@@ -1,0 +1,238 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "i18n": "intro"
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "table",
+          "i18n": "tableTab",
+          "label": "Table",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "table"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/sessions",
+              "options": {
+                "table": true,
+                "showSortButtons": true,
+                "cells": {
+                  "room": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#/properties/name"
+                    },
+                    "detail": {
+                      "type": "VerticalLayout",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/name"
+                        },
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/floor"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "expandable",
+          "i18n": "expandableTab",
+          "label": "Expandable",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "expandable"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/speakers",
+              "options": {
+                "elementLabelProp": "name",
+                "showSortButtons": true,
+                "detail": {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/name"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/track"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/bio",
+                      "options": {
+                        "multi": true
+                      }
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/links"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Label",
+              "i18n": "expandableOptions"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/announcements",
+              "options": {
+                "elementLabelProp": "text",
+                "initCollapsed": true,
+                "collapseNewItems": true,
+                "hideAvatar": true,
+                "hideArraySummaryValidation": true
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "listWithDetail",
+          "i18n": "listTab",
+          "label": "List with detail",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "list"
+            },
+            {
+              "type": "ListWithDetail",
+              "scope": "#/properties/sponsors",
+              "options": {
+                "elementLabelProp": "name",
+                "detail": {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/name"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/tier"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/notes",
+                      "options": {
+                        "multi": true
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "grid",
+          "i18n": "gridTab",
+          "label": "AG Grid",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "grid"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/tickets",
+              "options": {
+                "variant": "ag-grid",
+                "showSortButtons": true,
+                "gridHeight": "260px",
+                "cells": {
+                  "holder": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#/properties/name"
+                    },
+                    "detail": {
+                      "type": "VerticalLayout",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/name"
+                        },
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/email"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "bounds",
+          "i18n": "boundsTab",
+          "label": "Add, remove and bounds",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "bounds"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/rounds",
+              "options": {
+                "elementLabelProp": "name",
+                "showSortButtons": true
+              }
+            },
+            {
+              "type": "Label",
+              "i18n": "disabled"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/checklist",
+              "options": {
+                "disableAdd": true,
+                "disableRemove": true
+              }
+            },
+            {
+              "type": "Label",
+              "i18n": "contains"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/reviewers"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

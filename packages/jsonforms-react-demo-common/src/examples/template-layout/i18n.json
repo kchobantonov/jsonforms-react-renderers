@@ -84,7 +84,6 @@
       "required": "полето е задължително"
     },
     "Additional Information": "Допълнителна информация",
-    "Custom TemplateLayout with JSONForms and Vuetify": "Персонализиран TemplateLayout с JSONForms и Vuetify",
     "Additional Information For": "Допълнителна информация за"
   }
 }

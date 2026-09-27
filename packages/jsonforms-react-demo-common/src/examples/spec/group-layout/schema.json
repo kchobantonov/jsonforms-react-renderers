@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "title": "Carrier record",
+  "properties": {
+    "legalName": { "type": "string", "title": "Legal name" },
+    "dotNumber": { "type": "string", "title": "DOT number" },
+    "contactName": { "type": "string", "title": "Contact name" },
+    "contactEmail": { "type": "string", "format": "email", "title": "Contact email" },
+    "alternatePhone": { "type": "string", "title": "Alternate phone" },
+    "afterHours": { "type": "string", "title": "After-hours line" },
+    "insurer": { "type": "string", "title": "Insurer" },
+    "policyNumber": { "type": "string", "title": "Policy number" },
+    "auditNote": { "type": "string", "title": "Audit note" }
+  }
+}

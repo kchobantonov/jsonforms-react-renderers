@@ -1,0 +1,26 @@
+{
+  "notes": { "gate": "Closes at 18:00" },
+  "lines": [{ "code": "A-01", "quantity": 3 }],
+  "quietLines": [{ "code": "TMP-1" }],
+  "stops": [
+    { "name": "Portland", "window": { "from": "08:00", "to": "10:00" } },
+    { "name": "Salem", "window": { "from": "11:30", "to": "12:15" } }
+  ],
+  "drivers": [
+    { "name": "A. Ferreira", "licence": "OR-44812" },
+    { "name": "M. Todorova", "licence": "OR-51907" }
+  ],
+  "charges": [
+    { "label": "Line haul", "amount": 1240 },
+    { "label": "Fuel surcharge", "amount": 185.5 },
+    { "label": "Detention", "amount": 0 }
+  ],
+  "payload": {
+    "carrier": "Cascade Supplies",
+    "route": { "origin": "Portland", "destination": "Salem" },
+    "legs": ["PDX-SLE", "SLE-EUG"],
+    "blank": {}
+  },
+  "scalar": "LEG-14",
+  "contact": { "email": "dispatch@example.test" }
+}

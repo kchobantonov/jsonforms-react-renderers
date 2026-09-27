@@ -1,0 +1,42 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Control", "scope": "#/properties/jobName" },
+    {
+      "type": "Group",
+      "label": "Selected by the schema",
+      "i18n": "group.selectedBySchema",
+      "elements": [
+        { "type": "Control", "scope": "#/properties/selectedBySchema/properties/stockSync" },
+        { "type": "Control", "scope": "#/properties/selectedBySchema/properties/supplierFeed" },
+        { "type": "Control", "scope": "#/properties/selectedBySchema/properties/monthEndReport" }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Selected by the UI schema",
+      "i18n": "group.selectedByUiSchema",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/selectedByUiSchema/properties/cacheWarm",
+          "options": { "format": "cron" }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/selectedByUiSchema/properties/unset",
+          "options": { "format": "cron", "placeholder": "0 0 3 * * *" }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Not this dialect",
+      "i18n": "group.rejected",
+      "elements": [
+        { "type": "Control", "scope": "#/properties/rejected/properties/unixFiveField" },
+        { "type": "Control", "scope": "#/properties/rejected/properties/quartzSevenField" }
+      ]
+    }
+  ]
+}

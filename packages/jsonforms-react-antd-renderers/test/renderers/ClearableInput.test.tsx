@@ -43,6 +43,8 @@ describe('Ant Design clearable input wrapper', () => {
         </AntdClearableInput>
       );
     });
-    expect(container.querySelector('button[aria-label="Clear value"]')).toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Clear value"]')
+    ).toBeNull();
   });
 });

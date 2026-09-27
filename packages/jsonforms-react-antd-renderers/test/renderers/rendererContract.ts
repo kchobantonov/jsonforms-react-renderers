@@ -87,6 +87,15 @@ const contracts: Record<string, Contract> = {
     },
     rank: 1,
   },
+  CategorizationAccordionLayout: {
+    schema: { type: 'object' },
+    uischema: {
+      type: 'Categorization',
+      options: { variant: 'accordion' },
+      elements: [{ type: 'Category', label: 'General', elements: [] }],
+    },
+    rank: 3,
+  },
   CategorizationStepperLayout: {
     schema: { type: 'object' },
     uischema: {

@@ -51,14 +51,14 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@jsonforms/core": "3.8.0",
-    "@jsonforms/react": "3.8.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^5.54.1",

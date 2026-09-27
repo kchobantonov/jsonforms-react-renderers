@@ -1,0 +1,18 @@
+{
+  "extends": "../../../tsconfig.base",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ],
+    "noEmit": true,
+    "rootDir": "../..",
+    "declaration": false,
+    "composite": false
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx",
+    "../src/**/*.ts",
+    "../src/**/*.tsx"
+  ]
+}

@@ -1,8 +1,23 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+
+# Declared here AND in package.json -> pnpm.overrides, on purpose. Verified
+# behaviour: pnpm 9 reads only package.json, pnpm 10 reads either, and pnpm 11
+# reads only this file. Keeping both means a developer on any of the three gets
+# the same resolutions instead of silently different ones.
+overrides:
+  ajv-formats: ^3.0.1
+  ajv@>=8: 8.20.0
+  enzyme>cheerio: 1.0.0-rc.12
+  lodash: ^4.18.1
+
 allowBuilds:
   '@parcel/watcher': set this to true or false
   core-js: set this to true or false
   esbuild: true
   nx: set this to true or false
+
+# pnpm 10+ prompts before purging node_modules and aborts when there is no TTY,
+# which is how CI and any non-interactive install run it.
+confirmModulesPurge: false

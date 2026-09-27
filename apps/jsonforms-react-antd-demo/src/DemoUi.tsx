@@ -64,10 +64,32 @@ const DemoTabs = ({ items, value, onChange }: DemoTabsProps) => (
   />
 );
 
-const DemoToggle = ({ checked, label, onChange }: DemoToggleProps) => (
-  <Space>
-    <Switch checked={checked} onChange={onChange} />
-    <Typography.Text>{label}</Typography.Text>
+/**
+ * The description is part of the contract, not decoration: several of these
+ * switches name an option whose effect is not obvious from its label alone.
+ * This used to drop it, so every explanation the settings panel supplied was
+ * invisible in this demo.
+ */
+const DemoToggle = ({
+  checked,
+  label,
+  description,
+  onChange,
+}: DemoToggleProps) => (
+  <Space orientation='vertical' size={2} style={{ display: 'flex' }}>
+    <Space>
+      <Switch checked={checked} onChange={onChange} />
+      <Typography.Text>{label}</Typography.Text>
+    </Space>
+    {description ? (
+      <Typography.Text
+        type='secondary'
+        // Indented past the switch so it reads as belonging to the label.
+        style={{ fontSize: 12, paddingInlineStart: 52 }}
+      >
+        {description}
+      </Typography.Text>
+    ) : null}
   </Space>
 );
 

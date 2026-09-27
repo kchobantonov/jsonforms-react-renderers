@@ -1,30 +1,7 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import React from 'react';
 import { CellProps, OwnPropsOfEnum, WithClassname } from '@jsonforms/core';
-import { Radio } from 'antd';
+import { Flex, Radio } from 'antd';
+import merge from 'lodash/merge';
 
 export const AntdRadioGroup = React.memo(function AntdRadioGroup(
   props: CellProps &
@@ -33,19 +10,51 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
       inputProps?: React.ComponentProps<typeof Radio.Group>;
     }
 ) {
-  const { data, options, handleChange, path, inputProps } = props;
+  const {
+    data,
+    options,
+    handleChange,
+    path,
+    enabled,
+    config,
+    uischema,
+    inputProps,
+  } = props;
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  /*
+    `options.vertical` is the single orientation encoding for a radio group:
+    false (the default) arranges the choices in a row that may wrap, true
+    stacks them. The orientation is also announced, so assistive technology
+    describes the arrangement that is actually on screen.
+  */
+  const vertical = appliedUiSchemaOptions.vertical === true;
 
   return (
     <Radio.Group
+      aria-orientation={vertical ? 'vertical' : 'horizontal'}
+      disabled={!enabled}
       value={data ?? ''}
-      onChange={(e: any) => handleChange(path, e.target.value)}
+      // Guarded as well as disabled: the specification requires mutation
+      // handlers to enforce the same rules as the visible state, so that
+      // neither a keyboard path nor a caller-supplied `inputProps.disabled`
+      // override can commit a change to a read-only control.
+      onChange={(e: any) => {
+        if (!enabled) {
+          return;
+        }
+        handleChange(path, e.target.value);
+      }}
       {...inputProps}
     >
-      {(options || []).map((option) => (
-        <Radio value={option.value} key={option.label}>
-          {option.label}
-        </Radio>
-      ))}
+      <Flex gap={vertical ? 4 : 8} vertical={vertical} wrap={!vertical}>
+        {(options || []).map((option) => (
+          // Keyed by value, not label: two distinct values may translate to
+          // the same label, and keying by label collapses them.
+          <Radio value={option.value} key={String(option.value)}>
+            {option.label}
+          </Radio>
+        ))}
+      </Flex>
     </Radio.Group>
   );
 });

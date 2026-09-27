@@ -1,33 +1,8 @@
-/*
-  The MIT License
-  
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   CombinatorRendererProps,
   createCombinatorRenderInfos,
-  createDefaultValue,
   isAnyOfControl,
   JsonSchema,
   RankedTester,
@@ -36,11 +11,33 @@ import {
 import { JsonFormsDispatch, withJsonFormsAnyOfProps } from '@jsonforms/react';
 import { Tabs } from 'antd';
 import CombinatorProperties from './CombinatorProperties';
-import isEmpty from 'lodash/isEmpty';
-import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
 
+/**
+ * `anyOf` - tabs over one value.
+ *
+ * Section 18: "Tabs selecting the branch form to display over the same bound
+ * value… Tab navigation alone preserves data; one or more branches may
+ * validate. These are editor views, not checkboxes enabling schema branches."
+ * And of the worked example: "Switching tabs does not delete email or phone.
+ * A value containing both can satisfy anyOf; the active tab is presentation
+ * state only."
+ *
+ * So changing tab writes nothing at all - no generated defaults, and
+ * therefore nothing to confirm.
+ *
+ * That holds even for a branch whose type the current value is not, such as
+ * an object branch over a string. It looks as though those inputs would have
+ * nowhere to write, but JSON Forms' `update` builds the containers along the
+ * path: a child write of `note` against a string value yields
+ * `{ "note": "…" }`, replacing the string. The branch becomes real when the
+ * user edits it, which is the moment they actually chose it - not when they
+ * looked at it.
+ *
+ * `oneOf` is the opposite case and must write on selection: its branches
+ * carry generated defaults, typically a `const` discriminator, that no amount
+ * of typing in the visible fields would produce.
+ */
 export const AnyOfRenderer = ({
-  handleChange,
   schema,
   rootSchema,
   indexOfFittingSchema,
@@ -50,54 +47,29 @@ export const AnyOfRenderer = ({
   cells,
   uischema,
   uischemas,
-  id,
-  data,
 }: CombinatorRendererProps) => {
-  const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema ?? -1);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [newSelectedIndex, setNewSelectedIndex] = useState(0);
+  const [selectedAnyOf, setSelectedAnyOf] = useState(
+    indexOfFittingSchema ?? -1
+  );
 
+  /*
+    Which tab opens is derived from the data only until the user picks one.
+    Afterwards the choice is theirs: re-deriving it moved the tab out from
+    under them as soon as their editing changed which branch fits - emptying
+    the value while on a chosen tab left no tab selected and the panel blank,
+    mid-edit. Section 22 counts the selected tab as runtime state.
+  */
+  const chosen = useRef(false);
   useEffect(() => {
-    setSelectedAnyOf(indexOfFittingSchema ?? -1);
+    if (!chosen.current) {
+      setSelectedAnyOf(indexOfFittingSchema ?? -1);
+    }
   }, [indexOfFittingSchema]);
 
-  const handleClose = useCallback(
-    () => setConfirmDialogOpen(false),
-    [setConfirmDialogOpen]
-  );
-
-  const handleTabChange = useCallback(
-    (value: string) => {
-      const newIndex = parseInt(value);
-      if (
-        isEmpty(data) ||
-        typeof data ===
-          typeof createDefaultValue(
-            anyOfRenderInfos[newIndex].schema,
-            rootSchema
-          )
-      ) {
-        setSelectedAnyOf(newIndex);
-      } else {
-        setNewSelectedIndex(newIndex);
-        setConfirmDialogOpen(true);
-      }
-    },
-    [setConfirmDialogOpen, setSelectedAnyOf, data]
-  );
-
-  const openNewTab = (newIndex: number) => {
-    handleChange(
-      path,
-      createDefaultValue(anyOfRenderInfos[newIndex].schema, rootSchema)
-    );
-    setSelectedAnyOf(newIndex);
-  };
-
-  const confirm = useCallback(() => {
-    openNewTab(newSelectedIndex);
-    setConfirmDialogOpen(false);
-  }, [handleChange, createDefaultValue, newSelectedIndex]);
+  const handleTabChange = useCallback((value: string) => {
+    chosen.current = true;
+    setSelectedAnyOf(parseInt(value, 10));
+  }, []);
 
   const anyOf = 'anyOf';
   const anyOfRenderInfos = createCombinatorRenderInfos(
@@ -141,13 +113,6 @@ export const AnyOfRenderer = ({
             } as any)
         )}
       ></Tabs>
-      <TabSwitchConfirmDialog
-        cancel={handleClose}
-        confirm={confirm}
-        id={'anyOf-' + id}
-        open={confirmDialogOpen}
-        handleClose={handleClose}
-      />
     </>
   );
 };

@@ -1,0 +1,34 @@
+{
+  "en": {
+    "intro.text": "Everything here is the validator, not the renderers. Switch the form's language and watch the messages change without a single error key in this catalog.",
+    "errorsTab.label": "Errors",
+    "transformTab.label": "transform",
+    "defaultsTab.label": "Defaults",
+    "messagesTab.label": "Messages in the schema",
+    "errors.text": "Ordinary keyword failures. The wording is Ajv's own, translated by ajv-i18n - this catalog defines no error text at all.",
+    "transform.text": "transform normalises the value as a side effect of validating. Blur a field and the stored data changes: trimmed, upper-cased, start-cased, or matched to the nearest declared choice.",
+    "defaults.text": "A schema default is written into the data on first validation - including false, which is why Confirmed stays unticked rather than being treated as missing. The four below it are computed: today, today plus two weeks, now, and this year.",
+    "request.text": "dynamicDefaults can read the page address, so an object field arrives holding the current request parameters. Add ?ref=AB-1234&campaign=spring to the URL and reload.",
+    "computed.text": "dynamic compiles a function written in the schema. It needs jsonformsExtended.security.allowScriptEvaluation, which this example grants; without it the field stays empty and the console says why.",
+    "messages.text": "These messages come from the schema, not from the validator. A message may be a catalog key - the first two are - or a sentence, which is used as written.",
+    "error.errorMessage.nicknameRequired": "Please choose a nickname.",
+    "error.errorMessage.nicknameTooShort": "A nickname needs at least two characters.",
+    "error.errorMessage.tooYoung": "Enrolment is open from 16."
+  },
+  "bg": {
+    "intro.text": "Всичко тук е на валидатора, а не на визуализаторите. Сменете езика на формуляра и вижте как съобщенията се променят без нито един ключ за грешка в този каталог.",
+    "errorsTab.label": "Грешки",
+    "transformTab.label": "transform",
+    "defaultsTab.label": "Стойности по подразбиране",
+    "messagesTab.label": "Съобщения в схемата",
+    "errors.text": "Обикновени нарушения на ключови думи. Текстът е на Ajv, преведен от ajv-i18n - този каталог не съдържа никакъв текст за грешки.",
+    "transform.text": "transform нормализира стойността като страничен ефект от валидирането. Напуснете полето и запазените данни се променят: изчистени, с главни букви или съпоставени с най-близкия обявен избор.",
+    "defaults.text": "Стойност по подразбиране от схемата се записва в данните при първото валидиране - включително false, затова Потвърдено остава неотметнато, вместо да се смята за липсващо. Четирите под него се изчисляват: днес, днес плюс две седмици, сега и тази година.",
+    "request.text": "dynamicDefaults може да чете адреса на страницата, така че обектно поле пристига със сегашните параметри на заявката. Добавете ?ref=AB-1234&campaign=spring към адреса и презаредете.",
+    "computed.text": "dynamic компилира функция, написана в схемата. Изисква jsonformsExtended.security.allowScriptEvaluation, което този пример дава; без него полето остава празно, а конзолата обяснява защо.",
+    "messages.text": "Тези съобщения идват от схемата, а не от валидатора. Съобщението може да е ключ от каталога - първите две са - или изречение, което се използва както е написано.",
+    "error.errorMessage.nicknameRequired": "Моля, изберете псевдоним.",
+    "error.errorMessage.nicknameTooShort": "Псевдонимът трябва да е поне два знака.",
+    "error.errorMessage.tooYoung": "Записването е от 16 години."
+  }
+}

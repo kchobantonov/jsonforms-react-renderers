@@ -1,0 +1,32 @@
+{
+  "en": {
+    "intro.text": "Errors that are not the schema's: a server rejecting a submit, and a code editor's language service. Both arrive as additionalErrors, both appear under the field they name, and each clears on its own terms.",
+    "reportedTab.label": "Reported",
+    "quietTab.label": "Not reported",
+    "languageTab.label": "Language",
+    "reported.text": "propagateErrors: true. The JSON below has a syntax error, and one summary appears under the editor - in the same place, and looking the same, as the message under a required field that is empty. Fix the JSON and it goes away; break it in two places and there is still one message, with a count.",
+    "compare.text": "For comparison, an ordinary field with minLength. The editor's message is the same kind of thing: an error at that field's path.",
+    "quiet.text": "The same editor with the option left out, which is the default. The JSON below is also broken - Monaco marks it, the marks stay inside the editor, and the form is unaffected.",
+    "language.text": "The summary comes from the language service, so it depends on the language. JSON and JavaScript are validated; Markdown has no validator, and no diagnostics is not the same as no errors.",
+    "summary.label": "Summary",
+    "error.minLength": "Write at least five characters.",
+    "serverTab.label": "From the server",
+    "server.text": "Press Submit. Nothing is sent - the two errors below stand in for what a server returned - but everything after that is real: they are published as additionalErrors at the paths they name, and JSON Forms shows them under those fields.",
+    "serverClear.text": "Now edit one of the two fields. Only that field's error goes; the other stays until its own field changes, or until Clear them retracts both. That is the rule the Camunda forms already use, applied by the store rather than by a container component."
+  },
+  "bg": {
+    "intro.text": "Грешки, които не са на схемата: сървър, отхвърлил изпращането, и езиковата услуга на редактора. И двете пристигат като additionalErrors, появяват се под полето, което назовават, и всяка се изчиства по своите правила.",
+    "reportedTab.label": "Съобщава се",
+    "quietTab.label": "Не се съобщава",
+    "languageTab.label": "Език",
+    "reported.text": "propagateErrors: true. JSON по-долу има синтактична грешка и под редактора се появява едно обобщение - на същото място и със същия вид като съобщението под задължително празно поле. Поправете JSON и то изчезва; развалете го на две места и съобщението пак е едно, с брояч.",
+    "compare.text": "За сравнение - обикновено поле с minLength. Съобщението на редактора е от същия вид: грешка на пътя на това поле.",
+    "quiet.text": "Същият редактор без опцията, което е подразбирането. JSON по-долу също е развален - Monaco го маркира, маркерите остават в редактора и формулярът не е засегнат.",
+    "language.text": "Обобщението идва от езиковата услуга, затова зависи от езика. JSON и JavaScript се валидират; Markdown няма валидатор, а липсата на диагностика не значи липса на грешки.",
+    "summary.label": "Обобщение",
+    "error.minLength": "Напишете поне пет знака.",
+    "serverTab.label": "От сървъра",
+    "server.text": "Натиснете Изпращане. Нищо не се изпраща - двете грешки по-долу заместват отговор на сървър - но всичко след това е истинско: публикуват се като additionalErrors на посочените пътища и JSON Forms ги показва под тези полета.",
+    "serverClear.text": "Сега редактирайте едно от двете полета. Изчезва само грешката на това поле; другата остава, докато не се промени нейното поле или докато Изчистване не оттегли и двете. Това е правилото, което формулярите на Camunda вече използват - приложено от хранилището, а не от компонент-контейнер."
+  }
+}

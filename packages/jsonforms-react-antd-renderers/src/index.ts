@@ -1,31 +1,15 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
+import AntdCompositeCell, {
+  antdCompositeCellTester,
+} from './cells/AntdCompositeCell';
+import { MixedRenderer, mixedControlTester } from './complex/MixedRenderer';
+import ChipsControl, { chipsControlTester } from './complex/ChipsControl';
+import MultiSelectControl, {
+  multiSelectControlTester,
+} from './complex/MultiSelectControl';
 import {
-  MixedRenderer,
-  mixedControlTester,
-} from './complex/MixedRenderer';
+  TupleControlRenderer,
+  tupleControlRendererTester,
+} from './complex/TupleControlRenderer';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
@@ -41,6 +25,8 @@ import {
   ObjectRenderer,
   oneOfControlTester,
   OneOfRenderer,
+  scalarCompositionTester,
+  ScalarCompositionRenderer,
   EnumArrayRenderer,
   enumArrayRendererTester,
 } from './complex';
@@ -73,6 +59,10 @@ import {
   numberControlTester,
   OneOfEnumControl,
   oneOfEnumControlTester,
+  PasswordControl,
+  passwordControlTester,
+  PasswordOtpControl,
+  passwordOtpControlTester,
   RadioGroupControl,
   radioGroupControlTester,
   SliderControl,
@@ -113,6 +103,8 @@ import {
   numberFormatCellTester,
   OneOfEnumCell,
   oneOfEnumCellTester,
+  PasswordCell,
+  passwordCellTester,
   TextCell,
   textCellTester,
   TimeCell,
@@ -121,6 +113,9 @@ import {
 import CategorizationStepperLayout, {
   categorizationStepperTester,
 } from './layouts/CategorizationStepperLayout';
+import CategorizationAccordionLayout, {
+  categorizationAccordionTester,
+} from './layouts/CategorizationAccordionLayout';
 
 export * from './additional';
 export * from './cells';
@@ -128,10 +123,14 @@ export * from './complex';
 export * from './controls';
 export * from './layouts';
 export * from './util';
+export * from './locale';
 
 export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
   // controls
   { tester: mixedControlTester, renderer: MixedRenderer },
+  { tester: multiSelectControlTester, renderer: MultiSelectControl },
+  { tester: chipsControlTester, renderer: ChipsControl },
+  { tester: tupleControlRendererTester, renderer: TupleControlRenderer },
   {
     tester: arrayControlTester,
     renderer: ArrayControlRenderer,
@@ -146,11 +145,22 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
   { tester: integerControlTester, renderer: IntegerControl },
   { tester: numberControlTester, renderer: NumberControl },
   { tester: textControlTester, renderer: TextControl },
+  { tester: passwordControlTester, renderer: PasswordControl },
+  { tester: passwordOtpControlTester, renderer: PasswordOtpControl },
   { tester: dateTimeControlTester, renderer: DateTimeControl },
   { tester: dateControlTester, renderer: DateControl },
   { tester: timeControlTester, renderer: TimeControl },
   { tester: sliderControlTester, renderer: SliderControl },
   { tester: objectControlTester, renderer: ObjectRenderer },
+  /*
+    Above the three combinator renderers: a composition that describes one
+    scalar editor gets one input rather than a branch selector. Below the
+    finite-choice renderers at rank 5, which keep their own conventions.
+  */
+  {
+    tester: scalarCompositionTester,
+    renderer: ScalarCompositionRenderer,
+  },
   { tester: allOfControlTester, renderer: AllOfRenderer },
   { tester: anyOfControlTester, renderer: AnyOfRenderer },
   { tester: oneOfControlTester, renderer: OneOfRenderer },
@@ -182,6 +192,10 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
     tester: categorizationStepperTester,
     renderer: CategorizationStepperLayout,
   },
+  {
+    tester: categorizationAccordionTester,
+    renderer: CategorizationAccordionLayout,
+  },
   { tester: arrayLayoutTester, renderer: ArrayLayout },
   // additional
   { tester: labelRendererTester, renderer: LabelRenderer },
@@ -200,6 +214,9 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
 ];
 
 export const antdCells: JsonFormsCellRendererRegistryEntry[] = [
+  // Rank 1 fallback: objects and arrays that no specialised cell handles get a
+  // summary plus a detail dialog instead of rendering nothing.
+  { tester: antdCompositeCellTester, cell: AntdCompositeCell },
   { tester: booleanCellTester, cell: BooleanCell },
   { tester: booleanToggleCellTester, cell: BooleanToggleCell },
   { tester: dateCellTester, cell: DateCell },
@@ -209,6 +226,7 @@ export const antdCells: JsonFormsCellRendererRegistryEntry[] = [
   { tester: numberFormatCellTester, cell: NumberFormatCell },
   { tester: oneOfEnumCellTester, cell: OneOfEnumCell },
   { tester: textCellTester, cell: TextCell },
+  { tester: passwordCellTester, cell: PasswordCell },
   { tester: timeCellTester, cell: TimeCell },
 ];
 

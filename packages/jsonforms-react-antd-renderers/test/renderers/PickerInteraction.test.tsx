@@ -92,9 +92,16 @@ describe('picker selection commits', () => {
     ).toBeNull();
   });
 
+  /*
+    The two bare-time rows carry no explicit `timeSaveFormat`, so they take the
+    default - which section 18 fixes at `HH:mm:ssZ`, offset included, because
+    a value without one does not satisfy `format: "time"`. The offset itself
+    depends on where the test runs, so these expect a pattern rather than a
+    string; every other row pins its own format and stays exact.
+  */
   it.each([
-    [AntdTimePicker, '13:37:00', {}, '15:37:00'],
-    [AntdTimePicker, '13:37:00', { ampm: true }, '15:37:00'],
+    [AntdTimePicker, '13:37:00', {}, /^15:37:00(Z|[+-]\d\d:\d\d)$/],
+    [AntdTimePicker, '13:37:00', { ampm: true }, /^15:37:00(Z|[+-]\d\d:\d\d)$/],
     [
       AntdDateTimePicker,
       '2024-01-15T13:37:00',
@@ -123,9 +130,13 @@ describe('picker selection commits', () => {
       );
       await act(async () => refresh());
       await click(document.querySelector('.ant-picker-ok button')!);
-      expect(output()).toBe(expected);
+      const check = (value: unknown) =>
+        expected instanceof RegExp
+          ? expect(String(value)).toMatch(expected)
+          : expect(value).toBe(expected);
+      check(output());
       await act(async () => refresh());
-      expect(output()).toBe(expected);
+      check(output());
     }
   );
 });

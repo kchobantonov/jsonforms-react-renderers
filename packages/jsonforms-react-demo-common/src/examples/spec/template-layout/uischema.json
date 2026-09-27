@@ -1,0 +1,115 @@
+{
+  "type": "VerticalLayout",
+  "options": {
+    "gap": "1.5rem"
+  },
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Edit these; whichever engine is on screen reacts to every keystroke."
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/customerName"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/priority"
+    },
+    {
+      "type": "Categorization",
+      "elements": [
+        {
+          "type": "Category",
+          "name": "jsx",
+          "label": "lang: jsx",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "JavaScript expressions, compiled with Sucrase."
+            },
+            {
+              "type": "TemplateLayout",
+              "lang": "jsx",
+              "template": "<div><p data-greeting>Hello {data.customerName}</p><p data-branch>{data.priority ? 'Priority booking' : 'Standard booking'}</p><p data-list>Contacts: {data.contacts.map(c => c.name).join(', ')}</p><div data-slot>{elements['jsxNote']}</div></div>",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/jsxNote",
+                  "name": "jsxNote"
+                }
+              ]
+            },
+            {
+              "type": "Label",
+              "text": "elements is also an ordered list: {elements} mounts every child, in order."
+            },
+            {
+              "type": "TemplateLayout",
+              "lang": "jsx",
+              "template": "<div data-children>{elements}</div>",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/reference",
+                  "name": "reference"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/copies"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "ractive",
+          "label": "lang: ractive",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "The portable default profile: no function literals, surgical updates."
+            },
+            {
+              "type": "TemplateLayout",
+              "lang": "ractive",
+              "template": "<div><p data-greeting>Hello {{data.customerName}}</p><p data-branch>{{#if data.priority}}Priority booking{{else}}Standard booking{{/if}}</p><p data-list>Contacts: {{#each data.contacts}}{{ @index ? ', ' : '' }}{{ .name }}{{/each}}</p><div data-slot>{{>ractiveNote}}</div></div>",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/ractiveNote",
+                  "name": "ractiveNote"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "resolution",
+          "label": "Language resolution",
+          "elements": [
+            {
+              "type": "Label",
+              "text": "No lang: config.jsonformsExtended.defaultTemplateLang decides (here, ractive)."
+            },
+            {
+              "type": "TemplateLayout",
+              "template": "<p data-default>Resolved by config: {{data.customerName}}</p>"
+            },
+            {
+              "type": "Label",
+              "text": "An unknown language is diagnosed, never guessed."
+            },
+            {
+              "type": "TemplateLayout",
+              "lang": "handlebars",
+              "template": "<p>never rendered</p>"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

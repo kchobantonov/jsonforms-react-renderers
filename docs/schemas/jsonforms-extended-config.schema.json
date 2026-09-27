@@ -1,0 +1,218 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON Forms config — core, antd and the extended renderer sets",
+  "description": "A superset of jsonforms-config.schema.json, which it REFERENCES rather than restates: everything that file describes still applies here, and this file adds only what the framework-agnostic extended renderers and their antd bindings read. Nothing is duplicated, so the two cannot disagree.",
+  "allOf": [
+    {
+      "$ref": "jsonforms-config.schema.json",
+      "description": "Everything a host on core plus the antd renderer set can author."
+    },
+    {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "What the extended renderer sets add, all of it inside the namespace.",
+      "properties": {
+        "jsonformsExtended": {
+          "$ref": "#/$defs/extendedOnly"
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "extendedOnly": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Options only the extended renderer sets read. The base file's own namespaced options still apply through the reference above; they are deliberately not repeated here.",
+      "properties": {
+        "security": {
+          "$ref": "#/$defs/security"
+        },
+        "defaultTemplateLang": {
+          "$ref": "#/$defs/templateLang",
+          "description": "Engine for a TemplateLayout that names none. The flat config.defaultTemplateLang is still honoured beneath this."
+        },
+        "propagateErrors": {
+          "type": "boolean",
+          "default": false,
+          "description": "Default for whether an embedded editor publishes its own diagnostics as an additional error. Off by default: finding a problem does not entitle a renderer to invalidate the form."
+        },
+        "colorTextEntry": {
+          "type": "boolean",
+          "description": "Default for whether the colour control offers text entry beside its picker."
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Default visible rows for an embedded editor."
+        },
+        "monaco": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Default options passed through to the code editor. Escape hatch: contents are the editor's own contract, not portable."
+        },
+        "agGridOptions": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Default options passed through to the data grid. Local arrays replace wholesale, including column definitions; option objects merge recursively."
+        },
+        "gridHeight": {
+          "$ref": "jsonforms-config.schema.json#/$defs/dimension",
+          "description": "Default data-grid height."
+        },
+        "gridWidth": {
+          "$ref": "jsonforms-config.schema.json#/$defs/dimension",
+          "description": "Default data-grid width."
+        },
+        "colorSaveFormat": {
+          "type": "string",
+          "enum": [
+            "hex",
+            "hex3",
+            "hex8",
+            "rgb",
+            "rgba",
+            "hsl",
+            "hsla",
+            "hsb",
+            "hsba"
+          ],
+          "description": "Stored serialization for the colour control, separate from the picker's internal model. A format that cannot carry transparency reports the loss rather than discarding it silently."
+        },
+        "allowAdditionalPropertiesIfMissing": {
+          "type": "boolean",
+          "default": false,
+          "description": "Offers the dynamic-property editor where the schema states no additionalProperties. Controls availability of the editor, not validation."
+        },
+        "allowEmptyPropertyNames": {
+          "type": "boolean",
+          "default": false,
+          "description": "Permits creating a property whose name is the empty string. Such a name has no addressable path and is edited through a path-free editor."
+        },
+        "showBorder": {
+          "type": "boolean",
+          "default": true,
+          "description": "Default for the tuple control's enclosing border."
+        },
+        "showEmptyButton": {
+          "type": "boolean",
+          "default": false,
+          "description": "Default for the composite detail dialog's Clear action."
+        },
+        "showRemoveButton": {
+          "type": "boolean",
+          "default": false,
+          "description": "Default for the composite detail dialog's Remove action."
+        },
+        "table": {
+          "type": "boolean",
+          "description": "Default for forcing the table presentation on an array whose items nest."
+        },
+        "convertJson": {
+          "type": "boolean",
+          "description": "Default for parsing an embedded editor's text as JSON before storing it."
+        },
+        "markup": {
+          "$ref": "#/$defs/markup"
+        },
+        "dynamicValues": {
+          "$ref": "#/$defs/dynamicValues"
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Gates for the two escape hatches. Both default closed.",
+      "properties": {
+        "allowScriptEvaluation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Permits compiling a string script. Enabling it means the host treats the UI schema as trusted executable code, and may require a content-security-policy allowance. It does NOT gate a function-valued script, which needs no evaluation."
+        },
+        "urlPolicy": {
+          "$ref": "#/$defs/urlPolicy"
+        }
+      }
+    },
+    "urlPolicy": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Applied to every URL-bearing value: link targets, image sources including scope-resolved ones, and Markdown URLs.",
+      "properties": {
+        "allowedSchemes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "https",
+            "http",
+            "mailto"
+          ],
+          "description": "Permitted URL schemes. Control characters are stripped before the scheme is read."
+        },
+        "allowRelative": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowImageDataUrls": {
+          "type": "boolean",
+          "default": false,
+          "description": "Permits data: URLs for images only, so the flag cannot open a data:text/html document. SVG data URLs stay blocked unless the host opts into an SVG-safe policy."
+        }
+      }
+    },
+    "templateLang": {
+      "type": "string",
+      "description": "Template engine. An unknown language is diagnosed, never interpreted as another engine.",
+      "examples": [
+        "ractive",
+        "jsx"
+      ]
+    },
+    "markup": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "How text elements that ask for markup are rendered.",
+      "properties": {
+        "markdown": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether Markdown is parsed at all. Defaults to TRUE, unlike the other extension gates: those gate something that executes, this gates a parser that cannot, and whose profile already excludes raw HTML, images and embedded content. A refused request reports itself and still shows the text."
+            },
+            "profile": {
+              "type": "string",
+              "enum": [
+                "basic",
+                "extended"
+              ],
+              "default": "basic",
+              "description": "basic: paragraphs and line breaks, bold, italic, strikethrough, inline code, links, and ordered and unordered lists. extended: those plus headings, blockquotes, tables and fenced code. Raw HTML and images are excluded from both and are gated independently."
+            }
+          }
+        },
+        "typography": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether rendered text is wrapped in the UI library's own text components, so it inherits the theme. Switchable because those components carry their own margins, which can fight a form's spacing. An element's own typography option overrides this."
+        }
+      }
+    },
+    "dynamicValues": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Whether values may be resolved out of the form's data and the host's context. Gates the data, item, config and context namespaces for both text interpolation and $dynamic.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Defaults closed, like the other section 12 gates. What it opens is a reader, not an evaluator of host code: an expression cannot call, assign or reach a prototype, so this is a data-exposure control rather than a script-execution one. Static textParams keep working while it is shut."
+        }
+      }
+    }
+  }
+}

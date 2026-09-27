@@ -16,7 +16,9 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             }
           ]
@@ -34,7 +36,9 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             },
             {
@@ -56,7 +60,9 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             },
             {
@@ -82,14 +88,18 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             },
             {
               "type": "Control",
               "scope": "#/properties/lastName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             }
           ]
@@ -107,14 +117,18 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 12
+                "layout": {
+                  "span": 12
+                }
               }
             },
             {
               "type": "Control",
               "scope": "#/properties/lastName",
               "options": {
-                "columns": 8
+                "layout": {
+                  "span": 8
+                }
               }
             },
             {
@@ -159,14 +173,18 @@
               "type": "Label",
               "text": "Quarter-width label",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               }
             },
             {
               "type": "Group",
               "label": "Nested group",
               "options": {
-                "columns": 8
+                "layout": {
+                  "span": 8
+                }
               },
               "elements": [
                 {
@@ -190,7 +208,9 @@
               "type": "Control",
               "scope": "#/properties/firstName",
               "options": {
-                "columns": 4
+                "layout": {
+                  "span": 4
+                }
               },
               "rule": {
                 "effect": "SHOW",

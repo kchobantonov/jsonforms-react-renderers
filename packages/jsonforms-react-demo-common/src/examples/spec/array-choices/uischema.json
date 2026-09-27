@@ -1,0 +1,50 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "One array-of-choices shape, three presentations. Only the variant differs."
+    },
+    { "type": "Control", "scope": "#/properties/channels" },
+    {
+      "type": "Control",
+      "scope": "#/properties/alerts",
+      "options": { "variant": "multi-select" }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/teams",
+      "options": { "variant": "multi-select" },
+      "i18n": "teams"
+    },
+    { "type": "Separator" },
+    { "type": "Label", "text": "Chips: free tokens, repeated tokens, and limited ones" },
+    {
+      "type": "Control",
+      "scope": "#/properties/tags",
+      "options": { "variant": "chips" }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/scans",
+      "options": { "variant": "chips" }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/labels",
+      "options": { "variant": "chips" }
+    },
+    { "type": "Separator" },
+    { "type": "Label", "text": "Bounds, and a value the schema does not offer" },
+    {
+      "type": "Control",
+      "scope": "#/properties/bonded",
+      "options": { "variant": "chips" }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/imported",
+      "options": { "variant": "multi-select" }
+    }
+  ]
+}

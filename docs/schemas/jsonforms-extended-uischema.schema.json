@@ -1,0 +1,1129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON Forms UI schema — core, antd and the extended renderer sets",
+  "description": "Everything jsonforms-uischema.schema.json describes, widened with the elements and options the extended renderer sets add.\n\nIt REFERENCES the base file for every definition that can be shared - the rule syntax, the layout sizing options, dimensions, labels. It cannot reference the rest: a UI schema is one mutually-recursive graph rooted at `element`, and the extended file has to *widen* that union, which draft-07 has no mechanism for. Those definitions are therefore generated from the base rather than written twice, and a test asserts they have not drifted.",
+  "$ref": "#/$defs/element",
+  "$defs": {
+    "uiSchema": {
+      "$ref": "#/$defs/element"
+    },
+    "element": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "rule": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/rule"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "i18n": {
+          "type": "string",
+          "description": "Translation key for this element's own text."
+        },
+        "name": {
+          "type": "string",
+          "description": "Project extension. Core declares no `name` on an element, so this schema does - it addresses a template's children, and names a Button's action when it declares none. See Adjustment 27."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/byType"
+        },
+        {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/layoutItemOptions"
+        }
+      ]
+    },
+    "byType": {
+      "description": "Per-type shape. Written as if/then so an unknown `type` still validates - a renderer set downstream may contribute its own.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Control"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/control"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "VerticalLayout"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/layout"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "HorizontalLayout"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/horizontalLayout"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Group"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/group"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Categorization"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/categorization"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Category"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/category"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ListWithDetail"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/listWithDetail"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Label"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/label"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Button"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/button"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Link"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/link"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ImageView"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/imageView"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Spacer"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/spacer"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Separator"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/separator"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "TemplateLayout"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/templateLayout"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Slot"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/slot"
+          }
+        }
+      ]
+    },
+    "layout": {
+      "required": [
+        "elements"
+      ],
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        },
+        "options": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/layoutContainerOptions"
+        }
+      }
+    },
+    "horizontalLayout": {
+      "required": [
+        "elements"
+      ],
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        },
+        "options": {
+          "allOf": [
+            {
+              "$ref": "jsonforms-uischema.schema.json#/$defs/layoutContainerOptions"
+            }
+          ],
+          "properties": {
+            "gridColumns": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 16,
+              "description": "Horizontal layouts only. A child's `span` is read against this."
+            }
+          }
+        }
+      }
+    },
+    "group": {
+      "required": [
+        "elements"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        },
+        "options": {
+          "allOf": [
+            {
+              "$ref": "jsonforms-uischema.schema.json#/$defs/layoutContainerOptions"
+            }
+          ],
+          "properties": {
+            "collapsible": {
+              "type": "boolean"
+            },
+            "collapsed": {
+              "type": "boolean",
+              "description": "Initial state only, not a controlled value."
+            },
+            "showBorder": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "categorization": {
+      "required": [
+        "elements"
+      ],
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "variant": {
+              "enum": [
+                "tabs",
+                "stepper",
+                "accordion"
+              ],
+              "default": "tabs"
+            },
+            "initial": {
+              "description": "Which category opens first: a 0-based index or a category name.",
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "category": {
+      "required": [
+        "elements"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        }
+      }
+    },
+    "control": {
+      "required": [
+        "scope"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "description": "JSON Pointer into the schema, e.g. `#/properties/name`."
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {
+          "$ref": "#/$defs/controlOptions"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "format": {
+                    "const": "date"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              }
+            },
+            "required": [
+              "options"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "views": {
+                    "items": {
+                      "enum": [
+                        "year",
+                        "month",
+                        "day"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "A date control offers calendar views only."
+        },
+        {
+          "if": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "format": {
+                    "const": "time"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              }
+            },
+            "required": [
+              "options"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "views": {
+                    "items": {
+                      "enum": [
+                        "hours",
+                        "minutes",
+                        "seconds"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "A time control offers time columns only."
+        },
+        {
+          "if": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "format": {
+                    "const": "date-time"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              }
+            },
+            "required": [
+              "options"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "properties": {
+                  "views": {
+                    "items": {
+                      "enum": [
+                        "year",
+                        "month",
+                        "day",
+                        "hours",
+                        "minutes",
+                        "seconds"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "A date-time control offers both."
+        }
+      ]
+    },
+    "controlOptions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Options a Control may carry. Which apply depends on the schema the scope resolves to; this schema does not try to correlate the two, because the renderer chosen depends on the data schema, not on the UI schema alone.",
+      "properties": {
+        "format": {
+          "type": "string",
+          "description": "A renderer-selection hint, and deliberately NOT a closed enum. It is distinct from the *schema's* `format`, which core's `formatIs` tester reads: this one asks for a presentation. Values in use across this repository include radio, date, date-time, time, password, table, and - with the extended set - code, duration and color. A renderer set downstream may add its own, so an unknown value is preserved and ignored rather than rejected.",
+          "examples": [
+            "radio",
+            "date",
+            "date-time",
+            "time",
+            "password",
+            "table",
+            "code",
+            "duration",
+            "color"
+          ]
+        },
+        "variant": {
+          "description": "Requests a presentation the automatic choice would not make. A reserved portable name and a dispatch input, which is why it is never namespaced.",
+          "examples": [
+            "radio",
+            "chips",
+            "multi-select",
+            "ag-grid",
+            "autocomplete",
+            "table",
+            "tuple",
+            "stepper",
+            "accordion"
+          ],
+          "type": "string"
+        },
+        "focus": {
+          "type": "boolean"
+        },
+        "clearable": {
+          "type": "boolean"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "readonly": {
+          "type": "boolean"
+        },
+        "restrict": {
+          "type": "boolean",
+          "description": "Prevention rather than only validation, for this control."
+        },
+        "multi": {
+          "type": "boolean",
+          "description": "Multi-line text."
+        },
+        "autocomplete": {
+          "type": "boolean",
+          "description": "Searchable choice entry."
+        },
+        "filter": {
+          "description": "Choice filtering behaviour."
+        },
+        "trim": {
+          "type": "boolean",
+          "description": "Reserved; diagnosed rather than applied."
+        },
+        "detail": {
+          "$ref": "#/$defs/detail"
+        },
+        "summary": {
+          "$ref": "#/$defs/element",
+          "description": "A scoped Control naming the property a composite cell shows in one line. NOT a format string."
+        },
+        "elementLabelProp": {
+          "type": "string",
+          "description": "Item-relative dotted DATA path for an item's header label - not a JSON pointer."
+        },
+        "childLabelProp": {
+          "type": "string",
+          "description": "Legacy alias of elementLabelProp. The specification says not to introduce an additional alias; it is read for compatibility."
+        },
+        "showSortButtons": {
+          "type": "boolean",
+          "default": false,
+          "description": "Table and expandable: Move up/down. AG Grid: a drag-handle column."
+        },
+        "disableAdd": {
+          "type": "boolean",
+          "default": false
+        },
+        "disableRemove": {
+          "type": "boolean",
+          "default": false
+        },
+        "initCollapsed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Initialization only, not a controlled expansion value."
+        },
+        "collapseNewItems": {
+          "type": "boolean",
+          "default": false
+        },
+        "hideAvatar": {
+          "type": "boolean",
+          "default": false
+        },
+        "hideArraySummaryValidation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hides the child-error summary only. Validation is unaffected, and the array's own error explanation remains."
+        },
+        "table": {
+          "type": "boolean",
+          "description": "Forces the table renderer for an array whose items nest, which the detail renderer would otherwise outrank."
+        },
+        "cells": {
+          "type": "object",
+          "description": "Per-column options handed to the composite cell, keyed by property name.",
+          "additionalProperties": {
+            "$ref": "#/$defs/cellOptions"
+          }
+        },
+        "showEmptyButton": {
+          "type": "boolean",
+          "description": "Adds Clear to a composite detail dialog."
+        },
+        "emptyLabel": {
+          "type": "string"
+        },
+        "okLabel": {
+          "type": "string",
+          "description": "Used as an i18n key first, literally if it does not resolve."
+        },
+        "cancelLabel": {
+          "type": "string"
+        },
+        "confirmation": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/confirmationOperations"
+        },
+        "showBorder": {
+          "type": "boolean",
+          "default": true,
+          "description": "Tuple control: encloses the heading and positions."
+        },
+        "layout": {
+          "description": "Tuple position layout.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "formatMinimum": {
+          "description": "Temporal bound. May be a literal or an Ajv `$data` pointer."
+        },
+        "formatMaximum": {},
+        "formatExclusiveMinimum": {},
+        "formatExclusiveMaximum": {},
+        "views": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "year",
+              "month",
+              "day",
+              "hours",
+              "minutes",
+              "seconds"
+            ]
+          },
+          "description": "Which panels the picker offers. Date views select the calendar's granularity; time views select which time columns are drawn. The finest date view named is where the calendar lands. It does not change the save format - a year/month picker storing a full date is a legitimate request, and asking for hours and minutes does not stop seconds being stored. An array naming no view of a kind the control uses leaves that half to the display format, rather than blanking it."
+        },
+        "saveFormat": {
+          "type": "string",
+          "description": "dayjs token string the committed value is written with. A format the schema's `format` would reject is diagnosed."
+        },
+        "showActions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Stage picker changes until OK. False commits immediately."
+        },
+        "mask": {
+          "description": "Masked entry grammar."
+        },
+        "monaco": {
+          "$ref": "#/$defs/monacoOptions"
+        },
+        "language": {
+          "type": "string",
+          "description": "Code editor language."
+        },
+        ":language": {
+          "type": "string",
+          "description": "Dotted data path whose value chooses the language at runtime."
+        },
+        "convertJson": {
+          "type": "boolean",
+          "description": "Edit the parsed JSON value rather than the source text."
+        },
+        "propagateErrors": {
+          "type": "boolean",
+          "default": false,
+          "description": "Publish one summary additionalError per editor instance. The portable default is true; this implementation defaults to false (Adjustment 31.2)."
+        },
+        "height": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/dimension"
+        },
+        "width": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/dimension"
+        },
+        "theme": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "agGridOptions": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "AG Grid configuration, recursively merged over config.agGridOptions. Arrays - including columnDefs - replace rather than merge by index."
+        },
+        "gridHeight": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/dimension",
+          "default": "400px"
+        },
+        "gridWidth": {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/dimension",
+          "default": "100%"
+        },
+        "map": {
+          "description": "Map control configuration."
+        },
+        "components": {
+          "type": "object",
+          "description": "Components a template may reference by name."
+        }
+      }
+    },
+    "cellOptions": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "summary": {
+          "$ref": "#/$defs/element"
+        },
+        "detail": {
+          "$ref": "#/$defs/detail"
+        },
+        "showEmptyButton": {
+          "type": "boolean"
+        },
+        "emptyLabel": {
+          "type": "string"
+        },
+        "okLabel": {
+          "type": "string"
+        },
+        "cancelLabel": {
+          "type": "string"
+        },
+        "restrict": {
+          "type": "boolean"
+        }
+      }
+    },
+    "listWithDetail": {
+      "required": [
+        "scope"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "elementLabelProp": {
+              "type": "string"
+            },
+            "detail": {
+              "$ref": "#/$defs/detail"
+            },
+            "showSortButtons": {
+              "type": "boolean",
+              "default": false
+            },
+            "hideArraySummaryValidation": {
+              "type": "boolean",
+              "default": false
+            },
+            "restrict": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "button": {
+      "description": "Invokes a command. `action` and `script` are mutually exclusive; where both are present the ACTION runs and the conflict is warned, because an action goes to the host's handler where it can be logged or refused. See Adjustment 24.5.",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "description": "The command name handed to the host. Never derived from the label, which moves with the locale; `name` is the fallback."
+        },
+        "script": {
+          "type": "string",
+          "description": "An async function body, invoked with the ActionEvent as `this`. Requires jsonformsExtended.security.allowScriptEvaluation. A FUNCTION is also accepted by an in-memory TypeScript model and has no JSON spelling."
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Arguments for the command, so one action serves several buttons."
+        },
+        "icon": {
+          "type": "string"
+        },
+        "color": {
+          "enum": [
+            "primary",
+            "secondary",
+            "alternative",
+            "success",
+            "warning",
+            "error"
+          ],
+          "description": "Semantic names, not paint; the renderer set maps them."
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            },
+            "action": {
+              "type": "string",
+              "description": "Read beneath the top-level field."
+            },
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "Subject to the URL policy. An empty href is permitted and non-navigating."
+        },
+        "label": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "imageView": {
+      "description": "Top-level `src`/`scope`/`alt`; `options.src` is read beneath them for compatibility. See Adjustment 23.1.",
+      "properties": {
+        "src": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "description": "Reads the URL from the data instead of from the element."
+        },
+        "alt": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "alt": {
+              "type": "string"
+            },
+            "width": {
+              "$ref": "jsonforms-uischema.schema.json#/$defs/dimension"
+            },
+            "height": {
+              "$ref": "jsonforms-uischema.schema.json#/$defs/dimension"
+            }
+          }
+        }
+      }
+    },
+    "spacer": {
+      "properties": {
+        "options": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "$ref": "jsonforms-uischema.schema.json#/$defs/dimension",
+              "description": "Along the parent's axis; the parent applies it."
+            },
+            "vertical": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "separator": {
+      "properties": {
+        "options": {
+          "type": "object",
+          "properties": {
+            "vertical": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "templateLayout": {
+      "required": [
+        "template"
+      ],
+      "description": "A template rendered by a named engine. `template` is a STRING in the portable model; the React set also accepts a function, which has no JSON spelling and cannot be serialized.",
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "lang": {
+          "$ref": "#/$defs/templateLangRef"
+        },
+        "name": {
+          "type": "string"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          },
+          "description": "Children. A named child is addressable from the template; an unnamed one gets its decimal index as a fallback name."
+        }
+      }
+    },
+    "templateLangRef": {
+      "type": "string",
+      "description": "Not a closed enum: an unknown language must be diagnosed rather than interpreted as another engine, which a closed enum would make unauthorable.",
+      "examples": [
+        "ractive",
+        "jsx"
+      ]
+    },
+    "slot": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Which named child of the enclosing template to place."
+        }
+      }
+    },
+    "monacoOptions": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10
+        },
+        "autoGrow": {
+          "type": "boolean"
+        },
+        "minRows": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 3
+        },
+        "maxRows": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 30
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Passed to Monaco itself."
+        },
+        "initActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "detail": {
+      "description": "An item or object form. Either the literal `GENERATE`, a full element, or a layout given without a `type` - JSON Forms treats a bare `{ elements: [...] }` as a vertical layout, and fixtures rely on it. `anyOf`, not `oneOf`: a detail written WITH a `type` matches both the element branch and the bare-layout branch, and `oneOf` would call that ambiguity an error.",
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GENERATE"
+          ]
+        },
+        {
+          "$ref": "#/$defs/element"
+        },
+        {
+          "type": "object",
+          "required": [
+            "elements"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "elements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/element"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "label": {
+      "description": "A Label, plus the options the extended renderer set reads on one. References the base definition rather than restating it, so `text` and `options.format` keep one home.",
+      "allOf": [
+        {
+          "$ref": "jsonforms-uischema.schema.json#/$defs/label"
+        },
+        {
+          "properties": {
+            "options": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "markup": {
+                  "type": "string",
+                  "enum": [
+                    "plain",
+                    "markdown"
+                  ],
+                  "default": "plain",
+                  "description": "How the text is rendered. `markdown` parses it with the host's configured profile; anything other than these two is reported beside the text rather than guessed at. A renderer set that does not implement this ignores the option and shows the text as written, which is why this is an option and not an element type."
+                },
+                "typography": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Whether to wrap the rendered text in the UI library's own text components. Overrides jsonformsExtended.markup.typography for this element."
+                },
+                "interpolate": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Evaluates the {...} placeholders in this element's text. A single { opens a placeholder and {{ emits a literal brace - inverted from Mustache, so {{data.x}} is literal text. Inside is an expression, not merely a path. A renderer set that does not implement this ignores the option and shows the text as written."
+                },
+                "textParams": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "description": "Named values exposed to the expressions as bare identifiers. Always in scope, unlike the data/item/config/context namespaces, which require jsonformsExtended.dynamicValues.enabled."
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

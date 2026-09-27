@@ -1,0 +1,22 @@
+{
+  "en": {
+    "joining.text": "**Joining instructions.** Doors open at 09:00. Bring the confirmation email — the code in it looks like `WS-2417`. Read the [venue access notes](https://example.com/venue) before you travel, or write to [the organizers](mailto:workshops@example.com).",
+    "bring.text": "Please bring:\n\n- A laptop with a current browser\n- Your **photo ID**\n- ~~A printed ticket~~ (no longer needed)",
+    "policy.text": "# Cancellation\n\nCancel at least 14 days ahead for a full refund.",
+    "legacy.text": "Refunds are issued to the original payment method. See the [old policy page](http://example.com/policy-2019).",
+    "plainAsterisks.text": "Rates are 120 EUR* per seat (*excluding VAT).",
+    "unsupported.text": "This notice was authored for a markup language this renderer set does not implement.",
+    "fineprint.text": "Seats are held for **15 minutes** after you submit. See the [booking terms](https://example.com/terms).",
+    "error.required": "This field is required."
+  },
+  "bg": {
+    "joining.text": "**Инструкции за пристигане.** Вратите отварят в 09:00 ч. Носете имейла за потвърждение — кодът в него изглежда така: `WS-2417`. Прочетете [бележките за достъп до залата](https://example.com/venue) преди да тръгнете или пишете на [организаторите](mailto:workshops@example.com).",
+    "bring.text": "Моля, носете:\n\n- Лаптоп със съвременен браузър\n- Вашата **лична карта**\n- ~~Разпечатан билет~~ (вече не е необходим)",
+    "policy.text": "# Отказ от участие\n\nОткажете участие поне 14 дни предварително за пълно възстановяване на сумата.",
+    "legacy.text": "Сумите се възстановяват по първоначалния начин на плащане. Вижте [старата страница с условия](http://example.com/policy-2019).",
+    "plainAsterisks.text": "Цената е 120 EUR* на място (*без ДДС).",
+    "unsupported.text": "Това съобщение е написано за език за маркиране, който този набор от рендери не поддържа.",
+    "fineprint.text": "Местата се запазват за **15 минути** след изпращане. Вижте [условията за резервация](https://example.com/terms).",
+    "error.required": "Полето е задължително."
+  }
+}

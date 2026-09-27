@@ -1,36 +1,15 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
 import {
   and,
   ArrayLayoutProps,
   ArrayTranslations,
   composePaths,
+  Resolve,
   computeLabel,
   createDefaultValue,
   deriveTypes,
+  errorsAt,
   findUISchema,
+  formatErrorMessage,
   RankedTester,
   rankWith,
   schemaTypeIs,
@@ -41,11 +20,13 @@ import {
   withArrayTranslationProps,
   withJsonFormsArrayLayoutProps,
   withTranslateProps,
+  useJsonForms,
 } from '@jsonforms/react';
-import { Col, Empty, List, Row } from 'antd';
+import { Col, Empty, Listy, Row } from 'antd';
 
 import range from 'lodash/range';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useConfirmation } from '../util/useConfirmation';
 import { ArrayLayoutRenderer } from '../layouts/ArrayLayoutRenderer';
 import { ArrayLayoutToolbar } from '../layouts/ArrayToolbar';
 import ListWithDetailMasterItem from './ListWithDetailMasterItem';
@@ -77,16 +58,42 @@ export const ListWithDetailRenderer = (
     translations,
   } = props;
   const [selectedIndex, setSelectedIndex] = useState(undefined);
+  const confirmation = useConfirmation();
+  const ctx = useJsonForms();
   const handleRemoveItem = useCallback(
     (p: string, value: any) => () => {
-      removeItems(p, [value])();
-      if (selectedIndex === value) {
-        setSelectedIndex(undefined);
-      } else if (selectedIndex > value) {
-        setSelectedIndex(selectedIndex - 1);
-      }
+      const remove = () => {
+        removeItems(p, [value])();
+        if (selectedIndex === value) {
+          setSelectedIndex(undefined);
+        } else if (selectedIndex > value) {
+          setSelectedIndex(selectedIndex - 1);
+        }
+      };
+      // Section 14's `always` fallback: this used to remove silently.
+      confirmation.request({
+        operation: 'delete',
+        catalogId: 'listWithDetail',
+        /*
+          `data` on an array layout is the item **count**, not the array, so
+          the item has to be read from the form's own data. Reading it from
+          `data` yielded `undefined`, and a policy told nothing is being
+          discarded does not prompt.
+        */
+        discarded: [Resolve.data(ctx.core?.data, composePaths(p, `${value}`))],
+        options: props.uischema?.options as Record<string, unknown> | undefined,
+        config,
+        perform: remove,
+      });
     },
-    [removeItems, setSelectedIndex]
+    [
+      confirmation,
+      config,
+      ctx.core?.data,
+      props.uischema,
+      removeItems,
+      selectedIndex,
+    ]
   );
   const handleListItemClick = useCallback(
     (index: number) => () => setSelectedIndex(index),
@@ -110,6 +117,20 @@ export const ListWithDetailRenderer = (
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  /*
+    `errors` on an array control is the control's own errors followed by a
+    combined child summary; hiding the summary shows only the former.
+  */
+  const ownErrors = formatErrorMessage(
+    errorsAt(
+      path,
+      schema,
+      (errorPath: string) => errorPath === path
+    )(ctx.core?.errors ?? []).map((error) => error.message)
+  );
+  const summaryErrors = appliedUiSchemaOptions.hideArraySummaryValidation
+    ? ownErrors
+    : errors;
   const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
   const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
 
@@ -131,63 +152,69 @@ export const ListWithDetailRenderer = (
   }
 
   return (
-    <ArrayLayoutToolbar
-      translations={translations}
-      label={computeLabel(
-        label,
-        required,
-        appliedUiSchemaOptions.hideRequiredAsterisk
-      )}
-      description={description}
-      errors={errors}
-      path={path}
-      enabled={enabled}
-      addItem={addItem}
-      createDefault={handleCreateDefaultValue}
-      disableAdd={doDisableAdd}
-    >
-      <Row gutter={8}>
-        <Col xs={6}>
-          {data > 0 ? (
-            <List
-              dataSource={range(data)}
-              renderItem={(_item, index) => (
-                <ListWithDetailMasterItem
-                  index={index}
-                  path={path}
-                  schema={schema}
-                  enabled={enabled}
-                  handleSelect={handleListItemClick}
-                  removeItem={handleRemoveItem}
-                  selected={selectedIndex === index}
-                  key={index}
-                  uischema={foundUISchema}
-                  childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                  translations={translations}
-                  disableRemove={doDisableRemove}
-                />
-              )}
-            ></List>
-          ) : (
-            <Empty description={translations.noDataMessage} />
-          )}
-        </Col>
-        <Col xs={18}>
-          {selectedIndex !== undefined ? (
-            <JsonFormsDispatch
-              renderers={renderers}
-              cells={cells}
-              visible={visible}
-              schema={schema}
-              uischema={foundUISchema}
-              path={composePaths(path, `${selectedIndex}`)}
-            />
-          ) : (
-            <Empty description={translations.noSelection} />
-          )}
-        </Col>
-      </Row>
-    </ArrayLayoutToolbar>
+    <>
+      {confirmation.dialog}
+      <ArrayLayoutToolbar
+        translations={translations}
+        label={computeLabel(
+          label,
+          required,
+          appliedUiSchemaOptions.hideRequiredAsterisk
+        )}
+        description={description}
+        errors={summaryErrors}
+        path={path}
+        enabled={enabled}
+        addItem={addItem}
+        createDefault={handleCreateDefaultValue}
+        disableAdd={doDisableAdd}
+      >
+        <Row gutter={8}>
+          <Col xs={6}>
+            {data > 0 ? (
+              <Listy
+                items={range(data)}
+                rowKey={(index) => index}
+                styles={{ item: { padding: 0 } }}
+                itemRender={(index) => (
+                  <ListWithDetailMasterItem
+                    index={index}
+                    path={path}
+                    schema={schema}
+                    enabled={enabled}
+                    handleSelect={handleListItemClick}
+                    removeItem={handleRemoveItem}
+                    selected={selectedIndex === index}
+                    key={index}
+                    uischema={foundUISchema}
+                    childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                    translations={translations}
+                    disableRemove={doDisableRemove}
+                    hideAvatar={appliedUiSchemaOptions.hideAvatar === true}
+                  />
+                )}
+              />
+            ) : (
+              <Empty description={translations.noDataMessage} />
+            )}
+          </Col>
+          <Col xs={18}>
+            {selectedIndex !== undefined ? (
+              <JsonFormsDispatch
+                renderers={renderers}
+                cells={cells}
+                visible={visible}
+                schema={schema}
+                uischema={foundUISchema}
+                path={composePaths(path, `${selectedIndex}`)}
+              />
+            ) : (
+              <Empty description={translations.noSelection} />
+            )}
+          </Col>
+        </Row>
+      </ArrayLayoutToolbar>
+    </>
   );
 };
 

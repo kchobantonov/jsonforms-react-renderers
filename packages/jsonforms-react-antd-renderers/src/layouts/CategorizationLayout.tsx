@@ -1,34 +1,9 @@
-/*
-  The MIT License
-
-  Copyright (c) 2017-2019 EclipseSource Munich
-  https://github.com/eclipsesource/jsonforms
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-*/
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   and,
   Categorization,
   Category,
   deriveLabelForUISchemaElement,
-  isVisible,
   RankedTester,
   rankWith,
   StatePropsOfLayout,
@@ -41,6 +16,8 @@ import {
   withJsonFormsLayoutProps,
   withTranslateProps,
 } from '@jsonforms/react';
+import { CategoryHeader } from './CategoryHeader';
+import { useCategorySelection } from '../util/categoryState';
 import {
   AjvProps,
   AntdLayoutRenderer,
@@ -101,26 +78,25 @@ export const CategorizationLayoutRenderer = (
     t,
   } = props;
   const categorization = uischema as Categorization;
-  const [previousCategorization, setPreviousCategorization] =
-    useState<Categorization>(uischema as Categorization);
-  const [activeCategory, setActiveCategory] = useState<number>(selected ?? 0);
-  const categories = useMemo(
-    () =>
-      categorization.elements.filter((category: Category) =>
-        isVisible(category, data, undefined, ajv, config)
-      ),
-    [categorization, data, ajv, config]
+  // Visibility, `options.initial` and the "selected category became hidden"
+  // rule are the same for tabs, stepper and accordion, so section 8's
+  // navigation contract is implemented once and shared.
+  const { categories, active, select } = useCategorySelection(
+    categorization,
+    data,
+    ajv,
+    config,
+    selected
   );
 
-  if (categorization !== previousCategorization) {
-    setActiveCategory(0);
-    setPreviousCategorization(categorization);
-  }
-
-  const safeCategory =
-    activeCategory >= categorization.elements.length ? 0 : activeCategory;
-  const childProps: AntdLayoutRendererProps = {
-    elements: categories[safeCategory] ? categories[safeCategory].elements : [],
+  /*
+    Per category, not per selection. antd keeps a tab panel mounted once it has
+    been visited, so a panel built from `categories[active]` goes on rendering
+    whatever is selected now - and the panels left behind end up duplicating
+    the selected category instead of holding their own.
+  */
+  const childProps = (category: Category): AntdLayoutRendererProps => ({
+    elements: category.elements ?? [],
     schema,
     path,
     direction: 'column',
@@ -128,14 +104,14 @@ export const CategorizationLayoutRenderer = (
     visible,
     renderers,
     cells,
-  };
+  });
   const onTabChange = (value: string) => {
     const category = parseInt(value);
 
     if (onChange) {
-      onChange(category, safeCategory);
+      onChange(category, active);
     }
-    setActiveCategory(category);
+    select(category);
   };
 
   const tabLabels = useMemo(() => {
@@ -148,14 +124,26 @@ export const CategorizationLayoutRenderer = (
 
   return (
     <Tabs
-      defaultActiveKey={safeCategory?.toString()}
+      /*
+        Controlled, not `defaultActiveKey`. An uncontrolled Tabs keeps its own
+        index, so when the selected category was hidden by a rule the tab strip
+        went on pointing at that slot and showed a different category's panel.
+      */
+      activeKey={String(active)}
       onChange={onTabChange}
       items={categories.map(
-        (_, idx: number) =>
+        (category: Category, idx: number) =>
           ({
-            label: tabLabels[idx],
+            label: (
+              <CategoryHeader
+                category={category}
+                label={tabLabels[idx]}
+                path={path}
+                config={config}
+              />
+            ),
             key: String(idx),
-            children: <AntdLayoutRenderer {...childProps} />,
+            children: <AntdLayoutRenderer {...childProps(category)} />,
           } as any)
       )}
     ></Tabs>

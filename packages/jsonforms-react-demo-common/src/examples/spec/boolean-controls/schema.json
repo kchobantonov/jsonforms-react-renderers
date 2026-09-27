@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Employee onboarding consent",
+  "required": [
+    "notifications"
+  ],
+  "properties": {
+    "notifications": {
+      "type": "boolean",
+      "title": "Send notifications",
+      "description": "Required: both true and false are valid answers, absence is not."
+    },
+    "newsletter": {
+      "type": "boolean",
+      "title": "Subscribe to the newsletter",
+      "description": "Optional, and unanswered on purpose."
+    },
+    "remoteWorker": {
+      "type": "boolean",
+      "title": "Works remotely",
+      "description": "Shown as a switch rather than a checkbox."
+    },
+    "handbookAccepted": {
+      "type": "boolean",
+      "const": true,
+      "title": "I accept the employee handbook",
+      "description": "Agreement: only true is valid. The widget does not imply this - const does."
+    },
+    "payrollOptOut": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "title": "Opt out of payroll emails",
+      "description": "Nullable, so null is a permitted stored value."
+    },
+    "legacyFlag": {
+      "type": "boolean",
+      "title": "Legacy flag",
+      "description": "Holds the string \"false\", which is not a boolean at all."
+    },
+    "importedCount": {
+      "type": "boolean",
+      "title": "Imported flag",
+      "description": "Holds the number 0, which must not read as a deliberate no."
+    },
+    "channels": {
+      "type": "array",
+      "title": "Notification channels",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "Email",
+          "SMS",
+          "Push"
+        ]
+      },
+      "description": "Checkboxes driven by array membership, not by a boolean value."
+    },
+    "team": {
+      "type": "array",
+      "title": "Team",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "onCall": {
+            "type": "boolean",
+            "title": "On call"
+          }
+        }
+      }
+    },
+    "escalation": {
+      "type": "array",
+      "title": "Escalation channels",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "Email",
+          "SMS",
+          "Push"
+        ]
+      },
+      "description": "The same checkbox group stacked vertically."
+    }
+  }
+}

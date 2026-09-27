@@ -1,0 +1,110 @@
+{
+  "type": "object",
+  "properties": {
+    "notes": {
+      "type": "object",
+      "title": "Dispatch notes",
+      "description": "Dynamic properties. Delete asks, because the fallback is always.",
+      "additionalProperties": { "type": "string" }
+    },
+    "lines": {
+      "type": "array",
+      "title": "Order lines",
+      "description": "An array table. Row delete asks.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "title": "Code" },
+          "quantity": { "type": "integer", "title": "Quantity" }
+        }
+      }
+    },
+    "quietLines": {
+      "type": "array",
+      "title": "Scratch lines",
+      "description": "The same table with confirmation turned off for delete.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "title": "Code" }
+        }
+      }
+    },
+    "stops": {
+      "type": "array",
+      "title": "Route stops",
+      "description": "Nested items, so the expandable array layout renders. Item delete asks.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "title": "Stop" },
+          "window": {
+            "type": "object",
+            "title": "Window",
+            "properties": {
+              "from": { "type": "string", "title": "From" },
+              "to": { "type": "string", "title": "To" }
+            }
+          }
+        }
+      }
+    },
+    "drivers": {
+      "type": "array",
+      "title": "Drivers",
+      "description": "A list with detail. Removing the selected entry asks.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "licence": { "type": "string", "title": "Licence" }
+        }
+      }
+    },
+    "charges": {
+      "type": "array",
+      "title": "Charges",
+      "description": "An AG Grid. Select several rows and remove them: one prompt covers the batch.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string", "title": "Charge" },
+          "amount": { "type": "number", "title": "Amount" }
+        }
+      }
+    },
+    "payload": {
+      "type": ["object", "array", "string", "number", "boolean", "null"],
+      "title": "Payload",
+      "description": "A mixed value holding nested structures. Type changes use complex; tree Delete uses always.",
+      "additionalProperties": {
+        "type": ["object", "array", "string", "number", "boolean", "null"]
+      },
+      "items": {
+        "type": ["object", "array", "string", "number", "boolean", "null"]
+      }
+    },
+    "scalar": {
+      "type": ["string", "number", "null"],
+      "title": "Reference",
+      "description": "Also mixed, but holding a simple value: complex does not ask."
+    },
+    "contact": {
+      "type": "object",
+      "title": "Contact",
+      "description": "A oneOf. Changing branch asks; so does clearing it.",
+      "oneOf": [
+        {
+          "title": "By email",
+          "properties": { "email": { "type": "string", "title": "Email" } },
+          "required": ["email"]
+        },
+        {
+          "title": "By phone",
+          "properties": { "phone": { "type": "string", "title": "Phone" } },
+          "required": ["phone"]
+        }
+      ]
+    }
+  }
+}
