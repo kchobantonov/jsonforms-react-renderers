@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useDebouncedChange } from '../src/util/debounce';
+import { useDebouncedChange } from '../src/debounce';
 
 /** Minimal consumer of the hook, so the race can be driven directly. */
 const Probe = ({

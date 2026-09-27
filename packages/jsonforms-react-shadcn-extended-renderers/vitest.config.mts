@@ -1,11 +1,18 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
-const fromPackage = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+const fromPackage = (path: string) =>
+  fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
   resolve: {
     alias: [
+      {
+        find: '@chobantonov/jsonforms-react-renderer-common',
+        replacement: fileURLToPath(
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+        ),
+      },
       {
         find: '@chobantonov/jsonforms-react-shadcn-renderers',
         replacement: fromPackage('../jsonforms-react-shadcn-renderers/src'),

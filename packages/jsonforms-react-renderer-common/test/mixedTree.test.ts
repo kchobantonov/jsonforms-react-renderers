@@ -2,7 +2,7 @@ import {
   buildMixedTree,
   deleteMixedTreeNode,
   renameMixedTreeNode,
-} from '../../src/complex/mixed/mixedTree';
+} from '../src/mixedTree';
 
 describe('mixed tree mutations', () => {
   it('deletes an array item without changing the original data', () => {

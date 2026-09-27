@@ -8,6 +8,12 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@chobantonov/jsonforms-react-renderer-common',
+        replacement: fileURLToPath(
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+        ),
+      },
+      {
         find: '@chobantonov/jsonforms-react-antd-renderers',
         replacement: fromPackage('./src'),
       },

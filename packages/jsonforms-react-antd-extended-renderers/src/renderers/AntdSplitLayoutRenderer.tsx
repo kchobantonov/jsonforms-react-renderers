@@ -1,3 +1,4 @@
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
 import {
   initialSplitSizes,
   splitCssSize,
@@ -8,16 +9,11 @@ import {
   LayoutProps,
   or,
   RankedTester,
-  isVisible,
   rankWith,
   UISchemaElement,
   uiTypeIs,
 } from '@jsonforms/core';
-import {
-  JsonFormsDispatch,
-  useJsonForms,
-  withJsonFormsLayoutProps,
-} from '@jsonforms/react';
+import { JsonFormsDispatch, withJsonFormsLayoutProps } from '@jsonforms/react';
 import { Splitter } from 'antd';
 import React from 'react';
 
@@ -33,7 +29,6 @@ export const antdSplitLayoutTester: RankedTester = rankWith(
 );
 
 export const AntdSplitLayout = (props: LayoutProps) => {
-  const ctx = useJsonForms();
   const layout = props.uischema as Layout;
   const vertical = layout.type === 'VerticalLayout';
   const options = { ...props.config, ...layout.options };
@@ -41,17 +36,11 @@ export const AntdSplitLayout = (props: LayoutProps) => {
     "Only effective visible UI-schema children participate. Hidden children
     leave layout." A hidden pane used to keep its share and its separator.
   */
-  const elements = (layout.elements ?? []).filter((element) => {
-    const ajv = ctx.core?.ajv;
-    try {
-      return ajv
-        ? isVisible(element, ctx.core?.data, props.path, ajv, props.config)
-        : true;
-    } catch {
-      // A malformed rule is the author's problem, not a reason to drop a pane.
-      return true;
-    }
-  });
+  const elements = useEffectiveElements(
+    layout.elements,
+    props.path,
+    props.config
+  );
   /* "Initial sizes use normal sizing", not equal shares. */
   const shares = initialSplitSizes(elements);
   /* "`resizable` defaults true." */

@@ -4,6 +4,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
+      '@chobantonov/jsonforms-react-renderer-common': fileURLToPath(
+        new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+      ),
       '@monaco-editor/react': fileURLToPath(
         new URL(
           '../jsonforms-react-extended-renderers/node_modules/@monaco-editor/react/dist/index.mjs',

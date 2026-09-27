@@ -1,19 +1,15 @@
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
 import {
   Layout,
   LayoutProps,
   RankedTester,
   UISchemaElement,
   and,
-  isVisible,
   or,
   rankWith,
   uiTypeIs,
 } from '@jsonforms/core';
-import {
-  JsonFormsDispatch,
-  useJsonForms,
-  withJsonFormsLayoutProps,
-} from '@jsonforms/react';
+import { JsonFormsDispatch, withJsonFormsLayoutProps } from '@jsonforms/react';
 import React from 'react';
 
 export const sharedSplitLayoutTester: RankedTester = rankWith(
@@ -60,18 +56,11 @@ export const SharedSplitLayout = (props: LayoutProps) => {
     "Only effective visible UI-schema children participate. Hidden children
     leave layout." A hidden pane used to keep its share and its separator.
   */
-  const ctx = useJsonForms();
-  const elements = (layout.elements ?? []).filter((element) => {
-    const ajv = ctx.core?.ajv;
-    try {
-      return ajv
-        ? isVisible(element, ctx.core?.data, props.path, ajv, props.config)
-        : true;
-    } catch {
-      // A malformed rule is the author's problem, not a reason to drop a pane.
-      return true;
-    }
-  });
+  const elements = useEffectiveElements(
+    layout.elements,
+    props.path,
+    props.config
+  );
   const count = elements.length;
   const [stored, setSizes] = React.useState<number[]>([]);
   const sizes = stored.length === count ? stored : initialSplitSizes(elements);

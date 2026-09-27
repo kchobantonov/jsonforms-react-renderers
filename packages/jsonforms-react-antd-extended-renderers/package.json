@@ -73,6 +73,7 @@
     "vitest": "2.1.9"
   },
   "dependencies": {
-    "maska": "^3.2.1"
+    "maska": "^3.2.1",
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   }
 }

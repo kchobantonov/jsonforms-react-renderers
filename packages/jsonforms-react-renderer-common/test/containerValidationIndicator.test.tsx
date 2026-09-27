@@ -5,8 +5,8 @@ import {
   resolveIndicatorOption,
   sharedErrorIndex,
   displayableErrors,
-} from '../src/util/validationIndicator';
-import { boundDataPaths } from '../src/util/groupState';
+} from '../src/validationIndicator';
+import { boundDataPaths } from '../src/groupState';
 
 const err = (instancePath: string) => ({ instancePath } as any);
 

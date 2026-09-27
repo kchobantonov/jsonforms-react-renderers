@@ -89,6 +89,7 @@ apps/
 The shared and aggregate projects are:
 
 ```text
+packages/jsonforms-react-renderer-common/   Shared UI-independent renderer behavior
 packages/jsonforms-react-demo-common/       Shared demo state and contracts
 packages/jsonforms-react-extended-renderers/ Shared optional behavior
 apps/jsonforms-react-examples-app/           Selector for all renderer demos

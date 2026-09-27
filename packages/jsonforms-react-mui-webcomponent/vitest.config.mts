@@ -4,6 +4,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
+      '@chobantonov/jsonforms-react-renderer-common': fileURLToPath(
+        new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+      ),
       '@jsonforms/material-renderers': fileURLToPath(
         new URL(
           './node_modules/@jsonforms/material-renderers/lib/jsonforms-react-material.esm.js',

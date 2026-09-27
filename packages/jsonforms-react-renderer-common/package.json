@@ -1,0 +1,64 @@
+{
+  "name": "@chobantonov/jsonforms-react-renderer-common",
+  "version": "0.0.1",
+  "description": "UI-independent JSON Forms React renderer behavior",
+  "license": "MIT",
+  "main": "lib/index.cjs.js",
+  "module": "lib/index.esm.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.esm.js",
+      "require": "./lib/index.cjs.js"
+    },
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "import": "./lib/*.esm.js",
+      "require": "./lib/*.cjs.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "lib/*"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p test/tsconfig.json",
+    "test": "vitest run",
+    "clean": "rimraf lib coverage"
+  },
+  "dependencies": {
+    "lodash": "^4.18.1",
+    "maska": "^3.2.1",
+    "dayjs": "^1.11.11",
+    "ajv": "^8.20.0"
+  },
+  "peerDependencies": {
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@types/lodash": "^4.14.149",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "jsdom": "^22.0.0",
+    "typescript": "~4.9.5",
+    "vite": "^5.4.11",
+    "vitest": "2.1.9",
+    "rimraf": "^3.0.2",
+    "tslib": "^2.5.0"
+  }
+}

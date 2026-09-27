@@ -48,7 +48,8 @@
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
     "dayjs": "^1.11.11",
-    "lodash": "^4.18.1"
+    "lodash": "^4.18.1",
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   },
   "peerDependencies": {
     "@ant-design/icons": "6.3.2",

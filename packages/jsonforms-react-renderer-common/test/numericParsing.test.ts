@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toCommittableNumber } from '../src/util/numeric';
+import { toCommittableNumber } from '../src/numeric';
 
 describe('numeric parsing', () => {
   describe('the truncations the specification names', () => {

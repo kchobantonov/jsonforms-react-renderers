@@ -14,7 +14,7 @@ import {
   storedValue,
   toMaskTokens,
   withinMaxLength,
-} from '../src/util/maskFormat';
+} from '../src/maskFormat';
 
 const maskFor = (options: Record<string, unknown>): Mask =>
   createMask(resolveMaskSettings(options, undefined)!);

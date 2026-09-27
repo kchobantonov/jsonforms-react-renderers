@@ -1,4 +1,4 @@
-import { formatDuration, parseDuration } from '../src/renderers/duration';
+import { formatDuration, parseDuration } from '../src/duration';
 
 describe('Ant Design duration utilities', () => {
   it('round trips ISO 8601 duration values', () => {

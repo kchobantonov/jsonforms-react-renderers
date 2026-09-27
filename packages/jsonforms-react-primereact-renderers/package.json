@@ -47,7 +47,8 @@
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
     "dayjs": "^1.11.11",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   },
   "peerDependencies": {
     "@emotion/react": "^11.5.0",

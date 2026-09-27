@@ -8,6 +8,12 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@chobantonov/jsonforms-react-renderer-common',
+        replacement: fileURLToPath(
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+        ),
+      },
+      {
         find: '@chobantonov/jsonforms-react-antd-renderers',
         replacement: fromPackage('../jsonforms-react-antd-renderers/src'),
       },
@@ -21,7 +27,7 @@ export default defineConfig({
         */
         find: '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers',
         replacement: fromPackage(
-          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers',
+          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers'
         ),
       },
       {

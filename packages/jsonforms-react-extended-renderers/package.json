@@ -48,7 +48,8 @@
     "markdown-it": "^14.1.0",
     "ractive": "^1.4.4",
     "sucrase": "^3.35.0",
-    "valtio": "^1.11.2"
+    "valtio": "^1.11.2",
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   },
   "peerDependencies": {
     "@jsonforms/core": "3.9.0-alpha.1",

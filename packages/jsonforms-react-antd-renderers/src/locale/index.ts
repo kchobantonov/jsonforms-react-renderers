@@ -1,2 +1,4 @@
-export * from './bg';
-export * from './de';
+export {
+  bgRendererLocale,
+  deRendererLocale,
+} from '@chobantonov/jsonforms-react-renderer-common/locale/index';
