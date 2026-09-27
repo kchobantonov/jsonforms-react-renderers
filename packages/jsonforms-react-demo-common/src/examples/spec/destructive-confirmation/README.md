@@ -2,14 +2,13 @@
 
 **Example ID:** `destructive-confirmation`\
 **Demo entry:** **Spec: Destructive-change confirmation** (`#spec-destructive-confirmation`)\
-**Domain:** dispatch cleanup\
+**Domain:** project cleanup\
 **Specs covered:**
 
 - [Portable spec §14 — Shared destructive-change confirmation](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §15 — Readonly, restrict and mutation constraints](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §17 — The confirmation policy](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
 - [Adjustments §1 — configuration namespacing](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §3.3](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 **Every** renderer that discards data, under **one** policy. The point of the
 example is that confirmation is not a property of a widget: the same `always`
@@ -34,10 +33,10 @@ own detail forms.
 
 | Operation | Catalog id | Control | Fallback |
 | --- | --- | --- | --- |
-| Dynamic property delete | `additionalProperties` | **Dispatch notes** | `always` |
+| Dynamic property delete | `additionalProperties` | **Project notes** | `always` |
 | Array table row delete | `arrayTable` | **Order lines** | `always` |
-| Array layout item delete | `arrayLayout` | **Route stops** | `always` |
-| List-with-detail item delete | `listWithDetail` | **Drivers** | `always` |
+| Array layout item delete | `arrayLayout` | **Project milestones** | `always` |
+| List-with-detail item delete | `listWithDetail` | **Coordinators** | `always` |
 | AG Grid selected-row delete | `agGrid` | **Charges** | `always` |
 | Mixed tree node delete | `mixed` | **Payload**, in the structure tree | `always` |
 | Mixed type change | `mixed` | **Payload** / **Reference** | `complex` |
@@ -54,13 +53,13 @@ fixing that is a separate change rather than a confirmation.
 ## What the form contains
 
 ```text
-Dispatch cleanup          config: default "always", mixed.typeChange "complex"
-  Dispatch notes     additionalProperties   -> delete asks
+Project cleanup          config: default "always", mixed.typeChange "complex"
+  Project notes     additionalProperties   -> delete asks
   Order lines        array table            -> row delete asks
   Scratch lines      array table            -> options.confirmation.delete "never"
   ---
-  Route stops        array layout           -> item delete asks
-  Drivers            list with detail       -> item delete asks
+  Project milestones        array layout           -> item delete asks
+  Coordinators            list with detail       -> item delete asks
   Charges            AG Grid                -> removing the selection asks, once
   ---
   Payload            mixed, nested object   -> type change asks (complex)
@@ -83,18 +82,18 @@ data here would suggest the two are connected.
 
 ### The policy is shared
 
-**Delete a dispatch note, then a row of Order lines, then a Route stop, then a
-Driver.** All four ask, because all four fall under the same `always`. Before
+**Delete a project note, then a row of Order lines, then a Project milestone, then a
+Coordinator.** All four ask, because all four fall under the same `always`. Before
 this policy existed only the table asked — not by design, but because each
 renderer had decided on its own.
 
 **Cancel one.** Nothing changes: not the data, not the selection, not which
 sections are open. Confirming performs the action once.
 
-**Select one Driver, then press Delete on the other.** The detail pane keeps
-showing the driver you were reading — pressing a row's action does not select
-that row. Cancel, and you are still on the same one. The same applies to Route
-stops, where a panel's Delete does not expand or collapse it. This is easy to
+**Select one Coordinator, then press Delete on the other.** The detail pane keeps
+showing the coordinator you were reading — pressing a row's action does not select
+that row. Cancel, and you are still on the same one. The same applies to Project
+milestones, where a panel's Delete does not expand or collapse it. This is easy to
 get wrong, because the *data* ends up correct either way; only the selection
 differs, and only when the row being deleted is not the row being read. See
 Adjustment 17.7.
@@ -105,7 +104,7 @@ Adjustment 17.7.
 batch, not one per row. Under `complex` it would appear if *any* selected row
 held something complex.
 
-**Delete `route` in the Payload tree** — a node that has children. One prompt.
+**Delete `assignment` in the Payload tree** — a node that has children. One prompt.
 The tree used to raise its own "and all of its nested content?" modal here *as
 well as* the shared one, and that second modal could not be switched off by any
 policy. See Adjustment 17.6.
@@ -130,9 +129,9 @@ building anything first:
 
 | Child | Value | Type change asks? |
 | --- | --- | --- |
-| `carrier` | `"Cascade Supplies"` | No — a string is not complex |
-| `route` | `{ origin, destination }` | Yes — a nonempty object |
-| `legs` | `["PDX-SLE", "SLE-EUG"]` | Yes — a nonempty array |
+| `supplier` | `"Cascade Supplies"` | No — a string is not complex |
+| `assignment` | `{ origin, destination }` | Yes — a nonempty object |
+| `phases` | `["PLAN-REVIEW", "REVIEW-DONE"]` | Yes — a nonempty array |
 | `blank` | `{}` | No — an empty container is a value, but not a complex one |
 
 **Change Payload's own type.** It holds an object with properties, so the
@@ -189,25 +188,6 @@ clear-value contract, not this policy.
 
 ## Status
 
-**Implemented** for every covered operation in this renderer set — the nine in
-the table above.
-
-The policy is in
-[`confirmation.ts`](../../../../../jsonforms-react-antd-renderers/src/util/confirmation.ts)
-with no React in it, and every renderer routes through
-[`useConfirmation`](../../../../../jsonforms-react-antd-renderers/src/util/useConfirmation.tsx).
-
-Covered by `confirmation.test.tsx` (the policy and dynamic properties),
-`arrayDeleteConfirmation.test.tsx` (the three array renderers),
-`confirmationRenderers.test.tsx` (mixed and `oneOf`),
-`gridDeleteConfirmation.test.tsx` and `confirmationExampleRenders.test.tsx`
-(the grid, and this fixture).
-
-**A note on the AG Grid entry.** That renderer lives in the framework-agnostic
-package, which must not depend on the antd set — so it takes a policy-free
-`useRemoveConfirmation` seam, and the antd side supplies the dialog and the
-`agGrid` catalog id. See Adjustment 17.5.
-
-**A note on which component asks.** The array table keeps the dialog it
-inherited from the upstream antd renderers; the rest share one. Only the
-*decision* is shared — §14 governs whether to ask, not which component asks.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

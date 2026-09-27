@@ -11,7 +11,6 @@
 - [Portable spec §18 — Literal-key editing](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §14 — Dynamic property names](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §6.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 Five objects whose keys are data rather than schema. The point of the example is
 that **a key is a value too**: what it may be called, whether it can be reached
@@ -37,7 +36,7 @@ No `uischemas.json`: nothing here needs a registered detail form.
 Inventory metadata
   Inventory labels      allowEmptyPropertyNames: true   -> 5 keys, incl. "" and "  spaced  "
   Telemetry readings   propertyNames: pattern+minLength -> "sensor-x" is too short  (invalid)
-  Carrier headers      additionalProperties: false      -> only x-carrier- / x-trace-
+  Supplier headers      additionalProperties: false      -> only x-supplier- / x-trace-
   ---
   Imported annotations free-form                        -> "legacy.key", "notes/1"
   ---
@@ -125,8 +124,8 @@ quota is unaffected either way — the control's own option has the last word.
 because it is eight characters and `minLength` is nine. `sensor-deck-b` is
 accepted. A pattern-only check would have taken both.
 
-**Carrier headers admits only what its patterns claim.** `additionalProperties`
-is `false`, so a name must match `^x-carrier-` or `^x-trace-`; `x-other-id` is
+**Supplier headers admits only what its patterns claim.** `additionalProperties`
+is `false`, so a name must match `^x-supplier-` or `^x-trace-`; `x-other-id` is
 refused.
 
 **Type `__proto__` into an Add box.** It is accepted and becomes an ordinary
@@ -167,22 +166,6 @@ themselves do not: they are data.
 
 ## Status
 
-**Implemented.** `allowEmptyPropertyNames` with element-over-config resolution,
-exact name preservation, the blank-label presentation, the empty-draft feedback
-rule, the isolated editor for unaddressable keys, full `propertyNames`
-evaluation and safe own-property writes are in
-[`additionalPropertyName.ts`](../../../../../jsonforms-react-antd-renderers/src/util/additionalPropertyName.ts),
-[`AdditionalProperties.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/AdditionalProperties.tsx)
-and
-[`AntdIsolatedPropertyEditor.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/additionalProperties/AntdIsolatedPropertyEditor.tsx).
-Covered by `test/additionalPropertyNames.test.tsx` and
-`test/emptyPropertyNames.test.tsx`.
-
-**A limitation worth knowing.** An isolated editor validates its own value, so
-errors on an empty-named or dotted property are shown beside that property but
-are **not** counted in the containing form's error list. That is the price of
-editing a property that has no data path; see Adjustment 14.
-
-**Not implemented:** delete confirmation for dynamic properties, and
-object-level error placement — see gaps
-[§6.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

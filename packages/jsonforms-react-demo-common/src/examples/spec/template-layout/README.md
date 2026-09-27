@@ -255,3 +255,9 @@ every panel rendered the *selected* category, so visiting a second tab left the
 first one — still mounted, merely hidden — rendering the selected category too,
 and both notes here came back identical. Fixed in `CategorizationLayout`, with
 `categorizationTabs.test.tsx` guarding it.
+
+## Rendering the error collection
+
+The JSX tab includes a plain list of `errors`. Set **Copies** to zero to trigger its `minimum: 1` schema error. The template uses HTML list semantics, so it
+does not depend on components injected by a particular UI library. An empty
+error collection produces an empty list.

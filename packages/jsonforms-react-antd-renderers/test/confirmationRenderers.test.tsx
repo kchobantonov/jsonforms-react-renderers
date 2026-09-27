@@ -141,32 +141,32 @@ describe('a mixed type change', () => {
     const { choose, prompted, promptFor, stored, unmount } = render(
       mixedSchema,
       mixedUi,
-      { payload: { carrier: 'Cascade Supplies' } }
+      { payload: { supplier: 'Cascade Supplies' } }
     );
     await settle();
     await choose('string');
     expect(prompted()).toBe(true);
     expect(promptFor()).toBe('typeChange');
     // Nothing committed yet.
-    expect(stored().payload).toEqual({ carrier: 'Cascade Supplies' });
+    expect(stored().payload).toEqual({ supplier: 'Cascade Supplies' });
     unmount();
   });
 
   it('performs the change once confirmed', async () => {
     const { choose, accept, stored, unmount } = render(mixedSchema, mixedUi, {
-      payload: { carrier: 'Cascade Supplies' },
+      payload: { supplier: 'Cascade Supplies' },
     });
     await settle();
     await choose('string');
     await accept();
-    expect(stored().payload).not.toEqual({ carrier: 'Cascade Supplies' });
+    expect(stored().payload).not.toEqual({ supplier: 'Cascade Supplies' });
     unmount();
   });
 
   /* "Inspect the old value, not the destination type." */
   it('does not ask when the old value is a simple one', async () => {
     const { choose, prompted, unmount } = render(mixedSchema, mixedUi, {
-      payload: 'LEG-14',
+      payload: 'TASK-14',
     });
     await settle();
     await choose('object');
@@ -188,7 +188,7 @@ describe('a mixed type change', () => {
     const { choose, prompted, unmount } = render(
       mixedSchema,
       { ...mixedUi, options: { confirmation: { typeChange: 'always' } } },
-      { payload: 'LEG-14' }
+      { payload: 'TASK-14' }
     );
     await settle();
     await choose('object');
@@ -200,7 +200,7 @@ describe('a mixed type change', () => {
     const { choose, prompted, unmount } = render(
       mixedSchema,
       { ...mixedUi, options: { confirmation: { typeChange: 'never' } } },
-      { payload: { carrier: 'Cascade Supplies' } }
+      { payload: { supplier: 'Cascade Supplies' } }
     );
     await settle();
     await choose('string');
@@ -210,13 +210,13 @@ describe('a mixed type change', () => {
 
   it('does nothing at all when the current type is chosen again', async () => {
     const { choose, prompted, stored, unmount } = render(mixedSchema, mixedUi, {
-      payload: { carrier: 'Cascade Supplies' },
+      payload: { supplier: 'Cascade Supplies' },
     });
     await settle();
     await choose('object');
     // "Selecting the already selected type/branch" is not a change.
     expect(prompted()).toBe(false);
-    expect(stored().payload).toEqual({ carrier: 'Cascade Supplies' });
+    expect(stored().payload).toEqual({ supplier: 'Cascade Supplies' });
     unmount();
   });
 });
@@ -248,24 +248,24 @@ const oneOfUi = { type: 'Control', scope: '#/properties/contact' } as any;
 describe('a oneOf branch change', () => {
   it('asks before replacing the current branch', async () => {
     const { choose, prompted, stored, unmount } = render(oneOfSchema, oneOfUi, {
-      contact: { email: 'dispatch@example.test' },
+      contact: { email: 'support@example.test' },
     });
     await settle();
     await choose('By phone');
     expect(prompted()).toBe(true);
-    expect(stored().contact).toEqual({ email: 'dispatch@example.test' });
+    expect(stored().contact).toEqual({ email: 'support@example.test' });
     unmount();
   });
 
   it('performs the change once confirmed', async () => {
     const { choose, accept, stored, unmount } = render(oneOfSchema, oneOfUi, {
-      contact: { email: 'dispatch@example.test' },
+      contact: { email: 'support@example.test' },
     });
     await settle();
     await choose('By phone');
     await accept();
     expect(stored().contact).not.toEqual({
-      email: 'dispatch@example.test',
+      email: 'support@example.test',
     });
     unmount();
   });
@@ -276,12 +276,12 @@ describe('a oneOf branch change', () => {
   */
   it('asks when the selection is cleared', async () => {
     const { clear, prompted, stored, unmount } = render(oneOfSchema, oneOfUi, {
-      contact: { email: 'dispatch@example.test' },
+      contact: { email: 'support@example.test' },
     });
     await settle();
     await clear();
     expect(prompted()).toBe(true);
-    expect(stored().contact).toEqual({ email: 'dispatch@example.test' });
+    expect(stored().contact).toEqual({ email: 'support@example.test' });
     unmount();
   });
 
@@ -326,7 +326,7 @@ describe('a oneOf branch change', () => {
     const { choose, prompted, unmount } = render(
       oneOfSchema,
       oneOfUi,
-      { contact: { email: 'dispatch@example.test' } },
+      { contact: { email: 'support@example.test' } },
       {
         jsonformsExtended: {
           confirmation: { renderers: { oneOf: { branchChange: 'never' } } },
@@ -359,9 +359,9 @@ const treeSchema = {
 const treeUi = { type: 'Control', scope: '#/properties/payload' } as any;
 const treeData = () => ({
   payload: {
-    carrier: 'Cascade Supplies',
-    route: { origin: 'Portland', destination: 'Salem' },
-    legs: ['PDX-SLE', 'SLE-EUG'],
+    supplier: 'Cascade Supplies',
+    assignment: { origin: 'Portland', destination: 'Salem' },
+    phases: ['PLAN-REVIEW', 'REVIEW-DONE'],
     blank: {},
   },
 });
@@ -395,10 +395,10 @@ describe('a mixed tree delete', () => {
       treeData()
     );
     await settle();
-    await deleteTreeNode(container, 'route');
+    await deleteTreeNode(container, 'assignment');
     expect(prompted()).toBe(true);
     expect(promptFor()).toBe('delete');
-    expect(stored().payload.route).toEqual({
+    expect(stored().payload.assignment).toEqual({
       origin: 'Portland',
       destination: 'Salem',
     });
@@ -412,13 +412,13 @@ describe('a mixed tree delete', () => {
       treeData()
     );
     await settle();
-    await deleteTreeNode(container, 'route');
+    await deleteTreeNode(container, 'assignment');
     await accept();
     expect(
-      Object.prototype.hasOwnProperty.call(stored().payload, 'route')
+      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment')
     ).toBe(false);
-    expect(stored().payload.legs).toEqual(['PDX-SLE', 'SLE-EUG']);
-    expect(stored().payload.carrier).toBe('Cascade Supplies');
+    expect(stored().payload.phases).toEqual(['PLAN-REVIEW', 'REVIEW-DONE']);
+    expect(stored().payload.supplier).toBe('Cascade Supplies');
     unmount();
   });
 
@@ -429,12 +429,12 @@ describe('a mixed tree delete', () => {
       treeData()
     );
     await settle();
-    await deleteTreeNode(container, 'route');
+    await deleteTreeNode(container, 'assignment');
     expect(prompted()).toBe(false);
     // Proves the delete is wired up, so the tests above are not passing
     // merely because nothing can be deleted.
     expect(
-      Object.prototype.hasOwnProperty.call(stored().payload, 'route')
+      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment')
     ).toBe(false);
     unmount();
   });
@@ -448,7 +448,7 @@ describe('a mixed tree delete', () => {
   it('asks exactly once for a node that has children', async () => {
     const { container, unmount } = render(treeSchema, treeUi, treeData());
     await settle();
-    await deleteTreeNode(container, 'route');
+    await deleteTreeNode(container, 'assignment');
     expect(document.querySelectorAll('.ant-modal')).toHaveLength(1);
     expect(
       document.querySelector('.ant-modal .ant-modal-title')?.textContent

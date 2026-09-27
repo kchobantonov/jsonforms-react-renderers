@@ -1,0 +1,18 @@
+{
+  "en": {
+    "intro.text": "Attach local files and inspect the stored value. Each main attachment is limited to 1 MiB; the small text attachment must contain 1–1023 bytes.",
+    "logo.label": "Supplier logo",
+    "contract.label": "Signed contract",
+    "payload.label": "Encoded attachment",
+    "receipt.label": "Receipt",
+    "bounded.label": "Small text attachment"
+  },
+  "bg": {
+    "intro.text": "Прикачете локални файлове и разгледайте записаната стойност. Основните прикачени файлове са ограничени до 1 MiB; малкият текстов файл трябва да съдържа 1–1023 байта.",
+    "logo.label": "Лого на доставчика",
+    "contract.label": "Подписан договор",
+    "payload.label": "Кодиран прикачен файл",
+    "receipt.label": "Разписка",
+    "bounded.label": "Малък текстов файл"
+  }
+}

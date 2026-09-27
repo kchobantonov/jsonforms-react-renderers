@@ -24,6 +24,6 @@
     },
     "isBusiness": { "type": "boolean", "title": "Business account" },
     "companyName": { "type": "string", "title": "Company name" },
-    "notes": { "type": "string", "title": "Notes for the driver" }
+    "notes": { "type": "string", "title": "Notes for the coordinator" }
   }
 }

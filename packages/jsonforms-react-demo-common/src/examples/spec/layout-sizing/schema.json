@@ -6,9 +6,9 @@
       "type": "string",
       "title": "Reference"
     },
-    "carrier": {
+    "supplier": {
       "type": "string",
-      "title": "Carrier"
+      "title": "Supplier"
     },
     "weightKg": {
       "type": "number",
@@ -30,25 +30,25 @@
       "type": "string",
       "title": "Notes"
     },
-    "hazmat": {
+    "needsApproval": {
       "type": "boolean",
-      "title": "Hazardous goods"
+      "title": "Needs approval"
     },
-    "unCode": {
+    "approvalCode": {
       "type": "string",
-      "title": "UN code"
+      "title": "Approval code"
     },
-    "showLane": {
+    "showTeam": {
       "type": "boolean",
-      "title": "Show lane"
+      "title": "Show team"
     },
     "bookedBy": {
       "type": "string",
       "title": "Booked by"
     },
-    "laneName": {
+    "teamName": {
       "type": "string",
-      "title": "Lane"
+      "title": "Team"
     },
     "approvedBy": {
       "type": "string",

@@ -93,7 +93,7 @@ const openTailTuple = {
   properties: {
     pair: {
       type: 'array',
-      items: [{ type: 'string', title: 'Carrier' }],
+      items: [{ type: 'string', title: 'Supplier' }],
       additionalItems: true,
     },
   },

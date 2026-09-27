@@ -4,10 +4,10 @@
   "surcharge": null,
   "priority": true,
   "payload": {
-    "carrier": "Cascade Supplies",
-    "stops": ["Portland", "Salem"],
+    "supplier": "Cascade Supplies",
+    "milestones": ["Portland", "Salem"],
     "verified": false
   },
   "anything": { "note": "anything at all" },
-  "route": ["Portland", 2, true]
+  "assignment": ["Portland", 2, true]
 }

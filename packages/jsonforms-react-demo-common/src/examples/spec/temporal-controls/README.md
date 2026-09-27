@@ -10,7 +10,6 @@
 - [Portable spec §18 — Duration control](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §5 — Schema-driven and UI-driven format selection](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §25 — Temporal serialization and picker bounds](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §6.5 and §7.4](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 Four controls that all store **strings**, split by *how the control was
 chosen*. That split is the whole example, because it decides something people
@@ -311,7 +310,7 @@ and the Apply and Cancel buttons all change language — and this example's
 That is the point of it: a form's catalog is authored for the form's own
 labels, so the renderer set's own strings have to come from somewhere else.
 They fall back to the **locale bundle** for the current language and only then
-to English, which is what antd already does for a calendar's month names. See
+to English. See
 [adjustments §6.5](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md).
 
 Switch to a language no bundle carries — Japanese — and the picker is English
@@ -338,3 +337,11 @@ Covered by `temporalControlsExample.test.tsx` for this fixture,
 `temporalSaveFormats.test.tsx` for what a picker commits, which days a
 calendar disables and the save-format diagnostic, and `temporalBounds.test.ts`
 for the bound arithmetic and the picker granularity.
+
+## Week-based duration and action visibility
+
+The **Support period** field starts at `P2W` and sets `showActions: false`.
+Compare it with **Session length**, which keeps the default actions. Both
+remain ISO 8601 duration strings; hiding the action bar does not disable editing
+or turn the value into a date. The added value is valid under the demo validator
+and adds no error to the validation state documented above.

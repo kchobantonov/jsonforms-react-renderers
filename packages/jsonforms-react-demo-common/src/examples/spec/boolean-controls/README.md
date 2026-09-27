@@ -8,7 +8,6 @@
 - [Portable spec §18 — Boolean checkbox and switch controls](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Shared table-cell behavior](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §4.5](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 One example, because every boolean renderer answers the same three questions:
 what is true, what is false, and what is neither.
@@ -95,9 +94,6 @@ included here because it is the renderer most often mistaken for one.
 
 ## Status
 
-The truthiness defect is fixed and covered by
-`test/booleanValues.test.tsx` in the antd renderer set.
-
-Still missing, per §18: **no clear affordance** on either boolean control, so a
-committed `false` cannot be returned to absent through the UI — the spec puts
-booleans under the shared clear contract and counts `false` as a present value.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

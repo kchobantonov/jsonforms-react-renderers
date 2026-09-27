@@ -34,7 +34,7 @@
   "handoffContacts": [
     {
       "name": "A. Ferreira",
-      "desk": "Dispatch"
+      "desk": "Support"
     },
     {
       "name": "M. Todorova",
@@ -49,7 +49,7 @@
       "desk": "Night"
     }
   ],
-  "legacyRoute": [
+  "legacyAssignment": [
     "LEG-01",
     3,
     "Imported extra value"

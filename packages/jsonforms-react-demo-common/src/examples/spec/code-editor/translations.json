@@ -1,0 +1,14 @@
+{
+  "en": {
+    "intro.text": "Compare a growing editor with fixed rows, then edit an object as JSON. Language switching and published diagnostics are demonstrated in Additional errors.",
+    "script.label": "Startup script",
+    "markup.label": "Status page",
+    "document.label": "Deployment settings"
+  },
+  "bg": {
+    "intro.text": "Сравнете редактор с автоматична височина и редактор с фиксирани редове, след което редактирайте обект като JSON. Смяната на езика и публикуваните грешки са показани в примера за допълнителни грешки.",
+    "script.label": "Скрипт за стартиране",
+    "markup.label": "Страница за състояние",
+    "document.label": "Настройки за внедряване"
+  }
+}

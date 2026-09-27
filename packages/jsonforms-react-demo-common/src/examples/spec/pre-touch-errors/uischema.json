@@ -7,7 +7,7 @@
     },
     { "type": "Control", "scope": "#/properties/legalName" },
     { "type": "Control", "scope": "#/properties/contactEmail" },
-    { "type": "Control", "scope": "#/properties/dotNumber" },
+    { "type": "Control", "scope": "#/properties/memberNumber" },
     { "type": "Separator" },
     {
       "type": "Label",
@@ -21,9 +21,9 @@
     { "type": "Separator" },
     { "type": "Label", "text": "Errors that are not required errors" },
     { "type": "Control", "scope": "#/properties/notes" },
-    { "type": "Control", "scope": "#/properties/insuranceExpiry" },
+    { "type": "Control", "scope": "#/properties/membershipExpiry" },
     { "type": "Separator" },
     { "type": "Label", "text": "A summary over children that can be touched" },
-    { "type": "Control", "scope": "#/properties/terminals" }
+    { "type": "Control", "scope": "#/properties/offices" }
   ]
 }

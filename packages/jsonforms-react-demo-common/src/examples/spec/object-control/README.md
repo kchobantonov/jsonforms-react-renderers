@@ -2,13 +2,12 @@
 
 **Example ID:** `object-control`\
 **Demo entry:** **Spec: Object control** (`#spec-object-control`)\
-**Domain:** consignee profile\
+**Domain:** customer profile\
 **Specs covered:**
 
 - [Portable spec §18 — Object controls and additional-property editing](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Object-level errors and errors without rendered targets](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §6.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 An object control's whole job is to produce **other** controls, so there are
 only two questions worth asking of it: where the nested form came from, and
@@ -40,7 +39,7 @@ depending on where core maps the error.
 ## What the form contains
 
 ```text
-Consignee profile
+Customer profile
   Identity      generated layout        -> legalName required and missing
   Contact       options.detail          -> Phone before Email, reversing the schema
   Address       registered UI schema    -> Street/Postcode, City, then...
@@ -245,18 +244,6 @@ to go.
 
 ## Status
 
-**Partial**, and the shortfall is one specific thing.
-
-**Implemented:** object dispatch, `options.detail` in both its forms with the
-documented precedence, registered detail UI schemas, arbitrary nesting, and
-required-property errors on the controls that carry them.
-
-**Missing:** an object-level explanation near the object editor, for errors
-core cannot map onto a control that displays them. Recorded in
-[§6.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md);
-`ObjectRenderer` renders no `errors` prop at all, which is where the work would
-start.
-
-Covered by `test/objectControl.test.tsx`, which pins both halves — the three
-layout sources and the nesting, and the exact set of errors that reach the
-screen today. When the gap is closed, the last group is the one to change.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

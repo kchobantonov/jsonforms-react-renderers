@@ -1,10 +1,10 @@
 {
   "type": "object",
   "properties": {
-    "driverName": {
+    "contactName": {
       "type": "string",
-      "title": "Driver name",
-      "description": "Name as it appears on the carrier's licence.",
+      "title": "Coordinator name",
+      "description": "Name as it appears on the supplier's registration.",
       "minLength": 2
     },
     "pickupCity": {
@@ -12,9 +12,9 @@
       "title": "Pickup city",
       "description": "Start typing; the suggestions are hints, not a fixed list."
     },
-    "deliveryNotes": {
+    "meetingNotes": {
       "type": "string",
-      "title": "Delivery notes",
+      "title": "Appointment notes",
       "description": "Anything the receiving yard needs to know."
     },
     "bookingReference": {
@@ -33,7 +33,7 @@
     "accountNumber": {
       "type": "string",
       "title": "Account number",
-      "description": "Eight digits for a depot account, twelve for a carrier account.",
+      "description": "Eight digits for a office account, twelve for a supplier account.",
       "pattern": "^([0-9]{8}|[0-9]{12})$"
     },
     "deckPosition": {
@@ -57,7 +57,7 @@
     "legacyReference": {
       "type": "string",
       "title": "Legacy reference",
-      "description": "Imported from the previous dispatch system.",
+      "description": "Imported from the previous project system.",
       "pattern": "^[0-9]{6}$"
     },
     "scheduledPickup": {
@@ -66,5 +66,5 @@
       "title": "Scheduled pickup"
     }
   },
-  "required": ["driverName", "bookingReference"]
+  "required": ["contactName", "bookingReference"]
 }

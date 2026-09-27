@@ -6,24 +6,24 @@
       "title": "No surcharge applies",
       "description": "Tick to record explicitly that no surcharge was assessed."
     },
-    "hazardsChecked": {
+    "exceptionsChecked": {
       "type": "null",
-      "title": "No hazardous materials declared",
-      "description": "Must be recorded before dispatch."
+      "title": "No exceptions declared",
+      "description": "Must be recorded before approval."
     },
-    "legacyClearance": {
+    "legacyApproval": {
       "type": "null",
-      "title": "Customs clearance not required",
+      "title": "Additional approval not required",
       "description": "Imported from a system that stored text here."
     },
-    "handlingNote": {
+    "reviewNote": {
       "type": "string",
-      "title": "Handling note",
+      "title": "Review note",
       "description": "An empty string is a note that says nothing, not an absent note."
     },
-    "sealNumber": {
+    "referenceNumber": {
       "type": "string",
-      "title": "Seal number",
+      "title": "Reference number",
       "description": "Absent: nobody has recorded one."
     },
     "inspectionRemark": {
@@ -32,5 +32,5 @@
       "description": "A union, so this is the mixed control rather than the null control."
     }
   },
-  "required": ["hazardsChecked"]
+  "required": ["exceptionsChecked"]
 }

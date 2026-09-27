@@ -87,8 +87,7 @@ including when it rejects — pending clears and the button works again.
 
 `color` takes one of `primary`, `secondary`, `alternative`, `success`,
 `warning`, `error`. They are names for *intent*, not paint: the renderer set
-maps them onto its own component, so `error` becomes antd's danger styling
-here and something else elsewhere.
+maps them onto its own component's semantic styling.
 
 ## Everything a Button can do
 

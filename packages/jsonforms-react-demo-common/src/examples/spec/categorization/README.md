@@ -10,7 +10,6 @@
 - [Portable spec §8 — Container visibility and hidden children](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §10 — The Categorization navigation contract](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
 - [Container validation indicator](../../../../../../docs/jsonforms-container-validation-indicator-spec.md)
-- [Gaps §2.5](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 **The same four categories, rendered three ways, bound to the same data.** Type
 in one and the other two follow. That is the point: which of tabs, stepper and
@@ -37,14 +36,14 @@ No `uischemas.json`: nothing here nests.
 Business account            [ ]          <- toggles the Business category
 
 Tabs — no variant
-  Contact | Logistics | Notes
+  Contact | Planning | Notes
 
 Stepper — variant: "stepper", showNavButtons
-  (1) Contact -> (2) Logistics -> (3) Notes
+  (1) Contact -> (2) Planning -> (3) Notes
 
-Accordion — variant: "accordion", initial: "logistics"
+Accordion — variant: "accordion", initial: "planning"
   > Contact
-  v Logistics        <- open, because options.initial names it
+  v Planning        <- open, because options.initial names it
   > Notes
 ```
 
@@ -62,7 +61,7 @@ exactly two errors — deliberately one in each of two different categories:
 
 ## Expected behaviour
 
-**Both section indicators appear on every presentation.** Contact and Logistics
+**Both section indicators appear on every presentation.** Contact and Planning
 carry an error marker, and every category holding data carries the dot. A
 Category has no data scope of its own, so both are aggregated from the Controls
 below it — through the one traversal shared with the Group's indicators.
@@ -83,7 +82,7 @@ category". Note also that the category is *hidden by its own rule*: a category
 whose children are all hidden would still be shown, and there is no
 `hideWhenEmpty`.
 
-**The accordion opens on Logistics.** `options.initial` names a direct Category
+**The accordion opens on Planning.** `options.initial` names a direct Category
 `name` — not its label, and not its index. Rename it to something that matches
 nothing and the first category opens instead, with a console warning; the form
 still works.
@@ -120,11 +119,6 @@ be consulted.
 
 ## Status
 
-**Implemented.** The accordion (`CategorizationAccordionLayout`, rank 3) was
-the missing one — `variant: "accordion"` used to fall through to tabs silently.
-All three now share one navigation contract in
-[`categoryState.ts`](../../../../../jsonforms-react-antd-renderers/src/util/categoryState.ts)
-and one set of indicators in
-[`CategoryHeader.tsx`](../../../../../jsonforms-react-antd-renderers/src/layouts/CategoryHeader.tsx).
-
-Covered by `test/categorizationAccordion.test.tsx` in the antd renderer set.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

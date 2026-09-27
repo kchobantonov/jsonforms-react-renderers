@@ -1,13 +1,13 @@
 {
-  "queue": "12 legs waiting",
-  "notes": "Gate closes at 18:00.",
-  "detail": "PDX-SLE, 1240 kg",
-  "mapNote": "Avoid the I-5 closure.",
-  "summary": "Two carriers unassigned.",
+  "queue": "12 tasks waiting",
+  "notes": "Office closes at 18:00.",
+  "detail": "Review phase, 12 open tasks",
+  "mapNote": "Review the pending tasks.",
+  "summary": "Two suppliers unassigned.",
   "showAudit": false,
   "audit": "Reassigned by A. Ferreira.",
-  "showLanePane": true,
+  "showTeamPane": true,
   "bookedBy": "A. Ferreira",
-  "laneName": "PDX-SLE nightly",
+  "teamName": "PLAN-REVIEW nightly",
   "approvedBy": "M. Todorova"
 }

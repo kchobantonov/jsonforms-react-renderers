@@ -38,9 +38,9 @@
       "title": "Anything",
       "description": "An unconstrained schema: every JSON type is offered."
     },
-    "route": {
+    "assignment": {
       "type": "array",
-      "title": "Route legs",
+      "title": "Project phases",
       "description": "A tuple with an open tail; trailing values are mixed.",
       "items": [{ "type": "string", "title": "Origin" }],
       "additionalItems": true

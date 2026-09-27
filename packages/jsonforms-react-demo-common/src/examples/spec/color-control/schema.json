@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "title": "Shipping label theme",
+  "title": "Processing label theme",
   "properties": {
     "brandPrimary": {
       "type": "string",

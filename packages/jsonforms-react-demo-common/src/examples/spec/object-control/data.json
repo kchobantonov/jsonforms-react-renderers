@@ -3,7 +3,7 @@
     "tradingName": "Cascade Supplies"
   },
   "contact": {
-    "email": "dispatch@example.test",
+    "email": "support@example.test",
     "phone": "+1 503 555 0113"
   },
   "address": {
@@ -21,19 +21,19 @@
   },
   "schedule": {
     "pickup": "2026-10-02",
-    "delivery": "2026-10-04"
+    "appointment": "2026-10-04"
   },
   "notes": {
-    "forDriver": "Call on arrival",
-    "forWarehouse": "Dock 3"
+    "forCoordinator": "Call on arrival",
+    "forOffice": "Room 3"
   },
   "compliance": {
-    "hazmat": "none",
+    "needsApproval": "none",
     "permit": "OR-2291"
   },
   "preferences": {},
   "routing": {
-    "terminal": "T-4",
+    "office": "T-4",
     "legacyZone": "west"
   },
   "billing": {

@@ -4,7 +4,7 @@
     "error.pattern": "Check the format of this value.",
     "error.minLength": "Enter at least {limit} characters.",
     "error.minItems": "Add at least {limit} entries.",
-    "dotNumber.error.pattern": "A DOT number is exactly seven digits.",
+    "memberNumber.error.pattern": "A member number is exactly seven digits.",
     "contactEmail.error.format": "Enter an address we can reach you at.",
     "control.clearValue": "Clear value"
   },
@@ -13,7 +13,7 @@
     "error.pattern": "Проверете формата на тази стойност.",
     "error.minLength": "Въведете поне {limit} знака.",
     "error.minItems": "Добавете поне {limit} записа.",
-    "dotNumber.error.pattern": "Номерът DOT е точно седем цифри.",
+    "memberNumber.error.pattern": "Членският номер е точно седем цифри.",
     "contactEmail.error.format": "Въведете адрес, на който можем да се свържем с вас.",
     "control.clearValue": "Изчистване на стойността"
   }

@@ -4,13 +4,19 @@
       "title": "Designing for the second read",
       "track": "des",
       "minutes": 45,
-      "room": { "name": "Aurora", "floor": 2 }
+      "room": {
+        "name": "Aurora",
+        "floor": 2
+      }
     },
     {
       "title": "Budgets that survive contact",
       "track": "ops",
       "minutes": 30,
-      "room": { "name": "Beacon", "floor": 1 }
+      "room": {
+        "name": "Beacon",
+        "floor": 1
+      }
     }
   ],
   "speakers": [
@@ -18,18 +24,31 @@
       "name": "Rosa Iqbal",
       "track": "des",
       "bio": "Writes about interfaces that explain themselves.",
-      "links": ["https://example.com/rosa"]
+      "links": [
+        "https://example.com/rosa"
+      ]
     },
-    { "name": "Tomas Lind", "track": "ops", "bio": "", "links": [] }
+    {
+      "name": "Tomas Lind",
+      "track": "ops",
+      "bio": "",
+      "links": []
+    }
   ],
   "announcements": [
     {
       "text": "Doors open at 08:30.",
-      "audience": { "role": "all", "region": "north" }
+      "audience": {
+        "role": "all",
+        "region": "north"
+      }
     },
     {
       "text": "Lunch is in the atrium.",
-      "audience": { "role": "all", "region": "north" }
+      "audience": {
+        "role": "all",
+        "region": "north"
+      }
     }
   ],
   "sponsors": [
@@ -38,30 +57,91 @@
       "tier": "gold",
       "notes": "Stand by the doors."
     },
-    { "name": "Calder Coffee", "tier": "silver", "notes": "" }
+    {
+      "name": "Calder Coffee",
+      "tier": "silver",
+      "notes": ""
+    }
   ],
   "tickets": [
     {
       "code": "EARLY-1",
       "price": 120,
-      "holder": { "name": "Ines Roy", "email": "ines@example.com" }
+      "holder": {
+        "name": "Ines Roy",
+        "email": "ines@example.com"
+      }
     },
     {
       "code": "EARLY-2",
       "price": 120,
-      "holder": { "name": "Kai Osei", "email": "kai@example.com" }
+      "holder": {
+        "name": "Kai Osei",
+        "email": "kai@example.com"
+      }
     }
   ],
   "rounds": [
     {
       "name": "First pass",
       "active": true,
-      "window": { "opens": "Monday", "closes": "Friday" }
+      "window": {
+        "opens": "Monday",
+        "closes": "Friday"
+      }
     }
   ],
   "checklist": [
-    { "step": "Unlock the hall", "done": true },
-    { "step": "Test the microphones", "done": false }
+    {
+      "step": "Unlock the hall",
+      "done": true
+    },
+    {
+      "step": "Test the microphones",
+      "done": false
+    }
   ],
-  "reviewers": [{ "name": "Ada Fenn", "lead": false }]
+  "reviewers": [
+    {
+      "name": "Ada Fenn",
+      "lead": false
+    }
+  ],
+  "staff": [
+    {
+      "name": "Ada Lovelace",
+      "age": 36,
+      "role": "Coordinator",
+      "badge": "#7c3aed",
+      "tenure": "P2Y6M",
+      "date": "2026-10-14",
+      "time": "09:30:00Z",
+      "dateTime": "2026-10-14T09:00:00Z",
+      "active": true,
+      "address": {
+        "street": "12 High Street",
+        "city": "London"
+      },
+      "phoneNumbers": [
+        "+44 20 1234 5678",
+        "+44 20 1234 5679"
+      ]
+    },
+    {
+      "name": "Grace Hopper",
+      "age": 85,
+      "role": "Technician",
+      "badge": "#0ea5e9",
+      "tenure": "P5Y",
+      "date": "2026-10-15",
+      "time": "14:45:00Z",
+      "dateTime": "2026-10-15T14:00:00Z",
+      "active": false,
+      "address": {
+        "street": "1 Navy Way",
+        "city": "Arlington"
+      },
+      "phoneNumbers": []
+    }
+  ]
 }

@@ -2,11 +2,13 @@
   "en": {
     "error.required": "Choose an appointment date.",
     "error.pattern": "Use a year and month, such as 2027-01.",
-    "control.clearValue": "Clear value"
+    "control.clearValue": "Clear value",
+    "schemaBased.weeks.label": "Support period (weeks, no action bar)"
   },
   "bg": {
     "error.required": "Изберете дата за срещата.",
     "error.pattern": "Въведете година и месец, например 2027-01.",
-    "control.clearValue": "Изчистване на стойността"
+    "control.clearValue": "Изчистване на стойността",
+    "schemaBased.weeks.label": "Период на поддръжка (седмици, без лента с действия)"
   }
 }

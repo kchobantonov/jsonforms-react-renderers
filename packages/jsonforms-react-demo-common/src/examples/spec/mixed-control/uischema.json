@@ -18,6 +18,6 @@
     { "type": "Control", "scope": "#/properties/anything" },
     { "type": "Separator" },
     { "type": "Label", "text": "Mixed values inside an array" },
-    { "type": "Control", "scope": "#/properties/route" }
+    { "type": "Control", "scope": "#/properties/assignment" }
   ]
 }

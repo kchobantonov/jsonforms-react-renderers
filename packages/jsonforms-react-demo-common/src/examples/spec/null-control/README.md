@@ -2,13 +2,12 @@
 
 **Example ID:** `null-control`\
 **Demo entry:** **Spec: Null control** (`#spec-null-control`)\
-**Domain:** dispatch declarations\
+**Domain:** project declarations\
 **Specs covered:**
 
 - [Portable spec §18 — Null control](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Shared clear-control behavior](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §7.x — Null control](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 A `{"type": "null"}` property can hold exactly one value, so the control's only
 job is to say whether that value is **there**. The point of the example is that
@@ -31,13 +30,13 @@ No `uischemas.json`: nothing here nests.
 ## What the form contains
 
 ```text
-Dispatch declarations
+Project declarations
   No surcharge applies            type: null            -> null        (ticked)
-  No hazardous materials          type: null, required  -> absent      (invalid)
-  Customs clearance not required  type: null            -> "n/a"       (invalid)
+  No exceptions          type: null, required  -> absent      (invalid)
+  Additional approval not required  type: null            -> "n/a"       (invalid)
   ---
-  Handling note                   type: string          -> ""
-  Seal number                     type: string          -> absent
+  Review note                   type: string          -> ""
+  Reference number                     type: string          -> absent
   Inspection remark               type: [string, null]  -> null        (mixed control)
 ```
 
@@ -48,8 +47,8 @@ exactly two errors:
 
 | Instance path | Keyword | Message |
 | --- | --- | --- |
-| `` (the object) | `required` | must have required property 'hazardsChecked' |
-| `/legacyClearance` | `type` | must be null |
+| `` (the object) | `required` | must have required property 'exceptionsChecked' |
+| `/legacyApproval` | `type` | must be null |
 
 The first is attached to the **object**, not to the field: an absent property
 has no instance path of its own. The second is the out-of-domain value.
@@ -61,22 +60,22 @@ property becomes **absent** — not `false`, and not `""`. Tick it again and
 `null` comes back. That is the whole of the control: a two-state switch between
 `null` and not-present.
 
-**No hazardous materials is required and absent**, so it is unticked and
+**No exceptions is required and absent**, so it is unticked and
 reports the missing-property error. Ticking it writes `null`, which satisfies
 `required` — because the property then exists. This is the case the control is
 for: a declaration that has to be *recorded*, where leaving the box untouched
 must not read the same as saying no.
 
-**Customs clearance not required holds `"n/a"`.** The box is drawn
+**Additional approval not required holds `"n/a"`.** The box is drawn
 **indeterminate** — neither ticked nor unticked — because the value is neither
 `null` nor absent, and §19 forbids showing it as either. The value stays in the
 data for the validator to report; the control does not quietly replace it.
 Ticking the box overwrites it with `null`, which is an edit, not a normalization.
 
-**Handling note is `""`, and that is a value.** An empty string is a note that
-says nothing; it is not the same as Seal number, which nobody has filled in.
-Neither is the same as `null`. Read the Data tab: `handlingNote` is present with
-an empty string, `sealNumber` is not there at all.
+**Review note is `""`, and that is a value.** An empty string is a note that
+says nothing; it is not the same as Reference number, which nobody has filled in.
+Neither is the same as `null`. Read the Data tab: `reviewNote` is present with
+an empty string, `referenceNumber` is not there at all.
 
 **Inspection remark is not a null control.** Its type is `["string", "null"]`,
 a union, which selects the **mixed control** — so it shows a type selector and
@@ -98,12 +97,6 @@ writes `null` only when null is the selected type. The null control is for
 
 ## Status
 
-**Implemented.** The control is
-[`AntdNullControlRenderer`](../../../../../jsonforms-react-antd-extended-renderers/src/renderers/AntdNullControlRenderer.tsx)
-at rank 3, selected by `schema.type === 'null'`. Covered by
-`test/nullControl.test.tsx` in the antd-extended renderer set.
-
-**Worth knowing:** the control has no options at all — no `clearable`, no
-`placeholder`. The spec's entry is a single row ("dedicated null
-representation; no additional value-conversion options established here"), and
-there is nothing to configure about a value that can only be itself.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

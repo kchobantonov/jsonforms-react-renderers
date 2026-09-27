@@ -4,7 +4,8 @@
     "time": "09:30:00Z",
     "datetime": "2026-10-13T17:00:00Z",
     "duration": "PT1H30M",
-    "timeWithSeconds": "09:30:45Z"
+    "timeWithSeconds": "09:30:45Z",
+    "weeks": "P2W"
   },
   "uiSchemaBased": {
     "month": "2027-01",

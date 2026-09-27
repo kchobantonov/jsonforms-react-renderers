@@ -10,9 +10,8 @@
 - [Portable spec §18 — Complex position summaries and dialog details](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §13 — The tuple control](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §2.4](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
-Eight positional arrays from one dispatch record. The point of the example is
+Eight positional arrays from one project record. The point of the example is
 that **a tuple is one value with several editors, not several values** — which
 is why no declared position can be added, removed or reordered, and why an edit
 at one position can change another.
@@ -46,18 +45,18 @@ than crashing on one.
 ## What the form contains
 
 ```text
-Dispatch record
+Project record
   Drop-off coordinates   positional, showBorder: false   -> [45.52, -122.68]
   Crate dimensions       uniform + variant, vertical     -> [120, 80, -5]   (invalid)
   Survey point           positional, options.detail      -> Group, Longitude before Latitude
   ---
   Order line             positional, empty               -> []
   Inspection record      typed tail, min 2 / max 4       -> [..., ..., "Call the yard..."]
-  Carrier reference      open tail, max 3                -> ["Cascade Supplies", 42]
+  Supplier reference      open tail, max 3                -> ["Cascade Supplies", 42]
   ---
   Pickup contact         object + array positions        -> dialogs
   Handoff contacts       four complex positions          -> one per registry-entry shape
-  Imported route leg     closed tail, three values       -> [..., ..., "Imported..."]  (invalid)
+  Imported assignment     closed tail, three values       -> [..., ..., "Imported..."]  (invalid)
   Asked for a tuple      uniform, no equal bounds        -> configuration diagnostic
 ```
 
@@ -69,12 +68,12 @@ exactly two errors — deliberately one of each placement §18 distinguishes:
 | Instance path | Keyword | Message |
 | --- | --- | --- |
 | `/dimensions/2` | `minimum` | must be >= 0 |
-| `/legacyRoute` | `additionalItems` | must NOT have more than 2 items |
+| `/legacyAssignment` | `additionalItems` | must NOT have more than 2 items |
 
 **Crate dimensions is a position error.** It appears beside Item 3 and nowhere
 else; Items 1 and 2 are valid and are not marked.
 
-**Imported route leg is an array error.** It appears beneath the tuple as a
+**Imported assignment is an array error.** It appears beneath the tuple as a
 whole. §18: "an array-level error must not automatically mark every positional
 field invalid" — Leg code and Sequence both hold valid values and are shown as
 such.
@@ -107,7 +106,7 @@ Additional items section has them, and only past the prefix.
 `restrict` off in the Config tab to compare: adding is allowed and the
 validator reports the excess instead.
 
-**Carrier reference has an open tail.** Its trailing values are edited through
+**Supplier reference has an open tail.** Its trailing values are edited through
 the mixed control, so a value's type can be changed from the editor — the data
 already holds a string and a number.
 
@@ -117,7 +116,7 @@ opens the dialog; the summary text is selectable. Opening one and cancelling
 writes nothing. **Clear** empties Address to `{}` and Phone numbers to `[]`,
 keeping both positions — it never produces a one-element array.
 
-**Imported route leg keeps its extra value.** The schema forbids a third
+**Imported assignment keeps its extra value.** The schema forbids a third
 position, and the value is preserved with a Delete beside it rather than
 truncated on load. Add stays disabled: the schema still permits no tail.
 
@@ -322,16 +321,6 @@ zero-based.
 
 ## Status
 
-**Implemented.** Both schema dialects, `variant`, `vertical`, `showBorder`, the
-Additional items section, the initialization and clearing contracts, positional
-validation placement and complex-position dialogs are in
-[`tuple.ts`](../../../../../jsonforms-react-antd-renderers/src/util/tuple.ts),
-[`TupleControlRenderer.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/TupleControlRenderer.tsx),
-[`TupleField.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/TupleField.tsx)
-and
-[`TupleAdditionalItems.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/TupleAdditionalItems.tsx).
-Covered by `test/tupleControl.test.tsx`.
-
-**Draft-2020-12 note.** `prefixItems` is recognized, and reading it is tested,
-but this example is authored in draft-07 because the demo's validator is not
-swapped per example. See Adjustment 13.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

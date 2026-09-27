@@ -7,7 +7,7 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/driverName",
+      "scope": "#/properties/contactName",
       "options": { "placeholder": "Family name first" }
     },
     {
@@ -19,7 +19,7 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/deliveryNotes",
+      "scope": "#/properties/meetingNotes",
       "options": { "multi": true }
     },
     { "type": "Separator" },

@@ -9,7 +9,6 @@
 - [Portable spec §18 — Tuple control](../../../../../../docs/jsonforms-extended-ui-model-spec.md) (the open tail delegates here)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §15 — An array element's type cannot be cleared](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §7.10](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 Eight values whose **type is data**. The point of the example is that a mixed
 value carries its own type alongside its contents: the selector says which, the
@@ -43,7 +42,7 @@ Product listing attributes
   Payload      [object, array, string, null]       -> object      (structure workspace)
   Anything     {} (unconstrained)                  -> object      (every type offered)
   ---
-  Route legs   tuple, open tail                    -> ["Portland", 2, true]
+  Project phases   tuple, open tail                    -> ["Portland", 2, true]
 ```
 
 ## Validation state
@@ -102,7 +101,7 @@ type is on the menu.
 
 ### Inside an array
 
-**Route legs is a tuple whose tail is open**, so its trailing values have no
+**Project phases is a tuple whose tail is open**, so its trailing values have no
 schema of their own and are edited here. Item 2 is a number and Item 3 a
 boolean, each with its own selector.
 
@@ -131,30 +130,6 @@ label, the rename/delete actions and the type error all translate.
 
 ## Status
 
-**Partially implemented**, and the example shows the working parts. Type
-selection, per-type schema derivation, the navigation workspace, tree search,
-rename, delete, `restrict` against parent bounds, and the array-element
-restriction are in
-[`MixedRenderer.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/MixedRenderer.tsx)
-and [`complex/mixed/`](../../../../../jsonforms-react-antd-renderers/src/complex/mixed/).
-
-**Not implemented, and deliberately not demonstrated here:**
-
-- **`options["<type>-detail"]`** — a type-specific detail UI schema such as
-  `object-detail`. Authoring it would have no effect, so the example does not.
-- **`typeChange` confirmation** (spec fallback `complex`) and **tree delete
-  confirmation** (fallback `always`). Changing Payload from an object to a
-  string discards its contents without asking.
-- **Localized tree search and primitive-visibility labels** — those strings are
-  still hard-coded English, so they do not switch with the demo's locale even
-  though the rest of the control does.
-
-See gaps [§7.10](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
-
-**Selection was broken until recently.** A union-typed *declared property* never
-reached this renderer: the tester was handed the enclosing schema and rejected
-it on `properties` before resolving the control's scope, so a
-`["string", "number"]` field fell through to the plain text control and a number
-typed into it was stored as a string. The spec selects on the **resolved**
-schema, and the tester now does too — which is what lets this example be written
-the way an author would naturally write it.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

@@ -30,7 +30,7 @@ describe('the null-control spec example', () => {
     expect(errorsFor(nullSchema, nullData)).toEqual([
       // Attached to the object: an absent property has no path of its own.
       ['', 'required'],
-      ['/legacyClearance', 'type'],
+      ['/legacyApproval', 'type'],
     ]);
   });
 
@@ -41,16 +41,16 @@ describe('the null-control spec example', () => {
   test('carries all three states of a null property', () => {
     const data = nullData as Record<string, unknown>;
     expect(data.noSurcharge).toBeNull();
-    expect(Object.prototype.hasOwnProperty.call(data, 'hazardsChecked')).toBe(
+    expect(Object.prototype.hasOwnProperty.call(data, 'exceptionsChecked')).toBe(
       false
     );
-    expect(data.legacyClearance).toBe('n/a');
+    expect(data.legacyApproval).toBe('n/a');
   });
 
   test('contrasts null with an empty string and with absence', () => {
     const data = nullData as Record<string, unknown>;
-    expect(data.handlingNote).toBe('');
-    expect(Object.prototype.hasOwnProperty.call(data, 'sealNumber')).toBe(
+    expect(data.reviewNote).toBe('');
+    expect(Object.prototype.hasOwnProperty.call(data, 'referenceNumber')).toBe(
       false
     );
   });
@@ -114,10 +114,10 @@ describe('the mixed-control spec example', () => {
   test('includes an array whose elements are mixed, for the clear-type rule', () => {
     // A tuple with an open tail: the trailing values have no schema of their
     // own, so they are edited by the mixed control at an array index.
-    const route = (mixedSchema as any).properties.route;
-    expect(Array.isArray(route.items)).toBe(true);
-    expect(route.additionalItems).toBe(true);
-    expect(mixedData.route.length).toBeGreaterThan(route.items.length);
+    const assignment = (mixedSchema as any).properties.assignment;
+    expect(Array.isArray(assignment.items)).toBe(true);
+    expect(assignment.additionalItems).toBe(true);
+    expect(mixedData.assignment.length).toBeGreaterThan(assignment.items.length);
   });
 
   test('ships both catalogs with matching keys', () => {

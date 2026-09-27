@@ -1,0 +1,8 @@
+{
+  "script": "const service = 'catalog';\nconsole.log(service);",
+  "markup": "<main>\n  <h1>Catalog service</h1>\n</main>",
+  "document": {
+    "service": "catalog",
+    "replicas": 2
+  }
+}

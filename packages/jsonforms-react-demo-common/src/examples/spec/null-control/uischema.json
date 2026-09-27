@@ -6,12 +6,12 @@
       "text": "A null control records \"explicitly nothing\". Absent, null and \"\" are three different values."
     },
     { "type": "Control", "scope": "#/properties/noSurcharge" },
-    { "type": "Control", "scope": "#/properties/hazardsChecked" },
-    { "type": "Control", "scope": "#/properties/legacyClearance" },
+    { "type": "Control", "scope": "#/properties/exceptionsChecked" },
+    { "type": "Control", "scope": "#/properties/legacyApproval" },
     { "type": "Separator" },
     { "type": "Label", "text": "What null is not" },
-    { "type": "Control", "scope": "#/properties/handlingNote" },
-    { "type": "Control", "scope": "#/properties/sealNumber" },
+    { "type": "Control", "scope": "#/properties/reviewNote" },
+    { "type": "Control", "scope": "#/properties/referenceNumber" },
     { "type": "Control", "scope": "#/properties/inspectionRemark" }
   ]
 }

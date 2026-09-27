@@ -132,8 +132,8 @@ describe('the fixture itself', () => {
     expect(view.hasError('Internal code')).toBe(true);
 
     // Present but wrong - nothing to do with being required.
-    expect(view.hasError('DOT number')).toBe(true);
-    expect(view.messageFor('DOT number')).toContain('seven digits');
+    expect(view.hasError('Member number')).toBe(true);
+    expect(view.messageFor('Member number')).toContain('seven digits');
     expect(view.hasError('Notes')).toBe(true);
 
     view.unmount();
@@ -143,7 +143,7 @@ describe('the fixture itself', () => {
   it('leaves the optional absent property alone', async () => {
     const view = draw();
     await settle();
-    expect(view.hasError('Insurance expiry')).toBe(false);
+    expect(view.hasError('Membership expiry')).toBe(false);
     view.unmount();
   });
 
@@ -161,7 +161,7 @@ describe('the fixture itself', () => {
     const bg = draw(undefined, 'bg');
     await settle();
     expect(bg.messageFor('Legal name')).toBe('Полето е задължително.');
-    expect(bg.messageFor('DOT number')).toContain('седем цифри');
+    expect(bg.messageFor('Member number')).toContain('седем цифри');
     bg.unmount();
   });
 
@@ -185,7 +185,7 @@ describe('filtering before touch', () => {
     expect(view.hasError('Legal name')).toBe(false);
     expect(view.hasError('Contact email')).toBe(false);
     // "nonmatching errors remain eligible for display"
-    expect(view.hasError('DOT number')).toBe(true);
+    expect(view.hasError('Member number')).toBe(true);
     expect(view.hasError('Notes')).toBe(true);
     view.unmount();
   });
@@ -234,7 +234,7 @@ describe('filtering before touch', () => {
     await settle();
     // "an absent or empty array suppresses all otherwise displayable control
     // error text before touch"
-    expect(view.hasError('DOT number')).toBe(false);
+    expect(view.hasError('Member number')).toBe(false);
     expect(view.hasError('Notes')).toBe(false);
     view.unmount();
   });
@@ -423,7 +423,7 @@ describe('the filter itself', () => {
       touched: false,
       coreErrors: [
         error('required', '/legalName'),
-        error('pattern', '/dotNumber'),
+        error('pattern', '/memberNumber'),
       ],
       appliedOptions: {
         enableFilterErrorsBeforeTouch: true,

@@ -50,7 +50,7 @@
     },
     "bonded": {
       "type": "array",
-      "title": "Bonded warehouses",
+      "title": "Office locations",
       "description": "Between two and three, enforced while restrict is on.",
       "uniqueItems": true,
       "minItems": 2,

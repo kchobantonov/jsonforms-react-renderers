@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "Warehouse stock line",
+  "title": "Office stock line",
   "properties": {
     "quantity": {
       "type": "integer",
@@ -9,13 +9,13 @@
       "minimum": 0,
       "description": "Whole units only. Typing 1.9 must not silently become 1."
     },
-    "palletCount": {
+    "batchCount": {
       "type": "integer",
-      "title": "Pallets",
+      "title": "Batches",
       "minimum": 1,
       "maximum": 40,
       "multipleOf": 2,
-      "description": "Shipped in pairs, so valid values are 2, 4, 6 ... 40."
+      "description": "Requested in pairs, so valid values are 2, 4, 6 ... 40."
     },
     "unitPrice": {
       "type": "number",

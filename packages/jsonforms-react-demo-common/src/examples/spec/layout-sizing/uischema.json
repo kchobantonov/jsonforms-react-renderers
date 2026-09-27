@@ -22,7 +22,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/carrier",
+          "scope": "#/properties/supplier",
           "options": {
             "layout": {
               "span": 8
@@ -117,15 +117,15 @@
       "elements": [
         {
           "type": "Control",
-          "scope": "#/properties/hazmat"
+          "scope": "#/properties/needsApproval"
         },
         {
           "type": "Control",
-          "scope": "#/properties/unCode",
+          "scope": "#/properties/approvalCode",
           "rule": {
             "effect": "SHOW",
             "condition": {
-              "scope": "#/properties/hazmat",
+              "scope": "#/properties/needsApproval",
               "schema": {
                 "const": true
               }
@@ -183,7 +183,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/carrier"
+          "scope": "#/properties/supplier"
         },
         {
           "type": "Control",
@@ -201,7 +201,7 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/showLane"
+      "scope": "#/properties/showTeam"
     },
     {
       "type": "HorizontalLayout",
@@ -217,7 +217,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/laneName",
+          "scope": "#/properties/teamName",
           "options": {
             "layout": {
               "span": 8
@@ -226,7 +226,7 @@
           "rule": {
             "effect": "SHOW",
             "condition": {
-              "scope": "#/properties/showLane",
+              "scope": "#/properties/showTeam",
               "schema": {
                 "const": true
               }
@@ -262,7 +262,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/laneName",
+          "scope": "#/properties/teamName",
           "options": {
             "layout": {
               "weight": 2
@@ -271,7 +271,7 @@
           "rule": {
             "effect": "SHOW",
             "condition": {
-              "scope": "#/properties/showLane",
+              "scope": "#/properties/showTeam",
               "schema": {
                 "const": true
               }
@@ -286,6 +286,172 @@
               "weight": 1
             }
           }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "One quarter, unused space",
+      "i18n": "quarterOnly",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference",
+              "options": {
+                "layout": {
+                  "span": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed plus Auto",
+      "i18n": "quarterAuto",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference",
+              "options": {
+                "layout": {
+                  "span": 4
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/supplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed plus two Auto",
+      "i18n": "quarterTwoAuto",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference",
+              "options": {
+                "layout": {
+                  "span": 4
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/supplier"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Fixed widths leave unused space",
+      "i18n": "unusedHalf",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference",
+              "options": {
+                "layout": {
+                  "span": 4
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/supplier",
+              "options": {
+                "layout": {
+                  "span": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Overflow wraps in order",
+      "i18n": "overflow",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference",
+              "options": {
+                "layout": {
+                  "span": 12
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/supplier",
+              "options": {
+                "layout": {
+                  "span": 8
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ],
+          "options": {
+            "wrap": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "All Auto, equal thirds",
+      "i18n": "equalThirds",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/reference"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/supplier"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/notes"
+            }
+          ]
         }
       ]
     }

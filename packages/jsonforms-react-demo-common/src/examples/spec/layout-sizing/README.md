@@ -71,7 +71,7 @@ whichever mode won, never modes themselves — a child with both `weight` and
 
 ### A hidden child leaves layout
 
-Tick **Hazardous goods**. The UN code control appears — and before it does, it
+Tick **Needs approval**. The Approval code control appears — and before it does, it
 consumes nothing: no share, and no gap. "Only effective visible UI-schema
 children participate. Hidden children leave layout."
 
@@ -82,8 +82,8 @@ slots, not three-with-one-empty. The previous implementation divided the row by
 ### Span is absolute; weight is relative
 
 The clearest way to see the difference is to take one child away. **Booked by /
-Lane / Approved by** appear twice — once at `span` 4 / 8 / 4, once at `weight`
-1 / 2 / 1 — with **Show lane** hiding the middle of each.
+Team / Approved by** appear twice — once at `span` 4 / 8 / 4, once at `weight`
+1 / 2 / 1 — with **Show team** hiding the middle of each.
 
 Untick it:
 
@@ -157,3 +157,11 @@ resolution rules), `layoutSizingExample.test.tsx` (this fixture) and
 
 The splitter variant is exercised by the separate
 [split-layout](../../split-layout/) example.
+
+## Fixed and automatic widths
+
+The final groups collect the older sizing demonstrations: a single quarter,
+a quarter with one or two Auto children, two fixed quarters leaving half the
+row free, an overflowing 12/8/Auto row, and three equally sized Auto children.
+They reuse the same order fields, so changing layout does not change the data
+or its validation. Labels have matching English and Bulgarian translations.

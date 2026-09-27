@@ -12,6 +12,8 @@ import './button-actions';
 import './categorization';
 import './choice-controls';
 import './color-control';
+import './code-editor';
+import './file-control';
 import './combinators';
 import './container-validation-indicator';
 import './cron-control';

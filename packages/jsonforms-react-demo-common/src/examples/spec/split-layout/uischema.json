@@ -113,7 +113,7 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/showLanePane"
+      "scope": "#/properties/showTeamPane"
     },
     {
       "type": "HorizontalLayout",
@@ -133,7 +133,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/laneName",
+          "scope": "#/properties/teamName",
           "options": {
             "layout": {
               "weight": 2
@@ -142,7 +142,7 @@
           "rule": {
             "effect": "SHOW",
             "condition": {
-              "scope": "#/properties/showLanePane",
+              "scope": "#/properties/showTeamPane",
               "schema": {
                 "const": true
               }

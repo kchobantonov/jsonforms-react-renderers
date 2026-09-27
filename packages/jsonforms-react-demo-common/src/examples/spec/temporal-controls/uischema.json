@@ -48,6 +48,13 @@
               "scope": "#/properties/schemaBased/properties/duration"
             },
             {
+              "type": "Control",
+              "scope": "#/properties/schemaBased/properties/weeks",
+              "options": {
+                "showActions": false
+              }
+            },
+            {
               "type": "Separator"
             },
             {

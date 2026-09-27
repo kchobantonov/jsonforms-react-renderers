@@ -1,5 +1,5 @@
 {
-  "dotNumber": "12ab",
+  "memberNumber": "12ab",
   "notes": "short",
-  "terminals": [{ "code": "PDX" }]
+  "offices": [{ "code": "PDX" }]
 }

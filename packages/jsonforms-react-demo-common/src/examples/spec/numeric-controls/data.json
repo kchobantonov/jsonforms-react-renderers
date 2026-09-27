@@ -1,6 +1,6 @@
 {
   "quantity": 0,
-  "palletCount": 3,
+  "batchCount": 3,
   "unitPrice": 12.5,
   "weightKg": 0,
   "discountPercent": 0,

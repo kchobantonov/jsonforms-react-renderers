@@ -86,7 +86,7 @@ describe('the null-control spec example', () => {
   it('draws one checkbox per null property, in its three states', async () => {
     const { boxes, unmount } = draw();
     await settle();
-    // noSurcharge (null), hazardsChecked (absent), legacyClearance ("n/a")
+    // noSurcharge (null), exceptionsChecked (absent), legacyApproval ("n/a")
     expect(boxes().length).toBeGreaterThanOrEqual(3);
     expect(boxes().some((box) => box.checked)).toBe(true);
     expect(boxes().some((box) => box.indeterminate)).toBe(true);

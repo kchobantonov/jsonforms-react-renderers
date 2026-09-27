@@ -166,7 +166,7 @@
               "options": {
                 "variant": "ag-grid",
                 "showSortButtons": true,
-                "gridHeight": "260px",
+                "height": 260,
                 "cells": {
                   "holder": {
                     "summary": {
@@ -187,6 +187,159 @@
                       ]
                     }
                   }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Category",
+          "name": "cells",
+          "label": "Scalar and composite cells",
+          "i18n": "cellsTab",
+          "elements": [
+            {
+              "type": "Label",
+              "i18n": "cells"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/staff",
+              "options": {
+                "table": true,
+                "showSortButtons": true,
+                "cells": {
+                  "address": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#/properties/street"
+                    },
+                    "showEmptyButton": true,
+                    "detail": {
+                      "type": "VerticalLayout",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/street"
+                        },
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/city"
+                        }
+                      ]
+                    }
+                  },
+                  "phoneNumbers": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#"
+                    },
+                    "detail": {
+                      "type": "Control",
+                      "scope": "#"
+                    },
+                    "showEmptyButton": true
+                  }
+                }
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/staff",
+              "options": {
+                "variant": "ag-grid",
+                "height": 430,
+                "showSortButtons": true,
+                "cells": {
+                  "address": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#/properties/street"
+                    },
+                    "showEmptyButton": true,
+                    "detail": {
+                      "type": "VerticalLayout",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/street"
+                        },
+                        {
+                          "type": "Control",
+                          "scope": "#/properties/city"
+                        }
+                      ]
+                    }
+                  },
+                  "phoneNumbers": {
+                    "summary": {
+                      "type": "Control",
+                      "scope": "#"
+                    },
+                    "detail": {
+                      "type": "Control",
+                      "scope": "#"
+                    },
+                    "showEmptyButton": true
+                  }
+                },
+                "agGridOptions": {
+                  "pagination": true,
+                  "paginationPageSize": 1,
+                  "paginationPageSizeSelector": [
+                    1,
+                    2,
+                    10
+                  ],
+                  "columnDefs": [
+                    {
+                      "field": "name",
+                      "width": 170
+                    },
+                    {
+                      "field": "age",
+                      "width": 170
+                    },
+                    {
+                      "field": "role",
+                      "width": 170
+                    },
+                    {
+                      "field": "badge",
+                      "width": 170
+                    },
+                    {
+                      "field": "tenure",
+                      "width": 170
+                    },
+                    {
+                      "field": "date",
+                      "width": 170
+                    },
+                    {
+                      "field": "time",
+                      "width": 170
+                    },
+                    {
+                      "field": "dateTime",
+                      "width": 240
+                    },
+                    {
+                      "field": "active",
+                      "width": 170,
+                      "filter": false
+                    },
+                    {
+                      "field": "address",
+                      "width": 240,
+                      "filter": false
+                    },
+                    {
+                      "field": "phoneNumbers",
+                      "width": 240,
+                      "filter": false
+                    }
+                  ]
                 }
               }
             }

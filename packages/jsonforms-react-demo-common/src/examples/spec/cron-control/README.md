@@ -137,6 +137,6 @@ missing state — not an empty string, and not a schema default.
 
 ## Status
 
-**Implemented.** `AntdCronControlRenderer` in the antd extended set, over
-`util/cron.ts` in the renderer-agnostic package; covered by `cronValues.test.ts`
-for the reading and `cronPicker.test.tsx` for the panel.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

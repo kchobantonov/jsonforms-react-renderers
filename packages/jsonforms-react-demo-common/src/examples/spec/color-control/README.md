@@ -2,13 +2,12 @@
 
 **Example ID:** `color-control`\
 **Demo entry:** **Spec: Color control** (`#spec-color-control`)\
-**Domain:** shipping label theme\
+**Domain:** processing label theme\
 **Specs covered:**
 
 - [Portable spec §18 — Color control](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §8 — Color encodings, text entry and clearing](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
 - [Adjustments §1 — configuration namespacing](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §7.3](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 One color, seen through every representation it can be stored in. The point of
 the example is that **how a color is edited and how it is stored are separate
@@ -31,7 +30,7 @@ No `uischemas.json`: nothing here nests.
 ## What the form contains
 
 ```text
-Shipping label theme
+Processing label theme
   Brand primary       format: color                       -> #3a7bd5
   Accent              colorSaveFormat: rgb                -> rgb(237, 80, 80)
   Chart series        colorSaveFormat: hsb                -> hsb(154, 76%, 71%)
@@ -57,8 +56,8 @@ exactly one error:
 
 Ajv also prints `unknown format "color" ignored` for each property. That is
 correct and expected: `color` is a **project-defined** format, and §18 requires
-each implementation to register a matching definition with its validator. React
-does not yet — see gaps [§3.6](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
+each implementation to register a matching definition with its validator. The demo validator
+does not currently register that format.
 The consequence is visible in this example: `importedTint` holds
 `color(display-p3 0.4 0.2 0.6)`, which the control correctly refuses to
 interpret, and **no error is reported for it**.
@@ -75,11 +74,9 @@ field stores — hex, RGB or HSB — every time it opens, not whichever tab was
 left selected last. Switching tabs while the panel is open changes what you are
 editing, never what is written.
 
-**Every save format is one the picker can edit.** There is deliberately no
-`hsl` output: antd's picker has no HSL panel, and a save format the editor
-cannot display means dragging one model while recording another. HSL is still
-**accepted as input** — see Highlight — so data from a system that emits it is
-not stranded. Authoring `colorSaveFormat: "hsl"` falls back to `hex`.
+**Compare accepted input with the configured output.** Highlight starts with
+an HSL value, while the authored output examples cover hex, RGB and HSB.
+The example does not require a particular picker panel or panel layout.
 
 **Type a color in any supported syntax.** Every field accepts `#RGB`,
 `#RRGGBB`, `#RRGGBBAA`, `rgb()`, `rgba()`, `hsl()`, `hsla()`, `hsb()` and
@@ -140,17 +137,6 @@ do not change.
 
 ## Status
 
-**Implemented.** All four save formats, both selection paths, `colorTextEntry`,
-clearing from the picker and the hex3 transparency refusal are in
-`AntdColorControlRenderer`, with encoding in
-[`colorFormat.ts`](../../../../../jsonforms-react-antd-extended-renderers/src/util/colorFormat.ts).
-Covered by `colorFormat.test.ts` and `colorControl.test.tsx` in the
-antd-extended renderer set.
-
-**Deliberately not implemented:** `colorSaveFormat: "hsl"`, which §18 lists.
-See Adjustment 8.1 for why, and the fallback row above for what an authored
-`hsl` does.
-
-**Not implemented:** the registered `color` format on the validator, so an
-unrecognized color is reported by nothing. `importedTint` is the fixture for
-that gap.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

@@ -39,7 +39,7 @@ Categorization (stepper)
       Phone number                     <- minLength 7 fails on "112"
   Compliance                           <- indicator suppressed
     Certifications (array)             <- indicator suppressed by the element
-      1. Forklift licence              <- valid
+      1. First aid certificate              <- valid
       2. (unnamed)                     <- required "name" fails
 ```
 

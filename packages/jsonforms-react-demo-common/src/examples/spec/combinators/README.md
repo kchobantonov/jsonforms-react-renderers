@@ -143,7 +143,7 @@ exist**, and it is the part that surprises people: a schema *can* decide that,
 and `if`/`then`/`else` is not how.
 
 ```json
-"delivery": {
+"appointment": {
   "type": "object",
   "properties": { "method": { "enum": ["collect", "post", "none"] } },
   "oneOf": [

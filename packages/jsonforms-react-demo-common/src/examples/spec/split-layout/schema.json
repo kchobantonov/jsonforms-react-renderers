@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "title": "Dispatch board",
+  "title": "Project board",
   "properties": {
     "queue": {
       "type": "string",
@@ -30,17 +30,17 @@
       "type": "string",
       "title": "Audit"
     },
-    "showLanePane": {
+    "showTeamPane": {
       "type": "boolean",
-      "title": "Show lane pane"
+      "title": "Show team pane"
     },
     "bookedBy": {
       "type": "string",
       "title": "Booked by"
     },
-    "laneName": {
+    "teamName": {
       "type": "string",
-      "title": "Lane"
+      "title": "Team"
     },
     "approvedBy": {
       "type": "string",

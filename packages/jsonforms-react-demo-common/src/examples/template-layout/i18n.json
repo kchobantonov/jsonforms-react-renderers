@@ -24,8 +24,8 @@
       "age": {
         "label": "Age"
       },
-      "driving": {
-        "label": "Driving Skill",
+      "presentation": {
+        "label": "Presentation Skill",
         "description": "Indicating experience level"
       }
     },
@@ -65,8 +65,8 @@
         "label": "Възраст",
         "description": "Моля, въведете вашата възраст."
       },
-      "driving": {
-        "label": "Шофьорски умения",
+      "presentation": {
+        "label": "Презентационни умения",
         "description": "Показва ниво на опит"
       }
     },

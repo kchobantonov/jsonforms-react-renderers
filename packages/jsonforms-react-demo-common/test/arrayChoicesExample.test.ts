@@ -63,9 +63,9 @@ describe('the array-choices spec example', () => {
   });
 
   test('carries a value the schema does not offer', () => {
-    expect(data.imported).toContain('Carrier pigeon');
+    expect(data.imported).toContain('Fax');
     expect((schema as any).properties.imported.items.enum).not.toContain(
-      'Carrier pigeon'
+      'Fax'
     );
   });
 

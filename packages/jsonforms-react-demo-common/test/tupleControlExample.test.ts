@@ -39,7 +39,7 @@ describe('the tuple-control spec example', () => {
       ])
     ).toEqual([
       ['/dimensions/2', 'minimum'],
-      ['/legacyRoute', 'additionalItems'],
+      ['/legacyAssignment', 'additionalItems'],
     ]);
   });
 
@@ -49,8 +49,8 @@ describe('the tuple-control spec example', () => {
   });
 
   test('keeps a trailing value its schema forbids, rather than trimming it', () => {
-    expect(data.legacyRoute).toHaveLength(3);
-    expect((schema as any).properties.legacyRoute.additionalItems).toBe(false);
+    expect(data.legacyAssignment).toHaveLength(3);
+    expect((schema as any).properties.legacyAssignment.additionalItems).toBe(false);
   });
 
   test('asks for a tuple it cannot have, to reach the diagnostic', () => {

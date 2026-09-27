@@ -16,7 +16,7 @@
   "attendees": 8,
   "seatsPerTable": 6,
   "urgent": false,
-  "delivery": {
+  "appointment": {
     "method": "collect",
     "collectionPoint": "Main reception"
   }

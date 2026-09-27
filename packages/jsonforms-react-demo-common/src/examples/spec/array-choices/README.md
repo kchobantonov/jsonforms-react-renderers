@@ -10,7 +10,6 @@
 - [Portable spec §15 — restrict and mutation constraints](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §16 — Choice searchability and array-choice variants](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §2.2](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 One array-of-choices shape, three presentations. The point of the example is
 that **the variant changes the widget and nothing else**: the same schema, the
@@ -43,8 +42,8 @@ Notification preferences
   Scan codes              no uniqueItems, chips        -> "A-117" twice
   Printed labels          enum items, chips            -> tokens from a fixed list
   ---
-  Bonded warehouses       chips, minItems 2 / max 3    -> one value  (invalid)
-  Imported preferences    multi-select                 -> "Carrier pigeon"  (invalid)
+  Office locations       chips, minItems 2 / max 3    -> one value  (invalid)
+  Imported preferences    multi-select                 -> "Fax"  (invalid)
 ```
 
 ## Validation state
@@ -106,14 +105,14 @@ already there.
 
 ### Bounds
 
-**Bonded warehouses wants between two and three**, and has one, so it reports
+**Office locations wants between two and three**, and has one, so it reports
 `minItems` and its existing token cannot be removed while `restrict` is on. Add
 a third and the adder stops. Switch `restrict` off in the Config tab to compare:
 adding and removing are allowed and the validator reports the breach instead.
 
 ### Values the schema does not offer
 
-**Imported preferences holds `"Carrier pigeon"`.** It is shown as a selected
+**Imported preferences holds `"Fax"`.** It is shown as a selected
 entry of its own and kept — §19, and "do not silently deduplicate, coerce, or
 discard invalid incoming values". Removing it is an edit; nothing removes it for
 you.
@@ -137,22 +136,6 @@ data.
 
 ## Status
 
-**Implemented.** Both variants are in
-[`MultiSelectControl.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/MultiSelectControl.tsx)
-and
-[`ChipsControl.tsx`](../../../../../jsonforms-react-antd-renderers/src/complex/ChipsControl.tsx),
-with the shared identity and mutation rules in
-[`arrayChoices.ts`](../../../../../jsonforms-react-antd-renderers/src/util/arrayChoices.ts).
-Both rank 6, above the automatic checkbox group at 5. Covered by
-`test/arrayChoices.test.tsx`.
-
-**Deliberately not matched:** numeric enums and structured (`object`/`array`)
-constants. §18 requires a tester to "match only choice value types that its
-selection, addition, and removal logic supports", and recognizing a `const`
-branch "is not by itself evidence of support for object or array constants".
-Leaving them unmatched keeps them eligible for a renderer that can edit them
-properly.
-
-**Not implemented:** `vertical` on the automatic checkbox group, and delete
-confirmation. See gaps
-[§2.2](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

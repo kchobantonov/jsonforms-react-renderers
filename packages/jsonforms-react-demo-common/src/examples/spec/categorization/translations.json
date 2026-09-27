@@ -1,7 +1,7 @@
 {
   "en": {
     "category.contact.label": "Contact",
-    "category.logistics.label": "Logistics",
+    "category.planning.label": "Planning",
     "category.business.label": "Business",
     "category.notes.label": "Notes",
     "hint.visibility": "Toggle this to watch the Business category appear and disappear in all three.",
@@ -20,7 +20,7 @@
   },
   "bg": {
     "category.contact.label": "Контакт",
-    "category.logistics.label": "Логистика",
+    "category.planning.label": "Планиране",
     "category.business.label": "Фирма",
     "category.notes.label": "Бележки",
     "hint.visibility": "Превключете, за да видите как категорията „Фирма“ се появява и изчезва и в трите.",

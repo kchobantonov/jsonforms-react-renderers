@@ -37,7 +37,8 @@
     },
     "copies": {
       "type": "integer",
-      "title": "Copies"
+      "title": "Copies",
+      "minimum": 1
     },
     "nativeNote": {
       "type": "string",

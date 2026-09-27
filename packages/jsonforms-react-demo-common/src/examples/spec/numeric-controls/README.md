@@ -2,13 +2,12 @@
 
 **Example ID:** `numeric-controls`\
 **Demo entry:** **Spec: Number and integer controls** (`#spec-numeric-controls`)\
-**Domain:** warehouse stock line\
+**Domain:** office stock line\
 **Specs covered:**
 
 - [Portable spec §18 — Number and integer controls](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Numeric parsing and representation limits](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Slider control](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §4.3 and §4.4](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 The three go together: they are the same value seen through three editors, and
 the parsing rules apply to all of them.
@@ -31,7 +30,7 @@ exactly two errors:
 
 | Instance path | Keyword | Message |
 | --- | --- | --- |
-| `/palletCount` | `multipleOf` | must be multiple of 2 |
+| `/batchCount` | `multipleOf` | must be multiple of 2 |
 | `/weightKg` | `exclusiveMinimum` | must be > 0 |
 
 Everything else is valid, including the values most likely to be mishandled.
@@ -62,22 +61,14 @@ forbids, and the bug this example was written to catch.
 interpolation of its own - the spec puts that on the translator - so a catalog
 message renders literally unless the translator substitutes.
 
-## What this example currently exposes as unimplemented
+## Adapter checks
 
-It is a fixture for work still to do as much as a demonstration:
-
-| Behaviour | Spec | Status |
-| --- | --- | --- |
-| `options.step` on Pallets and Unit price | `step` → `multipleOf` → `0.1`/`1` | **Ignored.** Number hard-codes `step={0.1}`; integer passes no step at all. |
-| `minimum`/`maximum` guarding entry under `restrict` | §15 | **Missing.** No bounds reach `InputNumber`. |
-| `exclusiveMinimum` on Weight | §18 | **Missing** from input handling; validation reports it. |
-| Slider showing `0` rather than the default | §18 Slider | **Fixed.** A committed `0` keeps the thumb at zero; it used to jump to the default of 10 while the data said 0. |
-| Slider marking an unset value as "Not set" | §18 Slider | **Partial.** `aria-valuetext="Not set"` is set, but there is no visible marking. |
-| Precision loss on `9007199254740993` | §18 parsing | **Not detectable here.** antd converts the text to a JavaScript number before the renderer sees it; catching this needs `stringMode`. |
-
-The parsing rules above **are** implemented — see
-`toCommittableNumber` in the antd renderer set and
-`test/numericParsing.test.ts`.
+Compare `options.step` with the schema's `multipleOf`, test inclusive and
+exclusive bounds with `restrict`, and verify that zero is shown as a real
+value. An unset slider needs a visible and accessible unset state. Numeric
+entry must avoid committing non-finite numbers or silently losing precision.
+These checks require interaction with the selected renderer, beyond schema
+validation of the fixture.
 
 ## Fallback behaviour
 

@@ -151,7 +151,7 @@
       "title": "Needed by",
       "minLength": 1
     },
-    "delivery": {
+    "appointment": {
       "type": "object",
       "title": "How to send the summary",
       "properties": {

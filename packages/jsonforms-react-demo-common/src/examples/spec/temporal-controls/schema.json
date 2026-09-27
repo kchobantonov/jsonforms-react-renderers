@@ -34,6 +34,11 @@
           "format": "time",
           "title": "Start time, to the second",
           "description": "The same format keyword, with seconds on screen."
+        },
+        "weeks": {
+          "type": "string",
+          "format": "duration",
+          "title": "Support period"
         }
       },
       "required": [

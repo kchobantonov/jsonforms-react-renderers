@@ -11,7 +11,6 @@
 - [Portable spec §5 — Established presentation options](../../../../../../docs/jsonforms-extended-ui-model-spec.md) (`multi`, `mask`)
 - [Portable spec §19 — Honest rendering of invalid data](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §11 — The masked string control](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §2.3, §4.1, §4.2](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 One intake form, seen through every string presentation the model defines. The
 point of the example is that **a mask describes how a value is typed, and the
@@ -35,9 +34,9 @@ No `uischemas.json`: nothing here nests.
 
 ```text
 Customer intake
-  Driver name          plain text + placeholder           -> "Marta Oliveira"
+  Coordinator name          plain text + placeholder           -> "Marta Oliveira"
   Pickup city          suggestion (free text + hints)     -> "Portland"
-  Delivery notes       multi                              -> two lines
+  Appointment notes       multi                              -> two lines
   ---
   Booking reference    mask ###-###, restrict, maxLength 6 -> stores "482913",   shows 482-913
   Contact phone        returnMaskedValue: true             -> stores "+1 (503) 555-0142"
@@ -148,27 +147,6 @@ and the descriptions translate. The stored values do not change.
 
 ## Status
 
-**Implemented.** Masks, tokens, `tokensReplace`, `maskReplacers`, `eager`,
-`reversed`, `returnMaskedValue`, alternative masks, the `restrict` contract,
-verbatim passthrough, composition handling and caret restoration are in
-[`maskFormat.ts`](../../../../../jsonforms-react-antd-extended-renderers/src/util/maskFormat.ts)
-and
-[`AntdMaskInput.tsx`](../../../../../jsonforms-react-antd-extended-renderers/src/renderers/AntdMaskInput.tsx),
-with selection in
-[`maskControls.ts`](../../../../../jsonforms-react-extended-renderers/src/util/maskControls.ts).
-Covered by `maskFormat.test.ts` and `maskControl.test.tsx`.
-
-**Not implemented, and visible here:**
-
-- **The temporal `mask` boolean.** Scheduled pickup correctly stays a date
-  picker, but that picker derives no input mask from its display format either,
-  so the option has nothing to switch off. See gaps
-  [§6.5](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
-- **`restrict` on the plain text control.** Driver name and the other unmasked
-  fields pass `maxLength` to antd unconditionally and never consult `restrict`,
-  and antd counts UTF-16 code units rather than code points. The masked fields
-  do neither. See gaps
-  [§4.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
-- **Multiline sizing.** Delivery notes is fixed at five rows; `rows` and
-  `autoSize` are hard-coded. See gaps
-  [§4.2](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

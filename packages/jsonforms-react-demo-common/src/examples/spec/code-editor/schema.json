@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "title": "Deployment assets",
+  "properties": {
+    "script": {
+      "type": "string",
+      "title": "Startup script"
+    },
+    "markup": {
+      "type": "string",
+      "title": "Status page"
+    },
+    "document": {
+      "type": "object",
+      "title": "Deployment settings",
+      "properties": {
+        "service": {
+          "type": "string"
+        },
+        "replicas": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": ["service", "replicas"]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "i18n": "intro"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/logo",
+      "options": {
+        "formatMaximum": 1048576
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/contract",
+      "options": {
+        "formatMaximum": 1048576
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/payload",
+      "options": {
+        "formatMaximum": 1048576
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/receipt",
+      "options": {
+        "formatMaximum": 1048576
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/bounded",
+      "options": {
+        "formatExclusiveMinimum": 0,
+        "formatExclusiveMaximum": 1024
+      }
+    }
+  ]
+}

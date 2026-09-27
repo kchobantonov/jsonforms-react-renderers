@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "title": "Consignee profile",
+  "title": "Customer profile",
   "definitions": {
     "geo": {
       "type": "object",
@@ -105,9 +105,9 @@
           "type": "string",
           "title": "Pickup"
         },
-        "delivery": {
+        "appointment": {
           "type": "string",
-          "title": "Delivery"
+          "title": "Appointment"
         }
       }
     },
@@ -116,13 +116,13 @@
       "title": "Notes",
       "description": "Its control carries a detail with no type, which is not a detail at all.",
       "properties": {
-        "forDriver": {
+        "forCoordinator": {
           "type": "string",
-          "title": "For driver"
+          "title": "For coordinator"
         },
-        "forWarehouse": {
+        "forOffice": {
           "type": "string",
-          "title": "For warehouse"
+          "title": "For office"
         }
       }
     },
@@ -131,9 +131,9 @@
       "title": "Compliance",
       "description": "A detail whose outermost element is a Group, wrapping another Group.",
       "properties": {
-        "hazmat": {
+        "needsApproval": {
           "type": "string",
-          "title": "Hazmat class"
+          "title": "Approval status"
         },
         "permit": {
           "type": "string",
@@ -163,9 +163,9 @@
       "description": "additionalProperties: false, with a key the schema does not declare.",
       "additionalProperties": false,
       "properties": {
-        "terminal": {
+        "office": {
           "type": "string",
-          "title": "Terminal"
+          "title": "Office"
         }
       }
     },

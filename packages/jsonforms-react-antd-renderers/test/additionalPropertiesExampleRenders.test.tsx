@@ -93,7 +93,7 @@ describe('the additional-properties spec example', () => {
     const values = Array.from(
       container.querySelectorAll<HTMLInputElement>('input')
     ).map((input) => input.value);
-    expect(values).toContain('written by the old dispatch system');
+    expect(values).toContain('written by the old project system');
     unmount();
   });
 

@@ -103,13 +103,13 @@ describe('the destructive-confirmation spec example', () => {
     */
     // Order lines and Scratch lines: the array table.
     expect(container.querySelectorAll('.ant-table')).toHaveLength(2);
-    // Route stops: the expandable array layout, one panel per item.
+    // Project milestones: the expandable array layout, one panel per item.
     const panels = Array.from(
       container.querySelectorAll('.ant-collapse-header')
     ).map((header) => header.textContent ?? '');
     expect(panels.some((text) => text.includes('Portland'))).toBe(true);
     expect(panels.some((text) => text.includes('Salem'))).toBe(true);
-    // Drivers: list with detail.
+    // Coordinators: list with detail.
     expect(container.querySelectorAll('.ant-listy')).toHaveLength(1);
     expect(container.textContent).toContain('A. Ferreira');
     // Charges: the AG Grid, which is the extended package's renderer.
@@ -119,7 +119,7 @@ describe('the destructive-confirmation spec example', () => {
     expect(
       container.querySelectorAll('.jsonforms-mixed-type-selector').length
     ).toBeGreaterThanOrEqual(2);
-    // Dispatch notes, and the payload's own dynamic properties.
+    // Project notes, and the payload's own dynamic properties.
     expect(labelled(container, 'Add property').length).toBeGreaterThanOrEqual(2);
     expect(labelled(container, 'Delete').length).toBeGreaterThan(0);
     unmount();
@@ -133,13 +133,13 @@ describe('the destructive-confirmation spec example', () => {
   it('gives the mixed payload both a complex and a non-complex child', async () => {
     const { container, stored, unmount } = await draw();
     const payload = stored().payload;
-    expect(payload.route).toEqual({
+    expect(payload.assignment).toEqual({
       origin: 'Portland',
       destination: 'Salem',
     });
-    expect(payload.legs).toHaveLength(2);
+    expect(payload.phases).toHaveLength(2);
     expect(payload.blank).toEqual({});
-    expect(typeof payload.carrier).toBe('string');
+    expect(typeof payload.supplier).toBe('string');
     // All four are reachable in the tree, which is what makes them testable.
     const tree = container.querySelector('.jsonforms-mixed-tree');
     expect(labelled(tree!, 'Delete').length).toBeGreaterThanOrEqual(3);
@@ -149,7 +149,7 @@ describe('the destructive-confirmation spec example', () => {
   it('prompts when a tree node is deleted', async () => {
     const { container, prompted, unmount } = await draw();
     const tree = container.querySelector('.jsonforms-mixed-tree');
-    const button = labelled(tree!, 'Delete route')[0];
+    const button = labelled(tree!, 'Delete assignment')[0];
     expect(button).toBeTruthy();
     act(() => button.click());
     await settle();

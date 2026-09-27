@@ -45,9 +45,9 @@ const settle = async (ms = 80) => {
 const schema = {
   type: 'object',
   properties: {
-    stops: {
+    milestones: {
       type: 'array',
-      title: 'Route stops',
+      title: 'Project milestones',
       items: {
         type: 'object',
         properties: {
@@ -63,14 +63,14 @@ const schema = {
   },
 };
 
-const uischema = { type: 'Control', scope: '#/properties/stops' } as any;
+const uischema = { type: 'Control', scope: '#/properties/milestones' } as any;
 
-const stops = () => [
+const milestones = () => [
   { name: 'Portland', window: { from: '08:00' } },
   { name: 'Salem', window: { from: '11:30' } },
 ];
 
-const draw = (config?: any, data: any = { stops: stops() }, ui = uischema) => {
+const draw = (config?: any, data: any = { milestones: milestones() }, ui = uischema) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -141,7 +141,7 @@ const draw = (config?: any, data: any = { stops: stops() }, ui = uischema) => {
       await settle();
     },
     avatars: () => container.querySelectorAll('.ant-avatar').length,
-    stored: () => latest.stops,
+    stored: () => latest.milestones,
     unmount: () => act(() => root.unmount()),
   };
 };
@@ -167,7 +167,7 @@ describe('initCollapsed', () => {
   });
 
   it('opens nothing when the array is empty, with either setting', async () => {
-    const view = draw(undefined, { stops: [] });
+    const view = draw(undefined, { milestones: [] });
     await settle();
     expect(view.panels()).toHaveLength(0);
     view.unmount();
@@ -185,7 +185,7 @@ describe('initCollapsed', () => {
   it('is overridable on the element', async () => {
     const view = draw(
       { initCollapsed: true },
-      { stops: stops() },
+      { milestones: milestones() },
       {
         ...uischema,
         options: { initCollapsed: false },
@@ -228,7 +228,7 @@ describe('expansion follows the item, not the slot', () => {
     than transferring expansion to the item now at its old index."
   */
   it('moves with the item when it is reordered', async () => {
-    const view = draw({ showSortButtons: true }, { stops: stops() }, uischema);
+    const view = draw({ showSortButtons: true }, { milestones: milestones() }, uischema);
     await settle();
     expect(view.openIndex()).toBe(0);
     // Move the open item down; expansion should go with it, not stay on slot 0.
@@ -299,7 +299,7 @@ describe('hideAvatar', () => {
 describe('hideArraySummaryValidation', () => {
   // `minLength: 3` makes the second item's name invalid.
   const invalid = () => ({
-    stops: [{ name: 'Portland' }, { name: 'ab' }],
+    milestones: [{ name: 'Portland' }, { name: 'ab' }],
   });
 
   /*
@@ -351,10 +351,10 @@ describe('hideAvatar in list with detail', () => {
       root.render(
         <ConfigProvider theme={{ token: { motion: false } }}>
           <JsonForms
-            data={{ stops: stops() }}
+            data={{ milestones: milestones() }}
             schema={schema as any}
             uischema={
-              { type: 'ListWithDetail', scope: '#/properties/stops' } as any
+              { type: 'ListWithDetail', scope: '#/properties/milestones' } as any
             }
             config={config}
             renderers={antdRenderers}

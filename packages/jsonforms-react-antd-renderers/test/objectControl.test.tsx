@@ -139,7 +139,7 @@ describe('where an object gets its layout', () => {
     const view = draw();
     await settle();
     expect(view.valueOf('Phone')).toBe('+1 503 555 0113');
-    expect(view.valueOf('Email')).toBe('dispatch@example.test');
+    expect(view.valueOf('Email')).toBe('support@example.test');
     const labels = view.labels();
     expect(labels.indexOf('Phone')).toBeLessThan(labels.indexOf('Email'));
     view.unmount();
@@ -183,7 +183,7 @@ describe('where an object gets its layout', () => {
   it('accepts a Categorization as a detail', async () => {
     const view = draw();
     await settle();
-    expect(view.tabs()).toEqual(['Pickup', 'Delivery']);
+    expect(view.tabs()).toEqual(['Pickup', 'Appointment']);
     view.unmount();
   });
 
@@ -199,9 +199,9 @@ describe('where an object gets its layout', () => {
   it('silently ignores a detail object with no type', async () => {
     const view = draw();
     await settle();
-    expect(view.valueOf('For driver')).toBe('Call on arrival');
-    // The detail named only `forDriver`; the generated layout has both.
-    expect(view.valueOf('For warehouse')).toBe('Dock 3');
+    expect(view.valueOf('For coordinator')).toBe('Call on arrival');
+    // The detail named only `forCoordinator`; the generated layout has both.
+    expect(view.valueOf('For office')).toBe('Room 3');
     view.unmount();
   });
 
@@ -219,7 +219,7 @@ describe('where an object gets its layout', () => {
     expect(view.text()).not.toContain('Dropped, because it is outermost');
     expect(view.text()).toContain('Kept, because it is inside');
     // The controls inside it render either way.
-    expect(view.valueOf('Hazmat class')).toBe('none');
+    expect(view.valueOf('Approval status')).toBe('none');
     view.unmount();
   });
 

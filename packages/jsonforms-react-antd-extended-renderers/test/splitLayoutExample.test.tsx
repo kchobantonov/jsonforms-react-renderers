@@ -339,14 +339,14 @@ describe('three panes with a hidden middle', () => {
   };
 
   it('starts at 1 : 2 : 1', async () => {
-    const view = draw({ showLanePane: true });
+    const view = draw({ showTeamPane: true });
     await settle();
     expect(lastSplitterBases(view.container)).toEqual(['25%', '50%', '25%']);
     view.unmount();
   });
 
   it('gives the middle pane’s share to the survivors when it goes', async () => {
-    const view = draw({ showLanePane: false });
+    const view = draw({ showTeamPane: false });
     await settle();
     expect(lastSplitterBases(view.container)).toEqual(['50%', '50%']);
     view.unmount();

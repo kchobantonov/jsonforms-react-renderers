@@ -17,11 +17,11 @@
     },
     "headers": {
       "type": "object",
-      "title": "Carrier headers",
+      "title": "Supplier headers",
       "description": "Only the names the patterns admit; nothing else is allowed.",
       "additionalProperties": false,
       "patternProperties": {
-        "^x-carrier-": { "type": "string" },
+        "^x-supplier-": { "type": "string" },
         "^x-trace-": { "type": "string" }
       }
     },

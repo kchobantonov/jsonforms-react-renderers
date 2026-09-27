@@ -63,9 +63,9 @@ const schema = {
 };
 
 const rows = () => [
-  { label: 'Line haul', amount: 1240 },
-  { label: 'Fuel surcharge', amount: 185.5 },
-  { label: 'Detention', amount: 0 },
+  { label: 'Consulting', amount: 1240 },
+  { label: 'Support fee', amount: 185.5 },
+  { label: 'Additional support', amount: 0 },
 ];
 
 const draw = async (options: any = {}, config?: any) => {

@@ -44,7 +44,7 @@ import React, { createContext, useContext, useRef } from 'react';
  * - **Ownership.** One owner retracting cannot disturb another's errors, or
  *   the host's. Two editors on one path, or an editor beside a server error,
  *   coexist.
- * - **Clearing is automatic**, and is the rule the Camunda forms already use.
+ * - **Clearing is automatic:** the store applies the clear-on-change rule.
  * - The errors are in core state, so `useJsonForms().core.additionalErrors`
  *   reads them - the point is having them *on the form*, not only under one
  *   control.
@@ -57,10 +57,9 @@ import React, { createContext, useContext, useRef } from 'react';
  * ## Clearing
  *
  * By default an owner's error is dropped when **the value at its own
- * `instancePath` changes** - the rule the Vue 2 Camunda container already
- * applies to server errors, moved from one container component to somewhere
- * every form gets it. Comparison is by value, not by the action's path, so an
- * update that rewrites a field with what it already held clears nothing.
+ * `instancePath` changes**. The store applies this clear-on-change rule in
+ * every form that uses it. Comparison is by value, not by the action's path,
+ * so an update that rewrites a field with what it already held clears nothing.
  *
  * An owner that manages its own lifecycle opts out with
  * `{ clearOnChange: false }`. The Monaco control does: it republishes or

@@ -2,12 +2,11 @@
 
 **Example ID:** `pre-touch-errors`\
 **Demo entry:** **Spec: Pre-touch error filtering** (`#spec-pre-touch-errors`)\
-**Domain:** carrier onboarding\
+**Domain:** supplier onboarding\
 **Specs covered:**
 
 - [Portable spec — Error-message filtering before touch](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §19 — honest rendering](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §26](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 A form where **nothing has been filled in yet**, so every required field is
 already complaining. That is the situation the option exists for: a form that
@@ -40,16 +39,16 @@ Validated with Ajv (`allErrors`, `strict: false`), the supplied data is
 | `required` | `/` | must have required property 'legalName' |
 | `required` | `/` | must have required property 'contactEmail' |
 | `required` | `/` | must have required property 'internalCode' |
-| `required` | `/terminals/0` | must have required property 'city' |
-| `pattern` | `/dotNumber` | must match pattern "^[0-9]{7}$" |
+| `required` | `/offices/0` | must have required property 'city' |
+| `pattern` | `/memberNumber` | must match pattern "^[0-9]{7}$" |
 | `minLength` | `/notes` | must NOT have fewer than 10 characters |
-| `minItems` | `/terminals` | must NOT have fewer than 2 items |
+| `minItems` | `/offices` | must NOT have fewer than 2 items |
 
 Four `required` and three that are not. That split is the whole point of the
 fixture: a filter that hid all seven would be indistinguishable from one that
 hid the right four.
 
-`insuranceExpiry` is absent and **not** required, so it contributes nothing —
+`membershipExpiry` is absent and **not** required, so it contributes nothing —
 the control that should be quiet throughout.
 
 ## Expected behaviour
@@ -57,8 +56,8 @@ the control that should be quiet throughout.
 ### With filtering off, which is the default
 
 Everything above is on screen from the first render. **Legal name**, **Contact
-email** and **Internal code** each say they are required; **DOT number** says
-its format is wrong; **Notes** asks for ten characters; **Terminals** asks for
+email** and **Internal code** each say they are required; **Member number** says
+its format is wrong; **Notes** asks for ten characters; **Offices** asks for
 two entries and its one item asks for a city.
 
 `filterErrorKeywordsBeforeTouch` is set in `config.json` and does nothing,
@@ -68,10 +67,10 @@ because it is "ignored when filtering is disabled".
 
 The three top-level **required** messages disappear. Still on screen:
 
-- **DOT number** — a `pattern` error. The user typed `12ab`; that is not a
+- **Member number** — a `pattern` error. The user typed `12ab`; that is not a
   message about something they have yet to do.
 - **Notes** — a `minLength` error, for the same reason.
-- **Terminals** — a `minItems` error on the array itself.
+- **Offices** — a `minItems` error on the array itself.
 - **Internal code** — its control sets
   `options.enableFilterErrorsBeforeTouch: false`, and a per-control option
   overrides the global config.
@@ -93,11 +92,11 @@ typing, clearing the field, or the value becoming valid and invalid again.
 ### Clear the keyword list
 
 Empty **Filter Error Keywords Before Touch** while filtering stays on. Now
-*every* untouched control's error text is suppressed — **DOT number**'s
+*every* untouched control's error text is suppressed — **Member number**'s
 `pattern` and **Notes**'s `minLength` go too — because "an absent or empty
 array suppresses all otherwise displayable control error text before touch".
 
-**Terminals** keeps its `minItems` error: that one belongs to the array, and
+**Offices** keeps its `minItems` error: that one belongs to the array, and
 arrays are not part of this feature (see below).
 
 Put `required` back and only the required messages hide again.
@@ -124,7 +123,7 @@ NoValidation." The filter can only ever subtract.
 
 ### Arrays: the item's fields filter, the summary does not
 
-**Terminals** carries a `minItems` error of its own and a child `required`
+**Offices** carries a `minItems` error of its own and a child `required`
 error underneath.
 
 **The child `city` field filters like any other control** — its required
@@ -163,24 +162,6 @@ message is shown, never which language it is in.
 
 ## Status
 
-**Implemented** for controls, in
-[`preTouchErrors.ts`](../../../../../jsonforms-react-antd-renderers/src/util/preTouchErrors.ts).
-
-The algorithm is deliberately the one the Vuetify
-(`vue-vuetify/src/util/composition.ts`) and Svelte renderer families already
-use, down to the branch order: these are *their* option names, so a form
-authored against them has to behave the same here. See
-[Adjustment 19](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md).
-
-**Covered:** every control that prints its own errors — the scalar inputs via
-`InputControl` and `NativeControl`, multi-select, chips, and the extended
-colour, duration and null controls.
-
-**Not covered:** array and tuple summaries, as above. Recorded rather than
-silently skipped, because the specification asks for it to be documented either
-way.
-
-`test/preTouchErrors.test.tsx` renders this fixture and pins the behaviour,
-alongside unit tests for the branches a rendered form does not reach — a
-host-published `additionalError` surviving a suppressed core error beside it,
-an error with no keyword, and a keyword list that matches nothing.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

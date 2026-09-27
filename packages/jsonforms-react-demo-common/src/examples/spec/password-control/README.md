@@ -49,12 +49,9 @@ format. The `hint` field beside it is an ordinary string, for contrast.
 must not write form data, fire a change event, alter validation or mark the
 value dirty, and the reveal state is never stored anywhere.
 
-**Tab to the toggle and press Enter.** It is a real focusable button, and the
-only one: antd 6 makes its own reveal icon a `role="button"` too, so the field
-uses a plain `Input` with the type switched rather than `Input.Password`, which
-would have nested one button inside another. Its accessible name states the
-action it will perform — "Show password", becoming "Hide password" once
-revealed — and hovering shows the same wording as a tooltip.
+**Tab to the toggle and press Enter.** It is a single focusable button.
+Its accessible name states the action it performs: “Show password”, becoming
+“Hide password” once revealed. The tooltip uses the same wording.
 
 **Reveal and clear are separate controls.** Each has its own name and its own
 hit target; neither reaches the other.
@@ -71,9 +68,7 @@ input showing a bullet — with the same reveal button and the same clear action
 this is a `variant` and not a new `format`.
 
 **Type two digits and stop.** The partial code is stored and reported as too
-short. antd fires its own `onChange` only once every box is filled, which would
-leave the form data holding the old value while the screen showed the new one;
-the renderer commits on every keystroke instead.
+short. Each keystroke must update form data, including incomplete codes.
 
 **Backup code asks for the same variant and does not get it.** Its schema sets
 no `minLength`/`maxLength`, so there is no honest number of boxes to draw and it
@@ -104,12 +99,6 @@ values do not change.
 
 ## Status
 
-Implemented and covered by `test/passwordControl.test.tsx` in the antd renderer
-set, including both selection paths, the toggle's name and focusability, that
-toggling writes nothing, and that a password column stays masked.
-
-The OTP variant is covered by `test/passwordOtpControl.test.tsx`: selection and
-its length precondition, the box count, the group's accessible name, partial
-commits, masking and reveal, and clearing.
-
-No portable option disables the reveal action, and none is introduced here.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

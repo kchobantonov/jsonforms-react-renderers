@@ -17,8 +17,8 @@
       "type": "Label",
       "text": "The same delete, in the other array renderers"
     },
-    { "type": "Control", "scope": "#/properties/stops" },
-    { "type": "ListWithDetail", "scope": "#/properties/drivers" },
+    { "type": "Control", "scope": "#/properties/milestones" },
+    { "type": "ListWithDetail", "scope": "#/properties/coordinators" },
     {
       "type": "Control",
       "scope": "#/properties/charges",

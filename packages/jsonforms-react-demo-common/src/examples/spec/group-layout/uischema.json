@@ -11,7 +11,7 @@
           "options": { "gap": "1rem" },
           "elements": [
             { "type": "Control", "scope": "#/properties/legalName", "options": { "layout": { "span": 10 } } },
-            { "type": "Control", "scope": "#/properties/dotNumber", "options": { "layout": { "span": 6 } } }
+            { "type": "Control", "scope": "#/properties/memberNumber", "options": { "layout": { "span": 6 } } }
           ]
         }
       ]

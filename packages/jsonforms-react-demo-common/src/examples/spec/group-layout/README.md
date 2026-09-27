@@ -2,12 +2,11 @@
 
 **Example ID:** `group-layout`\
 **Demo entry:** **Spec: Group layout** (`#spec-group-layout`)\
-**Domain:** carrier record\
+**Domain:** supplier record\
 **Specs covered:**
 
 - [Portable spec §8 — Group](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §6 — Layout types and semantics](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §3.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 A Group is the plainest container there is — "an ordinary Group presents
 related controls as a labelled section" — and three options make it more than
@@ -27,7 +26,7 @@ that. Four groups, one per combination worth seeing.
 ## What the form contains
 
 ```text
-Carrier record
+Supplier record
   Identity            plain group              -> a labelled section, always open
   Contact             collapsible              -> open, and marked as holding data
     Additional details  collapsible, collapsed -> nested, closed, also holds data
@@ -98,10 +97,8 @@ the inner.
 "$dynamic": { "options": { "collapsed": { "bind": "data.hideDetails" } } }
 ```
 
-`$dynamic` is **unimplemented** in this renderer set — it is the largest
-single gap in the coverage review,
-[§3.1](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md) —
-so the fixture uses static `collapsed` only.
+The fixture uses static `collapsed` only. Dynamic binding is a separate
+capability and must be verified in the selected renderer.
 
 Two consequences worth knowing when it is implemented:
 

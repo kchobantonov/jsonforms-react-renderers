@@ -1,9 +1,9 @@
 {
   "type": "object",
-  "title": "Carrier record",
+  "title": "Supplier record",
   "properties": {
     "legalName": { "type": "string", "title": "Legal name" },
-    "dotNumber": { "type": "string", "title": "DOT number" },
+    "memberNumber": { "type": "string", "title": "Member number" },
     "contactName": { "type": "string", "title": "Contact name" },
     "contactEmail": { "type": "string", "format": "email", "title": "Contact email" },
     "alternatePhone": { "type": "string", "title": "Alternate phone" },

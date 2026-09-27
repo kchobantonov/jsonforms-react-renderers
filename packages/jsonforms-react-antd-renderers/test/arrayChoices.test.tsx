@@ -168,12 +168,12 @@ describe('the chips control', () => {
   it('keeps a stored value the choices do not contain', async () => {
     const { chips, stored, unmount } = render(
       enumItems(),
-      { value: ['Email', 'Carrier pigeon'] },
+      { value: ['Email', 'Fax'] },
       'chips'
     );
     await settle();
     expect(chips()).toHaveLength(2);
-    expect(stored()).toEqual(['Email', 'Carrier pigeon']);
+    expect(stored()).toEqual(['Email', 'Fax']);
     unmount();
   });
 
@@ -228,12 +228,12 @@ describe('the multi-select control', () => {
   it('keeps a stored value outside the permitted set', async () => {
     const { container, stored, unmount } = render(
       enumItems(),
-      { value: ['Email', 'Carrier pigeon'] },
+      { value: ['Email', 'Fax'] },
       'multi-select'
     );
     await settle();
-    expect(container.textContent).toContain('Carrier pigeon');
-    expect(stored()).toEqual(['Email', 'Carrier pigeon']);
+    expect(container.textContent).toContain('Fax');
+    expect(stored()).toEqual(['Email', 'Fax']);
     unmount();
   });
 });

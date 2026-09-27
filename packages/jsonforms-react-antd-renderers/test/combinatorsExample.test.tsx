@@ -297,7 +297,7 @@ describe('fields that appear from the schema alone', () => {
     const view = await open();
     expect(view.labels()).toContain('Collection point');
 
-    view.setData({ ...data, delivery: { method: 'post' } });
+    view.setData({ ...data, appointment: { method: 'post' } });
     await settle();
 
     expect(view.labels()).toContain('Postcode');
@@ -308,7 +308,7 @@ describe('fields that appear from the schema alone', () => {
 
   /* A branch may contribute no fields at all, which is still a branch. */
   it('shows only the discriminator for a branch with no fields', async () => {
-    const view = await open({ delivery: { method: 'none' } });
+    const view = await open({ appointment: { method: 'none' } });
     expect(view.labels()).toContain('Method');
     expect(view.labels()).not.toContain('Collection point');
     expect(view.labels()).not.toContain('Postcode');
@@ -322,26 +322,26 @@ describe('fields that appear from the schema alone', () => {
   */
   it('keeps a value the displayed branch does not show', async () => {
     const view = await open({
-      delivery: {
+      appointment: {
         method: 'post',
         postcode: 'AB1 2CD',
         collectionPoint: 'Main reception',
       },
     });
     expect(view.labels()).not.toContain('Collection point');
-    expect(view.data().delivery.collectionPoint).toBe('Main reception');
+    expect(view.data().appointment.collectionPoint).toBe('Main reception');
     view.unmount();
   });
 
   /*
-    No `rule` is involved anywhere in this fixture's delivery section - the
+    No `rule` is involved anywhere in this fixture's appointment section - the
     check that keeps the example honest about what is doing the work.
   */
   it('uses no UI rule to do it', () => {
-    const delivery = (uischema as any).elements[1].elements.find(
+    const appointment = (uischema as any).elements[1].elements.find(
       (category: any) => category.name === 'schemaVisibility'
     );
-    const serialised = JSON.stringify(delivery);
+    const serialised = JSON.stringify(appointment);
     expect(serialised).not.toContain('"rule"');
     expect(serialised).not.toContain('"effect"');
   });

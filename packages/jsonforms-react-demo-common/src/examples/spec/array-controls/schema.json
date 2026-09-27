@@ -7,16 +7,31 @@
       "title": "Sessions",
       "items": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
-          "title": { "type": "string", "title": "Title", "minLength": 3 },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "minLength": 3
+          },
           "track": {
             "type": "string",
             "title": "Track",
             "oneOf": [
-              { "const": "eng", "title": "Engineering" },
-              { "const": "des", "title": "Design" },
-              { "const": "ops", "title": "Operations" }
+              {
+                "const": "eng",
+                "title": "Engineering"
+              },
+              {
+                "const": "des",
+                "title": "Design"
+              },
+              {
+                "const": "ops",
+                "title": "Operations"
+              }
             ]
           },
           "minutes": {
@@ -29,8 +44,14 @@
             "type": "object",
             "title": "Room",
             "properties": {
-              "name": { "type": "string", "title": "Name" },
-              "floor": { "type": "integer", "title": "Floor" }
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "floor": {
+                "type": "integer",
+                "title": "Floor"
+              }
             }
           }
         }
@@ -41,23 +62,43 @@
       "title": "Speakers",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "type": "string", "title": "Name", "minLength": 2 },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "minLength": 2
+          },
           "track": {
             "type": "string",
             "title": "Track",
             "oneOf": [
-              { "const": "eng", "title": "Engineering" },
-              { "const": "des", "title": "Design" },
-              { "const": "ops", "title": "Operations" }
+              {
+                "const": "eng",
+                "title": "Engineering"
+              },
+              {
+                "const": "des",
+                "title": "Design"
+              },
+              {
+                "const": "ops",
+                "title": "Operations"
+              }
             ]
           },
-          "bio": { "type": "string", "title": "Biography" },
+          "bio": {
+            "type": "string",
+            "title": "Biography"
+          },
           "links": {
             "type": "array",
             "title": "Links",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
@@ -68,13 +109,22 @@
       "items": {
         "type": "object",
         "properties": {
-          "text": { "type": "string", "title": "Text" },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
           "audience": {
             "type": "object",
             "title": "Audience",
             "properties": {
-              "role": { "type": "string", "title": "Role" },
-              "region": { "type": "string", "title": "Region" }
+              "role": {
+                "type": "string",
+                "title": "Role"
+              },
+              "region": {
+                "type": "string",
+                "title": "Region"
+              }
             }
           }
         }
@@ -85,18 +135,33 @@
       "title": "Sponsors",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "type": "string", "title": "Name", "minLength": 2 },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "minLength": 2
+          },
           "tier": {
             "type": "string",
             "title": "Tier",
             "oneOf": [
-              { "const": "gold", "title": "Gold" },
-              { "const": "silver", "title": "Silver" }
+              {
+                "const": "gold",
+                "title": "Gold"
+              },
+              {
+                "const": "silver",
+                "title": "Silver"
+              }
             ]
           },
-          "notes": { "type": "string", "title": "Notes" }
+          "notes": {
+            "type": "string",
+            "title": "Notes"
+          }
         }
       }
     },
@@ -106,14 +171,27 @@
       "items": {
         "type": "object",
         "properties": {
-          "code": { "type": "string", "title": "Code" },
-          "price": { "type": "number", "title": "Price", "minimum": 0 },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price",
+            "minimum": 0
+          },
           "holder": {
             "type": "object",
             "title": "Holder",
             "properties": {
-              "name": { "type": "string", "title": "Name" },
-              "email": { "type": "string", "title": "Email" }
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "email": {
+                "type": "string",
+                "title": "Email"
+              }
             }
           }
         }
@@ -126,16 +204,32 @@
       "maxItems": 3,
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "type": "string", "title": "Name", "minLength": 1 },
-          "active": { "type": "boolean", "title": "Active", "default": true },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "minLength": 1
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
           "window": {
             "type": "object",
             "title": "Window",
             "properties": {
-              "opens": { "type": "string", "title": "Opens" },
-              "closes": { "type": "string", "title": "Closes" }
+              "opens": {
+                "type": "string",
+                "title": "Opens"
+              },
+              "closes": {
+                "type": "string",
+                "title": "Closes"
+              }
             }
           }
         }
@@ -147,8 +241,14 @@
       "items": {
         "type": "object",
         "properties": {
-          "step": { "type": "string", "title": "Step" },
-          "done": { "type": "boolean", "title": "Done" }
+          "step": {
+            "type": "string",
+            "title": "Step"
+          },
+          "done": {
+            "type": "boolean",
+            "title": "Done"
+          }
         }
       }
     },
@@ -158,14 +258,106 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "title": "Name" },
-          "lead": { "type": "boolean", "title": "Lead" }
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lead": {
+            "type": "boolean",
+            "title": "Lead"
+          }
         }
       },
       "contains": {
         "type": "object",
-        "required": ["lead"],
-        "properties": { "lead": { "const": true } }
+        "required": [
+          "lead"
+        ],
+        "properties": {
+          "lead": {
+            "const": true
+          }
+        }
+      }
+    },
+    "staff": {
+      "type": "array",
+      "title": "Conference staff",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "age": {
+            "type": "integer",
+            "title": "Age",
+            "minimum": 0
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "enum": [
+              "Coordinator",
+              "Technician"
+            ]
+          },
+          "badge": {
+            "type": "string",
+            "title": "Badge color",
+            "format": "color",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "tenure": {
+            "type": "string",
+            "title": "Tenure",
+            "format": "duration"
+          },
+          "date": {
+            "type": "string",
+            "title": "Arrival date",
+            "format": "date"
+          },
+          "time": {
+            "type": "string",
+            "title": "Start time",
+            "format": "time"
+          },
+          "dateTime": {
+            "type": "string",
+            "title": "Briefing",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "address": {
+            "type": "object",
+            "title": "Address",
+            "properties": {
+              "street": {
+                "type": "string",
+                "title": "Street"
+              },
+              "city": {
+                "type": "string",
+                "title": "City"
+              }
+            }
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "title": "Phone numbers",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }

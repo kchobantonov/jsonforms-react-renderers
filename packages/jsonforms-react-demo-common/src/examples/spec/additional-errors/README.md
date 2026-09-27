@@ -8,19 +8,18 @@
 - [Portable spec §21 — Code editor (Monaco), `propagateErrors`](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Additional-error ownership and changing data paths](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §31 — Renderer-published additional errors](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §3.5](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 Two things know something the schema does not: a **server** that rejected a
 submit, and a code editor's **language service**. They look like different
 problems and are the same mechanism — `additionalErrors`, published by an
 owner, shown under the field they name, cleared on that owner's terms.
 
-| Tab | Who publishes | Clears when |
-| --- | --- | --- |
-| **From the server** | the application, after a rejected submit | that field is edited |
-| **Reported** | the Monaco control, `propagateErrors: true` | the language service is happy again |
-| **Not reported** | nobody — the default | — |
-| **Language** | the editor, language chosen from the form | — |
+| Tab                 | Who publishes                               | Clears when                         |
+| ------------------- | ------------------------------------------- | ----------------------------------- |
+| **From the server** | the application, after a rejected submit    | that field is edited                |
+| **Reported**        | the Monaco control, `propagateErrors: true` | the language service is happy again |
+| **Not reported**    | nobody — the default                        | —                                   |
+| **Language**        | the editor, language chosen from the form   | —                                   |
 
 ## From the server
 
@@ -34,15 +33,6 @@ store.publish('server', response.validationErrors);
 They appear under **Email** and **Phone**, because that is what their
 `instancePath` says. Now edit one field — **only that field's error goes.** The
 other stays until its own field changes.
-
-That is the rule the Vue 2 Camunda container already applies, moved out of one
-container component into the store, so every form gets it:
-
-```ts
-// CamundaResolvedJsonForms.onChange
-_remove(this.additionalErrorsToUse, (error) =>
-  _get(event.data, path(error)) !== _get(this.previousData, path(error)));
-```
 
 Comparison is **by value**, not by which path the change named, so rewriting a
 field with what it already held clears nothing.
@@ -61,8 +51,11 @@ count. Fix it and the message goes.
 ## Off by default
 
 ```json
-{ "type": "Control", "scope": "#/properties/policy",
-  "options": { "format": "code", "language": "json", "propagateErrors": true } }
+{
+  "type": "Control",
+  "scope": "#/properties/policy",
+  "options": { "format": "code", "language": "json", "propagateErrors": true }
+}
 ```
 
 **The default is `false` here, and the portable contract says `true`.** That is
@@ -107,10 +100,10 @@ Without the owner, one editor going quiet would wipe the others.
 for adding one and no hook for withdrawing one. So publication takes two
 mechanisms, and neither alone is enough:
 
-| | Does | Why the other cannot |
-| --- | --- | --- |
-| `additionalErrors` | Carries published errors in | Middleware is passive — publishing dispatches nothing, so the form would not re-reduce until somebody typed |
-| `middleware` | Clears on change, merges owners | Only middleware sees the data **before** and after a change |
+|                    | Does                            | Why the other cannot                                                                                        |
+| ------------------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `additionalErrors` | Carries published errors in     | Middleware is passive — publishing dispatches nothing, so the form would not re-reduce until somebody typed |
+| `middleware`       | Clears on change, merges owners | Only middleware sees the data **before** and after a change                                                 |
 
 The simplest way to get both is to render the form with the wrapper:
 
@@ -130,9 +123,8 @@ or, for a host that assembles `<JsonForms>` itself:
 the owner and the way out (`additionalErrors.noStore`), because silence there
 is indistinguishable from the option not working.
 
-A host that already passes its own `additionalErrors` — as the Camunda
-container does — keeps them: published errors are merged alongside, and
-neither clears the other.
+A host that already passes its own `additionalErrors` keeps them. Published
+errors are merged alongside, and neither clears the other.
 
 ## Warnings are not errors
 
@@ -141,7 +133,7 @@ stay inside Monaco: they do not add to the count and do not block the form.
 
 ## The language decides whether there is anything to report
 
-Open **Language**. The summary comes from a language *service*, so it exists
+Open **Language**. The summary comes from a language _service_, so it exists
 only for a language that has one — JSON and JavaScript here. Choose
 **Markdown** and the same broken text reports nothing.
 
@@ -150,31 +142,25 @@ Syntax highlighting alone does not establish that a language is validated.
 
 ## Expected behaviour
 
-| Action | Result |
-| --- | --- |
-| Press **Submit (rejected)** | Errors appear under Email and Phone. |
-| Edit **Email** | Only that error goes; Phone's stays. |
-| Press **Clear them** | Both go. |
-| Open **Reported** | One message under the editor, beside an ordinary `minLength` message for comparison. |
-| Add a second syntax error | Still one message; the count goes up. |
-| Fix the JSON | The message disappears. |
-| Open **Not reported** | Monaco marks the same kind of error; the form says nothing. |
-| Switch the language to Markdown | The snippet's summary goes, with no edit to the text. |
-| Empty **Summary** | A schema error, rendered the same way — which is the point. |
-| Publish a server error on a field an editor is on, then fix the code | The server's error stays: one owner retracting never removes another's. |
+| Action                                                               | Result                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Press **Submit (rejected)**                                          | Errors appear under Email and Phone.                                                 |
+| Edit **Email**                                                       | Only that error goes; Phone's stays.                                                 |
+| Press **Clear them**                                                 | Both go.                                                                             |
+| Open **Reported**                                                    | One message under the editor, beside an ordinary `minLength` message for comparison. |
+| Add a second syntax error                                            | Still one message; the count goes up.                                                |
+| Fix the JSON                                                         | The message disappears.                                                              |
+| Open **Not reported**                                                | Monaco marks the same kind of error; the form says nothing.                          |
+| Switch the language to Markdown                                      | The snippet's summary goes, with no edit to the text.                                |
+| Empty **Summary**                                                    | A schema error, rendered the same way — which is the point.                          |
+| Publish a server error on a field an editor is on, then fix the code | The server's error stays: one owner retracting never removes another's.              |
 
 ## Status
 
-**Implemented** for Monaco. The file control and the duration control are named
-by the specification as publishers too and do not publish yet; see
-[gaps §3.5](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md).
+The shared editor publishes settled diagnostic summaries. File and duration
+error publication require separate adapter verification. Pending language
+analysis is not yet integrated into combined command validity, so the summary
+must not be treated as proof that all asynchronous validation has settled.
 
-The combined-validity integration a submit guard would consume — pending
-language analysis blocking validity — is **not** implemented: this publishes a
-settled summary, not a pending state.
-
-Covered by `editorDiagnostics.test.ts` for the summary rules,
-`additionalErrors.test.tsx` for the store and the middleware driven through the
-real reducer, `monacoAdditionalErrors.test.tsx` end to end — including a server
-error and an editor error on the same field, in both directions — and
-`extendedJsonForms.test.tsx` for the wrapper and the missing-store diagnostic.
+The host must install the additional-error store and its middleware. Schema
+validation modes do not install that integration automatically.

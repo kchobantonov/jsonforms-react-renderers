@@ -136,3 +136,15 @@ for what each of them was doing before.
 Covered by `presentationExample.test.tsx` for this fixture, `imageView.test.tsx`
 for the source-resolution rules, `linkRenderer.test.tsx` for `rel` and the
 inert cases, and `layoutPrimitives.test.tsx` for Spacer and Separator.
+
+## Link localization and zero spacing
+
+The Links tab also includes a relative handbook link, a documentation link in
+a new tab, and a `mailto:` link. Each has an explicit `i18n` prefix and matching
+English/Bulgarian catalog entries. Change locale to compare them with the
+unprefixed **Untranslated link**, which keeps its authored label. These are
+example destinations, not application routes supplied by the demo.
+
+The spacing tab ends with `size: 0`. It contributes no spacer height, unlike
+an omitted size, which uses the default. These presentation elements do not
+change the fixture's validation state.

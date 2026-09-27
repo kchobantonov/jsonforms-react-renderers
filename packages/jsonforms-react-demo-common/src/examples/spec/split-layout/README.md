@@ -2,7 +2,7 @@
 
 **Example ID:** `split-layout`\
 **Demo entry:** **Spec: Split layout** (`#spec-split-layout`)\
-**Domain:** dispatch board\
+**Domain:** project board\
 **Specs covered:**
 
 - [Portable spec §7 — Wrap, defaults, splitter and Spacer](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
@@ -27,7 +27,7 @@ layout type — so **the layout type is the direction**.
 ## What the form contains
 
 ```text
-Dispatch board
+Project board
   HorizontalLayout + splitter   -> panes side by side, weights 2 : auto
   VerticalLayout   + splitter   -> panes stacked, definite height
   HorizontalLayout + resizable:false -> boundary stays, dragging does not
@@ -78,8 +78,8 @@ before that it has neither. A hidden child does not hold a share open.
 
 ### Three panes, and one of them goes
 
-The last splitter holds **Booked by / Lane / Approved by** at `weight`
-1 : 2 : 1, so they start at 25 / 50 / 25. **Show lane pane** removes the middle
+The last splitter holds **Booked by / Team / Approved by** at `weight`
+1 : 2 : 1, so they start at 25 / 50 / 25. **Show team pane** removes the middle
 one, and the two that remain divide the space again at 50 / 50.
 
 Panes are weighted rather than spanned on purpose: "span SHOULD NOT be used"
@@ -101,23 +101,14 @@ share of a fixed grid, weight is a share of what is present.
 | `wrap` together with the variant | Unsupported, and diagnosed. |
 | A hidden pane | Leaves layout, separator included. |
 
-## Two implementations
+## Accessibility
 
-Both renderer sets register a splitter, and the antd one wins when it is
-registered:
-
-| | Separator | Accessibility |
-| --- | --- | --- |
-| **Shared** (`jsonforms-react-extended-renderers`) | our own element | `role="separator"`, `aria-orientation`, `aria-valuenow`, arrow-key resizing |
-| **antd** (`jsonforms-react-antd-extended-renderers`) | antd's `Splitter` | whatever antd provides |
-
-The shared one satisfies the specification's accessibility requirement more
-fully. Both now agree on the behaviour that is portable: weighted initial
-sizes, `resizable`, hidden panes leaving layout, and the `wrap` diagnostic.
+A resizable boundary should expose separator semantics, its orientation and
+current position, and support keyboard resizing. The registered adapter chooses
+the component; the authored layout and its sizing contract stay the same.
 
 ## Status
 
-**Implemented.** Covered by `splitLayoutExample.test.tsx` for this fixture and
-`layoutPrimitives.test.tsx` for the parts that are only observable on the
-shared renderer — `resizable` in particular, because antd's `Splitter` reports
-every bar disabled in jsdom, where panels measure zero.
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.

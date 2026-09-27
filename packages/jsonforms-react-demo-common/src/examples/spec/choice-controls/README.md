@@ -2,7 +2,7 @@
 
 **Example ID:** `choice-controls`\
 **Demo entry:** **Spec: Choice controls** (`#spec-choice-controls`)\
-**Domain:** delivery options\
+**Domain:** appointment options\
 **Specs covered:**
 
 - [Portable spec §18 — Radio-choice layout and interaction](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
@@ -19,7 +19,7 @@ exactly one error:
 
 | Instance path | Keyword | Message |
 | --- | --- | --- |
-| `/carrier` | `enum` | must be equal to one of the allowed values |
+| `/supplier` | `enum` | must be equal to one of the allowed values |
 
 ## Orientation
 
@@ -29,8 +29,8 @@ thing here as on a checkbox group — see
 
 | Control | Orientation |
 | --- | --- |
-| Shipping speed | Absent, so horizontal, wrapping when the row runs out of space. |
-| Packaging | `vertical: true`, stacked — the labels are long enough that a row reads poorly. |
+| Processing speed | Absent, so horizontal, wrapping when the row runs out of space. |
+| Workspace | `vertical: true`, stacked — the labels are long enough that a row reads poorly. |
 | Billing department | `vertical: true` on constant-based `oneOf` choices. |
 
 The orientation is announced with `aria-orientation`, so assistive technology
@@ -49,7 +49,7 @@ presentation, not the identity of the stored value.
 core looks up `department.fin`. Switch the demo to Bulgarian: the label becomes
 "Финанси" while the stored value stays `"fin"`.
 
-**An out-of-domain value is preserved.** `carrier` holds `"Rail"`, which is not
+**An out-of-domain value is preserved.** `supplier` holds `"Legacy"`, which is not
 in its enum. No radio is selected, the value stays in the data, and validation
 reports it. A renderer must not select the nearest option or clear the field to
 make the widget look valid.
@@ -73,8 +73,8 @@ is unimplemented, so there is no searchable presentation of these same choices.
 
 ## Searchable choices
 
-**Origin depot and Handling team ask for `options.autocomplete: true`**, so
-their dropdowns take a query. The same Origin depot appears again below without
+**Office location and Handling team ask for `options.autocomplete: true`**, so
+their dropdowns take a query. The same Office location appears again below without
 the option, which is **this family's default**: not searchable.
 
 That default is a choice, and section 18 allows it — "preserves the renderer

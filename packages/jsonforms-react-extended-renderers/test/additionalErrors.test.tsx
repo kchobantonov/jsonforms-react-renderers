@@ -145,10 +145,6 @@ describe('several owners and the host', () => {
     expect(messages(state)).toEqual(['from the server']);
   });
 
-  /*
-    And the other direction: a host that still supplies the prop - which the
-    Camunda container does - keeps its own errors through everything.
-  */
   it('merges with host-supplied errors and never drops them', () => {
     const store = createAdditionalErrorStore();
     const hostError = err('/a', 'from the host');
@@ -190,7 +186,7 @@ describe('several owners and the host', () => {
 });
 
 describe('clearing when the field changes', () => {
-  /* The Camunda rule: its own field, not any field. */
+  /* Clear-on-change applies only to the error's own field. */
   it('clears only the error whose value changed', () => {
     const store = createAdditionalErrorStore();
     store.publish('server', [err('/a', 'about a'), err('/b', 'about b')]);

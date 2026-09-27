@@ -1,9 +1,9 @@
 {
-  "shipping": "Express",
-  "packaging": "Crate",
+  "processing": "Express",
+  "workspace": "Meeting room",
   "department": "fin",
   "priority": 2,
-  "carrier": "Rail",
+  "supplier": "Legacy",
   "origin": "Salem",
   "handler": "ops"
 }

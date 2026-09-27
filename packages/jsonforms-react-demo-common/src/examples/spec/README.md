@@ -1,13 +1,13 @@
 # Spec examples
 
-Every spec in [`client/docs`](../../../../../docs) has a worked example here.
+The shared examples exercise the contracts in [`docs`](../../../../../docs).
 An example is a folder of authored JSON plus a README, so it reads as
 documentation and runs in the demo app without being transcribed first.
 
 They live in this package, rather than beside the specs, so they are **runnable**:
 each registers itself with the demo and appears in its example list under a
-`Spec: ` label. Open the demo (`pnpm run demo` from `client/`, or the
-`jsonforms-react-antd-demo` app) and pick the entry to edit the form live.
+`Spec: ` label. Open any renderer demo and pick the entry to edit the form live.
+Schemas, options and documentation here stay independent of the UI library.
 
 ## Index
 
@@ -15,34 +15,61 @@ each registers itself with the demo and appears in its example list under a
 | --- | --- | --- | --- |
 | [additional-properties](additional-properties/) | Spec: Additional properties | Portable spec §18 — dynamic properties, empty-name policy, literal-key editing; §19 honest rendering; [Adjustments §14](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Inventory metadata |
 | [container-validation-indicator](container-validation-indicator/) | Spec: Container validation indicator | [Container validation indicator](../../../../../docs/jsonforms-container-validation-indicator-spec.md), [Adjustments §1 — configuration namespacing](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Employee onboarding |
-| [destructive-confirmation](destructive-confirmation/) | Spec: Destructive-change confirmation | Portable spec §14 — shared destructive-change confirmation; [Adjustments §17](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Dispatch cleanup |
-| [group-layout](group-layout/) | Spec: Group layout | Portable spec §8 — Group: collapsible, collapsed, data indicator; §6 layout composition | Carrier record |
-| [split-layout](split-layout/) | Spec: Split layout | Portable spec §7 — splitter variant, initial sizes, resizable; [Adjustments §21.7](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Dispatch board |
+| [destructive-confirmation](destructive-confirmation/) | Spec: Destructive-change confirmation | Portable spec §14 — shared destructive-change confirmation; [Adjustments §17](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Project cleanup |
+| [group-layout](group-layout/) | Spec: Group layout | Portable spec §8 — Group: collapsible, collapsed, data indicator; §6 layout composition | Supplier record |
+| [split-layout](split-layout/) | Spec: Split layout | Portable spec §7 — splitter variant, initial sizes, resizable; [Adjustments §21.7](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Project board |
 | [label-interpolation](label-interpolation/) | Spec: Label interpolation | Portable spec §9 — interpolation and internationalizable text; §10 — Markdown; §11.4 — template grammar; [Adjustments §37](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Subscription billing |
 | [layout-sizing](layout-sizing/) | Spec: Layout sizing | Portable spec §6 — layout types and semantics; §7 — wrap, defaults and Spacer; [Adjustments §21](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Order intake |
 | [markup-label](markup-label/) | Spec: Markup labels | Portable spec §10 — Markdown policy; §12 — URL policy; §9 — text and markup; [Adjustments §35](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Workshop registration |
 | [mixed-control](mixed-control/) | Spec: Mixed control | Portable spec §18 — mixed-value control and deep-structure navigation; §19 honest rendering; [Adjustments §15](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Product listing attributes |
-| [null-control](null-control/) | Spec: Null control | Portable spec §18 — null control; §19 honest rendering; shared clear-value contract | Dispatch declarations |
-| [object-control](object-control/) | Spec: Object control | Portable spec §18 — object controls, detail selection and nesting; object-level errors and errors without rendered targets; §19 honest rendering; [Gaps §6.1](../../../../../docs/jsonforms-react-antd-implementation-gaps.md) | Consignee profile |
-| [numeric-controls](numeric-controls/) | Spec: Number and integer controls | Portable spec §18 — number/integer controls, numeric parsing limits, slider | Warehouse stock line |
+| [null-control](null-control/) | Spec: Null control | Portable spec §18 — null control; §19 honest rendering; shared clear-value contract | Project declarations |
+| [object-control](object-control/) | Spec: Object control | Portable spec §18 — object controls, detail selection and nesting; object-level errors and errors without rendered targets; §19 honest rendering | Customer profile |
+| [numeric-controls](numeric-controls/) | Spec: Number and integer controls | Portable spec §18 — number/integer controls, numeric parsing limits, slider | Office stock line |
 | [array-choices](array-choices/) | Spec: Array choices and tokens | Portable spec §18 — array choices and tokens, multi-choice identity and safe removal; §19 honest rendering; [Adjustments §16](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Notification preferences |
-| [array-controls](array-controls/) | Spec: Array controls | Portable spec §18 — array tables, expandable item forms, ListWithDetail, shared action options, item labels, Add-item initialization, array-level errors, `contains`; §21 AG Grid array control; [Gaps §6.2–6.4](../../../../../docs/jsonforms-react-antd-implementation-gaps.md) | Conference programme |
+| [array-controls](array-controls/) | Spec: Array controls | Portable spec §18 — array tables, expandable item forms, ListWithDetail, shared action options, item labels, Add-item initialization, array-level errors, `contains`; §21 AG Grid array control | Conference programme |
 | [boolean-controls](boolean-controls/) | Spec: Boolean controls | Portable spec §18 — boolean checkbox and switch, table cells; §19 honest rendering | Onboarding consent |
 | [categorization](categorization/) | Spec: Categorization: tabs, stepper, accordion | Portable spec §8 — categorization, accordion, container visibility; [Adjustments §10](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Equipment order |
 | [additional-errors](additional-errors/) | Spec: Additional errors: server and editor | Portable spec §21 — Monaco `propagateErrors`; §18 additional-error ownership; [Adjustments §31](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Deployment notes |
-| [choice-controls](choice-controls/) | Spec: Choice controls | Portable spec §18 — radio layout, choice identity; [Adjustments §7](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Delivery options |
-| [color-control](color-control/) | Spec: Color control | Portable spec §18 — color control; [Adjustments §8](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Shipping label theme |
+| [choice-controls](choice-controls/) | Spec: Choice controls | Portable spec §18 — radio layout, choice identity; [Adjustments §7](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Appointment options |
+| [color-control](color-control/) | Spec: Color control | Portable spec §18 — color control; [Adjustments §8](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Processing label theme |
 | [cron-control](cron-control/) | Spec: Cron control | [Adjustments §39](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) — cron picker; Portable spec §5 schema vs UI format selection; §18 shared clear-value contract, pending edits and cancellation; [Adjustments §30](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) validator profile | Overnight replenishment job |
-| [pre-touch-errors](pre-touch-errors/) | Spec: Pre-touch error filtering | Portable spec — error-message filtering before touch; §19 honest rendering; [Gaps §26](../../../../../docs/jsonforms-react-antd-implementation-gaps.md) | Carrier onboarding |
+| [pre-touch-errors](pre-touch-errors/) | Spec: Pre-touch error filtering | Portable spec — error-message filtering before touch; §19 honest rendering | Supplier onboarding |
 | [password-control](password-control/) | Spec: Password control | Portable spec §18 — password interaction; §5 schema vs UI format; table cells; [Adjustments §9](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Account credentials |
 | [string-controls](string-controls/) | Spec: String controls | Portable spec §18 — masked string control, placeholder hints, Unicode length; §5 `multi`/`mask`; §19 honest rendering; [Adjustments §11](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Customer intake |
 | [template-layout](template-layout/) | Spec: Template layout: three engines | Portable spec §13 — TemplateLayout profiles and language resolution; §14 script-evaluation permission; [Adjustments §22](../../../../../docs/jsonforms-extended-ui-model-adjustments.md), [§29](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Event registration |
 | [tuple-control](tuple-control/) | Spec: Tuple control | Portable spec §18 — tuple control, Add-item initialization, complex position dialogs; §19 honest rendering; [Adjustments §13](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Work order |
 | [validator-profile](validator-profile/) | Spec: Validator profile (Ajv) | Portable spec §15 — extended validator profile; §9 internationalizable text; §14 script-evaluation permission; [Adjustments §30](../../../../../docs/jsonforms-extended-ui-model-adjustments.md) | Course enrolment |
+| [file-control](file-control/) | Spec: File control | Portable spec §18 — encodings, file filters and byte-size bounds | Supplier attachments |
+| [code-editor](code-editor/) | Spec: Code editor | Portable spec §21 — editor sizing, initialization actions and JSON conversion | Deployment assets |
+| [temporal-controls](temporal-controls/) | Spec: Temporal controls | Portable spec §18 — dates, times, duration, storage formats and bounds | Appointment booking |
+| [presentation](presentation/) | Spec: Presentation elements | Portable spec §12–13 — images, links, spacing and localization | Course handbook |
+| [button-actions](button-actions/) | Spec: Button actions | Portable spec §14 — commands, parameters and pending actions | Form commands |
+| [combinators](combinators/) | Spec: Combinators and schema conditions | Portable spec §18 — schema branch selection | Branch selection |
 
-The portable
-[UI model specification](../../../../../docs/jsonforms-extended-ui-model-spec.md) carries its own
-examples inline and is not covered here; it is a verbatim upstream copy.
+## Consolidation map
+
+The spec catalog is the home for authored feature demonstrations. Older local
+examples remain available for existing links and imports; the destinations
+below collect their behavior by topic. Upstream `JsonForms:` examples remain
+separate because they also exercise schema generation, regressions and dynamic
+host APIs beyond this project's authored UI model.
+
+| Earlier local example | Spec destination |
+| --- | --- |
+| File | [File control](file-control/) — base64, byte, data URL, filename, media filter and size limits |
+| Color, Null | [Color](color-control/), [Null](null-control/) |
+| Duration | [Temporal controls](temporal-controls/) — includes weeks and action visibility |
+| Monaco Editor | [Code editor](code-editor/) — sizing, formatting, JSON conversion; [Additional errors](additional-errors/) — language switching and diagnostics |
+| AG Grid, Table Cells | [Array controls](array-controls/) — scalar/composite cells, draft dialogs, pagination and columns |
+| Spacer, ImageView, Separator, Link, Presentation Renderers | [Presentation](presentation/) — includes translated links and zero spacing |
+| Horizontal Layout Sizing | [Layout sizing](layout-sizing/) |
+| Collapsible Groups | [Group layout](group-layout/) |
+| Split Layout | [Split layout](split-layout/) |
+| Template Layout | [Template layout](template-layout/) and [Button actions](button-actions/) |
+
+The [portable UI model](../../../../../docs/jsonforms-extended-ui-model-spec.md)
+contains additional inline examples. Registration proves that a fixture is
+available; it does not imply feature parity among renderer adapters.
 
 ## One example per group of specs, not per spec
 
@@ -131,7 +158,7 @@ the lookup key is the literal label text, so the catalog entry is never
 consulted. A plain Group may hold controls from several objects, so there is
 nothing for core to correlate it with.
 
-The demo's **Link** example shows both sides: three links carry a prefix and
+The **Presentation** spec example shows both sides: three links carry a prefix and
 switch language with the demo's locale, a fourth carries none and stays English
 in every locale.
 

@@ -9,7 +9,6 @@
 - [Portable spec §9 — Internationalizable text](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §14 — script-evaluation permission](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Adjustments §30 — The extended validator profile](../../../../../../docs/jsonforms-extended-ui-model-adjustments.md)
-- [Gaps §3.6](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 **Nothing in this example is renderer behaviour.** Every tab is something the
 validator did before a renderer saw anything: reported a failure, rewrote a

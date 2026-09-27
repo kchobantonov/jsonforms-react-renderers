@@ -89,11 +89,11 @@
     },
     "flexible": {
       "type": "array",
-      "title": "Carrier reference and free values",
+      "title": "Supplier reference and free values",
       "items": [
         {
           "type": "string",
-          "title": "Carrier"
+          "title": "Supplier"
         }
       ],
       "additionalItems": true,
@@ -192,9 +192,9 @@
       ],
       "additionalItems": false
     },
-    "legacyRoute": {
+    "legacyAssignment": {
       "type": "array",
-      "title": "Imported route leg",
+      "title": "Imported assignment",
       "items": [
         {
           "type": "string",

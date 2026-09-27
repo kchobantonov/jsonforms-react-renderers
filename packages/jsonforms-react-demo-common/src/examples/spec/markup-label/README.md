@@ -90,11 +90,8 @@ Rendered text is wrapped in the UI library's own text component by default, so
 it picks up the theme's colour, size and link styling.
 
 The fine-print label sets `options.typography: false` and sits directly above
-the controls, which is where the option earns its keep: antd gives its text
-components a bottom margin, and one label carrying a margin its neighbours do
-not is exactly the unexplained gap the option exists to close. Compare it with
-the joining-instructions label above, which says nothing and keeps the
-wrapper.
+the controls. It omits the text wrapper and its theme spacing. Compare it with
+the joining-instructions label, which keeps the default wrapper.
 
 The same switch exists form-wide as
 `jsonformsExtended.markup.typography: false`, and the element option wins over

@@ -1,14 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "Delivery options",
+  "title": "Appointment options",
   "required": [
-    "shipping"
+    "processing"
   ],
   "properties": {
-    "shipping": {
+    "processing": {
       "type": "string",
-      "title": "Shipping speed",
+      "title": "Processing speed",
       "enum": [
         "Standard",
         "Express",
@@ -16,15 +16,15 @@
       ],
       "description": "A plain enum, laid out in a row."
     },
-    "packaging": {
+    "workspace": {
       "type": "string",
-      "title": "Packaging",
+      "title": "Workspace",
       "enum": [
-        "Box",
-        "Envelope",
-        "Crate",
-        "Pallet",
-        "Bulk container"
+        "Private office",
+        "Shared desk",
+        "Meeting room",
+        "Studio",
+        "Open workspace"
       ],
       "description": "The same control stacked, for longer labels."
     },
@@ -62,18 +62,18 @@
       ],
       "description": "Unselected on purpose: mounting must not choose the first option."
     },
-    "carrier": {
+    "supplier": {
       "type": "string",
-      "title": "Carrier",
+      "title": "Supplier",
       "enum": [
-        "Air",
-        "Sea"
+        "Internal",
+        "External"
       ],
       "description": "Holds a value outside the permitted set, preserved for correction."
     },
     "origin": {
       "type": "string",
-      "title": "Origin depot",
+      "title": "Office location",
       "enum": [
         "Portland",
         "Salem",

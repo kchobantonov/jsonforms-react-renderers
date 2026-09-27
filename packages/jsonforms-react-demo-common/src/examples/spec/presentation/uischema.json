@@ -105,6 +105,30 @@
               "type": "Link",
               "label": "Refused by policy",
               "href": "javascript:alert(1)"
+            },
+            {
+              "type": "Link",
+              "i18n": "handbook",
+              "label": "Employee handbook",
+              "href": "/handbook"
+            },
+            {
+              "type": "Link",
+              "i18n": "jsonformsDocs",
+              "label": "JSON Forms documentation",
+              "href": "https://jsonforms.io/docs/",
+              "target": "_blank"
+            },
+            {
+              "type": "Link",
+              "i18n": "emailHr",
+              "label": "Email HR",
+              "href": "mailto:hr@example.com"
+            },
+            {
+              "type": "Link",
+              "label": "Untranslated link",
+              "href": "/untranslated"
             }
           ]
         },
@@ -160,6 +184,14 @@
                   "scope": "#/properties/notes"
                 }
               ]
+            },
+            {
+              "type": "Label",
+              "i18n": "zeroSpacing"
+            },
+            {
+              "type": "Spacer",
+              "size": 0
             }
           ]
         }

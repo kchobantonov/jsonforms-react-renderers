@@ -95,7 +95,7 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/legacyRoute"
+      "scope": "#/properties/legacyAssignment"
     },
     {
       "type": "Control",

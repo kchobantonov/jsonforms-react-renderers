@@ -5,7 +5,7 @@
     { "type": "Control", "scope": "#/properties/quantity" },
     {
       "type": "Control",
-      "scope": "#/properties/palletCount",
+      "scope": "#/properties/batchCount",
       "options": { "step": 2 }
     },
     { "type": "Separator" },

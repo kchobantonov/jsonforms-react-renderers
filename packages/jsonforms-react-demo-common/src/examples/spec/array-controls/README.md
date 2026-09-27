@@ -14,7 +14,6 @@
 - [Portable spec §18 — Array-level errors and item summaries](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §18 — Array matching constraints: contains and matching counts](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
 - [Portable spec §21 — AG Grid array control](../../../../../../docs/jsonforms-extended-ui-model-spec.md)
-- [Gaps §6.2, §6.3, §6.4](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md)
 
 One schema, five presentations, one tab each. The example exists to make the
 **selection rules** visible rather than described, because that is the part
@@ -183,35 +182,29 @@ teach something false.
 
 ## Status
 
-**Implemented** for all five presentations. Known divergences, from
-[gaps §6.2–6.4](../../../../../../docs/jsonforms-react-antd-implementation-gaps.md):
+This is a runnable contract example. Availability of specialized controls and
+options depends on the registered renderer set. Check the behaviors above in
+the selected demo; schema validation alone does not verify UI interactions.
 
-- **`restrict` is not honoured by the table presentation** — only
-  `disableAdd`/`disableRemove` are. `ArrayLayout` does implement it, so the two
-  presentations disagree. This example puts its bounds on an expandable array
-  for that reason; moving `rounds` to a table would make the demonstration
-  false.
-- **`hideArraySummaryValidation` is missing from the table** and from
-  ListWithDetail; it works on the expandable form, which is where the example
-  shows it.
-- **Table column headers are not translated** — `title ?? startCase(prop)`,
-  with no translator.
-- **Expansion is keyed by array index**, so reordering transfers an open panel
-  to whatever item now occupies that position.
-- **Item labels are not choice-aware** — `elementLabelProp` resolves the raw
-  value, so an `eng` would display as `eng` rather than "Engineering". This
-  example labels items by `name` and `text`, which are plain strings, so it
-  does not depend on the missing behaviour.
-- **ListWithDetail** is missing `showSortButtons`, `restrict`,
-  `hideArraySummaryValidation` and delete confirmation.
+## Scalar and composite cells
 
-Building this example produced one fix: the array validation icon rendered only
-an error **count**, with the messages in a hover-only tooltip and no accessible
-name — a screen reader announced "1". The spec asks for an *accessible*
-explanation of array-level errors, so the icon is now named with the messages,
-the same way the cell feedback icon already was.
+The **Scalar and composite cells** tab shows the same conference staff array
+as a table and a grid. It covers strings, integers, enum choices, colors,
+durations, dates, times, date-times, booleans, objects and arrays. A change in
+one view is visible in the other because both edit `staff`.
 
-Covered by `arrayControlsExample.test.tsx` for this fixture — each tab
-selected in turn, and the bounds asserted through the handler rather than the
-button alone — and by `arrayLevelErrors.test.tsx` for the `contains` error and
-its accessible name.
+Address summaries use the street; phone summaries use the array itself.
+Open either detail dialog, edit the draft, then cancel or apply it.
+`cells.<property>.showEmptyButton` requests a Clear action inside the dialog;
+clearing a draft must not commit until Apply. This supplements the existing
+Room and Holder detail examples with an array-valued cell.
+
+The grid supplies explicit column widths, disables filtering on composite and
+boolean columns, and enables pagination. A page size of one makes the second
+page visible with only two records; the selector offers 1, 2 and 10 rows.
+`showSortButtons` requests row dragging, which is unavailable while the view is
+sorted or filtered. Page changes and view sorting must not reorder form data.
+
+The added staff records are schema-valid and add no initial validation errors.
+An adapter without a matching specialized cell must preserve the stored value;
+a fallback is not evidence that its specialized editing behavior is supported.

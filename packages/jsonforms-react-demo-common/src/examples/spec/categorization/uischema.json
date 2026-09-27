@@ -39,9 +39,9 @@
         },
         {
           "type": "Category",
-          "name": "logistics",
-          "label": "Logistics",
-          "i18n": "category.logistics",
+          "name": "planning",
+          "label": "Planning",
+          "i18n": "category.planning",
           "elements": [
             {
               "type": "Control",
@@ -126,9 +126,9 @@
         },
         {
           "type": "Category",
-          "name": "logistics",
-          "label": "Logistics",
-          "i18n": "category.logistics",
+          "name": "planning",
+          "label": "Planning",
+          "i18n": "category.planning",
           "elements": [
             {
               "type": "Control",
@@ -192,7 +192,7 @@
       "type": "Categorization",
       "options": {
         "variant": "accordion",
-        "initial": "logistics"
+        "initial": "planning"
       },
       "elements": [
         {
@@ -213,9 +213,9 @@
         },
         {
           "type": "Category",
-          "name": "logistics",
-          "label": "Logistics",
-          "i18n": "category.logistics",
+          "name": "planning",
+          "label": "Planning",
+          "i18n": "category.planning",
           "elements": [
             {
               "type": "Control",

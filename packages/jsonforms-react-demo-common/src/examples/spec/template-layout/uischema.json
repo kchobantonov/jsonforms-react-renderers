@@ -59,6 +59,11 @@
                   "scope": "#/properties/copies"
                 }
               ]
+            },
+            {
+              "type": "TemplateLayout",
+              "lang": "jsx",
+              "template": "<ul aria-label=\"Validation errors\">{errors.map((error, index) => <li key={index}>{error.message}</li>)}</ul>"
             }
           ]
         },

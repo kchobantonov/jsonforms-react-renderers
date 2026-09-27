@@ -11,11 +11,11 @@
     "sensor-x": 9.1
   },
   "headers": {
-    "x-carrier-id": "CAS-1",
+    "x-supplier-id": "CAS-1",
     "x-trace-id": "b17f"
   },
   "annotations": {
-    "legacy.key": "written by the old dispatch system",
+    "legacy.key": "written by the old project system",
     "notes/1": "a slash is an ordinary character in a key"
   },
   "quota": {

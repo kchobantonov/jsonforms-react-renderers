@@ -1,7 +1,7 @@
 {
   "type": "object",
-  "title": "Carrier onboarding",
-  "required": ["legalName", "contactEmail", "dotNumber", "internalCode"],
+  "title": "Supplier onboarding",
+  "required": ["legalName", "contactEmail", "memberNumber", "internalCode"],
   "properties": {
     "legalName": {
       "type": "string",
@@ -15,9 +15,9 @@
       "title": "Contact email",
       "description": "Also required and absent."
     },
-    "dotNumber": {
+    "memberNumber": {
       "type": "string",
-      "title": "DOT number",
+      "title": "Member number",
       "description": "Required and present, but malformed: a pattern error, not a required one.",
       "pattern": "^[0-9]{7}$"
     },
@@ -32,15 +32,15 @@
       "description": "Not required. Too short, so it carries a minLength error.",
       "minLength": 10
     },
-    "insuranceExpiry": {
+    "membershipExpiry": {
       "type": "string",
       "format": "date",
-      "title": "Insurance expiry",
+      "title": "Membership expiry",
       "description": "Not required and absent: no error at all."
     },
-    "terminals": {
+    "offices": {
       "type": "array",
-      "title": "Terminals",
+      "title": "Offices",
       "description": "Two are required, and the one present is missing its city.",
       "minItems": 2,
       "items": {

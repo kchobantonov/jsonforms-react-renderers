@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "title": "Supplier attachments",
+  "properties": {
+    "logo": {
+      "type": "string",
+      "title": "Supplier logo",
+      "format": "uri",
+      "contentEncoding": "base64",
+      "contentMediaType": "image/*"
+    },
+    "contract": {
+      "type": "string",
+      "title": "Signed contract",
+      "format": "binary"
+    },
+    "payload": {
+      "type": "string",
+      "title": "Encoded attachment",
+      "contentEncoding": "base64"
+    },
+    "receipt": {
+      "type": "string",
+      "title": "Receipt",
+      "format": "byte"
+    },
+    "bounded": {
+      "type": "string",
+      "title": "Small text attachment",
+      "contentEncoding": "base64",
+      "contentMediaType": "text/plain"
+    }
+  }
+}

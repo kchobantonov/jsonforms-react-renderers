@@ -121,8 +121,31 @@ describe('the array example', () => {
       'Expandable',
       'List with detail',
       'AG Grid',
+      'Scalar and composite cells',
       'Add, remove and bounds',
     ]);
+    view.unmount();
+  });
+});
+
+describe('the scalar and composite cells tab', () => {
+  it('renders both views and paginates the grid without dropping stored rows', async () => {
+    const view = draw();
+    await view.selectTab('Scalar and composite cells');
+    await flushUntil(
+      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0
+    );
+    const headers = Array.from(view.active()?.querySelectorAll('th') ?? []).map(
+      (header) => header.textContent?.trim()
+    );
+    expect(headers).toEqual(
+      expect.arrayContaining(['Name', 'Tenure', 'Address', 'Phone numbers'])
+    );
+    expect(view.active()?.querySelector('.ag-paging-panel')).toBeTruthy();
+    expect(
+      view.active()?.querySelectorAll('.ag-cell[col-id="name"]')
+    ).toHaveLength(1);
+    expect(view.current().staff).toHaveLength(2);
     view.unmount();
   });
 });

@@ -89,7 +89,7 @@ describe('numeric controls example', () => {
     );
     expect(controls.map((c: any) => c.scope)).toEqual([
       '#/properties/quantity',
-      '#/properties/palletCount',
+      '#/properties/batchCount',
       '#/properties/unitPrice',
       '#/properties/weightKg',
       '#/properties/toleranceMm',
@@ -185,9 +185,9 @@ describe('choice and password examples', () => {
   });
 
   test('choice example keeps an out-of-domain value for correction', () => {
-    expect((choice!.data as any).carrier).toBe('Rail');
-    const enumValues = (choice!.schema as any).properties.carrier.enum;
-    expect(enumValues).not.toContain('Rail');
+    expect((choice!.data as any).supplier).toBe('Legacy');
+    const enumValues = (choice!.schema as any).properties.supplier.enum;
+    expect(enumValues).not.toContain('Legacy');
   });
 
   test('choice example leaves one control unselected', () => {
@@ -372,7 +372,7 @@ describe('categorization example', () => {
     const names = all.map((c: any) =>
       c.elements.map((category: any) => category.name)
     );
-    expect(names[0]).toEqual(['contact', 'logistics', 'business', 'notes']);
+    expect(names[0]).toEqual(['contact', 'planning', 'business', 'notes']);
     expect(names[1]).toEqual(names[0]);
     expect(names[2]).toEqual(names[0]);
   });
@@ -381,7 +381,7 @@ describe('categorization example', () => {
     const accordion = categorizations().find(
       (c: any) => variantOf(c) === 'accordion'
     );
-    expect(accordion.options.initial).toBe('logistics');
+    expect(accordion.options.initial).toBe('planning');
     // `initial` names a Category `name`, not a label or an index.
     expect(
       accordion.elements.some((c: any) => c.name === accordion.options.initial)
@@ -430,7 +430,7 @@ describe('categorization example', () => {
     expect(Object.keys(catalogs.bg).sort()).toEqual(
       Object.keys(catalogs.en).sort()
     );
-    expect(catalogs.en['category.logistics.label']).toBe('Logistics');
+    expect(catalogs.en['category.planning.label']).toBe('Planning');
     expect(catalogs.bg['group.dataIndicator']).toBe('Секцията съдържа данни');
   });
 });

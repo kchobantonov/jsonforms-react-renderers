@@ -92,12 +92,12 @@ describe('the layout-sizing spec example', () => {
 
   /* "Hidden children leave layout." */
   it('drops the conditional child until its rule matches', async () => {
-    const hidden = draw({ hazmat: false });
+    const hidden = draw({ needsApproval: false });
     await settle();
     expect(hidden.itemsIn(hidden.rows()[3])).toHaveLength(1);
     hidden.unmount();
 
-    const shown = draw({ hazmat: true });
+    const shown = draw({ needsApproval: true });
     await settle();
     expect(shown.itemsIn(shown.rows()[3])).toHaveLength(2);
     shown.unmount();
@@ -139,13 +139,16 @@ describe('the layout-sizing spec example', () => {
 */
 describe('a hidden middle child', () => {
   const rowsFor = (view: ReturnType<typeof draw>) => {
-    const all = view.rows();
-    // The span row and the weight row are the last two in the fixture.
-    return { span: all.at(-2)!, weight: all.at(-1)! };
+    const matching = view
+      .rows()
+      .filter((row) => row.textContent?.includes('Booked by'));
+    // Locate the paired demonstration independently of later example groups.
+    expect(matching).toHaveLength(2);
+    return { span: matching[0], weight: matching[1] };
   };
 
   it('lays the three out at 4 / 8 / 4 while all are visible', async () => {
-    const view = draw({ showLane: true });
+    const view = draw({ showTeam: true });
     await settle();
     const { span } = rowsFor(view);
     expect(view.itemsIn(span).map((item) => item.style.flexBasis)).toEqual([
@@ -162,7 +165,7 @@ describe('a hidden middle child', () => {
     stays empty. Two slots, not three with a blank one.
   */
   it('leaves the span row short when the middle goes', async () => {
-    const view = draw({ showLane: false });
+    const view = draw({ showTeam: false });
     await settle();
     const { span } = rowsFor(view);
     const items = view.itemsIn(span);
@@ -176,14 +179,14 @@ describe('a hidden middle child', () => {
 
   /* Weight is a share of what is there, so the survivors take it all. */
   it('redistributes the weight row instead', async () => {
-    const shown = draw({ showLane: true });
+    const shown = draw({ showTeam: true });
     await settle();
     expect(
       shown.itemsIn(rowsFor(shown).weight).map((item) => item.style.flexGrow)
     ).toEqual(['1', '2', '1']);
     shown.unmount();
 
-    const hidden = draw({ showLane: false });
+    const hidden = draw({ showTeam: false });
     await settle();
     // Two children of equal weight: half each, with nothing left over.
     expect(

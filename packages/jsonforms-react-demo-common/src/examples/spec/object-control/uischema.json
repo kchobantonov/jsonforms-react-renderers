@@ -65,11 +65,11 @@
             },
             {
               "type": "Category",
-              "label": "Delivery",
+              "label": "Appointment",
               "elements": [
                 {
                   "type": "Control",
-                  "scope": "#/properties/delivery"
+                  "scope": "#/properties/appointment"
                 }
               ]
             }
@@ -85,7 +85,7 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/forDriver"
+              "scope": "#/properties/forCoordinator"
             }
           ]
         }
@@ -112,7 +112,7 @@
               "elements": [
                 {
                   "type": "Control",
-                  "scope": "#/properties/hazmat"
+                  "scope": "#/properties/needsApproval"
                 },
                 {
                   "type": "Control",

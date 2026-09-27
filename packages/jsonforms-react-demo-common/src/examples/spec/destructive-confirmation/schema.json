@@ -3,7 +3,7 @@
   "properties": {
     "notes": {
       "type": "object",
-      "title": "Dispatch notes",
+      "title": "Project notes",
       "description": "Dynamic properties. Delete asks, because the fallback is always.",
       "additionalProperties": { "type": "string" }
     },
@@ -30,14 +30,14 @@
         }
       }
     },
-    "stops": {
+    "milestones": {
       "type": "array",
-      "title": "Route stops",
+      "title": "Project milestones",
       "description": "Nested items, so the expandable array layout renders. Item delete asks.",
       "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "title": "Stop" },
+          "name": { "type": "string", "title": "Milestone" },
           "window": {
             "type": "object",
             "title": "Window",
@@ -49,15 +49,15 @@
         }
       }
     },
-    "drivers": {
+    "coordinators": {
       "type": "array",
-      "title": "Drivers",
+      "title": "Coordinators",
       "description": "A list with detail. Removing the selected entry asks.",
       "items": {
         "type": "object",
         "properties": {
           "name": { "type": "string", "title": "Name" },
-          "licence": { "type": "string", "title": "Licence" }
+          "registration": { "type": "string", "title": "Registration" }
         }
       }
     },
