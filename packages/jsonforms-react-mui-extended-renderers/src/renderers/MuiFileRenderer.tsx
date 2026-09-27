@@ -207,48 +207,50 @@ export const MuiFileRendererComponent = (props: ControlProps) => {
             {errors}
           </>
         }
-        InputProps={{
-          readOnly: true,
-          onClick: openPicker,
-          startAdornment: (
-            <InputAdornment position='start'>
-              <AttachFileIcon />
-            </InputAdornment>
-          ),
-          endAdornment:
-            populated && editable && options.clearable !== false ? (
-              <InputAdornment position='end'>
-                <Tooltip title={t('file.clear', 'Clear value')}>
-                  <IconButton
-                    size='small'
-                    aria-label='Clear value'
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      cancel();
-                      setSelection(undefined);
-                      setError('');
-                      props.handleChange(props.path, undefined);
-                    }}
-                  >
-                    <CloseIcon fontSize='small' />
-                  </IconButton>
-                </Tooltip>
+        slotProps={{
+          input: {
+            readOnly: true,
+            onClick: openPicker,
+            startAdornment: (
+              <InputAdornment position='start'>
+                <AttachFileIcon />
               </InputAdornment>
-            ) : undefined,
-        }}
-        inputProps={{
-          'aria-label': props.label || 'File',
-          onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              openPicker();
-            }
+            ),
+            endAdornment:
+              populated && editable && options.clearable !== false ? (
+                <InputAdornment position='end'>
+                  <Tooltip title={t('file.clear', 'Clear value')}>
+                    <IconButton
+                      size='small'
+                      aria-label='Clear value'
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        cancel();
+                        setSelection(undefined);
+                        setError('');
+                        props.handleChange(props.path, undefined);
+                      }}
+                    >
+                      <CloseIcon fontSize='small' />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ) : undefined,
           },
-          style: {
-            textOverflow: 'ellipsis',
-            cursor: editable ? 'pointer' : undefined,
+          htmlInput: {
+            'aria-label': props.label || 'File',
+            onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openPicker();
+              }
+            },
+            style: {
+              textOverflow: 'ellipsis',
+              cursor: editable ? 'pointer' : undefined,
+            },
           },
         }}
       />

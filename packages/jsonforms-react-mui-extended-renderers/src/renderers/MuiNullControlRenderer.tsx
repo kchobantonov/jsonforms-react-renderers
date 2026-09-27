@@ -23,10 +23,12 @@ export const MuiNullControl = (props: ControlProps) => {
             indeterminate={props.data === undefined}
             disabled={!props.enabled || props.readonly}
             autoFocus={options.focus}
-            inputProps={{
-              'aria-label': props.label || 'Null value',
-              'aria-describedby': `${props.id}-help`,
-              'aria-invalid': Boolean(props.errors),
+            slotProps={{
+              input: {
+                'aria-label': props.label || 'Null value',
+                'aria-describedby': `${props.id}-help`,
+                'aria-invalid': Boolean(props.errors),
+              },
             }}
             onChange={(_event, checked) =>
               props.handleChange(props.path, checked ? null : undefined)

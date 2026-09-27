@@ -47,7 +47,7 @@ describe('shared presentation renderers', () => {
     [64, '64px'],
     [0, '0px'],
     [-5, '0px'],
-    ['64', '32px'],
+    ['2rem', '2rem'],
     [null, '32px'],
     [NaN, '32px'],
     [Infinity, '32px'],
@@ -59,7 +59,7 @@ describe('shared presentation renderers', () => {
     expect(spacer.getAttribute('aria-hidden')).toBe('true');
   });
 
-  test('inherits configuration and gives explicit options precedence', () => {
+  test('inherits legacy spacer height while images require an element source', () => {
     const config = { height: 48, src: '/default.png', alt: 'Default' };
     expect(
       (render({ type: 'Spacer' }, config).firstElementChild as HTMLElement)
@@ -71,11 +71,18 @@ describe('shared presentation renderers', () => {
           .firstElementChild as HTMLElement
       ).style.height
     ).toBe('16px');
+    expect(
+      render({ type: 'ImageView' }, config).querySelector('img')
+    ).toBeNull();
     const img = render(
-      { type: 'ImageView', options: { alt: 'Override' } },
+      {
+        type: 'ImageView',
+        src: '/explicit.png',
+        alt: 'Override',
+      } as UISchemaElement,
       config
     ).querySelector('img')!;
-    expect(img.getAttribute('src')).toBe('/default.png');
+    expect(img.getAttribute('src')).toBe('/explicit.png');
     expect(img.alt).toBe('Override');
     expect(
       render({ type: 'ImageView', options: { src: '' } }, config).querySelector(

@@ -9,7 +9,8 @@
       "ajv-formats": "^3.0.1",
       "ajv@>=8": "8.20.0",
       "enzyme>cheerio": "1.0.0-rc.12",
-      "lodash": "^4.18.1"
+      "lodash": "^4.18.1",
+      "dayjs": "1.11.13"
     }
   },
   "scripts": {

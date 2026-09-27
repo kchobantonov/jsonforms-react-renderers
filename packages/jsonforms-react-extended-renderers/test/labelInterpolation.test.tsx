@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { JsonForms } from '@jsonforms/react';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
 
@@ -61,7 +61,15 @@ describe('interpolating a label', () => {
       text: 'Welcome, {firstName}!',
       options: { interpolate: true, textParams: { firstName: 'there' } },
     });
-    expect(view.text()).toContain('Welcome, there!');
+    await vi.waitFor(
+      async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(view.text()).toContain('Welcome, there!');
+      },
+      { timeout: 5000 }
+    );
     view.unmount();
   });
 
@@ -167,7 +175,15 @@ describe('interpolating a label', () => {
       },
       dynamicOn
     );
-    expect(view.html()).toContain('<strong>Welcome</strong>');
+    await vi.waitFor(
+      async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(view.html()).toContain('<strong>Welcome</strong>');
+      },
+      { timeout: 5000 }
+    );
     expect(view.text()).toContain('Ana');
     view.unmount();
   });

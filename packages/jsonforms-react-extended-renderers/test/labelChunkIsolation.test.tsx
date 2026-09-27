@@ -68,7 +68,17 @@ describe('a label reaches only for what it needs', () => {
       text: '**Doors open** at 09:00.',
       options: { markup: 'markdown' },
     });
-    expect(container.querySelector('strong')?.textContent).toBe('Doors open');
+    await vi.waitFor(
+      async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(container.querySelector('strong')?.textContent).toBe(
+          'Doors open'
+        );
+      },
+      { timeout: 5000 }
+    );
   });
 
   /*
@@ -93,7 +103,15 @@ describe('a label reaches only for what it needs', () => {
       text: '**Seats** are limited.',
       options: { interpolate: true, markup: 'markdown' },
     });
-    expect(container.querySelector('strong')?.textContent).toBe('Seats');
+    await vi.waitFor(
+      async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(container.querySelector('strong')?.textContent).toBe('Seats');
+      },
+      { timeout: 5000 }
+    );
   });
 
   /*

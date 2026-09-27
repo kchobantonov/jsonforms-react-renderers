@@ -6,6 +6,7 @@ import {
   createExtendedRenderers,
   horizontalLayoutWidths,
   horizontalColumnsLayoutTester,
+  HorizontalColumnsLayoutRenderer,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { splitLayoutTester } from '../src';
 
@@ -85,13 +86,19 @@ const render = (layout: Layout, data = {}) => {
       schema={{}}
       uischema={layout}
       data={data}
-      renderers={createExtendedRenderers()}
+      renderers={[
+        {
+          tester: horizontalColumnsLayoutTester,
+          renderer: HorizontalColumnsLayoutRenderer,
+        },
+        ...createExtendedRenderers(),
+      ]}
     />
   );
   return container;
 };
 
-describe('horizontal layout rendering', () => {
+describe('explicitly registered legacy columns layout', () => {
   test('allocates presentation elements and nested layouts, ignoring parent columns', () => {
     const container = render({
       type: 'HorizontalLayout',
@@ -167,6 +174,14 @@ describe('horizontal layout rendering', () => {
         },
       }).innerHTML
     ).toBe('');
+  });
+
+  test('does not override family layouts in the default registry', () => {
+    expect(
+      createExtendedRenderers().some(
+        (entry) => entry.tester === horizontalColumnsLayoutTester
+      )
+    ).toBe(false);
   });
 
   test('selects horizontal layouts below split layouts without affecting vertical layouts', () => {

@@ -316,10 +316,9 @@ export const MuiMixedRendererComponent = ({
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Stack
-              alignItems='center'
               direction='row'
               spacing={2}
-              sx={{ width: '100%' }}
+              sx={{ width: '100%', alignItems: 'center' }}
             >
               <Box
                 onClick={(event) => event.stopPropagation()}

@@ -22,7 +22,7 @@ export const MuiNestedMixedNavigation = ({
 
   return (
     <Stack className='jsonforms-mui-nested-mixed-navigation' spacing={0.75}>
-      <Stack alignItems='flex-start' direction='row' spacing={1}>
+      <Stack sx={{ alignItems: 'flex-start' }} direction='row' spacing={1}>
         {selector}
         <Tooltip title={`View ${targetLabel}`}>
           <IconButton

@@ -99,7 +99,11 @@ export const MuiDurationControl = (props: ControlProps) => {
             />
           ))}
           {state.showActions && (
-            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+            <Stack
+              direction='row'
+              spacing={1}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button onClick={state.close}>
                 {state.options.cancelLabel ?? 'Cancel'}
               </Button>

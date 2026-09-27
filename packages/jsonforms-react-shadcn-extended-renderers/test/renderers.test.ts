@@ -1,7 +1,14 @@
 import {
   agGridArrayTester,
+  monacoControlTester,
+  shadcnButtonRendererTester,
   colorControlTester,
   createShadcnExtendedRenderers,
+  spacerRendererTester,
+  imageViewRendererTester,
+  separatorRendererTester,
+  linkRendererTester,
+  markupLabelTester,
   durationControlTester,
   fileControlTester,
   formatDurationIso,
@@ -16,7 +23,30 @@ const rank = (tester: any, uischema: any, schema: any) =>
 
 describe('Shadcn extended renderer registry', () => {
   test('includes the extended and shared presentation renderers', () => {
-    expect(createShadcnExtendedRenderers()).toHaveLength(16);
+    const entries = createShadcnExtendedRenderers();
+    const testers = entries.map((entry) => entry.tester);
+    for (const tester of [
+      agGridArrayTester,
+      monacoControlTester,
+      shadcnButtonRendererTester,
+      colorControlTester,
+      durationControlTester,
+      fileControlTester,
+      nullControlTester,
+      splitLayoutTester,
+    ]) {
+      expect(testers).toContain(tester);
+    }
+    for (const tester of [
+      spacerRendererTester,
+      imageViewRendererTester,
+      separatorRendererTester,
+      linkRendererTester,
+      markupLabelTester,
+    ]) {
+      expect(testers).toContain(tester);
+    }
+    expect(new Set(testers).size).toBe(testers.length);
   });
 
   test('selects each specialized renderer only for its contract', () => {

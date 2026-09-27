@@ -197,6 +197,12 @@ describe('MUI extended registry', () => {
       { format: 'code', language: 'json', convertJson: true }
     );
     try {
+      await vi.waitFor(async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(mocks.editor).not.toBeNull();
+      });
       expect(mocks.editor.value).toContain('"a": 1');
       await act(async () => mocks.editor.onChange('{'));
       expect(mocks.editor.value).toBe('{');
@@ -220,6 +226,12 @@ describe('MUI extended registry', () => {
       { variant: 'ag-grid' }
     );
     try {
+      await vi.waitFor(async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(mocks.grid).not.toBeNull();
+      });
       await act(async () =>
         mocks.grid.onCellEditRequest({
           data: { index: 0 },
