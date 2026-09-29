@@ -6,11 +6,11 @@ import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
 import { filterErrorsBeforeTouch } from '../src/util/preTouchErrors';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/uischema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/uischema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
 /*

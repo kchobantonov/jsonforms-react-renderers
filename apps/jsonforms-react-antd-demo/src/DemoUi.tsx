@@ -94,6 +94,11 @@ const DemoToggle = ({
 );
 
 export const antdDemoUi: DemoUi = {
+  Tooltip: ({ content, children }) => (
+    <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}>{content}</span>}>
+      {children}
+    </Tooltip>
+  ),
   Button: DemoButton,
   Panel: DemoPanel,
   Select: DemoSelect,

@@ -7,7 +7,7 @@ export const DefaultDemoTextInput = ({
   placeholder,
   description,
   onChange,
-}: DemoTextInputProps) => (
+}: DemoTextInputProps): React.JSX.Element => (
   <label className='demo-ui-field'>
     <span>{label}</span>
     <input

@@ -78,11 +78,6 @@ export const defaultAntdLocaleLoaders: Record<string, AntdLocaleLoader> = {
     () => import('dayjs/locale/bg'),
     'bg'
   ),
-  de: entry(
-    () => import('antd/locale/de_DE'),
-    () => import('dayjs/locale/de'),
-    'de'
-  ),
   es: entry(
     () => import('antd/locale/es_ES'),
     () => import('dayjs/locale/es'),

@@ -8,10 +8,10 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/destructive-confirmation/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/destructive-confirmation/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/destructive-confirmation/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/destructive-confirmation/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/destructive-confirmation/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/destructive-confirmation/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/destructive-confirmation/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/destructive-confirmation/uischema.json';
 import { flushUntil } from './support/flush';
 
 /*
@@ -120,7 +120,9 @@ describe('the destructive-confirmation spec example', () => {
       container.querySelectorAll('.jsonforms-mixed-type-selector').length
     ).toBeGreaterThanOrEqual(2);
     // Project notes, and the payload's own dynamic properties.
-    expect(labelled(container, 'Add property').length).toBeGreaterThanOrEqual(2);
+    expect(labelled(container, 'Add property').length).toBeGreaterThanOrEqual(
+      2
+    );
     expect(labelled(container, 'Delete').length).toBeGreaterThan(0);
     unmount();
   });
@@ -168,7 +170,9 @@ describe('the destructive-confirmation spec example', () => {
     // it; the row is found through the input instead.
     const row = Array.from(
       container.querySelectorAll<HTMLInputElement>('tr input')
-    ).find((input) => input.value === 'A-01')?.closest('tr');
+    )
+      .find((input) => input.value === 'A-01')
+      ?.closest('tr');
     expect(row, 'the order-lines row is not in the fixture').toBeTruthy();
     const button = Array.from(
       row!.querySelectorAll<HTMLButtonElement>('button')

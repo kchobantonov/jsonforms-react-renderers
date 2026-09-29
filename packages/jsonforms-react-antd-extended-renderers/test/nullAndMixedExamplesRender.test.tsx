@@ -8,14 +8,14 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import nullConfig from '../../jsonforms-react-demo-common/src/examples/spec/null-control/config.json';
-import nullData from '../../jsonforms-react-demo-common/src/examples/spec/null-control/data.json';
-import nullSchema from '../../jsonforms-react-demo-common/src/examples/spec/null-control/schema.json';
-import nullUischema from '../../jsonforms-react-demo-common/src/examples/spec/null-control/uischema.json';
-import mixedConfig from '../../jsonforms-react-demo-common/src/examples/spec/mixed-control/config.json';
-import mixedData from '../../jsonforms-react-demo-common/src/examples/spec/mixed-control/data.json';
-import mixedSchema from '../../jsonforms-react-demo-common/src/examples/spec/mixed-control/schema.json';
-import mixedUischema from '../../jsonforms-react-demo-common/src/examples/spec/mixed-control/uischema.json';
+import nullConfig from '@chobantonov/jsonforms-extended-spec/examples/null-control/config.json';
+import nullData from '@chobantonov/jsonforms-extended-spec/examples/null-control/data.json';
+import nullSchema from '@chobantonov/jsonforms-extended-spec/examples/null-control/schema.json';
+import nullUischema from '@chobantonov/jsonforms-extended-spec/examples/null-control/uischema.json';
+import mixedConfig from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/config.json';
+import mixedData from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/data.json';
+import mixedSchema from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/schema.json';
+import mixedUischema from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/uischema.json';
 
 /*
   Both fixtures are otherwise only exercised by opening the demo. These render

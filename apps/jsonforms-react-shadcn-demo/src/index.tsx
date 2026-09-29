@@ -2,9 +2,10 @@ import React from 'react';
 import {
   shadcnCells,
   shadcnRenderers,
-  Button,
-  Input,
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
+
 import '@chobantonov/jsonforms-react-shadcn-renderers/src/styles.css';
 import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
 import {
@@ -12,6 +13,7 @@ import {
   createShadcnRendererStyle,
   defaultShadcnRendererSettings,
   createShadcnExtendedRenderers,
+  shadcnExtendedCells,
 } from '@chobantonov/jsonforms-react-shadcn-extended-renderers';
 import {
   JSON_FORMS_SHADCN_TAG,
@@ -83,11 +85,7 @@ const ShadcnDemoShell = ({
           >
             <Menu />
           </Button>
-          <button
-            className='shadcn-demo-brand'
-            type='button'
-            onClick={onHome}
-          >
+          <button className='shadcn-demo-brand' type='button' onClick={onHome}>
             <span className='shadcn-demo-brand-icon'>
               <ShadcnIcon className='shadcn-logo' />
             </span>
@@ -330,9 +328,9 @@ registerJsonFormsShadcn();
 
 const shadcnDemoExtendedRenderers = createShadcnExtendedRenderers();
 
-renderExample(
+const demoRoot = renderExample(
   shadcnRenderers.concat(shadcnDemoExtendedRenderers),
-  shadcnCells,
+  [...shadcnExtendedCells, ...shadcnCells],
   ShadcnWrapper,
   {
     brand: 'Shadcn UI',
@@ -346,3 +344,7 @@ renderExample(
     Ui: shadcnDemoUi,
   }
 );
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => demoRoot.unmount());
+}

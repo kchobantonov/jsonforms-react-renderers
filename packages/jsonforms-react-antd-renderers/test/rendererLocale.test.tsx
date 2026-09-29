@@ -100,8 +100,8 @@ describe('renderer locale bundles', () => {
   });
 
   it('uses the language bundle for a regional tag', async () => {
-    const { container } = await draw('de-AT');
-    expect(labels(container).join('|')).toContain('Element hinzufügen');
+    const { container } = await draw('bg-BG');
+    expect(labels(container).join('|')).toContain('Добавяне на елемент');
   });
 
   it('lets the form catalog win over the bundle', async () => {

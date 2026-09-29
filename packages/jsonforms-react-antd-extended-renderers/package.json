@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-antd-extended-renderers",
   "version": "0.0.1",
   "description": "Extended Ant Design renderers for JSON Forms React",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-antd-extended-renderers"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -37,8 +41,8 @@
   },
   "peerDependencies": {
     "@ant-design/icons": "6.3.2",
-    "@chobantonov/jsonforms-react-antd-renderers": "0.0.1",
-    "@chobantonov/jsonforms-react-extended-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
     "antd": "6.6.5",
@@ -75,5 +79,8 @@
   "dependencies": {
     "maska": "^3.2.1",
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

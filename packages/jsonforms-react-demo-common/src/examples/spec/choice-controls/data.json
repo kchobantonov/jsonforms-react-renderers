@@ -1,9 +1,0 @@
-{
-  "processing": "Express",
-  "workspace": "Meeting room",
-  "department": "fin",
-  "priority": 2,
-  "supplier": "Legacy",
-  "origin": "Salem",
-  "handler": "ops"
-}

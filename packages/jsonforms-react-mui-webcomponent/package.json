@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-mui-webcomponent",
   "version": "0.0.1",
   "description": "Material UI JSON Forms React custom element",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-mui-webcomponent"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -33,7 +37,7 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@chobantonov/jsonforms-react-mui-extended-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-mui-extended-renderers": "workspace:*",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
@@ -74,5 +78,8 @@
     "typescript": "~4.9.5",
     "vite": "^5.4.11",
     "vitest": "2.1.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

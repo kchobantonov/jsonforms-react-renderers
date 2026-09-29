@@ -37,12 +37,65 @@ describe('ShadcnDateControl', () => {
 
     await act(async () => root.render(<ShadcnDateControl {...props} />));
     await act(async () => {
-      container.querySelector<HTMLButtonElement>('#shadcn-jsonforms-birthDate')?.click();
+      container
+        .querySelector<HTMLButtonElement>('#shadcn-jsonforms-birthDate')
+        ?.click();
     });
 
-    expect(document.body.querySelector('[data-slot="calendar"]')).not.toBeNull();
+    expect(
+      document.body.querySelector('[data-slot="calendar"]')
+    ).not.toBeNull();
 
     await act(async () => root.unmount());
     container.remove();
   });
+});
+
+it('uses month and year controls and preserves the configured save and display formats', async () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const handleChange = vi.fn();
+  try {
+    await act(async () =>
+      root.render(
+        <ShadcnDateControl
+          {...props}
+          data='2024-01'
+          handleChange={handleChange}
+          uischema={{
+            ...props.uischema,
+            options: {
+              views: ['year', 'month'],
+              dateFormat: 'YYYY.MM',
+              dateSaveFormat: 'YYYY-MM',
+            },
+          }}
+        />
+      )
+    );
+    expect(container.textContent).toContain('2024.01');
+    await act(async () =>
+      container
+        .querySelector<HTMLButtonElement>('#shadcn-jsonforms-birthDate')!
+        .click()
+    );
+    expect(document.body.querySelector('[data-slot="calendar"]')).toBeNull();
+    expect(
+      document.body.querySelector('[aria-label="Month"]')!.textContent
+    ).toContain('January');
+    expect(
+      document.body.querySelector('[aria-label="Year"]')!.textContent
+    ).toContain('2024');
+    expect(handleChange).not.toHaveBeenCalled();
+    await act(async () =>
+      Array.from(document.body.querySelectorAll('button'))
+        .find((button) => button.textContent === 'Apply')!
+        .click()
+    );
+    expect(handleChange).toHaveBeenCalledWith('birthDate', '2024-01');
+  } finally {
+    await act(async () => root.unmount());
+    container.remove();
+  }
 });

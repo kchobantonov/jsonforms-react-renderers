@@ -145,3 +145,15 @@ describe('deciding whether to prompt', () => {
     expect(confirmationRequired('complex', ['a', {}, []])).toBe(false);
   });
 });
+
+it('defaults composite cell deletion to complex while preserving policy overrides', () => {
+  const resolve = (options = {}, config = {}) => resolveConfirmationPolicy({
+    catalogId: 'compositeCell', operation: 'delete', options, config,
+  });
+  expect(resolve()).toBe('complex');
+  for (const value of [{}, []]) expect(confirmationRequired(resolve(), [value])).toBe(false);
+  for (const value of [{ key: undefined }, [{}]]) expect(confirmationRequired(resolve(), [value])).toBe(true);
+  expect(resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('always');
+  expect(resolve({}, { jsonformsExtended: { confirmation: { renderers: { compositeCell: { delete: 'never' } } } } })).toBe('never');
+  expect(resolve({ confirmation: { delete: 'never' } }, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('never');
+});

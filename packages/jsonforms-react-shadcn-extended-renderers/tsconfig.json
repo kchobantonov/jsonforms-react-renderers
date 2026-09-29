@@ -1,8 +1,15 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
+    "jsx": "react",
     "outDir": "lib",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@jsonforms-react-shadcn-ui/*": [
+        "../jsonforms-react-shadcn-renderers/test/ui-types/*"
+      ]
+    }
   },
   "exclude": ["node_modules"],
   "files": ["./src/index.tsx"]

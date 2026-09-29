@@ -7,7 +7,7 @@ import {
   forSchema,
   type AuthoredSchema,
   type DataOf,
-} from '@chobantonov/jsonforms-react-extended-renderers';
+} from '@chobantonov/jsonforms-extended-spec/typescript';
 
 const schema = {
   type: 'object',
@@ -18,7 +18,10 @@ const schema = {
 const f = forSchema(schema);
 const uischema = f.layout({
   type: 'VerticalLayout',
-  elements: [f.control('email'), f.control('age', { options: { slider: true } })],
+  elements: [
+    f.control('email'),
+    f.control('age', { options: { slider: true } }),
+  ],
 });
 type Data = DataOf<typeof schema>;
 const data: Data = { email: 'a@b.c' };
@@ -51,7 +54,11 @@ describe('the typed authoring guide', () => {
       type: 'VerticalLayout',
       elements: [
         { type: 'Control', scope: '#/properties/email' },
-        { type: 'Control', scope: '#/properties/age', options: { slider: true } },
+        {
+          type: 'Control',
+          scope: '#/properties/age',
+          options: { slider: true },
+        },
       ],
     });
   });

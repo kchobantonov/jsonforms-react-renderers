@@ -278,7 +278,7 @@ describe('the additional-errors example fixture', () => {
   it('opts one editor in and leaves the other at the default', async () => {
     const exampleUischema = (
       await import(
-        '../../jsonforms-react-demo-common/src/examples/spec/additional-errors/uischema.json'
+        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/uischema.json'
       )
     ).default as any;
 
@@ -305,7 +305,7 @@ describe('the additional-errors example fixture', () => {
   it('ships JSON that really is invalid in both editors', async () => {
     const exampleData = (
       await import(
-        '../../jsonforms-react-demo-common/src/examples/spec/additional-errors/data.json'
+        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/data.json'
       )
     ).default as any;
 
@@ -320,7 +320,7 @@ describe('the additional-errors example fixture', () => {
   it('leaves the form-wide default alone', async () => {
     const exampleConfig = (
       await import(
-        '../../jsonforms-react-demo-common/src/examples/spec/additional-errors/config.json'
+        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/config.json'
       )
     ).default as any;
     expect(exampleConfig.propagateErrors).toBeUndefined();

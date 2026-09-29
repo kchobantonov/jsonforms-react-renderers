@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import {
   asTranslationCatalogs,
@@ -14,9 +13,8 @@ const spec = examples.find(
   (e) => e.name === 'spec-container-validation-indicator'
 )!;
 
-const translationsFile = join(
-  __dirname,
-  '../src/examples/spec/container-validation-indicator/translations.json'
+const translationsFile = require.resolve(
+  '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json'
 );
 
 describe('the Internationalization tab shows translations.json verbatim', () => {

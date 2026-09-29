@@ -1,8 +1,0 @@
-{
-  "jsonformsExtended": {
-    "dynamicValues": { "enabled": true },
-    "markup": {
-      "markdown": { "enabled": true, "profile": "basic" }
-    }
-  }
-}

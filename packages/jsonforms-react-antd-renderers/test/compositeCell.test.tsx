@@ -110,3 +110,16 @@ describe('composite cells in the table', () => {
     unmount();
   });
 });
+
+it('asks before removing a populated composite and cancels without clearing', () => {
+  const { container, unmount } = render();
+  try {
+    const button = container.querySelector<HTMLButtonElement>('button[aria-label="Remove Address"]')!;
+    act(() => button.click());
+    const dialog = document.querySelector('[data-confirm="delete"]');
+    expect(dialog).toBeTruthy();
+    const cancel = Array.from(dialog!.querySelectorAll('button')).find(b => b.textContent === 'No')!;
+    act(() => cancel.click());
+    expect(container.textContent).toContain('12 St James');
+  } finally { unmount(); container.remove(); }
+});

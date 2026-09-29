@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-extended-renderers",
   "version": "0.0.1",
   "description": "Extended Renderer Set for JSON Forms",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-extended-renderers"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -115,5 +119,8 @@
         "lib/core/ajvI18n/localizers.d.ts"
       ]
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

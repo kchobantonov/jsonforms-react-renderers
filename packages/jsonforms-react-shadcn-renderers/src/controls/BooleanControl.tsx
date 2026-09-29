@@ -6,9 +6,12 @@ import {
 } from '@jsonforms/core';
 import React from 'react';
 import { InputShell, makeId } from './InputControl';
-import { Checkbox } from '../components/ui/checkbox';
+import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
 
 export const ShadcnBooleanControl = ({
+  config,
+  uischema,
+  schema,
   data,
   description,
   enabled,
@@ -17,13 +20,14 @@ export const ShadcnBooleanControl = ({
   label,
   path,
   required,
+  readonly,
   visible,
 }: ControlProps) => {
   if (!visible) return null;
   const id = makeId(path, label);
 
   return (
-    <InputShell
+    <InputShell path={path} schema={schema} config={config} uischema={uischema}
       id={id}
       label={label}
       required={required}
@@ -34,11 +38,11 @@ export const ShadcnBooleanControl = ({
         <Checkbox
           className='shadcn-jsonforms-checkbox-control'
           id={id}
-          disabled={!enabled}
-          checked={Boolean(data)}
+          disabled={!enabled || readonly}
+          checked={typeof data === 'boolean' ? data : 'indeterminate'}
           onCheckedChange={(checked) => handleChange(path, checked === true)}
         />
-        <span>{Boolean(data) ? 'Yes' : 'No'}</span>
+        <span>{data === true ? 'Yes' : data === false ? 'No' : ''}</span>
       </label>
     </InputShell>
   );

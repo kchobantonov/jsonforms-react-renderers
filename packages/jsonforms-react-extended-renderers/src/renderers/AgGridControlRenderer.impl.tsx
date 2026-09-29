@@ -151,21 +151,26 @@ export const createAgGridControl = ({
         : props.schema.items
     ) as JsonSchema | undefined;
     const object = items?.type === 'object' || Boolean(items?.properties);
-    const options = { ...props.config, ...props.uischema.options };
+    const options = useMemo(
+      () => ({ ...props.config, ...props.uischema.options }),
+      [props.config, props.uischema.options]
+    );
     const editable = props.enabled && !props.readonly;
     const showSortButtons = Boolean(options.showSortButtons);
     // `cells: { <field>: { summary, detail } }` from the uischema: how a
     // composite column summarises itself and what its detail dialog shows.
-    const cellOptions = (options.cells ?? {}) as Record<
+    const cellOptions = options.cells as Record<
       string,
       Record<string, unknown>
     >;
-    const columns: ColDef[] = Object.entries(
-      object ? items?.properties ?? {} : { value: items ?? {} }
-    ).map(([field, schema]) => ({
-      colId: field,
-      headerName: schema.title ?? field,
-      /*
+    const columns: ColDef[] = useMemo(
+      () =>
+        Object.entries(
+          object ? items?.properties ?? {} : { value: items ?? {} }
+        ).map(([field, schema]) => ({
+          colId: field,
+          headerName: schema.title ?? field,
+          /*
         Cells render the renderer set's own controls rather than plain text,
         so a column gets the same editor the form would use - but only for a
         control the host registered as a **cell**. A control that exists only
@@ -176,55 +181,66 @@ export const createAgGridControl = ({
 
         CellShell strips the label and inline message a cell has no room for.
       */
-      editable: false,
-      valueGetter: (event) =>
-        object ? event.data.value?.[field] : event.data.value,
-      cellRenderer: (event: { data: { index: number } }) => {
-        const cellSchema = object
-          ? (Resolve.schema(
-              items as JsonSchema,
-              `#/properties/${field}`,
-              props.rootSchema
-            ) as JsonSchema)
-          : (items as JsonSchema);
-        const cellUiSchema = {
-          type: 'Control' as const,
-          scope: object ? `#/properties/${field}` : '#',
-          label: false,
-          // `cells: { <field>: { summary, detail } }` tells a composite
-          // column how to summarise itself and what its dialog shows.
-          options: cellOptions[field],
-        };
-        const cellPath = object
-          ? composePaths(
-              composePaths(props.path, String(event.data.index)),
-              field
-            )
-          : composePaths(props.path, String(event.data.index));
-        return (
-          <CellShell
-            schema={cellSchema}
-            uischema={cellUiSchema}
-            path={cellPath}
-          >
-            {/*
+          editable: false,
+          valueGetter: (event) =>
+            object ? event.data.value?.[field] : event.data.value,
+          cellRenderer: (event: { data: { index: number } }) => {
+            const cellSchema = object
+              ? (Resolve.schema(
+                  items as JsonSchema,
+                  `#/properties/${field}`,
+                  props.rootSchema
+                ) as JsonSchema)
+              : (items as JsonSchema);
+            const cellUiSchema = {
+              type: 'Control' as const,
+              scope: object ? `#/properties/${field}` : '#',
+              label: false,
+              // `cells: { <field>: { summary, detail } }` tells a composite
+              // column how to summarise itself and what its dialog shows.
+              options: cellOptions?.[field],
+            };
+            const cellPath = object
+              ? composePaths(
+                  composePaths(props.path, String(event.data.index)),
+                  field
+                )
+              : composePaths(props.path, String(event.data.index));
+            return (
+              <CellShell
+                schema={cellSchema}
+                uischema={cellUiSchema}
+                path={cellPath}
+              >
+                {/*
             DispatchCell, not JsonFormsDispatch: the composite (object/array)
             cell lives in the cells registry. Dispatching a renderer instead
             picks the object renderer and inlines the whole detail form in the
             cell rather than a one-line summary.
           */}
-            <DispatchCell
-              schema={cellSchema}
-              uischema={cellUiSchema}
-              path={cellPath}
-              enabled={editable && !(schema as any).readOnly}
-              renderers={props.renderers}
-              cells={props.cells}
-            />
-          </CellShell>
-        );
-      },
-    }));
+                <DispatchCell
+                  schema={cellSchema}
+                  uischema={cellUiSchema}
+                  path={cellPath}
+                  enabled={editable && !(schema as any).readOnly}
+                  renderers={props.renderers}
+                  cells={props.cells}
+                />
+              </CellShell>
+            );
+          },
+        })),
+      [
+        object,
+        items,
+        props.rootSchema,
+        props.path,
+        props.renderers,
+        props.cells,
+        editable,
+        cellOptions,
+      ]
+    );
     // Let the uischema refine the generated columns: entries are matched by
     // field, and their order wins, so widths/filters can be tuned without the
     // renderer having to know about the schema.
@@ -238,7 +254,17 @@ export const createAgGridControl = ({
             const generated = columns.find(
               (column) => column.colId === requestedCol.field
             );
-            return generated ? { ...generated, ...requestedCol } : undefined;
+            return generated
+              ? {
+                  ...generated,
+                  // A fixed width must opt out of the default flex sizing.
+                  ...(requestedCol.width !== undefined &&
+                  requestedCol.flex === undefined
+                    ? { flex: 0 }
+                    : {}),
+                  ...requestedCol,
+                }
+              : undefined;
           })
           .filter((column): column is ColDef => Boolean(column))
       : columns;
@@ -336,6 +362,8 @@ export const createAgGridControl = ({
     if (!props.visible) return null;
     return (
       <ArrayShell
+        options={props.uischema.options}
+        config={props.config}
         label={props.label}
         description={props.description}
         errors={props.errors}

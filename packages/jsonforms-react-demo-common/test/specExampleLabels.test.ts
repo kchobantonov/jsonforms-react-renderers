@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { deriveLabelForUISchemaElement } from '@jsonforms/core';
 import { translatorFor } from '../src/i18nCatalogs';
-import translations from '../src/examples/spec/container-validation-indicator/translations.json';
-import uischema from '../src/examples/spec/container-validation-indicator/uischema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/uischema.json';
 
 const categories = (uischema as any).elements[1].elements;
 const group = categories[0].elements[1];
@@ -39,9 +39,7 @@ describe('unbound elements need an explicit i18n prefix', () => {
     const prefixes = [group.i18n, ...categories.map((c: any) => c.i18n)];
     for (const locale of ['en', 'bg'] as const) {
       for (const prefix of prefixes) {
-        expect(
-          (translations as any)[locale][`${prefix}.label`]
-        ).toBeTruthy();
+        expect((translations as any)[locale][`${prefix}.label`]).toBeTruthy();
       }
     }
   });

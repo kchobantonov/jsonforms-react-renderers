@@ -1,42 +1,77 @@
 import { LayoutProps, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
 import React from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { ShadcnLayout } from './Layout';
-import { Button } from '../components/ui/button';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@jsonforms-react-shadcn-ui/collapsible';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { useGroupState } from '../util/groupState';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 
 export const ShadcnGroupLayout = (props: LayoutProps) => {
   const group = useGroupState(props.uischema, props.path, props.config);
+  const t = useI18n();
   if (!props.visible) return null;
 
+  const header = (
+    <>
+      <span className='shadcn-jsonforms-group-title'>{props.label}</span>
+      <span className='shadcn-jsonforms-group-actions'>
+        {group.hasData && (
+          <span
+            role='img'
+            aria-label={t('group.dataIndicator')}
+            title={t('group.dataIndicator')}
+            data-group-indicator
+          >
+            ●
+          </span>
+        )}
+        {group.collapsible &&
+          (group.collapsed ? (
+            <ChevronDown aria-hidden='true' />
+          ) : (
+            <ChevronUp aria-hidden='true' />
+          ))}
+      </span>
+    </>
+  );
+
   return (
-    <fieldset className='shadcn-jsonforms-group'>
-      {props.label || group.collapsible || group.hasData ? (
-        <legend>
-          {props.label}
-          {group.hasData && (
-            <span role='img' aria-label='Contains data' data-group-indicator>
-              ●
-            </span>
-          )}
-          {group.collapsible && (
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon'
-              aria-label={props.label || 'Group'}
-              aria-expanded={!group.collapsed}
-              aria-controls={group.contentId}
-              onClick={group.toggle}
-            >
-              <span aria-hidden='true'>{group.collapsed ? '▸' : '▾'}</span>
-            </Button>
-          )}
-        </legend>
+    <Collapsible
+      className='shadcn-jsonforms-group'
+      data-collapsible={group.collapsible || undefined}
+      role='group'
+      aria-label={props.label || undefined}
+      open={!group.collapsed}
+      onOpenChange={(open) => {
+        if (group.collapsible && open === group.collapsed) group.toggle();
+      }}
+    >
+      {group.collapsible ? (
+        <CollapsibleTrigger
+          render={<Button type='button' variant='ghost' />}
+          className='shadcn-jsonforms-group-header'
+          aria-label={props.label || 'Group'}
+          aria-controls={group.contentId}
+        >
+          {header}
+        </CollapsibleTrigger>
+      ) : props.label || group.hasData ? (
+        <div className='shadcn-jsonforms-group-header'>{header}</div>
       ) : null}
-      <div id={group.contentId} hidden={group.collapsed}>
+      <CollapsibleContent
+        className='shadcn-jsonforms-group-content'
+        id={group.contentId}
+        keepMounted
+        hidden={group.collapsed}
+      >
         <ShadcnLayout {...props} direction='column' />
-      </div>
-    </fieldset>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 

@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-mui-extended-renderers",
   "version": "0.0.1",
   "description": "Extended Material UI renderers for JSON Forms React",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-mui-extended-renderers"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -36,7 +40,7 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@chobantonov/jsonforms-react-extended-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@jsonforms/core": "3.9.0-alpha.1",
@@ -77,5 +81,8 @@
   },
   "dependencies": {
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

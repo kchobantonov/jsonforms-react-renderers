@@ -12,11 +12,13 @@ const externalPackages = new Set([
   ...Object.keys(packageJson.peerDependencies ?? {}),
 ]);
 const isExternal = (id) =>
+  id.startsWith('@jsonforms-react-shadcn-ui/') ||
   [...externalPackages].some(
     (packageName) => id === packageName || id.startsWith(`${packageName}/`)
   );
 
 export default defineConfig({
+  esbuild: { jsx: "automatic" },
   resolve: {
     alias: {
       '@': resolve(packageDir, 'src'),

@@ -319,6 +319,7 @@ export class TableControl extends React.Component<
 
     return (
       <TableToolbar
+        config={this.props.config}
         errors={errors}
         label={label}
         description={description}
@@ -332,6 +333,7 @@ export class TableControl extends React.Component<
         disableAdd={doDisableAdd}
       >
         <Table
+          scroll={{ x: 'max-content' }}
           dataSource={dataSource}
           showHeader={isObjectSchema}
           columns={columns}

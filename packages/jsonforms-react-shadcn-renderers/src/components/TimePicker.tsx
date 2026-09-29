@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
 import { TimeValue, formatTimeValue, parseTimeValue } from '../util/dateTime';
 
 export type TimePickerProps = {
@@ -61,12 +61,12 @@ export const TimePicker = ({
     }
     const normalized = Math.max(1, Math.min(12, hour));
     const isPm = (time?.hours ?? 0) >= 12;
-    updatePart('hours', normalized % 12 + (isPm ? 12 : 0));
+    updatePart('hours', (normalized % 12) + (isPm ? 12 : 0));
   };
 
   const setPeriod = (isPm: boolean) => {
     const current = time ?? emptyTime;
-    const hours = current.hours % 12 + (isPm ? 12 : 0);
+    const hours = (current.hours % 12) + (isPm ? 12 : 0);
     commit({ ...current, hours });
   };
 
@@ -117,7 +117,10 @@ export const TimePicker = ({
   );
 
   return (
-    <div className='flex items-center justify-center gap-2' data-slot='time-picker'>
+    <div
+      className='flex items-center justify-center gap-2'
+      data-slot='time-picker'
+    >
       {renderPart('hours', 'Hours', displayedHour, updateDisplayedHour)}
       <span className='select-none text-2xl font-semibold'>:</span>
       {renderPart('minutes', 'Minutes', time?.minutes)}

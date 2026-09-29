@@ -11,10 +11,10 @@ import {
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
 import { flushUntil } from './support/flush';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/array-controls/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/array-controls/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/array-controls/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/array-controls/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/array-controls/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/array-controls/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/array-controls/uischema.json';
 
 /*
   Every array presentation, on one schema.

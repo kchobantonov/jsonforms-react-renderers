@@ -1,8 +1,14 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@jsonforms-react-shadcn-ui/*": ["./src/components/ui/*"],
+      "@/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules"],
   "files": ["./src/index.tsx", "./src/register.ts", "./src/vite-env.d.ts"]

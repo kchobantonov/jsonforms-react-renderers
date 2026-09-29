@@ -31,7 +31,7 @@ export const DefaultDemoShell = ({
   onOpenSettings,
   onCloseSettings,
   children,
-}: DemoShellProps) => (
+}: DemoShellProps): React.JSX.Element => (
   <div
     className={dark ? 'app-shell app-dark' : 'app-shell'}
     dir={rtl ? 'rtl' : 'ltr'}

@@ -31,3 +31,5 @@ export {
 
 export * from './CategoryHeader';
 export * from './ArrayToolbar';
+
+export * from './ArrayPanel';

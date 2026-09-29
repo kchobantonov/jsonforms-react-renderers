@@ -81,3 +81,39 @@ describe('Shadcn allOf renderer', () => {
     expect(onChange.mock.lastCall?.[0].data.shipping_address).toBeUndefined();
   });
 });
+
+it('resolves Geometry inside an allOf branch without an explicit object type', () => {
+  const host = document.createElement('div');
+  const root = createRoot(host);
+  const schema = {
+    $defs: {
+      Base: { type: 'object', properties: { width: { type: 'integer' } } },
+      Child: {
+        type: 'object',
+        allOf: [
+          { $ref: '#/$defs/Base' },
+          { properties: { geometry: { type: 'string' } } },
+        ],
+      },
+    },
+    type: 'object',
+    properties: { element: { $ref: '#/$defs/Child' } },
+  };
+  try {
+    act(() =>
+      root.render(
+        <JsonForms
+          data={{}}
+          schema={schema}
+          uischema={{ type: 'Control', scope: '#/properties/element' }}
+          renderers={shadcnRenderers}
+        />
+      )
+    );
+    expect(host.querySelectorAll('input')).toHaveLength(2);
+    expect(host.textContent).toContain('Geometry');
+    expect(host.querySelector('[role="combobox"]')).toBeNull();
+  } finally {
+    act(() => root.unmount());
+  }
+});

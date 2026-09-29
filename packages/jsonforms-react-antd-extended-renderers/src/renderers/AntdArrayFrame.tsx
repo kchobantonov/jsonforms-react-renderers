@@ -1,6 +1,9 @@
 import React from 'react';
 import { Button, Card, Col, Row, Tooltip, Typography } from 'antd';
-import { ValidationIcon } from '@chobantonov/jsonforms-react-antd-renderers';
+import {
+  ArrayPanel,
+  ValidationIcon,
+} from '@chobantonov/jsonforms-react-antd-renderers';
 import type { EditorArrayFrameProps } from '@chobantonov/jsonforms-react-extended-renderers';
 
 const { Title } = Typography;
@@ -11,13 +14,18 @@ const { Title } = Typography;
  * indicator beside it, circular icon actions with tooltips on the right.
  */
 export const AntdArrayFrame = ({
+  options,
+  config,
   label,
   description,
   errors,
   actions = [],
   children,
 }: EditorArrayFrameProps) => (
-  <Card
+  <ArrayPanel
+    options={options}
+    config={config}
+    panelLabel={label}
     style={{ width: '100%' }}
     size='small'
     type='inner'
@@ -56,5 +64,5 @@ export const AntdArrayFrame = ({
     ))}
   >
     {children}
-  </Card>
+  </ArrayPanel>
 );

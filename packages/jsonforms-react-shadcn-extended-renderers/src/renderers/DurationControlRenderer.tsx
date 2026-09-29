@@ -1,131 +1,206 @@
 import {
   ControlProps,
-  RankedTester,
   and,
   formatIs,
   isStringControl,
+  optionIs,
+  or,
   rankWith,
 } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import {
-  Button,
-  Input,
   InputShell,
   makeId,
+  ClearValueButton,
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import {
+  useI18n,
+  useTranslator,
+} from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@jsonforms-react-shadcn-ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@jsonforms-react-shadcn-ui/select';
+import { Timer, X } from 'lucide-react';
 import React from 'react';
 import {
+  useExtendedTranslator,
   useDurationControl,
-  durationFields,
   durationFieldMax,
+  ExtendedDurationParts,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 
-export const durationControlTester: RankedTester = rankWith(
-  2,
-  and(isStringControl, formatIs('duration'))
+export const durationControlTester = rankWith(
+  3,
+  and(isStringControl, or(formatIs('duration'), optionIs('format', 'duration')))
 );
-const fields = durationFields;
 
 export const ShadcnDurationControl = (props: ControlProps) => {
   const state = useDurationControl(props);
-  const { open, draft: parts } = state;
+  const label = useI18n();
+  const t = useTranslator();
+  const editorText = useExtendedTranslator();
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
-  const value = state.value;
-  const valid = !state.error;
-
+  const unitLabel = (field: keyof ExtendedDurationParts) =>
+    label(`duration.${field}` as any);
   return (
-    <InputShell
+    <InputShell {...props}
       id={id}
       label={props.label}
       required={props.required}
       description={props.description}
-      errors={
-        !valid
-          ? 'Enter an ISO 8601 duration, for example P2DT3H.'
-          : props.errors
-      }
+      errors={state.error}
     >
-      <div className='shadcn-jsonforms-duration-control'>
+      <div className='group relative'>
         <Input
-          className='shadcn-jsonforms-input'
           id={id}
-          value={value}
+          className='pl-10 pr-10'
+          value={state.value}
           placeholder={state.options.placeholder ?? 'P1DT2H'}
           autoFocus={state.options.focus}
           disabled={state.disabled}
-          onChange={(event) =>
-            props.handleChange(
-              props.path,
-              event.currentTarget.value || undefined
-            )
-          }
+          aria-invalid={Boolean(state.error)}
+          aria-describedby={state.error ? `${id}-errors` : undefined}
+          onChange={(event) => state.changeText(event.currentTarget.value)}
         />
-        <Button
-          className='shadcn-jsonforms-button shadcn-jsonforms-button-outline shadcn-jsonforms-button-sm'
-          variant='outline'
-          size='sm'
-          disabled={state.disabled}
-          aria-expanded={open}
-          onClick={() => {
-            open ? state.close() : state.openPicker();
-          }}
+        <Popover
+          open={state.open}
+          onOpenChange={(open) => (open ? state.openPicker() : state.close())}
         >
-          Duration
-        </Button>
-      </div>
-      {open ? (
-        <div className='shadcn-jsonforms-duration-picker'>
-          {fields.map((field) => (
-            <label key={field}>
-              {field}
-              <Input
-                className='shadcn-jsonforms-input'
-                type='number'
-                min={0}
-                value={parts[field]}
-                disabled={
-                  state.disabled ||
-                  (field === 'weeks'
-                    ? durationFields.some(
-                        (part) => part !== 'weeks' && state.draft[part] > 0
-                      )
-                    : state.draft.weeks > 0)
-                }
-                max={durationFieldMax}
-                onChange={(event) =>
-                  state.changePart(field, Number(event.currentTarget.value))
-                }
-              />
-            </label>
-          ))}
-          {state.showActions && (
-            <div className='shadcn-jsonforms-duration-actions'>
-              <Button
-                className='shadcn-jsonforms-button shadcn-jsonforms-button-sm'
-                size='sm'
-                onClick={() => {
-                  state.apply();
-                }}
-              >
-                {state.options.okLabel ?? 'Apply'}
-              </Button>
-              <Button
-                className='shadcn-jsonforms-button shadcn-jsonforms-button-ghost shadcn-jsonforms-button-sm'
-                variant='ghost'
-                size='sm'
-                onClick={() => state.close()}
-              >
-                {state.options.cancelLabel ?? 'Cancel'}
-              </Button>
+          <PopoverTrigger asChild>
+            <Button
+              type='button'
+              variant='ghost'
+              size='icon'
+              className='absolute left-1 top-1 h-8 w-8'
+              disabled={state.disabled}
+              aria-label={editorText('editor.chooseDuration')}
+              title={editorText('editor.chooseDuration')}
+            >
+              <Timer aria-hidden='true' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align='start' className='w-80 space-y-3'>
+            <div className='flex gap-2'>
+              {(['components', 'weeks'] as const).map((mode) => (
+                <Button
+                  type='button'
+                  key={mode}
+                  variant={state.mode === mode ? 'default' : 'outline'}
+                  aria-pressed={state.mode === mode}
+                  disabled={state.disabled}
+                  onClick={() => state.setMode(mode)}
+                >
+                  {label(
+                    mode === 'weeks'
+                      ? 'duration.modeWeeks'
+                      : 'duration.modeComponents'
+                  )}
+                </Button>
+              ))}
             </div>
-          )}
-        </div>
-      ) : null}
+            {state.activeFields.map((field) => (
+              <div
+                key={field}
+                className='grid grid-cols-[1fr_2rem] items-center gap-1'
+              >
+                <label className='grid grid-cols-2 items-center gap-2'>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={durationFieldMax}
+                    step={1}
+                    value={state.draft[field]}
+                    aria-label={unitLabel(field)}
+                    disabled={state.disabled}
+                    onChange={(event) =>
+                      state.changePart(field, Number(event.currentTarget.value))
+                    }
+                  />
+                  <span>{unitLabel(field)}</span>
+                </label>
+                {state.mode === 'components' &&
+                  state.activeFields.length > 1 && (
+                    <Button
+                      type='button'
+                      size='icon'
+                      variant='ghost'
+                      className='h-8 w-8'
+                      disabled={state.disabled}
+                      aria-label={label('duration.removeUnit', {
+                        unit: unitLabel(field),
+                      })}
+                      title={label('duration.removeUnit', {
+                        unit: unitLabel(field),
+                      })}
+                      onClick={() => state.removeField(field)}
+                    >
+                      <X aria-hidden='true' />
+                    </Button>
+                  )}
+              </div>
+            ))}
+            {state.addableFields.length > 0 && (
+              <Select
+                value=''
+                disabled={state.disabled}
+                onValueChange={(field) =>
+                  state.addField(field as keyof ExtendedDurationParts)
+                }
+              >
+                <SelectTrigger aria-label={label('duration.addUnit')}>
+                  <SelectValue placeholder={label('duration.addUnit')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {state.addableFields.map((field) => (
+                    <SelectItem key={field} value={field}>
+                      {unitLabel(field)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {state.showActions && (
+              <div className='flex justify-end gap-2'>
+                <Button type='button' variant='outline' onClick={state.close}>
+                  {state.options.cancelLabel
+                    ? t(state.options.cancelLabel, state.options.cancelLabel)
+                    : label('duration.cancel')}
+                </Button>
+                <Button
+                  type='button'
+                  disabled={state.disabled}
+                  onClick={state.apply}
+                >
+                  {state.options.okLabel
+                    ? t(state.options.okLabel, state.options.okLabel)
+                    : label('duration.ok')}
+                </Button>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+        <ClearValueButton
+          clearable={state.options.clearable !== false}
+          data={props.data}
+          enabled={!state.disabled}
+          onClear={() => state.changeText('')}
+        />
+      </div>
     </InputShell>
   );
 };
-
 export const DurationControlRenderer = withJsonFormsControlProps(
   ShadcnDurationControl
 );

@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
-import data from '../src/examples/spec/string-controls/data.json';
-import schema from '../src/examples/spec/string-controls/schema.json';
-import translations from '../src/examples/spec/string-controls/translations.json';
-import uischema from '../src/examples/spec/string-controls/uischema.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/string-controls/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/string-controls/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/string-controls/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/string-controls/uischema.json';
 
 const example = examples.find((e) => e.name === 'spec-string-controls');
 
@@ -57,8 +57,8 @@ describe('the string-controls spec example', () => {
   });
 
   test('carries the boolean temporal opt-out that must not select a mask', () => {
-    expect(optionsFor('scheduledPickup').mask).toBe(false);
-    expect((schema as any).properties.scheduledPickup.format).toBe('date');
+    expect(optionsFor('scheduledMeeting').mask).toBe(false);
+    expect((schema as any).properties.scheduledMeeting.format).toBe('date');
   });
 
   test('stores the separators only where returnMaskedValue asks for it', () => {

@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-primereact-webcomponent",
   "version": "0.0.1",
   "description": "PrimeReact-based JSON Forms React web component",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-primereact-webcomponent"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -21,8 +25,8 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@chobantonov/jsonforms-react-primereact-extended-renderers": "0.0.1",
-    "@chobantonov/jsonforms-react-primereact-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-primereact-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-primereact-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
     "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
@@ -51,5 +55,8 @@
     "tslib": "^2.5.0",
     "typescript": "~4.9.5",
     "vite": "^5.4.11"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -9,12 +9,13 @@ import {
 } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import {
-  Alert,
-  Button,
-  Input,
   InputShell,
+  ClearValueButton,
   makeId,
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { Alert } from '@jsonforms-react-shadcn-ui/alert';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
+
 import React from 'react';
 
 export type JsonSchemaWithContent = JsonSchema & {
@@ -71,12 +72,13 @@ export const readFile = (
   });
 
 export const ShadcnFileControl = (props: ControlProps) => {
+  const fileInput = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [localError, setLocalError] = React.useState('');
   if (!props.visible) return null;
   const schema = props.schema as JsonSchemaWithContent;
-  const options = props.uischema.options ?? {};
+  const options = { ...props.config, ...props.uischema.options };
   const id = makeId(props.path, props.label);
   const minimum = optionNumber(
     schema.formatMinimum ??
@@ -100,16 +102,17 @@ export const ShadcnFileControl = (props: ControlProps) => {
       options.formatExclusiveMaximum !== undefined);
 
   return (
-    <InputShell
+    <InputShell {...props}
       id={id}
       label={props.label}
       required={props.required}
       description={props.description}
       errors={props.errors}
     >
-      <div className='shadcn-jsonforms-file-control'>
+      <div className='shadcn-jsonforms-file-control group relative'>
         <Input
-          className='shadcn-jsonforms-input'
+          ref={fileInput}
+          className='shadcn-jsonforms-input pr-10'
           id={id}
           type='file'
           accept={
@@ -117,7 +120,7 @@ export const ShadcnFileControl = (props: ControlProps) => {
             (typeof options.accept === 'string' ? options.accept : undefined)
           }
           required={props.required}
-          disabled={!props.enabled || busy}
+          disabled={!props.enabled || props.readonly || busy}
           onChange={async (event) => {
             const file = event.currentTarget.files?.[0];
             if (!file) return;
@@ -159,20 +162,18 @@ export const ShadcnFileControl = (props: ControlProps) => {
             }
           }}
         />
-        {props.data ? (
-          <Button
-            className='shadcn-jsonforms-button shadcn-jsonforms-button-ghost shadcn-jsonforms-button-sm'
-            variant='ghost'
-            size='sm'
-            disabled={!props.enabled || busy}
-            onClick={() => {
-              props.handleChange(props.path, undefined);
-              setFileName('');
-            }}
-          >
-            Clear
-          </Button>
-        ) : null}
+        <ClearValueButton
+          data={props.data || fileName}
+          enabled={props.enabled && !busy}
+          readonly={props.readonly}
+          clearable={options.clearable !== false}
+          onClear={() => {
+            props.handleChange(props.path, undefined);
+            setFileName('');
+            setLocalError('');
+            if (fileInput.current) fileInput.current.value = '';
+          }}
+        />
       </div>
       {busy ? <div role='status'>Attaching file…</div> : null}
       {fileName ? (

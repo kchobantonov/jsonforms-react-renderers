@@ -1,33 +1,73 @@
-name: Release to npm
+name: Release Packages
+
 on:
-  release:
-    types:
-      - created
+  push:
+    branches: [master]
+    paths:
+      - '.changeset/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 22.x
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
+      - name: Checkout local specification dependency
+        uses: actions/checkout@v4
+        with:
+          repository: kchobantonov/jsonforms-extended-spec
+          path: .spec-source
+      - name: Place specification beside the renderer workspace
+        run: mv .spec-source ../jsonforms-extended-spec
+      - name: Build specification package
+        run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Build package
-        run: pnpm run build
-
-      - name: Publish to npm
-        run: npx lerna publish --no-private from-git --yes --no-verify-access
+      - name: Configure npm authentication
+        run: pnpm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create release PR or publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          title: 'task: release'
+          commit: 'chore: release packages'
+          version: pnpm run changeset:version
+          publish: pnpm run changeset:publish
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push release tags
+        if: steps.changesets.outputs.published == 'true'
+        run: git push origin --tags

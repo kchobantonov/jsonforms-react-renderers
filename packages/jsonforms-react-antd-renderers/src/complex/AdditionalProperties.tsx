@@ -1,3 +1,4 @@
+import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
 import {
   toObjectSchema,
   hasAdditionalProperties,
@@ -440,15 +441,17 @@ export const AdditionalProperties = ({
                       }
                     />
                   ) : (
-                    <JsonFormsDispatch
-                      schema={item.schema}
-                      uischema={item.uischema}
-                      path={item.path}
-                      enabled={enabled}
-                      renderers={renderers}
-                      cells={cells}
-                      readonly={readonly}
-                    />
+                    <DynamicPropertyProvider path={item.path}>
+                      <JsonFormsDispatch
+                        schema={item.schema}
+                        uischema={item.uischema}
+                        path={item.path}
+                        enabled={enabled}
+                        renderers={renderers}
+                        cells={cells}
+                        readonly={readonly}
+                      />
+                    </DynamicPropertyProvider>
                   )}
                 </div>
               </Flex>

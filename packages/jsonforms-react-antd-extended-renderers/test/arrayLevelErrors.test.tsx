@@ -33,7 +33,7 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/array-controls/schema.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json';
 
 (globalThis as any).ResizeObserver =
   (globalThis as any).ResizeObserver ??

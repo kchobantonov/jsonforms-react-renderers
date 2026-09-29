@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-shadcn-webcomponent",
   "version": "0.0.1",
   "description": "Shadcn UI JSON Forms React custom element",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-shadcn-webcomponent"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -33,20 +37,21 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@chobantonov/jsonforms-react-shadcn-renderers": "0.0.1",
-    "@chobantonov/jsonforms-react-shadcn-extended-renderers": "0.0.1",
-    "@chobantonov/jsonforms-react-extended-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-shadcn-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
-    "@chobantonov/jsonforms-react-shadcn-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-shadcn-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
@@ -62,11 +67,35 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^3.0.2",
-    "tailwindcss": "3.4.17",
+    "tailwindcss": "4.3.3",
     "tailwindcss-animate": "1.0.7",
     "tslib": "^2.5.0",
     "typescript": "~4.9.5",
     "vite": "^5.4.11",
     "vitest": "2.1.9"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@radix-ui/react-avatar": "^1.2.6",
+    "@radix-ui/react-checkbox": "1.3.11",
+    "@radix-ui/react-dialog": "1.1.23",
+    "@radix-ui/react-popover": "1.1.23",
+    "@radix-ui/react-radio-group": "^1.4.7",
+    "@radix-ui/react-select": "2.3.7",
+    "@radix-ui/react-slider": "^1.4.7",
+    "@radix-ui/react-slot": "1.2.4",
+    "@radix-ui/react-switch": "^1.3.7",
+    "@radix-ui/react-tabs": "1.1.21",
+    "@radix-ui/react-tooltip": "^1.2.16",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.37.0",
+    "radix-ui": "^1.6.7",
+    "react-day-picker": "10.0.1",
+    "react-resizable-panels": "^4.12.3",
+    "tailwind-merge": "3.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

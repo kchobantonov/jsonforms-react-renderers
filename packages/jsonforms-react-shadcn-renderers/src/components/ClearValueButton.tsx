@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import React from 'react';
-import { Button } from './ui/button';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
 
 export interface ClearValueButtonProps {
   clearable?: boolean;

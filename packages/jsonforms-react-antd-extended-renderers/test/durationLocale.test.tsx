@@ -48,7 +48,7 @@ describe('the duration picker follows the locale', () => {
   it('names its units in the locale, with no duration keys in the catalog', async () => {
     expect(await open('en')).toEqual(['Hours', 'Minutes']);
     expect(await open('bg')).toEqual(['Часове', 'Минути']);
-    expect(await open('de')).toEqual(['Stunden', 'Minuten']);
+    expect(await open('de')).toEqual(['Hours', 'Minutes']);
   });
 
   /*

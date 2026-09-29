@@ -134,6 +134,11 @@ const DemoToggle = ({
 );
 
 export const muiDemoUi: DemoUi = {
+  Tooltip: ({ content, children }) => (
+    <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}>{content}</span>}>
+      {children}
+    </Tooltip>
+  ),
   Typography: MuiDemoTypography,
   TextInput: MuiDemoTextInput,
   SegmentedControl: MuiDemoSegmentedControl,

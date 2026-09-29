@@ -2,7 +2,11 @@
   "name": "@chobantonov/jsonforms-react-shadcn-extended-renderers",
   "version": "0.0.1",
   "description": "Extended Shadcn UI renderers for JSON Forms React",
-  "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-shadcn-extended-renderers"
+  },
   "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
   "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers",
   "license": "MIT",
@@ -37,8 +41,8 @@
     "tsc": "tsc --build tsconfig.json"
   },
   "peerDependencies": {
-    "@chobantonov/jsonforms-react-extended-renderers": "0.0.1",
-    "@chobantonov/jsonforms-react-shadcn-renderers": "0.0.1",
+    "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
     "ag-grid-community": "^36.1.0",
@@ -51,13 +55,13 @@
     "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
-    "ag-grid-community": "36.1.0",
-    "ag-grid-react": "36.1.0",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
     "@vitest/coverage-v8": "2.1.9",
+    "ag-grid-community": "36.1.0",
+    "ag-grid-react": "36.1.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -72,5 +76,12 @@
     "typescript": "~4.9.5",
     "vite": "^5.4.11",
     "vitest": "2.1.9"
+  },
+  "dependencies": {
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
+    "lucide-react": "1.37.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -11,12 +11,24 @@ const externalPackages = new Set([
   ...Object.keys(packageJson.dependencies ?? {}),
   ...Object.keys(packageJson.peerDependencies ?? {}),
 ]);
+const bundledRenderers = new Set([
+  '@chobantonov/jsonforms-react-shadcn-renderers',
+  '@chobantonov/jsonforms-react-shadcn-extended-renderers',
+]);
 const isExternal = (id) =>
+  !bundledRenderers.has(id) &&
   [...externalPackages].some(
     (packageName) => id === packageName || id.startsWith(`${packageName}/`)
   );
 
 export default defineConfig({
+  esbuild: { jsx: "automatic" },
+  resolve: {
+    alias: {
+      '@': resolve(packageDir, 'src'),
+      '@jsonforms-react-shadcn-ui': resolve(packageDir, 'src/components/ui'),
+    },
+  },
   build: {
     lib: {
       entry: {

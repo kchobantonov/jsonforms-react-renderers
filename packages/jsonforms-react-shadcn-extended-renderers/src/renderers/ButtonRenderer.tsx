@@ -7,7 +7,8 @@ import {
 } from '@jsonforms/core';
 import { useJsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
 import { useHandleAction } from '@chobantonov/jsonforms-react-extended-renderers';
-import { Button } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+
 import React from 'react';
 
 export type ShadcnButtonElement = UISchemaElement & {

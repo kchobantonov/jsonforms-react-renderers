@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
-import data from '../src/examples/spec/array-choices/data.json';
-import schema from '../src/examples/spec/array-choices/schema.json';
-import translations from '../src/examples/spec/array-choices/translations.json';
-import uischema from '../src/examples/spec/array-choices/uischema.json';
-import choiceUischema from '../src/examples/spec/choice-controls/uischema.json';
-import choiceSchema from '../src/examples/spec/choice-controls/schema.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/array-choices/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/array-choices/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/array-choices/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/array-choices/uischema.json';
+import choiceUischema from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/uischema.json';
+import choiceSchema from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/schema.json';
 
 const optionsFor = (doc: any, property: string) =>
   doc.elements.find((e: any) => e.scope === `#/properties/${property}`)
@@ -64,9 +64,7 @@ describe('the array-choices spec example', () => {
 
   test('carries a value the schema does not offer', () => {
     expect(data.imported).toContain('Fax');
-    expect((schema as any).properties.imported.items.enum).not.toContain(
-      'Fax'
-    );
+    expect((schema as any).properties.imported.items.enum).not.toContain('Fax');
   });
 
   test('bounds one field on both sides, for the restrict contract', () => {

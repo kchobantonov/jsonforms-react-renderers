@@ -123,7 +123,7 @@ describe('Shadcn anyOf renderer', () => {
     expect(container.querySelectorAll('input')).toHaveLength(3);
     expect(
       Array.from(container.querySelectorAll('button')).filter(
-        (button) => button.textContent === 'Add'
+        (button) => button.getAttribute('aria-label') === 'Add'
       )
     ).toHaveLength(2);
     expect(onChange).not.toHaveBeenCalled();

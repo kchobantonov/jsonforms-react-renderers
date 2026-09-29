@@ -8,16 +8,17 @@ import {
 import { TranslateProps } from '@jsonforms/react';
 import React from 'react';
 import { ClearValueButton } from '../components/ClearValueButton';
-import { InputShell, makeId, toStringValue } from './InputControl';
+import { InputShell, makeId } from './InputControl';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../components/ui/select';
+} from '@jsonforms-react-shadcn-ui/select';
 
 export const ShadcnEnumControl = ({
+  schema,
   data,
   config,
   description,
@@ -36,7 +37,7 @@ export const ShadcnEnumControl = ({
   const id = makeId(path, label);
 
   return (
-    <InputShell
+    <InputShell path={path} schema={schema} config={config} uischema={uischema}
       id={id}
       label={label}
       required={required}
@@ -45,9 +46,20 @@ export const ShadcnEnumControl = ({
     >
       <div className='group relative w-full'>
         <Select
-          disabled={!enabled}
-          value={toStringValue(data) || undefined}
-          onValueChange={(value) => handleChange(path, value || undefined)}
+          disabled={!enabled || readonly}
+          value={(() => {
+            const index = (options ?? []).findIndex((option) =>
+              Object.is(option.value, data)
+            );
+            return index < 0 ? '' : `option-${index}`;
+          })()}
+          onValueChange={(value) => {
+            const option = (options ?? [])[
+              Number(value.replace('option-', ''))
+            ];
+            if (option && enabled && !readonly)
+              handleChange(path, option.value);
+          }}
         >
           <SelectTrigger
             id={id}
@@ -56,11 +68,11 @@ export const ShadcnEnumControl = ({
             <SelectValue placeholder='Select...' />
           </SelectTrigger>
           <SelectContent className='shadcn-jsonforms-select-content'>
-            {(options ?? []).map((option) => (
+            {(options ?? []).map((option, index) => (
               <SelectItem
                 className='shadcn-jsonforms-select-item'
-                key={String(option.value)}
-                value={String(option.value)}
+                key={index}
+                value={`option-${index}`}
               >
                 {option.label}
               </SelectItem>

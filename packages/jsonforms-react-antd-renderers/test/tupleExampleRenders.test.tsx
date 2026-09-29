@@ -5,11 +5,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/tuple-control/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/tuple-control/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/tuple-control/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/tuple-control/uischema.json';
-import { uischemas } from '../../jsonforms-react-demo-common/src/examples/spec/tuple-control/uischemas';
+import config from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischema.json';
+import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischemas.mjs';
 
 /*
   The spec example is otherwise only exercised by opening the demo. Its schema

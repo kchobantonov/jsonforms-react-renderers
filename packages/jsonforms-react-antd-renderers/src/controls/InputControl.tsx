@@ -1,13 +1,13 @@
-import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
+import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
+import { ControlProps } from '@jsonforms/core';
 import React, { useCallback } from 'react';
 
-import merge from 'lodash/merge';
 import { AntdCheckbox } from '../antd-controls';
 import { ControlFormItem, useCellMode } from '../util';
 import { usePreTouchErrors } from '../util/preTouchErrors';
 import {
   clearedDynamicPropertyValue,
-  PRESERVE_DYNAMIC_PROPERTY_OPTION,
+  useDynamicProperty,
 } from '../util/dynamicProperties';
 
 export interface WithInput {
@@ -16,8 +16,7 @@ export interface WithInput {
 
 export const InputControl = (props: ControlProps & WithInput) => {
   const cell = useCellMode();
-  const { id, description, label, uischema, visible, required, config, input } =
-    props;
+  const { id, label, visible, required, config, input } = props;
   /*
     Replaces `useFocus`: the same focus state, plus the touch state pre-touch
     error filtering needs, and the filtered message. With filtering off this
@@ -31,14 +30,14 @@ export const InputControl = (props: ControlProps & WithInput) => {
     config,
   });
   const isValid = errors.length === 0;
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const preserveDynamicPropertyKey =
-    appliedUiSchemaOptions[PRESERVE_DYNAMIC_PROPERTY_OPTION] === true;
+  const preserveDynamicPropertyKey = useDynamicProperty(props.path);
   const handleInputChange = useCallback(
     (changedPath: string, value: unknown) => {
       props.handleChange(
         changedPath,
-        preserveDynamicPropertyKey && value === undefined
+        preserveDynamicPropertyKey &&
+          changedPath === props.path &&
+          value === undefined
           ? clearedDynamicPropertyValue(props.schema, props.rootSchema)
           : value
       );
@@ -46,25 +45,14 @@ export const InputControl = (props: ControlProps & WithInput) => {
     [
       preserveDynamicPropertyKey,
       props.handleChange,
+      props.path,
       props.rootSchema,
       props.schema,
     ]
   );
 
-  const showDescription = !isDescriptionHidden(
-    visible,
-    description,
-    focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
-  );
+  const help = getControlHelp({ ...props, errors }, focused);
 
-  // const firstFormHelperText = showDescription
-  //   ? description
-  //   : !isValid
-  //   ? errors
-  //   : null;
-  // const secondFormHelperText = showDescription && !isValid ? errors : null;
-  const help = !isValid ? errors : showDescription ? description : null;
   const helpId = help ? `${id}-input-help` : undefined;
 
   const InnerComponent = input;

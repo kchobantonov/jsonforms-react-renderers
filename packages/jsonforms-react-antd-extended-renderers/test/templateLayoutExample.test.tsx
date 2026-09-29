@@ -9,10 +9,10 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/template-layout/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/template-layout/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/template-layout/schema.json';
-import { composed as uischema } from '../../jsonforms-react-demo-common/src/examples/spec/template-layout';
+import config from '@chobantonov/jsonforms-extended-spec/examples/template-layout/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/template-layout/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/template-layout/schema.json';
+import { composed as uischema } from '../../jsonforms-react-demo-common/src/examples/nativeSpecExamples/template-layout';
 
 /*
   The three-engine fixture. All three templates express the same five things,

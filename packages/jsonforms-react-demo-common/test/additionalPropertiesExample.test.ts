@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
-import data from '../src/examples/spec/additional-properties/data.json';
-import schema from '../src/examples/spec/additional-properties/schema.json';
-import translations from '../src/examples/spec/additional-properties/translations.json';
-import uischema from '../src/examples/spec/additional-properties/uischema.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/uischema.json';
 
 const example = examples.find((e) => e.name === 'spec-additional-properties');
 

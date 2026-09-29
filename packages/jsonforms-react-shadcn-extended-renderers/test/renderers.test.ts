@@ -63,7 +63,7 @@ describe('Shadcn extended renderer registry', () => {
         { type: 'Control', scope: '#/properties/value' },
         { type: 'string', format: 'duration' }
       )
-    ).toBe(2);
+    ).toBe(3);
     expect(
       rank(
         fileControlTester,

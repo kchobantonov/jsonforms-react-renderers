@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.cjs";
 
 .shadcn-jsonforms-root.app-dark .demo-home-logo {
   filter: invert(1);

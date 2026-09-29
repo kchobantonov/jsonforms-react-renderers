@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../components/ui/button';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../components/ui/dialog';
+} from '@jsonforms-react-shadcn-ui/dialog';
 
 type CombinatorSwitchDialogProps = {
   open: boolean;

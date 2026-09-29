@@ -16,8 +16,8 @@ import {
 import { JsonFormsDispatch } from '@jsonforms/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
-import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Card } from '@jsonforms-react-shadcn-ui/card';
 import {
   Dialog,
   DialogContent,
@@ -25,8 +25,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../components/ui/dialog';
-import { Input } from '../components/ui/input';
+} from '@jsonforms-react-shadcn-ui/dialog';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
 
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
@@ -466,11 +466,14 @@ export const AdditionalProperties = ({
         </div>
         <div className='jsonforms-additional-properties-list flex flex-col gap-2 px-4 pb-4'>
           {additionalPropertyItems.map((item) => (
-            <div className='jsonforms-additional-property relative' key={item.propertyName}>
+            <div
+              className='jsonforms-additional-property relative'
+              key={item.propertyName}
+            >
               {enabled ? (
                 <div className='jsonforms-additional-property-actions absolute right-1 top-0 z-20 flex items-center gap-0.5'>
                   <Button
-                    className='h-7 w-7 text-muted-foreground'
+                    className='h-6 w-6 text-muted-foreground [&_svg]:size-3'
                     variant='ghost'
                     size='icon'
                     disabled={readonly}
@@ -485,7 +488,7 @@ export const AdditionalProperties = ({
                     <Pencil className='h-4 w-4' />
                   </Button>
                   <Button
-                    className='h-7 w-7'
+                    className='h-6 w-6 bg-destructive/10 text-destructive hover:bg-destructive/20 [&_svg]:size-3'
                     variant='destructive'
                     size='icon'
                     disabled={removePropertyDisabled}
@@ -555,7 +558,11 @@ export const AdditionalProperties = ({
               </p>
             ) : null}
             <DialogFooter className='mt-4'>
-              <Button type='button' variant='outline' onClick={closeRenameDialog}>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={closeRenameDialog}
+              >
                 Cancel
               </Button>
               <Button type='submit' disabled={renameDisabled}>

@@ -185,10 +185,6 @@ export * from './util/markdownEscape';
   naming it here would put the parser in the entry chunk of every form and
   undo the dynamic import in `MarkupLabelRenderer`. It is imported by path.
 */
-export * from './authoring/cssLength';
-export * from './authoring/schemaTypes';
-export * from './authoring/forSchema';
 export * from './locale/bg';
-export * from './locale/de';
 export * from './renderers/MonacoControlRenderer';
 export * from './renderers/AgGridControlRenderer';

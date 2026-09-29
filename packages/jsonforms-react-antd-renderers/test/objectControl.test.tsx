@@ -5,12 +5,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/object-control/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/object-control/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/object-control/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/object-control/uischema.json';
-import { uischemas } from '../../jsonforms-react-demo-common/src/examples/spec/object-control/uischemas';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/object-control/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/object-control/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/object-control/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/object-control/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/object-control/uischema.json';
+import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/object-control/uischemas.mjs';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/object-control/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
 /*
@@ -183,7 +183,7 @@ describe('where an object gets its layout', () => {
   it('accepts a Categorization as a detail', async () => {
     const view = draw();
     await settle();
-    expect(view.tabs()).toEqual(['Pickup', 'Appointment']);
+    expect(view.tabs()).toEqual(['Starts on', 'Appointment']);
     view.unmount();
   });
 

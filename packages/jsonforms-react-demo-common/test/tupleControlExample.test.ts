@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
-import data from '../src/examples/spec/tuple-control/data.json';
-import schema from '../src/examples/spec/tuple-control/schema.json';
-import translations from '../src/examples/spec/tuple-control/translations.json';
-import uischema from '../src/examples/spec/tuple-control/uischema.json';
-import { uischemas } from '../src/examples/spec/tuple-control/uischemas';
+import data from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischema.json';
+import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischemas.mjs';
 
 const example = examples.find((e) => e.name === 'spec-tuple-control');
 
@@ -50,7 +50,9 @@ describe('the tuple-control spec example', () => {
 
   test('keeps a trailing value its schema forbids, rather than trimming it', () => {
     expect(data.legacyAssignment).toHaveLength(3);
-    expect((schema as any).properties.legacyAssignment.additionalItems).toBe(false);
+    expect((schema as any).properties.legacyAssignment.additionalItems).toBe(
+      false
+    );
   });
 
   test('asks for a tuple it cannot have, to reach the diagnostic', () => {
@@ -89,8 +91,8 @@ describe('the tuple-control spec example', () => {
     expect(translations.bg['tuple.position']).toContain('{position}');
   });
 
-  test('registers an entry for each complex position of pickupContact', () => {
-    const positions = (schema as any).properties.pickupContact.items;
+  test('registers an entry for each complex position of projectContact', () => {
+    const positions = (schema as any).properties.projectContact.items;
     const forPosition = (position: any) =>
       uischemas.filter(
         (entry) => entry.tester(position, position, {} as any) === 10
@@ -112,7 +114,7 @@ describe('the tuple-control spec example', () => {
   /*
     `handoffContacts` exists to carry one position per *shape* a registry entry
     can take, so these deliberately differ from each other - which is why the
-    test above is scoped to `pickupContact` rather than asserting over the
+    test above is scoped to `projectContact` rather than asserting over the
     whole registry.
   */
   test('registers one entry per registry-entry shape for handoffContacts', () => {

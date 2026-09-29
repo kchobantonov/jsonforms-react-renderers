@@ -9,6 +9,7 @@ import type { TranslationCatalogs } from '../i18nCatalogs';
 import type { DemoUi } from './types';
 import { DefaultDemoSplitter } from '../DemoSplitter';
 import { DefaultDemoTypography } from '../DefaultDemoTypography';
+import { DemoValidationIndicator } from './DemoValidationIndicator';
 import { DemoEditorPanel } from './DemoEditorPanel';
 import { DATA_MODEL_PATH, parseEditorValue } from './editorValue';
 
@@ -99,17 +100,29 @@ export const DemoWorkspace = ({
               .map((tab) => ({
                 value: tab,
                 label:
-                  tab === 'demo'
-                    ? `${
-                        layout === 'demo-and-data' ? 'Demo and Data' : 'Demo'
-                      }${errors.length ? ` (${errors.length})` : ''}`
-                    : tab === 'uischema'
-                    ? 'UI Schema'
-                    : tab === 'uischemas'
-                    ? 'UI Schemas'
-                    : tab === 'i18n'
-                    ? 'Internationalization'
-                    : tab[0].toUpperCase() + tab.slice(1),
+                  tab === 'demo' ? (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                      }}
+                    >
+                      {layout === 'demo-and-data' ? 'Demo and Data' : 'Demo'}
+                      <DemoValidationIndicator
+                        errors={errors}
+                        Tooltip={Ui.Tooltip}
+                      />
+                    </span>
+                  ) : tab === 'uischema' ? (
+                    'UI Schema'
+                  ) : tab === 'uischemas' ? (
+                    'UI Schemas'
+                  ) : tab === 'i18n' ? (
+                    'Internationalization'
+                  ) : (
+                    tab[0].toUpperCase() + tab.slice(1)
+                  ),
               }))}
             onChange={(value) => changeActiveTab(value as DemoTab)}
           />

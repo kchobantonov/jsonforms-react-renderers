@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from 'antd';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
@@ -26,6 +26,7 @@ import {
   withJsonFormsCellProps,
   withTranslateProps,
 } from '@jsonforms/react';
+import { useConfirmation } from '../util/useConfirmation';
 import { useI18nDefault } from '../util/translate';
 import { compositeSummary } from '../util/compositeSummary';
 import {
@@ -40,6 +41,9 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     read straight out of the English table.
   */
   const d = useI18nDefault();
+  const confirmation = useConfirmation();
+  const latest = useRef(props);
+  latest.current = props;
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const options = (props.uischema?.options ??
@@ -58,7 +62,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     t(key, d(key), { label }).replace('{label}', label);
   const detail: UISchemaElement =
     options.detail ?? ({ type: 'Control', scope: '#', label: false } as any);
-  // Svelte clears a composite value outright; only row deletion confirms.
+  // Cell removal shares the destructive-change policy.
   const canClear =
     props.enabled && props.data !== undefined && options.clearable !== false;
   return (
@@ -117,12 +121,25 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
             type='text'
             danger
             icon={<CloseOutlined />}
-            onClick={() => props.handleChange(props.path, undefined)}
+            onClick={() => {
+              const target = props.data;
+              const path = props.path;
+              confirmation.request({
+                catalogId: 'compositeCell', operation: 'delete',
+                options, config: props.config, discarded: [target],
+                perform: () => {
+                  const current = latest.current;
+                  if (current.enabled && current.path === path && current.data === target && current.uischema.options?.clearable !== false)
+                    current.handleChange(path, undefined);
+                },
+              });
+            }}
             title={translateWithLabel('composite.remove')}
             aria-label={translateWithLabel('composite.remove')}
           />
         )}
       </span>
+      {confirmation.dialog}
       <CompositeDetailDialog
         open={open}
         title={

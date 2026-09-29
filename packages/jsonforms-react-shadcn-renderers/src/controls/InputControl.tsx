@@ -1,7 +1,11 @@
+import { usePreTouchErrors } from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
+import { useJsonForms } from '@jsonforms/react';
+import { getControlHelp, ControlHelpProps } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
 import { ControlProps } from '@jsonforms/core';
-import React from 'react';
+import React, { useContext } from 'react';
+import { ShadcnCellMode } from '../cells/asCell';
 import { ClearValueButton } from '../components/ClearValueButton';
-import { Input } from '../components/ui/input';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
 
 export const toStringValue = (value: unknown) =>
   value === undefined ? '' : String(value);
@@ -14,32 +18,66 @@ export const InputShell = ({
   label,
   required,
   description,
-  errors,
+  errors: rawErrors,
+  path = '',
+  schema,
   children,
-}: React.PropsWithChildren<{
+  config,
+  uischema,
+}: React.PropsWithChildren<ControlHelpProps & {
   id: string;
+  path?: string;
+  schema?: ControlProps['schema'];
   label?: string;
   required?: boolean;
   description?: string;
   errors?: string;
-}>) => (
-  <div className='shadcn-jsonforms-field'>
-    {label ? (
-      <label className='shadcn-jsonforms-label' htmlFor={id}>
-        {label}
-        {required ? <span aria-hidden='true'> *</span> : null}
-      </label>
-    ) : null}
-    {children}
-    {description ? (
-      <div className='shadcn-jsonforms-description'>{description}</div>
-    ) : null}
-    {errors ? <div className='shadcn-jsonforms-error'>{errors}</div> : null}
-  </div>
-);
+}>) => {
+  const ctx = useJsonForms();
+  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({ errors: rawErrors, path, schema, config: config ?? ctx.config, uischema: uischema as ControlProps['uischema'] });
+  const help = getControlHelp({ description, errors, config: config ?? ctx.config, uischema }, focused);
+  const cell = useContext(ShadcnCellMode);
+  if (cell)
+    return (
+      <div className='shadcn-jsonforms-cell' title={errors || undefined} onFocusCapture={onFocus} onBlurCapture={onBlur}>
+        {children}
+      </div>
+    );
+  return (
+    <div
+      className='shadcn-jsonforms-field'
+      onFocusCapture={onFocus}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node))
+          onBlur();
+      }}
+    >
+      {label ? (
+        <label className='shadcn-jsonforms-label' htmlFor={id}>
+          {label}
+          {required ? <span aria-hidden='true'> *</span> : null}
+        </label>
+      ) : null}
+      {children}
+      {help && !errors ? (
+        <div className='shadcn-jsonforms-description'>{help}</div>
+      ) : null}
+      {errors ? (
+        <div
+          id={`${id}-errors`}
+          role='alert'
+          className='shadcn-jsonforms-error'
+        >
+          {errors}
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 export const ShadcnInputControl = ({
   data,
+  schema,
   config,
   description,
   enabled,
@@ -52,13 +90,14 @@ export const ShadcnInputControl = ({
   uischema,
   visible,
   type = 'text',
-}: ControlProps & { type?: string }) => {
+  suggestions,
+}: ControlProps & { type?: string; suggestions?: string[] }) => {
   if (!visible) return null;
   const id = makeId(path, label);
   const inputType = uischema.options?.format ?? type;
 
   return (
-    <InputShell
+    <InputShell path={path} schema={schema} config={config} uischema={uischema}
       id={id}
       label={label}
       required={required}
@@ -70,12 +109,22 @@ export const ShadcnInputControl = ({
           id={id}
           className='shadcn-jsonforms-input pr-10'
           type={inputType}
-          disabled={!enabled}
+          disabled={!enabled || readonly}
+          aria-invalid={Boolean(errors)}
+          aria-describedby={errors ? `${id}-errors` : undefined}
+          list={suggestions ? `${id}-suggestions` : undefined}
           value={toStringValue(data)}
           onChange={(event) =>
             handleChange(path, event.currentTarget.value || undefined)
           }
         />
+        {suggestions && (
+          <datalist id={`${id}-suggestions`}>
+            {suggestions.map((value) => (
+              <option key={value} value={value} />
+            ))}
+          </datalist>
+        )}
         <ClearValueButton
           clearable={uischema.options?.clearable ?? config?.clearable ?? true}
           data={data}
@@ -105,7 +154,7 @@ export const ShadcnNumberControl = (
   const id = makeId(path, props.label);
 
   return (
-    <InputShell
+    <InputShell {...props}
       id={id}
       label={props.label}
       required={props.required}
@@ -118,7 +167,7 @@ export const ShadcnNumberControl = (
           className='shadcn-jsonforms-input pr-10'
           type='number'
           step={props.integer ? 1 : 'any'}
-          disabled={!enabled}
+          disabled={!enabled || readonly}
           value={toStringValue(data)}
           onChange={(event) => {
             const value = event.currentTarget.value;
@@ -127,7 +176,7 @@ export const ShadcnNumberControl = (
               value === ''
                 ? undefined
                 : props.integer
-                ? parseInt(value, 10)
+                ? Math.trunc(Number(value))
                 : Number(value)
             );
           }}

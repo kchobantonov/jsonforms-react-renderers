@@ -1,3 +1,8 @@
+### Specification
+
+See the [JSON Forms Extended Specification](https://github.com/kchobantonov/jsonforms-extended-spec)
+for the shared renderer behavior, UI Schema options, and reference examples.
+
 ### First time setup
 
 - Install [node.js](https://nodejs.org/) (only Node v18.19+ < 19 is currently supported)
@@ -51,7 +56,10 @@ from the form configuration, with UI Schema options taking precedence.
   "elements": [
     { "type": "Spacer", "options": { "height": 32 } },
     { "type": "Separator" },
-    { "type": "ImageView", "options": { "src": "/image.png", "alt": "Description" } }
+    {
+      "type": "ImageView",
+      "options": { "src": "/image.png", "alt": "Description" }
+    }
   ]
 }
 ```
@@ -106,11 +114,10 @@ the example menu.
 
 ### Implementation specification
 
-See [Renderer Set and Demo Application Specification](docs/renderer-set-and-demo-specification.md)
+See [Renderer Set and Demo Application Specification](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
 for the required demo layout, settings, renderer behavior, Web Component
 parity, project structure, and acceptance checklist for new UI-library
 renderer sets.
-
 
 ### MUI file controls
 
@@ -144,14 +151,14 @@ with standard JSON Forms labels, descriptions, validation, and read-only rules.
 
 ### Extended control availability
 
-| Renderer | MUI | Ant Design | PrimeReact | Shadcn |
-| --- | --- | --- | --- | --- |
-| Button actions | Yes | Yes | Yes | Yes |
-| Color, Duration, Null | Yes | Yes | Yes | Yes |
-| File | Yes | Yes (base set) | Yes (base set) | Yes |
-| Monaco editor | Yes | Yes | Yes | Yes |
-| AG Grid arrays | Yes | Yes | Yes | Yes |
-| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes | Yes | Yes | Yes |
+| Renderer                                                   | MUI | Ant Design     | PrimeReact     | Shadcn |
+| ---------------------------------------------------------- | --- | -------------- | -------------- | ------ |
+| Button actions                                             | Yes | Yes            | Yes            | Yes    |
+| Color, Duration, Null                                      | Yes | Yes            | Yes            | Yes    |
+| File                                                       | Yes | Yes (base set) | Yes (base set) | Yes    |
+| Monaco editor                                              | Yes | Yes            | Yes            | Yes    |
+| AG Grid arrays                                             | Yes | Yes            | Yes            | Yes    |
+| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes | Yes            | Yes            | Yes    |
 
 The shared demos include **Color**, **Duration**, **Null**, **Monaco Editor**, and
 **AG Grid**. Use string schema `format: "color"` or `format: "duration"`, or
@@ -181,3 +188,64 @@ selection, sorting, filtering, adding and removing rows, and read-only mode.
 Schema `minItems`/`maxItems` restrict removal/addition unless `restrict: false`.
 The React implementation uses AG Grid Community; it does not claim parity with
 Svelte's advanced grid-specific features or enterprise options.
+
+### React shadcn/ui component ownership
+
+The shadcn renderer packages use components owned by the consuming application.
+They do not bundle generated shadcn UI source. Configure the component import
+alias, install all required components, and provide the theme/styles using the
+[shadcn setup guide](packages/jsonforms-react-shadcn-renderers/README.md).
+The demo and Web Component each include their own generated component sources.
+
+## Releasing packages
+
+Releases use the same Changesets workflow as `jsonforms-svelte`:
+
+1. Run `pnpm changeset`, select the public packages and bump type, and commit the
+   generated file under `.changeset/`.
+2. Merge it into `master`. The `Release Packages` workflow opens or updates a
+   `task: release` PR containing versions, dependency updates, and changelogs.
+3. Merge that PR. The workflow validates the release tarballs, publishes to npm,
+   pushes tags, and creates GitHub Releases.
+
+Creating a release manually in GitHub does not trigger npm publishing. Demos and
+`jsonforms-react-demo-common` stay private. Package versions are independent.
+
+### Repository setup
+
+Use Node 22 and pnpm 10.28.2, as configured in `.nvmrc`, `packageManager`, and CI.
+The repository needs an `NPM_TOKEN` Actions secret with permission to publish
+under `@chobantonov`. Enable GitHub Actions to create pull requests and grant the
+workflow's `GITHUB_TOKEN` contents and pull-request write permissions. Release
+PRs should pass the normal branch protection checks.
+
+### Validate before release
+
+```sh
+pnpm test:release
+pnpm release:pack /tmp/jsonforms-react-release-packs
+pnpm exec playwright install chromium
+pnpm test:packed /tmp/jsonforms-react-release-packs
+```
+
+Packing builds every public library, rehearses pending Changesets versions in
+temporary copies, and validates the actual npm contents with publint. Tarballs
+and `overrides.json` are written to the chosen directory. The checkout's
+versions are unchanged. See [.changeset/README.md](.changeset/README.md).
+
+## Local specification dependency
+
+Clone `jsonforms-extended-spec` beside this repository before running `pnpm install`. The demo and fixture tests temporarily use `link:../../../jsonforms-extended-spec` until that package is released. Specification text, schemas, examples, and TypeScript authoring helpers are maintained there. The demo automatically registers the spec package catalog with `spec-` IDs and `Spec: ` labels. Native React template and action demonstrations remain optional enhancements here.
+
+TypeScript consumers should import `forSchema`, `DataOf`, and `CssLength` from `@chobantonov/jsonforms-extended-spec/typescript`; the React extended renderer package no longer exports these portable helpers. Build that package with `pnpm --dir ../jsonforms-extended-spec build` when using its authoring API locally.
+
+For a fresh checkout, prepare the sibling package before the React build:
+
+```sh
+pnpm --dir ../jsonforms-extended-spec install
+pnpm --dir ../jsonforms-extended-spec build
+pnpm install
+pnpm run build
+```
+
+New spec examples only need a catalog entry in the spec project. Run its build (or `pnpm generate:examples` there) to refresh the linked example module; no React registration file needs editing. The maintained [renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared design.

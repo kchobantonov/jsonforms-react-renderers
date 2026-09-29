@@ -155,6 +155,8 @@ export const ListWithDetailRenderer = (
     <>
       {confirmation.dialog}
       <ArrayLayoutToolbar
+        options={uischema.options}
+        config={config}
         translations={translations}
         label={computeLabel(
           label,

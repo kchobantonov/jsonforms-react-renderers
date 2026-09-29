@@ -1,3 +1,4 @@
+import { ArrayPanel } from '../layouts/ArrayPanel';
 import React from 'react';
 import {
   ControlElement,
@@ -11,6 +12,8 @@ import ValidationIcon from './ValidationIcon';
 
 export interface TableToolbarProps {
   errors: string;
+  options?: Record<string, any>;
+  config?: any;
   label: string;
   description: string;
   path: string;
@@ -56,9 +59,15 @@ const TableToolbar = React.memo(function TableToolbar({
   rootSchema,
   disableAdd,
   children,
+  options,
+  uischema,
+  config,
 }: TableToolbarProps) {
   return (
-    <Card
+    <ArrayPanel
+      options={options ?? uischema.options}
+      config={config}
+      panelLabel={label}
       style={{ width: '100%' }}
       size='small'
       type='inner'
@@ -80,7 +89,7 @@ const TableToolbar = React.memo(function TableToolbar({
       ]}
     >
       {children}
-    </Card>
+    </ArrayPanel>
   );
 });
 

@@ -5,11 +5,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/group-layout/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/group-layout/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/group-layout/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/group-layout/uischema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/group-layout/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/group-layout/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/group-layout/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/group-layout/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/group-layout/uischema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/group-layout/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
 class ResizeObserverStub {

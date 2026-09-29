@@ -54,6 +54,8 @@ export type EditorArrayAction = {
  * other array renderers instead of inventing its own.
  */
 export type EditorArrayFrameProps = React.PropsWithChildren<{
+  options?: Record<string, any>;
+  config?: any;
   label?: string;
   description?: string;
   errors?: string;

@@ -1,3 +1,7 @@
+import {
+  anyOfStringOrEnumControlTester,
+  ShadcnAnyOfStringOrEnumControl,
+} from './controls/AnyOfStringOrEnumControl';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import {
   withJsonFormsArrayLayoutProps,
@@ -10,6 +14,8 @@ import {
 import { ShadcnLabelRenderer, labelRendererTester } from './additional';
 import { shadcnCells } from './cells';
 import {
+  oneOfControlTester,
+  ShadcnOneOfControl,
   allOfControlTester,
   anyOfControlTester,
   MixedRenderer,
@@ -22,6 +28,14 @@ import {
   objectControlTester,
 } from './complex';
 import {
+  ShadcnOneOfEnumControl,
+  oneOfEnumControlTester,
+  ShadcnBooleanToggleControl,
+  booleanToggleControlTester,
+  ShadcnRadioGroupControl,
+  radioGroupControlTester,
+  ShadcnSliderControl,
+  sliderControlTester,
   ShadcnBooleanControl,
   ShadcnDateControl,
   ShadcnDateTimeControl,
@@ -45,6 +59,8 @@ import {
   ShadcnHorizontalLayout,
   ShadcnVerticalLayout,
   categorizationTester,
+  categorizationAccordionTester,
+  categorizationStepperTester,
   groupTester,
   horizontalLayoutTester,
   verticalLayoutTester,
@@ -57,6 +73,32 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  {
+    tester: anyOfStringOrEnumControlTester,
+    renderer: withJsonFormsControlProps(ShadcnAnyOfStringOrEnumControl),
+  },
+  {
+    tester: categorizationAccordionTester,
+    renderer: withJsonFormsLayoutProps(ShadcnCategorizationLayout),
+  },
+  {
+    tester: categorizationStepperTester,
+    renderer: withJsonFormsLayoutProps(ShadcnCategorizationLayout),
+  },
+  {
+    tester: booleanToggleControlTester,
+    renderer: withJsonFormsControlProps(ShadcnBooleanToggleControl),
+  },
+  {
+    tester: radioGroupControlTester,
+    renderer: withJsonFormsEnumProps(ShadcnRadioGroupControl),
+  },
+  {
+    tester: sliderControlTester,
+    renderer: withJsonFormsControlProps(ShadcnSliderControl),
+  },
+  { tester: oneOfEnumControlTester, renderer: ShadcnOneOfEnumControl },
+  { tester: oneOfControlTester, renderer: ShadcnOneOfControl },
   { tester: allOfControlTester, renderer: ShadcnAllOfControl },
   { tester: anyOfControlTester, renderer: ShadcnAnyOfControl },
   { tester: mixedControlTester, renderer: MixedRenderer },

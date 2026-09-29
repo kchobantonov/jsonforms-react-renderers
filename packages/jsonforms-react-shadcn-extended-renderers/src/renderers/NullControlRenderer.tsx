@@ -9,10 +9,11 @@ import {
 } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import {
-  Checkbox,
   InputShell,
   makeId,
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
+
 import React from 'react';
 
 export const nullControlTester: RankedTester = rankWith(
@@ -27,7 +28,11 @@ export const ShadcnNullControl = (props: ControlProps) => {
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
   return (
-    <InputShell id={id} description={props.description} errors={props.errors}>
+    <InputShell {...props}
+      id={id}
+      description={props.description}
+      errors={props.errors}
+    >
       <label className='shadcn-jsonforms-checkbox-label' htmlFor={id}>
         <Checkbox
           className='shadcn-jsonforms-checkbox-control'

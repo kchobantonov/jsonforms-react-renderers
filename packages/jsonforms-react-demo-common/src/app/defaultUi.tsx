@@ -23,7 +23,7 @@ const DefaultButton = ({
   tooltip,
   onClick,
   children,
-}: DemoButtonProps) => (
+}: DemoButtonProps): React.JSX.Element => (
   <button
     aria-label={ariaLabel}
     className={`demo-button${active ? ' active' : ''}${

@@ -6,11 +6,11 @@ import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/combinators/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/combinators/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/combinators/schema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/combinators/translations.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/combinators/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/combinators/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/combinators/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/combinators/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/combinators/translations.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/combinators/uischema.json';
 
 /*
   The combinators fixture. Each presentation gets its own category, so these

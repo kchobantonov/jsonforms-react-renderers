@@ -14,7 +14,7 @@ import {
 } from '@jsonforms/react';
 import { AdditionalProperties } from '../../src/complex/AdditionalProperties';
 import { InputControl } from '../../src/controls/InputControl';
-import { PRESERVE_DYNAMIC_PROPERTY_OPTION } from '../../src/util/dynamicProperties';
+import { DynamicPropertyProvider } from '../../src/util/dynamicProperties';
 import { antdRenderers } from '../../src';
 
 const additionalPropertiesRenderer = withJsonFormsControlProps(
@@ -231,13 +231,21 @@ describe('AdditionalProperties', () => {
   });
 
   it.each([
-    ['string', 'value', ''],
+    ['string', 'value', '', undefined, 'dynamic'],
+    ['string', 'value', undefined, undefined, 'dynamic', 'dynamic.child'],
     ['number', 12.5, 0],
     ['integer', 12, 0],
     ['string', 'value', 'schema default', 'schema default'],
   ] as const)(
-    'resets a cleared dynamic %s value to its schema default instead of removing its key',
-    async (type, initialValue, expectedValue, defaultValue?) => {
+    'preserves a cleared %s key only at the dynamic property path',
+    async (
+      type,
+      initialValue,
+      expectedValue,
+      defaultValue?,
+      providerPath: string = 'dynamic',
+      controlPath: string = 'dynamic'
+    ) => {
       const handleChange = vi.fn();
       const schema = {
         type,
@@ -246,30 +254,34 @@ describe('AdditionalProperties', () => {
 
       await act(async () => {
         root.render(
-          <InputControl
-            data={initialValue}
-            enabled
-            errors=''
-            handleChange={handleChange}
-            id='dynamic'
-            label='Dynamic'
-            path='dynamic'
-            rootSchema={schema}
-            schema={schema}
-            uischema={{
-              type: 'Control',
-              scope: '#',
-              options: { [PRESERVE_DYNAMIC_PROPERTY_OPTION]: true },
-            }}
-            visible
-            input={({ handleChange: clearValue, path }) => (
-              <button
-                aria-label='Clear dynamic value'
-                onClick={() => clearValue(path, undefined)}
-                type='button'
-              />
-            )}
-          />
+          <DynamicPropertyProvider path={providerPath}>
+            <InputControl
+              data={initialValue}
+              enabled
+              errors=''
+              handleChange={handleChange}
+              id='dynamic'
+              label='Dynamic'
+              path={controlPath}
+              rootSchema={schema}
+              schema={schema}
+              uischema={{
+                type: 'Control',
+                scope: '#',
+                options: {
+                  preserveDynamicPropertyKey: providerPath !== controlPath,
+                },
+              }}
+              visible
+              input={({ handleChange: clearValue, path }) => (
+                <button
+                  aria-label='Clear dynamic value'
+                  onClick={() => clearValue(path, undefined)}
+                  type='button'
+                />
+              )}
+            />
+          </DynamicPropertyProvider>
         );
       });
 
@@ -284,7 +296,7 @@ describe('AdditionalProperties', () => {
         );
       });
 
-      expect(handleChange).toHaveBeenCalledWith('dynamic', expectedValue);
+      expect(handleChange).toHaveBeenCalledWith(controlPath, expectedValue);
     }
   );
 });

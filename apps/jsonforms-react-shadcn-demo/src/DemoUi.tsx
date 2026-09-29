@@ -1,3 +1,9 @@
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from '@jsonforms-react-shadcn-ui/tooltip';
 import React from 'react';
 import {
   DemoButtonProps,
@@ -7,18 +13,17 @@ import {
   DemoToggleProps,
   DemoUi,
 } from '@chobantonov/jsonforms-react-demo-common';
-import {
-  Button,
-  Checkbox,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
+import { Select } from '@jsonforms-react-shadcn-ui/select';
+import { SelectContent } from '@jsonforms-react-shadcn-ui/select';
+import { SelectItem } from '@jsonforms-react-shadcn-ui/select';
+import { SelectTrigger } from '@jsonforms-react-shadcn-ui/select';
+import { SelectValue } from '@jsonforms-react-shadcn-ui/select';
+import { Tabs } from '@jsonforms-react-shadcn-ui/tabs';
+import { TabsList } from '@jsonforms-react-shadcn-ui/tabs';
+import { TabsTrigger } from '@jsonforms-react-shadcn-ui/tabs';
+
 import { ShadcnDemoSplitter } from './ShadcnDemoSplitter';
 
 const DemoButton = ({
@@ -29,7 +34,7 @@ const DemoButton = ({
   tooltip,
   onClick,
   children,
-}: DemoButtonProps) => (
+}: DemoButtonProps): React.JSX.Element => (
   <Button
     aria-label={ariaLabel}
     variant={active ? 'secondary' : 'outline'}
@@ -100,6 +105,14 @@ const DemoToggle = ({
 );
 
 export const shadcnDemoUi: DemoUi = {
+  Tooltip: ({ content, children }) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent>{content}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ),
   Button: DemoButton,
   Panel: DemoPanel,
   Select: DemoSelect,

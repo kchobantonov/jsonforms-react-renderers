@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
-import nullData from '../src/examples/spec/null-control/data.json';
-import nullSchema from '../src/examples/spec/null-control/schema.json';
-import nullTranslations from '../src/examples/spec/null-control/translations.json';
-import mixedData from '../src/examples/spec/mixed-control/data.json';
-import mixedSchema from '../src/examples/spec/mixed-control/schema.json';
-import mixedTranslations from '../src/examples/spec/mixed-control/translations.json';
+import nullData from '@chobantonov/jsonforms-extended-spec/examples/null-control/data.json';
+import nullSchema from '@chobantonov/jsonforms-extended-spec/examples/null-control/schema.json';
+import nullTranslations from '@chobantonov/jsonforms-extended-spec/examples/null-control/translations.json';
+import mixedData from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/data.json';
+import mixedSchema from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/schema.json';
+import mixedTranslations from '@chobantonov/jsonforms-extended-spec/examples/mixed-control/translations.json';
 
 const errorsFor = (schema: any, data: any) => {
   const validate = createAjv().compile(schema);
@@ -41,9 +41,9 @@ describe('the null-control spec example', () => {
   test('carries all three states of a null property', () => {
     const data = nullData as Record<string, unknown>;
     expect(data.noSurcharge).toBeNull();
-    expect(Object.prototype.hasOwnProperty.call(data, 'exceptionsChecked')).toBe(
-      false
-    );
+    expect(
+      Object.prototype.hasOwnProperty.call(data, 'exceptionsChecked')
+    ).toBe(false);
     expect(data.legacyApproval).toBe('n/a');
   });
 
@@ -117,7 +117,9 @@ describe('the mixed-control spec example', () => {
     const assignment = (mixedSchema as any).properties.assignment;
     expect(Array.isArray(assignment.items)).toBe(true);
     expect(assignment.additionalItems).toBe(true);
-    expect(mixedData.assignment.length).toBeGreaterThan(assignment.items.length);
+    expect(mixedData.assignment.length).toBeGreaterThan(
+      assignment.items.length
+    );
   });
 
   test('ships both catalogs with matching keys', () => {

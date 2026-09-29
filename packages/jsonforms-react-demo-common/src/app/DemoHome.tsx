@@ -22,7 +22,7 @@ export const DemoHome = ({
   logoSrc,
   examples,
   changeExample,
-}: DemoHomeProps) => {
+}: DemoHomeProps): React.JSX.Element => {
   const { Button: UiButton, Typography: UiTypography = DefaultDemoTypography } =
     Ui;
 

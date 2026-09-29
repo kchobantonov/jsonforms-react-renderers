@@ -6,3 +6,5 @@ export * from './FileControlRenderer';
 export * from './NullControlRenderer';
 export * from './SplitLayoutRenderer';
 export * from './duration';
+
+export * from './CronControlRenderer';

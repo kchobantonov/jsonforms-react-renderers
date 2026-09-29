@@ -1,10 +1,10 @@
+import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
 import { ControlFormItem, useDebouncedChange } from '../util';
 import { usePreTouchErrors } from '../util/preTouchErrors';
 import React from 'react';
 import {
   ControlProps,
   isDateControl,
-  isDescriptionHidden,
   isTimeControl,
   or,
   RankedTester,
@@ -19,7 +19,6 @@ export const NativeControl = (props: ControlProps) => {
     id,
     label,
     schema,
-    description,
     enabled,
     visible,
     required,
@@ -45,12 +44,7 @@ export const NativeControl = (props: ControlProps) => {
     path
   );
   const fieldType = appliedUiSchemaOptions.format ?? schema.format;
-  const showDescription = !isDescriptionHidden(
-    visible,
-    description,
-    focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
-  );
+  const help = getControlHelp({ ...props, errors }, focused);
 
   const inputStyle = { width: '100%' };
 
@@ -63,7 +57,7 @@ export const NativeControl = (props: ControlProps) => {
       errors={!isValid ? errors : undefined}
       required={required}
       label={label}
-      help={!isValid ? errors : showDescription ? description : null}
+      help={help}
       htmlFor={id + '-input'}
       id={id}
     >

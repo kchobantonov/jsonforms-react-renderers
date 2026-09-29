@@ -75,7 +75,7 @@ describe('extended locale bundles', () => {
   });
 
   it('uses the language bundle for a regional tag', async () => {
-    expect(await draw('de-CH')).toBe('Zeile hinzufügen');
+    expect(await draw('bg-BG')).toBe('Добавяне на ред');
   });
 
   it('lets the form catalog win over the bundle', async () => {

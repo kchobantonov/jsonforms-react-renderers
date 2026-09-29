@@ -7,13 +7,13 @@ import {
 import { CalendarClock, X } from 'lucide-react';
 import React from 'react';
 import { TimePicker } from '../components/TimePicker';
-import { Button } from '../components/ui/button';
-import { Calendar } from '../components/ui/calendar';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { Calendar } from '@jsonforms-react-shadcn-ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../components/ui/popover';
+} from '@jsonforms-react-shadcn-ui/popover';
 import {
   TimeValue,
   formatDateTimeValue,
@@ -63,7 +63,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
   };
 
   return (
-    <InputShell
+    <InputShell {...props}
       id={id}
       label={label}
       required={required}
@@ -86,7 +86,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
               id={id}
               type='button'
               variant='outline'
-              disabled={!enabled}
+              disabled={!enabled || props.readonly}
               autoFocus={uischema.options?.focus === true}
               aria-invalid={!!errors}
               className='w-full justify-start pr-10 text-left font-normal data-[empty=true]:text-muted-foreground'
@@ -127,7 +127,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
                 }
                 useSeconds={useSeconds}
                 ampm={ampm}
-                disabled={!enabled}
+                disabled={!enabled || props.readonly}
                 onChange={(value) => {
                   const nextTime = parseTimeValue(value);
                   setDraftTime(nextTime);
@@ -142,7 +142,10 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             </div>
           </PopoverContent>
         </Popover>
-        {selectedDate && enabled ? (
+        {selectedDate &&
+        enabled &&
+        !props.readonly &&
+        (uischema.options?.clearable ?? props.config?.clearable ?? true) ? (
           <Button
             type='button'
             variant='ghost'

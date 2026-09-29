@@ -1,3 +1,4 @@
+import { Tooltip } from 'primereact/tooltip';
 import React from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
@@ -72,7 +73,23 @@ const DemoToggle = ({ checked, label, onChange }: DemoToggleProps) => (
   </label>
 );
 
+const DemoTooltip: NonNullable<DemoUi['Tooltip']> = ({ content, children }) => {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  return (
+    <>
+      <span ref={ref}>{children}</span>
+      <Tooltip
+        target={ref}
+        content={content}
+        style={{ whiteSpace: 'pre-line' }}
+        event='both'
+      />
+    </>
+  );
+};
+
 export const primereactDemoUi: DemoUi = {
+  Tooltip: DemoTooltip,
   Button: DemoButton,
   Panel: DemoPanel,
   Select: DemoSelect,

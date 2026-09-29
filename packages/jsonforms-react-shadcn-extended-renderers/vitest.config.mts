@@ -5,8 +5,24 @@ const fromPackage = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
+  esbuild: { jsx: "automatic" },
   resolve: {
     alias: [
+      {
+        find: '@monaco-editor/react',
+        replacement: fromPackage(
+          '../jsonforms-react-extended-renderers/node_modules/@monaco-editor/react/dist/index.mjs'
+        ),
+      },
+      {
+        find: '@jsonforms-react-shadcn-ui',
+        replacement: fileURLToPath(
+          new URL(
+            '../../apps/jsonforms-react-shadcn-demo/src/components/ui',
+            import.meta.url
+          )
+        ),
+      },
       {
         find: '@chobantonov/jsonforms-react-renderer-common',
         replacement: fileURLToPath(

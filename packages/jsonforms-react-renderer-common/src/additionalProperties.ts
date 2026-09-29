@@ -5,11 +5,9 @@ import {
   GroupLayout,
   JsonSchema,
   JsonSchema7,
-  isControl,
   resolveSchema,
   UISchemaElement,
 } from '@jsonforms/core';
-import { PRESERVE_DYNAMIC_PROPERTY_OPTION } from './dynamicProperties';
 const ANY_TYPE: JsonSchema7['type'] = [
   'array',
   'boolean',
@@ -129,16 +127,6 @@ export const toAdditionalPropertyItem = (
     } else if (propSchema.type === 'array') {
       propSchema.items = propSchema.items ?? {};
     }
-  }
-
-  if (isControl(propUiSchema)) {
-    propUiSchema = {
-      ...propUiSchema,
-      options: {
-        ...(propUiSchema.options ?? {}),
-        [PRESERVE_DYNAMIC_PROPERTY_OPTION]: true,
-      },
-    };
   }
 
   return {

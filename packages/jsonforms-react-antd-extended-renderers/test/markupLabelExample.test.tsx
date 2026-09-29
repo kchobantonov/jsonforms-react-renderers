@@ -9,11 +9,11 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/markup-label/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/markup-label/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/markup-label/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/markup-label/uischema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/markup-label/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/markup-label/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/markup-label/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/markup-label/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/markup-label/uischema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/markup-label/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
 (globalThis as any).ResizeObserver =

@@ -7,10 +7,9 @@ extended renderers. Demo application state stays in `jsonforms-react-demo-common
 
 ## Specification ownership
 
-The consolidated UI model supplies the current portable contracts. The original
-model and adjustments explain their provenance; the consolidation record calls
-out remaining gaps. Renderer-set requirements still require each family to use
-its underlying UI library where supported.
+The portable contracts, schemas, examples, and TypeScript authoring helpers are
+owned by [jsonforms-extended-spec](https://github.com/kchobantonov/jsonforms-extended-spec).
+The [renderer/demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared presentation and host requirements. This document describes how the React packages implement those contracts.
 
 | Contract | Common implementation | Family-owned implementation |
 | --- | --- | --- |
@@ -27,15 +26,15 @@ its underlying UI library where supported.
 | Value conversion (§18) | `numeric`, `datejs`, `temporalFormats`, `temporalBounds`, `colorFormat`, `maskFormat`, `maskControls`, legacy `duration` helpers | Picker format mapping, picker events, upload controls and widget presentation |
 | Small React/web utilities | `focus`, `clearAffordance`, `visuallyHidden` | Actual buttons, icons and focus targets |
 
-The schema files under `docs/schemas/` define the public configuration and UI
+The schema files under `@chobantonov/jsonforms-extended-spec/schemas/` define the public configuration and UI
 schema vocabulary. Extraction preserves those names and shapes; it does not add
 new options or require schema migrations. The container-validation specification
 maps to shared error aggregation and family-owned indicator rendering.
 
-Typed authoring, expression evaluation, actions, templates, URL policy,
+Expression evaluation, actions, templates, URL policy,
 additional-error ownership, the richer duration model, Monaco and AG Grid were
 already shared in the optional extended package. They remain there. Demo state,
-example catalogs, and demo layout requirements remain in the demo layer.
+example registration adapters, and demo layout requirements remain in the demo layer. Portable example catalogs are imported from the spec package.
 
 The implementation-gaps document and `TODO.md` describe outstanding behavior;
 this extraction does not mark those items complete or extend other libraries'

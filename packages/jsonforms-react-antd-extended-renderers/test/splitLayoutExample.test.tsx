@@ -7,10 +7,10 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/split-layout/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/split-layout/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/split-layout/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/split-layout/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/split-layout/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/split-layout/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/split-layout/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/split-layout/uischema.json';
 
 // jsdom has no layout engine. Keep the real antd Splitter and supply only
 // the browser measurements needed by tests that assert measured positions.

@@ -9,10 +9,10 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/presentation/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/presentation/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/presentation/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/presentation/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/presentation/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/presentation/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/presentation/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/presentation/uischema.json';
 
 /*
   The elements that read nothing and write nothing: ImageView, Link, Spacer,
@@ -76,7 +76,8 @@ const draw = (override?: any) => {
     active,
     images: () =>
       Array.from(active()?.querySelectorAll<HTMLImageElement>('img') ?? []),
-    links: () => Array.from(active()?.querySelectorAll<HTMLAnchorElement>('a') ?? []),
+    links: () =>
+      Array.from(active()?.querySelectorAll<HTMLAnchorElement>('a') ?? []),
     diagnostics: () =>
       Array.from(
         container.querySelectorAll<HTMLElement>('[data-image-diagnostic]')
@@ -125,7 +126,9 @@ describe('ImageView', () => {
   it('resolves a scoped image out of the data', async () => {
     const view = draw();
     await view.selectTab('ImageView');
-    const badge = view.images().find((img) => img.alt === 'Course completion badge');
+    const badge = view
+      .images()
+      .find((img) => img.alt === 'Course completion badge');
     expect(badge?.getAttribute('src')).toBe((data as any).badgeImage);
     view.unmount();
   });
@@ -203,9 +206,9 @@ describe('Link', () => {
   it('does not turn a refused URL into an anchor', async () => {
     const view = draw();
     await view.selectTab('Link');
-    expect(view.links().some((a) => a.textContent === 'Refused by policy')).toBe(
-      false
-    );
+    expect(
+      view.links().some((a) => a.textContent === 'Refused by policy')
+    ).toBe(false);
     expect(view.active()?.textContent).toContain('Refused by policy');
     expect(view.container.innerHTML).not.toContain('javascript:alert');
     view.unmount();
@@ -239,7 +242,9 @@ describe('Spacer and Separator', () => {
   it('declares the orientation to assistive technology', async () => {
     const view = draw();
     await view.selectTab('Spacer and Separator');
-    const vertical = view.active()!.querySelector('[data-separator="vertical"]');
+    const vertical = view
+      .active()!
+      .querySelector('[data-separator="vertical"]');
     expect(vertical?.getAttribute('aria-orientation')).toBe('vertical');
     view.unmount();
   });

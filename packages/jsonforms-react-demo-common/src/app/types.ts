@@ -79,7 +79,7 @@ export type DemoPanelProps = React.PropsWithChildren<{
 }>;
 
 export type DemoTabsProps = {
-  items: DemoOption[];
+  items: { value: string; label: React.ReactNode }[];
   value: string;
   onChange: (value: string) => void;
 };
@@ -112,6 +112,10 @@ export type DemoTypographyProps = React.PropsWithChildren<{
 }>;
 
 export type DemoUi = {
+  Tooltip?: React.ComponentType<{
+    content: string;
+    children: React.ReactElement;
+  }>;
   Typography?: React.ComponentType<DemoTypographyProps>;
   TextInput?: React.ComponentType<DemoTextInputProps>;
   SegmentedControl?: React.ComponentType<DemoSelectProps>;

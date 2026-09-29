@@ -14,7 +14,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../components/ui/tabs';
+} from '@jsonforms-react-shadcn-ui/tabs';
 import { CombinatorProperties } from './CombinatorProperties';
 import { CombinatorSwitchDialog } from './CombinatorSwitchDialog';
 
@@ -39,14 +39,15 @@ export const ShadcnAnyOfRenderer = ({
   uischema,
   uischemas,
   data,
-}: CombinatorRendererProps) => {
+  combinator = 'anyOf',
+}: CombinatorRendererProps & { combinator?: 'anyOf' | 'oneOf' }) => {
   const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema ?? 0);
   const [pendingIndex, setPendingIndex] = useState<number>();
 
   const renderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema).anyOf,
+    (schema as JsonSchema)[combinator],
     rootSchema,
-    'anyOf',
+    combinator,
     uischema,
     path,
     uischemas
@@ -88,7 +89,7 @@ export const ShadcnAnyOfRenderer = ({
     <div className='shadcn-jsonforms-combinator'>
       <CombinatorProperties
         schema={schema}
-        combinatorKeyword='anyOf'
+        combinatorKeyword={combinator}
         path={path}
         rootSchema={rootSchema}
       />

@@ -8,7 +8,6 @@ import {
   ActionEvent,
   HandleActionContext,
 } from '@chobantonov/jsonforms-react-extended-renderers';
-import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import {
   shadcnWebcomponentCells,

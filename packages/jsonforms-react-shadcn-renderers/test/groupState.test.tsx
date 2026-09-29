@@ -91,6 +91,22 @@ describe('Group collapse and data indicator', () => {
         toggle().getAttribute('aria-controls')!
       )!;
       expect(content.hidden).toBe(true);
+      expect(container.querySelector('fieldset, legend')).toBeNull();
+      expect(
+        container.querySelector('div[data-slot="collapsible"]')
+      ).not.toBeNull();
+      expect(toggle().getAttribute('data-slot')).toBe('collapsible-trigger');
+      expect(content.getAttribute('data-slot')).toBe('collapsible-content');
+      expect(container.querySelectorAll('button')).toHaveLength(1);
+      expect(
+        toggle().querySelector('.shadcn-jsonforms-group-title')?.textContent
+      ).toBe('Details');
+      expect(
+        toggle().querySelector(
+          '.shadcn-jsonforms-group-actions [data-group-indicator]'
+        )
+      ).not.toBeNull();
+      expect(toggle().querySelector('svg')).not.toBeNull();
       expect(toggle().getAttribute('aria-label')).toBe('Details');
       expect(container.querySelector('[data-group-indicator]')).not.toBeNull();
       await act(async () => toggle().click());

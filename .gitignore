@@ -15,3 +15,5 @@ stats.html
 packages/examples-react/build
 
 **/.angular/cache
+# Local pnpm dependency cache
+.pnpm-store/

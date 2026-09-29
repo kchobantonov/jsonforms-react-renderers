@@ -130,3 +130,56 @@ describe('ag-grid reordering', () => {
     unmount();
   });
 });
+
+it('preserves explicit column widths instead of flex shrinking them', async () => {
+  const { unmount } = await render({
+    agGridOptions: { columnDefs: [{ field: 'name', width: 240 }] },
+  });
+  expect(captured.props.columnDefs[0]).toMatchObject({ width: 240, flex: 0 });
+  unmount();
+});
+it('allows explicitly requested flex sizing', async () => {
+  const { unmount } = await render({
+    agGridOptions: { columnDefs: [{ field: 'name', width: 240, flex: 2 }] },
+  });
+  expect(captured.props.columnDefs[0]).toMatchObject({ width: 240, flex: 2 });
+  unmount();
+});
+
+it('preserves cell renderer identity across form data updates', async () => {
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  const uischema = {
+    type: 'Control',
+    scope: '#',
+    options: { variant: 'ag-grid' },
+  };
+  const renderers = [
+    { tester: extendedAgGridTester, renderer: AgGridControlRenderer },
+  ];
+  const cells: any[] = [];
+  const draw = (name: string) =>
+    act(() =>
+      root.render(
+        <JsonForms
+          data={[{ name }]}
+          schema={schema as any}
+          uischema={uischema}
+          renderers={renderers}
+          cells={cells}
+        />
+      )
+    );
+  try {
+    draw('a');
+    await flushUntil(() => Boolean(captured.props?.columnDefs));
+    const renderer = captured.props.columnDefs[0].cellRenderer;
+    for (const name of ['ab', 'abc', 'abcd']) {
+      draw(name);
+      await flushUntil(() => captured.props.rowData[0].value.name === name);
+      expect(captured.props.columnDefs[0].cellRenderer).toBe(renderer);
+    }
+  } finally {
+    act(() => root.unmount());
+  }
+});

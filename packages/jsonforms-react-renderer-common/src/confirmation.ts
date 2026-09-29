@@ -31,6 +31,7 @@ export type ConfirmationOperation = 'typeChange' | 'branchChange' | 'delete';
  * `mixed`.
  */
 export type BaseConfirmationCatalogId =
+  | 'compositeCell'
   | 'mixed'
   | 'oneOf'
   | 'arrayTable'
@@ -60,7 +61,7 @@ const asPolicy = (value: unknown): ConfirmationPolicy | undefined =>
 /**
  * The documented fallback, used when nothing configures the operation.
  *
- * Only mixed type changes fall back to `complex`; everything else falls back to
+ * Mixed type changes and composite cell deletion fall back to `complex`; other operations fall back to
  * `always`. Section 14 spells out the consequence: "the default configuration
  * example deliberately opts into always globally while restoring complex for
  * mixed type changes; without that exception a global always also applies to
@@ -71,7 +72,10 @@ export const fallbackConfirmationPolicy = (
   catalogId: ConfirmationCatalogId,
   operation: ConfirmationOperation
 ): ConfirmationPolicy =>
-  catalogId === 'mixed' && operation === 'typeChange' ? 'complex' : 'always';
+  (catalogId === 'mixed' && operation === 'typeChange') ||
+  (catalogId === 'compositeCell' && operation === 'delete')
+    ? 'complex'
+    : 'always';
 
 const namespaceOf = (config: unknown): Record<string, unknown> | undefined => {
   const extended = (config as Record<string, unknown> | undefined)?.[

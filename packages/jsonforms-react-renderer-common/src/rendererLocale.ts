@@ -1,6 +1,5 @@
 import { I18nKey, i18nDefaults } from './i18nDefaults';
 import { bgRendererLocale } from './locale/bg';
-import { deRendererLocale } from './locale/de';
 
 /**
  * Synchronous catalogs for shared renderer messages. Each UI library owns its
@@ -22,7 +21,6 @@ export type RendererLocaleCatalog = Partial<Record<I18nKey, string>>;
 export const defaultRendererLocales: Record<string, RendererLocaleCatalog> = {
   en: {},
   bg: bgRendererLocale,
-  de: deRendererLocale,
 };
 
 let catalogs: Record<string, RendererLocaleCatalog> = defaultRendererLocales;

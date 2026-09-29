@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { DemoSplitterProps } from '@chobantonov/jsonforms-react-demo-common';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@chobantonov/jsonforms-react-shadcn-renderers';
+import { ResizableHandle } from '@jsonforms-react-shadcn-ui/resizable';
+import { ResizablePanel } from '@jsonforms-react-shadcn-ui/resizable';
+import { ResizablePanelGroup } from '@jsonforms-react-shadcn-ui/resizable';
 
 const stackedLayoutQuery = '(max-width: 1100px)';
 
-export const ShadcnDemoSplitter = ({ form, data }: DemoSplitterProps) => {
+export const ShadcnDemoSplitter = ({ form, data }: DemoSplitterProps): React.JSX.Element => {
   const [stacked, setStacked] = useState(
     () => window.matchMedia(stackedLayoutQuery).matches
   );

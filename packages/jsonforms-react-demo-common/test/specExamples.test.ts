@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import catalog from '@chobantonov/jsonforms-extended-spec/examples/catalog.json';
 import examples, {
   SPEC_EXAMPLE_LABEL_PREFIX,
   SPEC_EXAMPLE_NAME_PREFIX,
@@ -6,13 +7,21 @@ import examples, {
   isSpecExample,
   translatorFor,
 } from '../src/examples';
-import translations from '../src/examples/spec/container-validation-indicator/translations.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json';
 
 const example = examples.find(
   (e) => e.name === 'spec-container-validation-indicator'
 );
 
 describe('spec examples', () => {
+  test('registers every example from the spec package catalog', () => {
+    expect(
+      examples
+        .filter((e) => isSpecExample(e.name))
+        .map((e) => e.name)
+        .sort()
+    ).toEqual(catalog.map((e) => `${SPEC_EXAMPLE_NAME_PREFIX}${e.id}`).sort());
+  });
   test('are registered into the demo list', () => {
     expect(example).toBeDefined();
     expect(example?.label).toBe(
@@ -61,7 +70,9 @@ describe('spec examples', () => {
     const bg = translatorFor(translations, 'bg');
     expect(bg('error.required', 'fb')).toBe('Полето е задължително.');
     // An unknown locale yields an empty catalog, so every lookup falls back.
-    expect(translatorFor(translations, 'de')('error.required', 'fb')).toBe('fb');
+    expect(translatorFor(translations, 'de')('error.required', 'fb')).toBe(
+      'fb'
+    );
   });
 });
 
@@ -95,10 +106,12 @@ describe('numeric controls example', () => {
       '#/properties/toleranceMm',
       '#/properties/discountPercent',
     ]);
+    expect(controls.find((c: any) => c.options?.slider === true).scope).toBe(
+      '#/properties/discountPercent'
+    );
     expect(
-      controls.find((c: any) => c.options?.slider === true).scope
-    ).toBe('#/properties/discountPercent');
-    expect(controls.filter((c: any) => c.options?.step !== undefined)).toHaveLength(2);
+      controls.filter((c: any) => c.options?.step !== undefined)
+    ).toHaveLength(2);
   });
 
   test('puts its config keys in the right tier', () => {
@@ -134,9 +147,9 @@ describe('boolean controls example', () => {
     const scopes = controls.map((c: any) => c.scope);
     // checkbox, switch, checkbox group, and a table carrying both cells
     expect(scopes).toContain('#/properties/notifications');
-    expect(
-      controls.find((c: any) => c.options?.toggle === true).scope
-    ).toBe('#/properties/remoteWorker');
+    expect(controls.find((c: any) => c.options?.toggle === true).scope).toBe(
+      '#/properties/remoteWorker'
+    );
     expect(scopes).toContain('#/properties/channels');
     const table = controls.find((c: any) => c.options?.table === true);
     expect(table.scope).toBe('#/properties/team');
@@ -232,7 +245,9 @@ describe('choice and password examples', () => {
   });
 
   test('password example masks a column in a table too', () => {
-    const table = controls(password).find((c: any) => c.options?.table === true);
+    const table = controls(password).find(
+      (c: any) => c.options?.table === true
+    );
     expect(table.scope).toBe('#/properties/serviceAccounts');
     const items = (password!.schema as any).properties.serviceAccounts.items;
     expect(items.properties.token.format).toBe('password');
@@ -240,9 +255,7 @@ describe('choice and password examples', () => {
 
   test('sample people have English names', () => {
     const names = JSON.stringify(
-      examples
-        .filter((e) => e.name.startsWith('spec-'))
-        .map((e) => e.data)
+      examples.filter((e) => e.name.startsWith('spec-')).map((e) => e.data)
     );
     for (const cyrillic of ['Петров', 'Мира', 'Иван']) {
       expect(names).not.toContain(cyrillic);
@@ -360,7 +373,9 @@ describe('categorization example', () => {
   const variantOf = (c: any) => c.options?.variant;
 
   test('is registered with the Spec prefix', () => {
-    expect(example?.label).toBe('Spec: Categorization: tabs, stepper, accordion');
+    expect(example?.label).toBe(
+      'Spec: Categorization: tabs, stepper, accordion'
+    );
     expect(isSpecExample(example!.name)).toBe(true);
   });
 

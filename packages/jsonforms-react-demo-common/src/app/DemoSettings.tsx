@@ -141,7 +141,6 @@ export const DemoSettingsPanel = ({
         value={locale}
         options={[
           { value: 'en', label: 'English' },
-          { value: 'de', label: 'German' },
           { value: 'bg', label: 'Bulgarian' },
           { value: navigator.language, label: 'Browser language' },
         ]}

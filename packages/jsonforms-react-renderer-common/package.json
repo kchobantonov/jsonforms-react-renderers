@@ -60,5 +60,13 @@
     "vitest": "2.1.9",
     "rimraf": "^3.0.2",
     "tslib": "^2.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchobantonov/jsonforms-react-renderers.git",
+    "directory": "packages/jsonforms-react-renderer-common"
   }
 }

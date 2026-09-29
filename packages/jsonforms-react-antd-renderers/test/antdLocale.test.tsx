@@ -44,15 +44,30 @@ const drawCalendar = async (locale: string | undefined) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
-  const View = () => (
-    <ConfigProvider
-      locale={useAntdLocale(locale)}
-      theme={{ token: { motion: false } }}
-    >
-      <DatePicker open value={dayjs('2026-01-15')} />
-    </ConfigProvider>
-  );
+  let resolvedLocale: ReturnType<typeof useAntdLocale>;
+  const View = () => {
+    resolvedLocale = useAntdLocale(locale);
+    return (
+      <ConfigProvider
+        locale={resolvedLocale}
+        theme={{ token: { motion: false } }}
+      >
+        <DatePicker open value={dayjs('2026-01-15')} />
+      </ConfigProvider>
+    );
+  };
   act(() => root.render(<View />));
+  // Locale chunks can take more than 150 ms during a full parallel test run.
+  // Wait for the hook result instead of treating elapsed time as completion.
+  if (locale && defaultAntdLocaleLoaders[localeKey(locale)!]) {
+    await vi.waitFor(
+      async () => {
+        await act(async () => {});
+        expect(resolvedLocale).toBeDefined();
+      },
+      { timeout: 5000 }
+    );
+  }
   await settle(150);
   return {
     header: () =>
@@ -170,12 +185,12 @@ describe('switching back to a locale already loaded', () => {
     first.unmount();
     document.body.innerHTML = '';
 
-    const second = await drawCalendar('de');
-    expect(dayjs.locale()).toBe('de');
+    const second = await drawCalendar('en');
+    expect(dayjs.locale()).toBe('en');
     second.unmount();
     document.body.innerHTML = '';
 
-    // `bg` is cached now. Without re-applying, dayjs would still say `de`.
+    // `bg` is cached now. Without re-applying, dayjs would still say `en`.
     const third = await drawCalendar('bg');
     expect(dayjs.locale()).toBe('bg');
     expect(third.header()).toMatch(/яну/i);

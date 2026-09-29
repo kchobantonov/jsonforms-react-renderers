@@ -6,3 +6,5 @@ export * from './CombinatorProperties';
 export * from './CombinatorSwitchDialog';
 export * from './MixedRenderer';
 export * from './ObjectRenderer';
+
+export * from './OneOfRenderer';

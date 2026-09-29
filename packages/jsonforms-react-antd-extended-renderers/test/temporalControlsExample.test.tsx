@@ -11,9 +11,9 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/temporal-controls/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/temporal-controls/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/temporal-controls/uischema.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/temporal-controls/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/temporal-controls/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/temporal-controls/uischema.json';
 
 /*
   Date, time, date-time and duration, split by **how the control was chosen**.
@@ -448,7 +448,9 @@ describe('in other structures', () => {
     const labels = Array.from(
       view.active()!.querySelectorAll<HTMLElement>('.ant-form-item label')
     ).map((label) => label.textContent);
-    expect(labels.filter((label) => label === 'From').length).toBeGreaterThanOrEqual(2);
+    expect(
+      labels.filter((label) => label === 'From').length
+    ).toBeGreaterThanOrEqual(2);
     const values = Array.from(
       view.active()!.querySelectorAll<HTMLInputElement>('input')
     ).map((input) => input.value);
@@ -492,7 +494,9 @@ describe('in other structures', () => {
       view.active()!.querySelectorAll<HTMLInputElement>('input')
     ).map((input) => input.value);
     // Four date inputs across the two tuples, two of each value.
-    expect(values.filter((value) => value === '2026-10-01').length).toBeGreaterThanOrEqual(3);
+    expect(
+      values.filter((value) => value === '2026-10-01').length
+    ).toBeGreaterThanOrEqual(3);
     view.unmount();
   });
 
@@ -559,10 +563,10 @@ describe('the tuple spellings validate differently', () => {
     expect(check(schema, ['2026-10-01', '2026-10-05'])).toBe(false);
   });
 
-  /* Which is why the fixture uses `prefixItems` without `items: false`. */
-  it('keeps the fixture free of that trap', () => {
+  /* The canonical fixture uses draft-07 so each position is validated. */
+  it('validates dates in the canonical fixture', () => {
     const tuple = (schema as any).properties.composed.properties.tupleRange;
-    expect(tuple.prefixItems).toHaveLength(2);
-    expect(tuple.items).toBeUndefined();
+    expect(check(tuple, ['2026-10-01', '2026-10-05'])).toBe(true);
+    expect(check(tuple, ['not a date', '2026-10-05'])).toBe(false);
   });
 });

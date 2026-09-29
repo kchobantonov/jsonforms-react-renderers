@@ -50,7 +50,7 @@ import {
   MixedTreePath,
   renameMixedTreeNode,
 } from './mixed/mixedTree';
-import { PRESERVE_DYNAMIC_PROPERTY_OPTION } from '../util/dynamicProperties';
+import { useDynamicProperty } from '../util/dynamicProperties';
 
 const findDetailUiSchema = (
   schema: JsonSchema,
@@ -132,18 +132,7 @@ export const MixedRendererComponent = ({
   const selectedNode = tree
     ? findMixedTreeNode(tree, selectedPath) ?? tree
     : undefined;
-  const preserveDynamicPropertyKey =
-    uischema.options?.[PRESERVE_DYNAMIC_PROPERTY_OPTION] === true;
-  const preserveDynamicProperty = (element: UISchemaElement) =>
-    preserveDynamicPropertyKey && isControl(element)
-      ? {
-          ...element,
-          options: {
-            ...(element.options ?? {}),
-            [PRESERVE_DYNAMIC_PROPERTY_OPTION]: true,
-          },
-        }
-      : element;
+  const preserveDynamicPropertyKey = useDynamicProperty(path);
   const withoutControlLabel = (element: UISchemaElement): UISchemaElement =>
     isControl(element) ? { ...element, label: false } : element;
 
@@ -207,11 +196,11 @@ export const MixedRendererComponent = ({
         <div className='jsonforms-mixed-renderer-detail-control'>
           <JsonFormsDispatch
             schema={nodeSchema}
-            uischema={preserveDynamicProperty(
+            uischema={
               isNestedPrimitive
                 ? withoutControlLabel(nodeUiSchema)
                 : nodeUiSchema
-            )}
+            }
             path={nodePath}
             enabled={enabled}
             renderers={renderers}
@@ -237,7 +226,7 @@ export const MixedRendererComponent = ({
     selectedType !== 'null' && selectedSchema && detailUiSchema ? (
       <JsonFormsDispatch
         schema={selectedSchema}
-        uischema={preserveDynamicProperty(withoutControlLabel(detailUiSchema))}
+        uischema={withoutControlLabel(detailUiSchema)}
         path={path}
         enabled={enabled}
         renderers={renderers}

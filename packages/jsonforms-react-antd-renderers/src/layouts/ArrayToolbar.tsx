@@ -1,9 +1,12 @@
+import { ArrayPanel } from '../layouts/ArrayPanel';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import { ArrayTranslations } from '@jsonforms/core';
 import { Button, Card, Col, Row, Tooltip, Typography } from 'antd';
 import React from 'react';
 import ValidationIcon from '../complex/ValidationIcon';
 export interface ArrayLayoutToolbarProps {
+  options?: Record<string, any>;
+  config?: any;
   label: string;
   description: string;
   errors: string;
@@ -45,9 +48,14 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   translations,
   disableAdd,
   children,
+  options,
+  config,
 }: ArrayLayoutToolbarProps) {
   return (
-    <Card
+    <ArrayPanel
+      options={options}
+      config={config}
+      panelLabel={label}
       style={{ width: '100%' }}
       size='small'
       type='inner'
@@ -65,6 +73,6 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       ]}
     >
       {children}
-    </Card>
+    </ArrayPanel>
   );
 });

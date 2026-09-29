@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/shadcn-ui/ui",
+  "revision": "db2db460a26fa84fb65c8d903b213925fbdee9ed",
+  "files": {
+    "tabs.tsx": "apps/v4/registry/new-york-v4/ui/tabs.tsx",
+    "card.tsx": "apps/v4/registry/new-york-v4/ui/card.tsx",
+    "slider.tsx": "apps/v4/registry/new-york-v4/ui/slider.tsx",
+    "popover.tsx": "apps/v4/registry/new-york-v4/ui/popover.tsx",
+    "resizable.tsx": "apps/v4/registry/new-york-v4/ui/resizable.tsx",
+    "tooltip.tsx": "apps/v4/registry/new-york-v4/ui/tooltip.tsx",
+    "alert.tsx": "apps/v4/registry/new-york-v4/ui/alert.tsx",
+    "switch.tsx": "apps/v4/registry/new-york-v4/ui/switch.tsx",
+    "calendar.tsx": "apps/v4/registry/new-york-v4/ui/calendar.tsx",
+    "radio-group.tsx": "apps/v4/registry/new-york-v4/ui/radio-group.tsx",
+    "item.tsx": "apps/v4/registry/new-york-v4/ui/item.tsx",
+    "avatar.tsx": "apps/v4/registry/new-york-v4/ui/avatar.tsx",
+    "dialog.tsx": "apps/v4/registry/new-york-v4/ui/dialog.tsx",
+    "separator.tsx": "apps/v4/registry/new-york-v4/ui/separator.tsx",
+    "button.tsx": "apps/v4/registry/new-york-v4/ui/button.tsx",
+    "checkbox.tsx": "apps/v4/registry/new-york-v4/ui/checkbox.tsx",
+    "collapsible.tsx": "apps/v4/registry/bases/base/ui/collapsible.tsx",
+    "select.tsx": "apps/v4/registry/new-york-v4/ui/select.tsx",
+    "textarea.tsx": "apps/v4/registry/new-york-v4/ui/textarea.tsx",
+    "input.tsx": "apps/v4/registry/new-york-v4/ui/input.tsx",
+    "breadcrumb.tsx": "apps/v4/registry/new-york-v4/ui/breadcrumb.tsx"
+  }
+}

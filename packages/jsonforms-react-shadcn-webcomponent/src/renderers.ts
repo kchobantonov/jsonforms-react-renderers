@@ -1,3 +1,4 @@
+import { shadcnExtendedCells } from '@chobantonov/jsonforms-react-shadcn-extended-renderers';
 import {
   shadcnCells,
   shadcnRenderers,
@@ -8,4 +9,4 @@ export const shadcnWebcomponentRenderers = [
   ...shadcnRenderers,
   ...createShadcnExtendedRenderers(),
 ];
-export const shadcnWebcomponentCells = shadcnCells;
+export const shadcnWebcomponentCells = [...shadcnExtendedCells, ...shadcnCells];

@@ -16,10 +16,10 @@ route.
 
 It was written without changing any renderer. One change has been made since:
 the Group data-presence indicator now carries a translated tooltip, per
-[Adjustment 4](jsonforms-extended-ui-model-adjustments.md). Findings elsewhere
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). Findings elsewhere
 in this document still describe the code as reviewed.
 
-[spec]: jsonforms-extended-ui-model-spec.md
+[spec]: https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md
 [svelte-gaps]: #the-svelte-review-document
 
 ## Outstanding gaps at a glance
@@ -39,7 +39,7 @@ below rather than listed here.
 | An error inside a composite cell's value does not surface at that cell (exact-path filter) | [§6.2](#62-array-table-control--partial) |
 | The array **table** ignores `restrict`, so the two array presentations disagree with each other | [§6.2](#62-array-table-control--partial) |
 | Array table column headers are not translated | [§6.2](#62-array-table-control--partial) |
-| ~~Colour and duration columns in an array render as plain text — both controls existed only in the renderer registry, and a column dispatches through the cells registry~~ — **fixed** via `antdExtendedCells`; see [Adjustment 36](jsonforms-extended-ui-model-adjustments.md) | [§6.2](#62-array-table-control--partial) |
+| ~~Colour and duration columns in an array render as plain text — both controls existed only in the renderer registry, and a column dispatches through the cells registry~~ — **fixed** via `antdExtendedCells`; see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) | [§6.2](#62-array-table-control--partial) |
 
 **JSON Forms UI model — unsupported or incomplete**
 
@@ -75,18 +75,18 @@ which the house rule excludes. They are `additional-properties`,
 
 ---
 
-## Documents in this folder
+## Specification ownership
 
-| Document | Role |
-| --- | --- |
-| [jsonforms-extended-ui-model-spec.md](jsonforms-extended-ui-model-spec.md) | The portable specification, copied **verbatim** from the Svelte repository. Normative, and never edited here — it is refreshed by overwriting. Amendments go in the adjustments register below. |
-| [jsonforms-extended-ui-model-adjustments.md](jsonforms-extended-ui-model-adjustments.md) | This project's amendments, added rules and interpretations on top of the specification. Currently: config namespacing, and the container validation indicator. |
-| This document | React + antd gap analysis against that specification. Not normative. |
-| [../packages/jsonforms-react-demo-common/src/examples/spec/](../packages/jsonforms-react-demo-common/src/examples/spec/) | Runnable examples for the specs above, registered with the demo app under a `Spec: ` label. |
-| [jsonforms-extended-ui-model-consolidated-spec.md](jsonforms-extended-ui-model-consolidated-spec.md) | The portable specification, the container-indicator proposal and the adjustments register merged into one self-contained normative text, with no vendor, framework or domain references. **Partial for §18** — see the record below. |
-| [jsonforms-consolidated-spec-record.md](jsonforms-consolidated-spec-record.md) | How that consolidation was produced: the editorial rules, where each adjustment landed, the deliberate divergences, and what is not yet covered. |
-| [typed-form-authoring.md](typed-form-authoring.md) | How to write a schema and its UI schema in TypeScript so the compiler checks that they agree, what that catches, and where it stops. Not normative. |
-| [jsonforms-container-validation-indicator-spec.md](jsonforms-container-validation-indicator-spec.md) | Proposal for a shared container error-indicator contract covering Group and Categorization, which the portable specification defines for arrays only. |
+The current portable contract is [specification](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
+Its schemas, examples, and TypeScript authoring helpers live in that project.
+Use the [renderer/demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
+and [migration audit](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/audit.md)
+for maintained design requirements and the status of historical sources.
+This repository keeps renderer implementation gaps, [actionable TODOs](TODO.md),
+and [shared React architecture](renderer-common.md).
+
+Historical adjustment references now link to the maintained portable contract.
+The findings below describe this renderer implementation and its remaining gaps.
 
 ### The Svelte review document
 
@@ -110,7 +110,7 @@ comparison only.
   `set`/`unset` in the core reducer with a path walker that treats every segment
   as a plain property name, which is what makes brackets and digits usable in a
   dynamic property name — see
-  [Adjustment 14](jsonforms-extended-ui-model-adjustments.md). The legacy Vue 2
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). The legacy Vue 2
   packages stay on 3.7 and resolve their own copy.
 - Findings are from reading source, not from browser verification. Where a
   behavior depends on an antd component's internals it is marked as such.
@@ -223,7 +223,7 @@ The field is a plain `Input` with `type` switched, **not** `Input.Password`. In
 antd 6 that component's `iconRender` wrapper is itself `role="button"`,
 focusable and labelled from antd's locale, so the button carrying our name sat
 nested inside another button: two tab stops for one action, and two names for
-it. See [Adjustment 9.5](jsonforms-extended-ui-model-adjustments.md).
+it. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 `PasswordCell` exists because the shared table-cell contract requires masking
 to survive delegation to a cell; without it a password column fell through to
@@ -246,7 +246,7 @@ an offset that clears it leaves a gap when it is not.
 
 **`options.variant: "otp"`** adds a fixed-length, one-character-per-box editor
 for verification and backup codes — a project addition, not in the spec; see
-[Adjustment 9](jsonforms-extended-ui-model-adjustments.md). It is a *variant*
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). It is a *variant*
 rather than a new format because the value is still a password: same schema,
 same storage, same masking and reveal contract. `PasswordOtpControl` ranks 5,
 above the plain control, and is selected only when the schema sets **both**
@@ -257,7 +257,7 @@ otherwise leave the data disagreeing with the screen. Masking passes a mask
 **character** and an explicit `type`: antd's `mask={true}` draws the real
 character in its overlay, and its own `type` is spread away, so the obvious
 spelling left the code readable. See
-[Adjustment 9.5](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Covered by `test/passwordControl.test.tsx` and
 `test/passwordOtpControl.test.tsx`; demonstrated by the `password-control` spec
@@ -268,7 +268,7 @@ example.
 `options.autocomplete` is honored by `AntdSelect`, so every single-value choice
 control inherits it. **This family's documented default is off**, which section
 18 permits and which differs from Material — see
-[Adjustment 16](jsonforms-extended-ui-model-adjustments.md). Only `true` enables
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). Only `true` enables
 it, so an element `false` overrides a config `true`.
 
 The query filters on the **label**, case-insensitively — the branch title for a
@@ -309,7 +309,7 @@ identical by construction rather than by re-reading. Only its pure `Mask` class
 is used; its DOM binding assigns `input.value` directly and announces the result
 with a non-bubbling `CustomEvent`, both of which a React controlled input does
 not survive, and it normalizes the field on attach, which the spec forbids. See
-[Adjustment 11](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Selection requires `options.mask` to carry an actual **pattern**. The
 neighbouring families select on the option's presence, so a temporal control
@@ -381,7 +381,7 @@ Implemented: labels from positional schema titles with a localized
 `restrict`/`disableAdd`/`disableRemove`, the missing-position initialization
 contract, the clearing contract, positional versus array-level validation
 placement, and complex-position summaries reusing the composite dialog. See
-[Adjustment 13](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Beyond the specification: `options.detail` on a tuple places the fixed
 positions, scoped against the tuple (`#/items/N`, or `#/items/N/...` to reach
@@ -391,7 +391,7 @@ parent. A tuple-wide `detail` is no longer forwarded into the position lookup,
 which is a narrow divergence from "explicit tuple-wide detail retains the
 existing JSON Forms detail lookup precedence"; position dialogs come from the
 registry instead. See
-[Adjustment 20](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Two things are worth knowing before changing it:
 
@@ -430,7 +430,7 @@ the request.~~
 It implements **at most one open**, which is a deliberate divergence from §8's
 *exactly* one: activating the open header closes it, so a reader can collapse a
 long form to its outline. Two open at once remains impossible. See
-[Adjustment 10.2](jsonforms-extended-ui-model-adjustments.md), which also
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md), which also
 explains why antd's `Collapse accordion` prop is still not used even though its
 behaviour now matches — it swaps the disclosure roles for an unimplemented tabs
 pattern, and a `tablist` cannot express "nothing selected".
@@ -452,7 +452,7 @@ one shared `CategoryIndicators` — at the end of the bar on an accordion, as on
 a collapsible Group, and beside the label on a tab or step, which has no
 trailing edge; `useGroupState` also gained the
 `jsonformsExtended` lookup it was missing, so the two indicators are configured
-the same way. See [Adjustment 10](jsonforms-extended-ui-model-adjustments.md).
+the same way. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 **Not implemented:** `categorization.initialNotFound` as a rendered message —
 an unmatched `initial` warns on the console and falls back to the first visible
@@ -494,7 +494,7 @@ gating, no prototype-pollution guard, and no template parser.
 `layoutDefaults`, `security.urlPolicy`, `security.allowScriptEvaluation`,
 `markup` and `confirmation`, through
 [`util/configNamespaces.ts`](../packages/jsonforms-react-antd-renderers/src/util/configNamespaces.ts)
-and [Adjustment 1](jsonforms-extended-ui-model-adjustments.md). It is only
+and [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). It is only
 `dynamicValues` and the resolution it gates that are absent.)
 
 Consequences, in spec order:
@@ -629,7 +629,7 @@ the sibling renderer families rather than from the specification:
 deliberate — the two `reserved` item options, min/max redistribution delegated
 to flex, no scroll container on a non-wrapping row — and each is listed with
 its reason in
-[Adjustment 21.9](jsonforms-extended-ui-model-adjustments.md), so the distance
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md), so the distance
 is a decision rather than an unknown.
 
 **The fallback gap was 0, and that made every foreign uischema look broken.**
@@ -644,7 +644,7 @@ The default is now **16px for a row and 0 for a column**, and it has to be
 direction-dependent: antd's `Form.Item` already carries
 `marginBottom: token.marginLG`, so a non-zero column default double-spaces
 every vertical form. `gap: 0` at either level restores the old behaviour. See
-[Adjustment 21.2a](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Worth carrying across: this is the kind of default that looks like a styling
 preference and is really a portability defect. A renderer family that adopts
@@ -652,7 +652,7 @@ the recommended 0 without asking whether its own controls space themselves
 will render every ported uischema wrongly, and it will read as the author's
 fault rather than the family's.
 
-See [Adjustment 21](jsonforms-extended-ui-model-adjustments.md).
+See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 ### 3.3 Shared destructive-change confirmation (§14) — **Implemented**
 
@@ -684,7 +684,7 @@ holding `0` changed without asking.
 framework-agnostic package, which must not depend on the antd set, so it takes a
 policy-free `useRemoveConfirmation` seam and the antd side supplies the dialog
 and the catalog id. See
-[Adjustment 17.5](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Covered by `test/confirmation.test.tsx`; demonstrated by the
 `destructive-confirmation` spec example.
@@ -698,9 +698,9 @@ is a change to the renderer, not a confirmation.
 `enableFilterErrorsBeforeTouch` and `filterErrorKeywordsBeforeTouch` are read by
 every control that prints its own errors, using the same algorithm as the
 Vuetify and Svelte renderer families. See
-[Adjustment 19](jsonforms-extended-ui-model-adjustments.md) and the worked
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and the worked
 example
-[pre-touch-errors](../packages/jsonforms-react-demo-common/src/examples/spec/pre-touch-errors/README.md).
+[pre-touch-errors](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/pre-touch-errors/README.md).
 
 **Still missing:** array and tuple summary participation. The specification
 asks for summaries to account for child touch state, and leaves the behaviour
@@ -716,7 +716,7 @@ three renderers, and requires a combined-validity integration on top:
 - ~~**Monaco** — one summary error per editor instance, gated by
   `propagateErrors`…~~ — **done**, with two things to know: the effective
   default here is **`false`**, not the specification's `true`
-  ([Adjustment 31.2](jsonforms-extended-ui-model-adjustments.md)), and
+  ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)), and
   publication needs a host that combines what renderers publish, because
   `additionalErrors` is a `<JsonForms>` prop with no renderer-facing action.
   Pending language validation feeding combined validity is still missing.
@@ -749,7 +749,7 @@ used by the web component and the demo:
 | `useDefaults`, `$data`, `discriminator` | **Done** |
 | `color` format | **Done** |
 | Caller-supplied extra formats | **Done** |
-| ajv-errors (`errorMessage`), ajv-keywords, ajv-i18n | **Done** — ported from the Vue 2 `common` package, including the extended `transform` and the extra `dynamicDefaults`. See [Adjustment 30](jsonforms-extended-ui-model-adjustments.md) |
+| ajv-errors (`errorMessage`), ajv-keywords, ajv-i18n | **Done** — ported from the Vue 2 `common` package, including the extended `transform` and the extra `dynamicDefaults`. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
 | `duration` format | **Done** — `ajv-formats` supplies it, and it is what makes §7.4's unbounded components checkable. Verified against `PT90M`, `P400D`, `PT1H591212M` and `P0W` |
 | `password` format | Not validated, and correctly so: JSON Schema treats it as an annotation, and `strictSchema: false` lets it through without constraining the value |
 | `/#` current-form schema reference | Still missing |
@@ -810,8 +810,8 @@ at rank 3, which parses with the profile in
 Both §10 profiles are implemented, link targets go through the §12 URL policy,
 and the host gate and `typography` option are read from
 `jsonformsExtended.markup`. See
-[Adjustment 35](jsonforms-extended-ui-model-adjustments.md) and the
-[`markup-label`](../packages/jsonforms-react-demo-common/src/examples/spec/markup-label/)
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and the
+[`markup-label`](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/markup-label/)
 example.
 
 Four findings worth carrying to another implementation, all recorded in
@@ -831,8 +831,8 @@ Adjustment 35:
 **interpolation is implemented**, with CEL rather than ICU, so §9 and §11.4
 share one grammar and one evaluator. The tester now claims an element asking
 for either markup or interpolation. See
-[Adjustment 37](jsonforms-extended-ui-model-adjustments.md) and the
-[`label-interpolation`](../packages/jsonforms-react-demo-common/src/examples/spec/label-interpolation/)
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and the
+[`label-interpolation`](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/label-interpolation/)
 example.
 
 Still outstanding:
@@ -981,7 +981,7 @@ Fixed with per-locale bundles, the direct counterpart of antd's own: resolution
 is **form catalog → locale bundle → English**, and the ordering is not
 re-implemented, because the bundle's string is handed to the translator as its
 *default message*. See
-[Adjustment 6.5](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Three things to carry across, each of which cost something here:
 
@@ -1156,7 +1156,7 @@ Source:
 
 - ~~**`options.vertical` is not read.**~~ **Fixed.** Both choice groups now
   honour it identically and announce `aria-orientation`; see
-  [Adjustments §7](jsonforms-extended-ui-model-adjustments.md).
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - ~~**`enabled` is not consumed.**~~ **Fixed.** `Radio.Group` now receives
   `disabled={!enabled}`, and the change handler is guarded as well, so neither
   a keyboard path nor a caller-supplied `inputProps.disabled` override can
@@ -1196,7 +1196,7 @@ Source:
   contact to Phone contact. Today it does not.~~ — **fixed**: `branchChangeData`
   in `util/combinators.ts` applies §18's rule, and the confirmation now weighs
   only what is actually discarded. See
-  [adjustments §23.3](jsonforms-extended-ui-model-adjustments.md).
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - ~~**The displayed branch is derived once, at mount.**~~ — **fixed**, and
   worth checking in any renderer set: a *discriminated* `oneOf` went stale the
   moment its discriminator changed, leaving the previous branch's fields on
@@ -1204,7 +1204,7 @@ Source:
   fields exist, this broke that mechanism entirely. The branch now follows
   `indexOfFittingSchema` until the user selects one; a value fitting no branch
   leaves the display alone. See
-  [adjustments §23.7](jsonforms-extended-ui-model-adjustments.md).
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - ~~Confirmation is unconditional when `!isEmpty(data)`~~ — **fixed**: branch
   changes and clears now resolve through the shared policy, so `0` and `false`
   count as existing values and the prompt is configurable. See
@@ -1241,7 +1241,7 @@ Source:
   against `"a plain note"` yields `{"note":"hello"}`. Verified directly against
   `coreReducer`, and pinned by a test, because if core ever stops doing that
   every other assertion becomes a silent data loss. See
-  [adjustments §23.4](jsonforms-extended-ui-model-adjustments.md).
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - ~~**The selected tab is re-derived from the data on every change.**~~ —
   **fixed**: emptying the value while on a chosen tab left *no* tab selected and
   the panel blank, mid-edit. §22 counts the selected tab as runtime state, so
@@ -1317,7 +1317,7 @@ Three findings to carry across:
   has to draw the message itself. The branch errors underneath stay suppressed,
   which is what the section wants.
 
-See [adjustments §23.6 and §23.9](jsonforms-extended-ui-model-adjustments.md).
+See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 ---
 
@@ -1341,7 +1341,7 @@ Implemented and matching the spec:
   and `sdf.sdf` are all ordinary keys; only the schema refuses one. A name a
   data path cannot address - empty, or containing a dot - is routed to an
   isolated editor rather than rejected. See
-  [Adjustment 14](jsonforms-extended-ui-model-adjustments.md).
+  [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - `restrict` gating on `minProperties` / `maxProperties`, counting all keys.
 - Required keys protected from deletion under `restrict`.
 - Rename with collision rejection and value preservation.
@@ -1350,14 +1350,14 @@ Gaps:
 
 | Spec requirement | Status |
 | --- | --- |
-| `allowEmptyPropertyNames` (default `false`, UI option overrides config, including `false` over `true`) | **Implemented** — see [Adjustment 14.5](jsonforms-extended-ui-model-adjustments.md) |
+| `allowEmptyPropertyNames` (default `false`, UI option overrides config, including `false` over `true`) | **Implemented** — see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
 | Preserve names exactly; trimming is only a blankness check | **Implemented** — `trim()` decides blankness and nothing else, on both Add and Rename |
 | Empty add-name draft must not show inline errors on load or after reset | **Implemented** — the message is suppressed while the box is exactly empty; Add still consults the validation result |
 | Empty-name blank-label presentation | **Implemented** — a blank label, never the literal `""`, with Rename/Delete kept above the value input |
 | Literal dotted / empty key isolated editors | **Implemented** — a key a data path cannot address is edited in a form rooted at its value and written back under its exact key, with the schema rebundled so local `$ref`s still resolve. Such names can also be **created**, not only preserved. **Limitation:** that form validates its own value, so those errors are not part of the containing form's error list |
 | Every matching `patternProperties` schema applies conjunctively (strongest bounds) | **Partial** — `matchingSchemas` is collected, but the combination policy for overlapping scalar constraints needs verification against the spec's `price_total` example |
 | Delete confirmation | **Implemented** through the shared policy — see [§3.3](#33-shared-destructive-change-confirmation-14--implemented) |
-| Object-level errors (e.g. `minProperties` on `{}`) shown near the object editor | **Missing** — `ObjectRenderer` renders no `errors` prop at all. Which errors this actually loses depends on where core maps each one: a `dependencies` failure is mapped onto the missing property and *does* display, while `additionalProperties` (mapped onto a key the dynamic-property editor renders without errors) and `minProperties` (mapped onto the object itself) show nowhere. Worked through in the [object-control example](../packages/jsonforms-react-demo-common/src/examples/spec/object-control/README.md) |
+| Object-level errors (e.g. `minProperties` on `{}`) shown near the object editor | **Missing** — `ObjectRenderer` renders no `errors` prop at all. Which errors this actually loses depends on where core maps each one: a `dependencies` failure is mapped onto the missing property and *does* display, while `additionalProperties` (mapped onto a key the dynamic-property editor renders without errors) and `minProperties` (mapped onto the object itself) show nowhere. Worked through in the [object-control example](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/object-control/README.md) |
 | Clearing a dynamic property's value retains the key | **Implemented** — `PRESERVE_DYNAMIC_PROPERTY_OPTION` + `clearedDynamicPropertyValue` in `InputControl` |
 
 ### 6.2 Array table control — **Partial**
@@ -1396,7 +1396,7 @@ Source:
 | `showSortButtons` | Implemented |
 | `restrict` (`minItems`/`maxItems`) | Implemented |
 | `disableAdd` / `disableRemove` | Implemented |
-| `initCollapsed` | **Implemented** — the first item opens by default ([Adjustment 18](jsonforms-extended-ui-model-adjustments.md)) |
+| `initCollapsed` | **Implemented** — the first item opens by default ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)) |
 | `collapseNewItems` | **Implemented** — a newly added item opens unless set |
 | `hideAvatar` | **Implemented** — the marker goes, the index stays readable |
 | `hideArraySummaryValidation` | **Implemented** — hides the child summary, keeps the array's own errors |
@@ -1646,8 +1646,8 @@ Sources:
 [AntdColorControlRenderer.tsx](../packages/jsonforms-react-antd-extended-renderers/src/renderers/AntdColorControlRenderer.tsx),
 [colorFormat.ts](../packages/jsonforms-react-antd-extended-renderers/src/util/colorFormat.ts).
 Example:
-[color-control](../packages/jsonforms-react-demo-common/src/examples/spec/color-control/README.md).
-Amendments: [Adjustment 8](jsonforms-extended-ui-model-adjustments.md).
+[color-control](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/color-control/README.md).
+Amendments: [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 | Spec requirement | Status |
 | --- | --- |
@@ -1686,7 +1686,7 @@ and the exclusive weeks mode, `P0D` for a zero duration, `showActions`
 defaulting to true with Cancel discarding the draft, a picker showing only the
 units in play with an add control for the rest, `placeholder`, `focus`, and the
 shared clear affordance. See
-[Adjustment 32](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 | Spec requirement | Status |
 | --- | --- |
@@ -1717,7 +1717,7 @@ Two things made it worse than a display limit:
 
 A renderer set that models a duration on a time-of-day widget will inherit
 both. The only real bound is the exact-integer range. See
-[Adjustment 32.1a-ii](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 ### 7.5 Split layout — **Partial**
 
@@ -1786,7 +1786,7 @@ guard has to be a **ref, not the pending state** — a second click can arrive
 before React has re-rendered, so state alone leaves a window in which both
 activations get through.
 
-See [adjustments §24](jsonforms-extended-ui-model-adjustments.md).
+See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 ### 7.7 ImageView — **Implemented** (was Divergent)
 
@@ -1821,7 +1821,7 @@ goes through `isAllowedImageUrl`, which accepts `data:image/…` when the flag i
 set and nothing else — a `data:` URL of any other media type stays refused, so
 the flag cannot become a way to smuggle in a document.
 
-See [adjustments §23.1](jsonforms-extended-ui-model-adjustments.md).
+See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 ### 7.8 Separator — **Implemented** (was Partial)
 
@@ -1933,7 +1933,7 @@ needs either a spec entry or a decision to drop it.
 | `options.width` / `options.height` on Monaco | Monaco | Coexists with the spec's `monaco.rows`/`autoGrow` sizing |
 | `options.height` on AG Grid | AG Grid | Should be `gridHeight` |
 | `options.disabled` on Button | `ButtonRenderer` | No spec entry; `rule`-driven enablement is the specified mechanism |
-| TemplateLayout profiles | `TemplateLayoutRenderer` (jsx), `RactiveTemplateLayoutRenderer` (ractive) | **Resolved.** Both profiles are implemented and selected per element by their own testers: explicit `lang`, then `config.defaultTemplateLang`, then `ractive`. An unknown language is diagnosed rather than interpreted as another engine, and both engines are gated on `allowScriptEvaluation` — Ractive compiles each `{{ }}` through `new Function` too. `lang: vue` remains unimplemented. See [Adjustment 22](jsonforms-extended-ui-model-adjustments.md) |
+| TemplateLayout profiles | `TemplateLayoutRenderer` (jsx), `RactiveTemplateLayoutRenderer` (ractive) | **Resolved.** Both profiles are implemented and selected per element by their own testers: explicit `lang`, then `config.defaultTemplateLang`, then `ractive`. An unknown language is diagnosed rather than interpreted as another engine, and both engines are gated on `allowScriptEvaluation` — Ractive compiles each `{{ }}` through `new Function` too. `lang: vue` remains unimplemented. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
 | `format: "uri"` in the file control | `AntdFile` | Third storage convention alongside base64 and the `binary` data URL |
 | `AntdCompositeCell` as a rank-1 fallback for any object/array cell | `cells/AntdCompositeCell.tsx` | Reasonable, and consistent with the spec's "Detail omitted → dispatch `{Control, scope:"#", label:false}`", but the fallback ranking itself is a local decision |
 
@@ -2002,7 +2002,7 @@ exact presence rules (false and zero count; missing, null, blank strings and
 recursively empty containers do not).
 
 The indicator's tooltip and localization, required by
-[Adjustment 4](jsonforms-extended-ui-model-adjustments.md), are **implemented**:
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md), are **implemented**:
 the marker is wrapped in a `Tooltip` triggered by hover and focus, is focusable,
 and resolves `group.dataIndicator` through the translator, with one string
 serving both the tooltip and the accessible name.
@@ -2011,7 +2011,7 @@ Its per-render cost has also been fixed: scope strings are split once per
 element instead of per render, the item context is resolved once for the whole
 subtree instead of once per Control, and the result is memoized on the data.
 Measured 7.3x faster over 40 groups and 4.2x over 200 array items. See
-[Adjustment 5](jsonforms-extended-ui-model-adjustments.md).
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 One gap remains: **a non-boolean `collapsed` is coerced** by `=== true` rather
 than producing a configuration diagnostic.
@@ -2075,9 +2075,9 @@ renderer does today.
 **Group and Category now have one.** `showValidationIndicator` is implemented
 in `GroupLayout`, `CategorizationLayout` and `CategorizationStepperLayout`,
 defaulting to off, using the shared ancestor index of
-[Adjustment 5](jsonforms-extended-ui-model-adjustments.md) and the same subtree
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and the same subtree
 traversal as the data indicator. See
-[the indicator spec](jsonforms-container-validation-indicator-spec.md).
+[the indicator spec](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Still missing for arrays: the option itself, `hideArraySummaryValidation`, and
 the separation of the array's own errors from descendant errors that both
@@ -2091,7 +2091,7 @@ Every config key the React renderers read today is a flat top-level key, via
 block, which is consistent with §3.1: none of the namespaced configuration the
 specification defines is implemented.
 
-[Adjustment 1](jsonforms-extended-ui-model-adjustments.md) sets the rule for
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) sets the rule for
 where a key belongs: core/Material/Vuetify conventions stay top level, portable
 project extensions go under `jsonformsExtended`, and JSON Forms React Renderers-only settings go
 under `jsonforms-react-renderers`. Per-element `uischema.options` stay flat in all three cases.
@@ -2119,7 +2119,7 @@ Existing coverage is substantial for the areas that were most recently built:
   control, `groupState`, forced tables, the additional-properties editor, the
   mixed tree, and a per-renderer contract suite.
 - **Spec examples** now exist for 27 areas, each a folder under
-  `packages/jsonforms-react-demo-common/src/examples/spec/` with a README
+  `@chobantonov/jsonforms-extended-spec/examples/` with a README
   naming the sections it covers and a test file asserting the behaviour it
   claims. Several of the fixes recorded above were found by writing one.
 - **Demo examples** exist for collapsible groups, extended controls, file,
@@ -2247,7 +2247,7 @@ The ones most worth re-checking elsewhere, because each was silent:
    `3.9.0-alpha.1`, matching the Svelte families. Bracketed and numeric dynamic
    property keys work as a result, and dotted and empty keys are created and
    edited through an isolated editor — see
-   [Adjustment 14](jsonforms-extended-ui-model-adjustments.md).
+   [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 2. **`columns` versus `options.layout`.** Which encoding is authoritative for
    this renderer family? If both, which wins?
 3. **antd's default choice searchability.** The spec notes Material defaults to
@@ -2269,7 +2269,198 @@ The ones most worth re-checking elsewhere, because each was silent:
 7. **Timezone options.** §18's timezone section is marked PROVISIONAL. Confirm
    it is out of scope for the current round before anyone implements it.
 8. **Container validation indicators.** Should the shared option proposed in
-   [jsonforms-container-validation-indicator-spec.md](jsonforms-container-validation-indicator-spec.md)
+   [jsonforms-container-validation-indicator-spec.md](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)
    be adopted, extending header error indicators to Group and Categorization
    with a global switch, or should we implement only the array-scoped
    `hideArraySummaryValidation` the portable specification already defines?
+
+## Reference adapter audit transferred from the spec project
+
+These findings record the original audit state, not a fresh certification of
+the current implementation. Reconcile them with fixes recorded above.
+
+### Implementation differences
+
+| Finding | Evidence and consequence |
+| --- | --- |
+| Config namespace consumption is uneven | The follow-up audit removed unconsumed namespace declarations. Published config paths now identify actual readers. Namespaced equivalents remain a possible adapter change, not a current feature. |
+| Core read-only support exceeds adapter verification | Core `mappers/util.ts` and `mappers/cell.ts` use `separateReadonlyFromDisabled`. Several renderer paths rely on enabled state; mutation guards and presentation need adapter tests before enabling separation throughout a form. |
+| Restrict resolution differs by control | Core seeds flat `restrict: false`. Array/property controls read flat merged settings; temporal `effectiveRestrict` ignores the flat key and resolves local options, then `jsonformsExtended.restrict`, then true. Both actual inputs are documented. The portable uniform contract still requires host/adapter work. |
+| Vendor settings are intentionally open | Monaco's `options` and AG Grid's option bag are third-party APIs, not a complete portable schema vocabulary. This audit does not certify each vendor property or callback. |
+| Unknown options remain accepted | `additionalProperties: true` preserves extension interoperability. Passing validation does not prove a misspelled or unrecognized option works. |
+| Dynamic overlays and pending integration remain incomplete | See [TODO.md](TODO.md); retained design text is not evidence of current implementation. |
+
+No source renderer implementation was changed by this audit. These runtime gaps
+are recorded instead of treating schema acceptance as proof of support.
+
+
+### Configuration property review
+
+The first audit inferred too much from a renderer merging `config` with local
+options. A merge does not establish that later code reads a particular key,
+and a single specialized consumer does not establish a shared global default.
+This follow-up traces **all 113 previously declared paths**, including nested
+objects and Monaco members. It removes 30 declarations and adds 9 confirmed
+paths at their consumed location, leaving 92 declared paths. These counts include
+container properties, not just scalar settings.
+
+The complete evidence record is
+[config-consumption.json](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/conformance/config-consumption.json). Its evidence paths
+are relative to the source checkout identified above. A coverage test requires
+every published named config path to have a record, and checks that removed paths
+are no longer declared. Unknown extension keys remain accepted; absence from the
+vocabulary does not mean `additionalProperties` has become false.
+
+### Field-specific options
+
+- `elementLabelProp`: local in ArrayLayout; ListWithDetail exceptionally reads
+  a merged default. Author the data path on the control.
+- `childLabelProp`: local ArrayLayout fallback only.
+- `detail`: core lookup and composite cells read local options. Tuple position
+  layout exceptionally reads merged options. A detail UI schema belongs to the
+  control whose schema its scopes address.
+- `summary`: local tuple/composite-cell options.
+- `cells`: local in the base table; the grid exceptionally reads merged options.
+  Keep column-specific overrides on the array control.
+
+### Merge behavior
+
+The scalar precedence claim needs care for compound values. Base renderers often
+use `lodash.merge`, which merges arrays by index; an empty local suggestions,
+views or pre-touch-keyword list does not necessarily clear a global list. Monaco
+and AG Grid use shallow spreads: a local `monaco` or `agGridOptions` object replaces
+the global bag wholesale. The previously advertised recursive grid merge is not
+the current implementation. The intended portable merge contract remains adapter
+work; these schemas describe the actual accepted shapes and locations.
+
+### Every reviewed path
+
+`Consumed` means a traced reader exists; it does not mean every renderer uses the
+setting. `Core` means core consumes it but renderer support varies. `Core default
+only` identifies legacy `trim`. Removed paths have their local or alternate
+location explained in the evidence record.
+
+| Config path | Source finding | Declared now |
+| --- | --- | --- |
+| `config.:language` | Consumed | Yes |
+| `config.agGridOptions` | Consumed | Yes |
+| `config.allowAdditionalPropertiesIfMissing` | Consumed | Yes |
+| `config.allowEmptyPropertyNames` | Consumed | Yes |
+| `config.ampm` | Consumed | Yes |
+| `config.autocomplete` | Consumed | Yes |
+| `config.cancelLabel` | Consumed | Yes |
+| `config.childLabelProp` | Local only | No |
+| `config.clearable` | Consumed | Yes |
+| `config.collapseNewItems` | Consumed | Yes |
+| `config.convertJson` | Consumed | Yes |
+| `config.dateFormat` | Consumed | Yes |
+| `config.dateSaveFormat` | Consumed | Yes |
+| `config.dateTimeFormat` | Consumed | Yes |
+| `config.dateTimeSaveFormat` | Consumed | Yes |
+| `config.defaultTemplateLang` | Consumed | Yes |
+| `config.detail` | Renderer specific | No |
+| `config.disableAdd` | Consumed | Yes |
+| `config.disableRemove` | Consumed | Yes |
+| `config.elementLabelProp` | Renderer specific | No |
+| `config.enableFilterErrorsBeforeTouch` | Consumed | Yes |
+| `config.filterErrorKeywordsBeforeTouch` | Consumed | Yes |
+| `config.focus` | Consumed | Yes |
+| `config.height` | Consumed | Yes |
+| `config.hideArraySummaryValidation` | Consumed | Yes |
+| `config.hideAvatar` | Consumed | Yes |
+| `config.hideRequiredAsterisk` | Consumed | Yes |
+| `config.initCollapsed` | Consumed | Yes |
+| `config.jsonformsExtended` | Container | Yes |
+| `config.jsonformsExtended.accept` | Unsupported location | No |
+| `config.jsonformsExtended.agGridOptions` | Unsupported location | No |
+| `config.jsonformsExtended.allowAdditionalPropertiesIfMissing` | Unsupported location | No |
+| `config.jsonformsExtended.allowEmptyPropertyNames` | Unsupported location | No |
+| `config.jsonformsExtended.cancelLabel` | Unsupported location | No |
+| `config.jsonformsExtended.cells` | Unsupported location | No |
+| `config.jsonformsExtended.collapsed` | Consumed | Yes |
+| `config.jsonformsExtended.collapsible` | Consumed | Yes |
+| `config.jsonformsExtended.colorSaveFormat` | Consumed | Yes |
+| `config.jsonformsExtended.colorTextEntry` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation.default` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation.renderers` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation.renderers.*.branchChange` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation.renderers.*.delete` | Consumed | Yes |
+| `config.jsonformsExtended.confirmation.renderers.*.typeChange` | Consumed | Yes |
+| `config.jsonformsExtended.convertJson` | Unsupported location | No |
+| `config.jsonformsExtended.defaultTemplateLang` | Consumed | Yes |
+| `config.jsonformsExtended.dynamicValues` | Consumed | Yes |
+| `config.jsonformsExtended.dynamicValues.enabled` | Consumed | Yes |
+| `config.jsonformsExtended.emptyLabel` | Unsupported location | No |
+| `config.jsonformsExtended.height` | Unsupported location | No |
+| `config.jsonformsExtended.initial` | Unsupported location | No |
+| `config.jsonformsExtended.language` | Unsupported location | No |
+| `config.jsonformsExtended.layoutDefaults` | Consumed | Yes |
+| `config.jsonformsExtended.layoutDefaults.gap` | Consumed | Yes |
+| `config.jsonformsExtended.layoutDefaults.gridColumns` | Consumed | Yes |
+| `config.jsonformsExtended.layoutDefaults.minItemWidth` | Unsupported location | No |
+| `config.jsonformsExtended.layoutDefaults.wrap` | Consumed | Yes |
+| `config.jsonformsExtended.markup` | Consumed | Yes |
+| `config.jsonformsExtended.markup.markdown` | Consumed | Yes |
+| `config.jsonformsExtended.markup.markdown.enabled` | Consumed | Yes |
+| `config.jsonformsExtended.markup.markdown.profile` | Consumed | Yes |
+| `config.jsonformsExtended.markup.typography` | Consumed | Yes |
+| `config.jsonformsExtended.monaco` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.autoGrow` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.initActions` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.maxRows` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.minRows` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.options` | Unsupported location | No |
+| `config.jsonformsExtended.monaco.rows` | Unsupported location | No |
+| `config.jsonformsExtended.okLabel` | Unsupported location | No |
+| `config.jsonformsExtended.propagateErrors` | Consumed | Yes |
+| `config.jsonformsExtended.resizable` | Unsupported location | No |
+| `config.jsonformsExtended.restrict` | Consumed | Yes |
+| `config.jsonformsExtended.security` | Consumed | Yes |
+| `config.jsonformsExtended.security.allowScriptEvaluation` | Consumed | Yes |
+| `config.jsonformsExtended.security.urlPolicy` | Consumed | Yes |
+| `config.jsonformsExtended.security.urlPolicy.allowImageDataUrls` | Consumed | Yes |
+| `config.jsonformsExtended.security.urlPolicy.allowRelative` | Consumed | Yes |
+| `config.jsonformsExtended.security.urlPolicy.allowedSchemes` | Consumed | Yes |
+| `config.jsonformsExtended.showActions` | Unsupported location | No |
+| `config.jsonformsExtended.showBorder` | Unsupported location | No |
+| `config.jsonformsExtended.showDataIndicator` | Consumed | Yes |
+| `config.jsonformsExtended.showEmptyButton` | Unsupported location | No |
+| `config.jsonformsExtended.showValidationIndicator` | Consumed | Yes |
+| `config.jsonformsExtended.showValidationIndicatorCount` | Consumed | Yes |
+| `config.jsonformsExtended.table` | Unsupported location | No |
+| `config.jsonformsExtended.width` | Unsupported location | No |
+| `config.language` | Consumed | Yes |
+| `config.mode` | Consumed | Yes |
+| `config.monaco` | Consumed | Yes |
+| `config.monaco.autoGrow` | Consumed | Yes |
+| `config.monaco.initActions` | Consumed | Yes |
+| `config.monaco.maxRows` | Consumed | Yes |
+| `config.monaco.minRows` | Consumed | Yes |
+| `config.monaco.options` | Consumed | Yes |
+| `config.monaco.rows` | Consumed | Yes |
+| `config.multi` | Consumed | Yes |
+| `config.okLabel` | Consumed | Yes |
+| `config.placeholder` | Consumed | Yes |
+| `config.propagateErrors` | Consumed | Yes |
+| `config.readOnly` | Core | Yes |
+| `config.readonly` | Core | Yes |
+| `config.resizable` | Consumed | Yes |
+| `config.restrict` | Consumed | Yes |
+| `config.separateReadonlyFromDisabled` | Core | Yes |
+| `config.showActions` | Consumed | Yes |
+| `config.showArrayLayoutSortButtons` | Consumed | Yes |
+| `config.showArrayTableSortButtons` | Consumed | Yes |
+| `config.showBorder` | Consumed | Yes |
+| `config.showNavButtons` | Consumed | Yes |
+| `config.showSortButtons` | Consumed | Yes |
+| `config.showUnfocusedDescription` | Consumed | Yes |
+| `config.suggestion` | Consumed | Yes |
+| `config.summary` | Local only | No |
+| `config.theme` | Consumed | Yes |
+| `config.timeFormat` | Consumed | Yes |
+| `config.timeSaveFormat` | Consumed | Yes |
+| `config.trim` | Core default only | Yes |
+| `config.vertical` | Consumed | Yes |
+| `config.views` | Consumed | Yes |
+| `config.width` | Consumed | Yes |

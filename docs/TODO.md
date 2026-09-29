@@ -5,7 +5,7 @@ wrong, how to reproduce it, **what has already been ruled out**, and where the
 detail lives — so picking one up does not mean repeating the investigation.
 
 The two reference documents are
-[the adjustments](jsonforms-extended-ui-model-adjustments.md), which records
+[the adjustments](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md), which records
 where this implementation adds to or departs from the portable specification,
 and [the gaps review](jsonforms-react-antd-implementation-gaps.md), which
 tracks specification coverage. This file is only the actionable subset.
@@ -19,7 +19,7 @@ tracks specification coverage. This file is only the actionable subset.
 > first render. The recorded observation that "an entry with no options at all
 > is fine" was the opposite of the truth, and is what sent the investigation
 > at `dialogOptions`. Fixed by a cycle guard; see
-> [Adjustment 20.7](jsonforms-extended-ui-model-adjustments.md) for the whole
+> [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) for the whole
 > account, including why nothing threw.
 >
 > **If `uiSchemaRegistryCycle.test.tsx` ever takes the run down with an
@@ -31,7 +31,7 @@ tracks specification coverage. This file is only the actionable subset.
 **Severity: medium — the form can be invalid with nothing on screen.**\
 **Detail:** [gaps §6.1](jsonforms-react-antd-implementation-gaps.md), and the
 worked example
-[object-control](../packages/jsonforms-react-demo-common/src/examples/spec/object-control/README.md)
+[object-control](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/object-control/README.md)
 
 `ObjectRenderer` renders no `errors` prop, so an error at an object's own path
 has nowhere to go. What is actually lost depends on where core maps each error:
@@ -51,7 +51,7 @@ data.
 ### 2. JSON Forms core: a tester resolves a scope only for object schemas
 
 **Severity: medium — blocks deleting a workaround here.**\
-**Detail:** [Adjustment 20.6](jsonforms-extended-ui-model-adjustments.md),
+**Detail:** [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md),
 which is written to be handed to a PR author as-is.
 
 `schemaMatches` and `schemaSubPathMatches` resolve a Control's `scope` only
@@ -72,13 +72,13 @@ what to delete once the fix lands.
 > `new Function` reachable from a UI schema. It is gated now — both template
 > engines require `jsonformsExtended.security.allowScriptEvaluation`, and a
 > host that has not granted it gets an explanation rather than a blank region.
-> See [Adjustment 22.3](jsonforms-extended-ui-model-adjustments.md).
+> See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 >
 > **Also closed:** `href={data.url}` in a template used to bypass the
 > `isAllowedUrl` policy, so `javascript:` went through verbatim. It is checked
 > now — in the `createElement` pragma for the `jsx` profile, and in a DOM pass
 > over the rendered subtree for `ractive`. Fifteen URL-bearing attributes, not
-> just `href`. See [Adjustment 22.6a](jsonforms-extended-ui-model-adjustments.md).
+> just `href`. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 >
 > **Known limit, deliberately documented rather than hidden:** Ractive owns its
 > DOM and exposes no hook for a bound attribute value, so the check runs
@@ -92,7 +92,7 @@ what to delete once the fix lands.
 These are specified, exposed, and do nothing yet.
 
 > The layout sizing model (§6–§7) used to be listed here. It is implemented —
-> see [Adjustment 21](jsonforms-extended-ui-model-adjustments.md). Two options
+> see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). Two options
 > were removed with it: `trim`, which the contract excludes, and `columns`,
 > which it does not define but which the Svelte family reads. A form using
 > either now gets a diagnostic.
@@ -111,7 +111,7 @@ required-state information". The asterisk has to be hidden in CSS with
 
 ### 4. Pre-touch error filtering does not cover array or tuple summaries
 
-**Detail:** [Adjustment 19.3](jsonforms-extended-ui-model-adjustments.md)
+**Detail:** [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)
 
 Implemented for every control that prints its own errors. An array header keeps
 showing its child-error summary regardless of touch state.
@@ -127,14 +127,14 @@ the record rather than a surprise.
 > are CEL expressions, which is what let §9 and §11.4 share one grammar. The
 > ICU analysis that follows is kept because it is why ICU was rejected, not
 > because it is pending. See
-> [Adjustment 37](jsonforms-extended-ui-model-adjustments.md).
+> [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 >
 > Still open: no element other than `Label` interpolates, and a control's
 > `description` reads neither markup nor placeholders.
 
 #### The original entry
 
-**Detail:** [Adjustment 35.2](jsonforms-extended-ui-model-adjustments.md),
+**Detail:** [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md),
 [gaps §3.7](jsonforms-react-antd-implementation-gaps.md)
 
 `options.markup: "markdown"` is implemented; `options.interpolate` and
@@ -392,7 +392,7 @@ the second as sugar.
 > option (C) sketched below — drop `template`, compose `bind` with a message
 > formatter — is **not** what happened, and is kept only because its analysis
 > of ICU is what ruled ICU out. See
-> [Adjustment 37](jsonforms-extended-ui-model-adjustments.md) for the trade,
+> [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) for the trade,
 > including what a message format gave that an expression language does not.
 >
 > What remains open is not the language but the **resolution layer**:
@@ -403,7 +403,7 @@ the second as sugar.
 > siblings — may be supplied by `bind` but **never** by `template`. It
 > bypassed the catalog silently, and it was the one place two interpolation
 > grammars met on the same string. Recorded in
-> [Adjustment 35.9](jsonforms-extended-ui-model-adjustments.md) and §9 of the
+> [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and §9 of the
 > consolidated spec. Nothing was removed from the code, because nothing
 > implemented it; what was removed is the licence to add it later. **What
 > remains open below is `template` for strings that are *not* messages** — an
@@ -488,7 +488,7 @@ failure policies, and should not: §9 wants empty text plus a diagnostic,
 §11.4 wants the whole value undefined so a half-resolved string never
 overrides a good static one. A label with a hole is still readable; an `href`
 with a hole is a broken link. Same language, different policy — the same
-distinction as [Adjustment 35.3](jsonforms-extended-ui-model-adjustments.md).
+distinction as [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 **`TemplateLayout` (§22) is not part of this question.** Ractive and JSX
 produce *structure*, not a value, and no amount of ICU replaces a layout
@@ -523,7 +523,7 @@ table.
 > the workspace but wired to nothing in the React packages. They are wired
 > now, together with the extended `transform` and the extra `dynamicDefaults`,
 > ported from the Vue 2 `common` package — see
-> [Adjustment 30](jsonforms-extended-ui-model-adjustments.md). The `dynamic`
+> [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). The `dynamic`
 > default is gated behind `allowScriptEvaluation`, which the original is not.
 
 `pnpm run lint` reports 11 pre-existing errors — `no-empty-function` on
@@ -536,3 +536,33 @@ The twenty per-file `ResizeObserver` stubs in
 in `test/setup/jsdomShims.ts`. They are `??`-guarded, so they are harmless, and
 they are most of the `no-empty-function` errors above. Removing them is one
 sweep that would clear both.
+
+## React adapter follow-up from the spec migration audit
+
+These findings were transferred from the spec project. Verify them against the
+current renderer code before starting work; their source audit predates later fixes.
+Portable design proposals remain in the spec project’s `docs/todo.md`.
+
+### Implementation and support verification
+
+| Feature | Remaining work | Published schemas |
+| --- | --- | --- |
+| Mixed-control `<type>-detail` options | Implement lookup and dispatch for each supported type; test nested paths and registry precedence. The current mixed renderer does not consume these keys. | Removed seven type-specific detail definitions. Ordinary `detail` remains supported. |
+| Composite dialog Remove action | Implement `showRemoveButton` and `removeLabel`, including ownership, confirmation and mutation guards, or formally retire this proposed footer action. A cell's existing remove action is a separate feature. | Removed both option definitions from UI/cell/global configuration. |
+| `showClearButton` | Resolve whether a separate option is needed alongside `clearable`, and implement a consumer before exposing it. | Removed the unused global definition. |
+| Separate read-only and disabled presentation | Core provides the setting, but the reference adapter does not consistently consume separate read-only state. Verify mutation guards and presentation throughout controls/cells before advertising the opt-in. | `separateReadonlyFromDisabled` is typed as an existing core setting, with an explicit adapter-support caveat. It is not a promise of renderer support. |
+| Config resolution and compound defaults | Align namespace consumption, temporal versus flat restrict resolution, and compound-value merging across adapters. Base lodash merges arrays by index; Monaco/grid replace local option bags wholesale. | Only traced config locations are declared. Unsupported namespaced defaults, global structural control options and layoutDefaults.minItemWidth were removed. See the complete configuration review in jsonforms-react-antd-implementation-gaps.md. |
+| Interpolation/markup beyond Label | Integrate the text pipeline into other text-bearing elements and test translation ordering. | Shared option shapes do not promise support on every element. |
+| Pending validation and submit integration | Finish a consistent pending-analysis contract, stale-result handling and host submit policy. Preserve the implemented owner-based additional-error store. | No speculative pending-state configuration. |
+| File additional-error publication | Verify/publish local read and conversion failures through the existing owner-based error integration; test cleanup and valid committed data. | Duration and registered cron validation use the schema validator; invalid duration drafts retain local feedback and pending-edit validity without additional-error publication. |
+| Container pre-touch summaries | Define and implement touch-aware descendant summaries consistently across container families. | Existing indicator/filter options describe their implemented uses, not universal coverage. |
+| Structured diagnostics | Implement consistent stable codes and reporting across all required paths. | A diagnostic requirement in prose is not proof of a runtime emitter. |
+
+The implementation audit uses the Ant Design adapter plus its shared renderer
+logic and installed JSON Forms core. Relevant evidence includes
+`jsonforms-react-renderer-common/src/layoutSizing.ts`,
+`jsonforms-react-antd-renderers/src/complex/MixedRenderer.tsx`,
+`jsonforms-react-antd-renderers/src/cells/CompositeDetailDialog.tsx`,
+`jsonforms-react-extended-renderers/src/util/interpolate.ts`, and
+`jsonforms-react-extended-renderers/src/util/additionalErrors.tsx`.
+The portable feature descriptions remain independent of component-library APIs.

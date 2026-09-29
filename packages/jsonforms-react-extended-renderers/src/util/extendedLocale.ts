@@ -1,6 +1,5 @@
 import { ExtendedI18nKey, extendedI18nDefaults } from './i18nDefaults';
 import { bgExtendedLocale } from '../locale/bg';
-import { deExtendedLocale } from '../locale/de';
 
 /**
  * Locale bundles for this package's **own** strings - the grid's "Add row",
@@ -22,7 +21,6 @@ export type ExtendedLocaleCatalog = Partial<Record<ExtendedI18nKey, string>>;
 export const defaultExtendedLocales: Record<string, ExtendedLocaleCatalog> = {
   en: {},
   bg: bgExtendedLocale,
-  de: deExtendedLocale,
 };
 
 let catalogs: Record<string, ExtendedLocaleCatalog> = defaultExtendedLocales;

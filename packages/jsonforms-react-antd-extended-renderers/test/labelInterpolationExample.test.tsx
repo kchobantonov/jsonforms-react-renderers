@@ -9,11 +9,11 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedCells, antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/label-interpolation/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/label-interpolation/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/label-interpolation/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/label-interpolation/uischema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/label-interpolation/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/label-interpolation/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/label-interpolation/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/label-interpolation/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/label-interpolation/uischema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/label-interpolation/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
 /**

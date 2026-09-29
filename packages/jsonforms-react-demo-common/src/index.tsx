@@ -48,4 +48,5 @@ export const renderExample = (
       settingsStorageKey={options.settingsStorageKey}
     />
   );
+  return root;
 };

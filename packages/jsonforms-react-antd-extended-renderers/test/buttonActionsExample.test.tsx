@@ -14,14 +14,14 @@ import {
   HandleActionContext,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { antdExtendedRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/button-actions/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/button-actions/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/button-actions/schema.json';
-import translations from '../../jsonforms-react-demo-common/src/examples/spec/button-actions/translations.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/button-actions/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/button-actions/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/button-actions/schema.json';
+import translations from '@chobantonov/jsonforms-extended-spec/examples/button-actions/translations.json';
 import {
   composed as uischema,
   uischema as portableUischema,
-} from '../../jsonforms-react-demo-common/src/examples/spec/button-actions';
+} from '../../jsonforms-react-demo-common/src/examples/nativeSpecExamples/button-actions';
 
 /*
   `Button`, section 14.

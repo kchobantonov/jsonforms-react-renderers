@@ -5,10 +5,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/additional-properties/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/additional-properties/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/additional-properties/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/additional-properties/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/uischema.json';
 
 /*
   The spec example is otherwise only exercised by opening the demo, and its

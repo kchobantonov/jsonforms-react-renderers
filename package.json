@@ -1,8 +1,8 @@
 {
   "name": "jsonforms-react-renderers",
   "engines": {
-    "node": "^18.19.0",
-    "pnpm": ">=7.13.4"
+    "node": "^22.0.0",
+    "pnpm": ">=10.28.2"
   },
   "pnpm": {
     "overrides": {
@@ -14,8 +14,7 @@
     }
   },
   "scripts": {
-    "lerna": "lerna",
-    "preparePublish": "git clean -dfx && pnpm i --frozen-lockfile && pnpm run clean && pnpm run build && pnpm run doc && pnpm run test",
+    "preparePublish": "pnpm run test:release && pnpm run release:pack",
     "merge-report": "mkdir -p coverage && lcov-result-merger 'packages/**/coverage/lcov.info' 'coverage/lcov.info' --prepend-source-files",
     "check-format": "echo 'temporarily disabled'",
     "example:antd:dev": "pnpm --filter jsonforms-react-antd-demo dev",
@@ -36,7 +35,7 @@
     "build:mui": "pnpm --filter jsonforms-react-mui-demo... --if-present build",
     "build:shadcn": "pnpm --filter jsonforms-react-shadcn-demo... --if-present build",
     "build:libs": "pnpm --filter @chobantonov/jsonforms-react-renderer-common build && pnpm --filter @chobantonov/jsonforms-react-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-primereact-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-shadcn-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-mui-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-mui-webcomponent build",
-    "bundle": "lerna run bundle",
+    "bundle": "pnpm -r --if-present bundle",
     "clean": "pnpm -r --if-present clean",
     "doc": "pnpm -r --if-present doc",
     "test": "pnpm -r --if-present test",
@@ -50,11 +49,20 @@
     "examples-app:build": "pnpm run example:antd:build && pnpm run example:primereact:build && pnpm run example:shadcn:build && pnpm run example:mui:build && node apps/jsonforms-react-examples-app/prepare-examples-app.js",
     "examples-app:dev": "pnpm run examples-app:build && pnpm --filter @chobantonov/jsonforms-react-examples-app dev",
     "examples-app:preview": "pnpm run examples-app:build && pnpm --filter @chobantonov/jsonforms-react-examples-app preview",
-    "build:examples-app": "pnpm run examples-app:build"
+    "build:examples-app": "pnpm run examples-app:build",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "pnpm run release:pack && changeset publish",
+    "release:pack": "pnpm run build:libs && node scripts/pack-release.mjs",
+    "test:release": "node --test scripts/test/*.test.mjs",
+    "test:packed": "node scripts/test-packed-webcomponents.mjs",
+    "shadcn:sync": "node scripts/sync-shadcn.mjs",
+    "shadcn:check": "node scripts/sync-shadcn.mjs --check"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5",
     "@babel/plugin-proposal-optional-chaining": "^7.16.5",
+    "@changesets/cli": "^2.30.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/lodash": "^4.14.149",
     "ajv": "^8.20.0",
@@ -64,13 +72,18 @@
     "cross-env": "^7.0.2",
     "istanbul-lib-coverage": "^3.2.0",
     "lcov-result-merger": "^3.1.0",
-    "lerna": "^6.6.2",
     "nan": "^2.14.2",
     "nyc": "^15.1.0",
+    "playwright": "1.58.1",
     "prettier": "^2.8.4",
+    "publint": "^0.3.17",
     "source-map-support": "0.5.16",
     "ts-node": "^10.4.0",
     "tslib": "^2.5.0",
-    "typescript": "~4.9.5"
-  }
+    "typescript": "~4.9.5",
+    "vite": "^5.4.21",
+    "@chobantonov/jsonforms-extended-spec": "link:../jsonforms-extended-spec"
+  },
+  "private": true,
+  "packageManager": "pnpm@10.28.2"
 }

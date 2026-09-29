@@ -5,10 +5,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
-import config from '../../jsonforms-react-demo-common/src/examples/spec/layout-sizing/config.json';
-import data from '../../jsonforms-react-demo-common/src/examples/spec/layout-sizing/data.json';
-import schema from '../../jsonforms-react-demo-common/src/examples/spec/layout-sizing/schema.json';
-import uischema from '../../jsonforms-react-demo-common/src/examples/spec/layout-sizing/uischema.json';
+import config from '@chobantonov/jsonforms-extended-spec/examples/layout-sizing/config.json';
+import data from '@chobantonov/jsonforms-extended-spec/examples/layout-sizing/data.json';
+import schema from '@chobantonov/jsonforms-extended-spec/examples/layout-sizing/schema.json';
+import uischema from '@chobantonov/jsonforms-extended-spec/examples/layout-sizing/uischema.json';
 
 /*
   The layout-sizing fixture, rendered with the base renderer set.

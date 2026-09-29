@@ -78,7 +78,7 @@
   padding: 14px;
 }
 
-.shadcn-jsonforms-group > legend,
+.shadcn-jsonforms-group > .shadcn-jsonforms-group-header,
 .shadcn-jsonforms-array h3,
 .shadcn-jsonforms-object h3 {
   color: #0f172a;
@@ -91,6 +91,14 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
+}
+
+.shadcn-jsonforms-array-actions {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  margin-left: auto;
 }
 
 .shadcn-jsonforms-array-item {
@@ -155,7 +163,9 @@
 }
 
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-label,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-group > legend,
+.shadcn-jsonforms-root.app-dark
+  .shadcn-jsonforms-group
+  > .shadcn-jsonforms-group-header,
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array h3,
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-object h3,
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item-label,
@@ -179,4 +189,151 @@
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item,
 .shadcn-jsonforms-root.app-dark .shadcn-jsonforms-tabs {
   border-color: hsl(var(--border));
+}
+
+/* A full-width disclosure header, with status separated from the title. */
+.shadcn-jsonforms-group > .shadcn-jsonforms-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: auto;
+  text-align: start;
+  white-space: normal;
+}
+
+.shadcn-jsonforms-group-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.shadcn-jsonforms-group-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+  margin-inline-start: auto;
+}
+
+.shadcn-jsonforms-group-actions [data-group-indicator] {
+  font-size: 10px;
+}
+
+.shadcn-jsonforms-group[data-collapsible] {
+  display: block;
+  border: 0;
+  border-radius: 12px;
+  padding: 0;
+  background: hsl(var(--muted, 210 40% 96.1%));
+}
+
+.shadcn-jsonforms-group[data-collapsible] > .shadcn-jsonforms-group-header {
+  padding: 12px 16px;
+  border-radius: inherit;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.shadcn-jsonforms-group[data-collapsible] > .shadcn-jsonforms-group-content {
+  padding: 0 16px 16px;
+}
+
+/* Let AG Grid provide cell boundaries and keyboard-focus indication. */
+.ag-cell:has(.shadcn-jsonforms-grid-cell) {
+  padding-inline: 0;
+}
+.ag-cell:has(.shadcn-jsonforms-grid-cell) .ag-cell-wrapper,
+.ag-cell:has(.shadcn-jsonforms-grid-cell) .ag-cell-value,
+.shadcn-jsonforms-grid-cell-content,
+.shadcn-jsonforms-grid-cell-content > .shadcn-jsonforms-cell,
+.shadcn-jsonforms-grid-cell-content > .shadcn-jsonforms-cell > .group {
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.shadcn-jsonforms-grid-cell input:not([type='checkbox']):not([type='color']),
+.shadcn-jsonforms-grid-cell button[role='combobox'] {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+/* The shared grid suppresses its own cell focus border. Keep one indication. */
+.shadcn-jsonforms-grid-cell:focus-within {
+  box-shadow: inset 0 0 0 2px hsl(var(--ring, 222.2 84% 4.9%));
+}
+
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error) {
+  position: relative;
+  padding-inline-end: 40px;
+}
+.shadcn-jsonforms-table-cell > .shadcn-jsonforms-cell-error {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error) input,
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error)
+  button[role='combobox'] {
+  border-color: hsl(var(--destructive, 0 84% 60%));
+  box-shadow: 0 0 0 1px hsl(var(--destructive, 0 84% 60%) / 0.25);
+}
+
+/* Keep wide tables inside the panel; only the table body scrolls. */
+.shadcn-jsonforms-array,
+.shadcn-jsonforms-object {
+  min-width: 0;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+.shadcn-jsonforms-array > div,
+.shadcn-jsonforms-categorization,
+.shadcn-jsonforms-categorization > [role='tabpanel'] {
+  min-width: 0;
+  max-width: 100%;
+}
+.shadcn-jsonforms-array-header > :first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.shadcn-jsonforms-array-header > :last-child {
+  flex-shrink: 0;
+}
+
+.jsonforms-mixed-renderer-primitive,
+.jsonforms-mixed-renderer-detail-primitive {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .jsonforms-mixed-renderer-primitive,
+  .jsonforms-mixed-renderer-detail-primitive {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The mixed workspace's object panel supplies the detail outline. */
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .shadcn-jsonforms-group,
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .jsonforms-additional-properties {
+  border: 0;
+  box-shadow: none;
+}
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .shadcn-jsonforms-group {
+  padding: 0;
 }
