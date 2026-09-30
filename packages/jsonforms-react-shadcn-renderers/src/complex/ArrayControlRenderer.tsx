@@ -382,6 +382,7 @@ export const ShadcnArrayRenderer = ({
       ] as const
   );
   const objectRows = Boolean(schema.properties);
+  const hasRowActions = Boolean(rowDetail.options || options.showSortButtons);
   const childLabelForIndex = (childPath: string, index: number) => {
     if (!childLabelProp) {
       return `${index}`;
@@ -554,8 +555,8 @@ export const ShadcnArrayRenderer = ({
                   {objectRows && (
                     <thead>
                       <tr className='border-b'>
-                        <th data-column-key='__selection' style={{ width: columnWidths.__selection }} className='p-2'>
-                          <Checkbox aria-label={rowDetail.t('collection.selectPage')}
+                        <th data-column-key='__selection' style={{ width: columnWidths.__selection ?? 32, minWidth: 32, maxWidth: columnWidths.__selection ?? 32 }} className='p-2 text-center'>
+                          <Checkbox className='shadcn-jsonforms-row-selection align-middle' aria-label={rowDetail.t('collection.selectPage')}
                             disabled={!selection.selectable || !page.indices.length}
                             checked={page.indices.length > 0 && page.indices.every((i) => selection.selected.includes(i)) ? true : page.indices.some((i) => selection.selected.includes(i)) ? 'indeterminate' : false}
                             onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
@@ -563,12 +564,12 @@ export const ShadcnArrayRenderer = ({
                         {columns.map(([field, column]) => (
                           <th key={field} data-column-key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
                             {column.title ?? createCleanLabel(field)}
-                            <ColumnResizeHandle colors={{ border: 'var(--border)', active: 'var(--primary)', focus: 'var(--ring)' }} field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
+                            <ColumnResizeHandle colors={{ border: 'hsl(var(--muted-foreground) / 0.5)', active: 'hsl(var(--primary))', focus: 'hsl(var(--ring))' }} field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
                               onResizeStart={(widths) => setColumnWidths(widths)}
                               onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} />
                           </th>
                         ))}
-                        <th data-column-key='__actions' style={{ width: columnWidths.__actions }} className='p-2' />
+                        {hasRowActions && <th data-column-key='__actions' style={{ width: columnWidths.__actions ?? 1 }} className='whitespace-nowrap p-2' />}
                       </tr>
                     </thead>
                   )}
@@ -586,8 +587,8 @@ export const ShadcnArrayRenderer = ({
                             }
                           }}
                         >
-                          <td className='p-2' onClick={(event) => event.stopPropagation()}>
-                            <Checkbox aria-label={rowDetail.t('collection.selectRow', { index: index + 1 })}
+                          <td className='p-2 text-center' style={{ width: columnWidths.__selection ?? 32, minWidth: 32, maxWidth: columnWidths.__selection ?? 32 }} onClick={(event) => event.stopPropagation()}>
+                            <Checkbox className='shadcn-jsonforms-row-selection align-middle' aria-label={rowDetail.t('collection.selectRow', { index: index + 1 })}
                               disabled={!selection.selectable} checked={selection.selected.includes(index)}
                               onCheckedChange={(checked) => selection.setSelected(checked === true ? [...selection.selected, index] : selection.selected.filter((i) => i !== index))} />
                           </td>
@@ -632,7 +633,8 @@ export const ShadcnArrayRenderer = ({
                               </div>
                             </td>
                           ))}
-                          <td className='p-2'>
+                          {hasRowActions && <td className='whitespace-nowrap p-2' style={{ width: columnWidths.__actions ?? 1 }}>
+                            <div className='flex w-max flex-nowrap items-center gap-1'>
                             {rowDetail.options && (
                               <TooltipProvider>
                                 <Tooltip>
@@ -700,7 +702,8 @@ export const ShadcnArrayRenderer = ({
                               </>
                             )}
 
-                          </td>
+                            </div>
+                          </td>}
                         </tr>
                       );
                     })}

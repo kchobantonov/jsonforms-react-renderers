@@ -337,3 +337,19 @@
   > .shadcn-jsonforms-group {
   padding: 0;
 }
+
+/* Preserve native checkbox behavior while keeping row selectors visible in both themes. */
+.shadcn-jsonforms-row-selection[data-state='unchecked'] {
+  border-color: color-mix(in srgb, hsl(var(--muted-foreground)) 60%, hsl(var(--background)));
+}
+.shadcn-jsonforms-row-selection:disabled {
+  opacity: 1;
+}
+.shadcn-jsonforms-row-selection:disabled[data-state='unchecked'] {
+  background-color: hsl(var(--muted));
+}
+.shadcn-jsonforms-row-selection[data-state='indeterminate'] {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
