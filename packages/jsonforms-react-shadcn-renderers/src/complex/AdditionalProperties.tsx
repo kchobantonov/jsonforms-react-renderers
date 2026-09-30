@@ -1,3 +1,5 @@
+import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
+import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { CollectionPager } from './CollectionPager';
@@ -305,9 +307,6 @@ export const AdditionalProperties = ({
     allowIfMissing ||
     additionalKeys.length > 0;
 
-  if (!shouldShow) {
-    return null;
-  }
 
   const propertyName = newPropertyName.trim();
   const propertyNameError = validatePropertyName(
@@ -355,15 +354,18 @@ export const AdditionalProperties = ({
     setNewPropertyName('');
   };
 
-  const removeProperty = (propertyToRemove: string) => {
-    if (removePropertyDisabled || !objectData) {
-      return;
-    }
-
-    const updatedData = { ...objectData };
-    delete updatedData[propertyToRemove];
-    handleChange(path, updatedData);
-  };
+  const deletion = useCollectionDelete<string>({
+    data: objectData, identity: path, catalogId: 'additionalProperties',
+    options: uischema.options, config,
+    canRemove: (key) => !removePropertyDisabled && !appliedOptions.disableRemove && !!objectData && Object.prototype.hasOwnProperty.call(objectData, key) && !reservedPropertyNames.includes(key) && !(appliedOptions.restrict !== false && objectSchema.required?.includes(key)),
+    value: (key) => objectData?.[key],
+    remove: (key) => {
+      const updatedData = { ...objectData };
+      delete updatedData[key];
+      handleChange(path, updatedData);
+    },
+  });
+  const removeProperty = deletion.request;
 
   const renameProperty = (propertyToRename: string) => {
     const trimmed = renameValue.trim();
@@ -411,9 +413,12 @@ export const AdditionalProperties = ({
   const renameDisabled =
     !enabled || readonly || Boolean(renameError) || !renameValue.trim();
 
+  if (!shouldShow) return null;
+
   return (
     <PendingChangesProvider changes={page.pending}>
       <>
+        <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
         <Card className='jsonforms-additional-properties my-1 min-w-full'>
           <div className='px-4 py-2'>
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
@@ -474,8 +479,7 @@ export const AdditionalProperties = ({
               </div>
             </div>
           </div>
-          <CollectionPager page={page} />
-          <div className='jsonforms-additional-properties-list flex flex-col gap-2 px-4 pb-4'>
+          <div className='jsonforms-additional-properties-list flex flex-col gap-2 px-4'>
             {page.indices
               .map((index) => additionalPropertyItems[index])
               .map((item) => (
@@ -527,6 +531,9 @@ export const AdditionalProperties = ({
                   </div>
                 </div>
               ))}
+          </div>
+          <div className='px-4 pb-4'>
+            <CollectionPager page={page} />
           </div>
         </Card>
 

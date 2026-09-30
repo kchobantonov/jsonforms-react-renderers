@@ -278,6 +278,8 @@ export const TupleControl = (props: Props) => {
         values.length > definition.prefix.length) && (
         <TupleAdditionalItems
           definition={definition}
+          config={props.config}
+          path={path}
           data={values}
           schema={schema}
           rootSchema={rootSchema}

@@ -22,7 +22,7 @@ import {
   Paths,
 } from '@jsonforms/core';
 import { JsonFormsStateContext, useJsonForms } from '@jsonforms/react';
-import { Button, Table, TableColumnProps, Tooltip } from 'antd';
+import { Button, Table, TableColumnProps, Tooltip, theme } from 'antd';
 import range from 'lodash/range';
 import startCase from 'lodash/startCase';
 import union from 'lodash/union';
@@ -276,6 +276,7 @@ const CollectionTable = ({
   isObjectSchema,
   renderFrame,
 }: any) => {
+  const { token } = theme.useToken();
   const page = useCollectionPagination(
     dataSource.map((row: any) => row.index),
     props.uischema.options?.pagination,
@@ -320,7 +321,10 @@ const CollectionTable = ({
       {renderFrame(<RowDetailFrame state={detail}>
         <div style={{ minWidth: 0, overflow: 'auto' }}>
           <Table
+            style={columnWidths.__selection ? { width: Object.values(columnWidths).reduce((sum, value) => sum + value, 0), maxWidth: 'none' } : undefined}
+            tableLayout={columnWidths.__selection ? 'fixed' : 'auto'}
             rowSelection={{
+              columnWidth: columnWidths.__selection,
               selectedRowKeys: selection.selected,
               onChange: (keys) => selection.setSelected(keys as number[]),
               getCheckboxProps: () => ({ disabled: !selection.selectable }),
@@ -329,14 +333,15 @@ const CollectionTable = ({
             dataSource={page.indices.map((index) => dataSource[index])}
             showHeader={isObjectSchema}
             columns={displayColumns.map((column: any) => {
-              if (!column.dataIndex) return column;
+              if (!column.dataIndex) return { ...column, width: columnWidths.__actions ?? column.width };
               const field = column.dataIndex;
               const definition = props.uischema.options?.columnDefs?.find((item: TableColumnDefinition) => item.field === field);
               const width = columnWidths[field] ?? column.width;
               return { ...column, width,
-                onHeaderCell: () => ({ style: { ...tableColumnStyle(definition), width, position: 'relative', paddingInlineEnd: 16 } }),
+                onHeaderCell: () => ({ 'data-column-key': field, style: { ...tableColumnStyle(definition), width, position: 'relative', paddingInlineEnd: 16 } }),
                 onCell: () => ({ style: { ...tableColumnStyle(definition), width } }),
-                title: <>{column.title}<ColumnResizeHandle field={String(column.title ?? field)} definition={definition} width={width}
+                title: <>{column.title}<ColumnResizeHandle colors={{ border: token.colorSplit, active: token.colorPrimary, focus: token.colorPrimaryBorder }} field={String(column.title ?? field)} definition={definition} width={width}
+                  onResizeStart={(widths) => setColumnWidths(widths)}
                   onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} /></>,
               };
             })}

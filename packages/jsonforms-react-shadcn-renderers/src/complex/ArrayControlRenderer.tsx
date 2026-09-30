@@ -550,24 +550,25 @@ export const ShadcnArrayRenderer = ({
           ) : table ? (
             <RowDetailFrame state={rowDetail}>
               <div className='min-w-0 max-w-full overflow-x-auto'>
-                <table className='w-full text-sm' aria-label={label}>
+                <table className='text-sm' style={{ width: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : '100%', tableLayout: columnWidths.__selection ? 'fixed' : 'auto' }} aria-label={label}>
                   {objectRows && (
                     <thead>
                       <tr className='border-b'>
-                        <th className='p-2'>
+                        <th data-column-key='__selection' style={{ width: columnWidths.__selection }} className='p-2'>
                           <Checkbox aria-label={rowDetail.t('collection.selectPage')}
                             disabled={!selection.selectable || !page.indices.length}
                             checked={page.indices.length > 0 && page.indices.every((i) => selection.selected.includes(i)) ? true : page.indices.some((i) => selection.selected.includes(i)) ? 'indeterminate' : false}
                             onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
                         </th>
                         {columns.map(([field, column]) => (
-                          <th key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
+                          <th key={field} data-column-key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
                             {column.title ?? createCleanLabel(field)}
-                            <ColumnResizeHandle field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
+                            <ColumnResizeHandle colors={{ border: 'var(--border)', active: 'var(--primary)', focus: 'var(--ring)' }} field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
+                              onResizeStart={(widths) => setColumnWidths(widths)}
                               onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} />
                           </th>
                         ))}
-                        <th className='p-2' />
+                        <th data-column-key='__actions' style={{ width: columnWidths.__actions }} className='p-2' />
                       </tr>
                     </thead>
                   )}

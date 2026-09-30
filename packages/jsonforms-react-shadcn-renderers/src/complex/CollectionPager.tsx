@@ -19,56 +19,58 @@ export const CollectionPager = ({ page }: { page: CollectionPage }) => {
   const t = useI18n();
   if (!page.enabled || !page.total) return null;
   return (
-    <Pagination
-      aria-label={t('collection.pagination')}
-      className='flex flex-wrap items-center justify-end gap-2 py-2'
-    >
-      <Select
-        value={String(page.size)}
-        onValueChange={(value) => page.change(page.current, Number(value))}
+    <div data-collection-footer className='border-t py-3'>
+      <Pagination
+        aria-label={t('collection.pagination')}
+        className='flex flex-wrap items-center justify-end gap-2'
       >
-        <SelectTrigger aria-label={t('collection.pageSize')} className='w-20'>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {page.choices.map((size) => (
-            <SelectItem key={size} value={String(size)}>
-              {size}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <PaginationContent>
-        <PaginationItem>
-          <Button
-            type='button'
-            variant='outline'
-            size='icon-sm'
-            aria-label={t('collection.previous')}
-            disabled={page.current === 1}
-            onClick={() => page.change(page.current - 1)}
-          >
-            <ChevronLeft />
-          </Button>
-        </PaginationItem>
-        <PaginationItem>
-          <span aria-live='polite'>
-            {page.current} / {page.pages}
-          </span>
-        </PaginationItem>
-        <PaginationItem>
-          <Button
-            type='button'
-            variant='outline'
-            size='icon-sm'
-            aria-label={t('collection.next')}
-            disabled={page.current === page.pages}
-            onClick={() => page.change(page.current + 1)}
-          >
-            <ChevronRight />
-          </Button>
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+        <Select
+          value={String(page.size)}
+          onValueChange={(value) => page.change(page.current, Number(value))}
+        >
+          <SelectTrigger aria-label={t('collection.pageSize')} className='w-20'>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {page.choices.map((size) => (
+              <SelectItem key={size} value={String(size)}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <PaginationContent>
+          <PaginationItem>
+            <Button
+              type='button'
+              variant='outline'
+              size='icon-sm'
+              aria-label={t('collection.previous')}
+              disabled={page.current === 1}
+              onClick={() => page.change(page.current - 1)}
+            >
+              <ChevronLeft />
+            </Button>
+          </PaginationItem>
+          <PaginationItem>
+            <span aria-live='polite'>
+              {page.current} / {page.pages}
+            </span>
+          </PaginationItem>
+          <PaginationItem>
+            <Button
+              type='button'
+              variant='outline'
+              size='icon-sm'
+              aria-label={t('collection.next')}
+              disabled={page.current === page.pages}
+              onClick={() => page.change(page.current + 1)}
+            >
+              <ChevronRight />
+            </Button>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 };

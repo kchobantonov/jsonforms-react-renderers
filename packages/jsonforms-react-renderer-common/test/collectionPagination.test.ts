@@ -13,6 +13,15 @@ describe('collection pagination defaults', () => {
     expect(resolvePagination(false, config, 'array', true).enabled).toBe(false);
     expect(resolvePagination(undefined, { pagination: true }, 'additionalProperties', false).enabled).toBe(false);
   });
+  it('enables additional sections by default and supports scoped boolean overrides', () => {
+    for (const kind of ['additionalItems', 'additionalProperties'] as const) {
+      expect(resolvePagination(undefined, {}, kind)).toMatchObject({ enabled: true, size: 5 });
+      const config = { jsonformsExtended: { [kind]: { pagination: false } } };
+      expect(resolvePagination(undefined, config, kind).enabled).toBe(false);
+      expect(resolvePagination(true, config, kind).enabled).toBe(true);
+      expect(resolvePagination(false, {}, kind).enabled).toBe(false);
+    }
+  });
   it('includes the initial size and filters invalid choices without mutating options', () => {
     const options = { pageSize: 7, pageSizeOptions: [5, 5, 0, 10] };
     expect(resolvePagination(options, {}, 'array', true).choices).toEqual([5, 7, 10]);

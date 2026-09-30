@@ -27,6 +27,7 @@ interface RenderOptions {
   data?: Record<string, unknown>;
   options?: Record<string, unknown>;
   uischemas?: any[];
+  config?: any;
   property?: string;
 }
 
@@ -35,6 +36,7 @@ const render = ({
   data = {},
   options,
   uischemas,
+  config,
   property = 'pair',
 }: RenderOptions) => {
   const container = document.createElement('div');
@@ -47,6 +49,7 @@ const render = ({
     root.render(
       <ConfigProvider theme={{ token: { motion: false } }}>
         <JsonForms
+          config={{ ...config, jsonformsExtended: { confirmation: { default: 'never' }, ...config?.jsonformsExtended } }}
           data={data}
           schema={schema as any}
           uischema={
@@ -977,4 +980,52 @@ describe('a supplied position layout', () => {
     expect(view.stored()).toEqual([45.5, -122.6, 99]);
     view.unmount();
   });
+});
+
+
+describe('additional items pagination', () => {
+  const properties = { pair: { type: 'array', items: [{ type: 'string', title: 'Reference' }], additionalItems: { type: 'string' } } };
+  const data = { pair: ['REF', ...Array.from({ length: 7 }, (_, i) => `Package ${i + 1}`)] };
+  it('pages only the tail, edits absolute positions, and reveals appended items', async () => {
+    const form = render({ properties, data });
+    await settle(60);
+    expect(form.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(5);
+    expect(form.inputs()[0].value).toBe('REF');
+    await form.click(form.container.querySelector('.ant-pagination-next button'));
+    expect(form.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(2);
+    const tail = form.container.querySelector<HTMLInputElement>('[data-tuple-additional] input')!;
+    expect(tail.value).toBe('Package 6');
+    await form.type(tail, 'Edited package');
+    expect(form.stored()[6]).toBe('Edited package');
+    expect(form.stored()[0]).toBe('REF');
+    await form.click(form.container.querySelector('[data-tuple-add]'));
+    expect(form.container.querySelector('[data-tuple-delete="8"]')).not.toBeNull();
+    form.unmount();
+  });
+  it('honors scoped false and local true overrides', async () => {
+    const config = { jsonformsExtended: { additionalItems: { pagination: false } } };
+    const unpaged = render({ properties, data, config });
+    await settle(60);
+    expect(unpaged.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(7);
+    unpaged.unmount();
+    const paged = render({ properties, data, config, options: { additionalItems: { pagination: true } } });
+    await settle(60);
+    expect(paged.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(5);
+    paged.unmount();
+  });
+});
+
+
+it('confirms trailing item deletion and preserves data on cancel', async () => {
+  const form = render({ properties: { pair: { type: 'array', items: [{ type: 'string' }], additionalItems: { type: 'string' } } },
+    data: { pair: ['Fixed', 'Tail'] }, config: { jsonformsExtended: { confirmation: { default: 'always' } } } });
+  await form.click(form.container.querySelector('[data-tuple-delete]'));
+  expect(form.stored()).toEqual(['Fixed', 'Tail']);
+  const button = (text: string) => Array.from(document.body.querySelectorAll('button')).find(b => b.textContent?.trim() === text)!;
+  await form.click(button('No'));
+  expect(form.stored()).toEqual(['Fixed', 'Tail']);
+  await form.click(form.container.querySelector('[data-tuple-delete]'));
+  await form.click(button('Yes'));
+  expect(form.stored()).toEqual(['Fixed']);
+  form.unmount();
 });

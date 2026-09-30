@@ -52,7 +52,7 @@ describe('resolving the policy', () => {
   });
 
   it('then the documented fallback', () => {
-    expect(resolve(undefined, undefined)).toBe('always');
+    expect(resolve(undefined, undefined)).toBe('complex');
   });
 
   /*
@@ -62,7 +62,7 @@ describe('resolving the policy', () => {
   */
   it('falls back to complex only for a mixed type change', () => {
     expect(fallbackConfirmationPolicy('mixed', 'typeChange')).toBe('complex');
-    expect(fallbackConfirmationPolicy('mixed', 'delete')).toBe('always');
+    expect(fallbackConfirmationPolicy('mixed', 'delete')).toBe('complex');
     expect(fallbackConfirmationPolicy('oneOf', 'branchChange')).toBe('always');
   });
 
@@ -79,18 +79,18 @@ describe('resolving the policy', () => {
 
   it('ignores a value that is not a policy, rather than reading it as never', () => {
     expect(resolve({ confirmation: { delete: 'sometimes' } }, undefined)).toBe(
-      'always'
+      'complex'
     );
     expect(
       resolve(undefined, {
         jsonformsExtended: { confirmation: { default: true } },
       })
-    ).toBe('always');
+    ).toBe('complex');
   });
 
   it('reads nothing from an unrelated config shape', () => {
     expect(resolve(undefined, { confirmation: { default: 'never' } })).toBe(
-      'always'
+      'complex'
     );
   });
 });
@@ -156,4 +156,12 @@ it('defaults composite cell deletion to complex while preserving policy override
   expect(resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('always');
   expect(resolve({}, { jsonformsExtended: { confirmation: { renderers: { compositeCell: { delete: 'never' } } } } })).toBe('never');
   expect(resolve({ confirmation: { delete: 'never' } }, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('never');
+});
+
+
+it.each(['mixed', 'arrayTable', 'arrayLayout', 'listWithDetail', 'agGrid', 'additionalItems', 'additionalProperties', 'compositeCell'])('defaults %s deletion to complex', (catalogId) => {
+  const policy = fallbackConfirmationPolicy(catalogId, 'delete');
+  expect(policy).toBe('complex');
+  for (const value of ['', 'text', 0, false, null, {}, []]) expect(confirmationRequired(policy, [value])).toBe(false);
+  for (const value of [{ field: '' }, [null]]) expect(confirmationRequired(policy, [value])).toBe(true);
 });

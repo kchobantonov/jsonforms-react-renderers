@@ -120,6 +120,11 @@ it('paginates dynamic properties while retaining declared fields', () => {
     expect(container.querySelector('input[value="Fixed"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 5"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 6"]')).toBeNull();
+    const collection = container.querySelector('.jsonforms-additional-properties')!;
+    const list = collection.querySelector('.jsonforms-additional-properties-list')!;
+    const footer = collection.querySelector('[data-collection-footer]')!;
+    expect(footer).toBeTruthy();
+    expect(list.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   } finally {
     act(() => root.unmount());
   }
@@ -314,12 +319,18 @@ it('selects and orders summary columns while retaining all detail fields', () =>
     expect(resize.closest('th')!.style.width).toBe('300px');
     act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true })));
     expect(resize.closest('th')!.style.width).toBe('170px');
+    const emailHeader = container.querySelector<HTMLElement>('th[data-column-key="email"]')!;
+    const selectionHeader = container.querySelector<HTMLElement>('thead th')!;
+    vi.spyOn(emailHeader, 'getBoundingClientRect').mockReturnValue({ width: 220 } as DOMRect);
+    vi.spyOn(selectionHeader, 'getBoundingClientRect').mockReturnValue({ width: 40 } as DOMRect);
+    vi.spyOn(resize.closest('th')!, 'getBoundingClientRect').mockReturnValue({ width: 170 } as DOMRect);
     resize.setPointerCapture = vi.fn();
     resize.hasPointerCapture = () => true;
     resize.releasePointerCapture = vi.fn();
     act(() => resize.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, button: 0, bubbles: true })));
     act(() => resize.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, bubbles: true })));
     expect(resize.closest('th')!.style.width).toBe('210px');
+    expect(emailHeader.style.width).toBe('220px');
     act(() => resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true })));
 
 

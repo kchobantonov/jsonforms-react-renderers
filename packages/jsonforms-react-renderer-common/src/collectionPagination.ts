@@ -7,8 +7,8 @@ export type PaginationOption =
 export const resolvePagination = (
   local: PaginationOption | undefined,
   config: any,
-  kind: 'array' | 'additionalProperties',
-  defaultEnabled: boolean
+  kind: 'array' | 'additionalProperties' | 'additionalItems',
+  defaultEnabled = true
 ) => {
   const option =
     local ?? config?.jsonformsExtended?.[kind]?.pagination ?? defaultEnabled;
@@ -32,8 +32,8 @@ export const useCollectionPagination = (
   keys: readonly (string | number)[],
   local: PaginationOption | undefined,
   config: any,
-  kind: 'array' | 'additionalProperties',
-  defaultEnabled = false
+  kind: 'array' | 'additionalProperties' | 'additionalItems',
+  defaultEnabled = true
 ) => {
   const pending = useMemo(() => new Set<PendingChange>(), []);
   const resolved = resolvePagination(local, config, kind, defaultEnabled);

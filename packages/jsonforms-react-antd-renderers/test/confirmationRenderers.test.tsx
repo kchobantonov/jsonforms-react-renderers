@@ -385,8 +385,7 @@ const deleteTreeNode = async (container: HTMLElement, name: string) => {
 
 describe('a mixed tree delete', () => {
   /*
-    Tree Delete is `delete`, not `typeChange` - so its fallback is `always`,
-    not the mixed type-change exception, and it prompts for anything present.
+    Tree Delete uses the shared complex fallback and prompts for nonempty containers.
   */
   it('asks before removing a node', async () => {
     const { container, prompted, promptFor, stored, unmount } = render(
@@ -456,16 +455,16 @@ describe('a mixed tree delete', () => {
     unmount();
   });
 
-  it('also asks for an empty container, which is still a value', async () => {
+  it('deletes an empty container without prompting', async () => {
     const { container, prompted, unmount } = render(
       treeSchema,
       treeUi,
       treeData()
     );
     await settle();
-    // `blank` is `{}`: not complex, but `delete` falls back to `always`.
+    // Empty containers do not prompt under the complex fallback.
     await deleteTreeNode(container, 'blank');
-    expect(prompted()).toBe(true);
+    expect(prompted()).toBe(false);
     unmount();
   });
 });

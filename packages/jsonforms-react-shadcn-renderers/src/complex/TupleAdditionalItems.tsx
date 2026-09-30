@@ -1,3 +1,8 @@
+import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
+import { DeleteDialog } from './DeleteDialog';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { CollectionPager } from './CollectionPager';
 import React, { useState } from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Trash2, Plus } from 'lucide-react';
@@ -15,6 +20,8 @@ export interface TupleAdditionalItemsProps {
   schema: JsonSchema;
   rootSchema: JsonSchema;
   options: Record<string, any>;
+  config?: any;
+  path?: string;
   enabled: boolean;
   onChange: (next: unknown[]) => void;
 
@@ -28,6 +35,8 @@ export const TupleAdditionalItems = ({
   schema,
   rootSchema,
   options,
+  config,
+  path,
   enabled,
   onChange,
   renderItem,
@@ -90,15 +99,12 @@ export const TupleAdditionalItems = ({
     onChange(next);
   };
 
-  const remove = (index: number) => {
-    // The index guard is belt and braces: no Delete button is rendered for a
-    // declared position in the first place, so this only matters if the schema
-    // changes under a click already in flight.
-    if (!canDelete || index < definition.prefix.length) {
-      return;
-    }
-    onChange(data.filter((_, position) => position !== index));
-  };
+  const deletion = useCollectionDelete<number>({
+    data, identity: path, catalogId: 'additionalItems', options, config,
+    canRemove: (index) => canDelete && index >= definition.prefix.length && index < data.length,
+    value: (index) => data[index],
+    remove: (index) => onChange(data.filter((_, position) => position !== index)),
+  });
 
   const trailing: number[] = [];
   for (
@@ -109,6 +115,8 @@ export const TupleAdditionalItems = ({
     trailing.push(index);
   }
 
+  const page = useCollectionPagination(trailing, options.additionalItems?.pagination, config, 'additionalItems');
+
   return (
     <section
       data-tuple-additional
@@ -118,6 +126,7 @@ export const TupleAdditionalItems = ({
         borderTop: `1px solid ${'var(--border)'}`,
       }}
     >
+      <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
       <header
         style={{
           display: 'flex',
@@ -141,34 +150,37 @@ export const TupleAdditionalItems = ({
           <Plus className='h-4 w-4' />
         </Button>
       </header>
-      {trailing.map((index) => (
-        <div
-          key={index}
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 8,
-            marginBottom: 8,
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
-          <Button
-            size='icon-sm'
-            type='button'
-            variant='ghost'
-            className='text-destructive'
-            disabled={!canDelete}
-            onClick={() => remove(index)}
-            title={t('tuple.delete', { label: positionLabel(index) })}
-            aria-label={t('tuple.delete', {
-              label: positionLabel(index),
-            })}
-            data-tuple-delete={index}
+      <PendingChangesProvider changes={page.pending}>
+        {page.indices.map((offset) => trailing[offset]).map((index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 8,
+              marginBottom: 8,
+            }}
           >
-            <Trash2 className='h-4 w-4' />
-          </Button>
-        </div>
-      ))}
+            <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
+            <Button
+              size='icon-sm'
+              type='button'
+              variant='ghost'
+              className='text-destructive'
+              disabled={!canDelete}
+              onClick={() => deletion.request(index)}
+              title={t('tuple.delete', { label: positionLabel(index) })}
+              aria-label={t('tuple.delete', {
+                label: positionLabel(index),
+              })}
+              data-tuple-delete={index}
+            >
+              <Trash2 className='h-4 w-4' />
+            </Button>
+          </div>
+        ))}
+      </PendingChangesProvider>
+      <CollectionPager page={page} />
       {message && (
         <span className='text-destructive' role='alert' data-tuple-draft>
           {message}

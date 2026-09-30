@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import React from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
@@ -17,23 +18,26 @@ export const DeleteDialog = ({
   open: boolean;
   onCancel: () => void;
   onConfirm: () => void;
-}) => (
+}) => {
+  const t = useI18n();
+  return (
   <Dialog open={open} onOpenChange={(open) => !open && onCancel()}>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete item?</DialogTitle>
+        <DialogTitle>{t('confirm.delete.title')}</DialogTitle>
         <DialogDescription>
-          This will remove the selected item and its data.
+          {t('confirm.delete.message')}
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <Button type='button' variant='outline' onClick={onCancel}>
-          Cancel
+          {t('confirm.decline')}
         </Button>
         <Button type='button' variant='destructive' onClick={onConfirm}>
-          Delete
+          {t('confirm.accept')}
         </Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 );
+};

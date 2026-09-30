@@ -37,7 +37,8 @@ export type BaseConfirmationCatalogId =
   | 'arrayTable'
   | 'arrayLayout'
   | 'listWithDetail'
-  | 'additionalProperties';
+  | 'additionalProperties'
+  | 'additionalItems';
 
 /**
  * Any stable catalog id, including those contributed by optional extensions.
@@ -61,7 +62,7 @@ const asPolicy = (value: unknown): ConfirmationPolicy | undefined =>
 /**
  * The documented fallback, used when nothing configures the operation.
  *
- * Mixed type changes and composite cell deletion fall back to `complex`; other operations fall back to
+ * Mixed type changes and all deletions fall back to `complex`; other operations fall back to
  * `always`. Section 14 spells out the consequence: "the default configuration
  * example deliberately opts into always globally while restoring complex for
  * mixed type changes; without that exception a global always also applies to
@@ -73,7 +74,7 @@ export const fallbackConfirmationPolicy = (
   operation: ConfirmationOperation
 ): ConfirmationPolicy =>
   (catalogId === 'mixed' && operation === 'typeChange') ||
-  (catalogId === 'compositeCell' && operation === 'delete')
+  operation === 'delete'
     ? 'complex'
     : 'always';
 

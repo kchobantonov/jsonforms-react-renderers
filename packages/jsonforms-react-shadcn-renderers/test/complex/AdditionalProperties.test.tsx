@@ -205,13 +205,14 @@ describe('Shadcn AdditionalProperties', () => {
     expect(handleChange.mock.calls[0][1]).toHaveProperty('newProperty');
   });
 
-  it('deletes properties through the icon action', () => {
+  it('confirms property deletion through the icon action', () => {
     const handleChange = vi.fn();
     act(() => {
       root.render(
         <AdditionalProperties
           data={{ string: 'string value' }}
           enabled
+          config={{ jsonformsExtended: { confirmation: { default: 'always' } } }}
           handleChange={handleChange}
           label='Object'
           path=''
@@ -229,6 +230,15 @@ describe('Shadcn AdditionalProperties', () => {
         ?.click();
     });
 
+    expect(handleChange).not.toHaveBeenCalled();
+    act(() => {
+      Array.from(document.body.querySelectorAll('button')).find(button => button.textContent?.trim() === 'No')?.click();
+    });
+    expect(handleChange).not.toHaveBeenCalled();
+    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Delete string"]')?.click());
+    act(() => {
+      Array.from(document.body.querySelectorAll('button')).find(button => button.textContent?.trim() === 'Yes')?.click();
+    });
     expect(handleChange).toHaveBeenCalledTimes(1);
     expect(handleChange.mock.calls[0][1]).not.toHaveProperty('string');
   });

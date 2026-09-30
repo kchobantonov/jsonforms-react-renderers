@@ -1,3 +1,5 @@
+import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
+import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { CollectionPager } from './CollectionPager';
@@ -38,7 +40,6 @@ import {
   validateAdditionalPropertyName,
 } from '../util/additionalPropertyName';
 import { AntdIsolatedPropertyEditor } from './additionalProperties/AntdIsolatedPropertyEditor';
-import { useConfirmation } from '../util/useConfirmation';
 import { literalPropertySchema } from '../util/literalPropertySchema';
 import { AntdAdditionalPropertyActions } from './additionalProperties/AntdAdditionalPropertyActions';
 import { AntdAdditionalPropertyRenameDialog } from './additionalProperties/AntdAdditionalPropertyRenameDialog';
@@ -79,7 +80,6 @@ export const AdditionalProperties = ({
     string | null
   >(null);
   const t = useI18n();
-  const confirmation = useConfirmation();
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
@@ -127,9 +127,6 @@ export const AdditionalProperties = ({
     allowIfMissing ||
     additionalKeys.length > 0;
 
-  if (!shouldShow) {
-    return null;
-  }
 
   // Exactly as typed. Trimming here would store `"a"` for `"  a  "`, and with
   // empty names permitted it would erase a whitespace-only key entirely.
@@ -223,31 +220,18 @@ export const AdditionalProperties = ({
     setNewPropertyName('');
   };
 
-  const removeProperty = (propertyToRemove: string) => {
-    if (removePropertyDisabled || !objectData) {
-      return;
-    }
-    /*
-      "Dynamic-property Delete uses additionalProperties" - the owner of the
-      action. Fallback `always`, so this used to remove a property silently.
-    */
-    confirmation.request({
-      operation: 'delete',
-      catalogId: 'additionalProperties',
-      discarded: [objectData[propertyToRemove]],
-      options: uischema.options as Record<string, unknown> | undefined,
-      config,
-      perform: () => {
-        // The guard is rechecked, not remembered.
-        if (removePropertyDisabled || !objectData) {
-          return;
-        }
-        const updatedData = { ...objectData };
-        delete updatedData[propertyToRemove];
-        handleChange(path, updatedData);
-      },
-    });
-  };
+  const deletion = useCollectionDelete<string>({
+    data: objectData, identity: path, catalogId: 'additionalProperties',
+    options: uischema.options, config,
+    canRemove: (key) => !removePropertyDisabled && !appliedOptions.disableRemove && !!objectData && Object.prototype.hasOwnProperty.call(objectData, key) && !reservedPropertyNames.includes(key) && !(appliedOptions.restrict !== false && objectSchema.required?.includes(key)),
+    value: (key) => objectData?.[key],
+    remove: (key) => {
+      const updatedData = { ...objectData };
+      delete updatedData[key];
+      handleChange(path, updatedData);
+    },
+  });
+  const removeProperty = deletion.request;
 
   const renameProperty = (propertyToRename: string) => {
     const nextName = renameValue;
@@ -280,10 +264,12 @@ export const AdditionalProperties = ({
     setRenameValue('');
   };
 
+  if (!shouldShow) return null;
+
   return (
     <PendingChangesProvider changes={page.pending}>
       <Card className='jsonforms-additional-properties' size='small'>
-        {confirmation.dialog}
+        <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
         <Flex vertical gap='middle'>
           <Row align='bottom' gutter={[12, 8]}>
             <Col md={5} xs={24}>
@@ -334,7 +320,6 @@ export const AdditionalProperties = ({
               {propertyNameError}
             </Typography.Text>
           ) : null}
-          <CollectionPager page={page} />
           <Flex
             className='jsonforms-additional-properties-list'
             vertical
@@ -480,6 +465,7 @@ export const AdditionalProperties = ({
                 );
               })}
           </Flex>
+          <CollectionPager page={page} />
         </Flex>
         <AntdAdditionalPropertyRenameDialog
           disabled={

@@ -1,3 +1,8 @@
+import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
+import { DeleteDialog } from './DeleteDialog';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { CollectionPager } from './CollectionPager';
 import React, { useState } from 'react';
 import { Button, Typography, theme as antTheme } from 'antd';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
@@ -12,6 +17,8 @@ export interface TupleAdditionalItemsProps {
   schema: JsonSchema;
   rootSchema: JsonSchema;
   options: Record<string, any>;
+  config?: any;
+  path?: string;
   enabled: boolean;
   onChange: (next: unknown[]) => void;
   /** Renders one trailing position, by index. */
@@ -34,6 +41,8 @@ export const TupleAdditionalItems = ({
   schema,
   rootSchema,
   options,
+  config,
+  path,
   enabled,
   onChange,
   renderItem,
@@ -97,15 +106,12 @@ export const TupleAdditionalItems = ({
     onChange(next);
   };
 
-  const remove = (index: number) => {
-    // The index guard is belt and braces: no Delete button is rendered for a
-    // declared position in the first place, so this only matters if the schema
-    // changes under a click already in flight.
-    if (!canDelete || index < definition.prefix.length) {
-      return;
-    }
-    onChange(data.filter((_, position) => position !== index));
-  };
+  const deletion = useCollectionDelete<number>({
+    data, identity: path, catalogId: 'additionalItems', options, config,
+    canRemove: (index) => canDelete && index >= definition.prefix.length && index < data.length,
+    value: (index) => data[index],
+    remove: (index) => onChange(data.filter((_, position) => position !== index)),
+  });
 
   const trailing: number[] = [];
   for (
@@ -116,6 +122,8 @@ export const TupleAdditionalItems = ({
     trailing.push(index);
   }
 
+  const page = useCollectionPagination(trailing, options.additionalItems?.pagination, config, 'additionalItems');
+
   return (
     <section
       data-tuple-additional
@@ -125,6 +133,7 @@ export const TupleAdditionalItems = ({
         borderTop: `1px solid ${token.colorBorderSecondary}`,
       }}
     >
+      <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
       <header
         style={{
           display: 'flex',
@@ -146,32 +155,35 @@ export const TupleAdditionalItems = ({
           data-tuple-add
         />
       </header>
-      {trailing.map((index) => (
-        <div
-          key={index}
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: token.paddingXS,
-            marginBottom: token.paddingXS,
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
-          <Button
-            size='small'
-            type='text'
-            danger
-            icon={<DeleteOutlined />}
-            disabled={!canDelete}
-            onClick={() => remove(index)}
-            title={t('tuple.delete', { label: positionLabel(index) })}
-            aria-label={t('tuple.delete', {
-              label: positionLabel(index),
-            })}
-            data-tuple-delete={index}
-          />
-        </div>
-      ))}
+      <PendingChangesProvider changes={page.pending}>
+        {page.indices.map((offset) => trailing[offset]).map((index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: token.paddingXS,
+              marginBottom: token.paddingXS,
+            }}
+          >
+            <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
+            <Button
+              size='small'
+              type='text'
+              danger
+              icon={<DeleteOutlined />}
+              disabled={!canDelete}
+              onClick={() => deletion.request(index)}
+              title={t('tuple.delete', { label: positionLabel(index) })}
+              aria-label={t('tuple.delete', {
+                label: positionLabel(index),
+              })}
+              data-tuple-delete={index}
+            />
+          </div>
+        ))}
+      </PendingChangesProvider>
+      <CollectionPager page={page} />
       {message && (
         <Typography.Text type='warning' role='alert' data-tuple-draft>
           {message}
