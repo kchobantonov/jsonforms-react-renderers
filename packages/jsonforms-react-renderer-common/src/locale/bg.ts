@@ -20,6 +20,7 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'collection.deleteSelectedMessage': 'Да се изтрият ли избраните редове и техните данни?',
   'collection.selectPage': 'Избиране на всички редове на тази страница',
   'collection.selectRow': 'Избиране на ред {index}',
+  'collection.resizeColumn': 'Промяна на ширината на колоната {field}',
   'enum.none': 'Няма',
   'enum.noMatches': 'Няма съвпадения',
   'chips.addPlaceholder': 'Въведете стойност и натиснете Enter',

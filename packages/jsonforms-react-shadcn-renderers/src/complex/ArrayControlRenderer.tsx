@@ -1,3 +1,4 @@
+import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
 import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
@@ -283,6 +284,7 @@ export const ShadcnArrayRenderer = ({
     down: translate('array.down', 'Move down'),
   };
   const selection = useTableSelection({ path, schema, uischema, config, enabled, readonly, removeItems });
+  const [columnWidths, setColumnWidths] = useColumnWidths();
   const [selectedItem, setSelectedItem] = React.useState(0);
   const [pendingIndex, setPendingIndex] = React.useState<number>();
   const options = { ...config, ...uischema.options };
@@ -559,8 +561,10 @@ export const ShadcnArrayRenderer = ({
                             onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
                         </th>
                         {columns.map(([field, column]) => (
-                          <th key={field} style={tableColumnStyle(definitions?.find((column) => column.field === field))} className='p-2 text-left font-medium'>
+                          <th key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
                             {column.title ?? createCleanLabel(field)}
+                            <ColumnResizeHandle field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
+                              onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} />
                           </th>
                         ))}
                         <th className='p-2' />
@@ -573,7 +577,8 @@ export const ShadcnArrayRenderer = ({
                       return (
                         <tr
                           key={rowPath}
-                          className='border-b'
+                          className={rowDetail.options?.presentation === 'panel' && rowDetail.panelOpen && rowDetail.selection?.index === index ? 'border-b bg-accent' : 'border-b'}
+                          aria-current={rowDetail.options?.presentation === 'panel' && rowDetail.panelOpen && rowDetail.selection?.index === index ? true : undefined}
                           onClick={() => {
                             if (rowDetail.options?.presentation === 'panel') {
                               rowDetail.open(index);
@@ -588,7 +593,7 @@ export const ShadcnArrayRenderer = ({
                           {columns.map(([field, column]) => (
                             <td
                               key={field}
-                              style={tableColumnStyle(definitions?.find((column) => column.field === field))}
+                              style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }}
                               className='shadcn-jsonforms-table-cell p-2'
                             >
                               <div style={{ maxWidth: tableColumnStyle(definitions?.find((column) => column.field === field)).maxWidth, overflow: 'hidden' }}>

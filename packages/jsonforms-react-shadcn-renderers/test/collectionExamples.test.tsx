@@ -164,14 +164,18 @@ it.each([['right', false], ['bottom', false], ['right', true], ['bottom', true]]
         container.querySelectorAll('input[value="Person 1"]').length
       ).toBeGreaterThan(1);
       expect(document.querySelector('[role="dialog"]')).toBeNull();
+      expect(container.querySelector('tbody tr[aria-current="true"] input[value="Person 1"]')).not.toBeNull();
       const toggle = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
       act(() => toggle('Hide details').click());
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(1);
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
       act(() => container.querySelector<HTMLTableRowElement>('tbody tr')!.click());
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
       act(() => container.querySelector<HTMLInputElement>('tbody input')!.click());
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
       act(() => edit.click());
       expect(toggle('Hide details').getAttribute('aria-expanded')).toBe('true');
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(2);
@@ -304,6 +308,21 @@ it('selects and orders summary columns while retaining all detail fields', () =>
       } }} renderers={shadcnRenderers} cells={shadcnCells} />));
     const headers = Array.from(container.querySelectorAll('th')).map((cell) => cell.textContent);
     expect(headers.filter((text) => text === 'Email' || text === 'Name')).toEqual(['Email', 'Name']);
+    const resize = container.querySelector<HTMLElement>('[role="separator"][aria-label="Resize Name column"]')!;
+    expect(resize).not.toBeNull();
+    act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true })));
+    expect(resize.closest('th')!.style.width).toBe('300px');
+    act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true })));
+    expect(resize.closest('th')!.style.width).toBe('170px');
+    resize.setPointerCapture = vi.fn();
+    resize.hasPointerCapture = () => true;
+    resize.releasePointerCapture = vi.fn();
+    act(() => resize.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, button: 0, bubbles: true })));
+    act(() => resize.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, bubbles: true })));
+    expect(resize.closest('th')!.style.width).toBe('210px');
+    act(() => resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true })));
+
+
     expect(container.querySelector('input[value="Detail only"]')).toBeNull();
     act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Edit details"]')!.click());
     expect(document.querySelector('[role="dialog"] input[value="Detail only"]')).not.toBeNull();

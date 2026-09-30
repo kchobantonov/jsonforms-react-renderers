@@ -1,3 +1,4 @@
+import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
 import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
@@ -282,6 +283,7 @@ const CollectionTable = ({
     'array',
     true
   );
+  const [columnWidths, setColumnWidths] = useColumnWidths();
   const detail = useRowDetail(props);
   const selection = useTableSelection(props);
   const actionColumn = columns.find((column: any) => column.key === 'actions');
@@ -326,10 +328,27 @@ const CollectionTable = ({
             scroll={{ x: 'max-content' }}
             dataSource={page.indices.map((index) => dataSource[index])}
             showHeader={isObjectSchema}
-            columns={displayColumns}
+            columns={displayColumns.map((column: any) => {
+              if (!column.dataIndex) return column;
+              const field = column.dataIndex;
+              const definition = props.uischema.options?.columnDefs?.find((item: TableColumnDefinition) => item.field === field);
+              const width = columnWidths[field] ?? column.width;
+              return { ...column, width,
+                onHeaderCell: () => ({ style: { ...tableColumnStyle(definition), width, position: 'relative', paddingInlineEnd: 16 } }),
+                onCell: () => ({ style: { ...tableColumnStyle(definition), width } }),
+                title: <>{column.title}<ColumnResizeHandle field={String(column.title ?? field)} definition={definition} width={width}
+                  onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} /></>,
+              };
+            })}
             size='small'
             pagination={false}
+            rowClassName={(row: any) =>
+              detail.options?.presentation === 'panel' && detail.panelOpen && detail.selection?.index === row.index
+                ? 'ant-table-row-selected'
+                : ''
+            }
             onRow={(row: any) => ({
+              'aria-current': detail.options?.presentation === 'panel' && detail.panelOpen && detail.selection?.index === row.index ? true : undefined,
               onClick: () => {
                 if (detail.options?.presentation === 'panel')
                   detail.open(row.index);

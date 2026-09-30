@@ -1,4 +1,5 @@
 export const i18nDefaults = {
+  'collection.resizeColumn': 'Resize {field} column',
   'collection.deleteSelected': 'Delete selected rows',
   'collection.deleteSelectedMessage': 'Delete the selected rows and their data?',
   'collection.selectPage': 'Select all rows on this page',
