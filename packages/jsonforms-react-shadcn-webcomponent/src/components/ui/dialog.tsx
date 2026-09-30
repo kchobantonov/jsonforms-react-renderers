@@ -7,10 +7,18 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { Button } from "./button"
 
+// Keep portals inside the styled shadow tree instead of document.body.
+const DialogPortalContainer = React.createContext<HTMLElement | null>(null)
+
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null)
+  return <div ref={setContainer} style={{ display: "contents" }}>
+    <DialogPortalContainer.Provider value={container}>
+      <DialogPrimitive.Root data-slot="dialog" {...props} />
+    </DialogPortalContainer.Provider>
+  </div>
 }
 
 function DialogTrigger({
@@ -22,7 +30,9 @@ function DialogTrigger({
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+  const container = React.useContext(DialogPortalContainer)
+  if (!container) return null
+  return <DialogPrimitive.Portal data-slot="dialog-portal" container={container} {...props} />
 }
 
 function DialogClose({

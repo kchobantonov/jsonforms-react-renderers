@@ -1,9 +1,10 @@
 import { createAgGridControlRenderer } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
   ConnectedCellFrame,
+  RowDetailFrame,
   useConfirmation,
 } from '@chobantonov/jsonforms-react-antd-renderers';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, EditOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { AntdEditorButton } from './AntdEditorButton';
 import { AntdArrayFrame } from './AntdArrayFrame';
 import { AntdEditorFrame } from './AntdEditorFrame';
@@ -37,6 +38,10 @@ const useAgGridRemoveConfirmation = () => {
 
 export const AntdAgGridControlRenderer = createAgGridControlRenderer({
   Frame: AntdEditorFrame,
+  RowDetailFrame,
+  EditIcon: EditOutlined,
+  ShowDetailsIcon: EyeOutlined,
+  HideDetailsIcon: EyeInvisibleOutlined,
   ArrayFrame: AntdArrayFrame,
   CellFrame: ConnectedCellFrame,
   Button: AntdEditorButton,

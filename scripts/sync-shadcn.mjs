@@ -45,10 +45,24 @@ for (const file of Object.keys(manifest.files)) {
       .replace('\n}\n\nfunction DialogContent', '\n})\n\nfunction DialogContent');
   }
   for (const host of ['apps/jsonforms-react-shadcn-demo', 'packages/jsonforms-react-shadcn-webcomponent']) {
+    let hostExpected = expected;
+    if (file === 'dialog.tsx' && host.includes('webcomponent')) {
+      hostExpected = hostExpected
+        .replace('function Dialog({', '// Keep portals inside the styled shadow tree instead of document.body.\nconst DialogPortalContainer = React.createContext<HTMLElement | null>(null)\n\nfunction Dialog({')
+        .replace('  return <DialogPrimitive.Root data-slot="dialog" {...props} />', `  const [container, setContainer] = React.useState<HTMLDivElement | null>(null)
+  return <div ref={setContainer} style={{ display: "contents" }}>
+    <DialogPortalContainer.Provider value={container}>
+      <DialogPrimitive.Root data-slot="dialog" {...props} />
+    </DialogPortalContainer.Provider>
+  </div>`)
+        .replace('  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />', `  const container = React.useContext(DialogPortalContainer)
+  if (!container) return null
+  return <DialogPrimitive.Portal data-slot="dialog-portal" container={container} {...props} />`);
+    }
     const target = resolve(root, host, 'src/components/ui', file);
     if (check) {
-      if (readFileSync(target, 'utf8') !== expected) { console.error(`Upstream drift: ${target}`); drift = true; }
-    } else writeFileSync(target, expected);
+      if (readFileSync(target, 'utf8') !== hostExpected) { console.error(`Upstream drift: ${target}`); drift = true; }
+    } else writeFileSync(target, hostExpected);
   }
 }
 if (drift) process.exitCode = 1;

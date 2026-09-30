@@ -1,3 +1,7 @@
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
+import { ErrorIndicator } from './ErrorIndicator';
+import { ScrollRegion } from '../components/ScrollRegion';
 import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
 import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
@@ -7,26 +11,11 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from '@jsonforms-react-shadcn-ui/resizable';
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from '@jsonforms-react-shadcn-ui/tooltip';
-import {
-  ErrorSummaryList,
-  useErrorSummary,
-} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@jsonforms-react-shadcn-ui/popover';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import { CollectionPager } from './CollectionPager';
-import { RowDetailFrame, RowDetailToggle } from './RowDetailFrame';
+import { RowDetailFrame, RowDetailToggle, RowDetailEditButton } from './RowDetailFrame';
 import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
 import {
   and,
@@ -53,12 +42,10 @@ import {
 import React from 'react';
 import {
   Check,
-  Pencil,
   Plus,
   Trash2,
   ChevronUp,
   ChevronDown,
-  CircleAlert,
 } from 'lucide-react';
 import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
 import { DeleteDialog } from './DeleteDialog';
@@ -127,120 +114,8 @@ const ArrayItemPanel = ({
   );
 };
 
-const ErrorIndicator = ({
-  errors,
-  className,
-  path,
-}: {
-  errors: string;
-  className?: string;
-  path?: string;
-}) => {
-  const entries = useErrorSummary(errors, path);
-  const [open, setOpen] = React.useState(false);
-  const timer = React.useRef<ReturnType<typeof setTimeout>>();
-  const trigger = React.useRef<HTMLButtonElement>(null);
-  const content = React.useRef<HTMLDivElement>(null);
-  const cancelClose = () => {
-    if (timer.current) clearTimeout(timer.current);
-  };
-  const show = () => {
-    cancelClose();
-    setOpen(true);
-  };
-  const scheduleClose = () => {
-    cancelClose();
-    timer.current = setTimeout(() => {
-      if (
-        trigger.current !== document.activeElement &&
-        !content.current?.contains(document.activeElement)
-      )
-        setOpen(false);
-    }, 200);
-  };
-  React.useEffect(
-    () => () => {
-      if (timer.current) clearTimeout(timer.current);
-    },
-    []
-  );
-  if (entries.length <= 1)
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon-sm'
-              className={`h-6 w-6 shrink-0 p-0 text-destructive ${
-                className ?? ''
-              }`}
-              aria-label={errors}
-            >
-              <CircleAlert className='h-4 w-4' aria-hidden='true' />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent className='max-w-sm whitespace-pre-line'>
-            {errors}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          type='button'
-          variant='ghost'
-          size='icon-sm'
-          ref={trigger}
-          onPointerEnter={show}
-          onPointerLeave={scheduleClose}
-          onFocus={show}
-          onBlur={scheduleClose}
-          onClick={(event) => {
-            event.preventDefault();
-            show();
-          }}
-          className={`h-6 w-6 shrink-0 p-0 text-destructive ${className ?? ''}`}
-          aria-label={errors}
-        >
-          <CircleAlert className='h-4 w-4' aria-hidden='true' />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent
-        className='w-auto'
-        align='start'
-        onOpenAutoFocus={(event) => event.preventDefault()}
-        onCloseAutoFocus={(event) => event.preventDefault()}
-        onPointerEnter={cancelClose}
-        onPointerLeave={scheduleClose}
-        onFocusCapture={cancelClose}
-        onBlurCapture={scheduleClose}
-      >
-        <div ref={content}>
-          <ErrorSummaryList
-            entries={entries}
-            renderToggle={(label, toggle, expanded) => (
-              <Button
-                type='button'
-                variant='link'
-                onClick={toggle}
-                aria-expanded={expanded}
-              >
-                {label}
-              </Button>
-            )}
-          />
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
-const TableCellErrors = withJsonFormsCellProps(({ errors, path }: CellProps) =>
-  errors ? (
+const TableCellErrors = withJsonFormsCellProps(({ errors, path, schema, uischema }: CellProps) =>
+  errors && uischema.options?.summary?.type !== 'Label' && schema.type !== 'object' && schema.type !== 'array' ? (
     <ErrorIndicator
       errors={errors}
       path={path}
@@ -374,7 +249,7 @@ export const ShadcnArrayRenderer = ({
   if (!visible) return null;
   const definitions = uischema.options?.columnDefs as TableColumnDefinition[] | undefined;
   const properties = schema.properties ?? { value: schema };
-  const columns = tableColumnFields(properties, schema.properties ? definitions : undefined, Object.keys(properties)).map((field) => [field, properties[field]] as const).map(
+  const columns = tableColumnFields(properties, schema.properties ? definitions : undefined, Object.keys(properties)).map((field) => [field, definitions?.some(c => c.field === field && c.scope === '#') ? schema : properties[field]] as const).map(
     ([field, column]) =>
       [
         field,
@@ -468,6 +343,10 @@ export const ShadcnArrayRenderer = ({
                 style={{ height: 'auto' }}
               >
                 <ResizablePanel defaultSize='25%' minSize='15%' maxSize='60%'>
+                  <ScrollRegion
+                    className='shadcn-jsonforms-list-navigation'
+                    style={{ maxHeight: '20rem' }}
+                  >
                   <ItemGroup
                     className='min-w-0 rounded-lg border p-1'
                     aria-label={label}
@@ -511,7 +390,7 @@ export const ShadcnArrayRenderer = ({
                               )}
                             </Button>
                           </ItemContent>
-                          <ItemActions>
+                          <ItemActions className='shrink-0'>
                             <Button
                               type='button'
                               variant='ghost'
@@ -529,6 +408,7 @@ export const ShadcnArrayRenderer = ({
                       );
                     })}
                   </ItemGroup>
+                  </ScrollRegion>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel minSize='25%'>
@@ -550,8 +430,8 @@ export const ShadcnArrayRenderer = ({
             )
           ) : table ? (
             <RowDetailFrame state={rowDetail}>
-              <div className='min-w-0 max-w-full overflow-x-auto'>
-                <table className='text-sm' style={{ width: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : '100%', tableLayout: columnWidths.__selection ? 'fixed' : 'auto' }} aria-label={label}>
+              <div className='min-w-0 w-full max-w-full overflow-x-auto' style={{ contain: 'inline-size' }}>
+                <table className='text-sm' style={{ flexShrink: 0, minWidth: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : undefined, width: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : '100%', tableLayout: columnWidths.__selection ? 'fixed' : 'auto' }} aria-label={label}>
                   {objectRows && (
                     <thead>
                       <tr className='border-b'>
@@ -563,8 +443,8 @@ export const ShadcnArrayRenderer = ({
                         </th>
                         {columns.map(([field, column]) => (
                           <th key={field} data-column-key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
-                            {column.title ?? createCleanLabel(field)}
-                            <ColumnResizeHandle colors={{ border: 'hsl(var(--muted-foreground) / 0.5)', active: 'hsl(var(--primary))', focus: 'hsl(var(--ring))' }} field={column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
+                            {definitions?.find(c => c.field === field)?.headerName ?? column.title ?? createCleanLabel(field)}
+                            <ColumnResizeHandle colors={{ border: 'hsl(var(--muted-foreground) / 0.5)', active: 'hsl(var(--primary))', focus: 'hsl(var(--ring))' }} field={definitions?.find(c => c.field === field)?.headerName ?? column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
                               onResizeStart={(widths) => setColumnWidths(widths)}
                               onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} />
                           </th>
@@ -599,17 +479,17 @@ export const ShadcnArrayRenderer = ({
                               className='shadcn-jsonforms-table-cell p-2'
                             >
                               <div style={{ maxWidth: tableColumnStyle(definitions?.find((column) => column.field === field)).maxWidth, overflow: 'hidden' }}>
-                              <DispatchCell
+                              <ItemProvider path={rowPath}><DispatchCell
                                 schema={column}
                                 uischema={{
                                   type: 'Control',
-                                  scope: objectRows
+                                  scope: objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
                                     ? '#/properties/' + field
                                     : '#',
-                                  options: options.cells?.[field],
+                                  options: { ...options.cells?.[field], ...(definitions?.some(c => c.field === field && c.scope === '#') ? { summaryOnly: true } : {}) },
                                 }}
                                 path={
-                                  objectRows
+                                  objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
                                     ? composePaths(rowPath, field)
                                     : rowPath
                                 }
@@ -621,11 +501,12 @@ export const ShadcnArrayRenderer = ({
                                 renderers={renderers}
                                 cells={cells}
                               />
+                              </ItemProvider>
                               <TableCellErrors
                                 schema={column}
-                                uischema={{ type: 'Control', scope: '#' }}
+                                uischema={{ type: 'Control', scope: '#', options: options.cells?.[field] }}
                                 path={
-                                  objectRows
+                                  objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
                                     ? composePaths(rowPath, field)
                                     : rowPath
                                 }
@@ -636,30 +517,13 @@ export const ShadcnArrayRenderer = ({
                           {hasRowActions && <td className='whitespace-nowrap p-2' style={{ width: columnWidths.__actions ?? 1 }}>
                             <div className='flex w-max flex-nowrap items-center gap-1'>
                             {rowDetail.options && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      type='button'
-                                      variant='ghost'
-                                      size='icon-sm'
-                                      aria-label={rowDetail.t('collection.editDetails')}
-                                      onClick={(event) => {
-                    event.stopPropagation();
-                    if (rowDetail.options?.presentation === 'panel') {
-                      rowDetail.setPanelOpen(true);
-                    }
-                    rowDetail.open(index);
-                  }}
-                                    >
-                                      <Pencil className='h-4 w-4' aria-hidden='true' />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {rowDetail.t('collection.editDetails')}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                              <RowDetailEditButton label={rowDetail.t('collection.editDetails')}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  if (rowDetail.options?.presentation === 'panel') rowDetail.setPanelOpen(true);
+                                  rowDetail.open(index);
+                                }} />
+
                             )}
                             {options.showSortButtons && (
                               <>

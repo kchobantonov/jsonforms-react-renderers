@@ -1,5 +1,6 @@
 import { ControlProps, JsonSchema, UISchemaElement } from '@jsonforms/core';
 import React from 'react';
+import type { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 export type EditorControlFrameProps = React.PropsWithChildren<ControlProps>;
 export type EditorActionProps = React.PropsWithChildren<{
   disabled?: boolean;
@@ -64,6 +65,7 @@ export type EditorArrayFrameProps = React.PropsWithChildren<{
 export type EditorRendererComponents = {
   Frame: React.ComponentType<EditorControlFrameProps>;
   Button: React.ComponentType<EditorActionProps>;
+  RowDetailButton?: React.ComponentType<EditorActionProps>;
   /**
    * Optional icons for the editor's maximize/restore toggle. When omitted the
    * toggle falls back to a text label, so existing renderer sets keep working.
@@ -73,6 +75,13 @@ export type EditorRendererComponents = {
   /** Icons for the array toolbar; omitted icons fall back to text labels. */
   AddIcon?: React.ComponentType;
   RemoveIcon?: React.ComponentType;
+  EditIcon?: React.ComponentType;
+  ShowDetailsIcon?: React.ComponentType;
+  HideDetailsIcon?: React.ComponentType;
+  /** Whole-row detail chrome shared with the renderer set's normal table. */
+  RowDetailFrame?: React.ComponentType<
+    React.PropsWithChildren<{ state: RowDetailState }>
+  >;
   /** Optional chrome around the editor; defaults to an unstyled container. */
   Surface?: React.ComponentType<EditorSurfaceProps>;
   /** Optional chrome around array controls (title + validation + actions). */

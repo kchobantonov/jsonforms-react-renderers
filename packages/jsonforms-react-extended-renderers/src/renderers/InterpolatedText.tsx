@@ -89,13 +89,11 @@ export const InterpolatedText = ({
   fallback,
 }: InterpolatedTextProps) => (
   /*
-    Both fallbacks are the unresolved text. A label's words are worth more
-    half-rendered than replaced by a spinner, and the boundary is not
-    optional: Suspense has no error path, so a chunk that never arrives would
-    otherwise throw past it and take the form down over one label.
+    A pending evaluator shows a compact status indicator, never the authored
+    template. The caller supplies safe literal content for a failed load.
   */
   <LoadBoundary fallback={fallback}>
-    <Suspense fallback={fallback}>
+    <Suspense fallback={<span role="status" aria-busy="true">…</span>}>
       <LazyEvaluate
         segments={segments}
         textParams={textParams}

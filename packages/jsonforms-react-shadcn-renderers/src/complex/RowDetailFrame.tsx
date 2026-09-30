@@ -1,10 +1,11 @@
-import { Eye, EyeOff } from 'lucide-react';
+import { ScrollRegion } from '../components/ScrollRegion';
+import { DetailDialogContent } from '../complex/DetailDialogContent';
+import { Eye, EyeOff, Pencil } from 'lucide-react';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
 import React from 'react';
 import { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import {
   Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -30,11 +31,11 @@ export const RowDetailFrame = ({
           open={!!state.selection}
           onOpenChange={(open) => !open && state.close()}
         >
-          <DialogContent aria-describedby={undefined}>
+          <DetailDialogContent open={!!state.selection} options={options.dialog} aria-describedby={undefined}>
             <DialogHeader>
               <DialogTitle>{t('collection.editDetails')}</DialogTitle>
             </DialogHeader>
-            <div className='max-h-[65vh] overflow-auto p-1'>
+            <div className='p-1'>
               {state.conflict && (
                 <p role='alert'>{t('composite.applyConflict')}</p>
               )}
@@ -52,7 +53,7 @@ export const RowDetailFrame = ({
                 {t('composite.apply')}
               </Button>
             </DialogFooter>
-          </DialogContent>
+          </DetailDialogContent>
         </Dialog>
       </>
     );
@@ -65,13 +66,15 @@ export const RowDetailFrame = ({
       style={{ height: panelOpen && options.placement === 'bottom' ? '40rem' : '32rem' }}
     >
       <ResizablePanel defaultSize='55%' minSize='20%'>
-        {children}
+        <ScrollRegion className='shadcn-jsonforms-collection-pane' style={{ height: '100%' }}>
+          {children}
+        </ScrollRegion>
       </ResizablePanel>
       {panelOpen && options.resizable !== false && <ResizableHandle withHandle />}
       {panelOpen && <ResizablePanel minSize='20%'>
-        <div className='p-3'>
+        <ScrollRegion style={{ height: '100%' }}><div className='p-3'>
           {state.content ?? state.t('collection.selectItem')}
-        </div>
+        </div></ScrollRegion>
       </ResizablePanel>}
     </ResizablePanelGroup>
     </div>
@@ -97,3 +100,20 @@ export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
       </div>
   );
 };
+
+/** Shared row edit action for native tables and AG Grid. */
+export const RowDetailEditButton = ({ label, onClick, disabled }: {
+  label: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
+}) => (
+  <TooltipProvider><Tooltip>
+    <TooltipTrigger asChild>
+      <Button type='button' variant='ghost' size='icon-sm'
+        aria-label={label} disabled={disabled} onClick={onClick}>
+        <Pencil className='h-4 w-4' aria-hidden='true' />
+      </Button>
+    </TooltipTrigger>
+    <TooltipContent>{label}</TooltipContent>
+  </Tooltip></TooltipProvider>
+);

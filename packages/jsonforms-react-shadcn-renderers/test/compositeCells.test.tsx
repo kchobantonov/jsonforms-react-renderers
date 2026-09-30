@@ -207,10 +207,10 @@ it.each(['Address', 'Phones'])('confirms removing populated %s and preserves it 
   };
   remove();
   expect(document.querySelector('[role="dialog"]')).toBeTruthy();
-  click('Cancel');
+  click('No');
   expect(latest).toEqual(initial);
   remove();
-  click('Delete');
+  click('Yes');
   expect(latest.rows[0][label === 'Address' ? 'address' : 'phones']).toBeUndefined();
 });
 
@@ -219,4 +219,64 @@ it.each([{}, []])('clears an empty composite without prompting: %j', (value) => 
   click('Remove Address');
   expect(document.querySelector('[role="dialog"]')).toBeNull();
   expect(latest.rows[0].address).toBeUndefined();
+});
+
+it('shows descendant errors on object and array summaries without leaking sibling errors', () => {
+  const invalidSchema = JSON.parse(JSON.stringify(schema));
+  invalidSchema.properties.rows.items.properties.address.required = ['city'];
+  invalidSchema.properties.rows.items.properties.phones.items.minLength = 3;
+  mount(false, { rows: [
+    { name: 'Ada', address: {}, phones: ['x', 'y'] },
+    { name: 'Grace', address: { city: 'London' }, phones: ['123'] },
+  ] }, invalidSchema);
+  const composites = container.querySelectorAll('[class~="group/composite"]');
+  expect(composites[0].querySelector('button[aria-label*="city"]')).toBeTruthy();
+  expect(composites[1].querySelector('button[aria-label*="3"]')).toBeTruthy();
+  expect(composites[2].querySelector('svg.lucide-circle-alert')).toBeNull();
+  expect(composites[3].querySelector('svg.lucide-circle-alert')).toBeNull();
+});
+
+it('renders combinator cells with errors only on the invalid example row', () => {
+
+  const load = (name: string) => JSON.parse(readFileSync(require.resolve(
+    '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/' + name + '.json'
+  ), 'utf8'));
+  const exampleSchema = load('schema');
+  const exampleData = load('data');
+  const exampleUi = load('uischema').elements[1].elements[2].elements[0];
+  mount(false, exampleData, exampleSchema, exampleUi);
+  const cells = container.querySelectorAll('[class~="group/composite"]');
+  // Five complex columns per row: object, array, oneOf, anyOf, allOf.
+  expect(cells).toHaveLength(10);
+  for (let index = 0; index < 5; index++) {
+    expect(cells[index].querySelector('svg.lucide-circle-alert')).toBeTruthy();
+    expect(cells[index + 5].querySelector('svg.lucide-circle-alert')).toBeNull();
+  }
+  for (const label of ['OneOf contact', 'AnyOf contact', 'AllOf contact']) {
+    click('Edit ' + label);
+    expect(document.querySelector('[role="dialog"]')).toBeTruthy();
+    expect(document.querySelector('[role="dialog"]')!.textContent).not.toContain('No applicable renderer');
+    expect(document.querySelector('[role="dialog"]')!.textContent).not.toContain('Full name');
+    if (label === 'OneOf contact') {
+      expect(document.querySelector('[role="dialog"] [role="combobox"]')).toBeTruthy();
+      expect(document.querySelector('[role="dialog"] [role="tablist"]')).toBeNull();
+    }
+    click('Cancel');
+  }
+});
+
+it('renders a row-bound Label summary without edit or clear actions', () => {
+
+  const presentation = {
+    type: 'Control', scope: '#/properties/rows', options: {
+      table: true,
+      columnDefs: [{ field: 'preview', scope: '#', headerName: 'Preview' }],
+      cells: { preview: { summary: { type: 'Label', text: 'Row presentation' } } },
+    },
+  };
+  mount(false, initial, schema, presentation);
+  expect(container.textContent).toContain('Row presentation');
+  expect(container.textContent).toContain('Preview');
+  expect(container.querySelector('[aria-label^="Edit "]')).toBeNull();
+  expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
 });

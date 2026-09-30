@@ -173,6 +173,7 @@ export const ListWithDetailRenderer = (
       >
         <Splitter orientation='horizontal'>
           <Splitter.Panel defaultSize='25%' min='15%' max='60%'>
+            <div style={{ maxHeight: '20rem', overflowY: 'auto', overscrollBehaviorY: 'contain' }}>
             {data > 0 ? (
               <Listy
                 items={range(data)}
@@ -199,6 +200,7 @@ export const ListWithDetailRenderer = (
             ) : (
               <Empty description={translations.noDataMessage} />
             )}
+            </div>
           </Splitter.Panel>
           <Splitter.Panel min='25%'>
             <div style={{ minWidth: 0, paddingInlineStart: 12 }}>

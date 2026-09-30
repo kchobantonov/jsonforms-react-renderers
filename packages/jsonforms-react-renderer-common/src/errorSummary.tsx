@@ -106,6 +106,22 @@ export const useErrorSummary = (fallback: string, path?: string) => {
         .map((message) => ({ path: '', message }));
 };
 
+/** Include errors on a composite value and all descendants, with core path semantics. */
+export const usePathErrorMessages = (path: string): string => {
+  const context = useJsonForms();
+  const translate = useTranslator();
+  const errors = displayableErrors(context.core ?? {})
+    .flatMap((list) => list ?? [])
+    .filter((error) => {
+      const errorPath = getControlPath(error);
+      return path === '' || errorPath === path || errorPath.startsWith(path + '.');
+    });
+  return formatErrorSummary(
+    errors, context.core?.schema, context.core?.uischema,
+    translate, context.i18n?.translateError
+  ).map((entry) => entry.path ? `${entry.path}: ${entry.message}` : entry.message).join('\n');
+};
+
 /** Shared presentation structure; the renderer supplies its native action component. */
 export const ErrorSummaryList = ({
   entries,

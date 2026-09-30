@@ -1,5 +1,6 @@
+import { DetailModal } from '../complex/DetailModal';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Button, Modal, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import {
   JsonFormsCore,
   JsonSchema,
@@ -18,6 +19,7 @@ import { PendingChange, PendingChangesProvider } from '../util/pendingChanges';
 import { preventsEmpty } from '../util/compositeActions';
 
 export type CompositeDetailDialogOptions = {
+  dialog?: import('@chobantonov/jsonforms-react-renderer-common/detailDialog').DetailDialogOptions;
   showEmptyButton?: boolean;
   disableRemove?: boolean;
   restrict?: boolean;
@@ -202,7 +204,7 @@ export const CompositeDetailDialog = ({
   );
 
   return (
-    <Modal
+    <DetailModal options={options.dialog}
       open={open}
       title={title}
       onCancel={cancel}
@@ -218,6 +220,6 @@ export const CompositeDetailDialog = ({
           <CellModeProvider value={false}>{children}</CellModeProvider>
         </PendingChangesProvider>
       </JsonFormsContext.Provider>
-    </Modal>
+    </DetailModal>
   );
 };

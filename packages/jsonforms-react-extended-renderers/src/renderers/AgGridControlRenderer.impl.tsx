@@ -1,6 +1,14 @@
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import {
+  tableColumnFields,
+  tableColumnStyle,
+  TableColumnDefinition,
+} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import { useEditorAppearance } from '../util/useEditorAppearance';
 import { useExtendedTranslator } from '../util/useExtendedTranslator';
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
   composePaths,
   ControlProps,
@@ -8,7 +16,8 @@ import {
   createDefaultValue,
   JsonSchema,
 } from '@jsonforms/core';
-import { DispatchCell } from '@jsonforms/react';
+import { DispatchCell, useJsonForms } from '@jsonforms/react';
+import { labelFilterValue } from '../util/labelFilterValue';
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -86,6 +95,12 @@ const gridTheme = themeQuartz.withParams({
 });
 
 export const createAgGridControl = ({
+  Button,
+  RowDetailButton = Button,
+  EditIcon,
+  ShowDetailsIcon,
+  HideDetailsIcon,
+  RowDetailFrame,
   AddIcon,
   RemoveIcon,
   useRemoveConfirmation,
@@ -103,12 +118,16 @@ export const createAgGridControl = ({
             NonNullable<EditorRendererComponents['useRemoveConfirmation']>
           >
         | undefined);
+  const DetailShell =
+    RowDetailFrame ??
+    (({ children }: React.PropsWithChildren<any>) => <>{children}</>);
   const ArrayShell = ArrayFrame ?? PlainArrayFrame;
   // Fragment would reject the identity props, so the fallback drops them.
   const CellShell =
     CellFrame ?? (({ children }: React.PropsWithChildren) => <>{children}</>);
   const AgGridControl = (props: ControlProps) => {
     const anchor = useRef<HTMLDivElement>(null);
+    const formContext = useJsonForms();
     const hostTheme = useHostTheme();
     const confirmation = useConfirm();
     const t = useExtendedTranslator();
@@ -155,7 +174,82 @@ export const createAgGridControl = ({
       () => ({ ...props.config, ...props.uischema.options }),
       [props.config, props.uischema.options]
     );
-    const editable = props.enabled && !props.readonly;
+    const editable =
+      props.enabled && !props.readonly && !(props.schema as any).readOnly;
+    const detail = useRowDetail({
+      ...props,
+      schema: items ?? {},
+      enabled: editable,
+    });
+    // Keep the action renderer stable as selection and form data change.
+    const detailRef = useRef(detail);
+    detailRef.current = detail;
+    useEffect(() => {
+      const host = anchor.current;
+      if (!host || !RowDetailFrame || detail.options?.presentation !== 'panel')
+        return;
+      const markCurrent = () => {
+        host.querySelectorAll<HTMLElement>('.ag-row[row-id]').forEach((row) => {
+          if (
+            detail.panelOpen &&
+            row.getAttribute('row-id') === String(detail.selection?.index)
+          ) {
+            row.setAttribute('aria-current', 'true');
+          } else {
+            row.removeAttribute('aria-current');
+          }
+        });
+      };
+      markCurrent();
+      const observer = new MutationObserver(markCurrent);
+      observer.observe(host, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['row-id'],
+      });
+      return () => observer.disconnect();
+    }, [
+      detail.panelOpen,
+      detail.selection?.index,
+      detail.options?.presentation,
+      props.visible,
+    ]);
+    const detailColumn = useMemo<ColDef>(
+      () => ({
+        colId: '$detail',
+        pinned: 'right',
+        lockPinned: true,
+        maxWidth: EditIcon ? 64 : 140,
+        headerName: '',
+        sortable: false,
+        filter: false,
+        resizable: false,
+        suppressMovable: true,
+        flex: 0,
+        width: EditIcon ? 64 : 140,
+        minWidth: EditIcon ? 64 : 140,
+        cellRenderer: (event: { data?: { index: number } }) => (
+          <RowDetailButton
+            aria-label={detailRef.current.t('collection.editDetails')}
+            title={detailRef.current.t('collection.editDetails')}
+            icon={EditIcon ? <EditIcon /> : undefined}
+            onClick={(click) => {
+              click.stopPropagation();
+              if (event.data) {
+                detailRef.current.setPanelOpen(true);
+                detailRef.current.open(event.data.index);
+              }
+            }}
+          >
+            {EditIcon
+              ? undefined
+              : detailRef.current.t('collection.editDetails')}
+          </RowDetailButton>
+        ),
+      }),
+      []
+    );
     const showSortButtons = Boolean(options.showSortButtons);
     // `cells: { <field>: { summary, detail } }` from the uischema: how a
     // composite column summarises itself and what its detail dialog shows.
@@ -166,7 +260,7 @@ export const createAgGridControl = ({
     const columns: ColDef[] = useMemo(
       () =>
         Object.entries(
-          object ? items?.properties ?? {} : { value: items ?? {} }
+          object ? { ...items?.properties, ...Object.fromEntries((props.uischema.options?.columnDefs ?? []).filter((c: TableColumnDefinition) => c.scope === '#').map((c: TableColumnDefinition) => [c.field, items])) } : { value: items ?? {} }
         ).map(([field, schema]) => ({
           colId: field,
           headerName: schema.title ?? field,
@@ -182,10 +276,18 @@ export const createAgGridControl = ({
         CellShell strips the label and inline message a cell has no room for.
       */
           editable: false,
+          // AG Grid uses this value for sorting and its default text filters;
+          // the cell editor still binds to the original row/property below.
           valueGetter: (event) =>
-            object ? event.data.value?.[field] : event.data.value,
+            (cellOptions?.[field]?.summary as any)?.type === 'Label'
+              ? labelFilterValue(
+                  cellOptions[field].summary, formContext.core?.data, event.data?.value,
+                  props.config, formContext.i18n?.locale, formContext.i18n?.translate
+                )
+              : object ? event.data?.value?.[field] : event.data?.value,
           cellRenderer: (event: { data: { index: number } }) => {
-            const cellSchema = object
+            const rowBound = props.uischema.options?.columnDefs?.some((c: TableColumnDefinition) => c.field === field && c.scope === '#');
+            const cellSchema = object && !rowBound
               ? (Resolve.schema(
                   items as JsonSchema,
                   `#/properties/${field}`,
@@ -198,16 +300,16 @@ export const createAgGridControl = ({
               label: false,
               // `cells: { <field>: { summary, detail } }` tells a composite
               // column how to summarise itself and what its dialog shows.
-              options: cellOptions?.[field],
+              options: { ...cellOptions?.[field], ...(rowBound ? { summaryOnly: true } : {}) },
             };
-            const cellPath = object
+            const cellPath = object && !rowBound
               ? composePaths(
                   composePaths(props.path, String(event.data.index)),
                   field
                 )
               : composePaths(props.path, String(event.data.index));
             return (
-              <CellShell
+              <ItemProvider path={composePaths(props.path, String(event.data.index))}><CellShell
                 schema={cellSchema}
                 uischema={cellUiSchema}
                 path={cellPath}
@@ -226,7 +328,7 @@ export const createAgGridControl = ({
                   renderers={props.renderers}
                   cells={props.cells}
                 />
-              </CellShell>
+              </CellShell></ItemProvider>
             );
           },
         })),
@@ -239,35 +341,61 @@ export const createAgGridControl = ({
         props.cells,
         editable,
         cellOptions,
+        formContext.core?.data,
+        formContext.i18n,
+        props.config,
+        props.uischema.options?.columnDefs,
       ]
     );
     // Let the uischema refine the generated columns: entries are matched by
     // field, and their order wins, so widths/filters can be tuned without the
     // renderer having to know about the schema.
     const agGridOptions = (options.agGridOptions ?? {}) as Record<string, any>;
-    const requested = agGridOptions.columnDefs as
-      | (ColDef & { field?: string })[]
+    const pagination = resolvePagination(
+      props.uischema.options?.pagination,
+      props.config,
+      'array'
+    );
+    const portable = props.uischema.options?.columnDefs as
+      | TableColumnDefinition[]
       | undefined;
-    const resolvedColumns: ColDef[] = requested
-      ? requested
-          .map((requestedCol) => {
-            const generated = columns.find(
-              (column) => column.colId === requestedCol.field
-            );
-            return generated
-              ? {
-                  ...generated,
-                  // A fixed width must opt out of the default flex sizing.
-                  ...(requestedCol.width !== undefined &&
-                  requestedCol.flex === undefined
-                    ? { flex: 0 }
-                    : {}),
-                  ...requestedCol,
-                }
-              : undefined;
-          })
-          .filter((column): column is ColDef => Boolean(column))
-      : columns;
+    const portableFields = tableColumnFields(
+      Object.fromEntries(columns.map((column) => [column.colId!, true])),
+      portable,
+      columns.map((column) => column.colId!)
+    );
+    const mergeColumn = (definition: ColDef): ColDef => {
+      const generated = columns.find(
+        (column) => column.colId === (definition.field ?? definition.colId)
+      );
+      return {
+        ...generated,
+        ...(definition.width !== undefined && definition.flex === undefined
+          ? { flex: 0 }
+          : {}),
+        ...definition,
+      };
+    };
+    // Native definitions replace the portable list as a whole, including groups
+    // and computed columns. Known fields retain their JSON Forms cell editor.
+    const nativeColumns = (definitions: any[]): any[] =>
+      definitions.map((definition) =>
+        definition.children
+          ? { ...definition, children: nativeColumns(definition.children) }
+          : mergeColumn(definition)
+      );
+    const resolvedColumns: ColDef[] =
+      agGridOptions.columnDefs !== undefined
+        ? nativeColumns(agGridOptions.columnDefs)
+        : portableFields.map((field) =>
+            mergeColumn({
+              field,
+              ...(portable?.find(c => c.field === field)?.headerName ? { headerName: portable.find(c => c.field === field)!.headerName } : {}),
+              ...tableColumnStyle(
+                portable?.find((column) => column.field === field)
+              ),
+            } as ColDef)
+          );
     // `showSortButtons` is the same option the table renderer uses for its
     // per-row up/down buttons; in a grid the equivalent affordance is a drag
     // handle column. A column the uischema already marks `rowDrag` wins.
@@ -297,9 +425,12 @@ export const createAgGridControl = ({
       onSortChanged: userSortChanged,
       onFilterChanged: userFilterChanged,
       onRowDragEnd: userRowDragEnd,
+      onRowClicked: userRowClicked,
+      onRowDataUpdated: userRowDataUpdated,
       suppressRowDrag: userSuppressRowDrag,
       ...gridOptions
     } = agGridOptions;
+    const pendingAddedRow = useRef<number>();
     const addDisabled =
       !editable ||
       (options.restrict !== false &&
@@ -352,13 +483,25 @@ export const createAgGridControl = ({
         label: t('array.addRow'),
         disabled: addDisabled,
         icon: AddIcon ? <AddIcon /> : undefined,
-        onClick: () =>
+        onClick: () => {
+          pendingAddedRow.current = rows.length;
           props.handleChange(props.path, [
             ...rows,
             createDefaultValue(items ?? {}, props.rootSchema),
-          ]),
+          ]);
+        },
       },
     ];
+    if (RowDetailFrame && detail.options?.presentation === 'panel') {
+      actions.unshift({
+        key: 'details',
+        icon: detail.panelOpen && HideDetailsIcon ? <HideDetailsIcon /> : ShowDetailsIcon ? <ShowDetailsIcon /> : undefined,
+        label: detail.t(
+          detail.panelOpen ? 'collection.hideDetails' : 'collection.showDetails'
+        ),
+        onClick: () => detail.setPanelOpen((open) => !open),
+      });
+    }
     if (!props.visible) return null;
     return (
       <ArrayShell
@@ -370,77 +513,131 @@ export const createAgGridControl = ({
         actions={actions}
       >
         {confirmation?.dialog}
-        <div
-          ref={anchor}
-          data-ag-theme-mode={isDark ? 'dark' : 'light'}
-          style={{
-            ...gridVars,
-            colorScheme: isDark ? 'dark' : 'light',
-            height: options.height ?? 400,
-            minWidth: 0,
-          }}
-        >
-          <AgGridReact
-            theme={gridTheme}
-            themeStyleContainer={() => anchor.current ?? undefined}
-            rowData={rows.map((value, index) => ({ value, index }))}
-            columnDefs={columnDefs}
-            {...gridOptions}
-            defaultColDef={{
-              flex: 1,
-              minWidth: 120,
-              sortable: true,
-              filter: true,
-              resizable: true,
+        <DetailShell state={detail}>
+          <div
+            ref={anchor}
+            data-ag-theme-mode={isDark ? 'dark' : 'light'}
+            style={{
+              ...gridVars,
+              colorScheme: isDark ? 'dark' : 'light',
+              height:
+                RowDetailFrame &&
+                detail.options?.presentation === 'panel' &&
+                detail.panelOpen
+                  ? '100%'
+                  : options.height ?? 400,
+              minWidth: 0,
             }}
-            // Cells host real form controls that draw their own focus ring, so
-            // the grid's cell-focus border would double up on it.
-            suppressCellFocus
-            rowSelection={{ mode: 'multiRow' }}
-            readOnlyEdit
-            getRowId={(event) => String(event.data.index)}
-            suppressRowDrag={
-              Boolean(userSuppressRowDrag) || !editable || sorted || filtered
-            }
-            onSortChanged={(event) => {
-              setSorted(
-                event.api
-                  .getColumnState()
-                  .some((column) => Boolean(column.sort))
-              );
-              userSortChanged?.(event);
-            }}
-            onFilterChanged={(event) => {
-              setFiltered(Object.keys(event.api.getFilterModel()).length > 0);
-              userFilterChanged?.(event);
-            }}
-            onRowDragEnd={(event) => {
-              const from = event.node.data?.index ?? -1;
-              const to = event.overNode?.data?.index ?? -1;
-              if (from >= 0 && to >= 0 && from !== to && !sorted && !filtered) {
-                const next = rows.slice();
-                next.splice(to, 0, next.splice(from, 1)[0]);
-                props.handleChange(props.path, next);
-                event.api.clearFocusedCell();
+          >
+            <style>{`.ag-row[aria-current="true"] { background-color: var(--ag-selected-row-background-color); }`}</style>
+            <AgGridReact
+              theme={gridTheme}
+              themeStyleContainer={() => anchor.current ?? undefined}
+              rowData={rows.map((value, index) => ({ value, index }))}
+              columnDefs={
+                RowDetailFrame && detail.options
+                  ? [...columnDefs, detailColumn]
+                  : columnDefs
               }
-              userRowDragEnd?.(event);
-            }}
-            onSelectionChanged={(event) =>
-              setSelected(event.api.getSelectedRows().map((row) => row.index))
-            }
-            onCellEditRequest={(event) => {
-              if (!editable || event.data.index >= rows.length) return;
-              const next = rows.slice();
-              next[event.data.index] = object
-                ? {
-                    ...next[event.data.index],
-                    [event.column.getColId()]: event.newValue,
+              pagination={pagination.enabled}
+              paginationPageSize={pagination.size}
+              paginationPageSizeSelector={pagination.choices}
+              {...gridOptions}
+              onRowDataUpdated={(event) => {
+                const index = pendingAddedRow.current;
+                if (index !== undefined) {
+                  const node = event.api.getRowNode(String(index));
+                  if (node) {
+                    pendingAddedRow.current = undefined;
+                    // Use the displayed position so sorting is respected. A row
+                    // excluded by an active filter has no page to reveal.
+                    if (node.rowIndex != null) {
+                      event.api.paginationGoToPage(Math.floor(node.rowIndex / event.api.paginationGetPageSize()));
+                      event.api.ensureIndexVisible(node.rowIndex);
+                    }
                   }
-                : event.newValue;
-              props.handleChange(props.path, next);
-            }}
-          />
-        </div>
+                }
+                userRowDataUpdated?.(event);
+              }}
+              defaultColDef={{
+                flex: 1,
+                minWidth: 120,
+                sortable: true,
+                filter: true,
+                resizable: true,
+                ...agGridOptions.defaultColDef,
+              }}
+              // Cells host real form controls that draw their own focus ring, so
+              // the grid's cell-focus border would double up on it.
+              suppressCellFocus
+              rowSelection={{ mode: 'multiRow' }}
+              readOnlyEdit
+              getRowId={(event) => String(event.data.index)}
+              suppressRowDrag={
+                Boolean(userSuppressRowDrag) || !editable || sorted || filtered
+              }
+              onSortChanged={(event) => {
+                setSorted(
+                  event.api
+                    .getColumnState()
+                    .some((column) => Boolean(column.sort))
+                );
+                userSortChanged?.(event);
+              }}
+              onFilterChanged={(event) => {
+                setFiltered(Object.keys(event.api.getFilterModel()).length > 0);
+                userFilterChanged?.(event);
+              }}
+              onRowClicked={(event) => {
+                if (
+                  RowDetailFrame &&
+                  detail.options?.presentation === 'panel' &&
+                  event.data &&
+                  !(
+                    event.event?.target instanceof Element &&
+                    event.event.target.closest(
+                      '.ag-selection-checkbox, .ag-row-drag'
+                    )
+                  )
+                ) {
+                  detail.open(event.data.index);
+                }
+                userRowClicked?.(event);
+              }}
+              onRowDragEnd={(event) => {
+                const from = event.node.data?.index ?? -1;
+                const to = event.overNode?.data?.index ?? -1;
+                if (
+                  from >= 0 &&
+                  to >= 0 &&
+                  from !== to &&
+                  !sorted &&
+                  !filtered
+                ) {
+                  const next = rows.slice();
+                  next.splice(to, 0, next.splice(from, 1)[0]);
+                  props.handleChange(props.path, next);
+                  event.api.clearFocusedCell();
+                }
+                userRowDragEnd?.(event);
+              }}
+              onSelectionChanged={(event) =>
+                setSelected(event.api.getSelectedRows().map((row) => row.index))
+              }
+              onCellEditRequest={(event) => {
+                if (!editable || event.data.index >= rows.length) return;
+                const next = rows.slice();
+                next[event.data.index] = object
+                  ? {
+                      ...next[event.data.index],
+                      [event.column.getColId()]: event.newValue,
+                    }
+                  : event.newValue;
+                props.handleChange(props.path, next);
+              }}
+            />
+          </div>
+        </DetailShell>
       </ArrayShell>
     );
   };

@@ -1,3 +1,4 @@
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
 import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
@@ -31,6 +32,7 @@ import React, { useMemo } from 'react';
 import { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';
 import { DeleteDialog, WithDeleteDialogSupport } from './DeleteDialog';
+import { DispatchCell } from '@jsonforms/react';
 import DataCell, { DataCellProps } from './DataCell';
 import TableToolbar from './TableToolbar';
 
@@ -47,7 +49,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
       const props = {
         propName: prop,
         schema,
-        title: schema.properties?.[prop]?.title ?? startCase(prop),
+        title: definitions?.find(c => c.field === prop)?.headerName ?? schema.properties?.[prop]?.title ?? startCase(prop),
         enabled,
         cells,
         cellOptions: cellOptions?.[prop],
@@ -64,8 +66,11 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
           _index: number
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
+          if (definitions?.some(c => c.field === prop && c.scope === '#')) return <ItemProvider path={rowPath}><DispatchCell schema={schema}
+            path={rowPath} uischema={{ type: 'Control', scope: '#', options: { ...cellOptions?.[prop], summaryOnly: true } }}
+            enabled={enabled} cells={cells} /></ItemProvider>;
 
-          return <div style={{ ...style, width: style.width ? '100%' : undefined, overflow: 'hidden' }}><RowDataCell {...props} rowPath={rowPath} /></div>;
+          return <ItemProvider path={rowPath}><div style={{ ...style, width: style.width ? '100%' : undefined, overflow: 'hidden' }}><RowDataCell {...props} rowPath={rowPath} /></div></ItemProvider>;
         },
       } as TableColumnProps;
     });
@@ -329,7 +334,7 @@ const CollectionTable = ({
               onChange: (keys) => selection.setSelected(keys as number[]),
               getCheckboxProps: () => ({ disabled: !selection.selectable }),
             }}
-            scroll={{ x: 'max-content' }}
+            scroll={{ x: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : 'max-content' }}
             dataSource={page.indices.map((index) => dataSource[index])}
             showHeader={isObjectSchema}
             columns={displayColumns.map((column: any) => {

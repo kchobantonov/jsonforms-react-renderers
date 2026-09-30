@@ -35,7 +35,7 @@ const AgGridControlRenderer = createAgGridControlRenderer({
   Button: ({ children, ...rest }: any) => <button {...rest}>{children}</button>,
 });
 
-const render = async (options: Record<string, unknown>) => {
+const render = async (options: Record<string, unknown>, config?: any) => {
   captured.props = undefined;
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -43,6 +43,7 @@ const render = async (options: Record<string, unknown>) => {
   act(() =>
     root.render(
       <JsonForms
+        config={config}
         data={data}
         schema={schema as any}
         uischema={
@@ -182,4 +183,101 @@ it('preserves cell renderer identity across form data updates', async () => {
   } finally {
     act(() => root.unmount());
   }
+});
+
+describe('portable grid options', () => {
+  it('uses shared pagination defaults and scoped configuration', async () => {
+    const defaults = await render({});
+    expect(captured.props).toMatchObject({
+      pagination: true,
+      paginationPageSize: 5,
+      paginationPageSizeSelector: [5, 10, 25, 50],
+    });
+    defaults.unmount();
+    const configured = await render(
+      {},
+      {
+        jsonformsExtended: {
+          array: { pagination: { pageSize: 2, pageSizeOptions: [2, 4] } },
+        },
+      }
+    );
+    expect(captured.props).toMatchObject({
+      pagination: true,
+      paginationPageSize: 2,
+      paginationPageSizeSelector: [2, 4],
+    });
+    configured.unmount();
+    const disabled = await render({ pagination: false });
+    expect(captured.props.pagination).toBe(false);
+    disabled.unmount();
+  });
+  it('resolves local pagination as a whole and overrides only explicit native settings', async () => {
+    const app = await render(
+      {
+        pagination: { pageSize: 3, pageSizeOptions: [3, 6] },
+        agGridOptions: { pagination: false, paginationPageSize: 8 },
+      },
+      { jsonformsExtended: { array: { pagination: false } } }
+    );
+    expect(captured.props).toMatchObject({
+      pagination: false,
+      paginationPageSize: 8,
+      paginationPageSizeSelector: [3, 6],
+    });
+    app.unmount();
+    const native = await render({
+      pagination: false,
+      agGridOptions: { pagination: true, paginationPageSizeSelector: false },
+    });
+    expect(captured.props).toMatchObject({
+      pagination: true,
+      paginationPageSizeSelector: false,
+    });
+    native.unmount();
+  });
+  it('honours portable field selection, first duplicate, sizes and an empty list', async () => {
+    const app = await render({
+      columnDefs: [
+        { field: 'missing' },
+        { field: 'name', width: 240, minWidth: 180, maxWidth: 300 },
+        { field: 'name', width: 400 },
+      ],
+    });
+    expect(captured.props.columnDefs).toHaveLength(1);
+    expect(captured.props.columnDefs[0]).toMatchObject({
+      colId: 'name',
+      width: 240,
+      minWidth: 180,
+      maxWidth: 300,
+      flex: 0,
+    });
+    expect(captured.props.columnDefs[0].cellRenderer).toBeTypeOf('function');
+    app.unmount();
+    const empty = await render({ columnDefs: [] });
+    expect(captured.props.columnDefs).toEqual([]);
+    empty.unmount();
+  });
+  it('lets native grouped and computed columns replace portable definitions', async () => {
+    const valueGetter = () => 'computed';
+    const app = await render({
+      columnDefs: [],
+      agGridOptions: {
+        columnDefs: [
+          { headerName: 'Group', children: [{ field: 'name', width: 190 }] },
+          { colId: 'computed', valueGetter },
+        ],
+      },
+    });
+    expect(captured.props.columnDefs[0].children[0]).toMatchObject({
+      colId: 'name',
+      width: 190,
+      flex: 0,
+    });
+    expect(captured.props.columnDefs[0].children[0].cellRenderer).toBeTypeOf(
+      'function'
+    );
+    expect(captured.props.columnDefs[1].valueGetter).toBe(valueGetter);
+    app.unmount();
+  });
 });

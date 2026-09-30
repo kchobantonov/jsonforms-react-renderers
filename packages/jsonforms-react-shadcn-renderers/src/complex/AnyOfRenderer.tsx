@@ -1,3 +1,4 @@
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@jsonforms-react-shadcn-ui/select';
 import {
   CombinatorRendererProps,
   createCombinatorRenderInfos,
@@ -39,6 +40,8 @@ export const ShadcnAnyOfRenderer = ({
   uischema,
   uischemas,
   data,
+  enabled,
+  label,
   combinator = 'anyOf',
 }: CombinatorRendererProps & { combinator?: 'anyOf' | 'oneOf' }) => {
   const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema ?? 0);
@@ -93,7 +96,21 @@ export const ShadcnAnyOfRenderer = ({
         path={path}
         rootSchema={rootSchema}
       />
-      <Tabs value={String(selectedIndex)} onValueChange={handleTabChange}>
+      {combinator === 'oneOf' ? <>
+        <Select value={selectedIndex >= 0 ? String(selectedIndex) : ''}
+          disabled={enabled === false} onValueChange={handleTabChange}>
+          <SelectTrigger aria-label={label || schema.title || 'oneOf'}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {renderInfos.map((info, index) => <SelectItem key={index} value={String(index)}>{info.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {renderInfos[selectedIndex] && <JsonFormsDispatch
+          schema={renderInfos[selectedIndex].schema}
+          uischema={renderInfos[selectedIndex].uischema}
+          path={path} renderers={renderers} cells={cells} enabled={enabled} />}
+      </> : <Tabs value={String(selectedIndex)} onValueChange={handleTabChange}>
         <TabsList>
           {renderInfos.map((renderInfo, index) => (
             <TabsTrigger key={index} value={String(index)}>
@@ -114,7 +131,7 @@ export const ShadcnAnyOfRenderer = ({
             ) : null}
           </TabsContent>
         ))}
-      </Tabs>
+      </Tabs>}
       <CombinatorSwitchDialog
         open={pendingIndex !== undefined}
         onCancel={() => setPendingIndex(undefined)}

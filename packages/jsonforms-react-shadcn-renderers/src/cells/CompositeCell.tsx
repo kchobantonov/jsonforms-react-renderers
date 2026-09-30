@@ -1,3 +1,7 @@
+import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+import { usePathErrorMessages } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { ErrorIndicator } from '../complex/ErrorIndicator';
+import { DetailDialogContent } from '../complex/DetailDialogContent';
 import React, { useRef, useState } from 'react';
 import { Pencil, X } from 'lucide-react';
 import {
@@ -9,7 +13,6 @@ import {
   coreReducer,
   UPDATE_DATA,
   update,
-  rankWith,
 } from '@jsonforms/core';
 import {
   JsonFormsContext,
@@ -18,7 +21,7 @@ import {
 } from '@jsonforms/react';
 import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
 import { DeleteDialog } from '../complex/DeleteDialog';
-import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
+import { compositeSummaryPresentation } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
 import { preventsEmpty } from '@chobantonov/jsonforms-react-renderer-common/compositeActions';
 import {
   useI18n,
@@ -28,7 +31,6 @@ import {
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -46,6 +48,7 @@ type Props = CellProps & {
 /** A compact summary with isolated editing; only Apply writes to the form. */
 export const ShadcnCompositeCell = (props: Props) => {
   const parent = useJsonForms();
+  const errors = usePathErrorMessages(props.path);
   const t = useTranslator();
   const d = useI18nDefault();
   const text = useI18n();
@@ -54,6 +57,7 @@ export const ShadcnCompositeCell = (props: Props) => {
   const draftRef = useRef<JsonFormsCore>();
   const original = useRef<unknown>();
   const options = props.uischema.options ?? {};
+  const summary = compositeSummaryPresentation(props.data, options.summary?.type === 'Control' ? options.summary as any : undefined, props.schema?.title, t, d, props.schema);
   const enabled =
     props.enabled &&
     !(parent as any).readonly &&
@@ -94,20 +98,15 @@ export const ShadcnCompositeCell = (props: Props) => {
   if (props.visible === false) return null;
   return (
     <div className='group/composite flex min-w-0 items-center gap-1.5'>
-      <span className='min-w-0 flex-1 truncate'>
-        {compositeSummary(
-          props.data,
-          options.summary,
-          props.schema.title,
-          t,
-          d
-        )}
+      <span className={`min-w-0 flex-1 truncate${summary.generated && options.summary?.type !== 'Label' ? ' italic text-muted-foreground' : ''}`}>
+        {options.summary?.type === 'Label' ? <CellSummary schema={props.schema} path={props.path} uischema={options.summary} /> : summary.text}
       </span>
-      <Button
+      {errors && <ErrorIndicator errors={errors} path={props.path} />}
+      {((!options.summaryOnly && options.summary?.type !== 'Label') || options.detail) && <Button
         type='button'
         variant='ghost'
         size='icon'
-        className='h-7 w-7 shrink-0'
+        className='h-7 w-7 shrink-0 opacity-0 group-hover/composite:opacity-100 group-focus-within/composite:opacity-100 [@media(hover:none)]:opacity-100'
         title={text('composite.edit', { label })}
         aria-label={text('composite.edit', { label })}
         onClick={() => {
@@ -117,13 +116,14 @@ export const ShadcnCompositeCell = (props: Props) => {
         }}
       >
         <Pencil className='h-4 w-4' aria-hidden='true' />
-      </Button>
-      {enabled && props.data !== undefined && options.clearable !== false && (
+      </Button>}
+      {enabled && !options.summaryOnly && (options.summary?.type !== 'Label' || !!options.detail) && props.data !== undefined && options.clearable !== false && (
         <Button
           type='button'
           variant='ghost'
           size='icon'
           className='h-7 w-7 shrink-0 opacity-0 group-hover/composite:opacity-100 group-focus-within/composite:opacity-100 [@media(hover:none)]:opacity-100'
+          style={{ color: 'hsl(var(--destructive))' }}
           title={text('composite.remove', { label })}
           aria-label={text('composite.remove', { label })}
           onClick={() => {
@@ -145,7 +145,7 @@ export const ShadcnCompositeCell = (props: Props) => {
         }}
       />
       <Dialog open={!!draft} onOpenChange={(open) => !open && close()}>
-        <DialogContent
+        <DetailDialogContent open={!!draft} options={options.dialog}
           aria-describedby={undefined}
           className='max-h-[85vh] overflow-auto sm:max-w-2xl'
         >
@@ -207,12 +207,9 @@ export const ShadcnCompositeCell = (props: Props) => {
               {options.okLabel ?? text('composite.apply')}
             </Button>
           </DialogFooter>
-        </DialogContent>
+        </DetailDialogContent>
       </Dialog>
     </div>
   );
 };
-export const shadcnCompositeCellTester = rankWith(
-  1,
-  (_ui, schema) => schema?.type === 'object' || schema?.type === 'array'
-);
+export const shadcnCompositeCellTester = ((_ui: any, schema: any) => _ui.options?.summary?.type === 'Label' ? 6 : schema?.type === 'object' || schema?.type === 'array' ? 1 : -1);

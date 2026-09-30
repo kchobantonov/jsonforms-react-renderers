@@ -1,3 +1,4 @@
+import type { ItemContext } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import {
   LabelProps,
   RankedTester,
@@ -171,6 +172,7 @@ export const MarkupLabelRendererComponent = ({
   const namespaceScope = expressions
     ? buildNamespaceScope({
         data: ctx.core?.data,
+        get item() { return (ctx as typeof ctx & ItemContext).item; },
         locale: ctx.i18n?.locale,
         config,
         dynamicAllowed: dynamicValuesEnabled(config),
@@ -282,7 +284,7 @@ export const MarkupLabelRendererComponent = ({
       locale={ctx.i18n?.locale}
       translate={ctx.i18n?.translate}
       escape={request.markdown ? escapeMarkdown : undefined}
-      fallback={content}
+      fallback={plainText}
     >
       {(result) => (
         <>

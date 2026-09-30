@@ -30,16 +30,16 @@
 }
 
 .shadcn-jsonforms-label {
-  color: #1f2937;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
   font-size: 13px;
   font-weight: 600;
 }
 
 .shadcn-jsonforms-input {
-  background: #fff;
-  border: 1px solid #cbd5e1;
+  background: hsl(var(--background, 0 0% 100%));
+  border: 1px solid hsl(var(--input, 214.3 31.8% 91.4%));
   border-radius: var(--shadcn-jsonforms-radius, 6px);
-  color: #111827;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
   font: inherit;
   min-height: 36px;
   padding: 7px 10px;
@@ -53,12 +53,12 @@
 }
 
 .shadcn-jsonforms-description {
-  color: #64748b;
+  color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
   font-size: 12px;
 }
 
 .shadcn-jsonforms-error {
-  color: #b91c1c;
+  color: hsl(var(--destructive, 0 84.2% 60.2%));
   font-size: 12px;
 }
 
@@ -71,7 +71,7 @@
 .shadcn-jsonforms-group,
 .shadcn-jsonforms-array,
 .shadcn-jsonforms-object {
-  border: 1px solid #e2e8f0;
+  border: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
   border-radius: var(--shadcn-jsonforms-radius, 6px);
   display: grid;
   gap: 12px;
@@ -81,7 +81,7 @@
 .shadcn-jsonforms-group > .shadcn-jsonforms-group-header,
 .shadcn-jsonforms-array h3,
 .shadcn-jsonforms-object h3 {
-  color: #0f172a;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
   font-size: 15px;
   font-weight: 700;
   margin: 0;
@@ -102,14 +102,14 @@
 }
 
 .shadcn-jsonforms-array-item {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
   display: grid;
   gap: 10px;
   padding-top: 12px;
 }
 
 .shadcn-jsonforms-array-item-label {
-  color: #334155;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
   font-size: 14px;
   font-weight: 600;
   margin: 0;
@@ -139,7 +139,7 @@
 }
 
 .shadcn-jsonforms-tabs {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
   display: flex;
   gap: 6px;
   margin-bottom: 12px;
@@ -149,7 +149,7 @@
   background: transparent;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  color: #475569;
+  color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 }
 
 .shadcn-jsonforms-tab[data-active] {
@@ -158,37 +158,8 @@
 }
 
 .shadcn-jsonforms-static-label {
-  color: #334155;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
   font-weight: 600;
-}
-
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-label,
-.shadcn-jsonforms-root.app-dark
-  .shadcn-jsonforms-group
-  > .shadcn-jsonforms-group-header,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array h3,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-object h3,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item-label,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-static-label {
-  color: hsl(var(--foreground));
-}
-
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-input {
-  background: hsl(var(--background));
-  border-color: hsl(var(--input));
-  color: hsl(var(--foreground));
-}
-
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-description {
-  color: hsl(var(--muted-foreground));
-}
-
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-group,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-object,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-array-item,
-.shadcn-jsonforms-root.app-dark .shadcn-jsonforms-tabs {
-  border-color: hsl(var(--border));
 }
 
 /* A full-width disclosure header, with status separated from the title. */
@@ -274,7 +245,7 @@
   position: relative;
   padding-inline-end: 40px;
 }
-.shadcn-jsonforms-table-cell > .shadcn-jsonforms-cell-error {
+.shadcn-jsonforms-table-cell .shadcn-jsonforms-cell-error {
   position: absolute;
   inset-inline-end: 8px;
   top: 50%;
@@ -352,4 +323,29 @@
   border-color: hsl(var(--primary));
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
+}
+
+/* Constrain the viewport, not its content, for flex panels and capped lists. */
+.shadcn-jsonforms-scroll-region > [data-slot='scroll-area-viewport'] {
+  max-height: inherit;
+  min-height: 0;
+  height: auto;
+  flex: 1 1 auto;
+}
+
+/* Radix's table wrapper otherwise expands to the full, untruncated label.
+   Reserve only enough width for the avatar and actions; narrower panes scroll. */
+.shadcn-jsonforms-list-navigation > [data-slot='scroll-area-viewport'] > div {
+  display: block !important;
+  width: 100%;
+  min-width: 10rem !important;
+}
+
+/* Carry the split pane's definite height through Radix's content wrapper so
+   percentage-height grids retain their body as well as their pagination. */
+.shadcn-jsonforms-collection-pane > [data-slot='scroll-area-viewport'] {
+  height: 100%;
+}
+.shadcn-jsonforms-collection-pane > [data-slot='scroll-area-viewport'] > div {
+  height: 100%;
 }

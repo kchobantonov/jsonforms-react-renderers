@@ -14,6 +14,8 @@ import type { RendererLocaleCatalog } from '../rendererLocale';
  * a new key never breaks a translated form.
  */
 export const bgRendererLocale: RendererLocaleCatalog = {
+  'composite.summary.emptyObject': 'Празен обект',
+  'composite.summary.unspecified': '{label} не е зададено',
   'collection.showDetails': 'Показване на подробностите',
   'collection.hideDetails': 'Скриване на подробностите',
   'collection.deleteSelected': 'Изтриване на избраните редове',

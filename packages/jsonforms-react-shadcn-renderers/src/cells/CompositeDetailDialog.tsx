@@ -1,8 +1,8 @@
+import { DetailDialogContent } from '../complex/DetailDialogContent';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -28,6 +28,7 @@ import {
 import { preventsEmpty } from '@chobantonov/jsonforms-react-renderer-common/compositeActions';
 
 export type CompositeDetailDialogOptions = {
+  dialog?: import('@chobantonov/jsonforms-react-renderer-common/detailDialog').DetailDialogOptions;
   showEmptyButton?: boolean;
   disableRemove?: boolean;
   restrict?: boolean;
@@ -156,7 +157,7 @@ export const CompositeDetailDialog = ({
         if (!next) cancel();
       }}
     >
-      <DialogContent
+      <DetailDialogContent open={open} options={options.dialog}
         className='max-w-2xl'
         aria-label={label}
         aria-describedby={undefined}
@@ -167,7 +168,7 @@ export const CompositeDetailDialog = ({
         <JsonFormsContext.Provider value={context as any}>
           <PendingChangesProvider changes={pending}>
             <ShadcnCellMode.Provider value={false}>
-              <div className='max-h-[65vh] overflow-auto p-1'>{children}</div>
+              <div className='p-1'>{children}</div>
             </ShadcnCellMode.Provider>
           </PendingChangesProvider>
         </JsonFormsContext.Provider>
@@ -201,7 +202,7 @@ export const CompositeDetailDialog = ({
             {text(options.okLabel, 'composite.apply')}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DetailDialogContent>
     </Dialog>
   );
 };

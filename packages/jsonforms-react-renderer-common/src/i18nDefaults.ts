@@ -78,6 +78,8 @@ export const i18nDefaults = {
   'confirm.branchChange.title': 'Change the selection?',
   'confirm.branchChange.message':
     'Data that the new selection does not describe will be discarded.',
+  'dialog.maximize': 'Maximize dialog',
+  'dialog.restore': 'Restore dialog',
   'confirm.accept': 'Yes',
   'confirm.decline': 'No',
 
@@ -214,6 +216,8 @@ export const i18nDefaults = {
   'composite.summary.more': '(+{count} more)',
   'composite.edit': 'Edit {label}',
   'composite.remove': 'Remove {label}',
+  'composite.summary.emptyObject': 'Empty object',
+  'composite.summary.unspecified': '{label} not specified',
   'composite.detailsTitle': 'Details',
   'composite.itemsLabel': 'items',
   'composite.detailsLabel': 'details',

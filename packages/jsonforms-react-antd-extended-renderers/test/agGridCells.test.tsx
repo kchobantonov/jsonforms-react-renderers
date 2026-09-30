@@ -4,9 +4,18 @@ import { act } from 'react-dom/test-utils';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
-import { antdRenderers, antdCells } from '@chobantonov/jsonforms-react-antd-renderers';
+import {
+  antdRenderers,
+  antdCells,
+} from '@chobantonov/jsonforms-react-antd-renderers';
 import { AntdAgGridControlRenderer } from '../src/renderers/AntdAgGridControlRenderer';
 import { flushUntil } from './support/flush';
+
+globalThis.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
 
 const schema = {
   type: 'array',
@@ -45,7 +54,7 @@ const uischema = {
   },
 };
 
-const renderGrid = async () => {
+const renderGrid = async (options = {}) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -61,10 +70,15 @@ const renderGrid = async () => {
             },
           ]}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={
+            { ...uischema, options: { ...uischema.options, ...options } } as any
+          }
           renderers={[
             ...antdRenderers,
-            { tester: extendedAgGridTester, renderer: AntdAgGridControlRenderer },
+            {
+              tester: extendedAgGridTester,
+              renderer: AntdAgGridControlRenderer,
+            },
           ]}
           cells={antdCells}
           onChange={() => undefined}
@@ -131,4 +145,33 @@ describe('AG Grid cells', () => {
     }
     unmount();
   });
+});
+
+it('highlights the active detail row independently of AG Grid checkbox selection', async () => {
+  const { container, unmount } = await renderGrid({
+    rowDetail: { presentation: 'panel' },
+  });
+  try {
+    const row = () =>
+      container.querySelector<HTMLElement>('.ag-row[row-id="0"]')!;
+    act(() =>
+      row().querySelector<HTMLElement>('[aria-label="Edit details"]')!.click()
+    );
+    await flushUntil(() => row()?.getAttribute('aria-current') === 'true');
+    expect(row()?.getAttribute('aria-selected')).not.toBe('true');
+    act(() =>
+      container
+        .querySelector<HTMLElement>('[aria-label="Hide details"]')!
+        .click()
+    );
+    await flushUntil(() => !row()?.hasAttribute('aria-current'));
+    act(() =>
+      container
+        .querySelector<HTMLElement>('[aria-label="Show details"]')!
+        .click()
+    );
+    await flushUntil(() => row()?.getAttribute('aria-current') === 'true');
+  } finally {
+    unmount();
+  }
 });

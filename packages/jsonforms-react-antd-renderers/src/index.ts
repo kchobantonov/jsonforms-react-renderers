@@ -243,3 +243,5 @@ export const Unwrapped = {
 };
 
 export * from './antd-controls';
+
+export { RowDetailFrame } from './complex/RowDetailFrame';

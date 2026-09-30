@@ -1,5 +1,6 @@
+import { DetailModal } from '../complex/DetailModal';
 import React from 'react';
-import { Modal, Splitter, Empty, Button, Tooltip } from 'antd';
+import { Splitter, Empty, Button, Tooltip } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 export const RowDetailFrame = ({
@@ -13,7 +14,7 @@ export const RowDetailFrame = ({
     return (
       <>
         {children}
-        <Modal
+        <DetailModal options={options.dialog}
           open={!!state.selection}
           title={t('collection.editDetails')}
           onCancel={state.close}
@@ -25,7 +26,7 @@ export const RowDetailFrame = ({
         >
           {state.conflict && <p role='alert'>{t('composite.applyConflict')}</p>}
           {state.content}
-        </Modal>
+        </DetailModal>
       </>
     );
   return (
@@ -43,10 +44,12 @@ export const RowDetailFrame = ({
         min='20%'
         resizable={options.resizable !== false}
       >
-        {children}
+        <div style={{ height: panelOpen ? '100%' : undefined, minWidth: 0, minHeight: 0, overflow: 'auto' }}>
+          {children}
+        </div>
       </Splitter.Panel>
       {panelOpen && <Splitter.Panel min='20%' resizable={options.resizable !== false}>
-        <div style={{ padding: 12 }}>
+        <div style={{ padding: 12, height: '100%', minWidth: 0, minHeight: 0, overflow: 'auto' }}>
           {state.content ?? <Empty description={t('collection.selectItem')} />}
         </div>
       </Splitter.Panel>}
