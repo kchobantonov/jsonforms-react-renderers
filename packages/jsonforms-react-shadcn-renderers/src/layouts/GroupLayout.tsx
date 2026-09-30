@@ -1,3 +1,5 @@
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ContainerValidationIndicator } from './ValidationIndicator';
 import { LayoutProps, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -14,12 +16,21 @@ import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate'
 export const ShadcnGroupLayout = (props: LayoutProps) => {
   const group = useGroupState(props.uischema, props.path, props.config);
   const t = useI18n();
+  const validation = useContainerValidation(
+    props.uischema,
+    props.path,
+    props.config,
+    false
+  );
   if (!props.visible) return null;
 
   const header = (
     <>
       <span className='shadcn-jsonforms-group-title'>{props.label}</span>
       <span className='shadcn-jsonforms-group-actions'>
+        {validation.show && (
+          <ContainerValidationIndicator count={validation.count} />
+        )}
         {group.hasData && (
           <span
             role='img'
@@ -60,7 +71,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
         >
           {header}
         </CollapsibleTrigger>
-      ) : props.label || group.hasData ? (
+      ) : props.label || group.hasData || validation.show ? (
         <div className='shadcn-jsonforms-group-header'>{header}</div>
       ) : null}
       <CollapsibleContent

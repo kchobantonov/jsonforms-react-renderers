@@ -1,16 +1,19 @@
 import React from 'react';
 
-export interface WebComponentLogoProps {
+export interface WebComponentIconProps {
   active?: boolean;
   dark?: boolean;
 }
 
-export const WebComponentLogo = ({
+export const WebComponentIcon = ({
   active = false,
   dark = false,
-}: WebComponentLogoProps) => (
+}: WebComponentIconProps): React.ReactElement => (
   <svg
     aria-hidden='true'
+    width={18}
+    height={18}
+    style={{ display: 'block', flexShrink: 0 }}
     className={`renderer-demo-webcomponent-icon${active ? ' active' : ''}`}
     data-name='WebComponent Logo'
     viewBox='0 0 161 132'

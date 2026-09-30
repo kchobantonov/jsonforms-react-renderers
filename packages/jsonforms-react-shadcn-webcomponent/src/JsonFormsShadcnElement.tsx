@@ -1,12 +1,13 @@
-import { JsonForms } from '@jsonforms/react';
-import type { ValidationMode } from '@jsonforms/core';
+import type { Translator, ValidationMode } from '@jsonforms/core';
 import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
 } from '@chobantonov/jsonforms-react-shadcn-extended-renderers';
 import {
   ActionEvent,
-  HandleActionContext,
+  ExtendedJsonForms,
+  createAdditionalErrorStore,
+  createFormsAjv,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { createRoot, Root } from 'react-dom/client';
 import {
@@ -45,6 +46,7 @@ export const parseMode = (value: JsonInput) =>
     : 'system';
 
 export const createTranslator = (translations: JsonInput, locale = 'en') => {
+  if (typeof translations === 'function') return translations as Translator;
   const dictionary = parseJson(translations) as any;
   return (id: string, defaultMessage: string | undefined) => {
     const value = dictionary?.[locale]?.[id] ?? dictionary?.[id];
@@ -102,6 +104,15 @@ export class JsonFormsShadcnElement extends HTMLElement {
   }
 
   private root?: Root;
+  private errorStore = createAdditionalErrorStore();
+  private ajv = createFormsAjv({
+    i18n: () => ({
+      locale: this.state.locale,
+      translate: this.state.translations
+        ? createTranslator(this.state.translations, this.state.locale)
+        : (_key, fallback) => fallback,
+    }),
+  });
   private state: ElementState = {
     validationMode: 'ValidateAndShow',
     locale: 'en',
@@ -117,13 +128,18 @@ export class JsonFormsShadcnElement extends HTMLElement {
 
   connectedCallback() {
     if (!this.shadowRoot) return;
-    this.root = createRoot(this.shadowRoot);
+    this.root ??= createRoot(this.shadowRoot);
     this.render();
   }
 
   disconnectedCallback() {
-    this.root?.unmount();
-    this.root = undefined;
+    // The host may be removing this element during its own React commit.
+    // Reuse the root if the element is moved/reconnected before cleanup runs.
+    queueMicrotask(() => {
+      if (this.isConnected) return;
+      this.root?.unmount();
+      this.root = undefined;
+    });
   }
 
   attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
@@ -213,6 +229,10 @@ export class JsonFormsShadcnElement extends HTMLElement {
 
   private render() {
     if (!this.root) return;
+    const schema = parseJson(this.state.schema);
+    const data = parseJson(this.state.data);
+    // Hosts may attach the element before assigning its form properties.
+    if (schema === undefined && (data === undefined || data === null)) return;
 
     const dark =
       parseBoolean(this.state.dark) ?? parseMode(this.state.mode) === 'dark';
@@ -247,12 +267,12 @@ export class JsonFormsShadcnElement extends HTMLElement {
           style={style}
         >
           <slot name='form-header' />
-          <HandleActionContext.Provider
-            value={(event) => this.emitAction(event)}
-          >
-            <JsonForms
-              data={parseJson(this.state.data)}
-              schema={parseJson(this.state.schema) as any}
+            <ExtendedJsonForms
+              ajv={this.ajv}
+              store={this.errorStore}
+              onAction={(event) => this.emitAction(event)}
+              data={data}
+              schema={schema as any}
               uischema={parseJson(this.state.uischema) as any}
               uischemas={parseJson(this.state.uischemas) as any}
               config={{
@@ -271,7 +291,6 @@ export class JsonFormsShadcnElement extends HTMLElement {
               }}
               onChange={({ data, errors }) => this.emitChange(data, errors)}
             />
-          </HandleActionContext.Provider>
           <slot name='form-footer' />
         </div>
       </>

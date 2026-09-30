@@ -1,3 +1,6 @@
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { CollectionPager } from './CollectionPager';
 import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
 import {
   toObjectSchema,
@@ -99,6 +102,12 @@ export const AdditionalProperties = ({
   const reservedPropertyNames = Object.keys(objectSchema.properties ?? {});
   const additionalKeys = Object.keys(objectData ?? {}).filter(
     (key) => !reservedPropertyNames.includes(key)
+  );
+  const page = useCollectionPagination(
+    additionalKeys,
+    uischema.options?.additionalProperties?.pagination,
+    config,
+    'additionalProperties'
   );
   const additionalPropertyItems = useMemo(
     () =>
@@ -272,210 +281,224 @@ export const AdditionalProperties = ({
   };
 
   return (
-    <Card className='jsonforms-additional-properties' size='small'>
-      {confirmation.dialog}
-      <Flex vertical gap='middle'>
-        <Row align='bottom' gutter={[12, 8]}>
-          <Col md={5} xs={24}>
-            <Typography.Text>{t('additionalProperties.title')}</Typography.Text>
-          </Col>
-          <Col md={18} xs={20}>
-            <Form.Item
-              label={t('additionalProperties.namePlaceholder')}
-              validateStatus={showPropertyNameError ? 'error' : undefined}
-              style={{ marginBottom: 0 }}
+    <PendingChangesProvider changes={page.pending}>
+      <Card className='jsonforms-additional-properties' size='small'>
+        {confirmation.dialog}
+        <Flex vertical gap='middle'>
+          <Row align='bottom' gutter={[12, 8]}>
+            <Col md={5} xs={24}>
+              <Typography.Text>
+                {t('additionalProperties.title')}
+              </Typography.Text>
+            </Col>
+            <Col md={18} xs={20}>
+              <Form.Item
+                label={t('additionalProperties.namePlaceholder')}
+                validateStatus={showPropertyNameError ? 'error' : undefined}
+                style={{ marginBottom: 0 }}
+              >
+                <Input
+                  aria-label={
+                    label
+                      ? t('additionalProperties.addTo', { label })
+                      : t('additionalProperties.add')
+                  }
+                  disabled={!enabled || readonly}
+                  placeholder={t('additionalProperties.namePlaceholder')}
+                  value={newPropertyName}
+                  onChange={(event) =>
+                    setNewPropertyName(event.currentTarget.value)
+                  }
+                  onPressEnter={addProperty}
+                />
+              </Form.Item>
+            </Col>
+            <Col md={1} xs={4}>
+              <Tooltip title={t('additionalProperties.add')}>
+                <Button
+                  aria-label={t('additionalProperties.add')}
+                  disabled={addPropertyDisabled}
+                  icon={<PlusOutlined />}
+                  onClick={addProperty}
+                  shape='circle'
+                  size='small'
+                />
+              </Tooltip>
+            </Col>
+          </Row>
+          {showPropertyNameError ? (
+            <Typography.Text
+              className='jsonforms-additional-properties-error'
+              type='danger'
             >
-              <Input
-                aria-label={
-                  label
-                    ? t('additionalProperties.addTo', { label })
-                    : t('additionalProperties.add')
-                }
-                disabled={!enabled || readonly}
-                placeholder={t('additionalProperties.namePlaceholder')}
-                value={newPropertyName}
-                onChange={(event) =>
-                  setNewPropertyName(event.currentTarget.value)
-                }
-                onPressEnter={addProperty}
-              />
-            </Form.Item>
-          </Col>
-          <Col md={1} xs={4}>
-            <Tooltip title={t('additionalProperties.add')}>
-              <Button
-                aria-label={t('additionalProperties.add')}
-                disabled={addPropertyDisabled}
-                icon={<PlusOutlined />}
-                onClick={addProperty}
-                shape='circle'
-                size='small'
-              />
-            </Tooltip>
-          </Col>
-        </Row>
-        {showPropertyNameError ? (
-          <Typography.Text
-            className='jsonforms-additional-properties-error'
-            type='danger'
+              {propertyNameError}
+            </Typography.Text>
+          ) : null}
+          <CollectionPager page={page} />
+          <Flex
+            className='jsonforms-additional-properties-list'
+            vertical
+            gap='middle'
           >
-            {propertyNameError}
-          </Typography.Text>
-        ) : null}
-        <Flex
-          className='jsonforms-additional-properties-list'
-          vertical
-          gap='middle'
-        >
-          {additionalPropertyItems.map((item) => {
-            /*
+            {page.indices
+              .map((index) => additionalPropertyItems[index])
+              .map((item) => {
+                /*
               A name a data path cannot address - empty, or containing a dot -
               is edited in a form of its own. The row keeps the heading and the
               actions in that case, because the isolated editor draws no label.
             */
-            const isolated = needsIsolatedEditor(item.propertyName);
-            const rendersOwnHeading =
-              !isolated &&
-              !(
-                typeof item.schema === 'object' && item.schema.type === 'object'
-              );
-            const actions = enabled ? (
-              <AntdAdditionalPropertyActions
-                deleteDisabled={
-                  removePropertyDisabled ||
-                  Boolean(
-                    restrict &&
-                      objectSchema.required?.includes(item.propertyName)
-                  )
-                }
-                name={item.propertyName}
-                onDelete={() => removeProperty(item.propertyName)}
-                onRename={() => {
-                  setRenamingPropertyName(item.propertyName);
-                  setRenameValue(item.propertyName);
-                }}
-                readonly={readonly}
-              />
-            ) : null;
-            return (
-              <Flex
-                align='start'
-                className='jsonforms-additional-property'
-                key={item.propertyName}
-                style={{ position: 'relative', width: '100%' }}
-                vertical
-              >
-                {rendersOwnHeading ? (
-                  actions ? (
-                    <div
-                      style={{
-                        insetInlineEnd: 0,
-                        position: 'absolute',
-                        top: 0,
-                        zIndex: 1,
-                      }}
-                    >
-                      {actions}
-                    </div>
-                  ) : null
-                ) : (
+                const isolated = needsIsolatedEditor(item.propertyName);
+                const rendersOwnHeading =
+                  !isolated &&
+                  !(
+                    typeof item.schema === 'object' &&
+                    item.schema.type === 'object'
+                  );
+                const actions = enabled ? (
+                  <AntdAdditionalPropertyActions
+                    deleteDisabled={
+                      removePropertyDisabled ||
+                      Boolean(
+                        restrict &&
+                          objectSchema.required?.includes(item.propertyName)
+                      )
+                    }
+                    name={item.propertyName}
+                    onDelete={() => removeProperty(item.propertyName)}
+                    onRename={() => {
+                      setRenamingPropertyName(item.propertyName);
+                      setRenameValue(item.propertyName);
+                    }}
+                    readonly={readonly}
+                  />
+                ) : null;
+                return (
                   <Flex
-                    align='center'
-                    justify='space-between'
-                    style={{ width: '100%' }}
+                    align='start'
+                    className='jsonforms-additional-property'
+                    key={item.propertyName}
+                    style={{ position: 'relative', width: '100%' }}
+                    vertical
                   >
-                    {/*
+                    {rendersOwnHeading ? (
+                      actions ? (
+                        <div
+                          style={{
+                            insetInlineEnd: 0,
+                            position: 'absolute',
+                            top: 0,
+                            zIndex: 1,
+                          }}
+                        >
+                          {actions}
+                        </div>
+                      ) : null
+                    ) : (
+                      <Flex
+                        align='center'
+                        justify='space-between'
+                        style={{ width: '100%' }}
+                      >
+                        {/*
                       Section 18: an empty name "has a visually blank label. Do
                       not display the literal text `""` as a substitute name."
                       The non-breaking space keeps the row its normal height so
                       Rename and Delete stay above the value input rather than
                       dropping into a row of their own.
                     */}
-                    <Typography.Text
-                      strong
-                      data-property-name={item.propertyName}
+                        <Typography.Text
+                          strong
+                          data-property-name={item.propertyName}
+                        >
+                          {item.propertyName === ''
+                            ? '\u00a0'
+                            : item.propertyName}
+                        </Typography.Text>
+                        {actions}
+                      </Flex>
+                    )}
+                    <div
+                      className='jsonforms-additional-property-control'
+                      style={{ width: '100%' }}
                     >
-                      {item.propertyName === '' ? '\u00a0' : item.propertyName}
-                    </Typography.Text>
-                    {actions}
-                  </Flex>
-                )}
-                <div
-                  className='jsonforms-additional-property-control'
-                  style={{ width: '100%' }}
-                >
-                  {isolated ? (
-                    <AntdIsolatedPropertyEditor
-                      cells={cells}
-                      enabled={Boolean(enabled)}
-                      onChange={(next) =>
-                        handleChange(
-                          path,
-                          assignOwnProperty(
-                            { ...(objectData ?? {}) },
-                            item.propertyName,
-                            next
-                          )
-                        )
-                      }
-                      readonly={readonly}
-                      renderers={renderers}
-                      /*
+                      {isolated ? (
+                        <AntdIsolatedPropertyEditor
+                          cells={cells}
+                          enabled={Boolean(enabled)}
+                          onChange={(next) =>
+                            handleChange(
+                              path,
+                              assignOwnProperty(
+                                { ...(objectData ?? {}) },
+                                item.propertyName,
+                                next
+                              )
+                            )
+                          }
+                          readonly={readonly}
+                          renderers={renderers}
+                          /*
                         Rebundled, so a local `$ref` inside this property's
                         schema still resolves once the value is its own
                         document. See `literalPropertySchema`.
                       */
-                      schema={literalPropertySchema(
-                        item.schema as JsonSchema,
-                        rootSchema
+                          schema={literalPropertySchema(
+                            item.schema as JsonSchema,
+                            rootSchema
+                          )}
+                          uischema={{
+                            type: 'Control',
+                            scope: '#',
+                            label: false,
+                          }}
+                          value={
+                            objectData &&
+                            Object.prototype.hasOwnProperty.call(
+                              objectData,
+                              item.propertyName
+                            )
+                              ? objectData[item.propertyName]
+                              : undefined
+                          }
+                        />
+                      ) : (
+                        <DynamicPropertyProvider path={item.path}>
+                          <JsonFormsDispatch
+                            schema={item.schema}
+                            uischema={item.uischema}
+                            path={item.path}
+                            enabled={enabled}
+                            renderers={renderers}
+                            cells={cells}
+                            readonly={readonly}
+                          />
+                        </DynamicPropertyProvider>
                       )}
-                      uischema={{ type: 'Control', scope: '#', label: false }}
-                      value={
-                        objectData &&
-                        Object.prototype.hasOwnProperty.call(
-                          objectData,
-                          item.propertyName
-                        )
-                          ? objectData[item.propertyName]
-                          : undefined
-                      }
-                    />
-                  ) : (
-                    <DynamicPropertyProvider path={item.path}>
-                      <JsonFormsDispatch
-                        schema={item.schema}
-                        uischema={item.uischema}
-                        path={item.path}
-                        enabled={enabled}
-                        renderers={renderers}
-                        cells={cells}
-                        readonly={readonly}
-                      />
-                    </DynamicPropertyProvider>
-                  )}
-                </div>
-              </Flex>
-            );
-          })}
+                    </div>
+                  </Flex>
+                );
+              })}
+          </Flex>
         </Flex>
-      </Flex>
-      <AntdAdditionalPropertyRenameDialog
-        disabled={
-          !enabled ||
-          Boolean(readonly) ||
-          Boolean(renameError) ||
-          !renameValue.trim() ||
-          renameValue.trim() === renamingPropertyName
-        }
-        error={renameError}
-        oldName={renamingPropertyName}
-        onCancel={closeRename}
-        onChange={setRenameValue}
-        onRename={() => {
-          if (renamingPropertyName) renameProperty(renamingPropertyName);
-        }}
-        value={renameValue}
-      />
-    </Card>
+        <AntdAdditionalPropertyRenameDialog
+          disabled={
+            !enabled ||
+            Boolean(readonly) ||
+            Boolean(renameError) ||
+            !renameValue.trim() ||
+            renameValue.trim() === renamingPropertyName
+          }
+          error={renameError}
+          oldName={renamingPropertyName}
+          onCancel={closeRename}
+          onChange={setRenameValue}
+          onRename={() => {
+            if (renamingPropertyName) renameProperty(renamingPropertyName);
+          }}
+          value={renameValue}
+        />
+      </Card>
+    </PendingChangesProvider>
   );
 };

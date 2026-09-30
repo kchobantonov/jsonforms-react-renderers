@@ -1,3 +1,4 @@
+import { ContainerValidationIndicator } from './ValidationIndicator';
 import {
   Categorization,
   Category,
@@ -45,18 +46,7 @@ const Indicators = ({
   return (
     <span className='inline-flex items-center gap-1'>
       {validation.show && (
-        <span
-          role='img'
-          aria-label={t(
-            validation.count === 1
-              ? 'validation.containerError'
-              : 'validation.containerErrors',
-            { count: validation.count }
-          )}
-          className='text-destructive'
-        >
-          {validation.count}
-        </span>
+        <ContainerValidationIndicator count={validation.count} />
       )}
       {group.hasData && (
         <span

@@ -1,6 +1,12 @@
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+import { RowDetailFrame } from './RowDetailFrame';
+import { CollectionPager } from './CollectionPager';
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
+import EditOutlined from '@ant-design/icons/EditOutlined';
 import {
   ArrayLayoutProps,
   ArrayTranslations,
@@ -234,6 +240,7 @@ const generateColumns = (props: GenerateColumns) => {
     props.enabled
       ? [
           {
+            key: 'actions',
             dataIndex: '',
             title: '',
             width: width,
@@ -261,6 +268,68 @@ const generateColumns = (props: GenerateColumns) => {
           },
         ]
       : []
+  );
+};
+
+const CollectionTable = ({
+  props,
+  columns,
+  dataSource,
+  isObjectSchema,
+}: any) => {
+  const page = useCollectionPagination(
+    dataSource.map((row: any) => row.index),
+    props.uischema.options?.pagination,
+    props.config,
+    'array',
+    true
+  );
+  const detail = useRowDetail(props);
+  const actionColumn = columns.find((column: any) => column.key === 'actions');
+  const displayColumns = detail.options
+    ? [
+        ...columns.filter((column: any) => column.key !== 'actions'),
+        {
+          key: 'actions',
+          title: '',
+          width: (actionColumn?.width ?? 0) + 40,
+          render: (value: any, row: any, index: number) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
+              <Tooltip title={detail.t('collection.editDetails')}>
+                <Button
+                  icon={<EditOutlined />}
+                  aria-label={detail.t('collection.editDetails')}
+                  onClick={() => detail.open(row.index)}
+                />
+              </Tooltip>
+              {actionColumn?.render(value, row, index)}
+            </div>
+          ),
+        },
+      ]
+    : columns;
+  return (
+    <PendingChangesProvider changes={page.pending}>
+      <RowDetailFrame state={detail}>
+        <div style={{ minWidth: 0, overflow: 'auto' }}>
+          <Table
+            scroll={{ x: 'max-content' }}
+            dataSource={page.indices.map((index) => dataSource[index])}
+            showHeader={isObjectSchema}
+            columns={displayColumns}
+            size='small'
+            pagination={false}
+            onRow={(row: any) => ({
+              onClick: () => {
+                if (detail.options?.presentation === 'panel')
+                  detail.open(row.index);
+              },
+            })}
+          />
+          <CollectionPager page={page} />
+        </div>
+      </RowDetailFrame>
+    </PendingChangesProvider>
   );
 };
 
@@ -332,16 +401,12 @@ export class TableControl extends React.Component<
         translations={translations}
         disableAdd={doDisableAdd}
       >
-        <Table
-          scroll={{ x: 'max-content' }}
-          dataSource={dataSource}
-          showHeader={isObjectSchema}
+        <CollectionTable
+          props={this.props}
           columns={columns}
-          // compact density: default padding makes every row markedly taller
-          // than the control it holds
-          size='small'
-          pagination={{ hideOnSinglePage: true }}
-        ></Table>
+          dataSource={dataSource}
+          isObjectSchema={isObjectSchema}
+        />
       </TableToolbar>
     );
   }

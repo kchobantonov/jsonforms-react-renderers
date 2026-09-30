@@ -1,4 +1,8 @@
 import {
+  TupleControlRenderer,
+  tupleControlRendererTester,
+} from './complex/TupleControlRenderer';
+import {
   anyOfStringOrEnumControlTester,
   ShadcnAnyOfStringOrEnumControl,
 } from './controls/AnyOfStringOrEnumControl';
@@ -73,6 +77,7 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: tupleControlRendererTester, renderer: TupleControlRenderer },
   {
     tester: anyOfStringOrEnumControlTester,
     renderer: withJsonFormsControlProps(ShadcnAnyOfStringOrEnumControl),

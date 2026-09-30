@@ -85,7 +85,7 @@ describe('Shadcn AdditionalProperties', () => {
     });
 
     const card = container.querySelector('.jsonforms-additional-properties');
-    expect(card?.className).toContain('rounded-lg');
+    expect(card?.getAttribute('data-slot')).toBe('card');
     expect(card?.textContent).toContain('Additional Properties');
     expect(card?.textContent).toContain('Property Name');
     expect(container.querySelector('button[aria-label="Add property"]')).not.toBeNull();

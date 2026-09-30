@@ -22,6 +22,7 @@
     "select.tsx": "apps/v4/registry/new-york-v4/ui/select.tsx",
     "textarea.tsx": "apps/v4/registry/new-york-v4/ui/textarea.tsx",
     "input.tsx": "apps/v4/registry/new-york-v4/ui/input.tsx",
-    "breadcrumb.tsx": "apps/v4/registry/new-york-v4/ui/breadcrumb.tsx"
+    "breadcrumb.tsx": "apps/v4/registry/new-york-v4/ui/breadcrumb.tsx",
+    "pagination.tsx": "apps/v4/registry/new-york-v4/ui/pagination.tsx"
   }
 }

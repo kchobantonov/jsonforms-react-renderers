@@ -39,6 +39,7 @@ export const ShadcnEnumCell = ({
       }
     >
       <SelectTrigger
+        className='w-full min-w-0'
         id={id}
         aria-label={path || 'Value'}
         aria-invalid={Boolean(errors)}

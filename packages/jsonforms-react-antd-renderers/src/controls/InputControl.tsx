@@ -64,6 +64,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
 
   return (
     <ControlFormItem
+      path={props.path}
       required={required}
       errors={isValid ? undefined : errors}
       label={input !== AntdCheckbox ? label : ''}

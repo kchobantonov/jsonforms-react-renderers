@@ -7,7 +7,7 @@ import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Input } from '@jsonforms-react-shadcn-ui/input';
 
 import '@chobantonov/jsonforms-react-shadcn-renderers/src/styles.css';
-import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
+import { renderExample, WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
@@ -27,7 +27,6 @@ import {
 import './styles/globals.css';
 import { shadcnDemoUi } from './DemoUi';
 import {
-  Box,
   Menu,
   PanelsTopLeft,
   Palette,
@@ -120,7 +119,7 @@ const ShadcnDemoShell = ({
               }
               onClick={onToggleWebComponent}
             >
-              <Box />
+              <WebComponentIcon active={useWebComponent} dark={dark} />
             </Button>
           )}
           <Button

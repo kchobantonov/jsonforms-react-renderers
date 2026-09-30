@@ -54,6 +54,7 @@ export const NativeControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      path={props.path}
       errors={!isValid ? errors : undefined}
       required={required}
       label={label}

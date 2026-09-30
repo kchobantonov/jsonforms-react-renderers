@@ -42,7 +42,7 @@ import {
   registerJsonFormsAntd,
 } from '@chobantonov/jsonforms-react-antd-webcomponent';
 import { antdDemoUi } from './DemoUi';
-import { WebComponentLogo } from './WebComponentLogo';
+import { WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 
 const ANTD_LOGO = new URL('./antd-logo.svg', import.meta.url).href;
 
@@ -125,7 +125,11 @@ const AntdDemoShell = ({
               <small>React · {rendererName}</small>
             </span>
           </Button>
-          <Space className='renderer-demo-actions'>
+          <Space
+            className='renderer-demo-actions'
+            align='center'
+            styles={{ item: { display: 'flex', alignItems: 'center' } }}
+          >
             <Tooltip title={formOnly ? 'Show full UI' : 'Show form only'}>
               <Button
                 aria-label={formOnly ? 'Show full UI' : 'Show form only'}
@@ -151,7 +155,7 @@ const AntdDemoShell = ({
                   }
                   aria-pressed={useWebComponent}
                   icon={
-                    <WebComponentLogo active={useWebComponent} dark={dark} />
+                    <WebComponentIcon active={useWebComponent} dark={dark} />
                   }
                   type={useWebComponent ? 'primary' : 'text'}
                   onClick={onToggleWebComponent}

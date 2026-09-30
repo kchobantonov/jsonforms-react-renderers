@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Tooltip } from 'antd';
+import { Form } from 'antd';
+import { ErrorFeedback } from '../complex/ErrorFeedback';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 
 import { useCellMode } from '@chobantonov/jsonforms-react-renderer-common/cellMode';
@@ -9,6 +10,7 @@ export {
 } from '@chobantonov/jsonforms-react-renderer-common/cellMode';
 
 export interface ControlFormItemProps {
+  path?: string;
   id?: string;
   htmlFor?: string;
   label?: React.ReactNode;
@@ -30,6 +32,7 @@ export interface ControlFormItemProps {
  * moves into a tooltip on the control's error state instead.
  */
 export const ControlFormItem = ({
+  path,
   id,
   htmlFor,
   label,
@@ -73,11 +76,12 @@ export const ControlFormItem = ({
     warning: false,
     validating: false,
     error: (
-      <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}>{errors}</span>}>
+      <ErrorFeedback errors={errors ?? ''} path={path}>
         <ExclamationCircleFilled
           // In a cell the message exists only inside the tooltip, which opens
           // on hover and so is not reachable by a screen reader. Naming the
           // icon with the message keeps it announced.
+          tabIndex={0}
           role='img'
           aria-label={errors}
           // antd sets pointer-events: none on .ant-form-item-feedback-icon so
@@ -86,7 +90,7 @@ export const ControlFormItem = ({
           // in without making the whole slot clickable.
           style={{ pointerEvents: 'auto', cursor: 'help' }}
         />
-      </Tooltip>
+      </ErrorFeedback>
     ),
   });
 

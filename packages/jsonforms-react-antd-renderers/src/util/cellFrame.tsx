@@ -15,10 +15,11 @@ import { CellModeProvider, ControlFormItem } from './cellMode';
  */
 export const CellFrame = ({
   errors,
+  path,
   children,
-}: React.PropsWithChildren<{ errors?: string }>) => (
+}: React.PropsWithChildren<{ errors?: string; path?: string }>) => (
   <CellModeProvider>
-    <ControlFormItem errors={errors || undefined}>{children}</ControlFormItem>
+    <ControlFormItem path={path} errors={errors || undefined}>{children}</ControlFormItem>
   </CellModeProvider>
 );
 
@@ -41,5 +42,5 @@ export const ConnectedCellFrame = ({
 }: ConnectedCellFrameProps) => {
   const ctx = useJsonForms();
   const { errors } = ctxToCellProps(ctx, { schema, uischema, path } as any);
-  return <CellFrame errors={errors}>{children}</CellFrame>;
+  return <CellFrame errors={errors} path={path}>{children}</CellFrame>;
 };

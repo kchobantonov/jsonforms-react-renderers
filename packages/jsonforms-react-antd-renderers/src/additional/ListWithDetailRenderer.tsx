@@ -22,7 +22,7 @@ import {
   withTranslateProps,
   useJsonForms,
 } from '@jsonforms/react';
-import { Col, Empty, Listy, Row } from 'antd';
+import { Empty, Listy, Splitter } from 'antd';
 
 import range from 'lodash/range';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -171,8 +171,8 @@ export const ListWithDetailRenderer = (
         createDefault={handleCreateDefaultValue}
         disableAdd={doDisableAdd}
       >
-        <Row gutter={8}>
-          <Col xs={6}>
+        <Splitter orientation='horizontal'>
+          <Splitter.Panel defaultSize='25%' min='15%' max='60%'>
             {data > 0 ? (
               <Listy
                 items={range(data)}
@@ -199,22 +199,24 @@ export const ListWithDetailRenderer = (
             ) : (
               <Empty description={translations.noDataMessage} />
             )}
-          </Col>
-          <Col xs={18}>
-            {selectedIndex !== undefined ? (
-              <JsonFormsDispatch
-                renderers={renderers}
-                cells={cells}
-                visible={visible}
-                schema={schema}
-                uischema={foundUISchema}
-                path={composePaths(path, `${selectedIndex}`)}
-              />
-            ) : (
-              <Empty description={translations.noSelection} />
-            )}
-          </Col>
-        </Row>
+          </Splitter.Panel>
+          <Splitter.Panel min='25%'>
+            <div style={{ minWidth: 0, paddingInlineStart: 12 }}>
+              {selectedIndex !== undefined ? (
+                <JsonFormsDispatch
+                  renderers={renderers}
+                  cells={cells}
+                  visible={visible}
+                  schema={schema}
+                  uischema={foundUISchema}
+                  path={composePaths(path, `${selectedIndex}`)}
+                />
+              ) : (
+                <Empty description={translations.noSelection} />
+              )}
+            </div>
+          </Splitter.Panel>
+        </Splitter>
       </ArrayLayoutToolbar>
     </>
   );

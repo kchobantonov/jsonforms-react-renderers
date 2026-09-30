@@ -1,7 +1,6 @@
 import React from 'react';
 import { CellProps, OwnPropsOfEnum, WithClassname } from '@jsonforms/core';
 import { Flex, Radio } from 'antd';
-import merge from 'lodash/merge';
 
 export const AntdRadioGroup = React.memo(function AntdRadioGroup(
   props: CellProps &
@@ -10,24 +9,18 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
       inputProps?: React.ComponentProps<typeof Radio.Group>;
     }
 ) {
-  const {
-    data,
-    options,
-    handleChange,
-    path,
-    enabled,
-    config,
-    uischema,
-    inputProps,
-  } = props;
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const { data, options, handleChange, path, enabled, uischema, inputProps } =
+    props;
   /*
     `options.vertical` is the single orientation encoding for a radio group:
     false (the default) arranges the choices in a row that may wrap, true
     stacks them. The orientation is also announced, so assistive technology
     describes the arrangement that is actually on screen.
   */
-  const vertical = appliedUiSchemaOptions.vertical === true;
+  const vertical =
+    (uischema.options?.vertical ??
+      props.config?.jsonformsExtended?.radio?.vertical ??
+      false) === true;
 
   return (
     <Radio.Group

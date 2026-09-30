@@ -5,13 +5,14 @@ import { describe, expect, it } from 'vitest';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 
-const render = (schema: any, options: any, data: any) => {
+const render = (schema: any, options: any, data: any, config: any = {}) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
   act(() =>
     root.render(
       <JsonForms
+        config={config}
         data={data}
         schema={{ type: 'object', properties: { choice: schema } }}
         uischema={{
@@ -101,4 +102,14 @@ describe('radio group choice identity', () => {
     expect(inputs.filter((i) => i.checked)).toHaveLength(1);
     unmount();
   });
+});
+
+it('uses scoped radio defaults and honors an explicit horizontal override', () => {
+  for (const vertical of [undefined, false]) {
+    const { oriented, unmount } = render(radioSchema,
+      { format: 'radio', vertical }, { choice: 'Standard' },
+      { jsonformsExtended: { radio: { vertical: true } } });
+    expect(oriented?.getAttribute('aria-orientation')).toBe(vertical === false ? 'horizontal' : 'vertical');
+    unmount();
+  }
 });

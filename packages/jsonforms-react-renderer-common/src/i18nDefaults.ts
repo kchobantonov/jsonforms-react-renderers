@@ -1,4 +1,11 @@
 export const i18nDefaults = {
+  'collection.pagination': 'Pagination',
+  'collection.pageSize': 'Items per page',
+  'collection.previous': 'Previous page',
+  'collection.next': 'Next page',
+  'collection.editDetails': 'Edit details',
+  'collection.selectItem': 'Select an item to view its details.',
+
   'enum.none': 'None',
   // Shown when a search query matches no choice. The specification requires a
   // searchable renderer to define its empty-result behaviour, so this is part
@@ -15,6 +22,8 @@ export const i18nDefaults = {
   // matching composite.summary.item(s): this works with a plain translator,
   // where a single ICU pattern would render its own syntax. The count is what
   // the indicator may show after validationMode filtering, not the raw total.
+  'validation.showMore': 'Show {count} more',
+  'validation.showLess': 'Show less',
   'validation.containerError': '{count} error in this section',
   'validation.containerErrors': '{count} errors in this section',
   // Used when showValidationIndicatorCount is off.

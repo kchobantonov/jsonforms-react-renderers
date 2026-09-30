@@ -18,6 +18,8 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'enum.noMatches': 'Няма съвпадения',
   'chips.addPlaceholder': 'Въведете стойност и натиснете Enter',
   'group.dataIndicator': 'Секцията съдържа данни',
+  'validation.showMore': 'Покажи още {count}',
+  'validation.showLess': 'Покажи по-малко',
   'validation.containerError': '{count} грешка в тази секция',
   'validation.containerErrors': '{count} грешки в тази секция',
   'validation.containerHasErrors': 'Тази секция съдържа грешки',

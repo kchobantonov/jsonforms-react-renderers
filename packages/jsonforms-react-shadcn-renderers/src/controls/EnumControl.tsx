@@ -63,7 +63,7 @@ export const ShadcnEnumControl = ({
         >
           <SelectTrigger
             id={id}
-            className='shadcn-jsonforms-input shadcn-jsonforms-select pr-16'
+            className='shadcn-jsonforms-input shadcn-jsonforms-select w-full min-w-0 pr-16'
           >
             <SelectValue placeholder='Select...' />
           </SelectTrigger>

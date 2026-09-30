@@ -23,11 +23,14 @@ export const ShadcnRadioGroupControl = (
     Object.is(option.value, props.data)
   );
   const orientation =
-    props.uischema.options?.orientation === 'horizontal'
-      ? 'horizontal'
-      : 'vertical';
+    (props.uischema.options?.vertical ??
+      props.config?.jsonformsExtended?.radio?.vertical ??
+      false) === true
+      ? 'vertical'
+      : 'horizontal';
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}

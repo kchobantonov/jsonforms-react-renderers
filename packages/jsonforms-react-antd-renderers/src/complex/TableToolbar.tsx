@@ -29,7 +29,12 @@ export interface TableToolbarProps {
 
 const { Title } = Typography;
 
-const renderTitle = (label: string, errors: string, description: string) => (
+const renderTitle = (
+  label: string,
+  errors: string,
+  description: string,
+  path: string
+) => (
   <>
     <Row align='middle'>
       <Col>
@@ -39,7 +44,11 @@ const renderTitle = (label: string, errors: string, description: string) => (
       </Col>
       <Col style={{ paddingLeft: 8 }}>
         {errors.length !== 0 && (
-          <ValidationIcon id='tooltip-validation' errorMessages={errors} />
+          <ValidationIcon
+            id='tooltip-validation'
+            errorMessages={errors}
+            path={path}
+          />
         )}
       </Col>
     </Row>
@@ -71,7 +80,7 @@ const TableToolbar = React.memo(function TableToolbar({
       style={{ width: '100%' }}
       size='small'
       type='inner'
-      title={renderTitle(label, errors, description)}
+      title={renderTitle(label, errors, description, path)}
       extra={[
         <Tooltip
           key='tooltip-add'

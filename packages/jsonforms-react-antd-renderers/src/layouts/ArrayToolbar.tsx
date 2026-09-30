@@ -21,7 +21,12 @@ export interface ArrayLayoutToolbarProps {
 
 const { Title } = Typography;
 
-const renderTitle = (label: string, errors: string, description: string) => (
+const renderTitle = (
+  label: string,
+  errors: string,
+  description: string,
+  path: string
+) => (
   <>
     <Row align='middle'>
       <Col>
@@ -30,7 +35,11 @@ const renderTitle = (label: string, errors: string, description: string) => (
         </Title>
       </Col>
       <Col style={{ paddingLeft: 8 }}>
-        <ValidationIcon id='tooltip-validation' errorMessages={errors} />
+        <ValidationIcon
+          id='tooltip-validation'
+          errorMessages={errors}
+          path={path}
+        />
       </Col>
     </Row>
     {description && <Card.Meta description={description} />}
@@ -59,7 +68,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       style={{ width: '100%' }}
       size='small'
       type='inner'
-      title={renderTitle(label, errors, description)}
+      title={renderTitle(label, errors, description, path)}
       extra={[
         <Tooltip key='1' title={translations.addTooltip}>
           <Button

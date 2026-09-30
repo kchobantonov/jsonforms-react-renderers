@@ -30,7 +30,7 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Menu } from 'primereact/menu';
 import { Sidebar } from 'primereact/sidebar';
-import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
+import { renderExample, WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 import {
   DemoShellProps,
   DemoWrapperProps,
@@ -103,7 +103,7 @@ const PrimeReactDemoShell = ({
           {webComponentAvailable && (
             <Button
               outlined={!useWebComponent}
-              icon='pi pi-box'
+              icon={<WebComponentIcon active={useWebComponent} dark={dark} />}
               label='Web Component'
               onClick={onToggleWebComponent}
             />

@@ -44,7 +44,7 @@ export const EnumArrayRenderer = ({
   const [focused, onFocus, onBlur] = useFocus();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const vertical = appliedUiSchemaOptions.vertical === true;
+  const vertical = uischema.options?.vertical === true;
   const showDescription = !isDescriptionHidden(
     visible,
     description,

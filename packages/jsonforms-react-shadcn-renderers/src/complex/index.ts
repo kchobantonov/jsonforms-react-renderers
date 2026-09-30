@@ -8,3 +8,5 @@ export * from './MixedRenderer';
 export * from './ObjectRenderer';
 
 export * from './OneOfRenderer';
+
+export * from './TupleControlRenderer';

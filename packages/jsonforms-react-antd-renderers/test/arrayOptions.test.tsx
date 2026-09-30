@@ -302,13 +302,8 @@ describe('hideArraySummaryValidation', () => {
     milestones: [{ name: 'Portland' }, { name: 'ab' }],
   });
 
-  /*
-    The summary is a Badge carrying the error count. Not `#tooltip-validation`:
-    that id is handed to antd's `Tooltip`, which does not forward it to the
-    DOM, so it matches nothing whatever the state.
-  */
   const summary = (view: ReturnType<typeof draw>) =>
-    view.container.querySelector('.ant-card-head .ant-badge');
+    view.container.querySelector('.ant-card-head [data-validation-summary]');
 
   it('shows the child-error summary by default', async () => {
     const view = draw(undefined, invalid());

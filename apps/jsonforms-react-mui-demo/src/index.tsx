@@ -32,7 +32,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { WebComponentLogo } from './WebComponentLogo';
+import { WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
 import {
   createJsonFormsMuiTheme,
@@ -157,7 +157,7 @@ const MuiDemoShell = ({
                     color={useWebComponent ? 'primary' : 'default'}
                     onClick={onToggleWebComponent}
                   >
-                    <WebComponentLogo active={useWebComponent} dark={dark} />
+                    <WebComponentIcon active={useWebComponent} dark={dark} />
                   </IconButton>
                 </Tooltip>
               )}

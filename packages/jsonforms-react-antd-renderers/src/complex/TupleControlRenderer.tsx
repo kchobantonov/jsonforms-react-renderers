@@ -171,6 +171,10 @@ export const TupleControl = (props: Props) => {
     ...props.config,
     ...(uischema.options ?? {}),
   } as Record<string, any>;
+  const vertical =
+    (uischema.options?.vertical ??
+      props.config?.jsonformsExtended?.tuple?.vertical ??
+      false) === true;
   const definition = tupleDefinition(schema, options.variant === 'tuple');
   const values: unknown[] = Array.isArray(data) ? data : [];
   const editable = enabled !== false;
@@ -383,10 +387,10 @@ export const TupleControl = (props: Props) => {
           data-tuple-fields
           style={{
             display: 'flex',
-            flexDirection: options.vertical === true ? 'column' : 'row',
-            flexWrap: options.vertical === true ? 'nowrap' : 'wrap',
+            flexDirection: vertical ? 'column' : 'row',
+            flexWrap: vertical ? 'nowrap' : 'wrap',
             gap: token.margin,
-            alignItems: options.vertical === true ? 'stretch' : 'flex-start',
+            alignItems: vertical ? 'stretch' : 'flex-start',
           }}
         >
           {definition.prefix.map((_, index) => field(index))}
