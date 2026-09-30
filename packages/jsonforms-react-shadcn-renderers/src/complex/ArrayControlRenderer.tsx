@@ -1,3 +1,4 @@
+import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
 import {
@@ -369,7 +370,9 @@ export const ShadcnArrayRenderer = ({
     cells,
   });
   if (!visible) return null;
-  const columns = Object.entries(schema.properties ?? { value: schema }).map(
+  const definitions = uischema.options?.columnDefs as TableColumnDefinition[] | undefined;
+  const properties = schema.properties ?? { value: schema };
+  const columns = tableColumnFields(properties, schema.properties ? definitions : undefined, Object.keys(properties)).map((field) => [field, properties[field]] as const).map(
     ([field, column]) =>
       [
         field,
@@ -556,7 +559,7 @@ export const ShadcnArrayRenderer = ({
                             onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
                         </th>
                         {columns.map(([field, column]) => (
-                          <th key={field} className='p-2 text-left font-medium'>
+                          <th key={field} style={tableColumnStyle(definitions?.find((column) => column.field === field))} className='p-2 text-left font-medium'>
                             {column.title ?? createCleanLabel(field)}
                           </th>
                         ))}
@@ -585,8 +588,10 @@ export const ShadcnArrayRenderer = ({
                           {columns.map(([field, column]) => (
                             <td
                               key={field}
-                              className='shadcn-jsonforms-table-cell min-w-[160px] p-2'
+                              style={tableColumnStyle(definitions?.find((column) => column.field === field))}
+                              className='shadcn-jsonforms-table-cell p-2'
                             >
+                              <div style={{ maxWidth: tableColumnStyle(definitions?.find((column) => column.field === field)).maxWidth, overflow: 'hidden' }}>
                               <DispatchCell
                                 schema={column}
                                 uischema={{
@@ -618,6 +623,7 @@ export const ShadcnArrayRenderer = ({
                                     : rowPath
                                 }
                               />
+                              </div>
                             </td>
                           ))}
                           <td className='p-2'>

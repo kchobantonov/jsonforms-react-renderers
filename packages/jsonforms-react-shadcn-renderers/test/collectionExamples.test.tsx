@@ -289,3 +289,23 @@ it.each(['readonly', 'disableRemove'])('disables table selection for %s', (restr
     checks.forEach((checkbox) => expect(checkbox.disabled).toBe(true));
   } finally { act(() => root.unmount()); }
 });
+
+it('selects and orders summary columns while retaining all detail fields', () => {
+  const container = document.createElement('div'); document.body.append(container);
+  const root = createRoot(container);
+  try {
+    act(() => root.render(<JsonForms
+      schema={{ type: 'array', items: { type: 'object', properties: {
+        name: { type: 'string' }, email: { type: 'string' }, notes: { type: 'string' }
+      } } }} data={[{ name: 'Ada', email: 'ada@example.com', notes: 'Detail only' }]}
+      uischema={{ type: 'Control', scope: '#', options: { table: true,
+        columnDefs: [{ field: 'email', width: 220 }, { field: 'name', minWidth: 170, maxWidth: 300 }],
+        rowDetail: { presentation: 'dialog' }
+      } }} renderers={shadcnRenderers} cells={shadcnCells} />));
+    const headers = Array.from(container.querySelectorAll('th')).map((cell) => cell.textContent);
+    expect(headers.filter((text) => text === 'Email' || text === 'Name')).toEqual(['Email', 'Name']);
+    expect(container.querySelector('input[value="Detail only"]')).toBeNull();
+    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Edit details"]')!.click());
+    expect(document.querySelector('[role="dialog"] input[value="Detail only"]')).not.toBeNull();
+  } finally { act(() => root.unmount()); container.remove(); }
+});

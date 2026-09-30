@@ -1,3 +1,4 @@
+import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
@@ -39,7 +40,9 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
     | undefined;
 
   if (schema.type === 'object') {
-    return getValidColumnProps(schema, cellOptions).map((prop) => {
+    const definitions = props.uischema.options?.columnDefs as TableColumnDefinition[] | undefined;
+    return tableColumnFields(schema.properties ?? {}, definitions, getValidColumnProps(schema, cellOptions)).map((prop) => {
+      const style = tableColumnStyle(definitions?.find((column) => column.field === prop));
       const props = {
         propName: prop,
         schema,
@@ -50,6 +53,9 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
       };
       return {
         dataIndex: props.propName,
+        width: style.width,
+        onHeaderCell: () => ({ style }),
+        onCell: () => ({ style }),
         title: props.title,
         render: (
           _field: any,
@@ -58,7 +64,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
-          return <RowDataCell {...props} rowPath={rowPath}></RowDataCell>;
+          return <div style={{ ...style, width: style.width ? '100%' : undefined, overflow: 'hidden' }}><RowDataCell {...props} rowPath={rowPath} /></div>;
         },
       } as TableColumnProps;
     });
@@ -77,7 +83,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
-          return <RowDataCell {...props} rowPath={rowPath}></RowDataCell>;
+          return <RowDataCell {...props} rowPath={rowPath} />;
         },
       },
     ];
