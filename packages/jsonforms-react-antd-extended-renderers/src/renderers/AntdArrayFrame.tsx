@@ -50,7 +50,7 @@ export const AntdArrayFrame = ({
     extra={actions.map((action) => (
       <Tooltip key={action.key} title={action.label} placement='bottom'>
         {/* span keeps the tooltip working while the button is disabled */}
-        <span style={{ display: 'inline-block', marginLeft: 8 }}>
+        <span style={{ display: 'inline-flex' }}>
           <Button
             disabled={action.disabled}
             danger={action.danger}

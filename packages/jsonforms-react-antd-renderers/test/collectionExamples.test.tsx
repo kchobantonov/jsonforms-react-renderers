@@ -42,7 +42,7 @@ it('limits table rows and opens an isolated whole-row dialog', () => {
     expect(edit).toBeTruthy();
     const actionButtons = edit.closest('td')!.querySelectorAll('button');
     expect(actionButtons[0]).toBe(edit);
-    expect(actionButtons.length).toBeGreaterThan(1);
+    expect(actionButtons.length).toBe(1);
     act(() => edit.click());
     const dialog = document.querySelector('[role="dialog"]')!;
     expect(dialog).toBeTruthy();
@@ -58,20 +58,20 @@ it('limits table rows and opens an isolated whole-row dialog', () => {
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')?.value
     ).toBe('Person 1');
     const cancel = Array.from(dialog.querySelectorAll('button')).find(
       (b) => b.textContent === 'Cancel'
     )!;
     act(() => cancel.click());
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')?.value
     ).toBe('Person 1');
     const next = container.querySelector<HTMLButtonElement>(
       '.ant-pagination-next button'
     )!;
     expect(next).toBeTruthy();
-    const first = container.querySelector<HTMLInputElement>('tbody input')!;
+    const first = container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')!;
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
@@ -81,7 +81,7 @@ it('limits table rows and opens an isolated whole-row dialog', () => {
     });
     act(() => next.click());
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')?.value
     ).toBe('Person 6');
     act(() =>
       container
@@ -89,7 +89,7 @@ it('limits table rows and opens an isolated whole-row dialog', () => {
         .click()
     );
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')?.value
     ).toBe('Before paging');
   } finally {
     act(() => root.unmount());
@@ -130,9 +130,9 @@ it('paginates dynamic properties while retaining declared fields', () => {
   }
 });
 
-it.each(['right', 'bottom'])(
-  'shows generated row details in the %s panel',
-  (placement) => {
+it.each([['right', false], ['bottom', false], ['right', true], ['bottom', true]])(
+  'shows generated row details in the %s panel (collapsed: %s)',
+  (placement, collapsed) => {
     const container = document.createElement('div');
     document.body.append(container);
     const root = createRoot(container);
@@ -147,7 +147,7 @@ it.each(['right', 'bottom'])(
               scope: '#',
               options: {
                 table: true,
-                rowDetail: { presentation: 'panel', placement },
+                rowDetail: { presentation: 'panel', placement, collapsed },
               },
             }}
             renderers={antdRenderers}
@@ -155,6 +155,10 @@ it.each(['right', 'bottom'])(
           />
         )
       );
+      if (collapsed) {
+        expect(container.textContent).not.toContain('Select an item');
+        act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Show details"]')!.click());
+      }
       expect(container.textContent).toContain('Select an item');
       const edit = Array.from(container.querySelectorAll('button')).find(
         (b) => b.getAttribute('aria-label') === 'Edit details'
@@ -165,6 +169,18 @@ it.each(['right', 'bottom'])(
         container.querySelectorAll('input[value="Person 1"]').length
       ).toBeGreaterThan(1);
       expect(document.querySelector('[role="dialog"]')).toBeNull();
+      const toggle = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
+      act(() => toggle('Hide details').click());
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(1);
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      act(() => container.querySelector<HTMLTableRowElement>('tbody tr')!.click());
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      act(() => container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')!.click());
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
+      act(() => edit.click());
+      expect(toggle('Hide details').getAttribute('aria-expanded')).toBe('true');
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(2);
+
     } finally {
       act(() => root.unmount());
       container.remove();
@@ -212,11 +228,62 @@ it('applies a row draft without overwriting other rows', () => {
         .click()
     );
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input:not([type="checkbox"])')?.value
     ).toBe('Committed');
     expect(container.querySelector('input[value="Person 2"]')).toBeTruthy();
   } finally {
     act(() => root.unmount());
     container.remove();
   }
+});
+
+it.each(['never', 'always'])('deletes checked rows respecting minItems and %s confirmation', (policy) => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const rows = [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }];
+  try {
+    act(() => root.render(<JsonForms
+      schema={{ ...schema, minItems: 2 }} data={rows}
+      uischema={{ type: 'Control', scope: '#', options: { table: true, restrict: true, confirmation: { delete: policy } } }}
+      renderers={antdRenderers} cells={antdCells} />));
+    const deleteButton = () => container.querySelector<HTMLButtonElement>('button[aria-label="Delete selected rows"]')!;
+    const checks = () => Array.from(container.querySelectorAll<HTMLElement>('tbody tr[data-row-key] input[type="checkbox"], tbody button[role="checkbox"]'));
+    expect(deleteButton().disabled).toBe(true);
+    act(() => checks()[0].click());
+    expect(deleteButton().disabled).toBe(false);
+    act(() => checks()[1].click());
+    expect(deleteButton().disabled).toBe(true);
+    act(() => checks()[1].click());
+    act(() => deleteButton().click());
+    if (policy === 'always') {
+      expect(container.querySelector('input[value="One"]')).not.toBeNull();
+      const dialog = document.querySelector('[role="dialog"], [role="alertdialog"]')!;
+      expect(dialog).not.toBeNull();
+      const confirm = Array.from(dialog.querySelectorAll('button')).find((button) =>
+        button.textContent === 'Delete selected rows' || button.textContent === 'Delete' || button.textContent === 'Yes')!;
+      act(() => confirm.click());
+    }
+    expect(container.querySelector('input[value="One"]')).toBeNull();
+    expect(container.querySelector('input[value="Two"]')).not.toBeNull();
+    expect(deleteButton().disabled).toBe(true);
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
+});
+
+it.each(['readonly', 'disableRemove'])('disables table selection for %s', (restriction) => {
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  try {
+    act(() => root.render(<JsonForms schema={schema} data={data}
+      readonly={restriction === 'readonly'}
+      uischema={{ type: 'Control', scope: '#', options: { table: true, disableRemove: restriction === 'disableRemove' } }}
+      renderers={antdRenderers} cells={antdCells} />));
+    expect(container.querySelector<HTMLButtonElement>('button[aria-label="Delete selected rows"]')!.disabled).toBe(true);
+    const checks = container.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"], tbody button[role="checkbox"]');
+    expect(checks.length).toBeGreaterThan(0);
+    checks.forEach((checkbox) => expect(checkbox.disabled).toBe(true));
+  } finally { act(() => root.unmount()); }
 });

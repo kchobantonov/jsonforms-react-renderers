@@ -1,3 +1,5 @@
+import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
+import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -22,7 +24,7 @@ import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-co
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import { CollectionPager } from './CollectionPager';
-import { RowDetailFrame } from './RowDetailFrame';
+import { RowDetailFrame, RowDetailToggle } from './RowDetailFrame';
 import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
 import {
   and,
@@ -279,6 +281,7 @@ export const ShadcnArrayRenderer = ({
     downAriaLabel: translate('array.downAriaLabel', 'Move down'),
     down: translate('array.down', 'Move down'),
   };
+  const selection = useTableSelection({ path, schema, uischema, config, enabled, readonly, removeItems });
   const [selectedItem, setSelectedItem] = React.useState(0);
   const [pendingIndex, setPendingIndex] = React.useState<number>();
   const options = { ...config, ...uischema.options };
@@ -410,6 +413,14 @@ export const ShadcnArrayRenderer = ({
             )}
           </div>
           <div className='shadcn-jsonforms-array-actions'>
+            <RowDetailToggle state={rowDetail} />
+            {table && <TooltipProvider><Tooltip><TooltipTrigger asChild>
+              <Button type='button' size='icon-sm' variant='destructive'
+                aria-label={rowDetail.t('collection.deleteSelected')}
+                disabled={!selection.canDelete} onClick={selection.request}>
+                <Trash2 aria-hidden='true' className='h-4 w-4' />
+              </Button>
+            </TooltipTrigger><TooltipContent>{rowDetail.t('collection.deleteSelected')}</TooltipContent></Tooltip></TooltipProvider>}
             <Button
               type='button'
               size='icon-sm'
@@ -538,6 +549,12 @@ export const ShadcnArrayRenderer = ({
                   {objectRows && (
                     <thead>
                       <tr className='border-b'>
+                        <th className='p-2'>
+                          <Checkbox aria-label={rowDetail.t('collection.selectPage')}
+                            disabled={!selection.selectable || !page.indices.length}
+                            checked={page.indices.length > 0 && page.indices.every((i) => selection.selected.includes(i)) ? true : page.indices.some((i) => selection.selected.includes(i)) ? 'indeterminate' : false}
+                            onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
+                        </th>
                         {columns.map(([field, column]) => (
                           <th key={field} className='p-2 text-left font-medium'>
                             {column.title ?? createCleanLabel(field)}
@@ -560,6 +577,11 @@ export const ShadcnArrayRenderer = ({
                             }
                           }}
                         >
+                          <td className='p-2' onClick={(event) => event.stopPropagation()}>
+                            <Checkbox aria-label={rowDetail.t('collection.selectRow', { index: index + 1 })}
+                              disabled={!selection.selectable} checked={selection.selected.includes(index)}
+                              onCheckedChange={(checked) => selection.setSelected(checked === true ? [...selection.selected, index] : selection.selected.filter((i) => i !== index))} />
+                          </td>
                           {columns.map(([field, column]) => (
                             <td
                               key={field}
@@ -608,7 +630,13 @@ export const ShadcnArrayRenderer = ({
                                       variant='ghost'
                                       size='icon-sm'
                                       aria-label={rowDetail.t('collection.editDetails')}
-                                      onClick={() => rowDetail.open(index)}
+                                      onClick={(event) => {
+                    event.stopPropagation();
+                    if (rowDetail.options?.presentation === 'panel') {
+                      rowDetail.setPanelOpen(true);
+                    }
+                    rowDetail.open(index);
+                  }}
                                     >
                                       <Pencil className='h-4 w-4' aria-hidden='true' />
                                     </Button>
@@ -659,22 +687,7 @@ export const ShadcnArrayRenderer = ({
                                 </Button>
                               </>
                             )}
-                            <Button
-                              type='button'
-                              variant='destructive'
-                              size='icon'
-                              className='h-7 w-7'
-                              aria-label={
-                                translations?.removeAriaLabel || 'Remove'
-                              }
-                              title={
-                                translations?.removeTooltip || 'Remove item'
-                              }
-                              disabled={!canRemove}
-                              onClick={() => requestRemove(index)}
-                            >
-                              <Trash2 className='h-4 w-4' aria-hidden='true' />
-                            </Button>
+
                           </td>
                         </tr>
                       );
@@ -727,6 +740,7 @@ export const ShadcnArrayRenderer = ({
           )}
           {!table && <CollectionPager page={page} />}
         </div>
+        <DeleteDialog open={selection.confirming} onCancel={selection.cancel} onConfirm={selection.confirm} />
         <DeleteDialog
           open={pendingIndex !== undefined}
           onCancel={() => setPendingIndex(undefined)}

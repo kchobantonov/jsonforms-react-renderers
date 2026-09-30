@@ -1,7 +1,8 @@
+import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
-import { RowDetailFrame } from './RowDetailFrame';
+import { RowDetailFrame, RowDetailToggle } from './RowDetailFrame';
 import { CollectionPager } from './CollectionPager';
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
@@ -27,7 +28,7 @@ import React, { useMemo } from 'react';
 
 import { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';
-import { WithDeleteDialogSupport } from './DeleteDialog';
+import { DeleteDialog, WithDeleteDialogSupport } from './DeleteDialog';
 import DataCell, { DataCellProps } from './DataCell';
 import TableToolbar from './TableToolbar';
 
@@ -165,9 +166,7 @@ interface ActionCellProps {
 }
 
 const ActionCell = ({
-  childPath,
   rowIndex,
-  openDeleteDialog,
   moveUpCreator,
   moveDownCreator,
   enabled,
@@ -176,7 +175,6 @@ const ActionCell = ({
   showSortButtons,
   path,
   translations,
-  disableRemove,
 }: ActionCellProps & WithDeleteDialogSupport) => {
   const moveUp = useMemo(
     () => moveUpCreator(path, rowIndex),
@@ -211,14 +209,7 @@ const ActionCell = ({
           </Tooltip>
         </>
       ) : null}
-      <Tooltip title={translations.removeTooltip}>
-        <Button
-          disabled={!enabled || disableRemove}
-          aria-label={translations.removeAriaLabel}
-          icon={<DeleteFilled rev={undefined} />}
-          onClick={() => openDeleteDialog(childPath, rowIndex)}
-        />
-      </Tooltip>
+
     </div>
   );
 };
@@ -237,7 +228,7 @@ const generateColumns = (props: GenerateColumns) => {
   const width = props.showSortButtons ? 150 : 50;
 
   return generateDataColumns(props).concat(
-    props.enabled
+    props.enabled && props.showSortButtons
       ? [
           {
             key: 'actions',
@@ -276,6 +267,7 @@ const CollectionTable = ({
   columns,
   dataSource,
   isObjectSchema,
+  renderFrame,
 }: any) => {
   const page = useCollectionPagination(
     dataSource.map((row: any) => row.index),
@@ -285,6 +277,7 @@ const CollectionTable = ({
     true
   );
   const detail = useRowDetail(props);
+  const selection = useTableSelection(props);
   const actionColumn = columns.find((column: any) => column.key === 'actions');
   const displayColumns = detail.options
     ? [
@@ -299,7 +292,13 @@ const CollectionTable = ({
                 <Button
                   icon={<EditOutlined />}
                   aria-label={detail.t('collection.editDetails')}
-                  onClick={() => detail.open(row.index)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    if (detail.options?.presentation === 'panel') {
+                      detail.setPanelOpen(true);
+                    }
+                    detail.open(row.index);
+                  }}
                 />
               </Tooltip>
               {actionColumn?.render(value, row, index)}
@@ -310,9 +309,14 @@ const CollectionTable = ({
     : columns;
   return (
     <PendingChangesProvider changes={page.pending}>
-      <RowDetailFrame state={detail}>
+      {renderFrame(<RowDetailFrame state={detail}>
         <div style={{ minWidth: 0, overflow: 'auto' }}>
           <Table
+            rowSelection={{
+              selectedRowKeys: selection.selected,
+              onChange: (keys) => selection.setSelected(keys as number[]),
+              getCheckboxProps: () => ({ disabled: !selection.selectable }),
+            }}
             scroll={{ x: 'max-content' }}
             dataSource={page.indices.map((index) => dataSource[index])}
             showHeader={isObjectSchema}
@@ -328,7 +332,17 @@ const CollectionTable = ({
           />
           <CollectionPager page={page} />
         </div>
-      </RowDetailFrame>
+      </RowDetailFrame>, <React.Fragment key='table-actions'>
+        <RowDetailToggle state={detail} />
+        <Tooltip title={detail.t('collection.deleteSelected')}>
+          <Button shape='circle' icon={<DeleteFilled />} danger
+            aria-label={detail.t('collection.deleteSelected')}
+            disabled={!selection.canDelete} onClick={selection.request} />
+        </Tooltip>
+      </React.Fragment>)}
+      <DeleteDialog open={selection.confirming} onConfirm={selection.confirm} onCancel={selection.cancel}
+        title={detail.t('collection.deleteSelected')} message={detail.t('collection.deleteSelectedMessage')}
+        acceptText={detail.t('collection.deleteSelected')} declineText={detail.t('composite.cancel')} />
     </PendingChangesProvider>
   );
 };
@@ -387,6 +401,12 @@ export class TableControl extends React.Component<
     const dataSource = range(data).map((index) => ({ index, key: index }));
 
     return (
+      <CollectionTable
+        props={this.props}
+        columns={columns}
+        dataSource={dataSource}
+        isObjectSchema={isObjectSchema}
+        renderFrame={(children: React.ReactNode, actions: React.ReactNode) => (
       <TableToolbar
         config={this.props.config}
         errors={errors}
@@ -400,14 +420,12 @@ export class TableControl extends React.Component<
         enabled={enabled}
         translations={translations}
         disableAdd={doDisableAdd}
+        actions={actions}
       >
-        <CollectionTable
-          props={this.props}
-          columns={columns}
-          dataSource={dataSource}
-          isObjectSchema={isObjectSchema}
-        />
+        {children}
       </TableToolbar>
+        )}
+      />
     );
   }
 }

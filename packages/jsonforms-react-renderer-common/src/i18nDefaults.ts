@@ -1,8 +1,14 @@
 export const i18nDefaults = {
+  'collection.deleteSelected': 'Delete selected rows',
+  'collection.deleteSelectedMessage': 'Delete the selected rows and their data?',
+  'collection.selectPage': 'Select all rows on this page',
+  'collection.selectRow': 'Select row {index}',
   'collection.pagination': 'Pagination',
   'collection.pageSize': 'Items per page',
   'collection.previous': 'Previous page',
   'collection.next': 'Next page',
+  'collection.showDetails': 'Show details',
+  'collection.hideDetails': 'Hide details',
   'collection.editDetails': 'Edit details',
   'collection.selectItem': 'Select an item to view its details.',
 

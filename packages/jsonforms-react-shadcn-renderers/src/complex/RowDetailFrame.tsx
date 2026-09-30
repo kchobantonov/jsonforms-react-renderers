@@ -1,3 +1,5 @@
+import { Eye, EyeOff } from 'lucide-react';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
 import React from 'react';
 import { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import {
@@ -18,6 +20,7 @@ export const RowDetailFrame = ({
   children,
 }: React.PropsWithChildren<{ state: RowDetailState }>) => {
   const { options, t } = state;
+  const { panelOpen } = state;
   if (!options) return <>{children}</>;
   if (options.presentation === 'dialog')
     return (
@@ -54,19 +57,43 @@ export const RowDetailFrame = ({
       </>
     );
   return (
+    <div>
+
     <ResizablePanelGroup
       orientation={options.placement === 'bottom' ? 'vertical' : 'horizontal'}
-      style={{ height: options.placement === 'bottom' ? '40rem' : '32rem' }}
+      // Percentage-sized panels need a definite height, even with one panel.
+      style={{ height: panelOpen && options.placement === 'bottom' ? '40rem' : '32rem' }}
     >
       <ResizablePanel defaultSize='55%' minSize='20%'>
         {children}
       </ResizablePanel>
-      {options.resizable !== false && <ResizableHandle withHandle />}
-      <ResizablePanel minSize='20%'>
+      {panelOpen && options.resizable !== false && <ResizableHandle withHandle />}
+      {panelOpen && <ResizablePanel minSize='20%'>
         <div className='p-3'>
           {state.content ?? state.t('collection.selectItem')}
         </div>
-      </ResizablePanel>
+      </ResizablePanel>}
     </ResizablePanelGroup>
+    </div>
+  );
+};
+
+export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
+  const { panelOpen, setPanelOpen, t, options } = state;
+  if (options?.presentation !== 'panel') return null;
+  const toggleLabel = t(panelOpen ? 'collection.hideDetails' : 'collection.showDetails');
+  return (
+      <div className='flex items-center'>
+        <TooltipProvider><Tooltip>
+          <TooltipTrigger asChild>
+            <Button type='button' variant='ghost' size='icon-sm'
+              aria-label={toggleLabel} aria-expanded={panelOpen}
+              onClick={() => setPanelOpen((open) => !open)}>
+              {panelOpen ? <EyeOff aria-hidden='true' /> : <Eye aria-hidden='true' />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{toggleLabel}</TooltipContent>
+        </Tooltip></TooltipProvider>
+      </div>
   );
 };

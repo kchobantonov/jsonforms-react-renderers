@@ -23,6 +23,7 @@ export const useRowDetail = (props: any) => {
   const pending = useMemo(() => new Set<PendingChange>(), []);
   const t = useI18n();
   const options = props.uischema?.options?.rowDetail;
+  const [panelOpen, setPanelOpen] = useState(() => options?.collapsed !== true);
   const [selection, setSelection] = useState<{
     index: number;
     source: unknown;
@@ -130,6 +131,8 @@ export const useRowDetail = (props: any) => {
     ) : null;
   return {
     options,
+    panelOpen,
+    setPanelOpen,
     open,
     close,
     selection,

@@ -14,6 +14,12 @@ import type { RendererLocaleCatalog } from '../rendererLocale';
  * a new key never breaks a translated form.
  */
 export const bgRendererLocale: RendererLocaleCatalog = {
+  'collection.showDetails': 'Показване на подробностите',
+  'collection.hideDetails': 'Скриване на подробностите',
+  'collection.deleteSelected': 'Изтриване на избраните редове',
+  'collection.deleteSelectedMessage': 'Да се изтрият ли избраните редове и техните данни?',
+  'collection.selectPage': 'Избиране на всички редове на тази страница',
+  'collection.selectRow': 'Избиране на ред {index}',
   'enum.none': 'Няма',
   'enum.noMatches': 'Няма съвпадения',
   'chips.addPlaceholder': 'Въведете стойност и натиснете Enter',

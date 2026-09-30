@@ -25,6 +25,7 @@ export interface TableToolbarProps {
   addItem(path: string, value: any): () => void;
   disableAdd?: boolean;
   children?: React.ReactNode;
+  actions?: React.ReactNode;
 }
 
 const { Title } = Typography;
@@ -68,6 +69,7 @@ const TableToolbar = React.memo(function TableToolbar({
   rootSchema,
   disableAdd,
   children,
+  actions,
   options,
   uischema,
   config,
@@ -82,6 +84,7 @@ const TableToolbar = React.memo(function TableToolbar({
       type='inner'
       title={renderTitle(label, errors, description, path)}
       extra={[
+        actions,
         <Tooltip
           key='tooltip-add'
           title={translations.addTooltip}

@@ -22,11 +22,11 @@ export const ArrayPanel = ({
       {...props}
       style={{ minWidth: 0, maxWidth: '100%', ...props.style }}
       extra={
-        <>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {extra}
           {panel.collapsible && (
             <Button
-              type='text'
+              shape='circle'
               aria-label={panelLabel || 'Array'}
               aria-expanded={!panel.collapsed}
               aria-controls={panel.contentId}
@@ -34,7 +34,7 @@ export const ArrayPanel = ({
               icon={panel.collapsed ? <DownOutlined /> : <UpOutlined />}
             />
           )}
-        </>
+        </div>
       }
     >
       <div id={panel.contentId} hidden={panel.collapsed} style={{ minWidth: 0, maxWidth: '100%' }}>
