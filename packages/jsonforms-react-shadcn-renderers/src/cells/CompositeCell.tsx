@@ -98,6 +98,7 @@ export const ShadcnCompositeCell = (props: Props) => {
   if (props.visible === false) return null;
   return (
     <div className='group/composite flex min-w-0 items-center gap-1.5'>
+      {(options.showTypeIndicator ?? props.config?.showTypeIndicator ?? false) === true && (isArray || props.schema?.type === 'object') && <span aria-hidden='true' className='shrink-0 text-muted-foreground'>{isArray ? '[]' : '{}'}</span>}
       <span className={`min-w-0 flex-1 truncate${summary.generated && options.summary?.type !== 'Label' ? ' italic text-muted-foreground' : ''}`}>
         {options.summary?.type === 'Label' ? <CellSummary schema={props.schema} path={props.path} uischema={options.summary} /> : summary.text}
       </span>

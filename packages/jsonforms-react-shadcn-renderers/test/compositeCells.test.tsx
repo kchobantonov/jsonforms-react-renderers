@@ -67,11 +67,13 @@ const mount = (
   readonly = false,
   data: any = initial,
   formSchema: any = schema,
-  uischema: any = ui
+  uischema: any = ui,
+  config: any = {}
 ) => {
   act(() =>
     root.render(
       <JsonForms
+        config={config}
         schema={formSchema}
         uischema={uischema}
         data={data}
@@ -287,4 +289,17 @@ it.each([false, true])('shows a Label edit action only with explicit detail (det
       expect(document.querySelector('[role="dialog"]')).not.toBeNull();
     }
   expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
+});
+
+ it('uses the global type indicator default and honors explicit cell overrides', () => {
+  mount(false, initial, schema, ui, { showTypeIndicator: true });
+  expect(container.textContent).toContain('{}');
+  expect(container.textContent).toContain('[]');
+  const overrides = { ...ui, options: { ...ui.options, cells: {
+    address: { ...ui.options.cells.address, showTypeIndicator: false },
+    phones: { ...ui.options.cells.phones, showTypeIndicator: false },
+  } } };
+  mount(false, initial, schema, overrides, { showTypeIndicator: true });
+  expect(container.textContent).not.toContain('{}');
+  expect(container.textContent).not.toContain('[]');
 });

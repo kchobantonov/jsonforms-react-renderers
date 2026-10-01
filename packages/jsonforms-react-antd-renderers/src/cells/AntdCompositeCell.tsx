@@ -5,7 +5,6 @@ import React, { useState, useRef } from 'react';
 import { Button, theme } from 'antd';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
-import UnorderedListOutlined from '@ant-design/icons/UnorderedListOutlined';
 import {
   CellProps,
   Translator,
@@ -55,6 +54,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     detail?: UISchemaElement;
     clearable?: boolean;
     summaryOnly?: boolean;
+    showTypeIndicator?: boolean;
   };
   const summary = compositeSummaryPresentation(props.data, options.summary?.type === 'Control' ? options.summary as any : undefined, props.schema?.title, t, d, props.schema);
   const isArray = Array.isArray(props.data) || props.schema?.type === 'array';
@@ -78,11 +78,11 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
       onFocus={() => setActive(true)}
       onBlur={() => setActive(false)}
     >
-      {options.summary?.type !== 'Label' && <span
+      {(options.showTypeIndicator ?? props.config?.showTypeIndicator ?? false) === true && (isArray || props.schema?.type === 'object') && <span
         aria-hidden='true'
         style={{ flex: 'none', opacity: 0.55, lineHeight: 0 }}
       >
-        {isArray ? <UnorderedListOutlined /> : <span>{'{}'}</span>}
+        {isArray ? '[]' : '{}'}
       </span>}
       {/* one line: the row height must not grow with the content */}
       <span
