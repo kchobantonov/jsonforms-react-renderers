@@ -120,17 +120,28 @@ it('paginates dynamic properties while retaining declared fields', () => {
     expect(container.querySelector('input[value="Fixed"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 5"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 6"]')).toBeNull();
-    const collection = container.querySelector('.jsonforms-additional-properties')!;
-    const list = collection.querySelector('.jsonforms-additional-properties-list')!;
+    const collection = container.querySelector(
+      '.jsonforms-additional-properties'
+    )!;
+    const list = collection.querySelector(
+      '.jsonforms-additional-properties-list'
+    )!;
     const footer = collection.querySelector('[data-collection-footer]')!;
     expect(footer).toBeTruthy();
-    expect(list.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(
+      list.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   } finally {
     act(() => root.unmount());
   }
 });
 
-it.each([['right', false], ['bottom', false], ['right', true], ['bottom', true]])(
+it.each([
+  ['right', false],
+  ['bottom', false],
+  ['right', true],
+  ['bottom', true],
+])(
   'shows generated row details in the %s panel (collapsed: %s)',
   (placement, collapsed) => {
     const container = document.createElement('div');
@@ -157,7 +168,13 @@ it.each([['right', false], ['bottom', false], ['right', true], ['bottom', true]]
       );
       if (collapsed) {
         expect(container.textContent).not.toContain('Select an item');
-        act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Show details"]')!.click());
+        act(() =>
+          container
+            .querySelector<HTMLButtonElement>(
+              'button[aria-label="Show details"]'
+            )!
+            .click()
+        );
       }
       expect(container.textContent).toContain('Select an item');
       const edit = Array.from(container.querySelectorAll('button')).find(
@@ -169,29 +186,64 @@ it.each([['right', false], ['bottom', false], ['right', true], ['bottom', true]]
         container.querySelectorAll('input[value="Person 1"]').length
       ).toBeGreaterThan(1);
       expect(document.querySelector('[role="dialog"]')).toBeNull();
-      expect(container.querySelector('tbody tr[aria-current="true"] input[value="Person 1"]')).not.toBeNull();
-      const toggle = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
+      expect(
+        container.querySelector(
+          'tbody tr[aria-current="true"] input[value="Person 1"]'
+        )
+      ).not.toBeNull();
+      const toggle = (label: string) =>
+        container.querySelector<HTMLButtonElement>(
+          `button[aria-label="${label}"]`
+        )!;
       act(() => toggle('Hide details').click());
-      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(1);
-      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
-      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
-      act(() => container.querySelector<HTMLTableRowElement>('tbody tr')!.click());
-      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
-      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
-      act(() => container.querySelector<HTMLInputElement>('tbody input')!.click());
-      expect(toggle('Show details').getAttribute('aria-expanded')).toBe('false');
-      expect(container.querySelector('tbody tr[aria-current="true"]')).toBeNull();
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
+        1
+      );
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
+        'false'
+      );
+      expect(
+        container.querySelector('tbody tr[aria-current="true"]')
+      ).toBeNull();
+      act(() =>
+        container.querySelector<HTMLTableRowElement>('tbody tr')!.click()
+      );
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
+        'false'
+      );
+      expect(
+        container.querySelector('tbody tr[aria-current="true"]')
+      ).toBeNull();
+      act(() =>
+        container.querySelector<HTMLInputElement>('tbody input')!.click()
+      );
+      expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
+        'false'
+      );
+      expect(
+        container.querySelector('tbody tr[aria-current="true"]')
+      ).toBeNull();
       act(() => edit.click());
       expect(toggle('Hide details').getAttribute('aria-expanded')).toBe('true');
-      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(2);
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
+        2
+      );
 
       const rows = container.querySelectorAll<HTMLTableRowElement>('tbody tr');
       act(() => rows[1].click());
-      expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(2);
-      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(1);
+      expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(
+        2
+      );
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
+        1
+      );
       act(() => rows[0].querySelector<HTMLInputElement>('input')!.click());
-      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(2);
-      expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(1);
+      expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
+        2
+      );
+      expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(
+        1
+      );
     } finally {
       act(() => root.unmount());
       container.remove();
@@ -248,94 +300,223 @@ it('applies a row draft without overwriting other rows', () => {
   }
 });
 
-it.each(['never', 'always'])('deletes checked rows respecting minItems and %s confirmation', (policy) => {
+it.each(['never', 'always'])(
+  'deletes checked rows respecting minItems and %s confirmation',
+  (policy) => {
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    const rows = [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }];
+    try {
+      act(() =>
+        root.render(
+          <JsonForms
+            schema={{ ...schema, minItems: 2 }}
+            data={rows}
+            uischema={{
+              type: 'Control',
+              scope: '#',
+              options: {
+                table: true,
+                restrict: true,
+                confirmation: { delete: policy },
+              },
+            }}
+            renderers={shadcnRenderers}
+            cells={shadcnCells}
+          />
+        )
+      );
+      const deleteButton = () =>
+        container.querySelector<HTMLButtonElement>(
+          'button[aria-label="Delete selected rows"]'
+        )!;
+      const checks = () =>
+        Array.from(
+          container.querySelectorAll<HTMLElement>(
+            'tbody input[type="checkbox"], tbody button[role="checkbox"]'
+          )
+        );
+      expect(deleteButton().disabled).toBe(true);
+      act(() => checks()[0].click());
+      expect(deleteButton().disabled).toBe(false);
+      act(() => checks()[1].click());
+      expect(deleteButton().disabled).toBe(true);
+      act(() => checks()[1].click());
+      act(() => deleteButton().click());
+      if (policy === 'always') {
+        expect(container.querySelector('input[value="One"]')).not.toBeNull();
+        const dialog = document.querySelector(
+          '[role="dialog"], [role="alertdialog"]'
+        )!;
+        expect(dialog).not.toBeNull();
+        const confirm = Array.from(dialog.querySelectorAll('button')).find(
+          (button) =>
+            button.textContent === 'Delete selected rows' ||
+            button.textContent === 'Delete' ||
+            button.textContent === 'Yes'
+        )!;
+        act(() => confirm.click());
+      }
+      expect(container.querySelector('input[value="One"]')).toBeNull();
+      expect(container.querySelector('input[value="Two"]')).not.toBeNull();
+      expect(deleteButton().disabled).toBe(true);
+    } finally {
+      act(() => root.unmount());
+      container.remove();
+    }
+  }
+);
+
+it.each(['readonly', 'disableRemove'])(
+  'disables table selection for %s',
+  (restriction) => {
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      act(() =>
+        root.render(
+          <JsonForms
+            schema={schema}
+            data={data}
+            readonly={restriction === 'readonly'}
+            uischema={{
+              type: 'Control',
+              scope: '#',
+              options: {
+                table: true,
+                disableRemove: restriction === 'disableRemove',
+              },
+            }}
+            renderers={shadcnRenderers}
+            cells={shadcnCells}
+          />
+        )
+      );
+      expect(
+        container.querySelector<HTMLButtonElement>(
+          'button[aria-label="Delete selected rows"]'
+        )!.disabled
+      ).toBe(true);
+      const checks = container.querySelectorAll<HTMLInputElement>(
+        'tbody input[type="checkbox"], tbody button[role="checkbox"]'
+      );
+      expect(checks.length).toBeGreaterThan(0);
+      checks.forEach((checkbox) => expect(checkbox.disabled).toBe(true));
+    } finally {
+      act(() => root.unmount());
+    }
+  }
+);
+
+it('selects and orders summary columns while retaining all detail fields', () => {
   const container = document.createElement('div');
   document.body.append(container);
   const root = createRoot(container);
-  const rows = [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }];
   try {
-    act(() => root.render(<JsonForms
-      schema={{ ...schema, minItems: 2 }} data={rows}
-      uischema={{ type: 'Control', scope: '#', options: { table: true, restrict: true, confirmation: { delete: policy } } }}
-      renderers={shadcnRenderers} cells={shadcnCells} />));
-    const deleteButton = () => container.querySelector<HTMLButtonElement>('button[aria-label="Delete selected rows"]')!;
-    const checks = () => Array.from(container.querySelectorAll<HTMLElement>('tbody input[type="checkbox"], tbody button[role="checkbox"]'));
-    expect(deleteButton().disabled).toBe(true);
-    act(() => checks()[0].click());
-    expect(deleteButton().disabled).toBe(false);
-    act(() => checks()[1].click());
-    expect(deleteButton().disabled).toBe(true);
-    act(() => checks()[1].click());
-    act(() => deleteButton().click());
-    if (policy === 'always') {
-      expect(container.querySelector('input[value="One"]')).not.toBeNull();
-      const dialog = document.querySelector('[role="dialog"], [role="alertdialog"]')!;
-      expect(dialog).not.toBeNull();
-      const confirm = Array.from(dialog.querySelectorAll('button')).find((button) =>
-        button.textContent === 'Delete selected rows' || button.textContent === 'Delete' || button.textContent === 'Yes')!;
-      act(() => confirm.click());
-    }
-    expect(container.querySelector('input[value="One"]')).toBeNull();
-    expect(container.querySelector('input[value="Two"]')).not.toBeNull();
-    expect(deleteButton().disabled).toBe(true);
+    act(() =>
+      root.render(
+        <JsonForms
+          schema={{
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                email: { type: 'string' },
+                notes: { type: 'string' },
+              },
+            },
+          }}
+          data={[
+            { name: 'Ada', email: 'ada@example.com', notes: 'Detail only' },
+          ]}
+          uischema={{
+            type: 'Control',
+            scope: '#',
+            options: {
+              table: true,
+              columnDefs: [
+                { field: 'email', width: 220 },
+                { field: 'name', minWidth: 170, maxWidth: 300 },
+              ],
+              rowDetail: { presentation: 'dialog' },
+            },
+          }}
+          renderers={shadcnRenderers}
+          cells={shadcnCells}
+        />
+      )
+    );
+    const headers = Array.from(container.querySelectorAll('th')).map(
+      (cell) => cell.textContent
+    );
+    expect(
+      headers.filter((text) => text === 'Email' || text === 'Name')
+    ).toEqual(['Email', 'Name']);
+    const resize = container.querySelector<HTMLElement>(
+      '[role="separator"][aria-label="Resize Name column"]'
+    )!;
+    expect(resize).not.toBeNull();
+    act(() =>
+      resize.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'End', bubbles: true })
+      )
+    );
+    expect(resize.closest('th')!.style.width).toBe('300px');
+    act(() =>
+      resize.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Home', bubbles: true })
+      )
+    );
+    expect(resize.closest('th')!.style.width).toBe('170px');
+    const emailHeader = container.querySelector<HTMLElement>(
+      'th[data-column-key="email"]'
+    )!;
+    const selectionHeader = container.querySelector<HTMLElement>('thead th')!;
+    vi.spyOn(emailHeader, 'getBoundingClientRect').mockReturnValue({
+      width: 220,
+    } as DOMRect);
+    vi.spyOn(selectionHeader, 'getBoundingClientRect').mockReturnValue({
+      width: 40,
+    } as DOMRect);
+    vi.spyOn(resize.closest('th')!, 'getBoundingClientRect').mockReturnValue({
+      width: 170,
+    } as DOMRect);
+    resize.setPointerCapture = vi.fn();
+    resize.hasPointerCapture = () => true;
+    resize.releasePointerCapture = vi.fn();
+    act(() =>
+      resize.dispatchEvent(
+        new MouseEvent('pointerdown', {
+          clientX: 100,
+          button: 0,
+          bubbles: true,
+        })
+      )
+    );
+    act(() =>
+      resize.dispatchEvent(
+        new MouseEvent('pointermove', { clientX: 140, bubbles: true })
+      )
+    );
+    expect(resize.closest('th')!.style.width).toBe('210px');
+    expect(emailHeader.style.width).toBe('220px');
+    act(() =>
+      resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+    );
+
+    expect(container.querySelector('input[value="Detail only"]')).toBeNull();
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('button[aria-label="Edit details"]')!
+        .click()
+    );
+    expect(
+      document.querySelector('[role="dialog"] input[value="Detail only"]')
+    ).not.toBeNull();
   } finally {
     act(() => root.unmount());
     container.remove();
   }
-});
-
-it.each(['readonly', 'disableRemove'])('disables table selection for %s', (restriction) => {
-  const container = document.createElement('div');
-  const root = createRoot(container);
-  try {
-    act(() => root.render(<JsonForms schema={schema} data={data}
-      readonly={restriction === 'readonly'}
-      uischema={{ type: 'Control', scope: '#', options: { table: true, disableRemove: restriction === 'disableRemove' } }}
-      renderers={shadcnRenderers} cells={shadcnCells} />));
-    expect(container.querySelector<HTMLButtonElement>('button[aria-label="Delete selected rows"]')!.disabled).toBe(true);
-    const checks = container.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"], tbody button[role="checkbox"]');
-    expect(checks.length).toBeGreaterThan(0);
-    checks.forEach((checkbox) => expect(checkbox.disabled).toBe(true));
-  } finally { act(() => root.unmount()); }
-});
-
-it('selects and orders summary columns while retaining all detail fields', () => {
-  const container = document.createElement('div'); document.body.append(container);
-  const root = createRoot(container);
-  try {
-    act(() => root.render(<JsonForms
-      schema={{ type: 'array', items: { type: 'object', properties: {
-        name: { type: 'string' }, email: { type: 'string' }, notes: { type: 'string' }
-      } } }} data={[{ name: 'Ada', email: 'ada@example.com', notes: 'Detail only' }]}
-      uischema={{ type: 'Control', scope: '#', options: { table: true,
-        columnDefs: [{ field: 'email', width: 220 }, { field: 'name', minWidth: 170, maxWidth: 300 }],
-        rowDetail: { presentation: 'dialog' }
-      } }} renderers={shadcnRenderers} cells={shadcnCells} />));
-    const headers = Array.from(container.querySelectorAll('th')).map((cell) => cell.textContent);
-    expect(headers.filter((text) => text === 'Email' || text === 'Name')).toEqual(['Email', 'Name']);
-    const resize = container.querySelector<HTMLElement>('[role="separator"][aria-label="Resize Name column"]')!;
-    expect(resize).not.toBeNull();
-    act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true })));
-    expect(resize.closest('th')!.style.width).toBe('300px');
-    act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true })));
-    expect(resize.closest('th')!.style.width).toBe('170px');
-    const emailHeader = container.querySelector<HTMLElement>('th[data-column-key="email"]')!;
-    const selectionHeader = container.querySelector<HTMLElement>('thead th')!;
-    vi.spyOn(emailHeader, 'getBoundingClientRect').mockReturnValue({ width: 220 } as DOMRect);
-    vi.spyOn(selectionHeader, 'getBoundingClientRect').mockReturnValue({ width: 40 } as DOMRect);
-    vi.spyOn(resize.closest('th')!, 'getBoundingClientRect').mockReturnValue({ width: 170 } as DOMRect);
-    resize.setPointerCapture = vi.fn();
-    resize.hasPointerCapture = () => true;
-    resize.releasePointerCapture = vi.fn();
-    act(() => resize.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, button: 0, bubbles: true })));
-    act(() => resize.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, bubbles: true })));
-    expect(resize.closest('th')!.style.width).toBe('210px');
-    expect(emailHeader.style.width).toBe('220px');
-    act(() => resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true })));
-
-
-    expect(container.querySelector('input[value="Detail only"]')).toBeNull();
-    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Edit details"]')!.click());
-    expect(document.querySelector('[role="dialog"] input[value="Detail only"]')).not.toBeNull();
-  } finally { act(() => root.unmount()); container.remove(); }
 });

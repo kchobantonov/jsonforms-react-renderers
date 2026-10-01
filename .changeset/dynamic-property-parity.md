@@ -1,6 +1,6 @@
 ---
-"@chobantonov/jsonforms-react-antd-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
 ---
 
 Edit empty and dotted property names through isolated value editors in shadcn,

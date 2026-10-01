@@ -14,7 +14,8 @@ export const RowDetailFrame = ({
     return (
       <>
         {children}
-        <DetailModal options={options.dialog}
+        <DetailModal
+          options={options.dialog}
           open={!!state.selection}
           title={t('collection.editDetails')}
           onCancel={state.close}
@@ -31,29 +32,51 @@ export const RowDetailFrame = ({
     );
   return (
     <div>
-
-    <Splitter
-      orientation={options.placement === 'bottom' ? 'vertical' : 'horizontal'}
-      style={{
-        height: panelOpen ? (options.placement === 'bottom' ? '40rem' : '32rem') : 'auto',
-        maxWidth: '100%',
-      }}
-    >
-      <Splitter.Panel
-        defaultSize='55%'
-        min='20%'
-        resizable={options.resizable !== false}
+      <Splitter
+        orientation={options.placement === 'bottom' ? 'vertical' : 'horizontal'}
+        style={{
+          height: panelOpen
+            ? options.placement === 'bottom'
+              ? '40rem'
+              : '32rem'
+            : 'auto',
+          maxWidth: '100%',
+        }}
       >
-        <div style={{ height: panelOpen ? '100%' : undefined, minWidth: 0, minHeight: 0, overflow: 'auto' }}>
-          {children}
-        </div>
-      </Splitter.Panel>
-      {panelOpen && <Splitter.Panel min='20%' resizable={options.resizable !== false}>
-        <div style={{ padding: 12, height: '100%', minWidth: 0, minHeight: 0, overflow: 'auto' }}>
-          {state.content ?? <Empty description={t('collection.selectItem')} />}
-        </div>
-      </Splitter.Panel>}
-    </Splitter>
+        <Splitter.Panel
+          defaultSize='55%'
+          min='20%'
+          resizable={options.resizable !== false}
+        >
+          <div
+            style={{
+              height: panelOpen ? '100%' : undefined,
+              minWidth: 0,
+              minHeight: 0,
+              overflow: 'auto',
+            }}
+          >
+            {children}
+          </div>
+        </Splitter.Panel>
+        {panelOpen && (
+          <Splitter.Panel min='20%' resizable={options.resizable !== false}>
+            <div
+              style={{
+                padding: 12,
+                height: '100%',
+                minWidth: 0,
+                minHeight: 0,
+                overflow: 'auto',
+              }}
+            >
+              {state.content ?? (
+                <Empty description={t('collection.selectItem')} />
+              )}
+            </div>
+          </Splitter.Panel>
+        )}
+      </Splitter>
     </div>
   );
 };
@@ -61,14 +84,20 @@ export const RowDetailFrame = ({
 export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
   const { panelOpen, setPanelOpen, t, options } = state;
   if (options?.presentation !== 'panel') return null;
-  const toggleLabel = t(panelOpen ? 'collection.hideDetails' : 'collection.showDetails');
+  const toggleLabel = t(
+    panelOpen ? 'collection.hideDetails' : 'collection.showDetails'
+  );
   return (
-      <div style={{ display: 'inline-flex' }}>
-        <Tooltip title={toggleLabel}>
-          <Button shape='circle' aria-label={toggleLabel} aria-expanded={panelOpen}
-            icon={panelOpen ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-            onClick={() => setPanelOpen((open) => !open)} />
-        </Tooltip>
-      </div>
+    <div style={{ display: 'inline-flex' }}>
+      <Tooltip title={toggleLabel}>
+        <Button
+          shape='circle'
+          aria-label={toggleLabel}
+          aria-expanded={panelOpen}
+          icon={panelOpen ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+          onClick={() => setPanelOpen((open) => !open)}
+        />
+      </Tooltip>
+    </div>
   );
 };

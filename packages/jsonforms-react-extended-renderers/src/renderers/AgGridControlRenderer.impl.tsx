@@ -1,7 +1,10 @@
 import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
 import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
+import {
+  CollectionErrorNavigation,
+  RowErrorCount,
+} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import {
@@ -131,7 +134,10 @@ export const createAgGridControl = ({
   const CellShell =
     CellFrame ?? (({ children }: React.PropsWithChildren) => <>{children}</>);
   const AgGridControl = (props: ControlProps) => {
-    const collectionErrors = usePathErrorIndicator(props.path, props.uischema.options);
+    const collectionErrors = usePathErrorIndicator(
+      props.path,
+      props.uischema.options
+    );
     const anchor = useRef<HTMLDivElement>(null);
     const gridApi = useRef<any>();
     const formContext = useJsonForms();
@@ -239,25 +245,36 @@ export const createAgGridControl = ({
         width: EditIcon ? 104 : 180,
         minWidth: EditIcon ? 104 : 180,
         cellRenderer: (event: { data?: { index: number } }) => (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-          <RowDetailButton
-            aria-label={detailRef.current.t('collection.editDetails')}
-            title={detailRef.current.t('collection.editDetails')}
-            icon={EditIcon ? <EditIcon /> : undefined}
-            onClick={(click) => {
-              click.stopPropagation();
-              if (event.data) {
-                detailRef.current.setPanelOpen(true);
-                detailRef.current.open(event.data.index);
-              }
-            }}
+          <span
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
           >
-            {EditIcon
-              ? undefined
-              : detailRef.current.t('collection.editDetails')}
-          </RowDetailButton>
-          {event.data && <RowErrorCount path={props.path} index={event.data.index}
-            renderIndicator={RowErrorIndicator ? (message) => <RowErrorIndicator message={message} /> : undefined} />}
+            <RowDetailButton
+              aria-label={detailRef.current.t('collection.editDetails')}
+              title={detailRef.current.t('collection.editDetails')}
+              icon={EditIcon ? <EditIcon /> : undefined}
+              onClick={(click) => {
+                click.stopPropagation();
+                if (event.data) {
+                  detailRef.current.setPanelOpen(true);
+                  detailRef.current.open(event.data.index);
+                }
+              }}
+            >
+              {EditIcon
+                ? undefined
+                : detailRef.current.t('collection.editDetails')}
+            </RowDetailButton>
+            {event.data && (
+              <RowErrorCount
+                path={props.path}
+                index={event.data.index}
+                renderIndicator={
+                  RowErrorIndicator
+                    ? (message) => <RowErrorIndicator message={message} />
+                    : undefined
+                }
+              />
+            )}
           </span>
         ),
       }),
@@ -270,30 +287,56 @@ export const createAgGridControl = ({
       string,
       Record<string, unknown>
     >;
-    const summaryCache = useMemo(() => new Map<unknown, Map<unknown, string>>(),
-      [formContext.core?.data, formContext.i18n, props.config, cellOptions]);
+    const summaryCache = useMemo(
+      () => new Map<unknown, Map<unknown, string>>(),
+      [formContext.core?.data, formContext.i18n, props.config, cellOptions]
+    );
     const summaryValue = (label: any, item: unknown) => {
       let values = summaryCache.get(label);
-      if (!values) { values = new Map(); summaryCache.set(label, values); }
+      if (!values) {
+        values = new Map();
+        summaryCache.set(label, values);
+      }
       if (values.has(item)) return values.get(item)!;
-      const text = labelFilterValue(label, formContext.core?.data, item, props.config,
-        formContext.i18n?.locale, formContext.i18n?.translate);
+      const text = labelFilterValue(
+        label,
+        formContext.core?.data,
+        item,
+        props.config,
+        formContext.i18n?.locale,
+        formContext.i18n?.translate
+      );
       if (values.size >= 1000) values.delete(values.keys().next().value);
       values.set(item, text);
       return text;
     };
-    const controlSummaryRef = useRef<(summary: any, value: unknown, schema: JsonSchema) => string>(() => '');
-    controlSummaryRef.current = (summary, value, schema) => compositeSummary(
-      value, summary, schema.title,
-      formContext.i18n?.translate ?? ((_key, fallback) => fallback ?? ''),
-      summaryDefault, schema
-    );
+    const controlSummaryRef = useRef<
+      (summary: any, value: unknown, schema: JsonSchema) => string
+    >(() => '');
+    controlSummaryRef.current = (summary, value, schema) =>
+      compositeSummary(
+        value,
+        summary,
+        schema.title,
+        formContext.i18n?.translate ?? ((_key, fallback) => fallback ?? ''),
+        summaryDefault,
+        schema
+      );
     const summaryValueRef = useRef(summaryValue);
     summaryValueRef.current = summaryValue;
     const columns: ColDef[] = useMemo(
       () =>
         Object.entries(
-          object ? { ...items?.properties, ...Object.fromEntries((props.uischema.options?.columnDefs ?? []).filter((c: TableColumnDefinition) => c.scope === '#').map((c: TableColumnDefinition) => [c.field, items])) } : { value: items ?? {} }
+          object
+            ? {
+                ...items?.properties,
+                ...Object.fromEntries(
+                  (props.uischema.options?.columnDefs ?? [])
+                    .filter((c: TableColumnDefinition) => c.scope === '#')
+                    .map((c: TableColumnDefinition) => [c.field, items])
+                ),
+              }
+            : { value: items ?? {} }
         ).map(([field, schema]) => ({
           colId: field,
           headerName: schema.title ?? field,
@@ -313,55 +356,74 @@ export const createAgGridControl = ({
           // the cell editor still binds to the original row/property below.
           valueGetter: (event) =>
             (cellOptions?.[field]?.summary as any)?.type === 'Label'
-              ? summaryValueRef.current(cellOptions[field].summary, event.data?.value)
+              ? summaryValueRef.current(
+                  cellOptions[field].summary,
+                  event.data?.value
+                )
               : (cellOptions?.[field]?.summary as any)?.type === 'Control'
-                ? controlSummaryRef.current(cellOptions[field].summary,
-                    object ? event.data?.value?.[field] : event.data?.value, schema)
-                : object ? event.data?.value?.[field] : event.data?.value,
+              ? controlSummaryRef.current(
+                  cellOptions[field].summary,
+                  object ? event.data?.value?.[field] : event.data?.value,
+                  schema
+                )
+              : object
+              ? event.data?.value?.[field]
+              : event.data?.value,
           cellRenderer: (event: { data: { index: number } }) => {
-            const rowBound = props.uischema.options?.columnDefs?.some((c: TableColumnDefinition) => c.field === field && c.scope === '#');
-            const cellSchema = object && !rowBound
-              ? (Resolve.schema(
-                  items as JsonSchema,
-                  `#/properties/${field}`,
-                  props.rootSchema
-                ) as JsonSchema)
-              : (items as JsonSchema);
+            const rowBound = props.uischema.options?.columnDefs?.some(
+              (c: TableColumnDefinition) => c.field === field && c.scope === '#'
+            );
+            const cellSchema =
+              object && !rowBound
+                ? (Resolve.schema(
+                    items as JsonSchema,
+                    `#/properties/${field}`,
+                    props.rootSchema
+                  ) as JsonSchema)
+                : (items as JsonSchema);
             const cellUiSchema = {
               type: 'Control' as const,
               scope: object ? `#/properties/${field}` : '#',
               label: false,
               // `cells: { <field>: { summary, detail } }` tells a composite
               // column how to summarise itself and what its dialog shows.
-              options: { ...cellOptions?.[field], ...(rowBound ? { summaryOnly: true } : {}) },
+              options: {
+                ...cellOptions?.[field],
+                ...(rowBound ? { summaryOnly: true } : {}),
+              },
             };
-            const cellPath = object && !rowBound
-              ? composePaths(
-                  composePaths(props.path, String(event.data.index)),
-                  field
-                )
-              : composePaths(props.path, String(event.data.index));
+            const cellPath =
+              object && !rowBound
+                ? composePaths(
+                    composePaths(props.path, String(event.data.index)),
+                    field
+                  )
+                : composePaths(props.path, String(event.data.index));
             return (
-              <ItemProvider path={composePaths(props.path, String(event.data.index))}><CellShell
-                schema={cellSchema}
-                uischema={cellUiSchema}
-                path={cellPath}
+              <ItemProvider
+                path={composePaths(props.path, String(event.data.index))}
               >
-                {/*
+                <CellShell
+                  schema={cellSchema}
+                  uischema={cellUiSchema}
+                  path={cellPath}
+                >
+                  {/*
             DispatchCell, not JsonFormsDispatch: the composite (object/array)
             cell lives in the cells registry. Dispatching a renderer instead
             picks the object renderer and inlines the whole detail form in the
             cell rather than a one-line summary.
           */}
-                <DispatchCell
-                  schema={cellSchema}
-                  uischema={cellUiSchema}
-                  path={cellPath}
-                  enabled={editable && !(schema as any).readOnly}
-                  renderers={props.renderers}
-                  cells={props.cells}
-                />
-              </CellShell></ItemProvider>
+                  <DispatchCell
+                    schema={cellSchema}
+                    uischema={cellUiSchema}
+                    path={cellPath}
+                    enabled={editable && !(schema as any).readOnly}
+                    renderers={props.renderers}
+                    cells={props.cells}
+                  />
+                </CellShell>
+              </ItemProvider>
             );
           },
         })),
@@ -420,7 +482,12 @@ export const createAgGridControl = ({
         : portableFields.map((field) =>
             mergeColumn({
               field,
-              ...(portable?.find(c => c.field === field)?.headerName ? { headerName: portable.find(c => c.field === field)!.headerName } : {}),
+              ...(portable?.find((c) => c.field === field)?.headerName
+                ? {
+                    headerName: portable.find((c) => c.field === field)!
+                      .headerName,
+                  }
+                : {}),
               ...tableColumnStyle(
                 portable?.find((column) => column.field === field)
               ),
@@ -525,7 +592,12 @@ export const createAgGridControl = ({
     if (RowDetailFrame && detail.options?.presentation === 'panel') {
       actions.unshift({
         key: 'details',
-        icon: detail.panelOpen && HideDetailsIcon ? <HideDetailsIcon /> : ShowDetailsIcon ? <ShowDetailsIcon /> : undefined,
+        icon:
+          detail.panelOpen && HideDetailsIcon ? (
+            <HideDetailsIcon />
+          ) : ShowDetailsIcon ? (
+            <ShowDetailsIcon />
+          ) : undefined,
         label: detail.t(
           detail.panelOpen ? 'collection.hideDetails' : 'collection.showDetails'
         ),
@@ -543,12 +615,20 @@ export const createAgGridControl = ({
         actions={actions}
       >
         {confirmation?.dialog}
-        {addedHidden && <div role='status'>
-          {detail.t('collection.addedHidden')}
-          <button type='button' onClick={() => { gridApi.current?.setFilterModel(null); setAddedHidden(false); }}>
-            {detail.t('collection.clearFilters')}
-          </button>
-        </div>}
+        {addedHidden && (
+          <div role='status'>
+            {detail.t('collection.addedHidden')}
+            <button
+              type='button'
+              onClick={() => {
+                gridApi.current?.setFilterModel(null);
+                setAddedHidden(false);
+              }}
+            >
+              {detail.t('collection.clearFilters')}
+            </button>
+          </div>
+        )}
         <DetailShell state={detail}>
           <div
             ref={anchor}
@@ -589,7 +669,11 @@ export const createAgGridControl = ({
                     // excluded by an active filter has no page to reveal.
                     setAddedHidden(node.rowIndex == null);
                     if (node.rowIndex != null) {
-                      event.api.paginationGoToPage(Math.floor(node.rowIndex / event.api.paginationGetPageSize()));
+                      event.api.paginationGoToPage(
+                        Math.floor(
+                          node.rowIndex / event.api.paginationGetPageSize()
+                        )
+                      );
                       event.api.ensureIndexVisible(node.rowIndex);
                     }
                   }
@@ -658,7 +742,10 @@ export const createAgGridControl = ({
                 }
                 userRowDragEnd?.(event);
               }}
-              onGridReady={(event) => { gridApi.current = event.api; agGridOptions.onGridReady?.(event); }}
+              onGridReady={(event) => {
+                gridApi.current = event.api;
+                agGridOptions.onGridReady?.(event);
+              }}
               onSelectionChanged={(event) =>
                 setSelected(event.api.getSelectedRows().map((row) => row.index))
               }
@@ -675,17 +762,32 @@ export const createAgGridControl = ({
               }}
             />
           </div>
-          <CollectionErrorNavigation options={props.uischema.options} renderAction={(label, onClick, icon) =>
-            <Button icon={icon} title={label} aria-label={label} onClick={onClick} />}
-            path={props.path} reveal={(index) => {
-            const api = gridApi.current;
-            const node = api?.getRowNode(String(index));
-            if (node?.rowIndex != null) {
-              api.paginationGoToPage(Math.floor(node.rowIndex / api.paginationGetPageSize()));
-              api.ensureIndexVisible(node.rowIndex);
-            }
-            if (detail.options) { detail.setPanelOpen(true); detail.open(index); }
-          }} />
+          <CollectionErrorNavigation
+            options={props.uischema.options}
+            renderAction={(label, onClick, icon) => (
+              <Button
+                icon={icon}
+                title={label}
+                aria-label={label}
+                onClick={onClick}
+              />
+            )}
+            path={props.path}
+            reveal={(index) => {
+              const api = gridApi.current;
+              const node = api?.getRowNode(String(index));
+              if (node?.rowIndex != null) {
+                api.paginationGoToPage(
+                  Math.floor(node.rowIndex / api.paginationGetPageSize())
+                );
+                api.ensureIndexVisible(node.rowIndex);
+              }
+              if (detail.options) {
+                detail.setPanelOpen(true);
+                detail.open(index);
+              }
+            }}
+          />
         </DetailShell>
       </ArrayShell>
     );

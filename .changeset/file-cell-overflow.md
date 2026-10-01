@@ -1,7 +1,7 @@
 ---
-"@chobantonov/jsonforms-react-renderer-common": patch
-"@chobantonov/jsonforms-react-antd-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
+'@chobantonov/jsonforms-react-renderer-common': patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 ---
 
 Use compact choice-style file pills. Remove the multiple-file cell border and

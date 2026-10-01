@@ -1,11 +1,11 @@
 import {
   antdCells,
   antdRenderers,
-} from "@chobantonov/jsonforms-react-antd-renderers";
+} from '@chobantonov/jsonforms-react-antd-renderers';
 import {
   antdExtendedCells,
   antdExtendedRenderers,
-} from "@chobantonov/jsonforms-react-antd-extended-renderers";
+} from '@chobantonov/jsonforms-react-antd-extended-renderers';
 
 export const antdWebcomponentRenderers = [
   ...antdRenderers,

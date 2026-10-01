@@ -319,10 +319,7 @@ export const AdditionalProperties = ({
       rootSchema,
       allowIfMissing
     );
-    const updatedData =
-      objectData
-        ? { ...objectData }
-        : {};
+    const updatedData = objectData ? { ...objectData } : {};
 
     updatedData[propertyName] = createDefaultValue(
       additionalProperty.schema,

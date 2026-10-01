@@ -91,7 +91,8 @@ export const ShadcnDateControl = (props: ControlProps) => {
       : 'Pick a date';
 
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={label}
       required={required}

@@ -50,7 +50,8 @@ export const ShadcnTimeControl = (props: ControlProps) => {
       : 'Pick a time';
 
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={label}
       required={required}

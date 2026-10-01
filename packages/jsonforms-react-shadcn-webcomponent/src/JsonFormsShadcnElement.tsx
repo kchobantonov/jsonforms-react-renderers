@@ -267,30 +267,29 @@ export class JsonFormsShadcnElement extends HTMLElement {
           style={style}
         >
           <slot name='form-header' />
-            <ExtendedJsonForms
-              ajv={this.ajv}
-              store={this.errorStore}
-              onAction={(event) => this.emitAction(event)}
-              data={data}
-              schema={schema as any}
-              uischema={parseJson(this.state.uischema) as any}
-              uischemas={parseJson(this.state.uischemas) as any}
-              config={{
-                ...((parseJson(this.state.config) as Record<string, any>) ??
-                  {}),
-                readonly: parseBoolean(this.state.readonly),
-              }}
-              readonly={parseBoolean(this.state.readonly)}
-              validationMode={this.state.validationMode}
-              renderers={shadcnWebcomponentRenderers}
-              cells={shadcnWebcomponentCells}
-              additionalErrors={parseJson(this.state.additionalErrors) as any}
-              i18n={{
-                locale: this.state.locale,
-                translate,
-              }}
-              onChange={({ data, errors }) => this.emitChange(data, errors)}
-            />
+          <ExtendedJsonForms
+            ajv={this.ajv}
+            store={this.errorStore}
+            onAction={(event) => this.emitAction(event)}
+            data={data}
+            schema={schema as any}
+            uischema={parseJson(this.state.uischema) as any}
+            uischemas={parseJson(this.state.uischemas) as any}
+            config={{
+              ...((parseJson(this.state.config) as Record<string, any>) ?? {}),
+              readonly: parseBoolean(this.state.readonly),
+            }}
+            readonly={parseBoolean(this.state.readonly)}
+            validationMode={this.state.validationMode}
+            renderers={shadcnWebcomponentRenderers}
+            cells={shadcnWebcomponentCells}
+            additionalErrors={parseJson(this.state.additionalErrors) as any}
+            i18n={{
+              locale: this.state.locale,
+              translate,
+            }}
+            onChange={({ data, errors }) => this.emitChange(data, errors)}
+          />
           <slot name='form-footer' />
         </div>
       </>

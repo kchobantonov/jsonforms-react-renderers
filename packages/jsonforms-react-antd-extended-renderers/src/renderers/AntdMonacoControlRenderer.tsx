@@ -2,13 +2,9 @@ import { createMonacoControlRenderer } from '@chobantonov/jsonforms-react-extend
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { AntdEditorToggleButton } from './AntdEditorButton';
 import { AntdEditorFrame } from './AntdEditorFrame';
-import {
-  AntdEditorLoadError,
-  AntdEditorLoading,
-} from './AntdEditorLoading';
+import { AntdEditorLoadError, AntdEditorLoading } from './AntdEditorLoading';
 import { AntdEditorSurface } from './AntdEditorSurface';
 import { useAntdEditorTheme } from './useAntdEditorTheme';
-
 
 export const AntdMonacoControlRenderer = createMonacoControlRenderer({
   Frame: AntdEditorFrame,

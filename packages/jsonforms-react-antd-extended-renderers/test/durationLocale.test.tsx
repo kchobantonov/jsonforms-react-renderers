@@ -4,11 +4,20 @@ import { act } from 'react-dom/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
-import { antdRenderers, antdCells } from '@chobantonov/jsonforms-react-antd-renderers';
+import {
+  antdRenderers,
+  antdCells,
+} from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
 
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
-(globalThis as any).ResizeObserver = (globalThis as any).ResizeObserver ?? class { observe(){} unobserve(){} disconnect(){} };
+(globalThis as any).ResizeObserver =
+  (globalThis as any).ResizeObserver ??
+  class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
 
 /*
   The temporal-controls example's own catalog, near enough: error keys and
@@ -29,19 +38,38 @@ const open = async (locale: string) => {
     createRoot(c).render(
       <JsonForms
         data={{ span: 'PT1H30M' }}
-        schema={{ type:'object', properties:{ span:{ type:'string', format:'duration' } } } as any}
-        uischema={{ type:'Control', scope:'#/properties/span' } as any}
+        schema={
+          {
+            type: 'object',
+            properties: { span: { type: 'string', format: 'duration' } },
+          } as any
+        }
+        uischema={{ type: 'Control', scope: '#/properties/span' } as any}
         renderers={[...antdRenderers, ...antdExtendedRenderers]}
         cells={antdCells}
-        i18n={{ locale, translate: createTranslator((id, def) => catalog[locale]?.[id] ?? def) }}
+        i18n={{
+          locale,
+          translate: createTranslator(
+            (id, def) => catalog[locale]?.[id] ?? def
+          ),
+        }}
         onChange={() => undefined}
-      />);
+      />
+    );
   });
-  const trigger = c.querySelector<HTMLElement>('[aria-label="Choose a duration"], .anticon-clock-circle');
-  await act(async () => { trigger!.dispatchEvent(new MouseEvent('click',{bubbles:true})); });
-  await act(async () => { await new Promise(r => setTimeout(r, 200)); });
+  const trigger = c.querySelector<HTMLElement>(
+    '[aria-label="Choose a duration"], .anticon-clock-circle'
+  );
+  await act(async () => {
+    trigger!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
+  await act(async () => {
+    await new Promise((r) => setTimeout(r, 200));
+  });
   const panel = document.querySelector('.ant-popover') as HTMLElement;
-  return Array.from(panel.querySelectorAll('.ant-space-addon')).map(e => e.textContent?.trim());
+  return Array.from(panel.querySelectorAll('.ant-space-addon')).map((e) =>
+    e.textContent?.trim()
+  );
 };
 
 describe('the duration picker follows the locale', () => {

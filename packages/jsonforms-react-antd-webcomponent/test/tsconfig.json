@@ -1,9 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vitest/globals"],
     "noEmit": true,
     "baseUrl": "..",
     "paths": {
@@ -21,8 +19,5 @@
     "declaration": false,
     "composite": false
   },
-  "include": [
-    "./**/*.ts",
-    "./**/*.tsx"
-  ]
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }

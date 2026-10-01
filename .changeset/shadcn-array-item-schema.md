@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
 ---
 
 Handle arrays without an items schema without crashing. Use the resolved array

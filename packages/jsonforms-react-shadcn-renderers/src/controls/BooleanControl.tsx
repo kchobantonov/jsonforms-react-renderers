@@ -27,7 +27,11 @@ export const ShadcnBooleanControl = ({
   const id = makeId(path, label);
 
   return (
-    <InputShell path={path} schema={schema} config={config} uischema={uischema}
+    <InputShell
+      path={path}
+      schema={schema}
+      config={config}
+      uischema={uischema}
       id={id}
       label={label}
       required={required}

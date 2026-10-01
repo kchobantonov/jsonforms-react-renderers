@@ -1,6 +1,15 @@
-import { ShadcnNumberFormatCell, numberFormatCellTester } from './NumberFormatCell';
-import { ShadcnBooleanToggleControl, booleanToggleControlTester } from '../controls/BooleanToggleControl';
-import { ShadcnPasswordControl, passwordControlTester } from '../controls/PasswordControl';
+import {
+  ShadcnNumberFormatCell,
+  numberFormatCellTester,
+} from './NumberFormatCell';
+import {
+  ShadcnBooleanToggleControl,
+  booleanToggleControlTester,
+} from '../controls/BooleanToggleControl';
+import {
+  ShadcnPasswordControl,
+  passwordControlTester,
+} from '../controls/PasswordControl';
 import {
   isIntegerControl,
   isDateControl,
@@ -33,9 +42,20 @@ import { ShadcnTextCell } from './TextCell';
 
 export { ShadcnTextCell as ShadcnCell } from './TextCell';
 export const shadcnCells: JsonFormsCellRendererRegistryEntry[] = [
-  { tester: numberFormatCellTester, cell: withJsonFormsCellProps(ShadcnNumberFormatCell) },
-  { tester: booleanToggleControlTester, cell: asShadcnCell(withJsonFormsControlProps(ShadcnBooleanToggleControl)) as any },
-  { tester: passwordControlTester, cell: asShadcnCell(withJsonFormsControlProps(ShadcnPasswordControl)) as any },
+  {
+    tester: numberFormatCellTester,
+    cell: withJsonFormsCellProps(ShadcnNumberFormatCell),
+  },
+  {
+    tester: booleanToggleControlTester,
+    cell: asShadcnCell(
+      withJsonFormsControlProps(ShadcnBooleanToggleControl)
+    ) as any,
+  },
+  {
+    tester: passwordControlTester,
+    cell: asShadcnCell(withJsonFormsControlProps(ShadcnPasswordControl)) as any,
+  },
   {
     tester: rankWith(5, isOneOfEnumControl),
     cell: withJsonFormsCellProps(ShadcnEnumCell),

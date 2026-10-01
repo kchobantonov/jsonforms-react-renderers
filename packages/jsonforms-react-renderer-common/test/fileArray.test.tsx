@@ -4,7 +4,12 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { FileArrayInput, fileArrayTester } from '../src/FileArrayInput';
 let cleanup = () => {};
 afterEach(() => cleanup());
-const mount = (restrict: boolean, initial: string[] = ['old'], extra = {}, inputProps = {}) => {
+const mount = (
+  restrict: boolean,
+  initial: string[] = ['old'],
+  extra = {},
+  inputProps = {}
+) => {
   const container = document.createElement('div');
   document.body.append(container);
   const root = createRoot(container);
@@ -63,15 +68,28 @@ const mount = (restrict: boolean, initial: string[] = ['old'], extra = {}, input
 };
 it('reports rejected cell selections locally without marking stored data invalid', async () => {
   const Feedback = ({ message, severity, cell }: any) => (
-    <button data-feedback={severity} data-cell={String(cell)} aria-label={message} />
+    <button
+      data-feedback={severity}
+      data-cell={String(cell)}
+      aria-label={message}
+    />
   );
-  const view = mount(true, ['old'], {}, { cell: true, FeedbackComponent: Feedback });
+  const view = mount(
+    true,
+    ['old'],
+    {},
+    { cell: true, FeedbackComponent: Feedback }
+  );
   await view.select(['one.txt', 'two.txt']);
   expect(view.data()).toEqual(['old']);
-  expect(view.container.querySelector('input')?.getAttribute('aria-invalid')).toBe('false');
+  expect(
+    view.container.querySelector('input')?.getAttribute('aria-invalid')
+  ).toBe('false');
   const feedback = view.container.querySelector('[data-feedback="warning"]');
   expect(feedback?.getAttribute('data-cell')).toBe('true');
-  expect(feedback?.getAttribute('aria-label')).toContain('existing files were kept');
+  expect(feedback?.getAttribute('aria-label')).toContain(
+    'existing files were kept'
+  );
   expect(view.container.querySelector('[role="alert"]')).toBeNull();
 });
 it('selects file arrays including referenced items without claiming ordinary arrays', () => {
@@ -94,7 +112,11 @@ it('selects file arrays including referenced items without claiming ordinary arr
 });
 it('blocks additions above maxItems and removal below minItems when restricted', async () => {
   const c = mount(true);
-  expect(c.container.querySelector<HTMLButtonElement>('button[aria-label^="Remove "]')!.disabled).toBe(true);
+  expect(
+    c.container.querySelector<HTMLButtonElement>(
+      'button[aria-label^="Remove "]'
+    )!.disabled
+  ).toBe(true);
   await c.select(['a', 'b']);
   expect(c.data()).toEqual(['old']);
   expect(c.container.querySelector('[role=alert]')!.textContent).toContain('2');
@@ -104,14 +126,22 @@ it('appends a batch in order and permits count violations when unrestricted', as
   await c.select(['a', 'b']);
   expect(c.data()).toEqual(['old', 'YQ==', 'Yg==']);
   for (let i = 0; i < 3; i++)
-    act(() => c.container.querySelector<HTMLButtonElement>('button[aria-label^="Remove "]')!.click());
+    act(() =>
+      c.container
+        .querySelector<HTMLButtonElement>('button[aria-label^="Remove "]')!
+        .click()
+    );
   expect(c.data()).toEqual([]);
 });
 it('appends within maxItems and removes only one duplicate occurrence', async () => {
   const c = mount(true, [], { minItems: 0, maxItems: 3 });
   await c.select(['a', 'b', 'a']);
   expect(c.data()).toEqual(['YQ==', 'Yg==', 'YQ==']);
-  act(() => c.container.querySelectorAll<HTMLButtonElement>('button[aria-label^="Remove "]')[2].click());
+  act(() =>
+    c.container
+      .querySelectorAll<HTMLButtonElement>('button[aria-label^="Remove "]')[2]
+      .click()
+  );
   expect(c.data()).toEqual(['YQ==', 'Yg==']);
 });
 it('honors uniqueItems when appending encoded files', async () => {
@@ -129,22 +159,38 @@ it('opens the real file input when Select File is clicked', () => {
 });
 it('clears all files when unrestricted and blocks clear-all below minItems', () => {
   let c = mount(false, ['a', 'b']);
-  act(() => (c.container.querySelector('[aria-label="Clear all files"]') as HTMLButtonElement).click());
+  act(() =>
+    (
+      c.container.querySelector(
+        '[aria-label="Clear all files"]'
+      ) as HTMLButtonElement
+    ).click()
+  );
   expect(c.data()).toEqual([]);
   cleanup();
   c = mount(true, ['a', 'b']);
-  expect((c.container.querySelector('[aria-label="Clear all files"]') as HTMLButtonElement).disabled).toBe(true);
+  expect(
+    (
+      c.container.querySelector(
+        '[aria-label="Clear all files"]'
+      ) as HTMLButtonElement
+    ).disabled
+  ).toBe(true);
 });
 
 it('places clear-all last and reveals it on hover or focus within the field', () => {
   const c = mount(false, ['a']);
-  const clear = c.container.querySelector('[aria-label="Clear all files"]') as HTMLButtonElement;
+  const clear = c.container.querySelector(
+    '[aria-label="Clear all files"]'
+  ) as HTMLButtonElement;
   expect(clear.parentElement!.lastElementChild).toBe(clear);
   expect(clear.style.opacity).toBe('0');
   act(() => c.container.querySelector('button')!.focus());
   expect(clear.style.opacity).toBe('1');
   act(() => c.container.querySelector('button')!.blur());
   expect(clear.style.opacity).toBe('0');
-  act(() => clear.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+  act(() =>
+    clear.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
+  );
   expect(clear.style.opacity).toBe('1');
 });

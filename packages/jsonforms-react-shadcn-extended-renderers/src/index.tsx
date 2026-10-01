@@ -1,15 +1,20 @@
-import { MaskControlRenderer, maskControlTester } from './renderers/MaskControlRenderer';
+import {
+  MaskControlRenderer,
+  maskControlTester,
+} from './renderers/MaskControlRenderer';
 export * from './renderers/MaskControlRenderer';
-import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  extendedAgGridTester,
+  monacoControlTester,
+  createExtendedRenderers,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 import { ShadcnAgGridControlRenderer } from './renderers/ShadcnAgGridControlRenderer';
-import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import { ShadcnMonacoControlRenderer } from './renderers/ShadcnMonacoControlRenderer';
 import { asShadcnCell } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
-import { createExtendedRenderers } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
   ShadcnButtonRendererWithProps,
   ColorControlRenderer,
@@ -63,7 +68,10 @@ export * from './renderers/ShadcnAgGridControlRenderer';
 
 export const createShadcnExtendedCells =
   (): JsonFormsCellRendererRegistryEntry[] => [
-    { tester: fileControlTester, cell: asShadcnCell(FileControlRenderer) as any },
+    {
+      tester: fileControlTester,
+      cell: asShadcnCell(FileControlRenderer) as any,
+    },
     {
       tester: colorControlTester,
       cell: asShadcnCell(ColorControlRenderer) as any,

@@ -21,16 +21,42 @@
 export const DEFAULT_CRON = '0 0/15 * * * *';
 
 /** The six fields, in the order an expression writes them. */
-export const CRON_FIELDS = ['second', 'minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'] as const;
+export const CRON_FIELDS = [
+  'second',
+  'minute',
+  'hour',
+  'dayOfMonth',
+  'month',
+  'dayOfWeek',
+] as const;
 
 export type CronField = (typeof CRON_FIELDS)[number];
 
 /** Day-of-week names Spring accepts, in the order it numbers them. */
-export const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as const;
+export const DAY_NAMES = [
+  'SUN',
+  'MON',
+  'TUE',
+  'WED',
+  'THU',
+  'FRI',
+  'SAT',
+] as const;
 
 /** Month names Spring accepts. `JAN` is 1, so this list is offset by one from its values. */
 export const MONTH_NAMES = [
-  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+  'JAN',
+  'FEB',
+  'MAR',
+  'APR',
+  'MAY',
+  'JUN',
+  'JUL',
+  'AUG',
+  'SEP',
+  'OCT',
+  'NOV',
+  'DEC',
 ] as const;
 
 /**
@@ -104,14 +130,19 @@ function valueOf(text: string, field: CronField): number | undefined {
  * for anything malformed, which is what lets the caller tell a field it can offer choices for from
  * one it has to leave as text.
  */
-export function parseField(text: string, field: CronField): number[] | undefined {
+export function parseField(
+  text: string,
+  field: CronField
+): number[] | undefined {
   const [low, high] = FIELD_RANGE[field];
-  const all = (): number[] => Array.from({ length: high - low + 1 }, (_, index) => low + index);
+  const all = (): number[] =>
+    Array.from({ length: high - low + 1 }, (_, index) => low + index);
   const value = text.trim();
   if (value === '') return undefined;
   // `?` is Spring's alias for `*`, and only in the two day fields.
   if (value === '*') return all();
-  if (value === '?') return field === 'dayOfMonth' || field === 'dayOfWeek' ? all() : undefined;
+  if (value === '?')
+    return field === 'dayOfMonth' || field === 'dayOfWeek' ? all() : undefined;
 
   const selected = new Set<number>();
   for (const part of value.split(',')) {
@@ -164,9 +195,14 @@ export function labelFor(value: number, field: CronField): string {
  * and never with a step: a step on a name is not something every reader will be sure of, and the
  * list it would save is three characters long.
  */
-export function formatField(values: readonly number[], field: CronField): string {
+export function formatField(
+  values: readonly number[],
+  field: CronField
+): string {
   const [low, high] = FIELD_RANGE[field];
-  const sorted = [...new Set(values)].filter(value => value >= low && value <= high).sort((a, b) => a - b);
+  const sorted = [...new Set(values)]
+    .filter((value) => value >= low && value <= high)
+    .sort((a, b) => a - b);
   // An empty selection is "every", which is what clearing a field means. It is never written as
   // nothing, which would not be an expression.
   if (sorted.length === 0 || sorted.length === high - low + 1) return '*';
@@ -174,7 +210,9 @@ export function formatField(values: readonly number[], field: CronField): string
   const named = namesFor(field) !== undefined;
   if (!named && sorted.length > 2) {
     const step = sorted[1] - sorted[0];
-    const even = sorted.every((value, index) => index === 0 || value - sorted[index - 1] === step);
+    const even = sorted.every(
+      (value, index) => index === 0 || value - sorted[index - 1] === step
+    );
     // Only when the run really goes to the end of the field: `0,15,30` is evenly spaced too, and
     // writing it as a step would add 45 to the schedule.
     if (even && step > 1 && sorted[sorted.length - 1] + step > high) {
@@ -186,11 +224,15 @@ export function formatField(values: readonly number[], field: CronField): string
   let index = 0;
   while (index < sorted.length) {
     let end = index;
-    while (end + 1 < sorted.length && sorted[end + 1] === sorted[end] + 1) end += 1;
+    while (end + 1 < sorted.length && sorted[end + 1] === sorted[end] + 1)
+      end += 1;
     const first = labelFor(sorted[index], field);
     // Two in a row is written as two: `1-2` is no shorter than `1,2` and reads as less.
-    if (end - index >= 2) parts.push(`${first}-${labelFor(sorted[end], field)}`);
-    else for (let each = index; each <= end; each += 1) parts.push(labelFor(sorted[each], field));
+    if (end - index >= 2)
+      parts.push(`${first}-${labelFor(sorted[end], field)}`);
+    else
+      for (let each = index; each <= end; each += 1)
+        parts.push(labelFor(sorted[each], field));
     index = end + 1;
   }
   return parts.join(',');
@@ -199,27 +241,41 @@ export function formatField(values: readonly number[], field: CronField): string
 /** Whether a field is something Spring would accept, set or not. */
 function validField(value: string, field: CronField): boolean {
   if (parseField(value, field) !== undefined) return true;
-  if (field === 'dayOfMonth' && (value === 'L' || value === 'LW' || /^L-\d+$/.test(value) || /^\d+W$/.test(value))) {
+  if (
+    field === 'dayOfMonth' &&
+    (value === 'L' ||
+      value === 'LW' ||
+      /^L-\d+$/.test(value) ||
+      /^\d+W$/.test(value))
+  ) {
     return true;
   }
   // `5#2` is the second Friday and `FRI#2` is the same day written with a name; Spring accepts both
   // spellings, so a validator that only knew the numeric one would call a working schedule broken.
   if (
     field === 'dayOfWeek' &&
-    (/^\d?L$/.test(value) || /^[A-Za-z]{3}L$/.test(value) || /^(?:\d|[A-Za-z]{3})#[1-5]$/.test(value))
+    (/^\d?L$/.test(value) ||
+      /^[A-Za-z]{3}L$/.test(value) ||
+      /^(?:\d|[A-Za-z]{3})#[1-5]$/.test(value))
   ) {
     return true;
   }
   // A wrapping range is legal and simply not a set. `FRI-MON`, `NOV-FEB`.
   const [start, end] = value.split('-');
-  return end !== undefined && valueOf(start, field) !== undefined && valueOf(end, field) !== undefined;
+  return (
+    end !== undefined &&
+    valueOf(start, field) !== undefined &&
+    valueOf(end, field) !== undefined
+  );
 }
 
 /** Why this expression cannot be scheduled, as a message key, or `undefined` when it can. */
 export function cronProblem(expression: string): string | undefined {
   const fields = splitCron(expression);
   if (!fields) return 'sixFields';
-  const bad = CRON_FIELDS.findIndex((field, index) => !validField(fields[index], field));
+  const bad = CRON_FIELDS.findIndex(
+    (field, index) => !validField(fields[index], field)
+  );
   return bad < 0 ? undefined : CRON_FIELDS[bad];
 }
 
@@ -231,7 +287,14 @@ export function cronProblem(expression: string): string | undefined {
  * "every" is a form that hides its own answer. Derived rather than stored, so an expression typed
  * into the field opens on the period it actually describes.
  */
-export type CronPeriod = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+export type CronPeriod =
+  | 'year'
+  | 'month'
+  | 'week'
+  | 'day'
+  | 'hour'
+  | 'minute'
+  | 'second';
 
 /** Coarsest first: the order a period is decided in, and the order the picker lists fields in. */
 const BY_PERIOD: ReadonlyArray<readonly [CronPeriod, CronField]> = [
@@ -267,10 +330,12 @@ export function periodOf(fields: readonly string[]): CronPeriod {
 export function fieldsForPeriod(period: CronPeriod): CronField[] {
   const from = BY_PERIOD.findIndex(([each]) => each === period);
   if (from < 0) return [];
-  return BY_PERIOD.slice(from)
-    .map(([, field]) => field)
-    // A weekly schedule picks weekdays, not days of the month.
-    .filter(field => !(period === 'week' && field === 'dayOfMonth'));
+  return (
+    BY_PERIOD.slice(from)
+      .map(([, field]) => field)
+      // A weekly schedule picks weekdays, not days of the month.
+      .filter((field) => !(period === 'week' && field === 'dayOfMonth'))
+  );
 }
 
 /**
@@ -297,7 +362,10 @@ export function sameExpression(left: string, right: string): boolean {
     const one = parseField(a[index], field);
     const other = parseField(b[index], field);
     if (one === undefined || other === undefined) return a[index] === b[index];
-    return one.length === other.length && one.every((value, at) => value === other[at]);
+    return (
+      one.length === other.length &&
+      one.every((value, at) => value === other[at])
+    );
   });
 }
 
@@ -327,9 +395,14 @@ const COARSENESS: Record<CronField, number> = {
  * is about to hide — a monthly schedule switched to daily that kept its day of the month would
  * still run once a month, with nothing on screen saying so, because the row that said it is gone.
  */
-export function standDown(fields: readonly string[], period: CronPeriod): string[] {
+export function standDown(
+  fields: readonly string[],
+  period: CronPeriod
+): string[] {
   const shown = new Set(fieldsForPeriod(period));
-  return CRON_FIELDS.map((field, index) => (shown.has(field) ? (fields[index] ?? '*') : '*'));
+  return CRON_FIELDS.map((field, index) =>
+    shown.has(field) ? fields[index] ?? '*' : '*'
+  );
 }
 
 /**
@@ -345,12 +418,16 @@ export function standDown(fields: readonly string[], period: CronPeriod): string
  * Every pin it does make is one selection away from being undone, so "every minute during the 9am
  * hour" is still reachable — it is just no longer what picking an hour silently means.
  */
-export function withTimeDefaults(fields: readonly string[], changed: CronField): string[] {
+export function withTimeDefaults(
+  fields: readonly string[],
+  changed: CronField
+): string[] {
   const from = COARSENESS[changed];
   return CRON_FIELDS.map((field, index) => {
     const text = fields[index] ?? '*';
     const isTime = field === 'hour' || field === 'minute' || field === 'second';
-    if (!isTime || COARSENESS[field] <= from || !isEvery(text, field)) return text;
+    if (!isTime || COARSENESS[field] <= from || !isEvery(text, field))
+      return text;
     return formatField([FIELD_RANGE[field][0]], field);
   });
 }

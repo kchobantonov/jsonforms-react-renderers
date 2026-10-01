@@ -47,7 +47,8 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   const objectOwned = object?.uischema === props.uischema;
   const objectErrors = objectOwned ? object.message : '';
   const objectDetail = React.useContext(ObjectDetailContext);
-  const additional = objectDetail?.uischema === props.uischema ? objectDetail.additional : null;
+  const additional =
+    objectDetail?.uischema === props.uischema ? objectDetail.additional : null;
   const layout = props.uischema as GroupLayout;
   if (!props.visible) return null;
   // One string for the tooltip and the accessible name, so the two cannot
@@ -79,7 +80,15 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
           lineHeight: 0,
         }}
       >
-        {objectOwned ? (objectErrors ? <ValidationIcon local errorMessages={objectErrors} id={`${props.path}-object-errors`} /> : null) : validation.show ? (
+        {objectOwned ? (
+          objectErrors ? (
+            <ValidationIcon
+              local
+              errorMessages={objectErrors}
+              id={`${props.path}-object-errors`}
+            />
+          ) : null
+        ) : validation.show ? (
           <ContainerValidationIndicator count={validation.count} />
         ) : null}
         {indicator}
@@ -87,12 +96,14 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
     ) : undefined;
   const content = (
     <>
-    {layout.elements.length > 0 && <AntdLayoutRenderer
-      {...props}
-      direction='column'
-      elements={layout.elements}
-    />}
-    {additional}
+      {layout.elements.length > 0 && (
+        <AntdLayoutRenderer
+          {...props}
+          direction='column'
+          elements={layout.elements}
+        />
+      )}
+      {additional}
     </>
   );
   const style = { marginBottom: '10px', width: '100%' };

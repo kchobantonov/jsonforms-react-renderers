@@ -1,7 +1,25 @@
-import { ShadcnArrayChoicesControl, chipsControlTester, multiSelectControlTester, enumArrayControlTester } from './complex/ArrayChoicesControl';
-import ScalarCompositionRenderer, { scalarCompositionTester } from './complex/ScalarCompositionRenderer';
-import { and, isOneOfEnumControl, optionIs, rankWith } from '@jsonforms/core';
-import { ShadcnPasswordControl, ShadcnPasswordOtpControl, passwordControlTester, passwordOtpControlTester } from './controls/PasswordControl';
+import {
+  ShadcnArrayChoicesControl,
+  chipsControlTester,
+  multiSelectControlTester,
+  enumArrayControlTester,
+} from './complex/ArrayChoicesControl';
+import ScalarCompositionRenderer, {
+  scalarCompositionTester,
+} from './complex/ScalarCompositionRenderer';
+import {
+  and,
+  isOneOfEnumControl,
+  optionIs,
+  rankWith,
+  JsonFormsRendererRegistryEntry,
+} from '@jsonforms/core';
+import {
+  ShadcnPasswordControl,
+  ShadcnPasswordOtpControl,
+  passwordControlTester,
+  passwordOtpControlTester,
+} from './controls/PasswordControl';
 import {
   TupleControlRenderer,
   tupleControlRendererTester,
@@ -10,7 +28,6 @@ import {
   anyOfStringOrEnumControlTester,
   ShadcnAnyOfStringOrEnumControl,
 } from './controls/AnyOfStringOrEnumControl';
-import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import {
   withJsonFormsArrayLayoutProps,
   withJsonFormsControlProps,
@@ -21,7 +38,6 @@ import {
   withTranslateProps,
 } from '@jsonforms/react';
 import { ShadcnLabelRenderer, labelRendererTester } from './additional';
-import { shadcnCells } from './cells';
 import {
   oneOfControlTester,
   ShadcnOneOfControl,
@@ -82,11 +98,25 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
-  ...[chipsControlTester, multiSelectControlTester, enumArrayControlTester].map(tester => ({ tester, renderer: withJsonFormsControlProps(ShadcnArrayChoicesControl) })),
+  ...[chipsControlTester, multiSelectControlTester, enumArrayControlTester].map(
+    (tester) => ({
+      tester,
+      renderer: withJsonFormsControlProps(ShadcnArrayChoicesControl),
+    })
+  ),
   { tester: scalarCompositionTester, renderer: ScalarCompositionRenderer },
-  { tester: rankWith(20, and(isOneOfEnumControl, optionIs('format', 'radio'))), renderer: withJsonFormsOneOfEnumProps(ShadcnRadioGroupControl) },
-  { tester: passwordControlTester, renderer: withJsonFormsControlProps(ShadcnPasswordControl) },
-  { tester: passwordOtpControlTester, renderer: withJsonFormsControlProps(ShadcnPasswordOtpControl) },
+  {
+    tester: rankWith(20, and(isOneOfEnumControl, optionIs('format', 'radio'))),
+    renderer: withJsonFormsOneOfEnumProps(ShadcnRadioGroupControl),
+  },
+  {
+    tester: passwordControlTester,
+    renderer: withJsonFormsControlProps(ShadcnPasswordControl),
+  },
+  {
+    tester: passwordOtpControlTester,
+    renderer: withJsonFormsControlProps(ShadcnPasswordOtpControl),
+  },
   { tester: tupleControlRendererTester, renderer: TupleControlRenderer },
   {
     tester: anyOfStringOrEnumControlTester,
@@ -182,5 +212,4 @@ export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
   },
 ];
 
-export { shadcnCells };
 export const advancedShadcnRenderers = shadcnRenderers;

@@ -5,7 +5,7 @@ const fromPackage = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
-  esbuild: { jsx: "automatic" },
+  esbuild: { jsx: 'automatic' },
   resolve: {
     alias: [
       {

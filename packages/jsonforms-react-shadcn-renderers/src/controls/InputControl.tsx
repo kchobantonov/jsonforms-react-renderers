@@ -1,6 +1,9 @@
 import { usePreTouchErrors } from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
 import { useJsonForms } from '@jsonforms/react';
-import { getControlHelp, ControlHelpProps } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
+import {
+  getControlHelp,
+  ControlHelpProps,
+} from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
 import { ControlProps } from '@jsonforms/core';
 import React, { useContext } from 'react';
 import { ShadcnCellMode } from '../cells/asCell';
@@ -24,22 +27,38 @@ export const InputShell = ({
   children,
   config,
   uischema,
-}: React.PropsWithChildren<ControlHelpProps & {
-  id: string;
-  path?: string;
-  schema?: ControlProps['schema'];
-  label?: string;
-  required?: boolean;
-  description?: string;
-  errors?: string;
-}>) => {
+}: React.PropsWithChildren<
+  ControlHelpProps & {
+    id: string;
+    path?: string;
+    schema?: ControlProps['schema'];
+    label?: string;
+    required?: boolean;
+    description?: string;
+    errors?: string;
+  }
+>) => {
   const ctx = useJsonForms();
-  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({ errors: rawErrors, path, schema, config: config ?? ctx.config, uischema: uischema as ControlProps['uischema'] });
-  const help = getControlHelp({ description, errors, config: config ?? ctx.config, uischema }, focused);
+  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({
+    errors: rawErrors,
+    path,
+    schema,
+    config: config ?? ctx.config,
+    uischema: uischema as ControlProps['uischema'],
+  });
+  const help = getControlHelp(
+    { description, errors, config: config ?? ctx.config, uischema },
+    focused
+  );
   const cell = useContext(ShadcnCellMode);
   if (cell)
     return (
-      <div className='shadcn-jsonforms-cell' title={errors || undefined} onFocusCapture={onFocus} onBlurCapture={onBlur}>
+      <div
+        className='shadcn-jsonforms-cell'
+        title={errors || undefined}
+        onFocusCapture={onFocus}
+        onBlurCapture={onBlur}
+      >
         {children}
       </div>
     );
@@ -97,7 +116,11 @@ export const ShadcnInputControl = ({
   const inputType = uischema.options?.format ?? type;
 
   return (
-    <InputShell path={path} schema={schema} config={config} uischema={uischema}
+    <InputShell
+      path={path}
+      schema={schema}
+      config={config}
+      uischema={uischema}
       id={id}
       label={label}
       required={required}
@@ -154,7 +177,8 @@ export const ShadcnNumberControl = (
   const id = makeId(path, props.label);
 
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}

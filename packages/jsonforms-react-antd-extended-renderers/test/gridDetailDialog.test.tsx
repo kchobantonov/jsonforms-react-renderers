@@ -57,12 +57,17 @@ const openDetail = async () => {
     root.render(
       <ConfigProvider>
         <JsonForms
-          data={[{ name: 'Ada', address: { street: '12 St James', city: 'London' } }]}
+          data={[
+            { name: 'Ada', address: { street: '12 St James', city: 'London' } },
+          ]}
           schema={schema}
           uischema={uischema}
           renderers={[
             ...antdRenderers,
-            { tester: extendedAgGridTester, renderer: AntdAgGridControlRenderer },
+            {
+              tester: extendedAgGridTester,
+              renderer: AntdAgGridControlRenderer,
+            },
           ]}
           cells={antdCells}
           onChange={() => undefined}
@@ -70,8 +75,8 @@ const openDetail = async () => {
       </ConfigProvider>
     )
   );
-  await flushUntil(
-    () => Boolean(container.querySelector('[aria-label^="Edit"]'))
+  await flushUntil(() =>
+    Boolean(container.querySelector('[aria-label^="Edit"]'))
   );
   const edit = container.querySelector<HTMLElement>('[aria-label^="Edit"]');
   act(() => edit!.click());

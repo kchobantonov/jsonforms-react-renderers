@@ -87,8 +87,6 @@ export const TemplateLayoutRenderer = ({
   */
   const engine = resolveTemplateEngine(uischema, config);
 
-  if (!visible) return null;
-
   const template = uischema.template;
 
   const renderablesRef = useRef<Record<string, React.MemoExoticComponent<any>>>(
@@ -142,14 +140,14 @@ export const TemplateLayoutRenderer = ({
       if (!renderablesRef.current[key]) {
         // Memoized component for this element
         renderablesRef.current[key] = React.memo(
-          ({
+          function TemplateElementControl({
             schema,
             path,
             enabled,
             renderers,
             cells,
             uischema,
-          }: RenderableElementProps) => {
+          }: RenderableElementProps) {
             return (
               <JsonFormsDispatch
                 key={`${path}-${index}`}
@@ -163,6 +161,7 @@ export const TemplateLayoutRenderer = ({
             );
           }
         );
+        renderablesRef.current[key].displayName = `TemplateElement(${key})`;
       }
 
       /*
@@ -170,7 +169,7 @@ export const TemplateLayoutRenderer = ({
         template reaches it through `elements['name']`. Recorded as a known
         mutation in its own right; the *name* no longer is one.
       */
-      (element as any)[ElementRender] = () => {
+      (element as any)[ElementRender] = function TemplateElement() {
         const Renderable = renderablesRef.current[
           key
         ] as React.ComponentType<RenderableElementProps>;
@@ -363,6 +362,8 @@ export const TemplateLayoutRenderer = ({
       components,
     ]
   );
+
+  if (!visible) return null;
 
   // Dynamically destructure based on passed props
   const destructuringAssignment = `const { ${Object.keys(rendererProps)

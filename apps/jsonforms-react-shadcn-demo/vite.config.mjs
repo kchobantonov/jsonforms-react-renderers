@@ -22,12 +22,20 @@ export default ({ command }) => ({
         ? [
             {
               find: /^@chobantonov\/jsonforms-react-extended-renderers$/,
-            replacement: fileURLToPath(new URL('../../packages/jsonforms-react-extended-renderers/src/index.tsx', import.meta.url)),
-          },
-          {
-            find: '@chobantonov/jsonforms-react-renderer-common',
               replacement: fileURLToPath(
-                new URL('../../packages/jsonforms-react-renderer-common/src', import.meta.url)
+                new URL(
+                  '../../packages/jsonforms-react-extended-renderers/src/index.tsx',
+                  import.meta.url
+                )
+              ),
+            },
+            {
+              find: '@chobantonov/jsonforms-react-renderer-common',
+              replacement: fileURLToPath(
+                new URL(
+                  '../../packages/jsonforms-react-renderer-common/src',
+                  import.meta.url
+                )
               ),
             },
             {

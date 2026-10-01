@@ -14,7 +14,9 @@ import {
 const fixture = (name: string) =>
   JSON.parse(
     readFileSync(
-      require.resolve(`@chobantonov/jsonforms-extended-spec/examples/temporal-controls/${name}.json`),
+      require.resolve(
+        `@chobantonov/jsonforms-extended-spec/examples/temporal-controls/${name}.json`
+      ),
       'utf8'
     )
   );

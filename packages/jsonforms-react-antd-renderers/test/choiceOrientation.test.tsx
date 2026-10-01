@@ -106,10 +106,15 @@ describe('radio group choice identity', () => {
 
 it('uses scoped radio defaults and honors an explicit horizontal override', () => {
   for (const vertical of [undefined, false]) {
-    const { oriented, unmount } = render(radioSchema,
-      { format: 'radio', vertical }, { choice: 'Standard' },
-      { jsonformsExtended: { radio: { vertical: true } } });
-    expect(oriented?.getAttribute('aria-orientation')).toBe(vertical === false ? 'horizontal' : 'vertical');
+    const { oriented, unmount } = render(
+      radioSchema,
+      { format: 'radio', vertical },
+      { choice: 'Standard' },
+      { jsonformsExtended: { radio: { vertical: true } } }
+    );
+    expect(oriented?.getAttribute('aria-orientation')).toBe(
+      vertical === false ? 'horizontal' : 'vertical'
+    );
     unmount();
   }
 });

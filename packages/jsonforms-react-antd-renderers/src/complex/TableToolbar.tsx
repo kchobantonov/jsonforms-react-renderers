@@ -31,11 +31,7 @@ export interface TableToolbarProps {
 
 const { Title } = Typography;
 
-const renderTitle = (
-  label: string,
-  errors: string,
-  description: string
-) => (
+const renderTitle = (label: string, errors: string, description: string) => (
   <>
     <Row align='middle'>
       <Col>

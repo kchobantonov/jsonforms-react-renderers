@@ -1,8 +1,8 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
-"@chobantonov/jsonforms-react-renderer-common": patch
-"@chobantonov/jsonforms-react-extended-renderers": patch
-"@chobantonov/jsonforms-react-antd-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
+'@chobantonov/jsonforms-react-renderer-common': patch
+'@chobantonov/jsonforms-react-extended-renderers': patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
 ---
 
 Add a shadcn cron control selected by schema format or UI options, with a schedule

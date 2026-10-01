@@ -38,12 +38,20 @@ describe('ShadcnDateTimeControl', () => {
 
     await act(async () => root.render(<ShadcnDateTimeControl {...props} />));
     await act(async () => {
-      container.querySelector<HTMLButtonElement>('#shadcn-jsonforms-appointment')?.click();
+      container
+        .querySelector<HTMLButtonElement>('#shadcn-jsonforms-appointment')
+        ?.click();
     });
 
-    expect(document.body.querySelector('[data-slot="calendar"]')).not.toBeNull();
-    expect(document.body.querySelector('[data-slot="time-picker"]')).not.toBeNull();
-    expect(document.body.querySelector('input[type="datetime-local"]')).toBeNull();
+    expect(
+      document.body.querySelector('[data-slot="calendar"]')
+    ).not.toBeNull();
+    expect(
+      document.body.querySelector('[data-slot="time-picker"]')
+    ).not.toBeNull();
+    expect(
+      document.body.querySelector('input[type="datetime-local"]')
+    ).toBeNull();
 
     await act(async () => root.unmount());
     container.remove();

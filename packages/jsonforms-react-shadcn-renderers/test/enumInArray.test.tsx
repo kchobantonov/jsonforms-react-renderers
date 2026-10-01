@@ -41,7 +41,11 @@ it.each([{}, { table: false }])(
       expect(Boolean(host.querySelector('table'))).toBe(
         options.table !== false
       );
-      const selects = Array.from((host.querySelector('table') ?? host).querySelectorAll('[role="combobox"]'));
+      const selects = Array.from(
+        (host.querySelector('table') ?? host).querySelectorAll(
+          '[role="combobox"]'
+        )
+      );
       expect(selects.map((s) => s.textContent)).toEqual(['bar', 'FooBar']);
       expect(host.textContent).not.toContain('No applicable cell');
     } finally {

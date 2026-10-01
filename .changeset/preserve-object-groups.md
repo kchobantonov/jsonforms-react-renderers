@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-antd-renderers": patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
 ---
 
 Preserve resolved object Group layouts and use them as the single object boundary.

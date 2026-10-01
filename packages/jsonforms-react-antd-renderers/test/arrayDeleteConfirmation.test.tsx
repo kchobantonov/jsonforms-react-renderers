@@ -127,7 +127,9 @@ const render = (schema: any, uischema: any, options?: any) => {
   return {
     container,
     clickDelete: async () => {
-      const checkbox = container.querySelector<HTMLInputElement>('tbody tr[data-row-key] input[type="checkbox"]');
+      const checkbox = container.querySelector<HTMLInputElement>(
+        'tbody tr[data-row-key] input[type="checkbox"]'
+      );
       if (checkbox && !checkbox.checked) {
         act(() => checkbox.click());
         await settle();

@@ -1,12 +1,7 @@
 import React from 'react';
 
 export const ShadcnIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox='0 0 256 256'
-    fill='none'
-    aria-hidden='true'
-    {...props}
-  >
+  <svg viewBox='0 0 256 256' fill='none' aria-hidden='true' {...props}>
     <rect width='256' height='256' fill='none' />
     <line
       x1='208'

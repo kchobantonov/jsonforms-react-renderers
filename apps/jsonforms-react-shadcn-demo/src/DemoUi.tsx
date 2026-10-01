@@ -15,14 +15,14 @@ import {
 } from '@chobantonov/jsonforms-react-demo-common';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
-import { Select } from '@jsonforms-react-shadcn-ui/select';
-import { SelectContent } from '@jsonforms-react-shadcn-ui/select';
-import { SelectItem } from '@jsonforms-react-shadcn-ui/select';
-import { SelectTrigger } from '@jsonforms-react-shadcn-ui/select';
-import { SelectValue } from '@jsonforms-react-shadcn-ui/select';
-import { Tabs } from '@jsonforms-react-shadcn-ui/tabs';
-import { TabsList } from '@jsonforms-react-shadcn-ui/tabs';
-import { TabsTrigger } from '@jsonforms-react-shadcn-ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@jsonforms-react-shadcn-ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@jsonforms-react-shadcn-ui/tabs';
 
 import { ShadcnDemoSplitter } from './ShadcnDemoSplitter';
 

@@ -157,7 +157,9 @@ export const CompositeDetailDialog = ({
         if (!next) cancel();
       }}
     >
-      <DetailDialogContent open={open} options={options.dialog}
+      <DetailDialogContent
+        open={open}
+        options={options.dialog}
         className='max-w-2xl'
         aria-label={label}
         aria-describedby={undefined}

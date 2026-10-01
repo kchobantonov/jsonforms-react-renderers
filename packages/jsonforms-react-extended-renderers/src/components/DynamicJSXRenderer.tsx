@@ -459,11 +459,12 @@ export default function DynamicJSXRenderer({
         }
       });
 
+      SafeTemplate.displayName = 'SafeTemplate';
       return SafeTemplate;
     } catch (err) {
       console.error('JSX compile error:', err);
       // Fallback component if compile fails
-      return React.memo((_props) => (
+      const CompileError = React.memo((_props) => (
         <div
           style={{
             color: 'red',
@@ -491,6 +492,8 @@ export default function DynamicJSXRenderer({
           </details>
         </div>
       ));
+      CompileError.displayName = 'TemplateCompileError';
+      return CompileError;
     }
   }, [jsxTemplate, pragma]);
 

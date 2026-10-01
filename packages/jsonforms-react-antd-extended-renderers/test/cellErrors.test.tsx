@@ -30,7 +30,10 @@ const schema = {
 };
 
 // one valid row, one missing the required property
-const data = [{ firstName: 'Ada', lastName: 'Lovelace' }, { lastName: 'Hopper' }];
+const data = [
+  { firstName: 'Ada', lastName: 'Lovelace' },
+  { lastName: 'Hopper' },
+];
 
 afterEach(() => {
   document.body.innerHTML = '';

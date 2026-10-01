@@ -140,10 +140,6 @@ export const MixedRendererComponent = ({
     if (tree && !findMixedTreeNode(tree, selectedPath)) setSelectedPath([]);
   }, [tree, selectedPath]);
 
-  if (!visible) {
-    return null;
-  }
-
   const renderNodeControl = (node?: MixedTreeNode) => {
     if (!node) return null;
     const isNestedPrimitive =
@@ -327,6 +323,8 @@ export const MixedRendererComponent = ({
     }),
     [path, tree]
   );
+  if (!visible) return null;
+
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
   const restrict = appliedOptions.restrict !== false;
   const parentNode = (node: MixedTreeNode) =>

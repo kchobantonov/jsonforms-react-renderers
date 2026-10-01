@@ -1,9 +1,9 @@
 import './extended-controls';
 import * as file from './file';
-import * as templateLayout from './template-layout';
+import './template-layout';
 import * as presentation from './presentation';
-import * as horizontalSizing from './horizontal-sizing';
-import * as presentationRenderers from './presentation-renderers';
+import './horizontal-sizing';
+import './presentation-renderers';
 import './collapsible-groups';
 import './split-layout';
 import './spec';
@@ -15,13 +15,7 @@ import { listExamples } from './registry';
 // `JsonForms: <label>` and returns only the prefixed copies alongside ours.
 const examples = listExamples();
 
-export {
-  file,
-  templateLayout,
-  presentation,
-  horizontalSizing,
-  presentationRenderers,
-};
+export { file, presentation };
 export * from './registry';
 export * from './spec';
 export default examples;

@@ -161,7 +161,10 @@ export const buildNamespaceScope = (
   const scope: Record<string, unknown> = { locale: input.locale ?? 'en' };
   if (input.dynamicAllowed) {
     scope.data = input.data ?? {};
-    Object.defineProperty(scope, 'item', { enumerable: true, get: () => input.item });
+    Object.defineProperty(scope, 'item', {
+      enumerable: true,
+      get: () => input.item,
+    });
     scope.config = input.config ?? {};
     scope.context = input.context ?? {};
   }

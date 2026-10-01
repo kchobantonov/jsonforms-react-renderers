@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ emit: undefined as any }));
 vi.mock('@monaco-editor/react', () => ({
-  default: (props: any) => {
+  default: function MockMonaco(props: any) {
     harness.emit = (m: unknown[]) => props.onValidate?.(m);
     // Like a real language service: re-validates whenever the language changes,
     // and only JavaScript is unhappy with this snippet.

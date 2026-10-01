@@ -19,9 +19,13 @@ describe('JsonFormsShadcnElement', () => {
       const element = host.firstElementChild as JsonFormsShadcnElement;
       element.schema = { type: 'string' };
       element.data = JSON.stringify('hello');
-      await vi.waitFor(() => expect(element.shadowRoot?.querySelector('input')).not.toBeNull());
+      await vi.waitFor(() =>
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      );
       flushSync(() => root.render(null));
-      await vi.waitFor(() => expect(element.shadowRoot?.childNodes.length).toBe(0));
+      await vi.waitFor(() =>
+        expect(element.shadowRoot?.childNodes.length).toBe(0)
+      );
       expect(error).not.toHaveBeenCalled();
     } finally {
       root.unmount();
@@ -32,22 +36,30 @@ describe('JsonFormsShadcnElement', () => {
 
   it('reuses the root on immediate reconnection and remounts after cleanup', async () => {
     registerJsonFormsShadcn();
-    const element = document.createElement(JSON_FORMS_SHADCN_TAG) as JsonFormsShadcnElement;
+    const element = document.createElement(
+      JSON_FORMS_SHADCN_TAG
+    ) as JsonFormsShadcnElement;
     element.schema = { type: 'string' };
     element.data = JSON.stringify('hello');
     const error = vi.spyOn(console, 'error');
     try {
       document.body.append(element);
-      await vi.waitFor(() => expect(element.shadowRoot?.querySelector('input')).not.toBeNull());
+      await vi.waitFor(() =>
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      );
       const input = element.shadowRoot?.querySelector('input');
       element.remove();
       document.body.append(element);
       await new Promise((resolve) => setTimeout(resolve, 20));
       expect(element.shadowRoot?.querySelector('input')).toBe(input);
       element.remove();
-      await vi.waitFor(() => expect(element.shadowRoot?.childNodes.length).toBe(0));
+      await vi.waitFor(() =>
+        expect(element.shadowRoot?.childNodes.length).toBe(0)
+      );
       document.body.append(element);
-      await vi.waitFor(() => expect(element.shadowRoot?.querySelector('input')).not.toBeNull());
+      await vi.waitFor(() =>
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      );
       expect(error).not.toHaveBeenCalled();
     } finally {
       element.remove();
@@ -98,15 +110,21 @@ describe('JsonFormsShadcnElement', () => {
     document.body.append(element);
     try {
       await vi.waitFor(() => {
-        expect(element.shadowRoot?.textContent).toContain('One schema, five presentations.');
+        expect(element.shadowRoot?.textContent).toContain(
+          'One schema, five presentations.'
+        );
         expect(element.shadowRoot?.textContent).not.toContain('intro.text');
       });
       element.locale = 'bg';
       element.translations = (id: string, fallback: string | undefined) =>
         id === 'intro.text' ? 'Една схема, пет представяния.' : fallback;
       await vi.waitFor(() => {
-        expect(element.shadowRoot?.textContent).toContain('Една схема, пет представяния.');
-        expect(element.shadowRoot?.textContent).not.toContain('One schema, five presentations.');
+        expect(element.shadowRoot?.textContent).toContain(
+          'Една схема, пет представяния.'
+        );
+        expect(element.shadowRoot?.textContent).not.toContain(
+          'One schema, five presentations.'
+        );
       });
     } finally {
       element.remove();

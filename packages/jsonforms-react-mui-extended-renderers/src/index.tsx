@@ -1,6 +1,9 @@
-import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  extendedAgGridTester,
+  monacoControlTester,
+  createExtendedRenderers,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 import { MuiAgGridControlRenderer } from './renderers/MuiAgGridControlRenderer';
-import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import { MuiMonacoControlRenderer } from './renderers/MuiMonacoControlRenderer';
 import {
   MuiNullControlRenderer,
@@ -23,7 +26,6 @@ import {
   muiFileRendererTester,
 } from './renderers/MuiFileRenderer';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
-import { createExtendedRenderers } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
   Alert,
   Box,

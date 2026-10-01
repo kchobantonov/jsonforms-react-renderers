@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @config "../../tailwind.config.cjs";
 
 .shadcn-jsonforms-root.app-dark .demo-home-logo {
@@ -13,8 +13,11 @@ body {
 .shadcn-jsonforms-root.app-shell {
   min-height: 100vh;
   background-color: hsl(var(--background));
-  background-image:
-    radial-gradient(circle at 20% 20%, hsl(var(--muted) / 0.28), transparent 32%),
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      hsl(var(--muted) / 0.28),
+      transparent 32%
+    ),
     radial-gradient(circle at 80% 0%, hsl(var(--muted) / 0.18), transparent 28%);
   color: hsl(var(--foreground));
 }

@@ -1,5 +1,9 @@
 import { ValidationIcon } from './ValidationIcon';
-import { useNameConstraintMessage, usePropertyNameErrors, useAdditionalPropertyErrors } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import {
+  useNameConstraintMessage,
+  usePropertyNameErrors,
+  useAdditionalPropertyErrors,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
 import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
@@ -131,7 +135,6 @@ export const AdditionalProperties = ({
     allowIfMissing ||
     additionalKeys.length > 0;
 
-
   // Exactly as typed. Trimming here would store `"a"` for `"  a  "`, and with
   // empty names permitted it would erase a whitespace-only key entirely.
   const propertyName = newPropertyName;
@@ -174,7 +177,8 @@ export const AdditionalProperties = ({
     );
     return result.error === undefined
       ? undefined
-      : constraintMessage(result.errors) ?? nameMessage(result.error, result.name);
+      : constraintMessage(result.errors) ??
+          nameMessage(result.error, result.name);
   };
   const propertyNameError = validateName(propertyName);
   /*
@@ -226,9 +230,21 @@ export const AdditionalProperties = ({
   };
 
   const deletion = useCollectionDelete<string>({
-    data: objectData, identity: path, catalogId: 'additionalProperties',
-    options: uischema.options, config,
-    canRemove: (key) => !removePropertyDisabled && !appliedOptions.disableRemove && !!objectData && Object.prototype.hasOwnProperty.call(objectData, key) && !reservedPropertyNames.includes(key) && !(appliedOptions.restrict !== false && objectSchema.required?.includes(key)),
+    data: objectData,
+    identity: path,
+    catalogId: 'additionalProperties',
+    options: uischema.options,
+    config,
+    canRemove: (key) =>
+      !removePropertyDisabled &&
+      !appliedOptions.disableRemove &&
+      !!objectData &&
+      Object.prototype.hasOwnProperty.call(objectData, key) &&
+      !reservedPropertyNames.includes(key) &&
+      !(
+        appliedOptions.restrict !== false &&
+        objectSchema.required?.includes(key)
+      ),
     value: (key) => objectData?.[key],
     remove: (key) => {
       const updatedData = { ...objectData };
@@ -275,14 +291,29 @@ export const AdditionalProperties = ({
 
   return (
     <PendingChangesProvider changes={page.pending}>
-      <Card className='jsonforms-additional-properties' size='small' variant={embedded ? 'borderless' : 'outlined'} styles={embedded ? { body: { padding: 0 } } : undefined}>
-        <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
+      <Card
+        className='jsonforms-additional-properties'
+        size='small'
+        variant={embedded ? 'borderless' : 'outlined'}
+        styles={embedded ? { body: { padding: 0 } } : undefined}
+      >
+        <DeleteDialog
+          open={deletion.confirming}
+          onCancel={deletion.cancel}
+          onConfirm={deletion.confirm}
+        />
         <Flex vertical gap='middle'>
           <Row align='bottom' gutter={[12, 8]}>
             <Col md={5} xs={24}>
               <Typography.Text>
                 {t('additionalProperties.title')}
-                {propertyErrors && <ValidationIcon local errorMessages={propertyErrors} id={`${path}-additional-property-errors`} />}
+                {propertyErrors && (
+                  <ValidationIcon
+                    local
+                    errorMessages={propertyErrors}
+                    id={`${path}-additional-property-errors`}
+                  />
+                )}
               </Typography.Text>
             </Col>
             <Col md={18} xs={20}>
@@ -343,7 +374,8 @@ export const AdditionalProperties = ({
             */
                 const isolated = needsIsolatedEditor(item.propertyName);
                 const rendersOwnHeading =
-                  !isolated && !nameErrors.has(item.propertyName) &&
+                  !isolated &&
+                  !nameErrors.has(item.propertyName) &&
                   !(
                     typeof item.schema === 'object' &&
                     item.schema.type === 'object'
@@ -388,7 +420,13 @@ export const AdditionalProperties = ({
                             zIndex: 1,
                           }}
                         >
-                          {nameErrors.get(item.propertyName) && <ValidationIcon local errorMessages={nameErrors.get(item.propertyName)!} id={`${item.path}-name-errors`} />}
+                          {nameErrors.get(item.propertyName) && (
+                            <ValidationIcon
+                              local
+                              errorMessages={nameErrors.get(item.propertyName)!}
+                              id={`${item.path}-name-errors`}
+                            />
+                          )}
                           {actions}
                         </div>
                       ) : null
@@ -406,16 +444,26 @@ export const AdditionalProperties = ({
                       dropping into a row of their own.
                     */}
                         <Flex align='center' gap={4}>
-                        <Typography.Text
-                          type={nameErrors.has(item.propertyName) ? 'danger' : undefined}
-                          strong
-                          data-property-name={item.propertyName}
-                        >
-                          {item.propertyName === ''
-                            ? '\u00a0'
-                            : item.propertyName}
-                        </Typography.Text>
-                          {nameErrors.get(item.propertyName) && <ValidationIcon local errorMessages={nameErrors.get(item.propertyName)!} id={`${item.path}-name-errors`} />}
+                          <Typography.Text
+                            type={
+                              nameErrors.has(item.propertyName)
+                                ? 'danger'
+                                : undefined
+                            }
+                            strong
+                            data-property-name={item.propertyName}
+                          >
+                            {item.propertyName === ''
+                              ? '\u00a0'
+                              : item.propertyName}
+                          </Typography.Text>
+                          {nameErrors.get(item.propertyName) && (
+                            <ValidationIcon
+                              local
+                              errorMessages={nameErrors.get(item.propertyName)!}
+                              id={`${item.path}-name-errors`}
+                            />
+                          )}
                         </Flex>
                         {actions}
                       </Flex>
@@ -468,7 +516,11 @@ export const AdditionalProperties = ({
                         <DynamicPropertyProvider path={item.path}>
                           <JsonFormsDispatch
                             schema={item.schema}
-                            uischema={nameErrors.has(item.propertyName) ? { ...item.uischema, label: false } as any : item.uischema}
+                            uischema={
+                              nameErrors.has(item.propertyName)
+                                ? ({ ...item.uischema, label: false } as any)
+                                : item.uischema
+                            }
                             path={item.path}
                             enabled={enabled}
                             renderers={renderers}

@@ -1,5 +1,8 @@
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { usePathErrorMessages, labelDetailErrorPaths } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import {
+  usePathErrorMessages,
+  labelDetailErrorPaths,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ErrorIndicator } from '../complex/ErrorIndicator';
 import { DetailDialogContent } from '../complex/DetailDialogContent';
 import React, { useRef, useState } from 'react';
@@ -48,16 +51,29 @@ type Props = CellProps & {
 /** A compact summary with isolated editing; only Apply writes to the form. */
 export const ShadcnCompositeCell = (props: Props) => {
   const parent = useJsonForms();
-  const errors = usePathErrorMessages(props.path, labelDetailErrorPaths(props.path, props.uischema.options));
+  const errors = usePathErrorMessages(
+    props.path,
+    labelDetailErrorPaths(props.path, props.uischema.options)
+  );
   const t = useTranslator();
   const d = useI18nDefault();
   const text = useI18n();
-  const [pendingDelete, setPendingDelete] = useState<{ value: unknown; path: string }>();
+  const [pendingDelete, setPendingDelete] = useState<{
+    value: unknown;
+    path: string;
+  }>();
   const [draft, setDraft] = useState<JsonFormsCore>();
   const draftRef = useRef<JsonFormsCore>();
   const original = useRef<unknown>();
   const options = props.uischema.options ?? {};
-  const summary = compositeSummaryPresentation(props.data, options.summary?.type === 'Control' ? options.summary as any : undefined, props.schema?.title, t, d, props.schema);
+  const summary = compositeSummaryPresentation(
+    props.data,
+    options.summary?.type === 'Control' ? (options.summary as any) : undefined,
+    props.schema?.title,
+    t,
+    d,
+    props.schema
+  );
   const enabled =
     props.enabled &&
     !(parent as any).readonly &&
@@ -98,55 +114,104 @@ export const ShadcnCompositeCell = (props: Props) => {
   if (props.visible === false) return null;
   return (
     <div className='group/composite flex min-w-0 items-center gap-1.5'>
-      {(options.showTypeIndicator ?? props.config?.showTypeIndicator ?? false) === true && (isArray || props.schema?.type === 'object') && <span aria-hidden='true' className='shrink-0 text-muted-foreground'>{isArray ? '[]' : '{}'}</span>}
-      <span className={`min-w-0 flex-1 truncate${summary.generated && options.summary?.type !== 'Label' ? ' italic text-muted-foreground' : ''}`}>
-        {options.summary?.type === 'Label' ? <CellSummary schema={props.schema} path={props.path} uischema={options.summary} /> : summary.text}
+      {(options.showTypeIndicator ??
+        props.config?.showTypeIndicator ??
+        false) === true &&
+        (isArray || props.schema?.type === 'object') && (
+          <span aria-hidden='true' className='shrink-0 text-muted-foreground'>
+            {isArray ? '[]' : '{}'}
+          </span>
+        )}
+      <span
+        className={`min-w-0 flex-1 truncate${
+          summary.generated && options.summary?.type !== 'Label'
+            ? ' italic text-muted-foreground'
+            : ''
+        }`}
+      >
+        {options.summary?.type === 'Label' ? (
+          <CellSummary
+            schema={props.schema}
+            path={props.path}
+            uischema={options.summary}
+          />
+        ) : (
+          summary.text
+        )}
       </span>
       {errors && <ErrorIndicator errors={errors} path={props.path} />}
-      {((!options.summaryOnly && options.summary?.type !== 'Label') || options.detail) && <Button
-        type='button'
-        variant='ghost'
-        size='icon'
-        className='h-7 w-7 shrink-0 opacity-0 group-hover/composite:opacity-100 group-focus-within/composite:opacity-100 [@media(hover:none)]:opacity-100'
-        title={text('composite.edit', { label })}
-        aria-label={text('composite.edit', { label })}
-        onClick={() => {
-          original.current = copy(current());
-          draftRef.current = { ...parent.core, data: copy(parent.core?.data) };
-          setDraft(draftRef.current);
-        }}
-      >
-        <Pencil className='h-4 w-4' aria-hidden='true' />
-      </Button>}
-      {enabled && !options.summaryOnly && (options.summary?.type !== 'Label' || !!options.detail) && props.data !== undefined && options.clearable !== false && (
+      {((!options.summaryOnly && options.summary?.type !== 'Label') ||
+        options.detail) && (
         <Button
           type='button'
           variant='ghost'
           size='icon'
           className='h-7 w-7 shrink-0 opacity-0 group-hover/composite:opacity-100 group-focus-within/composite:opacity-100 [@media(hover:none)]:opacity-100'
-          style={{ color: 'hsl(var(--destructive))' }}
-          title={text('composite.remove', { label })}
-          aria-label={text('composite.remove', { label })}
+          title={text('composite.edit', { label })}
+          aria-label={text('composite.edit', { label })}
           onClick={() => {
-            if (shouldConfirm({ catalogId: 'compositeCell', operation: 'delete', options, config: props.config }, [props.data]))
-              setPendingDelete({ value: props.data, path: props.path });
-            else props.handleChange(props.path, undefined);
+            original.current = copy(current());
+            draftRef.current = {
+              ...parent.core,
+              data: copy(parent.core?.data),
+            };
+            setDraft(draftRef.current);
           }}
         >
-          <X className='h-4 w-4' aria-hidden='true' />
+          <Pencil className='h-4 w-4' aria-hidden='true' />
         </Button>
       )}
+      {enabled &&
+        !options.summaryOnly &&
+        (options.summary?.type !== 'Label' || !!options.detail) &&
+        props.data !== undefined &&
+        options.clearable !== false && (
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            className='h-7 w-7 shrink-0 opacity-0 group-hover/composite:opacity-100 group-focus-within/composite:opacity-100 [@media(hover:none)]:opacity-100'
+            style={{ color: 'hsl(var(--destructive))' }}
+            title={text('composite.remove', { label })}
+            aria-label={text('composite.remove', { label })}
+            onClick={() => {
+              if (
+                shouldConfirm(
+                  {
+                    catalogId: 'compositeCell',
+                    operation: 'delete',
+                    options,
+                    config: props.config,
+                  },
+                  [props.data]
+                )
+              )
+                setPendingDelete({ value: props.data, path: props.path });
+              else props.handleChange(props.path, undefined);
+            }}
+          >
+            <X className='h-4 w-4' aria-hidden='true' />
+          </Button>
+        )}
       <DeleteDialog
         open={!!pendingDelete}
         onCancel={() => setPendingDelete(undefined)}
         onConfirm={() => {
-          if (pendingDelete && enabled && options.clearable !== false && pendingDelete.path === props.path && pendingDelete.value === props.data)
+          if (
+            pendingDelete &&
+            enabled &&
+            options.clearable !== false &&
+            pendingDelete.path === props.path &&
+            pendingDelete.value === props.data
+          )
             props.handleChange(props.path, undefined);
           setPendingDelete(undefined);
         }}
       />
       <Dialog open={!!draft} onOpenChange={(open) => !open && close()}>
-        <DetailDialogContent open={!!draft} options={options.dialog}
+        <DetailDialogContent
+          open={!!draft}
+          options={options.dialog}
           aria-describedby={undefined}
           className='max-h-[85vh] overflow-auto sm:max-w-2xl'
         >
@@ -213,4 +278,9 @@ export const ShadcnCompositeCell = (props: Props) => {
     </div>
   );
 };
-export const shadcnCompositeCellTester = ((_ui: any, schema: any) => _ui.options?.summary?.type === 'Label' ? 6 : schema?.type === 'object' || schema?.type === 'array' ? 1 : -1);
+export const shadcnCompositeCellTester = (_ui: any, schema: any) =>
+  _ui.options?.summary?.type === 'Label'
+    ? 6
+    : schema?.type === 'object' || schema?.type === 'array'
+    ? 1
+    : -1;

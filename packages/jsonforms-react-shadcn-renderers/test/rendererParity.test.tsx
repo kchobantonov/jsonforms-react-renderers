@@ -160,10 +160,24 @@ it('shows a dynamic-only object title once without an empty static group', () =>
 });
 
 it('renders fields from every matching dynamic property pattern', () => {
-  const view = mount({ type: 'object', patternProperties: {
-    '^sensor-': { type: 'object', properties: { reading: { type: 'number' } } },
-    '-room$': { type: 'object', properties: { location: { type: 'string' } } },
-  }, additionalProperties: false }, {}, { 'sensor-room': { reading: 12, location: 'Office' } });
+  const view = mount(
+    {
+      type: 'object',
+      patternProperties: {
+        '^sensor-': {
+          type: 'object',
+          properties: { reading: { type: 'number' } },
+        },
+        '-room$': {
+          type: 'object',
+          properties: { location: { type: 'string' } },
+        },
+      },
+      additionalProperties: false,
+    },
+    {},
+    { 'sensor-room': { reading: 12, location: 'Office' } }
+  );
   expect(view.container.querySelector('input[value="12"]')).not.toBeNull();
   expect(view.container.querySelector('input[value="Office"]')).not.toBeNull();
 });

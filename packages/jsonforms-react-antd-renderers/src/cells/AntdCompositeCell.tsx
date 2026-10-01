@@ -1,5 +1,8 @@
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { usePathErrorMessages, labelDetailErrorPaths } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import {
+  usePathErrorMessages,
+  labelDetailErrorPaths,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ValidationIcon } from '../complex/ValidationIcon';
 import React, { useState, useRef } from 'react';
 import { Button, theme } from 'antd';
@@ -37,7 +40,10 @@ import {
 export const AntdCompositeCell = (props: CompositeCellProps) => {
   const { t } = props;
   const { token } = theme.useToken();
-  const errors = usePathErrorMessages(props.path, labelDetailErrorPaths(props.path, props.uischema.options));
+  const errors = usePathErrorMessages(
+    props.path,
+    labelDetailErrorPaths(props.path, props.uischema.options)
+  );
   /*
     The default message carries the locale bundle (§6.5), so it must not be
     read straight out of the English table.
@@ -56,7 +62,14 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     summaryOnly?: boolean;
     showTypeIndicator?: boolean;
   };
-  const summary = compositeSummaryPresentation(props.data, options.summary?.type === 'Control' ? options.summary as any : undefined, props.schema?.title, t, d, props.schema);
+  const summary = compositeSummaryPresentation(
+    props.data,
+    options.summary?.type === 'Control' ? (options.summary as any) : undefined,
+    props.schema?.title,
+    t,
+    d,
+    props.schema
+  );
   const isArray = Array.isArray(props.data) || props.schema?.type === 'array';
   const label =
     props.schema?.title ??
@@ -69,7 +82,11 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     options.detail ?? ({ type: 'Control', scope: '#', label: false } as any);
   // Cell removal shares the destructive-change policy.
   const canClear =
-    props.enabled && !options.summaryOnly && (options.summary?.type !== 'Label' || !!options.detail) && props.data !== undefined && options.clearable !== false;
+    props.enabled &&
+    !options.summaryOnly &&
+    (options.summary?.type !== 'Label' || !!options.detail) &&
+    props.data !== undefined &&
+    options.clearable !== false;
   return (
     <div
       style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}
@@ -78,17 +95,28 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
       onFocus={() => setActive(true)}
       onBlur={() => setActive(false)}
     >
-      {(options.showTypeIndicator ?? props.config?.showTypeIndicator ?? false) === true && (isArray || props.schema?.type === 'object') && <span
-        aria-hidden='true'
-        style={{ flex: 'none', opacity: 0.55, lineHeight: 0 }}
-      >
-        {isArray ? '[]' : '{}'}
-      </span>}
+      {(options.showTypeIndicator ??
+        props.config?.showTypeIndicator ??
+        false) === true &&
+        (isArray || props.schema?.type === 'object') && (
+          <span
+            aria-hidden='true'
+            style={{ flex: 'none', opacity: 0.55, lineHeight: 0 }}
+          >
+            {isArray ? '[]' : '{}'}
+          </span>
+        )}
       {/* one line: the row height must not grow with the content */}
       <span
         style={{
-          color: summary.generated && options.summary?.type !== 'Label' ? token.colorTextSecondary : undefined,
-          fontStyle: summary.generated && options.summary?.type !== 'Label' ? 'italic' : undefined,
+          color:
+            summary.generated && options.summary?.type !== 'Label'
+              ? token.colorTextSecondary
+              : undefined,
+          fontStyle:
+            summary.generated && options.summary?.type !== 'Label'
+              ? 'italic'
+              : undefined,
           flex: 1,
           minWidth: 0,
           overflow: 'hidden',
@@ -96,51 +124,74 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
           whiteSpace: 'nowrap',
         }}
       >
-        {options.summary?.type === 'Label' ? <CellSummary schema={props.schema} path={props.path} uischema={options.summary} /> : summary.text}
+        {options.summary?.type === 'Label' ? (
+          <CellSummary
+            schema={props.schema}
+            path={props.path}
+            uischema={options.summary}
+          />
+        ) : (
+          summary.text
+        )}
       </span>
-      <ValidationIcon errorMessages={errors} path={props.path} id={`${props.path}-cell-errors`} />
+      <ValidationIcon
+        errorMessages={errors}
+        path={props.path}
+        id={`${props.path}-cell-errors`}
+      />
       {/* opacity rather than mounting: keeps the row from reflowing on hover */}
-      {((!options.summaryOnly && options.summary?.type !== 'Label') || options.detail) && <span
-        style={{
-          display: 'flex',
-          gap: 2,
-          flex: 'none',
-          opacity: active || open ? 1 : 0,
-          transition: 'opacity 0.2s',
-        }}
-      >
-        <Button
-          size='small'
-          type='text'
-          icon={<EditOutlined />}
-          onClick={() => setOpen(true)}
-          title={translateWithLabel('composite.edit')}
-          aria-label={translateWithLabel('composite.edit')}
-        />
-        {canClear && (
+      {((!options.summaryOnly && options.summary?.type !== 'Label') ||
+        options.detail) && (
+        <span
+          style={{
+            display: 'flex',
+            gap: 2,
+            flex: 'none',
+            opacity: active || open ? 1 : 0,
+            transition: 'opacity 0.2s',
+          }}
+        >
           <Button
             size='small'
             type='text'
-            danger
-            icon={<CloseOutlined />}
-            onClick={() => {
-              const target = props.data;
-              const path = props.path;
-              confirmation.request({
-                catalogId: 'compositeCell', operation: 'delete',
-                options, config: props.config, discarded: [target],
-                perform: () => {
-                  const current = latest.current;
-                  if (current.enabled && current.path === path && current.data === target && current.uischema.options?.clearable !== false)
-                    current.handleChange(path, undefined);
-                },
-              });
-            }}
-            title={translateWithLabel('composite.remove')}
-            aria-label={translateWithLabel('composite.remove')}
+            icon={<EditOutlined />}
+            onClick={() => setOpen(true)}
+            title={translateWithLabel('composite.edit')}
+            aria-label={translateWithLabel('composite.edit')}
           />
-        )}
-      </span>}
+          {canClear && (
+            <Button
+              size='small'
+              type='text'
+              danger
+              icon={<CloseOutlined />}
+              onClick={() => {
+                const target = props.data;
+                const path = props.path;
+                confirmation.request({
+                  catalogId: 'compositeCell',
+                  operation: 'delete',
+                  options,
+                  config: props.config,
+                  discarded: [target],
+                  perform: () => {
+                    const current = latest.current;
+                    if (
+                      current.enabled &&
+                      current.path === path &&
+                      current.data === target &&
+                      current.uischema.options?.clearable !== false
+                    )
+                      current.handleChange(path, undefined);
+                  },
+                });
+              }}
+              title={translateWithLabel('composite.remove')}
+              aria-label={translateWithLabel('composite.remove')}
+            />
+          )}
+        </span>
+      )}
       {confirmation.dialog}
       <CompositeDetailDialog
         open={open}
@@ -174,7 +225,12 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
  * Objects and arrays only. A catch-all would tie with the scalar cells (also
  * rank 1) and win on registration order, swallowing every string column.
  */
-export const antdCompositeCellTester: RankedTester = ((_ui, schema) => _ui.options?.summary?.type === 'Label' ? 6 : schema?.type === 'object' || schema?.type === 'array' ? 1 : -1);
+export const antdCompositeCellTester: RankedTester = (_ui, schema) =>
+  _ui.options?.summary?.type === 'Label'
+    ? 6
+    : schema?.type === 'object' || schema?.type === 'array'
+    ? 1
+    : -1;
 
 export default withJsonFormsCellProps(
   withTranslateProps(AntdCompositeCell) as any

@@ -173,33 +173,39 @@ export const ListWithDetailRenderer = (
       >
         <Splitter orientation='horizontal'>
           <Splitter.Panel defaultSize='25%' min='15%' max='60%'>
-            <div style={{ maxHeight: '20rem', overflowY: 'auto', overscrollBehaviorY: 'contain' }}>
-            {data > 0 ? (
-              <Listy
-                items={range(data)}
-                rowKey={(index) => index}
-                styles={{ item: { padding: 0 } }}
-                itemRender={(index) => (
-                  <ListWithDetailMasterItem
-                    index={index}
-                    path={path}
-                    schema={schema}
-                    enabled={enabled}
-                    handleSelect={handleListItemClick}
-                    removeItem={handleRemoveItem}
-                    selected={selectedIndex === index}
-                    key={index}
-                    uischema={foundUISchema}
-                    childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                    translations={translations}
-                    disableRemove={doDisableRemove}
-                    hideAvatar={appliedUiSchemaOptions.hideAvatar === true}
-                  />
-                )}
-              />
-            ) : (
-              <Empty description={translations.noDataMessage} />
-            )}
+            <div
+              style={{
+                maxHeight: '20rem',
+                overflowY: 'auto',
+                overscrollBehaviorY: 'contain',
+              }}
+            >
+              {data > 0 ? (
+                <Listy
+                  items={range(data)}
+                  rowKey={(index) => index}
+                  styles={{ item: { padding: 0 } }}
+                  itemRender={(index) => (
+                    <ListWithDetailMasterItem
+                      index={index}
+                      path={path}
+                      schema={schema}
+                      enabled={enabled}
+                      handleSelect={handleListItemClick}
+                      removeItem={handleRemoveItem}
+                      selected={selectedIndex === index}
+                      key={index}
+                      uischema={foundUISchema}
+                      childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                      translations={translations}
+                      disableRemove={doDisableRemove}
+                      hideAvatar={appliedUiSchemaOptions.hideAvatar === true}
+                    />
+                  )}
+                />
+              ) : (
+                <Empty description={translations.noDataMessage} />
+              )}
             </div>
           </Splitter.Panel>
           <Splitter.Panel min='25%'>

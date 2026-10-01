@@ -32,10 +32,7 @@ export default defineConfig({
       */
       entry: {
         'jsonforms-react-extended': resolve(packageDir, 'src/index.tsx'),
-        'ajv-localizers': resolve(
-          packageDir,
-          'src/core/ajvI18n/localizers.ts'
-        ),
+        'ajv-localizers': resolve(packageDir, 'src/core/ajvI18n/localizers.ts'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) =>

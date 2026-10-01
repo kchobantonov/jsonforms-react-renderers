@@ -19,7 +19,9 @@ export const CellFrame = ({
   children,
 }: React.PropsWithChildren<{ errors?: string; path?: string }>) => (
   <CellModeProvider>
-    <ControlFormItem path={path} errors={errors || undefined}>{children}</ControlFormItem>
+    <ControlFormItem path={path} errors={errors || undefined}>
+      {children}
+    </ControlFormItem>
   </CellModeProvider>
 );
 
@@ -42,5 +44,9 @@ export const ConnectedCellFrame = ({
 }: ConnectedCellFrameProps) => {
   const ctx = useJsonForms();
   const { errors } = ctxToCellProps(ctx, { schema, uischema, path } as any);
-  return <CellFrame errors={errors} path={path}>{children}</CellFrame>;
+  return (
+    <CellFrame errors={errors} path={path}>
+      {children}
+    </CellFrame>
+  );
 };

@@ -19,8 +19,8 @@
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "clean": "rimraf dist lib 2> /dev/null",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
+    "lint:fix": "pnpm lint --fix",
     "test": "echo 'Nothing to do'",
     "tsc": "tsc --build tsconfig.json"
   },

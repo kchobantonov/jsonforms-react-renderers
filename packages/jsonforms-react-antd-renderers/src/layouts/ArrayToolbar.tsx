@@ -22,11 +22,7 @@ export interface ArrayLayoutToolbarProps {
 
 const { Title } = Typography;
 
-const renderTitle = (
-  label: string,
-  errors: string,
-  description: string
-) => (
+const renderTitle = (label: string, errors: string, description: string) => (
   <>
     <Row align='middle'>
       <Col>
@@ -35,11 +31,7 @@ const renderTitle = (
         </Title>
       </Col>
       <Col style={{ paddingLeft: 8 }}>
-        <ValidationIcon
-          id='tooltip-validation'
-          errorMessages={errors}
-          local
-        />
+        <ValidationIcon id='tooltip-validation' errorMessages={errors} local />
       </Col>
     </Row>
     {description && <Card.Meta description={description} />}

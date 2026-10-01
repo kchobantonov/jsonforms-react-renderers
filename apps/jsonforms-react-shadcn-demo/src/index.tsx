@@ -7,7 +7,13 @@ import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Input } from '@jsonforms-react-shadcn-ui/input';
 
 import '@chobantonov/jsonforms-react-shadcn-renderers/src/styles.css';
-import { renderExample, WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
+import {
+  renderExample,
+  WebComponentIcon,
+  DemoWrapperProps,
+  DemoShellProps,
+  ProviderSettingsProps,
+} from '@chobantonov/jsonforms-react-demo-common';
 import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
@@ -19,11 +25,6 @@ import {
   JSON_FORMS_SHADCN_TAG,
   registerJsonFormsShadcn,
 } from '@chobantonov/jsonforms-react-shadcn-webcomponent';
-import {
-  DemoWrapperProps,
-  DemoShellProps,
-  ProviderSettingsProps,
-} from '@chobantonov/jsonforms-react-demo-common';
 import './styles/globals.css';
 import { shadcnDemoUi } from './DemoUi';
 import {

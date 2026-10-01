@@ -102,7 +102,9 @@ const draw = async (options: any = {}, config?: any) => {
   const removeButton = () =>
     Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(
       (button) =>
-        (button.getAttribute('aria-label') ?? '').toLowerCase().includes('remove')
+        (button.getAttribute('aria-label') ?? '')
+          .toLowerCase()
+          .includes('remove')
     );
 
   return {
@@ -133,7 +135,8 @@ const draw = async (options: any = {}, config?: any) => {
       act(() => button!.click());
       await settle();
     },
-    dialogs: () => document.querySelectorAll('.ant-modal-confirm, [data-confirm]'),
+    dialogs: () =>
+      document.querySelectorAll('.ant-modal-confirm, [data-confirm]'),
     prompted: () => Boolean(document.querySelector('[data-confirm]')),
     accept: async () => {
       const ok = Array.from(

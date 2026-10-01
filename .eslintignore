@@ -1,0 +1,13 @@
+**/node_modules/**
+**/dist/**
+**/lib/**
+**/coverage/**
+**/.nyc_output/**
+**/build/**
+.pnpm-store/
+# Generated upstream UI copies; validate their source through shadcn:check.
+apps/jsonforms-react-shadcn-demo/src/components/ui/
+packages/jsonforms-react-shadcn-webcomponent/src/components/ui/
+scripts/shadcn-upstream/
+**/stats.html
+**/*.log

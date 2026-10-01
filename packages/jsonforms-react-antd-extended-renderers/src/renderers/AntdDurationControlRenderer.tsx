@@ -1,4 +1,9 @@
-import { useExtendedTranslator } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  useExtendedTranslator,
+  useDurationControl,
+  durationComponentFields,
+  durationFieldMax,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 import {
   ControlFormItem,
   usePreTouchErrors,
@@ -28,11 +33,6 @@ import {
 } from 'antd';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import React from 'react';
-import {
-  useDurationControl,
-  durationComponentFields,
-  durationFieldMax,
-} from '@chobantonov/jsonforms-react-extended-renderers';
 
 export const antdDurationControlTester: RankedTester = rankWith(
   3,

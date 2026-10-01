@@ -52,7 +52,10 @@ export const collectBoundPaths = (element: UISchemaElement): BoundPath[] => {
       scope?: string;
       elements?: UISchemaElement[];
     };
-    if ((candidate.type === 'Control' || candidate.type === 'ListWithDetail') && typeof candidate.scope === 'string') {
+    if (
+      (candidate.type === 'Control' || candidate.type === 'ListWithDetail') &&
+      typeof candidate.scope === 'string'
+    ) {
       const segments = toDataPathSegments(candidate.scope);
       paths.push({ segments, relative: segments.join('.') });
     }

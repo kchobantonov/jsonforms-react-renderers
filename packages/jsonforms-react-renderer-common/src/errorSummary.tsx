@@ -79,47 +79,129 @@ export const formatErrorSummary = (
   });
 };
 
-export const useErrorSummary = (fallback: string, path?: string, active = true) => {
+export const useErrorSummary = (
+  fallback: string,
+  path?: string,
+  active = true
+) => {
   const context = useJsonForms();
   const translate = useTranslator();
   const [primary, additional] = displayableErrors(context.core ?? {});
-  const errors = path === undefined ? noErrors : indexedPathErrors(primary, additional).get(path) ?? noErrors;
+  const errors =
+    path === undefined
+      ? noErrors
+      : indexedPathErrors(primary, additional).get(path) ?? noErrors;
   return useMemo(() => {
     if (!active || !fallback) return [];
-    const entries = formatErrorSummary(errors, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError);
-    return entries.length ? entries : fallback.split('\n').filter(Boolean).map(message => ({ path: '', message }));
-  }, [active, fallback, errors, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError]);
+    const entries = formatErrorSummary(
+      errors,
+      context.core?.schema,
+      context.core?.uischema,
+      translate,
+      context.i18n?.translateError
+    );
+    return entries.length
+      ? entries
+      : fallback
+          .split('\n')
+          .filter(Boolean)
+          .map((message) => ({ path: '', message }));
+  }, [
+    active,
+    fallback,
+    errors,
+    context.core?.schema,
+    context.core?.uischema,
+    translate,
+    context.i18n?.translateError,
+  ]);
 };
 
 /** Cheap count for choosing tooltip presentation; never translates individual errors. */
 export const useErrorSummaryCount = (fallback: string, path?: string) => {
   const context = useJsonForms();
   if (!fallback) return 0;
-  const errors = path === undefined ? undefined : indexedPathErrors(...displayableErrors(context.core ?? {})).get(path);
+  const errors =
+    path === undefined
+      ? undefined
+      : indexedPathErrors(...displayableErrors(context.core ?? {})).get(path);
   return errors?.length || fallback.split('\n').filter(Boolean).length;
 };
 
 /** Header indicators need a short accessible summary, not every formatted descendant. */
-export const usePathErrorIndicator = (path: string, options?: Record<string, any>, includeChildren = true) => {
+export const usePathErrorIndicator = (
+  path: string,
+  options?: Record<string, any>,
+  includeChildren = true
+) => {
   const context = useJsonForms();
   const t = useI18n();
   const translate = useTranslator();
-  const errors = indexedPathErrors(...displayableErrors(context.core ?? {})).get(path) ?? noErrors;
-  const own = useMemo(() => errors.filter(error => getControlPath(error) === path && error.keyword !== 'propertyNames' && (error as any).propertyName === undefined), [errors, path]);
+  const errors =
+    indexedPathErrors(...displayableErrors(context.core ?? {})).get(path) ??
+    noErrors;
+  const own = useMemo(
+    () =>
+      errors.filter(
+        (error) =>
+          getControlPath(error) === path &&
+          error.keyword !== 'propertyNames' &&
+          (error as any).propertyName === undefined
+      ),
+    [errors, path]
+  );
   const children = errors.length - own.length;
-  const showCount = options?.showValidationIndicatorCount ?? context.config?.showValidationIndicatorCount ?? false;
-  const ownMessages = useMemo(() => formatErrorSummary(own, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError).map(entry => entry.message), [own, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError]);
+  const showCount =
+    options?.showValidationIndicatorCount ??
+    context.config?.showValidationIndicatorCount ??
+    false;
+  const ownMessages = useMemo(
+    () =>
+      formatErrorSummary(
+        own,
+        context.core?.schema,
+        context.core?.uischema,
+        translate,
+        context.i18n?.translateError
+      ).map((entry) => entry.message),
+    [
+      own,
+      context.core?.schema,
+      context.core?.uischema,
+      translate,
+      context.i18n?.translateError,
+    ]
+  );
   const messages = [...ownMessages];
-  if (includeChildren && children) messages.push(t(showCount ? (children === 1 ? 'validation.childrenErrorCount' : 'validation.childrenErrorsCount') : 'validation.childrenErrors', { count: children }));
+  if (includeChildren && children)
+    messages.push(
+      t(
+        showCount
+          ? children === 1
+            ? 'validation.childrenErrorCount'
+            : 'validation.childrenErrorsCount'
+          : 'validation.childrenErrors',
+        { count: children }
+      )
+    );
   return messages.join('\n');
 };
 
 const noErrors: import('ajv').ErrorObject[] = [];
-const pathCache = new WeakMap<import('ajv').ErrorObject[], WeakMap<import('ajv').ErrorObject[], Map<string, import('ajv').ErrorObject[]>>>();
+const pathCache = new WeakMap<
+  import('ajv').ErrorObject[],
+  WeakMap<import('ajv').ErrorObject[], Map<string, import('ajv').ErrorObject[]>>
+>();
 /** Share descendant lists across all cells for each validation result. */
-export const indexedPathErrors = (primary = noErrors, additional = noErrors) => {
+export const indexedPathErrors = (
+  primary = noErrors,
+  additional = noErrors
+) => {
   let secondary = pathCache.get(primary);
-  if (!secondary) { secondary = new WeakMap(); pathCache.set(primary, secondary); }
+  if (!secondary) {
+    secondary = new WeakMap();
+    pathCache.set(primary, secondary);
+  }
   let index = secondary.get(additional);
   if (!index) {
     index = new Map();
@@ -147,14 +229,27 @@ export const useCollectionErrors = (path: string) => {
   const context = useJsonForms();
   const index = indexedPathErrors(...displayableErrors(context.core ?? {}));
   const errors = index.get(path) ?? noErrors;
-  const first = errors.map(error => getControlPath(error).slice(path ? path.length + 1 : 0).split('.')[0])
-    .find(segment => /^\d+$/.test(segment));
-  return { count: errors.length, firstIndex: first === undefined ? undefined : Number(first),
-    rowCount: (row: number) => index.get(path ? path + '.' + row : String(row))?.length ?? 0 };
+  const first = errors
+    .map(
+      (error) =>
+        getControlPath(error)
+          .slice(path ? path.length + 1 : 0)
+          .split('.')[0]
+    )
+    .find((segment) => /^\d+$/.test(segment));
+  return {
+    count: errors.length,
+    firstIndex: first === undefined ? undefined : Number(first),
+    rowCount: (row: number) =>
+      index.get(path ? path + '.' + row : String(row))?.length ?? 0,
+  };
 };
 
 /** Only explicit detail controls can make Label summary errors actionable. */
-export const labelDetailErrorPaths = (path: string, options: any): string[] | undefined => {
+export const labelDetailErrorPaths = (
+  path: string,
+  options: any
+): string[] | undefined => {
   if (options?.summary?.type !== 'Label') return undefined;
   const paths: string[] = [];
   const visit = (element: any) => {
@@ -170,16 +265,32 @@ export const labelDetailErrorPaths = (path: string, options: any): string[] | un
 };
 
 /** Include errors on a composite value and all descendants, with core path semantics. */
-export const usePathErrorMessages = (path: string, includedPaths?: string[]): string => {
+export const usePathErrorMessages = (
+  path: string,
+  includedPaths?: string[]
+): string => {
   const context = useJsonForms();
   const translate = useTranslator();
   const index = indexedPathErrors(...displayableErrors(context.core ?? {}));
-  const errors = includedPaths === undefined ? index.get(path) ?? noErrors
-    : Array.from(new Set(includedPaths.flatMap(included => index.get(included) ?? noErrors)));
+  const errors =
+    includedPaths === undefined
+      ? index.get(path) ?? noErrors
+      : Array.from(
+          new Set(
+            includedPaths.flatMap((included) => index.get(included) ?? noErrors)
+          )
+        );
   return formatErrorSummary(
-    errors, context.core?.schema, context.core?.uischema,
-    translate, context.i18n?.translateError
-  ).map((entry) => entry.path ? `${entry.path}: ${entry.message}` : entry.message).join('\n');
+    errors,
+    context.core?.schema,
+    context.core?.uischema,
+    translate,
+    context.i18n?.translateError
+  )
+    .map((entry) =>
+      entry.path ? `${entry.path}: ${entry.message}` : entry.message
+    )
+    .join('\n');
 };
 
 /** Shared presentation structure; the renderer supplies its native action component. */
@@ -236,7 +347,9 @@ export const ErrorSummaryList = ({
 };
 
 /** Object-owned group feedback; descendants keep their own validation messages. */
-export const ObjectErrorContext = React.createContext<{ uischema: unknown; message: string } | undefined>(undefined);
+export const ObjectErrorContext = React.createContext<
+  { uischema: unknown; message: string } | undefined
+>(undefined);
 
 /** Disallowed keys belong to the dynamic-property editor, including literal keys. */
 export const useAdditionalPropertyErrors = (path: string) => {
@@ -244,13 +357,36 @@ export const useAdditionalPropertyErrors = (path: string) => {
   const translate = useTranslator();
   const [primary, additional] = displayableErrors(context.core ?? {});
   return useMemo(() => {
-    const errors = [...(primary ?? []), ...(additional ?? [])].filter(error =>
-      error.keyword === 'additionalProperties' &&
-      error.instancePath.split('/').slice(1).map(segment => segment.replace(/~1/g, '/').replace(/~0/g, '~')).join('.') === path
+    const errors = [...(primary ?? []), ...(additional ?? [])].filter(
+      (error) =>
+        error.keyword === 'additionalProperties' &&
+        error.instancePath
+          .split('/')
+          .slice(1)
+          .map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'))
+          .join('.') === path
     );
-    return formatErrorSummary(errors, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError)
-      .map((entry, index) => `${errors[index].params.additionalProperty}: ${entry.message}`).join('\n');
-  }, [primary, additional, path, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError]);
+    return formatErrorSummary(
+      errors,
+      context.core?.schema,
+      context.core?.uischema,
+      translate,
+      context.i18n?.translateError
+    )
+      .map(
+        (entry, index) =>
+          `${errors[index].params.additionalProperty}: ${entry.message}`
+      )
+      .join('\n');
+  }, [
+    primary,
+    additional,
+    path,
+    context.core?.schema,
+    context.core?.uischema,
+    translate,
+    context.i18n?.translateError,
+  ]);
 };
 
 export const usePropertyNameErrors = (path: string) => {
@@ -259,24 +395,59 @@ export const usePropertyNameErrors = (path: string) => {
   const [primary, additional] = displayableErrors(context.core ?? {});
   return useMemo(() => {
     const result = new Map<string, string>();
-    const errors = [...(primary ?? []), ...(additional ?? [])].filter(error =>
-      ((error as any).propertyName !== undefined || error.keyword === 'propertyNames') &&
-      error.instancePath.split('/').slice(1).map(segment => segment.replace(/~1/g, '/').replace(/~0/g, '~')).join('.') === path);
-    const specificNames = new Set(errors.filter(error => error.keyword !== 'propertyNames').map(error => (error as any).propertyName));
+    const errors = [...(primary ?? []), ...(additional ?? [])].filter(
+      (error) =>
+        ((error as any).propertyName !== undefined ||
+          error.keyword === 'propertyNames') &&
+        error.instancePath
+          .split('/')
+          .slice(1)
+          .map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'))
+          .join('.') === path
+    );
+    const specificNames = new Set(
+      errors
+        .filter((error) => error.keyword !== 'propertyNames')
+        .map((error) => (error as any).propertyName)
+    );
     for (const error of errors) {
       const name = (error as any).propertyName ?? error.params.propertyName;
-      if (error.keyword === 'propertyNames' && specificNames.has(name)) continue;
-      const message = formatErrorSummary([error], context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError)[0].message;
+      if (error.keyword === 'propertyNames' && specificNames.has(name))
+        continue;
+      const message = formatErrorSummary(
+        [error],
+        context.core?.schema,
+        context.core?.uischema,
+        translate,
+        context.i18n?.translateError
+      )[0].message;
       result.set(name, [result.get(name), message].filter(Boolean).join('\n'));
     }
     return result;
-  }, [primary, additional, path, context.core?.schema, context.core?.uischema, translate, context.i18n?.translateError]);
+  }, [
+    primary,
+    additional,
+    path,
+    context.core?.schema,
+    context.core?.uischema,
+    translate,
+    context.i18n?.translateError,
+  ]);
 };
 
 export const useNameConstraintMessage = () => {
   const context = useJsonForms();
   const translate = useTranslator();
-  return (errors?: import('ajv').ErrorObject[]) => errors?.length
-    ? formatErrorSummary(errors, undefined, undefined, translate, context.i18n?.translateError).map(entry => entry.message).join('\n')
-    : undefined;
+  return (errors?: import('ajv').ErrorObject[]) =>
+    errors?.length
+      ? formatErrorSummary(
+          errors,
+          undefined,
+          undefined,
+          translate,
+          context.i18n?.translateError
+        )
+          .map((entry) => entry.message)
+          .join('\n')
+      : undefined;
 };

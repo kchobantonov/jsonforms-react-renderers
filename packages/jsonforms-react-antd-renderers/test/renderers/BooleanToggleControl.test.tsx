@@ -8,7 +8,6 @@ import {
 import BooleanToggleControl, {
   booleanToggleControlTester,
 } from '../../src/controls/BooleanToggleControl';
-import * as ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { antdRenderers } from '../../src';
 
@@ -152,13 +151,6 @@ describe('Ant Design boolean toggle control', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());
-
-  /** Use this container to render components */
-  const container = document.createElement('div');
-
-  afterEach(() => {
-    ReactDOM.unmountComponentAtNode(container);
-  });
 
   it('should autofocus via option', () => {
     const control: ControlElement = {

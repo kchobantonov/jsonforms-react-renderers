@@ -1,7 +1,7 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-webcomponent": patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-webcomponent': patch
 ---
 
 Register date, time and date-time cells and expose shadcnExtendedCells for color,

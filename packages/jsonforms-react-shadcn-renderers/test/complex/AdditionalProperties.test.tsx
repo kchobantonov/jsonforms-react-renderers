@@ -4,10 +4,7 @@ import {
   rankWith,
   schemaMatches,
 } from '@jsonforms/core';
-import {
-  JsonForms,
-  withJsonFormsControlProps,
-} from '@jsonforms/react';
+import { JsonForms, withJsonFormsControlProps } from '@jsonforms/react';
 import React, { act } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { AdditionalProperties } from '../../src/complex/AdditionalProperties';
@@ -48,11 +45,17 @@ const schema = {
 
 const renderers = [
   {
-    tester: rankWith(10, schemaMatches((candidate) => candidate.type === 'object')),
+    tester: rankWith(
+      10,
+      schemaMatches((candidate) => candidate.type === 'object')
+    ),
     renderer: additionalPropertiesRenderer,
   },
   {
-    tester: rankWith(10, schemaMatches((candidate) => candidate.type === 'string')),
+    tester: rankWith(
+      10,
+      schemaMatches((candidate) => candidate.type === 'string')
+    ),
     renderer: TextRenderer,
   },
 ];
@@ -88,9 +91,15 @@ describe('Shadcn AdditionalProperties', () => {
     expect(card?.getAttribute('data-slot')).toBe('card');
     expect(card?.textContent).toContain('Additional Properties');
     expect(card?.textContent).toContain('Property Name');
-    expect(container.querySelector('button[aria-label="Add property"]')).not.toBeNull();
-    expect(container.querySelector('button[aria-label="Rename string"]')).not.toBeNull();
-    expect(container.querySelector('button[aria-label="Delete string"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Add property"]')
+    ).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Rename string"]')
+    ).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Delete string"]')
+    ).not.toBeNull();
     expect(card?.textContent).not.toContain('Delete');
   });
 
@@ -212,7 +221,9 @@ describe('Shadcn AdditionalProperties', () => {
         <AdditionalProperties
           data={{ string: 'string value' }}
           enabled
-          config={{ jsonformsExtended: { confirmation: { default: 'always' } } }}
+          config={{
+            jsonformsExtended: { confirmation: { default: 'always' } },
+          }}
           handleChange={handleChange}
           label='Object'
           path=''
@@ -232,12 +243,20 @@ describe('Shadcn AdditionalProperties', () => {
 
     expect(handleChange).not.toHaveBeenCalled();
     act(() => {
-      Array.from(document.body.querySelectorAll('button')).find(button => button.textContent?.trim() === 'No')?.click();
+      Array.from(document.body.querySelectorAll('button'))
+        .find((button) => button.textContent?.trim() === 'No')
+        ?.click();
     });
     expect(handleChange).not.toHaveBeenCalled();
-    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Delete string"]')?.click());
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('button[aria-label="Delete string"]')
+        ?.click()
+    );
     act(() => {
-      Array.from(document.body.querySelectorAll('button')).find(button => button.textContent?.trim() === 'Yes')?.click();
+      Array.from(document.body.querySelectorAll('button'))
+        .find((button) => button.textContent?.trim() === 'Yes')
+        ?.click();
     });
     expect(handleChange).toHaveBeenCalledTimes(1);
     expect(handleChange.mock.calls[0][1]).not.toHaveProperty('string');

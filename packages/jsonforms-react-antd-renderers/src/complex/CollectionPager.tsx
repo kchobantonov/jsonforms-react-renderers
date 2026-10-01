@@ -4,7 +4,15 @@ import { CollectionPage } from '@chobantonov/jsonforms-react-renderer-common/col
 export const CollectionPager = ({ page }: { page: CollectionPage }) => {
   const { token } = theme.useToken();
   return !page.enabled || page.total === 0 ? null : (
-    <div data-collection-footer style={{ display: 'flex', justifyContent: 'flex-end', paddingBlock: 12, borderTop: `1px solid ${token.colorBorderSecondary}` }}>
+    <div
+      data-collection-footer
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        paddingBlock: 12,
+        borderTop: `1px solid ${token.colorBorderSecondary}`,
+      }}
+    >
       <Pagination
         current={page.current}
         pageSize={page.size}

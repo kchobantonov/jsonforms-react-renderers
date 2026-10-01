@@ -242,7 +242,8 @@
 }
 
 /* A compact focus halo fits table rows without the full-size input ring. */
-.shadcn-jsonforms-table-cell input:not([type='checkbox']):not([type='color']):focus-visible,
+.shadcn-jsonforms-table-cell
+  input:not([type='checkbox']):not([type='color']):focus-visible,
 .shadcn-jsonforms-table-cell button[role='combobox']:focus-visible {
   outline: none;
   border-color: var(--shadcn-jsonforms-accent, #0f172a);
@@ -320,7 +321,11 @@
 
 /* Preserve native checkbox behavior while keeping row selectors visible in both themes. */
 .shadcn-jsonforms-row-selection[data-state='unchecked'] {
-  border-color: color-mix(in srgb, hsl(var(--muted-foreground)) 60%, hsl(var(--background)));
+  border-color: color-mix(
+    in srgb,
+    hsl(var(--muted-foreground)) 60%,
+    hsl(var(--background))
+  );
 }
 .shadcn-jsonforms-row-selection:disabled {
   opacity: 1;

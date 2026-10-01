@@ -1,6 +1,6 @@
 ---
-"@chobantonov/jsonforms-react-antd-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
 ---
 
 Preserve object titles when unwrapping outer detail Groups, avoid redundant object

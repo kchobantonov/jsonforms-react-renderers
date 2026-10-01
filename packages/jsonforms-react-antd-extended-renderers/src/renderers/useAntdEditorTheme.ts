@@ -36,7 +36,10 @@ const isDark = (color: unknown): boolean | undefined => {
   if (typeof color !== 'string') return undefined;
   const rgb = color.startsWith('#')
     ? hexToRgb(color)
-    : color.match(/[\d.]+/g)?.map(Number).slice(0, 3);
+    : color
+        .match(/[\d.]+/g)
+        ?.map(Number)
+        .slice(0, 3);
   if (!rgb || rgb.length < 3) return undefined;
   return rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114 < 128;
 };

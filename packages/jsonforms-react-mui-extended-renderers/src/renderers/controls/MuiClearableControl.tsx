@@ -198,7 +198,8 @@ export const createMuiClearableControl = (
   );
   // Material renderers are already connected. Give them the original schema and
   // parent path so that they resolve the control exactly once.
-  return (props: OwnPropsOfControl) => (
+  const ClearableControl = (props: OwnPropsOfControl) => (
     <Clearable {...{ ...props, rendererProps: props }} />
   );
+  return ClearableControl;
 };

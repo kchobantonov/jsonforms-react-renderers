@@ -56,7 +56,11 @@ const schema: any = {
   },
 };
 
-const draw = (uischema: any, data: any = { customer: 'Ada', schedule: '0 9 * * 1', note: 'ok' }, extra: any = {}) => {
+const draw = (
+  uischema: any,
+  data: any = { customer: 'Ada', schedule: '0 9 * * 1', note: 'ok' },
+  extra: any = {}
+) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -137,7 +141,11 @@ describe('selecting the TypeScript form', () => {
         template: '<p data-marker>Hello {{data.customer}}</p>',
       },
       undefined,
-      { config: { jsonformsExtended: { security: { allowScriptEvaluation: true } } } }
+      {
+        config: {
+          jsonformsExtended: { security: { allowScriptEvaluation: true } },
+        },
+      }
     );
     // The Ractive engine is behind React.lazy, so its chunk has to arrive.
     await settle(400);
@@ -201,9 +209,9 @@ describe('placing children', () => {
     );
     await settle();
     expect(view.text('fallback')).toBe('nothing here');
-    expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
-    ).toContain('template.unknownSlot');
+    expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
+      'template.unknownSlot'
+    );
     warn.mockRestore();
     view.unmount();
   });
@@ -249,9 +257,12 @@ describe('what the template is handed', () => {
 
   it('reports errors from the form', async () => {
     const view = draw(
-      { type: 'TemplateLayout', template: ({ errors }: TemplateRenderProps<any>) => (
-        <div data-out>{errors.length}</div>
-      ) },
+      {
+        type: 'TemplateLayout',
+        template: ({ errors }: TemplateRenderProps<any>) => (
+          <div data-out>{errors.length}</div>
+        ),
+      },
       { customer: 'Ada', schedule: '', note: 'x' } // note is too short
     );
     await settle();
@@ -270,13 +281,21 @@ describe('a bound widget the registry does not know', () => {
     draw(
       {
         type: 'TemplateLayout',
-        template: ({ data, path, handleChange, enabled }: TemplateRenderProps<any>) => (
+        template: ({
+          data,
+          path,
+          handleChange,
+          enabled,
+        }: TemplateRenderProps<any>) => (
           <Input
             data-cron
             disabled={!enabled}
             value={data.schedule}
             onChange={(e) =>
-              handleChange(path ? `${path}.schedule` : 'schedule', e.target.value)
+              handleChange(
+                path ? `${path}.schedule` : 'schedule',
+                e.target.value
+              )
             }
           />
         ),
@@ -354,7 +373,11 @@ describe('the form context', () => {
     draw(
       {
         type: 'TemplateLayout',
-        template: ({ context, readonly, enabled }: TemplateRenderProps<any>) => (
+        template: ({
+          context,
+          readonly,
+          enabled,
+        }: TemplateRenderProps<any>) => (
           <span data-out>
             {JSON.stringify({
               keys: Object.keys(context).sort(),
@@ -403,7 +426,11 @@ describe('the form context', () => {
     await settle();
     const seen = JSON.parse(locked.text('out'));
     // Read-only disables as well, but says *why* it is disabled.
-    expect(seen).toMatchObject({ readonly: true, enabled: false, ctxReadonly: true });
+    expect(seen).toMatchObject({
+      readonly: true,
+      enabled: false,
+      ctxReadonly: true,
+    });
     locked.unmount();
   });
 

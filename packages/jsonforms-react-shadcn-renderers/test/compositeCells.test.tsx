@@ -200,49 +200,76 @@ it('reorders table rows with the requested move buttons', () => {
   expect(latest.rows.map((row: any) => row.name)).toEqual(['Grace', 'Ada']);
 });
 
-it.each(['Address', 'Phones'])('confirms removing populated %s and preserves it on cancel', (label) => {
-  mount();
-  const remove = () => {
-    const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>('button[aria-label^="Remove"]'));
-    act(() => buttons[label === 'Address' ? 0 : 1].click());
-    act(() => vi.advanceTimersByTime(50));
-  };
-  remove();
-  expect(document.querySelector('[role="dialog"]')).toBeTruthy();
-  click('No');
-  expect(latest).toEqual(initial);
-  remove();
-  click('Yes');
-  expect(latest.rows[0][label === 'Address' ? 'address' : 'phones']).toBeUndefined();
-});
+it.each(['Address', 'Phones'])(
+  'confirms removing populated %s and preserves it on cancel',
+  (label) => {
+    mount();
+    const remove = () => {
+      const buttons = Array.from(
+        container.querySelectorAll<HTMLButtonElement>(
+          'button[aria-label^="Remove"]'
+        )
+      );
+      act(() => buttons[label === 'Address' ? 0 : 1].click());
+      act(() => vi.advanceTimersByTime(50));
+    };
+    remove();
+    expect(document.querySelector('[role="dialog"]')).toBeTruthy();
+    click('No');
+    expect(latest).toEqual(initial);
+    remove();
+    click('Yes');
+    expect(
+      latest.rows[0][label === 'Address' ? 'address' : 'phones']
+    ).toBeUndefined();
+  }
+);
 
-it.each([{}, []])('clears an empty composite without prompting: %j', (value) => {
-  mount(false, { rows: [{ address: value }] });
-  click('Remove Address');
-  expect(document.querySelector('[role="dialog"]')).toBeNull();
-  expect(latest.rows[0].address).toBeUndefined();
-});
+it.each([{}, []])(
+  'clears an empty composite without prompting: %j',
+  (value) => {
+    mount(false, { rows: [{ address: value }] });
+    click('Remove Address');
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+    expect(latest.rows[0].address).toBeUndefined();
+  }
+);
 
 it('shows descendant errors on object and array summaries without leaking sibling errors', () => {
   const invalidSchema = JSON.parse(JSON.stringify(schema));
   invalidSchema.properties.rows.items.properties.address.required = ['city'];
   invalidSchema.properties.rows.items.properties.phones.items.minLength = 3;
-  mount(false, { rows: [
-    { name: 'Ada', address: {}, phones: ['x', 'y'] },
-    { name: 'Grace', address: { city: 'London' }, phones: ['123'] },
-  ] }, invalidSchema);
+  mount(
+    false,
+    {
+      rows: [
+        { name: 'Ada', address: {}, phones: ['x', 'y'] },
+        { name: 'Grace', address: { city: 'London' }, phones: ['123'] },
+      ],
+    },
+    invalidSchema
+  );
   const composites = container.querySelectorAll('[class~="group/composite"]');
-  expect(composites[0].querySelector('button[aria-label*="city"]')).toBeTruthy();
+  expect(
+    composites[0].querySelector('button[aria-label*="city"]')
+  ).toBeTruthy();
   expect(composites[1].querySelector('button[aria-label*="3"]')).toBeTruthy();
   expect(composites[2].querySelector('svg.lucide-circle-alert')).toBeNull();
   expect(composites[3].querySelector('svg.lucide-circle-alert')).toBeNull();
 });
 
 it('renders combinator cells with errors only on the invalid example row', () => {
-
-  const load = (name: string) => JSON.parse(readFileSync(require.resolve(
-    '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/' + name + '.json'
-  ), 'utf8'));
+  const load = (name: string) =>
+    JSON.parse(
+      readFileSync(
+        require.resolve(
+          '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/' +
+            name +
+            '.json'
+        ),
+        'utf8'
+      )
+    );
   const exampleSchema = load('schema');
   const exampleData = load('data');
   const exampleUi = load('uischema').elements[1].elements[2].elements[0];
@@ -252,53 +279,84 @@ it('renders combinator cells with errors only on the invalid example row', () =>
   expect(cells).toHaveLength(10);
   for (let index = 0; index < 5; index++) {
     expect(cells[index].querySelector('svg.lucide-circle-alert')).toBeTruthy();
-    expect(cells[index + 5].querySelector('svg.lucide-circle-alert')).toBeNull();
+    expect(
+      cells[index + 5].querySelector('svg.lucide-circle-alert')
+    ).toBeNull();
   }
   for (const label of ['OneOf contact', 'AnyOf contact', 'AllOf contact']) {
     click('Edit ' + label);
     expect(document.querySelector('[role="dialog"]')).toBeTruthy();
-    expect(document.querySelector('[role="dialog"]')!.textContent).not.toContain('No applicable renderer');
-    expect(document.querySelector('[role="dialog"]')!.textContent).not.toContain('Full name');
+    expect(
+      document.querySelector('[role="dialog"]')!.textContent
+    ).not.toContain('No applicable renderer');
+    expect(
+      document.querySelector('[role="dialog"]')!.textContent
+    ).not.toContain('Full name');
     if (label === 'OneOf contact') {
-      expect(document.querySelector('[role="dialog"] [role="combobox"]')).toBeTruthy();
-      expect(document.querySelector('[role="dialog"] [role="tablist"]')).toBeNull();
+      expect(
+        document.querySelector('[role="dialog"] [role="combobox"]')
+      ).toBeTruthy();
+      expect(
+        document.querySelector('[role="dialog"] [role="tablist"]')
+      ).toBeNull();
     }
     click('Cancel');
   }
 });
 
-it.each([false, true])('shows a Label edit action only with explicit detail (detail=%s)', (withDetail) => {
-
-  const presentation = {
-    type: 'Control', scope: '#/properties/rows', options: {
-      table: true,
-      columnDefs: [{ field: 'preview', scope: '#', headerName: 'Preview' }],
-      cells: { preview: { summary: { type: 'Label', text: 'Row presentation' }, ...(withDetail ? { detail: { type: 'VerticalLayout', elements: [] } } : {}) } },
-    },
-  };
-  mount(false, initial, schema, presentation);
-  expect(container.textContent).toContain('Row presentation');
-  expect(container.textContent).toContain('Preview');
-  const edit = container.querySelector<HTMLButtonElement>('[aria-label^="Edit "]');
+it.each([false, true])(
+  'shows a Label edit action only with explicit detail (detail=%s)',
+  (withDetail) => {
+    const presentation = {
+      type: 'Control',
+      scope: '#/properties/rows',
+      options: {
+        table: true,
+        columnDefs: [{ field: 'preview', scope: '#', headerName: 'Preview' }],
+        cells: {
+          preview: {
+            summary: { type: 'Label', text: 'Row presentation' },
+            ...(withDetail
+              ? { detail: { type: 'VerticalLayout', elements: [] } }
+              : {}),
+          },
+        },
+      },
+    };
+    mount(false, initial, schema, presentation);
+    expect(container.textContent).toContain('Row presentation');
+    expect(container.textContent).toContain('Preview');
+    const edit = container.querySelector<HTMLButtonElement>(
+      '[aria-label^="Edit "]'
+    );
     expect(Boolean(edit)).toBe(withDetail);
-    const label = Array.from(container.querySelectorAll('span')).find(el => el.textContent === 'Row presentation');
+    const label = Array.from(container.querySelectorAll('span')).find(
+      (el) => el.textContent === 'Row presentation'
+    );
     act(() => label?.click());
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     if (edit) {
       act(() => edit.click());
       expect(document.querySelector('[role="dialog"]')).not.toBeNull();
     }
-  expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
-});
+    expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
+  }
+);
 
- it('uses the global type indicator default and honors explicit cell overrides', () => {
+it('uses the global type indicator default and honors explicit cell overrides', () => {
   mount(false, initial, schema, ui, { showTypeIndicator: true });
   expect(container.textContent).toContain('{}');
   expect(container.textContent).toContain('[]');
-  const overrides = { ...ui, options: { ...ui.options, cells: {
-    address: { ...ui.options.cells.address, showTypeIndicator: false },
-    phones: { ...ui.options.cells.phones, showTypeIndicator: false },
-  } } };
+  const overrides = {
+    ...ui,
+    options: {
+      ...ui.options,
+      cells: {
+        address: { ...ui.options.cells.address, showTypeIndicator: false },
+        phones: { ...ui.options.cells.phones, showTypeIndicator: false },
+      },
+    },
+  };
   mount(false, initial, schema, overrides, { showTypeIndicator: true });
   expect(container.textContent).not.toContain('{}');
   expect(container.textContent).not.toContain('[]');

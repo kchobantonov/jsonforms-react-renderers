@@ -1,15 +1,15 @@
 import {
   extendedAgGridTester,
   markupLabelTester,
+  monacoControlTester,
+  createExtendedRenderers,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { AntdAgGridControlRenderer } from './renderers/AntdAgGridControlRenderer';
-import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import { AntdMonacoControlRenderer } from './renderers/AntdMonacoControlRenderer';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
-import { createExtendedRenderers } from '@chobantonov/jsonforms-react-extended-renderers';
 import { Alert, Button } from 'antd';
 import React from 'react';
 import {
@@ -134,12 +134,25 @@ export * from './renderers/AntdAgGridControlRenderer';
 
 export * from './util/colorFormat';
 
-export * from './util/maskFormat';
-
-/*
-  Re-exported so a consumer of this renderer set - the web component, in
-  particular - gets the validator these renderers expect without also having
-  to depend on the base extended package directly.
-*/
-export { createFormsAjv } from '@chobantonov/jsonforms-react-extended-renderers';
-export type { FormsAjvOptions } from '@chobantonov/jsonforms-react-extended-renderers';
+export {
+  DEFAULT_MASK_TOKENS,
+  MASKA_DEFAULT_TOKENS,
+  compileTokenPattern,
+  toMaskTokens,
+  DEFAULT_MASK_SETTINGS,
+  resolveMaskSettings,
+  createMask,
+  storedValue,
+  fitsMask,
+  displayValue,
+  codePointLength,
+  withinMaxLength,
+  nextCaret,
+  maskEdit,
+} from '@chobantonov/jsonforms-react-renderer-common/maskFormat';
+export type {
+  MaskPattern,
+  MaskTokenSpec,
+  MaskTokenSpecs,
+  MaskSettings,
+} from '@chobantonov/jsonforms-react-renderer-common/maskFormat';

@@ -1,7 +1,8 @@
 export const i18nDefaults = {
   'collection.resizeColumn': 'Resize {field} column',
   'collection.deleteSelected': 'Delete selected rows',
-  'collection.deleteSelectedMessage': 'Delete the selected rows and their data?',
+  'collection.deleteSelectedMessage':
+    'Delete the selected rows and their data?',
   'collection.selectPage': 'Select all rows on this page',
   'collection.selectRow': 'Select row {index}',
   'collection.pagination': 'Pagination',
@@ -45,9 +46,11 @@ export const i18nDefaults = {
   // the attachment that is still committed - without the name it reads as an
   // error about *that* file rather than the one that was turned away.
   'file.rejected': '"{name}" was not attached: {reason}',
-  'file.maxItems': 'These files were not added. A maximum of {limit} attachments is allowed; existing files were kept.',
+  'file.maxItems':
+    'These files were not added. A maximum of {limit} attachments is allowed; existing files were kept.',
   'file.sizeBound': '{name} must contain {bound} {limit} bytes.',
-  'file.readFailed': 'The files could not be read. Existing attachments were kept.',
+  'file.readFailed':
+    'The files could not be read. Existing attachments were kept.',
   'file.reading': 'Reading files…',
   'file.numbered': 'File {index}',
   'file.atLeast': 'at least',

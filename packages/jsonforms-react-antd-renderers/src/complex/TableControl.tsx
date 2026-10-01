@@ -1,8 +1,18 @@
 import { ValidationIcon } from './ValidationIcon';
-import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
+import {
+  CollectionErrorNavigation,
+  RowErrorCount,
+} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
-import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
+import {
+  ColumnResizeHandle,
+  useColumnWidths,
+} from '@chobantonov/jsonforms-react-renderer-common/columnResize';
+import {
+  tableColumnFields,
+  tableColumnStyle,
+  TableColumnDefinition,
+} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
@@ -24,7 +34,11 @@ import {
   JsonSchema,
   Paths,
 } from '@jsonforms/core';
-import { JsonFormsStateContext, useJsonForms } from '@jsonforms/react';
+import {
+  JsonFormsStateContext,
+  useJsonForms,
+  DispatchCell,
+} from '@jsonforms/react';
 import { Button, Table, TableColumnProps, Tooltip, theme } from 'antd';
 import range from 'lodash/range';
 import startCase from 'lodash/startCase';
@@ -34,7 +48,6 @@ import React, { useMemo } from 'react';
 import { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';
 import { DeleteDialog, WithDeleteDialogSupport } from './DeleteDialog';
-import { DispatchCell } from '@jsonforms/react';
 import DataCell, { DataCellProps } from './DataCell';
 import TableToolbar from './TableToolbar';
 
@@ -45,13 +58,24 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
     | undefined;
 
   if (schema.type === 'object') {
-    const definitions = props.uischema.options?.columnDefs as TableColumnDefinition[] | undefined;
-    return tableColumnFields(schema.properties ?? {}, definitions, getValidColumnProps(schema, cellOptions)).map((prop) => {
-      const style = tableColumnStyle(definitions?.find((column) => column.field === prop));
+    const definitions = props.uischema.options?.columnDefs as
+      | TableColumnDefinition[]
+      | undefined;
+    return tableColumnFields(
+      schema.properties ?? {},
+      definitions,
+      getValidColumnProps(schema, cellOptions)
+    ).map((prop) => {
+      const style = tableColumnStyle(
+        definitions?.find((column) => column.field === prop)
+      );
       const props = {
         propName: prop,
         schema,
-        title: definitions?.find(c => c.field === prop)?.headerName ?? schema.properties?.[prop]?.title ?? startCase(prop),
+        title:
+          definitions?.find((c) => c.field === prop)?.headerName ??
+          schema.properties?.[prop]?.title ??
+          startCase(prop),
         enabled,
         cells,
         cellOptions: cellOptions?.[prop],
@@ -68,11 +92,36 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
           _index: number
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
-          if (definitions?.some(c => c.field === prop && c.scope === '#')) return <ItemProvider path={rowPath}><DispatchCell schema={schema}
-            path={rowPath} uischema={{ type: 'Control', scope: '#', options: { ...cellOptions?.[prop], summaryOnly: true } }}
-            enabled={enabled} cells={cells} /></ItemProvider>;
+          if (definitions?.some((c) => c.field === prop && c.scope === '#'))
+            return (
+              <ItemProvider path={rowPath}>
+                <DispatchCell
+                  schema={schema}
+                  path={rowPath}
+                  uischema={{
+                    type: 'Control',
+                    scope: '#',
+                    options: { ...cellOptions?.[prop], summaryOnly: true },
+                  }}
+                  enabled={enabled}
+                  cells={cells}
+                />
+              </ItemProvider>
+            );
 
-          return <ItemProvider path={rowPath}><div style={{ ...style, width: style.width ? '100%' : undefined, overflow: 'hidden' }}><RowDataCell {...props} rowPath={rowPath} /></div></ItemProvider>;
+          return (
+            <ItemProvider path={rowPath}>
+              <div
+                style={{
+                  ...style,
+                  width: style.width ? '100%' : undefined,
+                  overflow: 'hidden',
+                }}
+              >
+                <RowDataCell {...props} rowPath={rowPath} />
+              </div>
+            </ItemProvider>
+          );
         },
       } as TableColumnProps;
     });
@@ -223,7 +272,6 @@ const ActionCell = ({
           </Tooltip>
         </>
       ) : null}
-
     </div>
   );
 };
@@ -303,7 +351,14 @@ const CollectionTable = ({
           title: '',
           width: (actionColumn?.width ?? 0) + 40,
           render: (value: any, row: any, index: number) => (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                whiteSpace: 'nowrap',
+              }}
+            >
               <Tooltip title={detail.t('collection.editDetails')}>
                 <Button
                   icon={<EditOutlined />}
@@ -317,7 +372,16 @@ const CollectionTable = ({
                   }}
                 />
               </Tooltip>
-              <RowErrorCount path={props.path} index={row.index} renderIndicator={(message) => <ValidationIcon errorMessages={message} id={`${props.path}-${row.index}-row-errors`} />} />
+              <RowErrorCount
+                path={props.path}
+                index={row.index}
+                renderIndicator={(message) => (
+                  <ValidationIcon
+                    errorMessages={message}
+                    id={`${props.path}-${row.index}-row-errors`}
+                  />
+                )}
+              />
               {actionColumn?.render(value, row, index)}
             </div>
           ),
@@ -326,67 +390,157 @@ const CollectionTable = ({
     : columns;
   return (
     <PendingChangesProvider changes={page.pending}>
-      {renderFrame(<RowDetailFrame state={detail}>
-        <div style={{ minWidth: 0, overflow: 'auto' }}>
-          <Table
-            style={columnWidths.__selection ? { width: Object.values(columnWidths).reduce((sum, value) => sum + value, 0), maxWidth: 'none' } : undefined}
-            tableLayout={columnWidths.__selection ? 'fixed' : 'auto'}
-            rowSelection={{
-              columnWidth: columnWidths.__selection,
-              selectedRowKeys: selection.selected,
-              onChange: (keys) => selection.setSelected(keys as number[]),
-              getCheckboxProps: () => ({ disabled: !selection.selectable }),
-            }}
-            scroll={{ x: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : 'max-content' }}
-            dataSource={page.indices.map((index) => dataSource[index])}
-            showHeader={isObjectSchema}
-            columns={displayColumns.map((column: any) => {
-              if (!column.dataIndex) return { ...column, width: columnWidths.__actions ?? column.width };
-              const field = column.dataIndex;
-              const definition = props.uischema.options?.columnDefs?.find((item: TableColumnDefinition) => item.field === field);
-              const width = columnWidths[field] ?? column.width;
-              return { ...column, width,
-                onHeaderCell: () => ({ 'data-column-key': field, style: { ...tableColumnStyle(definition), width, position: 'relative', paddingInlineEnd: 16 } }),
-                onCell: () => ({ style: { ...tableColumnStyle(definition), width } }),
-                title: <>{column.title}<ColumnResizeHandle colors={{ border: token.colorSplit, active: token.colorPrimary, focus: token.colorPrimaryBorder }} field={String(column.title ?? field)} definition={definition} width={width}
-                  onResizeStart={(widths) => setColumnWidths(widths)}
-                  onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} /></>,
-              };
-            })}
-            size='small'
-            pagination={false}
-            rowClassName={(row: any) =>
-              detail.options?.presentation === 'panel' && detail.panelOpen && detail.selection?.index === row.index
-                ? 'ant-table-row-selected'
-                : ''
-            }
-            onRow={(row: any) => ({
-              'aria-current': detail.options?.presentation === 'panel' && detail.panelOpen && detail.selection?.index === row.index ? true : undefined,
-              onClick: () => {
-                if (detail.options?.presentation === 'panel')
-                  detail.open(row.index);
-              },
-            })}
-          />
-          <CollectionErrorNavigation options={props.uischema.options} renderAction={(label, onClick, icon) =>
-            <Tooltip title={label}><Button size='small' icon={icon} aria-label={label} onClick={onClick} /></Tooltip>}
-            path={props.path} reveal={(index) => {
-            page.change(Math.floor(index / page.size) + 1);
-            if (detail.options) { detail.setPanelOpen(true); detail.open(index); }
-          }} />
-          <CollectionPager page={page} />
-        </div>
-      </RowDetailFrame>, <React.Fragment key='table-actions'>
-        <RowDetailToggle state={detail} />
-        <Tooltip title={detail.t('collection.deleteSelected')}>
-          <Button shape='circle' icon={<DeleteFilled />} danger
-            aria-label={detail.t('collection.deleteSelected')}
-            disabled={!selection.canDelete} onClick={selection.request} />
-        </Tooltip>
-      </React.Fragment>)}
-      <DeleteDialog open={selection.confirming} onConfirm={selection.confirm} onCancel={selection.cancel}
-        title={detail.t('collection.deleteSelected')} message={detail.t('collection.deleteSelectedMessage')}
-        acceptText={detail.t('collection.deleteSelected')} declineText={detail.t('composite.cancel')} />
+      {renderFrame(
+        <RowDetailFrame state={detail}>
+          <div style={{ minWidth: 0, overflow: 'auto' }}>
+            <Table
+              style={
+                columnWidths.__selection
+                  ? {
+                      width: Object.values(columnWidths).reduce(
+                        (sum, value) => sum + value,
+                        0
+                      ),
+                      maxWidth: 'none',
+                    }
+                  : undefined
+              }
+              tableLayout={columnWidths.__selection ? 'fixed' : 'auto'}
+              rowSelection={{
+                columnWidth: columnWidths.__selection,
+                selectedRowKeys: selection.selected,
+                onChange: (keys) => selection.setSelected(keys as number[]),
+                getCheckboxProps: () => ({ disabled: !selection.selectable }),
+              }}
+              scroll={{
+                x: columnWidths.__selection
+                  ? Object.values(columnWidths).reduce(
+                      (sum, value) => sum + value,
+                      0
+                    )
+                  : 'max-content',
+              }}
+              dataSource={page.indices.map((index) => dataSource[index])}
+              showHeader={isObjectSchema}
+              columns={displayColumns.map((column: any) => {
+                if (!column.dataIndex)
+                  return {
+                    ...column,
+                    width: columnWidths.__actions ?? column.width,
+                  };
+                const field = column.dataIndex;
+                const definition = props.uischema.options?.columnDefs?.find(
+                  (item: TableColumnDefinition) => item.field === field
+                );
+                const width = columnWidths[field] ?? column.width;
+                return {
+                  ...column,
+                  width,
+                  onHeaderCell: () => ({
+                    'data-column-key': field,
+                    style: {
+                      ...tableColumnStyle(definition),
+                      width,
+                      position: 'relative',
+                      paddingInlineEnd: 16,
+                    },
+                  }),
+                  onCell: () => ({
+                    style: { ...tableColumnStyle(definition), width },
+                  }),
+                  title: (
+                    <>
+                      {column.title}
+                      <ColumnResizeHandle
+                        colors={{
+                          border: token.colorSplit,
+                          active: token.colorPrimary,
+                          focus: token.colorPrimaryBorder,
+                        }}
+                        field={String(column.title ?? field)}
+                        definition={definition}
+                        width={width}
+                        onResizeStart={(widths) => setColumnWidths(widths)}
+                        onResize={(value) =>
+                          setColumnWidths((current) => ({
+                            ...current,
+                            [field]: value,
+                          }))
+                        }
+                      />
+                    </>
+                  ),
+                };
+              })}
+              size='small'
+              pagination={false}
+              rowClassName={(row: any) =>
+                detail.options?.presentation === 'panel' &&
+                detail.panelOpen &&
+                detail.selection?.index === row.index
+                  ? 'ant-table-row-selected'
+                  : ''
+              }
+              onRow={(row: any) => ({
+                'aria-current':
+                  detail.options?.presentation === 'panel' &&
+                  detail.panelOpen &&
+                  detail.selection?.index === row.index
+                    ? true
+                    : undefined,
+                onClick: () => {
+                  if (detail.options?.presentation === 'panel')
+                    detail.open(row.index);
+                },
+              })}
+            />
+            <CollectionErrorNavigation
+              options={props.uischema.options}
+              renderAction={(label, onClick, icon) => (
+                <Tooltip title={label}>
+                  <Button
+                    size='small'
+                    icon={icon}
+                    aria-label={label}
+                    onClick={onClick}
+                  />
+                </Tooltip>
+              )}
+              path={props.path}
+              reveal={(index) => {
+                page.change(Math.floor(index / page.size) + 1);
+                if (detail.options) {
+                  detail.setPanelOpen(true);
+                  detail.open(index);
+                }
+              }}
+            />
+            <CollectionPager page={page} />
+          </div>
+        </RowDetailFrame>,
+        <React.Fragment key='table-actions'>
+          <RowDetailToggle state={detail} />
+          <Tooltip title={detail.t('collection.deleteSelected')}>
+            <Button
+              shape='circle'
+              icon={<DeleteFilled />}
+              danger
+              aria-label={detail.t('collection.deleteSelected')}
+              disabled={!selection.canDelete}
+              onClick={selection.request}
+            />
+          </Tooltip>
+        </React.Fragment>
+      )}
+      <DeleteDialog
+        open={selection.confirming}
+        onConfirm={selection.confirm}
+        onCancel={selection.cancel}
+        title={detail.t('collection.deleteSelected')}
+        message={detail.t('collection.deleteSelectedMessage')}
+        acceptText={detail.t('collection.deleteSelected')}
+        declineText={detail.t('composite.cancel')}
+      />
     </PendingChangesProvider>
   );
 };
@@ -451,23 +605,23 @@ export class TableControl extends React.Component<
         dataSource={dataSource}
         isObjectSchema={isObjectSchema}
         renderFrame={(children: React.ReactNode, actions: React.ReactNode) => (
-      <TableToolbar
-        config={this.props.config}
-        errors={errors}
-        label={label}
-        description={description}
-        addItem={this.addItem}
-        path={path}
-        uischema={controlElement}
-        schema={schema}
-        rootSchema={rootSchema}
-        enabled={enabled}
-        translations={translations}
-        disableAdd={doDisableAdd}
-        actions={actions}
-      >
-        {children}
-      </TableToolbar>
+          <TableToolbar
+            config={this.props.config}
+            errors={errors}
+            label={label}
+            description={description}
+            addItem={this.addItem}
+            path={path}
+            uischema={controlElement}
+            schema={schema}
+            rootSchema={rootSchema}
+            enabled={enabled}
+            translations={translations}
+            disableAdd={doDisableAdd}
+            actions={actions}
+          >
+            {children}
+          </TableToolbar>
         )}
       />
     );

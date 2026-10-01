@@ -78,8 +78,14 @@ describe('reading one field as the values it selects', () => {
     ] as Array<[string, CronField]>) {
       expect(parseField(text, field), text).toBeUndefined();
       // Still a schedule the engine runs, so it must not be reported as broken.
-      expect(cronProblem(`0 0 9 ${field === 'dayOfMonth' ? text : '*'} * ${field === 'dayOfWeek' ? text : '*'}`), text)
-        .toBeUndefined();
+      expect(
+        cronProblem(
+          `0 0 9 ${field === 'dayOfMonth' ? text : '*'} * ${
+            field === 'dayOfWeek' ? text : '*'
+          }`
+        ),
+        text
+      ).toBeUndefined();
     }
   });
 
@@ -110,7 +116,12 @@ describe('writing one field back', () => {
     // Clearing a field means "every value", which is what `*` says. It is never written as
     // nothing, which would not be an expression.
     expect(formatField([], 'hour')).toBe('*');
-    expect(formatField(Array.from({ length: 24 }, (_, index) => index), 'hour')).toBe('*');
+    expect(
+      formatField(
+        Array.from({ length: 24 }, (_, index) => index),
+        'hour'
+      )
+    ).toBe('*');
   });
 
   it('only writes a step when the spacing really runs to the end of the field', () => {
@@ -133,7 +144,10 @@ describe('writing one field back', () => {
     for (const field of CRON_FIELDS) {
       const [low, high] = FIELD_RANGE[field];
       for (let value = low; value <= high; value += 1) {
-        expect(parseField(formatField([value], field), field), `${field} ${value}`).toEqual([value]);
+        expect(
+          parseField(formatField([value], field), field),
+          `${field} ${value}`
+        ).toEqual([value]);
       }
     }
   });
@@ -165,9 +179,27 @@ describe('deciding how often it repeats', () => {
     expect(fieldsForPeriod('day')).toEqual(['hour', 'minute', 'second']);
     // Weekly picks weekdays, not days of the month: naming both would mean "the 5th, and only
     // when it is a Monday", which Spring's AND allows and nobody meant by picking a weekday.
-    expect(fieldsForPeriod('week')).toEqual(['dayOfWeek', 'hour', 'minute', 'second']);
-    expect(fieldsForPeriod('month')).toEqual(['dayOfMonth', 'dayOfWeek', 'hour', 'minute', 'second']);
-    expect(fieldsForPeriod('year')).toEqual(['month', 'dayOfMonth', 'dayOfWeek', 'hour', 'minute', 'second']);
+    expect(fieldsForPeriod('week')).toEqual([
+      'dayOfWeek',
+      'hour',
+      'minute',
+      'second',
+    ]);
+    expect(fieldsForPeriod('month')).toEqual([
+      'dayOfMonth',
+      'dayOfWeek',
+      'hour',
+      'minute',
+      'second',
+    ]);
+    expect(fieldsForPeriod('year')).toEqual([
+      'month',
+      'dayOfMonth',
+      'dayOfWeek',
+      'hour',
+      'minute',
+      'second',
+    ]);
   });
 
   it('knows when a field says nothing', () => {
@@ -254,48 +286,80 @@ describe('choosing how often it repeats', () => {
   it('selects nothing, because a period is a lens and not a value', () => {
     // Picking "Yearly" is not the same as saying when in the year. A picker that answered that
     // question on someone's behalf would put a schedule in the field that nobody chose.
-    for (const period of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second'] as const) {
+    for (const period of [
+      'year',
+      'month',
+      'week',
+      'day',
+      'hour',
+      'minute',
+      'second',
+    ] as const) {
       expect(joinCron(standDown(NOTHING, period)), period).toBe('* * * * * *');
     }
   });
 
   it('keeps what a field already says', () => {
-    expect(joinCron(standDown(splitCron('0 0/15 * * * *')!, 'day'))).toBe('0 0/15 * * * *');
+    expect(joinCron(standDown(splitCron('0 0/15 * * * *')!, 'day'))).toBe(
+      '0 0/15 * * * *'
+    );
   });
 
   it('stands a coarser field down, so a hidden condition cannot survive the switch', () => {
     // The row that said "on the 1st" is gone from the form; the condition must go with it.
-    expect(joinCron(standDown(splitCron('0 0 9 1 * *')!, 'day'))).toBe('0 0 9 * * *');
-    expect(joinCron(standDown(splitCron('0 0 9 ? * MON')!, 'hour'))).toBe('0 0 * * * *');
-    expect(joinCron(standDown(splitCron('0 0 0 1 JAN *')!, 'week'))).toBe('0 0 0 * * *');
+    expect(joinCron(standDown(splitCron('0 0 9 1 * *')!, 'day'))).toBe(
+      '0 0 9 * * *'
+    );
+    expect(joinCron(standDown(splitCron('0 0 9 ? * MON')!, 'hour'))).toBe(
+      '0 0 * * * *'
+    );
+    expect(joinCron(standDown(splitCron('0 0 0 1 JAN *')!, 'week'))).toBe(
+      '0 0 0 * * *'
+    );
   });
 });
 
 describe('the time of day a choice implies', () => {
-  const NOTHING = ['*', '*', '*', '*', '*', '*'];
-
-  it('pins the time below what was chosen, so nine o\'clock is not 3600 executions', () => {
+  it("pins the time below what was chosen, so nine o'clock is not 3600 executions", () => {
     // `* * 9 * * *` is every second of the 9am hour. Picking an hour has to mean the hour.
-    expect(joinCron(withTimeDefaults(['*', '*', '9', '*', '*', '*'], 'hour'))).toBe('0 0 9 * * *');
-    expect(joinCron(withTimeDefaults(['*', '30', '*', '*', '*', '*'], 'minute'))).toBe('0 30 * * * *');
-    expect(joinCron(withTimeDefaults(['*', '*', '*', '*', '*', 'MON'], 'dayOfWeek'))).toBe('0 0 0 * * MON');
-    expect(joinCron(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month'))).toBe('0 0 0 * MAR *');
+    expect(
+      joinCron(withTimeDefaults(['*', '*', '9', '*', '*', '*'], 'hour'))
+    ).toBe('0 0 9 * * *');
+    expect(
+      joinCron(withTimeDefaults(['*', '30', '*', '*', '*', '*'], 'minute'))
+    ).toBe('0 30 * * * *');
+    expect(
+      joinCron(withTimeDefaults(['*', '*', '*', '*', '*', 'MON'], 'dayOfWeek'))
+    ).toBe('0 0 0 * * MON');
+    expect(
+      joinCron(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month'))
+    ).toBe('0 0 0 * MAR *');
   });
 
   it('never fills in a day or a month, which is the question being asked', () => {
     // Choosing March must not also choose the 1st, and choosing the 1st must not also choose
     // Sunday — Spring ANDs the two day fields, so that last one runs one year in seven.
-    expect(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month')[3]).toBe('*');
-    expect(withTimeDefaults(['*', '*', '*', '1', 'MAR', '*'], 'dayOfMonth')[5]).toBe('*');
+    expect(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month')[3]).toBe(
+      '*'
+    );
+    expect(
+      withTimeDefaults(['*', '*', '*', '1', 'MAR', '*'], 'dayOfMonth')[5]
+    ).toBe('*');
   });
 
   it('leaves alone anything already said', () => {
-    expect(joinCron(withTimeDefaults(splitCron('0 0/15 * * * *')!, 'hour'))).toBe('0 0/15 * * * *');
-    expect(joinCron(withTimeDefaults(splitCron('30 45 9 * * *')!, 'hour'))).toBe('30 45 9 * * *');
+    expect(
+      joinCron(withTimeDefaults(splitCron('0 0/15 * * * *')!, 'hour'))
+    ).toBe('0 0/15 * * * *');
+    expect(
+      joinCron(withTimeDefaults(splitCron('30 45 9 * * *')!, 'hour'))
+    ).toBe('30 45 9 * * *');
   });
 
   it('pins nothing above what was chosen', () => {
-    expect(joinCron(withTimeDefaults(['10', '*', '*', '*', '*', '*'], 'second'))).toBe('10 * * * * *');
+    expect(
+      joinCron(withTimeDefaults(['10', '*', '*', '*', '*', '*'], 'second'))
+    ).toBe('10 * * * * *');
   });
 
   it('is one selection away from being undone', () => {

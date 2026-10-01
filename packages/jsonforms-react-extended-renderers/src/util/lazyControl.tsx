@@ -50,7 +50,7 @@ export const createLazyControl = (
   const LoadError = components.LoadError ?? DefaultLoadError;
   // Created once per renderer set, not per render, so the chunk is fetched once.
   const Lazy = lazy(async () => ({ default: await load() }));
-  return (props: ControlProps) => {
+  const Deferred = (props: ControlProps) => {
     // translated here so the fallbacks are localised like everything else
     const t = useExtendedTranslator();
     return (
@@ -61,4 +61,6 @@ export const createLazyControl = (
       </LoadBoundary>
     );
   };
+  Deferred.displayName = `LazyControl(${labels.loading})`;
+  return Deferred;
 };

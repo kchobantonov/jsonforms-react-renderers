@@ -159,8 +159,6 @@ export const MuiMixedRendererComponent = ({
     if (tree && !findTreeNode(tree, selectedPath)) setSelectedPath([]);
   }, [tree, selectedPath]);
 
-  if (!visible) return null;
-
   const changeType = (type: JsonDataType) => {
     handleChange(path, defaultValueForType(schema, type, rootSchema));
     setSelectedPath([]);
@@ -254,6 +252,7 @@ export const MuiMixedRendererComponent = ({
     }),
     [path, tree]
   );
+  if (!visible) return null;
 
   if (parentNavigation && structured && selectedType) {
     return (

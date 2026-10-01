@@ -25,9 +25,7 @@ export default defineConfig({
       },
       formats: ['es'],
       fileName: (_format, entryName) =>
-        entryName === 'index'
-          ? 'jsonforms-react-primereact.js'
-          : 'register.js',
+        entryName === 'index' ? 'jsonforms-react-primereact.js' : 'register.js',
     },
     outDir: 'dist',
     emptyOutDir: true,

@@ -70,7 +70,11 @@ const milestones = () => [
   { name: 'Salem', window: { from: '11:30' } },
 ];
 
-const draw = (config?: any, data: any = { milestones: milestones() }, ui = uischema) => {
+const draw = (
+  config?: any,
+  data: any = { milestones: milestones() },
+  ui = uischema
+) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -228,7 +232,11 @@ describe('expansion follows the item, not the slot', () => {
     than transferring expansion to the item now at its old index."
   */
   it('moves with the item when it is reordered', async () => {
-    const view = draw({ showSortButtons: true }, { milestones: milestones() }, uischema);
+    const view = draw(
+      { showSortButtons: true },
+      { milestones: milestones() },
+      uischema
+    );
     await settle();
     expect(view.openIndex()).toBe(0);
     // Move the open item down; expansion should go with it, not stay on slot 0.
@@ -349,7 +357,10 @@ describe('hideAvatar in list with detail', () => {
             data={{ milestones: milestones() }}
             schema={schema as any}
             uischema={
-              { type: 'ListWithDetail', scope: '#/properties/milestones' } as any
+              {
+                type: 'ListWithDetail',
+                scope: '#/properties/milestones',
+              } as any
             }
             config={config}
             renderers={antdRenderers}

@@ -1,57 +1,57 @@
-import type { ValidationMode } from "@jsonforms/core";
+import type { ValidationMode } from '@jsonforms/core';
 import {
   ExtendedJsonForms,
   createAdditionalErrorStore,
+  createFormsAjv,
 } from '@chobantonov/jsonforms-react-antd-extended-renderers';
-import { antdWebcomponentCells, antdWebcomponentRenderers } from "./renderers";
-import { ConfigProvider, Form, InputProps, theme as antdTheme } from "antd";
-import { useAntdLocale } from "@chobantonov/jsonforms-react-antd-renderers";
-import { createFormsAjv } from "@chobantonov/jsonforms-react-antd-extended-renderers";
+import { antdWebcomponentCells, antdWebcomponentRenderers } from './renderers';
+import { ConfigProvider, Form, InputProps, theme as antdTheme } from 'antd';
+import { useAntdLocale } from '@chobantonov/jsonforms-react-antd-renderers';
 import {
   createAjvErrorTranslator,
   type AjvLocalizers,
-} from "@chobantonov/jsonforms-react-antd-extended-renderers";
-import React from "react";
-import { createRoot, Root } from "react-dom/client";
-import { StyleProvider } from "@ant-design/cssinjs";
+} from '@chobantonov/jsonforms-react-antd-extended-renderers';
+import React from 'react';
+import { createRoot, Root } from 'react-dom/client';
+import { StyleProvider } from '@ant-design/cssinjs';
 
-export const JSON_FORMS_ANTD_TAG = "jsonforms-react-antd";
+export const JSON_FORMS_ANTD_TAG = 'jsonforms-react-antd';
 
 export type JsonInput = unknown;
 
 export const parseJson = (value: JsonInput) => {
-  if (typeof value !== "string") {
+  if (typeof value !== 'string') {
     return value;
   }
-  if (value.trim() === "") {
+  if (value.trim() === '') {
     return undefined;
   }
   return JSON.parse(value);
 };
 
 export const parseBoolean = (value: JsonInput) => {
-  if (typeof value === "boolean") {
+  if (typeof value === 'boolean') {
     return value;
   }
-  if (typeof value === "string") {
-    if (value === "" || value.toLowerCase() === "true") return true;
-    if (value.toLowerCase() === "false") return false;
+  if (typeof value === 'string') {
+    if (value === '' || value.toLowerCase() === 'true') return true;
+    if (value.toLowerCase() === 'false') return false;
   }
   return undefined;
 };
 
 export const parseMode = (value: JsonInput) =>
-  value === "dark" || value === "light" || value === "system"
+  value === 'dark' || value === 'light' || value === 'system'
     ? value
-    : "system";
+    : 'system';
 
-export const createTranslator = (translations: JsonInput, locale = "en") => {
-  if (typeof translations === "function") return translations as any;
+export const createTranslator = (translations: JsonInput, locale = 'en') => {
+  if (typeof translations === 'function') return translations as any;
   const dictionary = parseJson(translations) as any;
   return (id: string, defaultMessage: string | undefined) => {
     const value = dictionary?.[locale]?.[id] ?? dictionary?.[id];
-    if (typeof value === "string") return value;
-    if (typeof value?.label === "string") return value.label;
+    if (typeof value === 'string') return value;
+    if (typeof value?.label === 'string') return value.label;
     return defaultMessage ?? id;
   };
 };
@@ -75,21 +75,21 @@ type ElementState = {
 };
 
 const observedAttributes = [
-  "data",
-  "schema",
-  "uischema",
-  "uischemas",
-  "config",
-  "readonly",
-  "validation-mode",
-  "locale",
-  "translations",
-  "additional-errors",
-  "dark",
-  "mode",
-  "rtl",
-  "custom-style",
-  "renderer-settings",
+  'data',
+  'schema',
+  'uischema',
+  'uischemas',
+  'config',
+  'readonly',
+  'validation-mode',
+  'locale',
+  'translations',
+  'additional-errors',
+  'dark',
+  'mode',
+  'rtl',
+  'custom-style',
+  'renderer-settings',
 ];
 
 /**
@@ -108,7 +108,7 @@ const LocalizedConfigProvider = ({
   localeTag,
   children,
   ...rest
-}: Omit<React.ComponentProps<typeof ConfigProvider>, "locale"> & {
+}: Omit<React.ComponentProps<typeof ConfigProvider>, 'locale'> & {
   localeTag?: string;
 }) => (
   <ConfigProvider {...rest} locale={useAntdLocale(localeTag)}>
@@ -196,24 +196,24 @@ export class JsonFormsAntdElement extends HTMLElement {
   private renderQueued = false;
   private connectionVersion = 0;
   private state: ElementState = {
-    validationMode: "ValidateAndShow",
-    locale: "en",
-    mode: "system",
+    validationMode: 'ValidateAndShow',
+    locale: 'en',
+    mode: 'system',
     readonly: false,
-    customStyle: "",
+    customStyle: '',
   };
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
     if (!this.shadowRoot) return;
     this.connectionVersion += 1;
     this.root ??= createRoot(this.shadowRoot);
-    this.colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    this.colorScheme.addEventListener("change", this.handleColorSchemeChange);
+    this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    this.colorScheme.addEventListener('change', this.handleColorSchemeChange);
     this.scheduleRender();
   }
 
@@ -221,7 +221,7 @@ export class JsonFormsAntdElement extends HTMLElement {
     const connectionVersion = ++this.connectionVersion;
     const root = this.root;
     this.colorScheme?.removeEventListener(
-      "change",
+      'change',
       this.handleColorSchemeChange
     );
     this.colorScheme = undefined;
@@ -246,49 +246,49 @@ export class JsonFormsAntdElement extends HTMLElement {
   }
 
   set data(value: JsonInput) {
-    this.setValue("data", value);
+    this.setValue('data', value);
   }
   set schema(value: JsonInput) {
-    this.setValue("schema", value);
+    this.setValue('schema', value);
   }
   set uischema(value: JsonInput) {
-    this.setValue("uischema", value);
+    this.setValue('uischema', value);
   }
   set uischemas(value: JsonInput) {
-    this.setValue("uischemas", value);
+    this.setValue('uischemas', value);
   }
   set config(value: JsonInput) {
-    this.setValue("config", value);
+    this.setValue('config', value);
   }
   set readonly(value: JsonInput) {
-    this.setValue("readonly", value);
+    this.setValue('readonly', value);
   }
   set validationMode(value: ValidationMode) {
-    this.setValue("validationMode", value);
+    this.setValue('validationMode', value);
   }
   set locale(value: string) {
-    this.setValue("locale", value);
+    this.setValue('locale', value);
   }
   set translations(value: JsonInput) {
-    this.setValue("translations", value);
+    this.setValue('translations', value);
   }
   set additionalErrors(value: JsonInput) {
-    this.setValue("additionalErrors", value);
+    this.setValue('additionalErrors', value);
   }
   set dark(value: JsonInput) {
-    this.setValue("dark", value);
+    this.setValue('dark', value);
   }
   set mode(value: JsonInput) {
-    this.setValue("mode", value);
+    this.setValue('mode', value);
   }
   set rtl(value: JsonInput) {
-    this.setValue("rtl", value);
+    this.setValue('rtl', value);
   }
   set customStyle(value: string) {
-    this.setValue("customStyle", value);
+    this.setValue('customStyle', value);
   }
   set rendererSettings(value: JsonInput) {
-    this.setValue("rendererSettings", value);
+    this.setValue('rendererSettings', value);
   }
 
   private setValue(name: string, value: JsonInput) {
@@ -330,8 +330,8 @@ export class JsonFormsAntdElement extends HTMLElement {
     const selectedMode = parseMode(this.state.mode);
     const dark =
       parseBoolean(this.state.dark) ??
-      (selectedMode === "dark" ||
-        (selectedMode === "system" && Boolean(this.colorScheme?.matches)));
+      (selectedMode === 'dark' ||
+        (selectedMode === 'system' && Boolean(this.colorScheme?.matches)));
     const rtl = parseBoolean(this.state.rtl) ?? false;
     const config = parseJson(this.state.config) as
       | Record<string, unknown>
@@ -353,10 +353,10 @@ export class JsonFormsAntdElement extends HTMLElement {
       <StyleProvider container={this.shadowRoot ?? undefined}>
         <LocalizedConfigProvider
           localeTag={this.state.locale}
-          direction={rtl ? "rtl" : "ltr"}
+          direction={rtl ? 'rtl' : 'ltr'}
           getPopupContainer={() =>
             (this.shadowRoot?.querySelector(
-              ".jsonforms-react-antd"
+              '.jsonforms-react-antd'
             ) as HTMLElement | null) ?? this
           }
           theme={{
@@ -367,23 +367,23 @@ export class JsonFormsAntdElement extends HTMLElement {
         >
           <div
             className={
-              dark ? "jsonforms-react-antd dark" : "jsonforms-react-antd"
+              dark ? 'jsonforms-react-antd dark' : 'jsonforms-react-antd'
             }
-            dir={rtl ? "rtl" : "ltr"}
+            dir={rtl ? 'rtl' : 'ltr'}
           >
             <style>{`
-            :host { display: block; color-scheme: ${dark ? "dark" : "light"}; }
+            :host { display: block; color-scheme: ${dark ? 'dark' : 'light'}; }
             .jsonforms-react-antd { box-sizing: border-box; min-width: 0; color-scheme: light; background: #fff; color: rgba(0, 0, 0, 0.88); }
             .jsonforms-react-antd.dark { color-scheme: dark; background: #141414; color: rgba(255, 255, 255, 0.88); }
-            ${this.state.customStyle ?? ""}
+            ${this.state.customStyle ?? ''}
           `}</style>
-            <slot name="styles" />
-            <slot name="form-header" />
+            <slot name='styles' />
+            <slot name='form-header' />
             <Form
-              layout="vertical"
+              layout='vertical'
               variant={
                 (rendererSettings.inputVariant ??
-                  "outlined") as InputProps["variant"]
+                  'outlined') as InputProps['variant']
               }
             >
               {/*
@@ -395,33 +395,31 @@ export class JsonFormsAntdElement extends HTMLElement {
                 merged rather than replaced.
               */}
               <ExtendedJsonForms
-                  store={this.errorStore}
-                  onAction={(event) => this.dispatch("handle-action", event)}
-                  data={data}
-                  schema={schema}
-                  uischema={parseJson(this.state.uischema)}
-                  uischemas={parseJson(this.state.uischemas) as any}
-                  config={{
-                    ...config,
-                    readonly,
-                  }}
-                  readonly={readonly}
-                  validationMode={this.state.validationMode}
-                  i18n={{
-                    locale: this.state.locale,
-                    translate,
-                    ...(translateError ? { translateError } : {}),
-                  }}
-                  additionalErrors={
-                    parseJson(this.state.additionalErrors) as any
-                  }
-                  ajv={this.ajv}
-                  renderers={antdWebcomponentRenderers}
-                  cells={antdWebcomponentCells}
-                  onChange={(event) => this.dispatch("change", event)}
-                />
+                store={this.errorStore}
+                onAction={(event) => this.dispatch('handle-action', event)}
+                data={data}
+                schema={schema}
+                uischema={parseJson(this.state.uischema)}
+                uischemas={parseJson(this.state.uischemas) as any}
+                config={{
+                  ...config,
+                  readonly,
+                }}
+                readonly={readonly}
+                validationMode={this.state.validationMode}
+                i18n={{
+                  locale: this.state.locale,
+                  translate,
+                  ...(translateError ? { translateError } : {}),
+                }}
+                additionalErrors={parseJson(this.state.additionalErrors) as any}
+                ajv={this.ajv}
+                renderers={antdWebcomponentRenderers}
+                cells={antdWebcomponentCells}
+                onChange={(event) => this.dispatch('change', event)}
+              />
             </Form>
-            <slot name="form-footer" />
+            <slot name='form-footer' />
           </div>
         </LocalizedConfigProvider>
       </StyleProvider>

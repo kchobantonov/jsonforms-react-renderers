@@ -30,8 +30,8 @@
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "clean": "rimraf dist 2> /dev/null",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
+    "lint:fix": "pnpm lint --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "tsc": "tsc --build tsconfig.json"

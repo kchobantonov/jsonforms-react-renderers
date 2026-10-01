@@ -1,11 +1,26 @@
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
+import {
+  CollectionErrorNavigation,
+  RowErrorCount,
+} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from '@jsonforms-react-shadcn-ui/tooltip';
 import { ErrorIndicator } from './ErrorIndicator';
 import { ScrollRegion } from '../components/ScrollRegion';
-import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
-import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
+import {
+  ColumnResizeHandle,
+  useColumnWidths,
+} from '@chobantonov/jsonforms-react-renderer-common/columnResize';
+import {
+  tableColumnFields,
+  tableColumnStyle,
+  TableColumnDefinition,
+} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
 import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
 import {
@@ -17,7 +32,11 @@ import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-co
 import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import { CollectionPager } from './CollectionPager';
-import { RowDetailFrame, RowDetailToggle, RowDetailEditButton } from './RowDetailFrame';
+import {
+  RowDetailFrame,
+  RowDetailToggle,
+  RowDetailEditButton,
+} from './RowDetailFrame';
 import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
 import {
   and,
@@ -42,13 +61,7 @@ import {
   withJsonFormsCellProps,
 } from '@jsonforms/react';
 import React from 'react';
-import {
-  Check,
-  Plus,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react';
+import { Check, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
 import { DeleteDialog } from './DeleteDialog';
 import {
@@ -116,15 +129,19 @@ const ArrayItemPanel = ({
   );
 };
 
-const TableCellErrors = withJsonFormsCellProps(({ errors, path, schema, uischema }: CellProps) =>
-  errors && uischema.options?.summary?.type !== 'Label' && schema.type !== 'object' && schema.type !== 'array' ? (
-    <ErrorIndicator
-      local
-      errors={errors}
-      path={path}
-      className='shadcn-jsonforms-cell-error'
-    />
-  ) : null
+const TableCellErrors = withJsonFormsCellProps(
+  ({ errors, path, schema, uischema }: CellProps) =>
+    errors &&
+    uischema.options?.summary?.type !== 'Label' &&
+    schema.type !== 'object' &&
+    schema.type !== 'array' ? (
+      <ErrorIndicator
+        local
+        errors={errors}
+        path={path}
+        className='shadcn-jsonforms-cell-error'
+      />
+    ) : null
 );
 
 export const ShadcnArrayRenderer = ({
@@ -161,7 +178,15 @@ export const ShadcnArrayRenderer = ({
     downAriaLabel: translate('array.downAriaLabel', 'Move down'),
     down: translate('array.down', 'Move down'),
   };
-  const selection = useTableSelection({ path, schema, uischema, config, enabled, readonly, removeItems });
+  const selection = useTableSelection({
+    path,
+    schema,
+    uischema,
+    config,
+    enabled,
+    readonly,
+    removeItems,
+  });
   const [columnWidths, setColumnWidths] = useColumnWidths();
   const [selectedItem, setSelectedItem] = React.useState(0);
   const [pendingIndex, setPendingIndex] = React.useState<number>();
@@ -250,15 +275,31 @@ export const ShadcnArrayRenderer = ({
     cells,
   });
   if (!visible) return null;
-  const definitions = uischema.options?.columnDefs as TableColumnDefinition[] | undefined;
+  const definitions = uischema.options?.columnDefs as
+    | TableColumnDefinition[]
+    | undefined;
   const properties = schema.properties ?? { value: schema };
-  const columns = tableColumnFields(properties, schema.properties ? definitions : undefined, Object.keys(properties)).map((field) => [field, definitions?.some(c => c.field === field && c.scope === '#') ? schema : properties[field]] as const).map(
-    ([field, column]) =>
-      [
-        field,
-        column.$ref ? Resolve.schema(column, '#', rootSchema) : column,
-      ] as const
-  );
+  const columns = tableColumnFields(
+    properties,
+    schema.properties ? definitions : undefined,
+    Object.keys(properties)
+  )
+    .map(
+      (field) =>
+        [
+          field,
+          definitions?.some((c) => c.field === field && c.scope === '#')
+            ? schema
+            : properties[field],
+        ] as const
+    )
+    .map(
+      ([field, column]) =>
+        [
+          field,
+          column.$ref ? Resolve.schema(column, '#', rootSchema) : column,
+        ] as const
+    );
   const objectRows = Boolean(schema.properties);
   const hasRowActions = Boolean(rowDetail.options || options.showSortButtons);
   const childLabelForIndex = (childPath: string, index: number) => {
@@ -298,13 +339,27 @@ export const ShadcnArrayRenderer = ({
           </div>
           <div className='shadcn-jsonforms-array-actions'>
             <RowDetailToggle state={rowDetail} />
-            {table && <TooltipProvider><Tooltip><TooltipTrigger asChild>
-              <Button type='button' size='icon-sm' variant='destructive'
-                aria-label={rowDetail.t('collection.deleteSelected')}
-                disabled={!selection.canDelete} onClick={selection.request}>
-                <Trash2 aria-hidden='true' className='h-4 w-4' />
-              </Button>
-            </TooltipTrigger><TooltipContent>{rowDetail.t('collection.deleteSelected')}</TooltipContent></Tooltip></TooltipProvider>}
+            {table && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type='button'
+                      size='icon-sm'
+                      variant='destructive'
+                      aria-label={rowDetail.t('collection.deleteSelected')}
+                      disabled={!selection.canDelete}
+                      onClick={selection.request}
+                    >
+                      <Trash2 aria-hidden='true' className='h-4 w-4' />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {rowDetail.t('collection.deleteSelected')}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
             <Button
               type='button'
               size='icon-sm'
@@ -350,67 +405,71 @@ export const ShadcnArrayRenderer = ({
                     className='shadcn-jsonforms-list-navigation'
                     style={{ maxHeight: '20rem' }}
                   >
-                  <ItemGroup
-                    className='min-w-0 rounded-lg border p-1'
-                    aria-label={label}
-                  >
-                    {page.indices.map((index) => {
-                      const selected = Math.min(selectedItem, data - 1) === index;
-                      const itemLabel = childLabelForIndex(
-                        composePaths(path, String(index)),
-                        index
-                      );
-                      return (
-                        <Item
-                          key={index}
-                          role='listitem'
-                          size='sm'
-                          variant={selected ? 'muted' : 'default'}
-                          className='flex-nowrap gap-1 p-1'
-                        >
-                          <ItemContent className='min-w-0'>
-                            <Button
-                              type='button'
-                              variant='ghost'
-                              className='h-auto min-h-12 w-full min-w-0 justify-start gap-3 whitespace-nowrap text-left'
-                              aria-pressed={selected}
-                              aria-label={itemLabel || String(index + 1)}
-                              onClick={() => setSelectedItem(index)}
-                            >
-                              {!options.hideAvatar && (
-                                <Avatar className='border'>
-                                  <AvatarFallback>{index + 1}</AvatarFallback>
-                                </Avatar>
-                              )}
-                              <span className='min-w-0 flex-1 truncate'>
-                                {itemLabel}
-                              </span>
-                              {selected && (
-                                <Check
-                                  className='h-4 w-4 shrink-0'
+                    <ItemGroup
+                      className='min-w-0 rounded-lg border p-1'
+                      aria-label={label}
+                    >
+                      {page.indices.map((index) => {
+                        const selected =
+                          Math.min(selectedItem, data - 1) === index;
+                        const itemLabel = childLabelForIndex(
+                          composePaths(path, String(index)),
+                          index
+                        );
+                        return (
+                          <Item
+                            key={index}
+                            role='listitem'
+                            size='sm'
+                            variant={selected ? 'muted' : 'default'}
+                            className='flex-nowrap gap-1 p-1'
+                          >
+                            <ItemContent className='min-w-0'>
+                              <Button
+                                type='button'
+                                variant='ghost'
+                                className='h-auto min-h-12 w-full min-w-0 justify-start gap-3 whitespace-nowrap text-left'
+                                aria-pressed={selected}
+                                aria-label={itemLabel || String(index + 1)}
+                                onClick={() => setSelectedItem(index)}
+                              >
+                                {!options.hideAvatar && (
+                                  <Avatar className='border'>
+                                    <AvatarFallback>{index + 1}</AvatarFallback>
+                                  </Avatar>
+                                )}
+                                <span className='min-w-0 flex-1 truncate'>
+                                  {itemLabel}
+                                </span>
+                                {selected && (
+                                  <Check
+                                    className='h-4 w-4 shrink-0'
+                                    aria-hidden='true'
+                                  />
+                                )}
+                              </Button>
+                            </ItemContent>
+                            <ItemActions className='shrink-0'>
+                              <Button
+                                type='button'
+                                variant='ghost'
+                                size='icon'
+                                className='h-6 w-6 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive'
+                                aria-label={translations.removeAriaLabel}
+                                title={translations.removeTooltip}
+                                disabled={!canRemove}
+                                onClick={() => requestRemove(index)}
+                              >
+                                <Trash2
+                                  className='h-3 w-3'
                                   aria-hidden='true'
                                 />
-                              )}
-                            </Button>
-                          </ItemContent>
-                          <ItemActions className='shrink-0'>
-                            <Button
-                              type='button'
-                              variant='ghost'
-                              size='icon'
-                              className='h-6 w-6 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive'
-                              aria-label={translations.removeAriaLabel}
-                              title={translations.removeTooltip}
-                              disabled={!canRemove}
-                              onClick={() => requestRemove(index)}
-                            >
-                              <Trash2 className='h-3 w-3' aria-hidden='true' />
-                            </Button>
-                          </ItemActions>
-                        </Item>
-                      );
-                    })}
-                  </ItemGroup>
+                              </Button>
+                            </ItemActions>
+                          </Item>
+                        );
+                      })}
+                    </ItemGroup>
                   </ScrollRegion>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
@@ -433,26 +492,135 @@ export const ShadcnArrayRenderer = ({
             )
           ) : table ? (
             <RowDetailFrame state={rowDetail}>
-              <div className='min-w-0 w-full max-w-full overflow-x-auto' style={{ contain: 'inline-size' }}>
-                <table className='text-sm' style={{ flexShrink: 0, minWidth: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : undefined, width: columnWidths.__selection ? Object.values(columnWidths).reduce((sum, value) => sum + value, 0) : '100%', tableLayout: columnWidths.__selection ? 'fixed' : 'auto' }} aria-label={label}>
+              <div
+                className='min-w-0 w-full max-w-full overflow-x-auto'
+                style={{ contain: 'inline-size' }}
+              >
+                <table
+                  className='text-sm'
+                  style={{
+                    flexShrink: 0,
+                    minWidth: columnWidths.__selection
+                      ? Object.values(columnWidths).reduce(
+                          (sum, value) => sum + value,
+                          0
+                        )
+                      : undefined,
+                    width: columnWidths.__selection
+                      ? Object.values(columnWidths).reduce(
+                          (sum, value) => sum + value,
+                          0
+                        )
+                      : '100%',
+                    tableLayout: columnWidths.__selection ? 'fixed' : 'auto',
+                  }}
+                  aria-label={label}
+                >
                   {objectRows && (
                     <thead>
                       <tr className='border-b'>
-                        <th data-column-key='__selection' style={{ width: columnWidths.__selection ?? 32, minWidth: 32, maxWidth: columnWidths.__selection ?? 32 }} className='p-2 text-center'>
-                          <Checkbox className='shadcn-jsonforms-row-selection align-middle' aria-label={rowDetail.t('collection.selectPage')}
-                            disabled={!selection.selectable || !page.indices.length}
-                            checked={page.indices.length > 0 && page.indices.every((i) => selection.selected.includes(i)) ? true : page.indices.some((i) => selection.selected.includes(i)) ? 'indeterminate' : false}
-                            onCheckedChange={(checked) => selection.setSelected(checked === true ? [...new Set([...selection.selected, ...page.indices])] : selection.selected.filter((i) => !page.indices.includes(i)))} />
+                        <th
+                          data-column-key='__selection'
+                          style={{
+                            width: columnWidths.__selection ?? 32,
+                            minWidth: 32,
+                            maxWidth: columnWidths.__selection ?? 32,
+                          }}
+                          className='p-2 text-center'
+                        >
+                          <Checkbox
+                            className='shadcn-jsonforms-row-selection align-middle'
+                            aria-label={rowDetail.t('collection.selectPage')}
+                            disabled={
+                              !selection.selectable || !page.indices.length
+                            }
+                            checked={
+                              page.indices.length > 0 &&
+                              page.indices.every((i) =>
+                                selection.selected.includes(i)
+                              )
+                                ? true
+                                : page.indices.some((i) =>
+                                    selection.selected.includes(i)
+                                  )
+                                ? 'indeterminate'
+                                : false
+                            }
+                            onCheckedChange={(checked) =>
+                              selection.setSelected(
+                                checked === true
+                                  ? [
+                                      ...new Set([
+                                        ...selection.selected,
+                                        ...page.indices,
+                                      ]),
+                                    ]
+                                  : selection.selected.filter(
+                                      (i) => !page.indices.includes(i)
+                                    )
+                              )
+                            }
+                          />
                         </th>
                         {columns.map(([field, column]) => (
-                          <th key={field} data-column-key={field} style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }} className='relative p-2 pe-4 text-left font-medium'>
-                            {definitions?.find(c => c.field === field)?.headerName ?? column.title ?? createCleanLabel(field)}
-                            <ColumnResizeHandle colors={{ border: 'hsl(var(--muted-foreground) / 0.5)', active: 'hsl(var(--primary))', focus: 'hsl(var(--ring))' }} field={definitions?.find(c => c.field === field)?.headerName ?? column.title ?? createCleanLabel(field)} definition={definitions?.find((item) => item.field === field)} width={columnWidths[field]}
-                              onResizeStart={(widths) => setColumnWidths(widths)}
-                              onResize={(value) => setColumnWidths((current) => ({ ...current, [field]: value }))} />
+                          <th
+                            key={field}
+                            data-column-key={field}
+                            style={{
+                              ...tableColumnStyle(
+                                definitions?.find(
+                                  (column) => column.field === field
+                                )
+                              ),
+                              ...(columnWidths[field] !== undefined
+                                ? {
+                                    width: columnWidths[field],
+                                    minWidth: columnWidths[field],
+                                    maxWidth: columnWidths[field],
+                                  }
+                                : {}),
+                            }}
+                            className='relative p-2 pe-4 text-left font-medium'
+                          >
+                            {definitions?.find((c) => c.field === field)
+                              ?.headerName ??
+                              column.title ??
+                              createCleanLabel(field)}
+                            <ColumnResizeHandle
+                              colors={{
+                                border: 'hsl(var(--muted-foreground) / 0.5)',
+                                active: 'hsl(var(--primary))',
+                                focus: 'hsl(var(--ring))',
+                              }}
+                              field={
+                                definitions?.find((c) => c.field === field)
+                                  ?.headerName ??
+                                column.title ??
+                                createCleanLabel(field)
+                              }
+                              definition={definitions?.find(
+                                (item) => item.field === field
+                              )}
+                              width={columnWidths[field]}
+                              onResizeStart={(widths) =>
+                                setColumnWidths(widths)
+                              }
+                              onResize={(value) =>
+                                setColumnWidths((current) => ({
+                                  ...current,
+                                  [field]: value,
+                                }))
+                              }
+                            />
                           </th>
                         ))}
-                        {hasRowActions && <th data-column-key='__actions' style={{ width: columnWidths.__actions ?? 1 }} className='whitespace-nowrap p-2' />}
+                        {hasRowActions && (
+                          <th
+                            data-column-key='__actions'
+                            style={{ width: columnWidths.__actions ?? 1 }}
+                            className='whitespace-nowrap p-2'
+                          />
+                        )}
                       </tr>
                     </thead>
                   )}
@@ -462,129 +630,255 @@ export const ShadcnArrayRenderer = ({
                       return (
                         <tr
                           key={rowPath}
-                          className={rowDetail.options?.presentation === 'panel' && rowDetail.panelOpen && rowDetail.selection?.index === index ? 'border-b bg-accent' : 'border-b'}
-                          aria-current={rowDetail.options?.presentation === 'panel' && rowDetail.panelOpen && rowDetail.selection?.index === index ? true : undefined}
+                          className={
+                            rowDetail.options?.presentation === 'panel' &&
+                            rowDetail.panelOpen &&
+                            rowDetail.selection?.index === index
+                              ? 'border-b bg-accent'
+                              : 'border-b'
+                          }
+                          aria-current={
+                            rowDetail.options?.presentation === 'panel' &&
+                            rowDetail.panelOpen &&
+                            rowDetail.selection?.index === index
+                              ? true
+                              : undefined
+                          }
                           onClick={() => {
                             if (rowDetail.options?.presentation === 'panel') {
                               rowDetail.open(index);
                             }
                           }}
                         >
-                          <td className='p-2 text-center' style={{ width: columnWidths.__selection ?? 32, minWidth: 32, maxWidth: columnWidths.__selection ?? 32 }} onClick={(event) => event.stopPropagation()}>
-                            <Checkbox className='shadcn-jsonforms-row-selection align-middle' aria-label={rowDetail.t('collection.selectRow', { index: index + 1 })}
-                              disabled={!selection.selectable} checked={selection.selected.includes(index)}
-                              onCheckedChange={(checked) => selection.setSelected(checked === true ? [...selection.selected, index] : selection.selected.filter((i) => i !== index))} />
+                          <td
+                            className='p-2 text-center'
+                            style={{
+                              width: columnWidths.__selection ?? 32,
+                              minWidth: 32,
+                              maxWidth: columnWidths.__selection ?? 32,
+                            }}
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <Checkbox
+                              className='shadcn-jsonforms-row-selection align-middle'
+                              aria-label={rowDetail.t('collection.selectRow', {
+                                index: index + 1,
+                              })}
+                              disabled={!selection.selectable}
+                              checked={selection.selected.includes(index)}
+                              onCheckedChange={(checked) =>
+                                selection.setSelected(
+                                  checked === true
+                                    ? [...selection.selected, index]
+                                    : selection.selected.filter(
+                                        (i) => i !== index
+                                      )
+                                )
+                              }
+                            />
                           </td>
                           {columns.map(([field, column]) => (
                             <td
                               key={field}
-                              style={{ ...tableColumnStyle(definitions?.find((column) => column.field === field)), ...(columnWidths[field] !== undefined ? { width: columnWidths[field], minWidth: columnWidths[field], maxWidth: columnWidths[field] } : {}) }}
+                              style={{
+                                ...tableColumnStyle(
+                                  definitions?.find(
+                                    (column) => column.field === field
+                                  )
+                                ),
+                                ...(columnWidths[field] !== undefined
+                                  ? {
+                                      width: columnWidths[field],
+                                      minWidth: columnWidths[field],
+                                      maxWidth: columnWidths[field],
+                                    }
+                                  : {}),
+                              }}
                               className='shadcn-jsonforms-table-cell p-2'
                             >
-                              <div style={{ maxWidth: tableColumnStyle(definitions?.find((column) => column.field === field)).maxWidth, overflow: 'hidden' }}>
-                              <ItemProvider path={rowPath}><DispatchCell
-                                schema={column}
-                                uischema={{
-                                  type: 'Control',
-                                  scope: objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
-                                    ? '#/properties/' + field
-                                    : '#',
-                                  options: { ...options.cells?.[field], ...(definitions?.some(c => c.field === field && c.scope === '#') ? { summaryOnly: true } : {}) },
+                              <div
+                                style={{
+                                  maxWidth: tableColumnStyle(
+                                    definitions?.find(
+                                      (column) => column.field === field
+                                    )
+                                  ).maxWidth,
+                                  overflow: 'hidden',
                                 }}
-                                path={
-                                  objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
-                                    ? composePaths(rowPath, field)
-                                    : rowPath
-                                }
-                                enabled={
-                                  enabled &&
-                                  !readonly &&
-                                  !(column as any).readOnly
-                                }
-                                renderers={renderers}
-                                cells={cells}
-                              />
-                              </ItemProvider>
-                              <TableCellErrors
-                                schema={column}
-                                uischema={{ type: 'Control', scope: '#', options: options.cells?.[field] }}
-                                path={
-                                  objectRows && !definitions?.some(c => c.field === field && c.scope === '#')
-                                    ? composePaths(rowPath, field)
-                                    : rowPath
-                                }
-                              />
+                              >
+                                <ItemProvider path={rowPath}>
+                                  <DispatchCell
+                                    schema={column}
+                                    uischema={{
+                                      type: 'Control',
+                                      scope:
+                                        objectRows &&
+                                        !definitions?.some(
+                                          (c) =>
+                                            c.field === field && c.scope === '#'
+                                        )
+                                          ? '#/properties/' + field
+                                          : '#',
+                                      options: {
+                                        ...options.cells?.[field],
+                                        ...(definitions?.some(
+                                          (c) =>
+                                            c.field === field && c.scope === '#'
+                                        )
+                                          ? { summaryOnly: true }
+                                          : {}),
+                                      },
+                                    }}
+                                    path={
+                                      objectRows &&
+                                      !definitions?.some(
+                                        (c) =>
+                                          c.field === field && c.scope === '#'
+                                      )
+                                        ? composePaths(rowPath, field)
+                                        : rowPath
+                                    }
+                                    enabled={
+                                      enabled &&
+                                      !readonly &&
+                                      !(column as any).readOnly
+                                    }
+                                    renderers={renderers}
+                                    cells={cells}
+                                  />
+                                </ItemProvider>
+                                <TableCellErrors
+                                  schema={column}
+                                  uischema={{
+                                    type: 'Control',
+                                    scope: '#',
+                                    options: options.cells?.[field],
+                                  }}
+                                  path={
+                                    objectRows &&
+                                    !definitions?.some(
+                                      (c) =>
+                                        c.field === field && c.scope === '#'
+                                    )
+                                      ? composePaths(rowPath, field)
+                                      : rowPath
+                                  }
+                                />
                               </div>
                             </td>
                           ))}
-                          {hasRowActions && <td className='whitespace-nowrap p-2' style={{ width: columnWidths.__actions ?? 1 }}>
-                            <div className='flex w-max flex-nowrap items-center gap-1'>
-                            {rowDetail.options && (
-                              <RowDetailEditButton label={rowDetail.t('collection.editDetails')}
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  if (rowDetail.options?.presentation === 'panel') rowDetail.setPanelOpen(true);
-                                  rowDetail.open(index);
-                                }} />
-
-                            )}
-                            <RowErrorCount path={path} index={index} renderIndicator={(message) => <ErrorIndicator errors={message} />} />
-                            {options.showSortButtons && (
-                              <>
-                                <Button
-                                  type='button'
-                                  variant='ghost'
-                                  size='icon'
-                                  className='h-7 w-7'
-                                  aria-label={
-                                    translations?.upAriaLabel || 'Move up'
-                                  }
-                                  title={translations?.up || 'Move up'}
-                                  disabled={!enabled || readonly || index === 0}
-                                  onClick={moveUp?.(path, index)}
-                                >
-                                  <ChevronUp
-                                    className='h-4 w-4'
-                                    aria-hidden='true'
+                          {hasRowActions && (
+                            <td
+                              className='whitespace-nowrap p-2'
+                              style={{ width: columnWidths.__actions ?? 1 }}
+                            >
+                              <div className='flex w-max flex-nowrap items-center gap-1'>
+                                {rowDetail.options && (
+                                  <RowDetailEditButton
+                                    label={rowDetail.t(
+                                      'collection.editDetails'
+                                    )}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      if (
+                                        rowDetail.options?.presentation ===
+                                        'panel'
+                                      )
+                                        rowDetail.setPanelOpen(true);
+                                      rowDetail.open(index);
+                                    }}
                                   />
-                                </Button>
-                                <Button
-                                  type='button'
-                                  variant='ghost'
-                                  size='icon'
-                                  className='h-7 w-7'
-                                  aria-label={
-                                    translations?.downAriaLabel || 'Move down'
-                                  }
-                                  title={translations?.down || 'Move down'}
-                                  disabled={
-                                    !enabled || readonly || index === data - 1
-                                  }
-                                  onClick={moveDown?.(path, index)}
-                                >
-                                  <ChevronDown
-                                    className='h-4 w-4'
-                                    aria-hidden='true'
-                                  />
-                                </Button>
-                              </>
-                            )}
-
-                            </div>
-                          </td>}
+                                )}
+                                <RowErrorCount
+                                  path={path}
+                                  index={index}
+                                  renderIndicator={(message) => (
+                                    <ErrorIndicator errors={message} />
+                                  )}
+                                />
+                                {options.showSortButtons && (
+                                  <>
+                                    <Button
+                                      type='button'
+                                      variant='ghost'
+                                      size='icon'
+                                      className='h-7 w-7'
+                                      aria-label={
+                                        translations?.upAriaLabel || 'Move up'
+                                      }
+                                      title={translations?.up || 'Move up'}
+                                      disabled={
+                                        !enabled || readonly || index === 0
+                                      }
+                                      onClick={moveUp?.(path, index)}
+                                    >
+                                      <ChevronUp
+                                        className='h-4 w-4'
+                                        aria-hidden='true'
+                                      />
+                                    </Button>
+                                    <Button
+                                      type='button'
+                                      variant='ghost'
+                                      size='icon'
+                                      className='h-7 w-7'
+                                      aria-label={
+                                        translations?.downAriaLabel ||
+                                        'Move down'
+                                      }
+                                      title={translations?.down || 'Move down'}
+                                      disabled={
+                                        !enabled ||
+                                        readonly ||
+                                        index === data - 1
+                                      }
+                                      onClick={moveDown?.(path, index)}
+                                    >
+                                      <ChevronDown
+                                        className='h-4 w-4'
+                                        aria-hidden='true'
+                                      />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
                   </tbody>
                 </table>
-                <CollectionErrorNavigation options={uischema.options} renderAction={(label, onClick, icon) =>
-                  <TooltipProvider><Tooltip><TooltipTrigger asChild>
-                    <Button type='button' variant='outline' size='icon' className='h-7 w-7' aria-label={label} onClick={onClick}>{icon}</Button>
-                  </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip></TooltipProvider>}
-                  path={path} reveal={(index) => {
-                  page.change(Math.floor(index / page.size) + 1);
-                  if (rowDetail.options) { rowDetail.setPanelOpen(true); rowDetail.open(index); }
-                }} />
+                <CollectionErrorNavigation
+                  options={uischema.options}
+                  renderAction={(label, onClick, icon) => (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='icon'
+                            className='h-7 w-7'
+                            aria-label={label}
+                            onClick={onClick}
+                          >
+                            {icon}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{label}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  path={path}
+                  reveal={(index) => {
+                    page.change(Math.floor(index / page.size) + 1);
+                    if (rowDetail.options) {
+                      rowDetail.setPanelOpen(true);
+                      rowDetail.open(index);
+                    }
+                  }}
+                />
                 <CollectionPager page={page} />
               </div>
             </RowDetailFrame>
@@ -631,7 +925,11 @@ export const ShadcnArrayRenderer = ({
           )}
           {!table && <CollectionPager page={page} />}
         </div>
-        <DeleteDialog open={selection.confirming} onCancel={selection.cancel} onConfirm={selection.confirm} />
+        <DeleteDialog
+          open={selection.confirming}
+          onCancel={selection.cancel}
+          onConfirm={selection.confirm}
+        />
         <DeleteDialog
           open={pendingIndex !== undefined}
           onCancel={() => setPendingIndex(undefined)}

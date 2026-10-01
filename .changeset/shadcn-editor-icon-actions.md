@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 ---
 
 Use compact maximize and restore icon buttons for the shadcn code editor,

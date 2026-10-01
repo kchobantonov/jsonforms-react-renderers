@@ -37,7 +37,11 @@ export const ArrayPanel = ({
         </div>
       }
     >
-      <div id={panel.contentId} hidden={panel.collapsed} style={{ minWidth: 0, maxWidth: '100%' }}>
+      <div
+        id={panel.contentId}
+        hidden={panel.collapsed}
+        style={{ minWidth: 0, maxWidth: '100%' }}
+      >
         {children}
       </div>
     </Card>

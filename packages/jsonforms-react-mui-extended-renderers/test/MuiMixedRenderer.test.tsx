@@ -352,3 +352,42 @@ describe('MUI mixed boolean layout', () => {
     }
   );
 });
+
+it('can reveal and hide a mixed control without changing hook order', () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const schema: any = {
+    type: 'object',
+    properties: {
+      show: { type: 'boolean' },
+      value: { type: ['string', 'object'] },
+    },
+  };
+  const uischema: any = {
+    type: 'Control',
+    scope: '#/properties/value',
+    rule: {
+      effect: 'SHOW',
+      condition: { scope: '#/properties/show', schema: { const: true } },
+    },
+  };
+  try {
+    for (const show of [false, true, false, true]) {
+      act(() =>
+        root.render(
+          <JsonForms
+            schema={schema}
+            uischema={uischema}
+            data={{ show, value: 'visible value' }}
+            renderers={[...muiExtendedRenderers, ...materialRenderers]}
+          />
+        )
+      );
+    }
+    expect(container.querySelector('input')).not.toBeNull();
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
+});

@@ -347,16 +347,13 @@ describe('applying without editing', () => {
     'PT011H591212M',
     'P0001D',
     'P01Y02M03D',
-  ])(
-    'leaves %s exactly as it was',
-    async (value) => {
-      const view = draw(value);
-      await view.openPicker();
-      await applyIn(view);
-      expect(view.data().duration).toBe(value);
-      view.unmount();
-    }
-  );
+  ])('leaves %s exactly as it was', async (value) => {
+    const view = draw(value);
+    await view.openPicker();
+    await applyIn(view);
+    expect(view.data().duration).toBe(value);
+    view.unmount();
+  });
 
   /* And still writes when something actually changed. */
   it('writes the canonical form once a unit is edited', async () => {

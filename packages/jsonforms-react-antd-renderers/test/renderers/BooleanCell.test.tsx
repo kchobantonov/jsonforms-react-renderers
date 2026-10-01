@@ -2,7 +2,6 @@ import './MatchMediaMock';
 import * as React from 'react';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
 import BooleanCell, { booleanCellTester } from '../../src/cells/BooleanCell';
-import * as ReactDOM from 'react-dom';
 import { antdRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';
@@ -89,13 +88,6 @@ describe('Ant Design boolean cell', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());
-
-  /** Use this container to render components */
-  const container = document.createElement('div');
-
-  afterEach(() => {
-    ReactDOM.unmountComponentAtNode(container);
-  });
 
   it('should autofocus via option', () => {
     const control: ControlElement = {

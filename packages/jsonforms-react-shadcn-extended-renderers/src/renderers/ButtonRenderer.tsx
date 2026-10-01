@@ -62,9 +62,9 @@ export const ShadcnButtonRenderer = ({
           if (configuredAction && handleAction) {
             await handleAction({ action, label, params, element: uischema });
           } else if (script) {
-            const AsyncFunction = Object.getPrototypeOf(
-              async function () {}
-            ).constructor;
+            const AsyncFunction = Object.getPrototypeOf(async function () {
+              /* Used only to obtain the AsyncFunction constructor. */
+            }).constructor;
             await new AsyncFunction(script).call({
               action,
               context: jsonforms,

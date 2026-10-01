@@ -63,7 +63,14 @@ const draw = (locale = 'en') => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={{ type: 'VerticalLayout', elements: (uischema as any).elements.flatMap((category: any) => category.elements) } as any}
+          uischema={
+            {
+              type: 'VerticalLayout',
+              elements: (uischema as any).elements.flatMap(
+                (category: any) => category.elements
+              ),
+            } as any
+          }
           uischemas={uischemas}
           config={config}
           i18n={{

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defaultTranslator } from '@jsonforms/core';
-import { formatErrorSummary } from '../src/errorSummary';
+import { formatErrorSummary, ErrorSummaryList } from '../src/errorSummary';
 const schema = {
   type: 'object',
   properties: {
@@ -70,7 +70,6 @@ describe('structured error summaries', () => {
 
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ErrorSummaryList } from '../src/errorSummary';
 it('expands and collapses a bounded summary without changing its count', () => {
   const host = document.createElement('div');
   const root = createRoot(host);

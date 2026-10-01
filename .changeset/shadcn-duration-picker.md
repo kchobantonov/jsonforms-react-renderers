@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 ---
 
 Replace the legacy duration editor with a localized shadcn popover using shared

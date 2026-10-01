@@ -40,8 +40,8 @@
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
     "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
+    "lint:fix": "pnpm lint --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "test-cov": "vitest run --coverage",

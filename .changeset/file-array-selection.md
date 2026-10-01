@@ -1,7 +1,7 @@
 ---
-"@chobantonov/jsonforms-react-renderer-common": patch
-"@chobantonov/jsonforms-react-antd-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
+'@chobantonov/jsonforms-react-renderer-common': patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 ---
 
 Support multiple-file selection for arrays of file strings in both themes,

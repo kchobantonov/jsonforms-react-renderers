@@ -32,36 +32,36 @@ below rather than listed here.
 
 **Defects in shipped renderers**
 
-| Gap | Where |
-| --- | --- |
-| An error at an object's own path is never displayed — the form can be invalid with nothing on screen | [§6.1](#61-object-control-and-additional-properties--partial), [TODO 1](TODO.md) |
-| Blur does not flush a pending edit before its errors are presented | [§3.10](#310-pending-edits-commit-timing-and-cancellation-18--partial) |
-| An error inside a composite cell's value does not surface at that cell (exact-path filter) | [§6.2](#62-array-table-control--partial) |
-| The array **table** ignores `restrict`, so the two array presentations disagree with each other | [§6.2](#62-array-table-control--partial) |
-| Array table column headers are not translated | [§6.2](#62-array-table-control--partial) |
-| ~~Colour and duration columns in an array render as plain text — both controls existed only in the renderer registry, and a column dispatches through the cells registry~~ — **fixed** via `antdExtendedCells`; see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) | [§6.2](#62-array-table-control--partial) |
+| Gap                                                                                                                                                                                                                                                                                                                       | Where                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| An error at an object's own path is never displayed — the form can be invalid with nothing on screen                                                                                                                                                                                                                      | [§6.1](#61-object-control-and-additional-properties--partial), [TODO 1](TODO.md) |
+| Blur does not flush a pending edit before its errors are presented                                                                                                                                                                                                                                                        | [§3.10](#310-pending-edits-commit-timing-and-cancellation-18--partial)           |
+| An error inside a composite cell's value does not surface at that cell (exact-path filter)                                                                                                                                                                                                                                | [§6.2](#62-array-table-control--partial)                                         |
+| The array **table** ignores `restrict`, so the two array presentations disagree with each other                                                                                                                                                                                                                           | [§6.2](#62-array-table-control--partial)                                         |
+| Array table column headers are not translated                                                                                                                                                                                                                                                                             | [§6.2](#62-array-table-control--partial)                                         |
+| ~~Colour and duration columns in an array render as plain text — both controls existed only in the renderer registry, and a column dispatches through the cells registry~~ — **fixed** via `antdExtendedCells`; see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) | [§6.2](#62-array-table-control--partial)                                         |
 
 **JSON Forms UI model — unsupported or incomplete**
 
-| Gap | Where |
-| --- | --- |
-| `$dynamic` resolution (§11) — no resolution layer, path grammar or gating. The largest single item, and five design decisions are open before it can start — including whether §11.4's template grammar survives at all, or ICU becomes the one interpolation language | [§3.1](#31-dynamic-resolution-11--missing-entirely), [TODO 6](TODO.md) |
-| Supplying a control's **choices** from outside the schema — `$dynamic` overlays the UI element, never the schema, so there is no portable spelling for a dropdown whose list is fetched or host-supplied | [§3.1a](#31a-what-11-does-not-cover-and-a-renderer-set-will-need-anyway) |
-| Markup and interpolation on elements **other than** `Label` — a control's `description`, a Group's label and a `Button` label read plain text only. Markdown and interpolation are both implemented for `Label` | [§3.7](#37-markdown-and-interpolation-910--partial-was-missing) |
-| `UIDiagnostic` shape and stable codes (§21); diagnostics are ad-hoc console warnings and DOM attributes | [§3.9](#39-diagnostics-21--missing) |
-| `separateReadonlyFromDisabled` (§15) read nowhere; read-only is collapsed into disabled | [§3.11](#311-read-only-separation-15--not-exercised) |
-| Renderer-published `additionalErrors` beyond Monaco — the file control and an invalid duration draft do not participate in validity | [§3.5](#35-renderer-published-additionalerrors--partial-was-missing) |
-| Pre-touch error filtering does not cover array or tuple summaries | [§3.4](#34-pre-touch-error-filtering-15--implemented-for-controls), [TODO 4](TODO.md) |
-| `hideRequiredAsterisk` is honoured on array labels only, not on ordinary controls | [§9.1](#91-hiderequiredasterisk), [TODO 3](TODO.md) |
-| `hideArraySummaryValidation` | [§6.2](#62-array-table-control--partial) |
+| Gap                                                                                                                                                                                                                                                                    | Where                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `$dynamic` resolution (§11) — no resolution layer, path grammar or gating. The largest single item, and five design decisions are open before it can start — including whether §11.4's template grammar survives at all, or ICU becomes the one interpolation language | [§3.1](#31-dynamic-resolution-11--missing-entirely), [TODO 6](TODO.md)                |
+| Supplying a control's **choices** from outside the schema — `$dynamic` overlays the UI element, never the schema, so there is no portable spelling for a dropdown whose list is fetched or host-supplied                                                               | [§3.1a](#31a-what-11-does-not-cover-and-a-renderer-set-will-need-anyway)              |
+| Markup and interpolation on elements **other than** `Label` — a control's `description`, a Group's label and a `Button` label read plain text only. Markdown and interpolation are both implemented for `Label`                                                        | [§3.7](#37-markdown-and-interpolation-910--partial-was-missing)                       |
+| `UIDiagnostic` shape and stable codes (§21); diagnostics are ad-hoc console warnings and DOM attributes                                                                                                                                                                | [§3.9](#39-diagnostics-21--missing)                                                   |
+| `separateReadonlyFromDisabled` (§15) read nowhere; read-only is collapsed into disabled                                                                                                                                                                                | [§3.11](#311-read-only-separation-15--not-exercised)                                  |
+| Renderer-published `additionalErrors` beyond Monaco — the file control and an invalid duration draft do not participate in validity                                                                                                                                    | [§3.5](#35-renderer-published-additionalerrors--partial-was-missing)                  |
+| Pre-touch error filtering does not cover array or tuple summaries                                                                                                                                                                                                      | [§3.4](#34-pre-touch-error-filtering-15--implemented-for-controls), [TODO 4](TODO.md) |
+| `hideRequiredAsterisk` is honoured on array labels only, not on ordinary controls                                                                                                                                                                                      | [§9.1](#91-hiderequiredasterisk), [TODO 3](TODO.md)                                   |
+| `hideArraySummaryValidation`                                                                                                                                                                                                                                           | [§6.2](#62-array-table-control--partial)                                              |
 
 **JSON Schema — unsupported or incomplete**
 
-| Gap | Where |
-| --- | --- |
-| `/#` current-form schema reference | [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react) |
-| A tester resolves a scope only for object schemas — an upstream core defect, patched around here | [TODO 2](TODO.md) |
-| No conformance vectors for any of §25's required areas (path grammar, prototype protection, URL policy, ICU subset, Markdown profiles, span formula, mixed sizing, wrap/auto-fit, hidden effective children, Spacer sizing, out-of-domain preservation) | [§10](#10-test-and-example-coverage) |
+| Gap                                                                                                                                                                                                                                                     | Where                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `/#` current-form schema reference                                                                                                                                                                                                                      | [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react) |
+| A tester resolves a scope only for object schemas — an upstream core defect, patched around here                                                                                                                                                        | [TODO 2](TODO.md)                                                        |
+| No conformance vectors for any of §25's required areas (path grammar, prototype protection, URL policy, ICU subset, Markdown profiles, span formula, mixed sizing, wrap/auto-fit, hidden effective children, Spacer sizing, out-of-domain preservation) | [§10](#10-test-and-example-coverage)                                     |
 
 **Worked spec examples**
 
@@ -121,13 +121,13 @@ comparison only.
 
 Each finding carries a status:
 
-| Status | Meaning |
-| --- | --- |
-| **Missing** | No implementation exists. Needs to be built. |
-| **Partial** | Selected and rendered, but one or more contracted behaviors are absent. |
-| **Divergent** | Implemented with a different encoding or semantics than the spec defines. |
+| Status          | Meaning                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Missing**     | No implementation exists. Needs to be built.                                                                            |
+| **Partial**     | Selected and rendered, but one or more contracted behaviors are absent.                                                 |
+| **Divergent**   | Implemented with a different encoding or semantics than the spec defines.                                               |
 | **Unspecified** | Implemented here, with no corresponding specification entry. The spec needs an entry, or the behavior needs a decision. |
-| **Deliberate** | A documented, intentional departure. No work implied. |
+| **Deliberate**  | A documented, intentional departure. No work implied.                                                                   |
 
 ---
 
@@ -135,69 +135,69 @@ Each finding carries a status:
 
 ### 1.1 JSON Forms conventions and reviewed adaptations (§18, "Existing JSON Forms conventions")
 
-| Spec entry | Implementation | Status |
-| --- | --- | --- |
-| String control | `TextControl` / `AntdInputText` | Partial |
-| Number control | `NumberControl` / `AntdInputNumber` | Partial |
-| Integer control | `IntegerControl` / `AntdInputInteger` | Partial |
-| Multiline string control | `AntdInputText`, `options.multi` branch | Partial |
-| Boolean control | `BooleanControl` / `AntdCheckbox` | Partial |
-| Boolean switch control | `BooleanToggleControl` / `AntdToggle` | Partial |
-| Slider control | `SliderControl` / `AntdSlider` | Partial |
-| Password control | `PasswordControl` / `PasswordCell`, plus `PasswordOtpControl` for `variant: "otp"` | Implemented |
-| Date control | `DateControl` / `AntdDatePicker` | Partial |
-| Time control | `TimeControl` / `AntdTimePicker` | Partial |
-| Date-time control | `DateTimeControl` / `AntdDateTimePicker` | Partial |
-| Enum choice control | `EnumControl` / `AntdSelect` | Partial |
-| Named choice control | `OneOfEnumControl` | Partial |
-| Autocomplete choice control | `AntdSelect` `options.autocomplete`, default off | Implemented |
-| Radio choice control | `RadioGroupControl`, `OneOfRadioGroupControl` | Partial |
-| Suggested string control | `AntdInputText` `options.suggestion` → antd `AutoComplete` | Partial |
-| String-or-enum control | `AnyOfStringOrEnumControl` | Partial |
-| Masked string control | `AntdMaskControl` / `AntdMaskInput`, on maska | Implemented |
-| Enum array / checkbox group | `EnumArrayRenderer` | Partial |
-| Object control | `ObjectRenderer` + `AdditionalProperties` | Partial |
-| Array table control | `ArrayControlRenderer` / `TableControl` | Partial |
-| Expandable array detail control | `ArrayLayoutRenderer` / `ArrayLayout` | Partial |
+| Spec entry                      | Implementation                                                                     | Status      |
+| ------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
+| String control                  | `TextControl` / `AntdInputText`                                                    | Partial     |
+| Number control                  | `NumberControl` / `AntdInputNumber`                                                | Partial     |
+| Integer control                 | `IntegerControl` / `AntdInputInteger`                                              | Partial     |
+| Multiline string control        | `AntdInputText`, `options.multi` branch                                            | Partial     |
+| Boolean control                 | `BooleanControl` / `AntdCheckbox`                                                  | Partial     |
+| Boolean switch control          | `BooleanToggleControl` / `AntdToggle`                                              | Partial     |
+| Slider control                  | `SliderControl` / `AntdSlider`                                                     | Partial     |
+| Password control                | `PasswordControl` / `PasswordCell`, plus `PasswordOtpControl` for `variant: "otp"` | Implemented |
+| Date control                    | `DateControl` / `AntdDatePicker`                                                   | Partial     |
+| Time control                    | `TimeControl` / `AntdTimePicker`                                                   | Partial     |
+| Date-time control               | `DateTimeControl` / `AntdDateTimePicker`                                           | Partial     |
+| Enum choice control             | `EnumControl` / `AntdSelect`                                                       | Partial     |
+| Named choice control            | `OneOfEnumControl`                                                                 | Partial     |
+| Autocomplete choice control     | `AntdSelect` `options.autocomplete`, default off                                   | Implemented |
+| Radio choice control            | `RadioGroupControl`, `OneOfRadioGroupControl`                                      | Partial     |
+| Suggested string control        | `AntdInputText` `options.suggestion` → antd `AutoComplete`                         | Partial     |
+| String-or-enum control          | `AnyOfStringOrEnumControl`                                                         | Partial     |
+| Masked string control           | `AntdMaskControl` / `AntdMaskInput`, on maska                                      | Implemented |
+| Enum array / checkbox group     | `EnumArrayRenderer`                                                                | Partial     |
+| Object control                  | `ObjectRenderer` + `AdditionalProperties`                                          | Partial     |
+| Array table control             | `ArrayControlRenderer` / `TableControl`                                            | Partial     |
+| Expandable array detail control | `ArrayLayoutRenderer` / `ArrayLayout`                                              | Partial     |
 
 ### 1.2 Structural renderers and unbound elements
 
-| Spec entry | Implementation | Status |
-| --- | --- | --- |
-| Horizontal layout | `HorizontalLayout` (base, rank 2) and `HorizontalColumnsLayoutRenderer` (extended, rank 3) | Divergent |
-| Vertical layout | `VerticalLayout` | Partial |
-| Group | `GroupLayout` + `useGroupState` | Partial |
-| Categorization (tabs) | `CategorizationLayout` | Partial |
-| Categorization stepper | `CategorizationStepperLayout` | Partial |
-| Categorization accordion | `CategorizationAccordionLayout` | Implemented |
-| Label | `LabelRenderer` | Partial |
-| List with detail | `ListWithDetailRenderer` | Partial |
+| Spec entry               | Implementation                                                                             | Status      |
+| ------------------------ | ------------------------------------------------------------------------------------------ | ----------- |
+| Horizontal layout        | `HorizontalLayout` (base, rank 2) and `HorizontalColumnsLayoutRenderer` (extended, rank 3) | Divergent   |
+| Vertical layout          | `VerticalLayout`                                                                           | Partial     |
+| Group                    | `GroupLayout` + `useGroupState`                                                            | Partial     |
+| Categorization (tabs)    | `CategorizationLayout`                                                                     | Partial     |
+| Categorization stepper   | `CategorizationStepperLayout`                                                              | Partial     |
+| Categorization accordion | `CategorizationAccordionLayout`                                                            | Implemented |
+| Label                    | `LabelRenderer`                                                                            | Partial     |
+| List with detail         | `ListWithDetailRenderer`                                                                   | Partial     |
 
 ### 1.3 Project extension catalog (§18, "Project extended renderer catalog")
 
-| Spec entry | Implementation | Status |
-| --- | --- | --- |
-| Explicit table with composite cells | `ArrayControlRenderer` forced-table tester, `AntdCompositeCell`, `CompositeDetailDialog` | Partial |
-| Tuple control | `TupleControl`, at rank 25 | Implemented |
-| AG Grid array control | `AgGridControlRenderer.impl` + `AntdAgGridControlRenderer` | Partial |
-| Code editor (Monaco) | `MonacoControlRenderer.impl` + `AntdMonacoControlRenderer` | Partial |
-| Color control | `AntdColorControlRenderer` + `colorFormat` | Complete apart from the validator format and `hsl` output |
-| Duration control | `AntdDurationControlRenderer` + `useDurationControl` | Partial |
-| File control | `FileControl` / `AntdFile` | Partial |
-| Null control | `AntdNullControlRenderer` | Complete for the spec's single-row entry; demonstrated by the `null-control` spec example |
-| Split layout | `SharedSplitLayoutRenderer` (rank 4), `AntdSplitLayoutRenderer` (rank 5) | Partial |
-| Action button | `ButtonRenderer` / `AntdButtonRenderer` | Partial |
-| ImageView | `ImageViewRenderer` | Divergent |
-| Separator | `SeparatorRenderer` | Partial |
-| Spacer | `SpacerRenderer` | Divergent |
-| Link | `LinkRenderer` | **Implemented** |
-| Mixed-value control | `MixedRenderer` + `complex/mixed/*` | Partial |
-| Combinators (oneOf / anyOf / allOf) | `OneOfRenderer`, `AnyOfRenderer`, `AllOfRenderer` | Partial |
-| Additional-properties editor | `AdditionalProperties` | Partial |
-| Template / Slot | `TemplateRenderer`, `SlotRenderer` | Matches the spec |
-| TemplateLayout | `TemplateLayoutRenderer` (Sucrase/JSX) | Divergent |
-| **Chips control (`variant: "chips"`)** | none | **Missing** |
-| **Multi-select control (`variant: "multi-select"`)** | none | **Missing** |
+| Spec entry                                           | Implementation                                                                           | Status                                                                                    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Explicit table with composite cells                  | `ArrayControlRenderer` forced-table tester, `AntdCompositeCell`, `CompositeDetailDialog` | Partial                                                                                   |
+| Tuple control                                        | `TupleControl`, at rank 25                                                               | Implemented                                                                               |
+| AG Grid array control                                | `AgGridControlRenderer.impl` + `AntdAgGridControlRenderer`                               | Partial                                                                                   |
+| Code editor (Monaco)                                 | `MonacoControlRenderer.impl` + `AntdMonacoControlRenderer`                               | Partial                                                                                   |
+| Color control                                        | `AntdColorControlRenderer` + `colorFormat`                                               | Complete apart from the validator format and `hsl` output                                 |
+| Duration control                                     | `AntdDurationControlRenderer` + `useDurationControl`                                     | Partial                                                                                   |
+| File control                                         | `FileControl` / `AntdFile`                                                               | Partial                                                                                   |
+| Null control                                         | `AntdNullControlRenderer`                                                                | Complete for the spec's single-row entry; demonstrated by the `null-control` spec example |
+| Split layout                                         | `SharedSplitLayoutRenderer` (rank 4), `AntdSplitLayoutRenderer` (rank 5)                 | Partial                                                                                   |
+| Action button                                        | `ButtonRenderer` / `AntdButtonRenderer`                                                  | Partial                                                                                   |
+| ImageView                                            | `ImageViewRenderer`                                                                      | Divergent                                                                                 |
+| Separator                                            | `SeparatorRenderer`                                                                      | Partial                                                                                   |
+| Spacer                                               | `SpacerRenderer`                                                                         | Divergent                                                                                 |
+| Link                                                 | `LinkRenderer`                                                                           | **Implemented**                                                                           |
+| Mixed-value control                                  | `MixedRenderer` + `complex/mixed/*`                                                      | Partial                                                                                   |
+| Combinators (oneOf / anyOf / allOf)                  | `OneOfRenderer`, `AnyOfRenderer`, `AllOfRenderer`                                        | Partial                                                                                   |
+| Additional-properties editor                         | `AdditionalProperties`                                                                   | Partial                                                                                   |
+| Template / Slot                                      | `TemplateRenderer`, `SlotRenderer`                                                       | Matches the spec                                                                          |
+| TemplateLayout                                       | `TemplateLayoutRenderer` (Sucrase/JSX)                                                   | Divergent                                                                                 |
+| **Chips control (`variant: "chips"`)**               | none                                                                                     | **Missing**                                                                               |
+| **Multi-select control (`variant: "multi-select"`)** | none                                                                                     | **Missing**                                                                               |
 
 ---
 
@@ -236,7 +236,7 @@ The `schema.format === 'password'` branch has been removed from
 the `Form.Item` error icon all want the same corner, and the shared clear button
 is normally positioned over the control — so an invalid password showed all
 three on top of one another. `Input` differs from `InputNumber` here: it
-*composes* its `suffix` with the feedback icon
+_composes_ its `suffix` with the feedback icon
 (`<>{suffix}{hasFeedback && feedbackIcon}</>`) rather than replacing it, so
 `AntdClearableInput` now accepts a function child that hands the clear button
 back for a control to place in that slot, and `AntdClearValueButton` grows an
@@ -246,7 +246,7 @@ an offset that clears it leaves a gap when it is not.
 
 **`options.variant: "otp"`** adds a fixed-length, one-character-per-box editor
 for verification and backup codes — a project addition, not in the spec; see
-[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). It is a *variant*
+[portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md). It is a _variant_
 rather than a new format because the value is still a password: same schema,
 same storage, same masking and reveal contract. `PasswordOtpControl` ranks 5,
 above the plain control, and is selected only when the schema sets **both**
@@ -313,7 +313,7 @@ not survive, and it normalizes the field on attach, which the spec forbids. See
 
 Selection requires `options.mask` to carry an actual **pattern**. The
 neighbouring families select on the option's presence, so a temporal control
-writing `"mask": false` to disable *its own* format-derived mask became eligible
+writing `"mask": false` to disable _its own_ format-derived mask became eligible
 for the generic masked renderer — the spec names this case ("a boolean temporal
 option must not by itself request a generic masked field") and those families'
 gap review records it as open. A string whose `format` names its own editor
@@ -355,18 +355,18 @@ control at 20 and every array renderer below it. **Both dialects** are
 recognized, which this entry previously asked to be declared: draft-07's
 positional `items` with `additionalItems`, and draft 2020-12's `prefixItems`
 with `items`. `prefixItems` is read first, because 2020-12 uses `items` for the
-*tail* and reading it as the prefix would silently turn one schema into every
+_tail_ and reading it as the prefix would silently turn one schema into every
 position.
 
 **The renderer understands more than the validator does**, and this is the
 sharpest case of it in the set. JSON Forms configures a **draft-07** Ajv, which
 has never heard of `prefixItems`:
 
-| Spelling | Renders the positions | Validates them |
-| --- | --- | --- |
-| `items: [ … ]` + `additionalItems: false` | yes | **yes** |
-| `prefixItems: [ … ]` | yes | **no** — ignored, a bad value passes |
-| `prefixItems: [ … ]` + `items: false` | yes | **rejects every element** |
+| Spelling                                  | Renders the positions | Validates them                       |
+| ----------------------------------------- | --------------------- | ------------------------------------ |
+| `items: [ … ]` + `additionalItems: false` | yes                   | **yes**                              |
+| `prefixItems: [ … ]`                      | yes                   | **no** — ignored, a bad value passes |
+| `prefixItems: [ … ]` + `items: false`     | yes                   | **rejects every element**            |
 
 The third row is the spelling 2020-12 actually recommends, and to a draft-07
 validator `items: false` reads "no items at all" — so a correct 2020-12 tuple
@@ -428,7 +428,7 @@ generic tabs renderer at 1 — the precedence §8 requires of an explicit match.
 the request.~~
 
 It implements **at most one open**, which is a deliberate divergence from §8's
-*exactly* one: activating the open header closes it, so a reader can collapse a
+_exactly_ one: activating the open header closes it, so a reader can collapse a
 long form to its outline. Two open at once remains impossible. See
 [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md), which also
 explains why antd's `Collapse accordion` prop is still not used even though its
@@ -525,14 +525,14 @@ list is neither in the schema nor in the deployed UI schema. Recorded here
 because none of it is an implementation gap: it is the specification's scope,
 and any family implementing §11 will meet the same wall.
 
-| Needed | §11 | Consequence |
-| --- | --- | --- |
-| Fetch remote data | **No I/O at all.** The grammar has no calls and no async | `$dynamic` cannot obtain data, only read what is already present. Remote lookups need an element or a host, not a binding |
-| Supply choices | **Nothing.** Choices come from the schema's `enum`/`oneOf`, or `options.suggestion` (strings only) | `$dynamic` overlays the **UI element**, never the schema, so there is no portable spelling for "these are the options" |
-| Scope for a provider's rows | Namespaces are a closed list: `data`, `item`, `locale`, `config`, `context` | An element supplying scope to its children — structurally what `item` already is — has nowhere to put it |
-| Project a row into a choice | **Nothing** | `EnumOption` is `{label, value}`; a fetched row is not. A composite label (`firstName + ' ' + lastName`) has no expression to build it |
-| Index by a form value | Paths are fixed strings | `context.rates[data.currency]` is **not expressible**. Host context must be resolved per session, not exposed as a lookup table |
-| Derive a boolean | No operators | `readonly` when `status === 'closed'` cannot be written. That is what **rules** are for; `$dynamic` reads, rules decide |
+| Needed                      | §11                                                                                                | Consequence                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Fetch remote data           | **No I/O at all.** The grammar has no calls and no async                                           | `$dynamic` cannot obtain data, only read what is already present. Remote lookups need an element or a host, not a binding              |
+| Supply choices              | **Nothing.** Choices come from the schema's `enum`/`oneOf`, or `options.suggestion` (strings only) | `$dynamic` overlays the **UI element**, never the schema, so there is no portable spelling for "these are the options"                 |
+| Scope for a provider's rows | Namespaces are a closed list: `data`, `item`, `locale`, `config`, `context`                        | An element supplying scope to its children — structurally what `item` already is — has nowhere to put it                               |
+| Project a row into a choice | **Nothing**                                                                                        | `EnumOption` is `{label, value}`; a fetched row is not. A composite label (`firstName + ' ' + lastName`) has no expression to build it |
+| Index by a form value       | Paths are fixed strings                                                                            | `context.rates[data.currency]` is **not expressible**. Host context must be resolved per session, not exposed as a lookup table        |
+| Derive a boolean            | No operators                                                                                       | `readonly` when `status === 'closed'` cannot be written. That is what **rules** are for; `$dynamic` reads, rules decide                |
 
 The first four are why the legacy Vue 2 stack grew a `DataProvider` element and
 a `data-provider-select` renderer beside it
@@ -663,16 +663,16 @@ config entries by catalog id, a global default, and the documented fallback
 (`complex` for mixed type changes, `always` for everything else). Every covered
 operation routes through it.
 
-| Operation | Catalog id | Fallback |
-| --- | --- | --- |
-| Array table row delete | `arrayTable` | `always` |
-| `ArrayLayout` item delete | `arrayLayout` | `always` |
-| `ListWithDetail` item delete | `listWithDetail` | `always` |
-| AG Grid selected-row delete | `agGrid` | `always` |
-| Mixed tree node delete | `mixed` | `always` |
-| Mixed type change and clear | `mixed` | `complex` |
-| `oneOf` branch change and clear | `oneOf` | `always` |
-| Dynamic property delete | `additionalProperties` | `always` |
+| Operation                       | Catalog id             | Fallback  |
+| ------------------------------- | ---------------------- | --------- |
+| Array table row delete          | `arrayTable`           | `always`  |
+| `ArrayLayout` item delete       | `arrayLayout`          | `always`  |
+| `ListWithDetail` item delete    | `listWithDetail`       | `always`  |
+| AG Grid selected-row delete     | `agGrid`               | `always`  |
+| Mixed tree node delete          | `mixed`                | `always`  |
+| Mixed type change and clear     | `mixed`                | `complex` |
+| `oneOf` branch change and clear | `oneOf`                | `always`  |
+| Dynamic property delete         | `additionalProperties` | `always`  |
 
 Two corrections worth noting. The array table used to confirm unconditionally —
 which agreed with the fallback but could not be switched off, so an element
@@ -744,20 +744,20 @@ declares or ships a validator integration.~~
 ([`core/ajv.ts`](../packages/jsonforms-react-extended-renderers/src/core/ajv.ts)),
 used by the web component and the demo:
 
-| Part of the profile | Status |
-| --- | --- |
-| `useDefaults`, `$data`, `discriminator` | **Done** |
-| `color` format | **Done** |
-| Caller-supplied extra formats | **Done** |
+| Part of the profile                                 | Status                                                                                                                                                                                                                           |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useDefaults`, `$data`, `discriminator`             | **Done**                                                                                                                                                                                                                         |
+| `color` format                                      | **Done**                                                                                                                                                                                                                         |
+| Caller-supplied extra formats                       | **Done**                                                                                                                                                                                                                         |
 | ajv-errors (`errorMessage`), ajv-keywords, ajv-i18n | **Done** — ported from the Vue 2 `common` package, including the extended `transform` and the extra `dynamicDefaults`. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
-| `duration` format | **Done** — `ajv-formats` supplies it, and it is what makes §7.4's unbounded components checkable. Verified against `PT90M`, `P400D`, `PT1H591212M` and `P0W` |
-| `password` format | Not validated, and correctly so: JSON Schema treats it as an annotation, and `strictSchema: false` lets it through without constraining the value |
-| `/#` current-form schema reference | Still missing |
+| `duration` format                                   | **Done** — `ajv-formats` supplies it, and it is what makes §7.4's unbounded components checkable. Verified against `PT90M`, `P400D`, `PT1H591212M` and `P0W`                                                                     |
+| `password` format                                   | Not validated, and correctly so: JSON Schema treats it as an annotation, and `strictSchema: false` lets it through without constraining the value                                                                                |
+| `/#` current-form schema reference                  | Still missing                                                                                                                                                                                                                    |
 
 **`$data` is the item to check first in another renderer set**, because it does
 not degrade. Ajv throws `formatMinimum value must be ["string"]` at **compile**
 time, inside `coreReducer` while the JSON Forms store initialises — so one
-schema using the canonical date-range idiom takes the *whole application* down
+schema using the canonical date-range idiom takes the _whole application_ down
 at mount, with a stack that names Ajv and never mentions the schema. A
 per-fixture test cannot catch it; `specExamplesCompile.test.ts` compiles every
 registered example the way the app does, which can.
@@ -824,7 +824,7 @@ Adjustment 35:
   front of the URL policy — otherwise the effective policy is the
   intersection of the two, and a refusal raises no diagnostic.
 - **The Markdown gate defaults open**, unlike every §12 gate. The criterion:
-  a gate defaults closed when what it opens can *act*.
+  a gate defaults closed when what it opens can _act_.
 - **A refusal shows the diagnostic and the text**, unlike a refused template.
 
 ~~Still outstanding: ICU interpolation and `textParams` (§9).~~ —
@@ -955,13 +955,13 @@ Two details to carry across:
 
 - **Loaders, not imports.** antd ships 75 locales and dayjs 143. Each entry is
   a function whose `import()` becomes its own chunk — verified as 28 chunks of
-  ~4–5 KB in the demo build — so the registry *is* the build-time selection of
+  ~4–5 KB in the demo build — so the registry _is_ the build-time selection of
   supported languages and only the one in use is downloaded. The specifiers
   must be literal: a computed `import(path)` cannot be analysed statically, and
   a bundler answers that by emitting either nothing or all 75.
 - **`dayjs.locale()` is global and must be re-applied every time a locale
   becomes active**, not once per fetch. Applying it inside the loader looked
-  right and left the most recently *loaded* language formatting dates, so
+  right and left the most recently _loaded_ language formatting dates, so
   returning to an already-cached locale showed the wrong one.
 
 A tag the build does not carry, and a chunk that fails to load, both fall back
@@ -980,7 +980,7 @@ tooltips and accessible names.
 Fixed with per-locale bundles, the direct counterpart of antd's own: resolution
 is **form catalog → locale bundle → English**, and the ordering is not
 re-implemented, because the bundle's string is handed to the translator as its
-*default message*. See
+_default message_. See
 [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 Three things to carry across, each of which cost something here:
@@ -988,7 +988,7 @@ Three things to carry across, each of which cost something here:
 - **Whatever supplies the default message decides the language.** Twenty-two
   call sites across eight files translated as
   `translate(key, i18nDefaults[key])` — the cells, the composite dialog and
-  summary, the container indicators, the select, the file control. They *do*
+  summary, the container indicators, the select, the file control. They _do_
   call the translator, so they look correct; handing in the English string as
   the default pins them to English anyway. Any renderer set with a
   `Translator` threaded as a prop will have this shape somewhere.
@@ -1013,15 +1013,15 @@ catalog, under a Bulgarian locale, still captioned "Section contains data".
 Source:
 [AntdInputText.tsx](../packages/jsonforms-react-antd-renderers/src/antd-controls/AntdInputText.tsx).
 
-| Spec requirement | Status |
-| --- | --- |
-| `placeholder`, `focus`, `clearable` (default true) | Implemented |
-| `suggestion` → free-text suggestions | Implemented via antd `AutoComplete` |
-| `restrict` + `maxLength` limits entry | **Divergent** — `maxLength` is passed to the input unconditionally; `restrict` is never consulted, so `restrict: false` still prevents entry |
-| Unicode code-point length semantics | **Missing** — antd's `maxLength` and `count.max` measure UTF-16 code units, so `{"maxLength":1}` rejects `"😀"`, which the spec names as the exact failure case |
-| Invalid incoming data preserved, not truncated on render | Needs verification: antd may clip an over-length incoming value |
-| Input-method composition preserved | Not handled explicitly; relies on antd/React behavior |
-| `mask` | Not handled by this control; a mask pattern selects the masked string control instead — see [§2.3](#23-masked-string-control--implemented) |
+| Spec requirement                                         | Status                                                                                                                                                          |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `placeholder`, `focus`, `clearable` (default true)       | Implemented                                                                                                                                                     |
+| `suggestion` → free-text suggestions                     | Implemented via antd `AutoComplete`                                                                                                                             |
+| `restrict` + `maxLength` limits entry                    | **Divergent** — `maxLength` is passed to the input unconditionally; `restrict` is never consulted, so `restrict: false` still prevents entry                    |
+| Unicode code-point length semantics                      | **Missing** — antd's `maxLength` and `count.max` measure UTF-16 code units, so `{"maxLength":1}` rejects `"😀"`, which the spec names as the exact failure case |
+| Invalid incoming data preserved, not truncated on render | Needs verification: antd may clip an over-length incoming value                                                                                                 |
+| Input-method composition preserved                       | Not handled explicitly; relies on antd/React behavior                                                                                                           |
+| `mask`                                                   | Not handled by this control; a mask pattern selects the masked string control instead — see [§2.3](#23-masked-string-control--implemented)                      |
 
 ### 4.2 Multiline string control — **Partial**
 
@@ -1049,17 +1049,17 @@ Sources:
 [AntdInputNumber.tsx](../packages/jsonforms-react-antd-renderers/src/antd-controls/AntdInputNumber.tsx),
 [AntdInputInteger.tsx](../packages/jsonforms-react-antd-renderers/src/antd-controls/AntdInputInteger.tsx).
 
-| Spec requirement | Status |
-| --- | --- |
-| `options.step` | **Missing** — number hard-codes `step={0.1}`; integer passes no step at all |
-| `multipleOf`-derived stepping | **Missing** — the spec's resolution order is `options.step` → `schema.multipleOf` → `0.1` (number) / `1` (integer) |
-| Fractional explicit integer step diagnosed | **Missing** |
-| `minimum`/`maximum` guard step actions and typed commits under `restrict` | **Missing** — no `min`/`max` reaches antd's `InputNumber` |
-| `exclusiveMinimum`/`exclusiveMaximum` preserved in input handling | **Missing** |
-| Parse the complete input before committing | **Fixed.** Both controls use `toCommittableNumber`, which parses with `Number`: `1.9` stays `1.9`, `1e3` becomes `1000`, and a numeric prefix like `12abc` is refused rather than silently becoming `12`. A fractional entry in an integer field is committed as typed so validation can report "must be integer" — rounding would be the same silent substitution in another disguise |
-| Never commit NaN / ±Infinity | **Fixed.** `toCommittableNumber` commits nothing unless `Number.isFinite` passes. Emptiness is tested first, since `Number('')` is `0` and would otherwise turn clearing into committing a zero |
-| Declare supported numeric range and precision; detect silent precision loss | **Missing, and not detectable where it stands** — antd's `InputNumber` converts the text to a JavaScript number before the renderer sees it, so `9007199254740993` has already become `...992`. Catching it needs antd's `stringMode` |
-| Incompatible-value hint (`numeric.incompatibleValue` / `numeric.clearValue`) | **Missing** — the §18 rename-into-a-different-value-schema contract has no hint icon or tooltip |
+| Spec requirement                                                             | Status                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options.step`                                                               | **Missing** — number hard-codes `step={0.1}`; integer passes no step at all                                                                                                                                                                                                                                                                                                            |
+| `multipleOf`-derived stepping                                                | **Missing** — the spec's resolution order is `options.step` → `schema.multipleOf` → `0.1` (number) / `1` (integer)                                                                                                                                                                                                                                                                     |
+| Fractional explicit integer step diagnosed                                   | **Missing**                                                                                                                                                                                                                                                                                                                                                                            |
+| `minimum`/`maximum` guard step actions and typed commits under `restrict`    | **Missing** — no `min`/`max` reaches antd's `InputNumber`                                                                                                                                                                                                                                                                                                                              |
+| `exclusiveMinimum`/`exclusiveMaximum` preserved in input handling            | **Missing**                                                                                                                                                                                                                                                                                                                                                                            |
+| Parse the complete input before committing                                   | **Fixed.** Both controls use `toCommittableNumber`, which parses with `Number`: `1.9` stays `1.9`, `1e3` becomes `1000`, and a numeric prefix like `12abc` is refused rather than silently becoming `12`. A fractional entry in an integer field is committed as typed so validation can report "must be integer" — rounding would be the same silent substitution in another disguise |
+| Never commit NaN / ±Infinity                                                 | **Fixed.** `toCommittableNumber` commits nothing unless `Number.isFinite` passes. Emptiness is tested first, since `Number('')` is `0` and would otherwise turn clearing into committing a zero                                                                                                                                                                                        |
+| Declare supported numeric range and precision; detect silent precision loss  | **Missing, and not detectable where it stands** — antd's `InputNumber` converts the text to a JavaScript number before the renderer sees it, so `9007199254740993` has already become `...992`. Catching it needs antd's `stringMode`                                                                                                                                                  |
+| Incompatible-value hint (`numeric.incompatibleValue` / `numeric.clearValue`) | **Missing** — the §18 rename-into-a-different-value-schema contract has no hint icon or tooltip                                                                                                                                                                                                                                                                                        |
 
 ### 4.4 Slider control — **Partial**
 
@@ -1077,7 +1077,7 @@ value={Number(data || schema.default) as any}
   `schema.minimum` → `0`, each link checked rather than trusted, since the range
   tester requires a default to exist but not that it is a number.
 - ~~**No "Not set" indication.**~~ **Partially fixed.** An uncommitted value is
-  announced as "Not set" rather than as a committed number. The *visible*
+  announced as "Not set" rather than as a committed number. The _visible_
   marking the spec also asks for is still missing.
 
   Worth carrying across: the first fix set `aria-valuetext` **as an attribute
@@ -1088,6 +1088,7 @@ value={Number(data || schema.default) as any}
   slider widget should check that its accessible text lands on the element
   that carries the value, not on the wrapper; nothing warns, and the attribute
   simply disappears.
+
 - ~~`Number(null)` is `0` and `Number("abc")` is `NaN`~~ — both now fall back
   rather than being coerced. A numeric string still positions the thumb, but an
   empty one falls back instead of becoming `Number('')` = 0.
@@ -1162,7 +1163,7 @@ Source:
   a keyboard path nor a caller-supplied `inputProps.disabled` override can
   commit a change to a read-only control.
 - `value={data ?? ''}` maps absence to the empty string, which would spuriously
-  select an enum choice whose value *is* `''`.
+  select an enum choice whose value _is_ `''`.
 - ~~`key={option.label}` collides when two distinct values share a translated
   label~~ **Fixed.** Keyed by value, so distinct values stay distinct choices.
 - No clear affordance; the spec requires the shared clear action, with
@@ -1198,7 +1199,7 @@ Source:
   only what is actually discarded. See
   [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 - ~~**The displayed branch is derived once, at mount.**~~ — **fixed**, and
-  worth checking in any renderer set: a *discriminated* `oneOf` went stale the
+  worth checking in any renderer set: a _discriminated_ `oneOf` went stale the
   moment its discriminator changed, leaving the previous branch's fields on
   screen. Since branch selection is the only way a schema alone decides which
   fields exist, this broke that mechanism entirely. The branch now follows
@@ -1242,8 +1243,9 @@ Source:
   `coreReducer`, and pinned by a test, because if core ever stops doing that
   every other assertion becomes a silent data loss. See
   [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
+
 - ~~**The selected tab is re-derived from the data on every change.**~~ —
-  **fixed**: emptying the value while on a chosen tab left *no* tab selected and
+  **fixed**: emptying the value while on a chosen tab left _no_ tab selected and
   the panel blank, mid-edit. §22 counts the selected tab as runtime state, so
   the choice is the user's once they have made it.
 
@@ -1267,7 +1269,7 @@ anywhere on the form** and no way to be edited.
 combinator keyword and dispatches it. `oneOf` and `anyOf` both used it;
 `allOf` never imported it. Two details make the omission easy to repeat:
 
-- the component is easy to read as "the *selector's* enclosing properties",
+- the component is easy to read as "the _selector's_ enclosing properties",
   and `allOf` has no selector — but the properties are the enclosing object's,
   not the selector's, and are just as real without one;
 - its `combinatorKeyword` prop was typed `'oneOf' | 'anyOf'`, so a renderer set
@@ -1348,17 +1350,17 @@ Implemented and matching the spec:
 
 Gaps:
 
-| Spec requirement | Status |
-| --- | --- |
-| `allowEmptyPropertyNames` (default `false`, UI option overrides config, including `false` over `true`) | **Implemented** — see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
-| Preserve names exactly; trimming is only a blankness check | **Implemented** — `trim()` decides blankness and nothing else, on both Add and Rename |
-| Empty add-name draft must not show inline errors on load or after reset | **Implemented** — the message is suppressed while the box is exactly empty; Add still consults the validation result |
-| Empty-name blank-label presentation | **Implemented** — a blank label, never the literal `""`, with Rename/Delete kept above the value input |
-| Literal dotted / empty key isolated editors | **Implemented** — a key a data path cannot address is edited in a form rooted at its value and written back under its exact key, with the schema rebundled so local `$ref`s still resolve. Such names can also be **created**, not only preserved. **Limitation:** that form validates its own value, so those errors are not part of the containing form's error list |
-| Every matching `patternProperties` schema applies conjunctively (strongest bounds) | **Partial** — `matchingSchemas` is collected, but the combination policy for overlapping scalar constraints needs verification against the spec's `price_total` example |
-| Delete confirmation | **Implemented** through the shared policy — see [§3.3](#33-shared-destructive-change-confirmation-14--implemented) |
-| Object-level errors (e.g. `minProperties` on `{}`) shown near the object editor | **Missing** — `ObjectRenderer` renders no `errors` prop at all. Which errors this actually loses depends on where core maps each one: a `dependencies` failure is mapped onto the missing property and *does* display, while `additionalProperties` (mapped onto a key the dynamic-property editor renders without errors) and `minProperties` (mapped onto the object itself) show nowhere. Worked through in the [object-control example](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/object-control/README.md) |
-| Clearing a dynamic property's value retains the key | **Implemented** — `PRESERVE_DYNAMIC_PROPERTY_OPTION` + `clearedDynamicPropertyValue` in `InputControl` |
+| Spec requirement                                                                                       | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `allowEmptyPropertyNames` (default `false`, UI option overrides config, including `false` over `true`) | **Implemented** — see [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Preserve names exactly; trimming is only a blankness check                                             | **Implemented** — `trim()` decides blankness and nothing else, on both Add and Rename                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Empty add-name draft must not show inline errors on load or after reset                                | **Implemented** — the message is suppressed while the box is exactly empty; Add still consults the validation result                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Empty-name blank-label presentation                                                                    | **Implemented** — a blank label, never the literal `""`, with Rename/Delete kept above the value input                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Literal dotted / empty key isolated editors                                                            | **Implemented** — a key a data path cannot address is edited in a form rooted at its value and written back under its exact key, with the schema rebundled so local `$ref`s still resolve. Such names can also be **created**, not only preserved. **Limitation:** that form validates its own value, so those errors are not part of the containing form's error list                                                                                                                                                                             |
+| Every matching `patternProperties` schema applies conjunctively (strongest bounds)                     | **Partial** — `matchingSchemas` is collected, but the combination policy for overlapping scalar constraints needs verification against the spec's `price_total` example                                                                                                                                                                                                                                                                                                                                                                            |
+| Delete confirmation                                                                                    | **Implemented** through the shared policy — see [§3.3](#33-shared-destructive-change-confirmation-14--implemented)                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Object-level errors (e.g. `minProperties` on `{}`) shown near the object editor                        | **Missing** — `ObjectRenderer` renders no `errors` prop at all. Which errors this actually loses depends on where core maps each one: a `dependencies` failure is mapped onto the missing property and _does_ display, while `additionalProperties` (mapped onto a key the dynamic-property editor renders without errors) and `minProperties` (mapped onto the object itself) show nowhere. Worked through in the [object-control example](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/object-control/README.md) |
+| Clearing a dynamic property's value retains the key                                                    | **Implemented** — `PRESERVE_DYNAMIC_PROPERTY_OPTION` + `clearedDynamicPropertyValue` in `InputControl`                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ### 6.2 Array table control — **Partial**
 
@@ -1375,36 +1377,36 @@ Sources:
 
 Gaps:
 
-| Spec requirement | Status |
-| --- | --- |
-| `restrict` → `minItems`/`maxItems` prevention | **Missing** — only `disableAdd`/`disableRemove` are honored. `ArrayLayout` *does* implement this, so the two array presentations disagree |
-| `hideArraySummaryValidation` | **Missing** |
-| Column header labels translated | **Missing** — `schema.properties[prop].title ?? startCase(prop)`, no translator |
-| Cell error association for nested/composite columns | **Partial** — `ctxToDataCellProps` filters with `(p) => p === path`, an exact match, so an error inside a composite cell's value does not surface at that cell. §18 requires discoverable feedback at the affected cell |
-| Array-level errors presented near the array, including an empty array | **Implemented** via `ArrayLayoutToolbar`/`TableToolbar`. The icon rendered only a **count**, with the messages in a hover-only tooltip and no accessible name, so a screen reader announced "2" and nothing else; §18 asks for an *accessible* explanation, so the icon is now named with the messages — the same fix `util/cellMode.tsx` already carried. Covered by `arrayLevelErrors.test.tsx` |
-| Edits target the original source row after sorting/filtering | Not applicable — the antd table is not sortable here |
+| Spec requirement                                                      | Status                                                                                                                                                                                                                                                                                                                                                                                            |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `restrict` → `minItems`/`maxItems` prevention                         | **Missing** — only `disableAdd`/`disableRemove` are honored. `ArrayLayout` _does_ implement this, so the two array presentations disagree                                                                                                                                                                                                                                                         |
+| `hideArraySummaryValidation`                                          | **Missing**                                                                                                                                                                                                                                                                                                                                                                                       |
+| Column header labels translated                                       | **Missing** — `schema.properties[prop].title ?? startCase(prop)`, no translator                                                                                                                                                                                                                                                                                                                   |
+| Cell error association for nested/composite columns                   | **Partial** — `ctxToDataCellProps` filters with `(p) => p === path`, an exact match, so an error inside a composite cell's value does not surface at that cell. §18 requires discoverable feedback at the affected cell                                                                                                                                                                           |
+| Array-level errors presented near the array, including an empty array | **Implemented** via `ArrayLayoutToolbar`/`TableToolbar`. The icon rendered only a **count**, with the messages in a hover-only tooltip and no accessible name, so a screen reader announced "2" and nothing else; §18 asks for an _accessible_ explanation, so the icon is now named with the messages — the same fix `util/cellMode.tsx` already carried. Covered by `arrayLevelErrors.test.tsx` |
+| Edits target the original source row after sorting/filtering          | Not applicable — the antd table is not sortable here                                                                                                                                                                                                                                                                                                                                              |
 
 ### 6.3 Expandable array-item forms (`ArrayLayout`) — **Partial**
 
 Source:
 [ArrayLayout.tsx](../packages/jsonforms-react-antd-renderers/src/layouts/ArrayLayout.tsx).
 
-| Option | Status |
-| --- | --- |
-| `detail` | Implemented (`findUISchema`, including `GENERATE`) |
-| `elementLabelProp` | Implemented (plus legacy `childLabelProp`), preserving `0`/`false` |
-| `showSortButtons` | Implemented |
-| `restrict` (`minItems`/`maxItems`) | Implemented |
-| `disableAdd` / `disableRemove` | Implemented |
-| `initCollapsed` | **Implemented** — the first item opens by default ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)) |
-| `collapseNewItems` | **Implemented** — a newly added item opens unless set |
-| `hideAvatar` | **Implemented** — the marker goes, the index stays readable |
-| `hideArraySummaryValidation` | **Implemented** — hides the child summary, keeps the array's own errors |
-| Delete confirmation | **Implemented** through the shared policy ([§3.3](#33-shared-destructive-change-confirmation-14--implemented)) |
-| Per-item error indication in the header | **Missing** |
-| Expansion tracks the logical item through reorder | **Missing** — expansion state is the array index (`key: String(index)`), so a move transfers expansion to whatever item now occupies that index |
-| Choice-aware item labels (oneOf/`const` title resolution) | **Missing** — `elementLabelProp` resolves the raw data value only; §18's "Shared array item labels" requires the enum/oneOf label helper |
-| Readable localized item fallback ("Item 1") | **Divergent** — falls back to the bare index string `` `${index}` `` |
+| Option                                                    | Status                                                                                                                                                    |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `detail`                                                  | Implemented (`findUISchema`, including `GENERATE`)                                                                                                        |
+| `elementLabelProp`                                        | Implemented (plus legacy `childLabelProp`), preserving `0`/`false`                                                                                        |
+| `showSortButtons`                                         | Implemented                                                                                                                                               |
+| `restrict` (`minItems`/`maxItems`)                        | Implemented                                                                                                                                               |
+| `disableAdd` / `disableRemove`                            | Implemented                                                                                                                                               |
+| `initCollapsed`                                           | **Implemented** — the first item opens by default ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)) |
+| `collapseNewItems`                                        | **Implemented** — a newly added item opens unless set                                                                                                     |
+| `hideAvatar`                                              | **Implemented** — the marker goes, the index stays readable                                                                                               |
+| `hideArraySummaryValidation`                              | **Implemented** — hides the child summary, keeps the array's own errors                                                                                   |
+| Delete confirmation                                       | **Implemented** through the shared policy ([§3.3](#33-shared-destructive-change-confirmation-14--implemented))                                            |
+| Per-item error indication in the header                   | **Missing**                                                                                                                                               |
+| Expansion tracks the logical item through reorder         | **Missing** — expansion state is the array index (`key: String(index)`), so a move transfers expansion to whatever item now occupies that index           |
+| Choice-aware item labels (oneOf/`const` title resolution) | **Missing** — `elementLabelProp` resolves the raw data value only; §18's "Shared array item labels" requires the enum/oneOf label helper                  |
+| Readable localized item fallback ("Item 1")               | **Divergent** — falls back to the bare index string `` `${index}` ``                                                                                      |
 
 The `avatarStyle` turns the index badge red while any panel is expanded
 (`if (expanded) style.backgroundColor = 'red'`). That appears to be a stray
@@ -1418,7 +1420,7 @@ Source:
 `elementLabelProp` and `detail` are honored, and `hideRequiredAsterisk` is
 applied to the array label. Missing: `showSortButtons`, `restrict`,
 `hideArraySummaryValidation`, and delete confirmation. Selection reconciliation
-after reorder/deletion (the spec requires the selected *logical* item to survive
+after reorder/deletion (the spec requires the selected _logical_ item to survive
 a delete of an earlier item) needs verification.
 
 ### 6.5 Temporal controls — **Partial**
@@ -1430,26 +1432,26 @@ Sources:
 
 This is the largest per-renderer gap after the layout model.
 
-| Spec option / behavior | Status |
-| --- | --- |
-| Schema-format **and** UI `options.format` selection | **Implemented** — the core `isDateControl`/`isTimeControl`/`isDateTimeControl` testers accept both |
-| `dateFormat`, `timeFormat`, `dateTimeFormat` | Implemented |
-| `dateSaveFormat`, `timeSaveFormat`, `dateTimeSaveFormat` | Implemented — but see **the defaults** below |
-| **Default save formats produce values the selecting `format` rejects** | ~~**Broken**~~ — **fixed** |
-| Localized `L` / `LT` / `L LT` display defaults | **Divergent** — hard-coded `'YYYY-MM-DD'`, `'HH:mm'` (or `'hh:mm a'`), `'YYYY-MM-DD HH:mm'`. The spec's default profile is the localized token with those as *fallbacks* |
-| `ampm` | Implemented (time and date-time) |
-| **`formatMinimum` / `formatMaximum` / `formatExclusiveMinimum` / `formatExclusiveMaximum`** | ~~**Missing entirely** — no `disabledDate`, `disabledTime` or `minDate`/`maxDate` is passed.~~ **Fixed** — see §6.5d |
-| **`showActions`** (stage picker edits until OK) | **Missing** |
-| **`okLabel` / `cancelLabel`** | **Missing** (no confirmation actions exist) |
-| **`mask`** | **Missing** — no format-aware input mask, so no `mask: false` opt-out either. This is the temporal boolean, not the generic pattern of [§2.3](#23-masked-string-control--implemented), which is implemented |
-| **`views`** | ~~**Divergent** — the picker mode is *inferred* from `saveFormat`.~~ **Fixed** — `datePickerMode` reads the explicit array and keeps the inference only as a fallback. The divergence is worth checking elsewhere: inferring granularity from the save format lets storage decide interaction, and makes "a month picker that stores a full date" inexpressible |
-| **`pickerIcon`** | **Missing** |
-| **`timezone` / `saveTimezone`** | **Missing** (the spec marks this section PROVISIONAL, so it is not yet a firm obligation) |
-| **Draft feedback** (`dateTime.outOfRange`, explaining a rejected or unappliable edit) | **Missing** |
-| `clearable` | **Missing as an option** — `allowClear={enabled}` is unconditional |
-| `placeholder` defaulting to the effective display format | **Partial** — `options.placeholder` is honored; the format-derived fallback is not supplied |
-| `focus` | Implemented |
-| Mounting/locale change/picker open preserves the stored value exactly | Likely satisfied (`value` is derived, not written back), but not verified for offset spelling and hidden-precision preservation |
+| Spec option / behavior                                                                      | Status                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schema-format **and** UI `options.format` selection                                         | **Implemented** — the core `isDateControl`/`isTimeControl`/`isDateTimeControl` testers accept both                                                                                                                                                                                                                                                              |
+| `dateFormat`, `timeFormat`, `dateTimeFormat`                                                | Implemented                                                                                                                                                                                                                                                                                                                                                     |
+| `dateSaveFormat`, `timeSaveFormat`, `dateTimeSaveFormat`                                    | Implemented — but see **the defaults** below                                                                                                                                                                                                                                                                                                                    |
+| **Default save formats produce values the selecting `format` rejects**                      | ~~**Broken**~~ — **fixed**                                                                                                                                                                                                                                                                                                                                      |
+| Localized `L` / `LT` / `L LT` display defaults                                              | **Divergent** — hard-coded `'YYYY-MM-DD'`, `'HH:mm'` (or `'hh:mm a'`), `'YYYY-MM-DD HH:mm'`. The spec's default profile is the localized token with those as _fallbacks_                                                                                                                                                                                        |
+| `ampm`                                                                                      | Implemented (time and date-time)                                                                                                                                                                                                                                                                                                                                |
+| **`formatMinimum` / `formatMaximum` / `formatExclusiveMinimum` / `formatExclusiveMaximum`** | ~~**Missing entirely** — no `disabledDate`, `disabledTime` or `minDate`/`maxDate` is passed.~~ **Fixed** — see §6.5d                                                                                                                                                                                                                                            |
+| **`showActions`** (stage picker edits until OK)                                             | **Missing**                                                                                                                                                                                                                                                                                                                                                     |
+| **`okLabel` / `cancelLabel`**                                                               | **Missing** (no confirmation actions exist)                                                                                                                                                                                                                                                                                                                     |
+| **`mask`**                                                                                  | **Missing** — no format-aware input mask, so no `mask: false` opt-out either. This is the temporal boolean, not the generic pattern of [§2.3](#23-masked-string-control--implemented), which is implemented                                                                                                                                                     |
+| **`views`**                                                                                 | ~~**Divergent** — the picker mode is _inferred_ from `saveFormat`.~~ **Fixed** — `datePickerMode` reads the explicit array and keeps the inference only as a fallback. The divergence is worth checking elsewhere: inferring granularity from the save format lets storage decide interaction, and makes "a month picker that stores a full date" inexpressible |
+| **`pickerIcon`**                                                                            | **Missing**                                                                                                                                                                                                                                                                                                                                                     |
+| **`timezone` / `saveTimezone`**                                                             | **Missing** (the spec marks this section PROVISIONAL, so it is not yet a firm obligation)                                                                                                                                                                                                                                                                       |
+| **Draft feedback** (`dateTime.outOfRange`, explaining a rejected or unappliable edit)       | **Missing**                                                                                                                                                                                                                                                                                                                                                     |
+| `clearable`                                                                                 | **Missing as an option** — `allowClear={enabled}` is unconditional                                                                                                                                                                                                                                                                                              |
+| `placeholder` defaulting to the effective display format                                    | **Partial** — `options.placeholder` is honored; the format-derived fallback is not supplied                                                                                                                                                                                                                                                                     |
+| `focus`                                                                                     | Implemented                                                                                                                                                                                                                                                                                                                                                     |
+| Mounting/locale change/picker open preserves the stored value exactly                       | Likely satisfied (`value` is derived, not written back), but not verified for offset spelling and hidden-precision preservation                                                                                                                                                                                                                                 |
 
 #### 6.5a The default save formats were invalid — **fixed**
 
@@ -1457,14 +1459,14 @@ The worst bug in this area, and the kind that only a round-trip test finds.
 A temporal control is selected **by** the schema's `format` keyword, so the
 value it writes has to satisfy that same keyword. It did not:
 
-| Option | Was | §18 says | `HH:mm:ss` example | Accepted by `format: "time"` |
-| --- | --- | --- | --- | --- |
-| `timeSaveFormat` | core's `HH:mm:ss` | `HH:mm:ssZ` | `17:04:09` | **no** |
-| `dateTimeSaveFormat` | `YYYY-MM-DD HH:mm` | `YYYY-MM-DDTHH:mm:ssZ` | `2026-10-13 17:00` | **no** |
-| `dateSaveFormat` | `YYYY-MM-DD` | `YYYY-MM-DD` | — | yes |
+| Option               | Was                | §18 says               | `HH:mm:ss` example | Accepted by `format: "time"` |
+| -------------------- | ------------------ | ---------------------- | ------------------ | ---------------------------- |
+| `timeSaveFormat`     | core's `HH:mm:ss`  | `HH:mm:ssZ`            | `17:04:09`         | **no**                       |
+| `dateTimeSaveFormat` | `YYYY-MM-DD HH:mm` | `YYYY-MM-DDTHH:mm:ssZ` | `2026-10-13 17:00` | **no**                       |
+| `dateSaveFormat`     | `YYYY-MM-DD`       | `YYYY-MM-DD`           | —                  | yes                          |
 
 JSON Forms' `createAjv` validates formats in **full** mode, where RFC 3339
-`time` and `date-time` both require seconds *and* a timezone offset. So a time
+`time` and `date-time` both require seconds _and_ a timezone offset. So a time
 control put the form into an error state the moment anyone touched the picker
 — and using the picker again could not repair it, because every value it could
 produce was invalid. That is what makes this worth checking elsewhere: the
@@ -1490,7 +1492,7 @@ browser's local timezone" — which suggests the same ground has been walked.
 Left as-is: §18 marks `timezone` / `saveTimezone` PROVISIONAL and neither is
 implemented, so there is no option to express an intent yet. Recorded so it is
 a decision rather than an accident, and so the temporal example's tests assert
-the *shape* of a displayed time rather than a wall clock.
+the _shape_ of a displayed time rather than a wall clock.
 
 #### 6.5d Format bounds — **fixed**
 
@@ -1530,19 +1532,19 @@ guards across the array, mixed and dynamic-property renderers at once.
 
 Read alongside `packages/jsonforms-svelte-skeleton/src/lib/`:
 
-| There | Here |
-| --- | --- |
+| There                                                                                                    | Here                                                                                                 |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `expandLocaleFormat('LT')` / `('L LT')` for display defaults, via dayjs `localizedFormat` + `localeData` | Hard-coded `HH:mm` / `YYYY-MM-DD HH:mm`. This is the "localized `L`/`LT` defaults" divergence above. |
-| `schemaBounds` driving picker min/max from `formatMinimum` / `formatMaximum` | Missing entirely. |
-| `useSeconds = timeFormat.includes('s')` deriving seconds interaction from the **display** format | Not derived; the picker's granularity comes from the save format instead. |
-| `parseTemporalText` comparing in the entered offset | No equivalent. |
-| `maska` tokens for the temporal `mask` option | Missing. |
+| `schemaBounds` driving picker min/max from `formatMinimum` / `formatMaximum`                             | Missing entirely.                                                                                    |
+| `useSeconds = timeFormat.includes('s')` deriving seconds interaction from the **display** format         | Not derived; the picker's granularity comes from the save format instead.                            |
+| `parseTemporalText` comparing in the entered offset                                                      | No equivalent.                                                                                       |
+| `maska` tokens for the temporal `mask` option                                                            | Missing.                                                                                             |
 
 There is also a **second, competing date/time renderer**:
 [NativeControl.tsx](../packages/jsonforms-react-antd-renderers/src/controls/NativeControl.tsx),
 `rankWith(2, or(isDateControl, isTimeControl))`, which renders a bare
 `<Input type={format}>`. The picker renderers are rank 4, so the pickers win
-under the default registry — but `NativeControl` is registered *before* them in
+under the default registry — but `NativeControl` is registered _before_ them in
 `antdRenderers` and is exported publicly, so a consumer assembling a partial
 registry can get the native input unexpectedly. It has no specification entry
 (see [§8](#8-implemented-without-a-specification-entry)).
@@ -1564,18 +1566,18 @@ Implemented well:
 
 Gaps:
 
-| Spec requirement | Status |
-| --- | --- |
-| UI `accept` takes precedence over `contentMediaType` | **Missing** — only `schema.contentMediaType` reaches antd's `accept`. An explicitly empty `accept` (meaning "no filter") is likewise unsupported |
-| Bounds are *intersected* when both schema and UI supply them | **Divergent** — `getFileSize` returns the schema bound and only falls back to the UI bound, discarding a tighter UI constraint |
-| `restrict` gates *prevention*; validation stays active when disabled | **Missing** — enforcement is unconditional, and `restrict: false` cannot allow the conversion to proceed |
-| Errors published through `additionalErrors` | **Missing** — `onError` is antd-local, so the form reports itself valid. See [§3.5](#35-renderer-published-additionalerrors--partial-was-missing) |
-| Rejection clears the previous committed value | ~~Divergent, data loss~~ **Fixed.** Size is now checked in `beforeUpload`, which returns `Upload.LIST_IGNORE`, so the file is never added to the list, `customRequest` never runs, nothing is read or converted, and the committed value is left alone. The rejection is shown in a `role="alert"` message beneath the control, **naming the rejected file** (`file.rejected`): the kept attachment is still listed above it, so a bare "size should be less than 1 MB" would read as an error about *that* file. A failed *read* of a new file no longer discards the committed value either |
-| Chooser cancellation clears the scoped value | **Missing** — antd's `Dragger` does not surface cancellation |
-| Rejected native selection cleared | **Implemented** — `Upload.LIST_IGNORE` keeps the rejected file out of the list entirely |
-| `clearable`, `focus` | **Missing** |
-| Zero-valued minimum bound | `if (minFileSize)` skips a bound of `0`; harmless but inconsistent with `toNonNegativeNumber` accepting it |
-| `format: "uri"` branch in `toBase64` | **Unspecified** — not in the spec's file-control entry |
+| Spec requirement                                                     | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI `accept` takes precedence over `contentMediaType`                 | **Missing** — only `schema.contentMediaType` reaches antd's `accept`. An explicitly empty `accept` (meaning "no filter") is likewise unsupported                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Bounds are _intersected_ when both schema and UI supply them         | **Divergent** — `getFileSize` returns the schema bound and only falls back to the UI bound, discarding a tighter UI constraint                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `restrict` gates _prevention_; validation stays active when disabled | **Missing** — enforcement is unconditional, and `restrict: false` cannot allow the conversion to proceed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Errors published through `additionalErrors`                          | **Missing** — `onError` is antd-local, so the form reports itself valid. See [§3.5](#35-renderer-published-additionalerrors--partial-was-missing)                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Rejection clears the previous committed value                        | ~~Divergent, data loss~~ **Fixed.** Size is now checked in `beforeUpload`, which returns `Upload.LIST_IGNORE`, so the file is never added to the list, `customRequest` never runs, nothing is read or converted, and the committed value is left alone. The rejection is shown in a `role="alert"` message beneath the control, **naming the rejected file** (`file.rejected`): the kept attachment is still listed above it, so a bare "size should be less than 1 MB" would read as an error about _that_ file. A failed _read_ of a new file no longer discards the committed value either |
+| Chooser cancellation clears the scoped value                         | **Missing** — antd's `Dragger` does not surface cancellation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Rejected native selection cleared                                    | **Implemented** — `Upload.LIST_IGNORE` keeps the rejected file out of the list entirely                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `clearable`, `focus`                                                 | **Missing**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Zero-valued minimum bound                                            | `if (minFileSize)` skips a bound of `0`; harmless but inconsistent with `toNonNegativeNumber` accepting it                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `format: "uri"` branch in `toBase64`                                 | **Unspecified** — not in the spec's file-control entry                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ---
 
@@ -1592,19 +1594,19 @@ theme registry, maximize/restore, `monaco.rows`/`minRows`/`maxRows`/`autoGrow`,
 `monaco.options`, `monaco.initActions`, `options.focus`, read-only propagation,
 and an explicit `convertJson: true` JSON-value mode.
 
-| Spec requirement | Status |
-| --- | --- |
-| **Storage mode inferred from the resolved schema** | **Missing** — `const convert = language === 'json' && options.convertJson === true`. An object/array/number schema with `{"format":"code"}` never enters JSON-value mode, and the tester (`monacoControlTester`) will not even select it: it requires `isStringControl && hasLanguage`, or `language === 'json' && convertJson === true`. The spec's whole inference table is unimplemented |
-| Ambiguous mode reported as a diagnostic and falls back to ordinary rendering | **Missing** |
-| JSON-value mode requires resolved `language: "json"`; otherwise inapplicable with a diagnostic | **Partial** — the conjunction is enforced, but silently (a non-json language with `convertJson: true` just stores text) |
-| **Monaco JSON schema association** (scoped schema on the model URI, preserving `$id`/reference bases, per-instance isolation) | **Missing entirely** |
-| **`propagateErrors`** (default `true`) | **Missing** — the option is read nowhere |
-| One summary `additionalError` per editor instance, with `keyword: "editor.language"`, `errorCount` in params, at the value's `instancePath` | **Missing** |
-| Pending asynchronous validation exposed to combined validity | **Missing** |
-| Stale-result discard by model/version | Not applicable yet |
-| Dynamic language via `$dynamic.options.language` | **Divergent** — implemented as `options[':language']`, a data path resolved by `resolveEditorLanguage`. The spec calls this shape "compatibility handling, not the portable authoring model" |
-| Invalid drafts stay local and do not overwrite the last committed value | **Implemented** — `lastCommitted` ref plus the focused re-sync guard |
-| Empty text vs. JSON null behavior defined | **Divergent** — `encodeEditorValue` maps `null`/`undefined` to `''` and `decodeEditorValue` in text mode maps `''` to `undefined`. The spec requires explicit, documented behavior for null, empty text and invalid drafts, and says empty text is not implicitly JSON null |
+| Spec requirement                                                                                                                            | Status                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Storage mode inferred from the resolved schema**                                                                                          | **Missing** — `const convert = language === 'json' && options.convertJson === true`. An object/array/number schema with `{"format":"code"}` never enters JSON-value mode, and the tester (`monacoControlTester`) will not even select it: it requires `isStringControl && hasLanguage`, or `language === 'json' && convertJson === true`. The spec's whole inference table is unimplemented |
+| Ambiguous mode reported as a diagnostic and falls back to ordinary rendering                                                                | **Missing**                                                                                                                                                                                                                                                                                                                                                                                 |
+| JSON-value mode requires resolved `language: "json"`; otherwise inapplicable with a diagnostic                                              | **Partial** — the conjunction is enforced, but silently (a non-json language with `convertJson: true` just stores text)                                                                                                                                                                                                                                                                     |
+| **Monaco JSON schema association** (scoped schema on the model URI, preserving `$id`/reference bases, per-instance isolation)               | **Missing entirely**                                                                                                                                                                                                                                                                                                                                                                        |
+| **`propagateErrors`** (default `true`)                                                                                                      | **Missing** — the option is read nowhere                                                                                                                                                                                                                                                                                                                                                    |
+| One summary `additionalError` per editor instance, with `keyword: "editor.language"`, `errorCount` in params, at the value's `instancePath` | **Missing**                                                                                                                                                                                                                                                                                                                                                                                 |
+| Pending asynchronous validation exposed to combined validity                                                                                | **Missing**                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stale-result discard by model/version                                                                                                       | Not applicable yet                                                                                                                                                                                                                                                                                                                                                                          |
+| Dynamic language via `$dynamic.options.language`                                                                                            | **Divergent** — implemented as `options[':language']`, a data path resolved by `resolveEditorLanguage`. The spec calls this shape "compatibility handling, not the portable authoring model"                                                                                                                                                                                                |
+| Invalid drafts stay local and do not overwrite the last committed value                                                                     | **Implemented** — `lastCommitted` ref plus the focused re-sync guard                                                                                                                                                                                                                                                                                                                        |
+| Empty text vs. JSON null behavior defined                                                                                                   | **Divergent** — `encodeEditorValue` maps `null`/`undefined` to `''` and `decodeEditorValue` in text mode maps `''` to `undefined`. The spec requires explicit, documented behavior for null, empty text and invalid drafts, and says empty text is not implicitly JSON null                                                                                                                 |
 
 ### 7.2 AG Grid array control — **Partial**
 
@@ -1630,15 +1632,15 @@ Implemented and matching the spec:
 
 Gaps:
 
-| Spec requirement | Status |
-| --- | --- |
-| **`gridHeight`** (default `400px`) | **Divergent** — the code reads `options.height ?? 400` |
-| **`gridWidth`** (default `100%`) | **Missing** |
+| Spec requirement                                                                               | Status                                                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`gridHeight`** (default `400px`)                                                             | **Divergent** — the code reads `options.height ?? 400`                                                                                                                             |
+| **`gridWidth`** (default `100%`)                                                               | **Missing**                                                                                                                                                                        |
 | Recursive merge of `config.agGridOptions` under `options.agGridOptions`, arrays replaced whole | **Missing** — `{ ...props.config, ...props.uischema.options }` is a shallow spread, so a local `agGridOptions` replaces the global one entirely rather than merging object members |
-| `agGridOptions.defaultColDef` overrides honored | **Missing** — `defaultColDef` is written as a JSX prop *after* `{...gridOptions}`, so a user-supplied `defaultColDef` is discarded |
-| `hideArraySummaryValidation` | **Missing** |
-| Tuple item shapes declared | **Divergent** — `props.schema.items[0]` silently treats a tuple as uniform. The spec requires item-shape support to be declared rather than assumed |
-| Delete confirmation | **Deliberate** — the spec records that Svelte's grid deletes without confirming and treats confirmation as per-renderer policy |
+| `agGridOptions.defaultColDef` overrides honored                                                | **Missing** — `defaultColDef` is written as a JSX prop _after_ `{...gridOptions}`, so a user-supplied `defaultColDef` is discarded                                                 |
+| `hideArraySummaryValidation`                                                                   | **Missing**                                                                                                                                                                        |
+| Tuple item shapes declared                                                                     | **Divergent** — `props.schema.items[0]` silently treats a tuple as uniform. The spec requires item-shape support to be declared rather than assumed                                |
+| Delete confirmation                                                                            | **Deliberate** — the spec records that Svelte's grid deletes without confirming and treats confirmation as per-renderer policy                                                     |
 
 ### 7.3 Color control — **Implemented**, apart from the validator format and `hsl` output
 
@@ -1649,28 +1651,28 @@ Example:
 [color-control](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/examples/color-control/README.md).
 Amendments: [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
-| Spec requirement | Status |
-| --- | --- |
-| Schema `format: "color"` selection | Implemented |
-| UI `options.format: "color"` selection | Implemented — the registry now registers the shared `extendedColorTester`, which carries both paths. ~~Missing: `antdColorControlTester` was `rankWith(3, and(isStringControl, formatIs('color')))`~~. **The same defect remains for duration and null** |
-| `colorSaveFormat: "hex"` (default) | Implemented |
-| `colorSaveFormat: "hex3"` with `round(channel / 17)` quantization | Implemented, matching the spec's `#ed5050` → `#e55` vector |
-| `colorSaveFormat: "rgb"` | Implemented. ~~Missing — an unrecognized value silently fell through to hex~~. An unrecognized value now falls back to `hex` explicitly |
-| **`colorSaveFormat: "hsl"`** | **Deliberately not implemented** — antd's picker has no HSL panel, and a save format the editor cannot display means editing one model while storing another. `hsl` stays **accepted as input**; authoring it as a save format falls back to `hex`. See Adjustment 8.1 |
-| `colorSaveFormat: "hsb"` | Implemented — an addition, not in the spec's four, and the model the picker actually edits in; see Adjustment 8.1 |
-| The picker panel opening on the stored format | Implemented — controlled and reset on each opening; `defaultFormat` alone reopened on whichever tab was left selected. See Adjustment 8.2 |
-| Accepting every supported representation as typed input, whatever the save format | Implemented — `#RGB`/`#RRGGBB`/`#RRGGBBAA`, `rgb()`/`rgba()`, `hsl()`/`hsla()`, `hsb()`/`hsba()` |
-| Serializing successful text edits to `colorSaveFormat` | Implemented, on blur rather than per keystroke; see Adjustment 8.4 |
-| Alpha handling: `#RRGGBBAA` output for hex, never silently discarding alpha | Implemented. ~~Partial — `toHex3`'s regex captured an alpha pair and dropped it~~. A transparent edit under `hex3` is now refused with the localized `color.hex3Transparency` guidance |
-| Existing transparent values not made opaque by picker edits | Implemented — alpha survives every format that can carry it, and `hex3` refuses rather than flattening |
-| `placeholder` | Implemented. ~~Missing — hard-coded `'#RRGGBB'`~~. An authored hint wins; otherwise it is the syntax of the configured representation |
-| `focus` | Implemented. ~~Missing~~ |
-| `clearable` as an opt-out | Implemented. ~~Partial — `clearable: false` was not honored~~. It now removes the input's affordance and the picker panel's |
-| Clearing from inside the picker | Implemented — the only affordance when text entry is off; see Adjustment 8.6 |
-| `colorTextEntry` (picker without the text field) | Implemented — a project addition; see Adjustment 8.5 |
-| Existing values not normalized on mount | Implemented |
-| Invalid values kept visible rather than replaced by the picker's fallback | Implemented — parsing is decidable rather than delegated to the picker's color object, which cannot fail; see Adjustment 8.3 |
-| Registered `color` format on the validator | **Missing** — see [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react). A value outside the profile is refused by the control but reported by nothing |
+| Spec requirement                                                                  | Status                                                                                                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schema `format: "color"` selection                                                | Implemented                                                                                                                                                                                                                                                            |
+| UI `options.format: "color"` selection                                            | Implemented — the registry now registers the shared `extendedColorTester`, which carries both paths. ~~Missing: `antdColorControlTester` was `rankWith(3, and(isStringControl, formatIs('color')))`~~. **The same defect remains for duration and null**               |
+| `colorSaveFormat: "hex"` (default)                                                | Implemented                                                                                                                                                                                                                                                            |
+| `colorSaveFormat: "hex3"` with `round(channel / 17)` quantization                 | Implemented, matching the spec's `#ed5050` → `#e55` vector                                                                                                                                                                                                             |
+| `colorSaveFormat: "rgb"`                                                          | Implemented. ~~Missing — an unrecognized value silently fell through to hex~~. An unrecognized value now falls back to `hex` explicitly                                                                                                                                |
+| **`colorSaveFormat: "hsl"`**                                                      | **Deliberately not implemented** — antd's picker has no HSL panel, and a save format the editor cannot display means editing one model while storing another. `hsl` stays **accepted as input**; authoring it as a save format falls back to `hex`. See Adjustment 8.1 |
+| `colorSaveFormat: "hsb"`                                                          | Implemented — an addition, not in the spec's four, and the model the picker actually edits in; see Adjustment 8.1                                                                                                                                                      |
+| The picker panel opening on the stored format                                     | Implemented — controlled and reset on each opening; `defaultFormat` alone reopened on whichever tab was left selected. See Adjustment 8.2                                                                                                                              |
+| Accepting every supported representation as typed input, whatever the save format | Implemented — `#RGB`/`#RRGGBB`/`#RRGGBBAA`, `rgb()`/`rgba()`, `hsl()`/`hsla()`, `hsb()`/`hsba()`                                                                                                                                                                       |
+| Serializing successful text edits to `colorSaveFormat`                            | Implemented, on blur rather than per keystroke; see Adjustment 8.4                                                                                                                                                                                                     |
+| Alpha handling: `#RRGGBBAA` output for hex, never silently discarding alpha       | Implemented. ~~Partial — `toHex3`'s regex captured an alpha pair and dropped it~~. A transparent edit under `hex3` is now refused with the localized `color.hex3Transparency` guidance                                                                                 |
+| Existing transparent values not made opaque by picker edits                       | Implemented — alpha survives every format that can carry it, and `hex3` refuses rather than flattening                                                                                                                                                                 |
+| `placeholder`                                                                     | Implemented. ~~Missing — hard-coded `'#RRGGBB'`~~. An authored hint wins; otherwise it is the syntax of the configured representation                                                                                                                                  |
+| `focus`                                                                           | Implemented. ~~Missing~~                                                                                                                                                                                                                                               |
+| `clearable` as an opt-out                                                         | Implemented. ~~Partial — `clearable: false` was not honored~~. It now removes the input's affordance and the picker panel's                                                                                                                                            |
+| Clearing from inside the picker                                                   | Implemented — the only affordance when text entry is off; see Adjustment 8.6                                                                                                                                                                                           |
+| `colorTextEntry` (picker without the text field)                                  | Implemented — a project addition; see Adjustment 8.5                                                                                                                                                                                                                   |
+| Existing values not normalized on mount                                           | Implemented                                                                                                                                                                                                                                                            |
+| Invalid values kept visible rather than replaced by the picker's fallback         | Implemented — parsing is decidable rather than delegated to the picker's color object, which cannot fail; see Adjustment 8.3                                                                                                                                           |
+| Registered `color` format on the validator                                        | **Missing** — see [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react). A value outside the profile is refused by the control but reported by nothing                                                                                              |
 
 Covered by `test/colorFormat.test.ts` (encoding, 24 cases) and
 `test/colorControl.test.tsx` (the control, 38 cases).
@@ -1688,15 +1690,15 @@ units in play with an add control for the rest, `placeholder`, `focus`, and the
 shared clear affordance. See
 [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
-| Spec requirement | Status |
-| --- | --- |
-| **Syntax-aware mask or equivalent guided text editing** | **Missing** — the text field is a plain `Input`; every keystroke commits directly via `handleChange` |
-| Partial prefixes (`P`, `PT1`) kept as local drafts, never overwriting the last committed value | **Divergent** — typing commits the partial string immediately |
-| Invalid characters and pasted input prevented where possible | **Missing** |
-| Invalid uncommitted drafts participate in diagnostics/validity | **Partial** — ~~the error is a hard-coded English string~~; it is translated now, but still local to the control, and no `additionalError` is published. See [§3.5](#35-renderer-published-additionalerrors--partial-was-missing) |
-| `okLabel` / `cancelLabel` translated as keys with literal fallback | ~~**Divergent**~~ — **fixed**; an explicit label is translated as a key first and used literally if it does not resolve |
-| Field labels localized | ~~**Missing**~~ — **fixed**; the units, the mode switch and the add/remove actions are keys, and follow the locale bundles of [§3.13](#313-the-renderer-sets-own-strings-did-not-follow-the-locale--fixed) |
-| Fractional/negative duration support declared | **Missing** (the baseline non-negative integer support matches the spec; the declaration does not exist) |
+| Spec requirement                                                                               | Status                                                                                                                                                                                                                            |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Syntax-aware mask or equivalent guided text editing**                                        | **Missing** — the text field is a plain `Input`; every keystroke commits directly via `handleChange`                                                                                                                              |
+| Partial prefixes (`P`, `PT1`) kept as local drafts, never overwriting the last committed value | **Divergent** — typing commits the partial string immediately                                                                                                                                                                     |
+| Invalid characters and pasted input prevented where possible                                   | **Missing**                                                                                                                                                                                                                       |
+| Invalid uncommitted drafts participate in diagnostics/validity                                 | **Partial** — ~~the error is a hard-coded English string~~; it is translated now, but still local to the control, and no `additionalError` is published. See [§3.5](#35-renderer-published-additionalerrors--partial-was-missing) |
+| `okLabel` / `cancelLabel` translated as keys with literal fallback                             | ~~**Divergent**~~ — **fixed**; an explicit label is translated as a key first and used literally if it does not resolve                                                                                                           |
+| Field labels localized                                                                         | ~~**Missing**~~ — **fixed**; the units, the mode switch and the add/remove actions are keys, and follow the locale bundles of [§3.13](#313-the-renderer-sets-own-strings-did-not-follow-the-locale--fixed)                        |
+| Fractional/negative duration support declared                                                  | **Missing** (the baseline non-negative integer support matches the spec; the declaration does not exist)                                                                                                                          |
 
 **The components were capped as if they were clock fields — fixed, and the
 one most worth checking elsewhere.** The picker bounded months at 11 and
@@ -1731,14 +1733,14 @@ the layout type, and the shared version has proper separator semantics
 which satisfies the spec's accessibility requirement better than the antd
 version, whose accessibility depends on antd's `Splitter`.
 
-| Spec requirement | Status |
-| --- | --- |
-| **`resizable`** (default `true`; `false` disables dragging) | **Implemented** in the shared renderer — the separator stays as a boundary but is no longer focusable or draggable |
-| Initial sizes use normal layout sizing | **Implemented** — `initialSplitSizes` divides by `options.layout.weight`, so equal shares are what Auto produces rather than a rule; `span` is ignored, as the spec advises |
-| Hidden children leave layout | **Implemented** in the shared renderer |
-| `splitter` + `wrap` unsupported | Not applicable (no `wrap` support) |
-| Dragged sizes are runtime state, not UI schema | Implemented |
-| Vertical splitters require definite height | Implemented via `options.height` with a `20rem` fallback |
+| Spec requirement                                            | Status                                                                                                                                                                      |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`resizable`** (default `true`; `false` disables dragging) | **Implemented** in the shared renderer — the separator stays as a boundary but is no longer focusable or draggable                                                          |
+| Initial sizes use normal layout sizing                      | **Implemented** — `initialSplitSizes` divides by `options.layout.weight`, so equal shares are what Auto produces rather than a rule; `span` is ignored, as the spec advises |
+| Hidden children leave layout                                | **Implemented** in the shared renderer                                                                                                                                      |
+| `splitter` + `wrap` unsupported                             | Not applicable (no `wrap` support)                                                                                                                                          |
+| Dragged sizes are runtime state, not UI schema              | Implemented                                                                                                                                                                 |
+| Vertical splitters require definite height                  | Implemented via `options.height` with a `20rem` fallback                                                                                                                    |
 
 ### 7.6 Action button — **Implemented** (was Partial)
 
@@ -1750,21 +1752,21 @@ Sources:
 The column on the right is what each item **was**; every one marked fixed is
 kept here so it can be checked against another renderer set.
 
-| Spec field / behavior | Was | Now |
-| --- | --- | --- |
-| Top-level `label` | **Partial** — read, but `options.label`/`options.text` take precedence, and `uischema.text`/`uischema.name` are additional undocumented fallbacks | **Fixed** — top level first, then i18n, then the legacy `options` fallbacks |
-| Top-level `action` | **Divergent** — read from `options.action` first, then **invented** from `uischema.name ?? label`. The spec has no such fallback; an unnamed Button should not dispatch a command derived from its visible text | **Fixed** — the label fallback is gone; `name` remains |
-| Top-level `params` | **Missing** — never populated on the emitted event; the spec requires missing params to be normalized to `{}` | **Fixed**, including the `{}` normalization |
-| `icon` | **Missing** | Accepted and passed on; no icon set is wired up, so nothing is drawn |
-| `color` | **Missing** — the antd binding hard-codes `type: 'primary'` | **Fixed** — the six semantic names, mapped by the renderer set |
-| **`script`** as a string | **Missing entirely** | **Fixed** — async function body, `this` = ActionEvent, gated on `allowScriptEvaluation` |
-| **`script`** as a function | Silently swallowed — stringified into an `AsyncFunction` body, where `() => {…}` is a discarded closure | **Fixed** — run with the event as **argument and `this`**, and **not** gated: the permission is about compiling a *string* |
-| `action` and `script` mutually exclusive | Not applicable yet | **Fixed** — the type forbids both; at runtime **`action` wins**, with a warning |
-| Awaits the complete promise | **Missing** — `handleAction?.(...)` is fire-and-forget | **Fixed** |
-| Pending/loading state | **Missing** | **Fixed** |
-| Duplicate activation prevented while pending | **Missing** | **Fixed** |
-| Rejection clears pending and propagates | **Missing** | **Fixed** |
-| `ActionEvent` shape (`context`, `$el`, `element`, `callback`) | **Partial** | `context` added; `$el` and `callback` remain absent — they belong to the web-component round trip |
+| Spec field / behavior                                         | Was                                                                                                                                                                                                             | Now                                                                                                                        |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Top-level `label`                                             | **Partial** — read, but `options.label`/`options.text` take precedence, and `uischema.text`/`uischema.name` are additional undocumented fallbacks                                                               | **Fixed** — top level first, then i18n, then the legacy `options` fallbacks                                                |
+| Top-level `action`                                            | **Divergent** — read from `options.action` first, then **invented** from `uischema.name ?? label`. The spec has no such fallback; an unnamed Button should not dispatch a command derived from its visible text | **Fixed** — the label fallback is gone; `name` remains                                                                     |
+| Top-level `params`                                            | **Missing** — never populated on the emitted event; the spec requires missing params to be normalized to `{}`                                                                                                   | **Fixed**, including the `{}` normalization                                                                                |
+| `icon`                                                        | **Missing**                                                                                                                                                                                                     | Accepted and passed on; no icon set is wired up, so nothing is drawn                                                       |
+| `color`                                                       | **Missing** — the antd binding hard-codes `type: 'primary'`                                                                                                                                                     | **Fixed** — the six semantic names, mapped by the renderer set                                                             |
+| **`script`** as a string                                      | **Missing entirely**                                                                                                                                                                                            | **Fixed** — async function body, `this` = ActionEvent, gated on `allowScriptEvaluation`                                    |
+| **`script`** as a function                                    | Silently swallowed — stringified into an `AsyncFunction` body, where `() => {…}` is a discarded closure                                                                                                         | **Fixed** — run with the event as **argument and `this`**, and **not** gated: the permission is about compiling a _string_ |
+| `action` and `script` mutually exclusive                      | Not applicable yet                                                                                                                                                                                              | **Fixed** — the type forbids both; at runtime **`action` wins**, with a warning                                            |
+| Awaits the complete promise                                   | **Missing** — `handleAction?.(...)` is fire-and-forget                                                                                                                                                          | **Fixed**                                                                                                                  |
+| Pending/loading state                                         | **Missing**                                                                                                                                                                                                     | **Fixed**                                                                                                                  |
+| Duplicate activation prevented while pending                  | **Missing**                                                                                                                                                                                                     | **Fixed**                                                                                                                  |
+| Rejection clears pending and propagates                       | **Missing**                                                                                                                                                                                                     | **Fixed**                                                                                                                  |
+| `ActionEvent` shape (`context`, `$el`, `element`, `callback`) | **Partial**                                                                                                                                                                                                     | `context` added; `$el` and `callback` remain absent — they belong to the web-component round trip                          |
 
 `options.disabled` is an additional, unspecified input, and is retained. Note
 the spec's guidance that a link-like appearance may be offered through
@@ -1775,10 +1777,10 @@ exists today.
 
 `.call()` **cannot bind an arrow function's `this`** — it is lexical. A
 renderer set that follows the specification's `this`-binding for a
-*function*-valued script gives every idiomatic `() => this.context` a silent
+_function_-valued script gives every idiomatic `() => this.context` a silent
 `undefined`. Passing the event as an argument as well costs one word and makes
 the mistake unreachable.
- The `action`-from-`label`
+The `action`-from-`label`
 fallback is worse than it reads: once labels are translated, the action name
 **changes with the form's language**, so a host answering `setLocale` in
 English silently stops recognising it in Bulgarian. And the duplicate-activation
@@ -1794,8 +1796,9 @@ Source:
 [ImageViewRenderer.tsx](../packages/jsonforms-react-extended-renderers/src/renderers/ImageViewRenderer.tsx).
 
 ~~- **Reads `options.src` / `options.alt`, not the spec's top-level `src` / `alt`.**
-  A spec-conformant `{"type":"ImageView","src":"/logo.png","alt":"Company"}`
-  renders nothing.
+A spec-conformant `{"type":"ImageView","src":"/logo.png","alt":"Company"}`
+renders nothing.
+
 - **No `scope` resolution.** The spec requires at least one of `src` or `scope`,
   with `scope` resolved against the current schema/data context including the
   current array-item path.
@@ -1864,16 +1867,16 @@ rename with parent-schema name validation, delete with selection
 reconciliation, `restrict` against parent `minItems`/`minProperties`, and
 ancestor `readOnly` inheritance.
 
-| Spec requirement | Status |
-| --- | --- |
-| Selection on the **resolved** schema | **Implemented** — the tester used to judge the enclosing schema, so a union-typed *declared property* never reached this renderer and fell through to the plain text control; a `["string","number"]` field became a text box and a number typed into it was stored as a string. Covered by `test/mixedSelection.test.tsx` |
-| **`options["<type>-detail"]`** (e.g. `object-detail`, `array-detail`) | **Missing** |
-| `typeChange` confirmation (fallback `complex`) | **Missing** |
-| Tree `delete` confirmation (fallback `always`) | **Missing** |
-| Literal dotted / empty key tree identity and isolated editors | **Partial** — the additional-properties control creates and edits both through an isolated editor; the mixed renderer's own tree has not been given the same treatment |
-| Search text and primitive-visibility preserved across navigation, rename and type change | Needs verification |
-| Selection retained when the active filter hides its row | Needs verification against the spec's `customer` → `client` example |
-| Tree search and toggle labels localized | **Missing** — `'Search value tree'`, `'Search tree...'`, `'Show primitives'`/`'Hide primitives'` are hard-coded English |
+| Spec requirement                                                                         | Status                                                                                                                                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Selection on the **resolved** schema                                                     | **Implemented** — the tester used to judge the enclosing schema, so a union-typed _declared property_ never reached this renderer and fell through to the plain text control; a `["string","number"]` field became a text box and a number typed into it was stored as a string. Covered by `test/mixedSelection.test.tsx` |
+| **`options["<type>-detail"]`** (e.g. `object-detail`, `array-detail`)                    | **Missing**                                                                                                                                                                                                                                                                                                                |
+| `typeChange` confirmation (fallback `complex`)                                           | **Missing**                                                                                                                                                                                                                                                                                                                |
+| Tree `delete` confirmation (fallback `always`)                                           | **Missing**                                                                                                                                                                                                                                                                                                                |
+| Literal dotted / empty key tree identity and isolated editors                            | **Partial** — the additional-properties control creates and edits both through an isolated editor; the mixed renderer's own tree has not been given the same treatment                                                                                                                                                     |
+| Search text and primitive-visibility preserved across navigation, rename and type change | Needs verification                                                                                                                                                                                                                                                                                                         |
+| Selection retained when the active filter hides its row                                  | Needs verification against the spec's `customer` → `client` example                                                                                                                                                                                                                                                        |
+| Tree search and toggle labels localized                                                  | **Missing** — `'Search value tree'`, `'Search tree...'`, `'Show primitives'`/`'Hide primitives'` are hard-coded English                                                                                                                                                                                                    |
 
 Demonstrated by the `mixed-control` spec example, whose README names the three
 gaps above as deliberately not shown.
@@ -1905,12 +1908,12 @@ This area is close to the spec. Implemented:
   `(+N more)`, and `composite.summary.unset`.
 - A dedicated edit-icon button, with selectable summary text separate from it.
 
-| Spec requirement | Status |
-| --- | --- |
+| Spec requirement                                                                    | Status                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `showRemoveButton` / `removeLabel` / `composite.removeTooltip` in the dialog footer | **Deliberate omission** — recorded in the repository's `CLAUDE.md`: removing a composite value is the cell's own hover action, so the footer is Clear / Cancel / Apply. The spec makes both opt-in, so this is a narrowing, not a contradiction |
-| Destructive styling on Remove | Not applicable |
-| Nested dialog Apply writes only to the enclosing draft | Needs verification |
-| `restrict: false` allows emptying and reports errors | **Implemented** — `CompositeDetailDialog` gates `preventsEmpty` behind `options.restrict !== false` |
+| Destructive styling on Remove                                                       | Not applicable                                                                                                                                                                                                                                  |
+| Nested dialog Apply writes only to the enclosing draft                              | Needs verification                                                                                                                                                                                                                              |
+| `restrict: false` allows emptying and reports errors                                | **Implemented** — `CompositeDetailDialog` gates `preventsEmpty` behind `options.restrict !== false`                                                                                                                                             |
 
 ---
 
@@ -1919,23 +1922,23 @@ This area is close to the spec. Implemented:
 These exist in the React packages and have no corresponding catalog entry. Each
 needs either a spec entry or a decision to drop it.
 
-| Item | Where | Note |
-| --- | --- | --- |
-| `options.columns` horizontal sizing | `horizontalLayout.ts` | A complete alternative to §6's `options.layout` model. Highest-priority reconciliation item |
-| `options.trim` | `AntdInputText`, `AntdInputNumber`, `AntdInputInteger`, `AntdSelect`, `OneOfRenderer`, `NativeControl`, `InputControl` | The spec **explicitly excludes** the trim sizing option from the portable contract |
-| `NativeControl` | `controls/NativeControl.tsx` | A second date/time renderer at rank 2 rendering `<Input type="date">`. No spec entry; competes with the picker controls |
-| `OneOfTabRenderer` | `complex/OneOfTabRenderer.tsx` | Exported but **not registered** in `antdRenderers`. The spec records `options.variant: "tab"` for oneOf as a Vuetify-specific alternative, not portable |
-| `NumberFormatCell` | `cells/NumberFormatCell.tsx` | No spec entry for a formatted-number cell |
-| `showArrayTableSortButtons` / `showArrayLayoutSortButtons` | `TableControl`, `ArrayLayout` | Legacy aliases for `showSortButtons`; the spec defines only the one name |
-| `childLabelProp` | `ArrayLayout`, `ListWithDetailRenderer` | Legacy alias for `elementLabelProp`; the spec says not to introduce an additional authoring alias |
-| `options[':language']` | `editorControls.ts` | Monaco dynamic language as a data path. The spec assigns this to compatibility handling, with `$dynamic` as the portable path |
-| `options.theme` / `options.mode` | Monaco | Editor appearance override; no spec entry |
-| `options.width` / `options.height` on Monaco | Monaco | Coexists with the spec's `monaco.rows`/`autoGrow` sizing |
-| `options.height` on AG Grid | AG Grid | Should be `gridHeight` |
-| `options.disabled` on Button | `ButtonRenderer` | No spec entry; `rule`-driven enablement is the specified mechanism |
-| TemplateLayout profiles | `TemplateLayoutRenderer` (jsx), `RactiveTemplateLayoutRenderer` (ractive) | **Resolved.** Both profiles are implemented and selected per element by their own testers: explicit `lang`, then `config.defaultTemplateLang`, then `ractive`. An unknown language is diagnosed rather than interpreted as another engine, and both engines are gated on `allowScriptEvaluation` — Ractive compiles each `{{ }}` through `new Function` too. `lang: vue` remains unimplemented. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
-| `format: "uri"` in the file control | `AntdFile` | Third storage convention alongside base64 and the `binary` data URL |
-| `AntdCompositeCell` as a rank-1 fallback for any object/array cell | `cells/AntdCompositeCell.tsx` | Reasonable, and consistent with the spec's "Detail omitted → dispatch `{Control, scope:"#", label:false}`", but the fallback ranking itself is a local decision |
+| Item                                                               | Where                                                                                                                  | Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options.columns` horizontal sizing                                | `horizontalLayout.ts`                                                                                                  | A complete alternative to §6's `options.layout` model. Highest-priority reconciliation item                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `options.trim`                                                     | `AntdInputText`, `AntdInputNumber`, `AntdInputInteger`, `AntdSelect`, `OneOfRenderer`, `NativeControl`, `InputControl` | The spec **explicitly excludes** the trim sizing option from the portable contract                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `NativeControl`                                                    | `controls/NativeControl.tsx`                                                                                           | A second date/time renderer at rank 2 rendering `<Input type="date">`. No spec entry; competes with the picker controls                                                                                                                                                                                                                                                                                                                                                                                   |
+| `OneOfTabRenderer`                                                 | `complex/OneOfTabRenderer.tsx`                                                                                         | Exported but **not registered** in `antdRenderers`. The spec records `options.variant: "tab"` for oneOf as a Vuetify-specific alternative, not portable                                                                                                                                                                                                                                                                                                                                                   |
+| `NumberFormatCell`                                                 | `cells/NumberFormatCell.tsx`                                                                                           | No spec entry for a formatted-number cell                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `showArrayTableSortButtons` / `showArrayLayoutSortButtons`         | `TableControl`, `ArrayLayout`                                                                                          | Legacy aliases for `showSortButtons`; the spec defines only the one name                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `childLabelProp`                                                   | `ArrayLayout`, `ListWithDetailRenderer`                                                                                | Legacy alias for `elementLabelProp`; the spec says not to introduce an additional authoring alias                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `options[':language']`                                             | `editorControls.ts`                                                                                                    | Monaco dynamic language as a data path. The spec assigns this to compatibility handling, with `$dynamic` as the portable path                                                                                                                                                                                                                                                                                                                                                                             |
+| `options.theme` / `options.mode`                                   | Monaco                                                                                                                 | Editor appearance override; no spec entry                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `options.width` / `options.height` on Monaco                       | Monaco                                                                                                                 | Coexists with the spec's `monaco.rows`/`autoGrow` sizing                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `options.height` on AG Grid                                        | AG Grid                                                                                                                | Should be `gridHeight`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `options.disabled` on Button                                       | `ButtonRenderer`                                                                                                       | No spec entry; `rule`-driven enablement is the specified mechanism                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| TemplateLayout profiles                                            | `TemplateLayoutRenderer` (jsx), `RactiveTemplateLayoutRenderer` (ractive)                                              | **Resolved.** Both profiles are implemented and selected per element by their own testers: explicit `lang`, then `config.defaultTemplateLang`, then `ractive`. An unknown language is diagnosed rather than interpreted as another engine, and both engines are gated on `allowScriptEvaluation` — Ractive compiles each `{{ }}` through `new Function` too. `lang: vue` remains unimplemented. See [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) |
+| `format: "uri"` in the file control                                | `AntdFile`                                                                                                             | Third storage convention alongside base64 and the `binary` data URL                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `AntdCompositeCell` as a rank-1 fallback for any object/array cell | `cells/AntdCompositeCell.tsx`                                                                                          | Reasonable, and consistent with the spec's "Detail omitted → dispatch `{Control, scope:"#", label:false}`", but the fallback ranking itself is a local decision                                                                                                                                                                                                                                                                                                                                           |
 
 ---
 
@@ -1957,7 +1960,7 @@ Adjustment 1 of the adjustments register leaves them at the top level too. Our
 that flat position, so the resolution shape is right where the option is
 honored at all.
 
-Options that are *not* inherited conventions follow a different rule — see
+Options that are _not_ inherited conventions follow a different rule — see
 [§9.9](#99-config-key-placement).
 
 ### 9.2 `trim` — **removed**, and diagnosed rather than ignored
@@ -1973,7 +1976,7 @@ What remains is deliberate and is the part worth copying:
 - **The option is still recognised, and reported.** `legacySizingDiagnostics`
   emits "`trim` is excluded by the portable contract; use
   `options.layout.width` or `maxWidth`" against any element that carries it.
-  Deleting the check would make `trim` *silently* ignored, which is worse than
+  Deleting the check would make `trim` _silently_ ignored, which is worse than
   unsupported: a form carrying it would lay out differently with nothing said.
   A family removing an option someone's schemas may already use should leave
   this behind.
@@ -2208,7 +2211,7 @@ Grouped by what unblocks the most, rather than by renderer.
 ## 12. Reading this document after a fix
 
 Entries are **struck through and marked fixed rather than deleted**. This file
-is the checklist for reviewing a *different* renderer set — Svelte, Vue, a
+is the checklist for reviewing a _different_ renderer set — Svelte, Vue, a
 native one — and a gap that has been closed here is exactly the gap most likely
 to be open there. The strikethrough says "this was real, and here is what it
 looked like"; the note after it says what the fix turned out to depend on.
@@ -2222,24 +2225,24 @@ punctuation dropped and **one dash per space**, so `— **Implemented**` becomes
 
 The ones most worth re-checking elsewhere, because each was silent:
 
-| Finding | Symptom in a renderer set that has it |
-| --- | --- |
-| [§5.6a](#56a-the-enclosing-properties-were-not-rendered--fixed) `allOf` skips `CombinatorProperties` | A property declared beside an `allOf` has no input anywhere. Nothing errors. |
-| [§7.7](#77-imageview--implemented-was-divergent) ImageView on `options.src` | A conformant element renders **no DOM at all**. |
-| [§3.8](#38-url-policy-12--partial) `allowImageDataUrls` consulted by nothing | Setting the flag does nothing, and says nothing. |
-| [§5.4](#54-oneof-renderer--partial) oneOf branch derived once | A discriminated `oneOf` shows the wrong branch's fields after its discriminator changes. |
-| [§7.6](#76-action-button--implemented-was-partial) action derived from the label | The action name changes with the form's language. |
-| [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react) `$data` unsupported | **Not** silent — it throws during store init and the whole application fails to mount, naming Ajv and not the schema. |
-| [§2.4](#24-tuple-control--implemented) `prefixItems` under a draft-07 validator | A correct 2020-12 tuple either validates nothing or can never be valid. |
-| [§3.12](#312-the-ui-librarys-own-locale-9--implemented) UI library locale never set | Month names and "Today" stay English; reads as a gap in the form's own translations. |
-| [§5.6b](#56b-the-scalar-composition-single-editor-contract--fixed) scalar composition | A tab strip labelled `anyOf-0` over a single integer. |
-| [§6.5a](#65a-the-default-save-formats-were-invalid--fixed) temporal save formats | A picker writes a value its own `format` rejects, and cannot repair it. |
-| [§6.5e](#65e-restrict-cannot-reach-its-specified-default-through-the-flat-config--fixed-here-open-elsewhere) `restrict` default | Every preventive constraint silently off, because core seeds the flat config to `false`. |
-| [§3.13](#313-the-renderer-sets-own-strings-did-not-follow-the-locale--fixed) renderer strings pinned to English | Every string the *renderer* owns stays English in every language, while the form's own labels translate. A guard that supplies a translator for every key cannot see it. |
-| [§3.2](#32-layout-sizing-model-67--implemented) fallback `gap` of 0 | Every uischema ported from another family renders with its horizontal rows touching, and it reads as the author's mistake. |
-| [§7.4](#74-duration-control--partial) duration components capped at 59 | A valid `PT90M` is clamped to `PT59M` as the user types it. The data is destroyed, silently. |
-| [§4.4](#44-slider-control--partial) `aria-valuetext` on the wrapper | The attribute never reaches the DOM and the borrowed default position is announced as a committed number. Nothing warns. |
-| [§3.10](#310-pending-edits-commit-timing-and-cancellation-18--partial) queued write outliving its target | An edit typed into a deleted array item lands on the item that took its place. Cancelling on unmount does **not** fix it: rows keyed by path are not unmounted when a sibling is deleted. |
+| Finding                                                                                                                         | Symptom in a renderer set that has it                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [§5.6a](#56a-the-enclosing-properties-were-not-rendered--fixed) `allOf` skips `CombinatorProperties`                            | A property declared beside an `allOf` has no input anywhere. Nothing errors.                                                                                                              |
+| [§7.7](#77-imageview--implemented-was-divergent) ImageView on `options.src`                                                     | A conformant element renders **no DOM at all**.                                                                                                                                           |
+| [§3.8](#38-url-policy-12--partial) `allowImageDataUrls` consulted by nothing                                                    | Setting the flag does nothing, and says nothing.                                                                                                                                          |
+| [§5.4](#54-oneof-renderer--partial) oneOf branch derived once                                                                   | A discriminated `oneOf` shows the wrong branch's fields after its discriminator changes.                                                                                                  |
+| [§7.6](#76-action-button--implemented-was-partial) action derived from the label                                                | The action name changes with the form's language.                                                                                                                                         |
+| [§3.6](#36-extended-validator-profile-15--partial-was-missing-for-react) `$data` unsupported                                    | **Not** silent — it throws during store init and the whole application fails to mount, naming Ajv and not the schema.                                                                     |
+| [§2.4](#24-tuple-control--implemented) `prefixItems` under a draft-07 validator                                                 | A correct 2020-12 tuple either validates nothing or can never be valid.                                                                                                                   |
+| [§3.12](#312-the-ui-librarys-own-locale-9--implemented) UI library locale never set                                             | Month names and "Today" stay English; reads as a gap in the form's own translations.                                                                                                      |
+| [§5.6b](#56b-the-scalar-composition-single-editor-contract--fixed) scalar composition                                           | A tab strip labelled `anyOf-0` over a single integer.                                                                                                                                     |
+| [§6.5a](#65a-the-default-save-formats-were-invalid--fixed) temporal save formats                                                | A picker writes a value its own `format` rejects, and cannot repair it.                                                                                                                   |
+| [§6.5e](#65e-restrict-cannot-reach-its-specified-default-through-the-flat-config--fixed-here-open-elsewhere) `restrict` default | Every preventive constraint silently off, because core seeds the flat config to `false`.                                                                                                  |
+| [§3.13](#313-the-renderer-sets-own-strings-did-not-follow-the-locale--fixed) renderer strings pinned to English                 | Every string the _renderer_ owns stays English in every language, while the form's own labels translate. A guard that supplies a translator for every key cannot see it.                  |
+| [§3.2](#32-layout-sizing-model-67--implemented) fallback `gap` of 0                                                             | Every uischema ported from another family renders with its horizontal rows touching, and it reads as the author's mistake.                                                                |
+| [§7.4](#74-duration-control--partial) duration components capped at 59                                                          | A valid `PT90M` is clamped to `PT59M` as the user types it. The data is destroyed, silently.                                                                                              |
+| [§4.4](#44-slider-control--partial) `aria-valuetext` on the wrapper                                                             | The attribute never reaches the DOM and the borrowed default position is announced as a committed number. Nothing warns.                                                                  |
+| [§3.10](#310-pending-edits-commit-timing-and-cancellation-18--partial) queued write outliving its target                        | An edit typed into a deleted array item lands on the item that took its place. Cancelling on unmount does **not** fix it: rows keyed by path are not unmounted when a sibling is deleted. |
 
 ## 13. Open questions
 
@@ -2260,7 +2263,7 @@ The ones most worth re-checking elsewhere, because each was silent:
    implementation, or removed? Either way, runtime compilation needs to be
    gated behind `allowScriptEvaluation`.
 5. ~~**`trim`.**~~ **Resolved: removed**, in favour of the shared sizing
-   options. The option is still *recognised* and reported through
+   options. The option is still _recognised_ and reported through
    `legacySizingDiagnostics`, so a form carrying it is told what to use
    instead rather than having it silently ignored. See
    [§9.2](#92-trim--removed-and-diagnosed-rather-than-ignored).
@@ -2281,18 +2284,17 @@ the current implementation. Reconcile them with fixes recorded above.
 
 ### Implementation differences
 
-| Finding | Evidence and consequence |
-| --- | --- |
-| Config namespace consumption is uneven | The follow-up audit removed unconsumed namespace declarations. Published config paths now identify actual readers. Namespaced equivalents remain a possible adapter change, not a current feature. |
-| Core read-only support exceeds adapter verification | Core `mappers/util.ts` and `mappers/cell.ts` use `separateReadonlyFromDisabled`. Several renderer paths rely on enabled state; mutation guards and presentation need adapter tests before enabling separation throughout a form. |
-| Restrict resolution differs by control | Core seeds flat `restrict: false`. Array/property controls read flat merged settings; temporal `effectiveRestrict` ignores the flat key and resolves local options, then `jsonformsExtended.restrict`, then true. Both actual inputs are documented. The portable uniform contract still requires host/adapter work. |
-| Vendor settings are intentionally open | Monaco's `options` and AG Grid's option bag are third-party APIs, not a complete portable schema vocabulary. This audit does not certify each vendor property or callback. |
-| Unknown options remain accepted | `additionalProperties: true` preserves extension interoperability. Passing validation does not prove a misspelled or unrecognized option works. |
-| Dynamic overlays and pending integration remain incomplete | See [TODO.md](TODO.md); retained design text is not evidence of current implementation. |
+| Finding                                                    | Evidence and consequence                                                                                                                                                                                                                                                                                             |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Config namespace consumption is uneven                     | The follow-up audit removed unconsumed namespace declarations. Published config paths now identify actual readers. Namespaced equivalents remain a possible adapter change, not a current feature.                                                                                                                   |
+| Core read-only support exceeds adapter verification        | Core `mappers/util.ts` and `mappers/cell.ts` use `separateReadonlyFromDisabled`. Several renderer paths rely on enabled state; mutation guards and presentation need adapter tests before enabling separation throughout a form.                                                                                     |
+| Restrict resolution differs by control                     | Core seeds flat `restrict: false`. Array/property controls read flat merged settings; temporal `effectiveRestrict` ignores the flat key and resolves local options, then `jsonformsExtended.restrict`, then true. Both actual inputs are documented. The portable uniform contract still requires host/adapter work. |
+| Vendor settings are intentionally open                     | Monaco's `options` and AG Grid's option bag are third-party APIs, not a complete portable schema vocabulary. This audit does not certify each vendor property or callback.                                                                                                                                           |
+| Unknown options remain accepted                            | `additionalProperties: true` preserves extension interoperability. Passing validation does not prove a misspelled or unrecognized option works.                                                                                                                                                                      |
+| Dynamic overlays and pending integration remain incomplete | See [TODO.md](TODO.md); retained design text is not evidence of current implementation.                                                                                                                                                                                                                              |
 
 No source renderer implementation was changed by this audit. These runtime gaps
 are recorded instead of treating schema acceptance as proof of support.
-
 
 ### Configuration property review
 
@@ -2340,127 +2342,127 @@ setting. `Core` means core consumes it but renderer support varies. `Core defaul
 only` identifies legacy `trim`. Removed paths have their local or alternate
 location explained in the evidence record.
 
-| Config path | Source finding | Declared now |
-| --- | --- | --- |
-| `config.:language` | Consumed | Yes |
-| `config.agGridOptions` | Consumed | Yes |
-| `config.allowAdditionalPropertiesIfMissing` | Consumed | Yes |
-| `config.allowEmptyPropertyNames` | Consumed | Yes |
-| `config.ampm` | Consumed | Yes |
-| `config.autocomplete` | Consumed | Yes |
-| `config.cancelLabel` | Consumed | Yes |
-| `config.childLabelProp` | Local only | No |
-| `config.clearable` | Consumed | Yes |
-| `config.collapseNewItems` | Consumed | Yes |
-| `config.convertJson` | Consumed | Yes |
-| `config.dateFormat` | Consumed | Yes |
-| `config.dateSaveFormat` | Consumed | Yes |
-| `config.dateTimeFormat` | Consumed | Yes |
-| `config.dateTimeSaveFormat` | Consumed | Yes |
-| `config.defaultTemplateLang` | Consumed | Yes |
-| `config.detail` | Renderer specific | No |
-| `config.disableAdd` | Consumed | Yes |
-| `config.disableRemove` | Consumed | Yes |
-| `config.elementLabelProp` | Renderer specific | No |
-| `config.enableFilterErrorsBeforeTouch` | Consumed | Yes |
-| `config.filterErrorKeywordsBeforeTouch` | Consumed | Yes |
-| `config.focus` | Consumed | Yes |
-| `config.height` | Consumed | Yes |
-| `config.hideArraySummaryValidation` | Consumed | Yes |
-| `config.hideAvatar` | Consumed | Yes |
-| `config.hideRequiredAsterisk` | Consumed | Yes |
-| `config.initCollapsed` | Consumed | Yes |
-| `config.jsonformsExtended` | Container | Yes |
-| `config.jsonformsExtended.accept` | Unsupported location | No |
-| `config.jsonformsExtended.agGridOptions` | Unsupported location | No |
-| `config.jsonformsExtended.allowAdditionalPropertiesIfMissing` | Unsupported location | No |
-| `config.jsonformsExtended.allowEmptyPropertyNames` | Unsupported location | No |
-| `config.jsonformsExtended.cancelLabel` | Unsupported location | No |
-| `config.jsonformsExtended.cells` | Unsupported location | No |
-| `config.jsonformsExtended.collapsed` | Consumed | Yes |
-| `config.jsonformsExtended.collapsible` | Consumed | Yes |
-| `config.jsonformsExtended.colorSaveFormat` | Consumed | Yes |
-| `config.jsonformsExtended.colorTextEntry` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation.default` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation.renderers` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation.renderers.*.branchChange` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation.renderers.*.delete` | Consumed | Yes |
-| `config.jsonformsExtended.confirmation.renderers.*.typeChange` | Consumed | Yes |
-| `config.jsonformsExtended.convertJson` | Unsupported location | No |
-| `config.jsonformsExtended.defaultTemplateLang` | Consumed | Yes |
-| `config.jsonformsExtended.dynamicValues` | Consumed | Yes |
-| `config.jsonformsExtended.dynamicValues.enabled` | Consumed | Yes |
-| `config.jsonformsExtended.emptyLabel` | Unsupported location | No |
-| `config.jsonformsExtended.height` | Unsupported location | No |
-| `config.jsonformsExtended.initial` | Unsupported location | No |
-| `config.jsonformsExtended.language` | Unsupported location | No |
-| `config.jsonformsExtended.layoutDefaults` | Consumed | Yes |
-| `config.jsonformsExtended.layoutDefaults.gap` | Consumed | Yes |
-| `config.jsonformsExtended.layoutDefaults.gridColumns` | Consumed | Yes |
-| `config.jsonformsExtended.layoutDefaults.minItemWidth` | Unsupported location | No |
-| `config.jsonformsExtended.layoutDefaults.wrap` | Consumed | Yes |
-| `config.jsonformsExtended.markup` | Consumed | Yes |
-| `config.jsonformsExtended.markup.markdown` | Consumed | Yes |
-| `config.jsonformsExtended.markup.markdown.enabled` | Consumed | Yes |
-| `config.jsonformsExtended.markup.markdown.profile` | Consumed | Yes |
-| `config.jsonformsExtended.markup.typography` | Consumed | Yes |
-| `config.jsonformsExtended.monaco` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.autoGrow` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.initActions` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.maxRows` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.minRows` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.options` | Unsupported location | No |
-| `config.jsonformsExtended.monaco.rows` | Unsupported location | No |
-| `config.jsonformsExtended.okLabel` | Unsupported location | No |
-| `config.jsonformsExtended.propagateErrors` | Consumed | Yes |
-| `config.jsonformsExtended.resizable` | Unsupported location | No |
-| `config.jsonformsExtended.restrict` | Consumed | Yes |
-| `config.jsonformsExtended.security` | Consumed | Yes |
-| `config.jsonformsExtended.security.allowScriptEvaluation` | Consumed | Yes |
-| `config.jsonformsExtended.security.urlPolicy` | Consumed | Yes |
-| `config.jsonformsExtended.security.urlPolicy.allowImageDataUrls` | Consumed | Yes |
-| `config.jsonformsExtended.security.urlPolicy.allowRelative` | Consumed | Yes |
-| `config.jsonformsExtended.security.urlPolicy.allowedSchemes` | Consumed | Yes |
-| `config.jsonformsExtended.showActions` | Unsupported location | No |
-| `config.jsonformsExtended.showBorder` | Unsupported location | No |
-| `config.jsonformsExtended.showDataIndicator` | Consumed | Yes |
-| `config.jsonformsExtended.showEmptyButton` | Unsupported location | No |
-| `config.jsonformsExtended.showValidationIndicator` | Consumed | Yes |
-| `config.jsonformsExtended.showValidationIndicatorCount` | Consumed | Yes |
-| `config.jsonformsExtended.table` | Unsupported location | No |
-| `config.jsonformsExtended.width` | Unsupported location | No |
-| `config.language` | Consumed | Yes |
-| `config.mode` | Consumed | Yes |
-| `config.monaco` | Consumed | Yes |
-| `config.monaco.autoGrow` | Consumed | Yes |
-| `config.monaco.initActions` | Consumed | Yes |
-| `config.monaco.maxRows` | Consumed | Yes |
-| `config.monaco.minRows` | Consumed | Yes |
-| `config.monaco.options` | Consumed | Yes |
-| `config.monaco.rows` | Consumed | Yes |
-| `config.multi` | Consumed | Yes |
-| `config.okLabel` | Consumed | Yes |
-| `config.placeholder` | Consumed | Yes |
-| `config.propagateErrors` | Consumed | Yes |
-| `config.readOnly` | Core | Yes |
-| `config.readonly` | Core | Yes |
-| `config.resizable` | Consumed | Yes |
-| `config.restrict` | Consumed | Yes |
-| `config.separateReadonlyFromDisabled` | Core | Yes |
-| `config.showActions` | Consumed | Yes |
-| `config.showArrayLayoutSortButtons` | Consumed | Yes |
-| `config.showArrayTableSortButtons` | Consumed | Yes |
-| `config.showBorder` | Consumed | Yes |
-| `config.showNavButtons` | Consumed | Yes |
-| `config.showSortButtons` | Consumed | Yes |
-| `config.showUnfocusedDescription` | Consumed | Yes |
-| `config.suggestion` | Consumed | Yes |
-| `config.summary` | Local only | No |
-| `config.theme` | Consumed | Yes |
-| `config.timeFormat` | Consumed | Yes |
-| `config.timeSaveFormat` | Consumed | Yes |
-| `config.trim` | Core default only | Yes |
-| `config.vertical` | Consumed | Yes |
-| `config.views` | Consumed | Yes |
-| `config.width` | Consumed | Yes |
+| Config path                                                      | Source finding       | Declared now |
+| ---------------------------------------------------------------- | -------------------- | ------------ |
+| `config.:language`                                               | Consumed             | Yes          |
+| `config.agGridOptions`                                           | Consumed             | Yes          |
+| `config.allowAdditionalPropertiesIfMissing`                      | Consumed             | Yes          |
+| `config.allowEmptyPropertyNames`                                 | Consumed             | Yes          |
+| `config.ampm`                                                    | Consumed             | Yes          |
+| `config.autocomplete`                                            | Consumed             | Yes          |
+| `config.cancelLabel`                                             | Consumed             | Yes          |
+| `config.childLabelProp`                                          | Local only           | No           |
+| `config.clearable`                                               | Consumed             | Yes          |
+| `config.collapseNewItems`                                        | Consumed             | Yes          |
+| `config.convertJson`                                             | Consumed             | Yes          |
+| `config.dateFormat`                                              | Consumed             | Yes          |
+| `config.dateSaveFormat`                                          | Consumed             | Yes          |
+| `config.dateTimeFormat`                                          | Consumed             | Yes          |
+| `config.dateTimeSaveFormat`                                      | Consumed             | Yes          |
+| `config.defaultTemplateLang`                                     | Consumed             | Yes          |
+| `config.detail`                                                  | Renderer specific    | No           |
+| `config.disableAdd`                                              | Consumed             | Yes          |
+| `config.disableRemove`                                           | Consumed             | Yes          |
+| `config.elementLabelProp`                                        | Renderer specific    | No           |
+| `config.enableFilterErrorsBeforeTouch`                           | Consumed             | Yes          |
+| `config.filterErrorKeywordsBeforeTouch`                          | Consumed             | Yes          |
+| `config.focus`                                                   | Consumed             | Yes          |
+| `config.height`                                                  | Consumed             | Yes          |
+| `config.hideArraySummaryValidation`                              | Consumed             | Yes          |
+| `config.hideAvatar`                                              | Consumed             | Yes          |
+| `config.hideRequiredAsterisk`                                    | Consumed             | Yes          |
+| `config.initCollapsed`                                           | Consumed             | Yes          |
+| `config.jsonformsExtended`                                       | Container            | Yes          |
+| `config.jsonformsExtended.accept`                                | Unsupported location | No           |
+| `config.jsonformsExtended.agGridOptions`                         | Unsupported location | No           |
+| `config.jsonformsExtended.allowAdditionalPropertiesIfMissing`    | Unsupported location | No           |
+| `config.jsonformsExtended.allowEmptyPropertyNames`               | Unsupported location | No           |
+| `config.jsonformsExtended.cancelLabel`                           | Unsupported location | No           |
+| `config.jsonformsExtended.cells`                                 | Unsupported location | No           |
+| `config.jsonformsExtended.collapsed`                             | Consumed             | Yes          |
+| `config.jsonformsExtended.collapsible`                           | Consumed             | Yes          |
+| `config.jsonformsExtended.colorSaveFormat`                       | Consumed             | Yes          |
+| `config.jsonformsExtended.colorTextEntry`                        | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation`                          | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation.default`                  | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation.renderers`                | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation.renderers.*.branchChange` | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation.renderers.*.delete`       | Consumed             | Yes          |
+| `config.jsonformsExtended.confirmation.renderers.*.typeChange`   | Consumed             | Yes          |
+| `config.jsonformsExtended.convertJson`                           | Unsupported location | No           |
+| `config.jsonformsExtended.defaultTemplateLang`                   | Consumed             | Yes          |
+| `config.jsonformsExtended.dynamicValues`                         | Consumed             | Yes          |
+| `config.jsonformsExtended.dynamicValues.enabled`                 | Consumed             | Yes          |
+| `config.jsonformsExtended.emptyLabel`                            | Unsupported location | No           |
+| `config.jsonformsExtended.height`                                | Unsupported location | No           |
+| `config.jsonformsExtended.initial`                               | Unsupported location | No           |
+| `config.jsonformsExtended.language`                              | Unsupported location | No           |
+| `config.jsonformsExtended.layoutDefaults`                        | Consumed             | Yes          |
+| `config.jsonformsExtended.layoutDefaults.gap`                    | Consumed             | Yes          |
+| `config.jsonformsExtended.layoutDefaults.gridColumns`            | Consumed             | Yes          |
+| `config.jsonformsExtended.layoutDefaults.minItemWidth`           | Unsupported location | No           |
+| `config.jsonformsExtended.layoutDefaults.wrap`                   | Consumed             | Yes          |
+| `config.jsonformsExtended.markup`                                | Consumed             | Yes          |
+| `config.jsonformsExtended.markup.markdown`                       | Consumed             | Yes          |
+| `config.jsonformsExtended.markup.markdown.enabled`               | Consumed             | Yes          |
+| `config.jsonformsExtended.markup.markdown.profile`               | Consumed             | Yes          |
+| `config.jsonformsExtended.markup.typography`                     | Consumed             | Yes          |
+| `config.jsonformsExtended.monaco`                                | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.autoGrow`                       | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.initActions`                    | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.maxRows`                        | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.minRows`                        | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.options`                        | Unsupported location | No           |
+| `config.jsonformsExtended.monaco.rows`                           | Unsupported location | No           |
+| `config.jsonformsExtended.okLabel`                               | Unsupported location | No           |
+| `config.jsonformsExtended.propagateErrors`                       | Consumed             | Yes          |
+| `config.jsonformsExtended.resizable`                             | Unsupported location | No           |
+| `config.jsonformsExtended.restrict`                              | Consumed             | Yes          |
+| `config.jsonformsExtended.security`                              | Consumed             | Yes          |
+| `config.jsonformsExtended.security.allowScriptEvaluation`        | Consumed             | Yes          |
+| `config.jsonformsExtended.security.urlPolicy`                    | Consumed             | Yes          |
+| `config.jsonformsExtended.security.urlPolicy.allowImageDataUrls` | Consumed             | Yes          |
+| `config.jsonformsExtended.security.urlPolicy.allowRelative`      | Consumed             | Yes          |
+| `config.jsonformsExtended.security.urlPolicy.allowedSchemes`     | Consumed             | Yes          |
+| `config.jsonformsExtended.showActions`                           | Unsupported location | No           |
+| `config.jsonformsExtended.showBorder`                            | Unsupported location | No           |
+| `config.jsonformsExtended.showDataIndicator`                     | Consumed             | Yes          |
+| `config.jsonformsExtended.showEmptyButton`                       | Unsupported location | No           |
+| `config.jsonformsExtended.showValidationIndicator`               | Consumed             | Yes          |
+| `config.jsonformsExtended.showValidationIndicatorCount`          | Consumed             | Yes          |
+| `config.jsonformsExtended.table`                                 | Unsupported location | No           |
+| `config.jsonformsExtended.width`                                 | Unsupported location | No           |
+| `config.language`                                                | Consumed             | Yes          |
+| `config.mode`                                                    | Consumed             | Yes          |
+| `config.monaco`                                                  | Consumed             | Yes          |
+| `config.monaco.autoGrow`                                         | Consumed             | Yes          |
+| `config.monaco.initActions`                                      | Consumed             | Yes          |
+| `config.monaco.maxRows`                                          | Consumed             | Yes          |
+| `config.monaco.minRows`                                          | Consumed             | Yes          |
+| `config.monaco.options`                                          | Consumed             | Yes          |
+| `config.monaco.rows`                                             | Consumed             | Yes          |
+| `config.multi`                                                   | Consumed             | Yes          |
+| `config.okLabel`                                                 | Consumed             | Yes          |
+| `config.placeholder`                                             | Consumed             | Yes          |
+| `config.propagateErrors`                                         | Consumed             | Yes          |
+| `config.readOnly`                                                | Core                 | Yes          |
+| `config.readonly`                                                | Core                 | Yes          |
+| `config.resizable`                                               | Consumed             | Yes          |
+| `config.restrict`                                                | Consumed             | Yes          |
+| `config.separateReadonlyFromDisabled`                            | Core                 | Yes          |
+| `config.showActions`                                             | Consumed             | Yes          |
+| `config.showArrayLayoutSortButtons`                              | Consumed             | Yes          |
+| `config.showArrayTableSortButtons`                               | Consumed             | Yes          |
+| `config.showBorder`                                              | Consumed             | Yes          |
+| `config.showNavButtons`                                          | Consumed             | Yes          |
+| `config.showSortButtons`                                         | Consumed             | Yes          |
+| `config.showUnfocusedDescription`                                | Consumed             | Yes          |
+| `config.suggestion`                                              | Consumed             | Yes          |
+| `config.summary`                                                 | Local only           | No           |
+| `config.theme`                                                   | Consumed             | Yes          |
+| `config.timeFormat`                                              | Consumed             | Yes          |
+| `config.timeSaveFormat`                                          | Consumed             | Yes          |
+| `config.trim`                                                    | Core default only    | Yes          |
+| `config.vertical`                                                | Consumed             | Yes          |
+| `config.views`                                                   | Consumed             | Yes          |
+| `config.width`                                                   | Consumed             | Yes          |

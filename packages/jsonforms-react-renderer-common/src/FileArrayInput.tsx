@@ -82,7 +82,11 @@ export const FileArrayInput = (
   props: CellProps & {
     readonly?: boolean;
     cell?: boolean;
-    FeedbackComponent?: React.ComponentType<{ message: string; cell?: boolean; severity: 'warning' | 'error' }>;
+    FeedbackComponent?: React.ComponentType<{
+      message: string;
+      cell?: boolean;
+      severity: 'warning' | 'error';
+    }>;
     PillComponent?: React.ElementType;
     ButtonComponent?: React.ElementType;
   }
@@ -94,7 +98,9 @@ export const FileArrayInput = (
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [severity, setSeverity] = useState<'warning' | 'error'>('warning');
-  useEffect(() => { setError(''); }, [props.data]);
+  useEffect(() => {
+    setError('');
+  }, [props.data]);
   const [names, setNames] = useState<Map<string, string>>(new Map());
   const latest = useRef(props);
   latest.current = props;
@@ -204,103 +210,193 @@ export const FileArrayInput = (
       });
       props.handleChange(props.path, next);
     } catch {
-      if (mounted.current) { setSeverity('error'); setError(t('file.readFailed')); }
+      if (mounted.current) {
+        setSeverity('error');
+        setError(t('file.readFailed'));
+      }
     } finally {
       if (mounted.current) setBusy(false);
     }
   };
   return (
-    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setFocused(true)}
-      onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setFocused(false); }}
-      style={{ minWidth: 0, width: '100%' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, border: props.cell ? 'none' : '1px solid var(--file-input-border, #8886)', borderRadius: 6, padding: props.cell ? 0 : '2px 4px', minWidth: 0, height: props.cell ? 28 : undefined, boxSizing: 'border-box' }}>
-      <input
-        ref={inputRef}
-        id={props.id}
-        type='file'
-        multiple
-        disabled={disabled}
-        aria-label={t('file.select')}
-        aria-invalid={Boolean(props.errors)}
-        accept={
-          typeof options.accept === 'string'
-            ? options.accept
-            : (item as any).contentMediaType
-        }
-        onChange={select}
-        style={{ display: 'none' }}
-      />
-      <Button style={{ flex: '0 0 24px', width: 24, height: 24, padding: 0 }} type='button' aria-label={t('file.select')} title={t('file.select')} disabled={disabled} onClick={() => inputRef.current?.click()}>
-        <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'><path d='M14 2H6v20h12V6z M14 2v6h4' /></svg>
-      </Button>
-      {busy && <span role='status'>{t('file.reading')}</span>}
-      <div data-file-pills tabIndex={0} style={{ display: 'flex', alignItems: 'center', flex: '1 1 0%', minWidth: 0, flexWrap: props.cell ? 'nowrap' : 'wrap', gap: 4, maxHeight: props.cell ? 28 : '8rem', overflowX: 'auto', overflowY: props.cell ? 'hidden' : 'auto', scrollbarWidth: 'thin' }}>
-        {values.map((value, index) => {
-          const name =
-            attachmentName(value) ??
-            names.get(String(value)) ??
-            t('file.numbered', { index: index + 1 });
-          return (
-            <Pill
-              key={index}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                maxWidth: '12rem',
-                flexShrink: 0,
-                height: 22,
-                boxSizing: 'border-box',
-                borderRadius: 4,
-                padding: '0 4px',
-                minWidth: 0,
-              }}
-            >
-              <span
-                title={name}
-                tabIndex={0}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node))
+          setFocused(false);
+      }}
+      style={{ minWidth: 0, width: '100%' }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
+          border: props.cell
+            ? 'none'
+            : '1px solid var(--file-input-border, #8886)',
+          borderRadius: 6,
+          padding: props.cell ? 0 : '2px 4px',
+          minWidth: 0,
+          height: props.cell ? 28 : undefined,
+          boxSizing: 'border-box',
+        }}
+      >
+        <input
+          ref={inputRef}
+          id={props.id}
+          type='file'
+          multiple
+          disabled={disabled}
+          aria-label={t('file.select')}
+          aria-invalid={Boolean(props.errors)}
+          accept={
+            typeof options.accept === 'string'
+              ? options.accept
+              : (item as any).contentMediaType
+          }
+          onChange={select}
+          style={{ display: 'none' }}
+        />
+        <Button
+          style={{ flex: '0 0 24px', width: 24, height: 24, padding: 0 }}
+          type='button'
+          aria-label={t('file.select')}
+          title={t('file.select')}
+          disabled={disabled}
+          onClick={() => inputRef.current?.click()}
+        >
+          <svg
+            width='16'
+            height='16'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            aria-hidden='true'
+          >
+            <path d='M14 2H6v20h12V6z M14 2v6h4' />
+          </svg>
+        </Button>
+        {busy && <span role='status'>{t('file.reading')}</span>}
+        <div
+          data-file-pills
+          tabIndex={0}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flex: '1 1 0%',
+            minWidth: 0,
+            flexWrap: props.cell ? 'nowrap' : 'wrap',
+            gap: 4,
+            maxHeight: props.cell ? 28 : '8rem',
+            overflowX: 'auto',
+            overflowY: props.cell ? 'hidden' : 'auto',
+            scrollbarWidth: 'thin',
+          }}
+        >
+          {values.map((value, index) => {
+            const name =
+              attachmentName(value) ??
+              names.get(String(value)) ??
+              t('file.numbered', { index: index + 1 });
+            return (
+              <Pill
+                key={index}
                 style={{
-                  flex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  maxWidth: '12rem',
+                  flexShrink: 0,
+                  height: 22,
+                  boxSizing: 'border-box',
+                  borderRadius: 4,
+                  padding: '0 4px',
                   minWidth: 0,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
                 }}
               >
-                {name}
-              </span>
-              {options.clearable !== false && (
-                <Button
-                  type='button'
-                  style={{ width: 16, height: 16, minWidth: 16, padding: 0, flexShrink: 0, lineHeight: 1 }}
-                  disabled={!canRemove}
-                  aria-label={t('composite.remove', { label: name })}
-                  onClick={() => {
-                    setError('');
-                    props.handleChange(
-                      props.path,
-                      values.filter((_, i) => i !== index)
-                    );
+                <span
+                  title={name}
+                  tabIndex={0}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  ×
-                </Button>
-              )}
-            </Pill>
-          );
-        })}
+                  {name}
+                </span>
+                {options.clearable !== false && (
+                  <Button
+                    type='button'
+                    style={{
+                      width: 16,
+                      height: 16,
+                      minWidth: 16,
+                      padding: 0,
+                      flexShrink: 0,
+                      lineHeight: 1,
+                    }}
+                    disabled={!canRemove}
+                    aria-label={t('composite.remove', { label: name })}
+                    onClick={() => {
+                      setError('');
+                      props.handleChange(
+                        props.path,
+                        values.filter((_, i) => i !== index)
+                      );
+                    }}
+                  >
+                    ×
+                  </Button>
+                )}
+              </Pill>
+            );
+          })}
+        </div>
+        {error && props.cell && props.FeedbackComponent && (
+          <props.FeedbackComponent message={error} cell severity={severity} />
+        )}
+        {options.clearable !== false &&
+          values.length > 0 &&
+          props.enabled &&
+          !props.readonly && (
+            <Button
+              style={{
+                marginLeft: 'auto',
+                flex: '0 0 24px',
+                width: 24,
+                height: 24,
+                padding: 0,
+                opacity: hovered || focused ? 1 : 0,
+              }}
+              type='button'
+              aria-label={t('file.clearAll')}
+              title={t('file.clearAll')}
+              disabled={
+                disabled || (restrict && (props.schema.minItems ?? 0) > 0)
+              }
+              onClick={() => {
+                setError('');
+                props.handleChange(props.path, []);
+              }}
+            >
+              ×
+            </Button>
+          )}
       </div>
-      {error && props.cell && props.FeedbackComponent && <props.FeedbackComponent message={error} cell severity={severity} />}
-      {options.clearable !== false && values.length > 0 && props.enabled && !props.readonly && (
-        <Button style={{ marginLeft: 'auto', flex: '0 0 24px', width: 24, height: 24, padding: 0, opacity: hovered || focused ? 1 : 0 }} type='button' aria-label={t('file.clearAll')} title={t('file.clearAll')}
-          disabled={disabled || (restrict && (props.schema.minItems ?? 0) > 0)}
-          onClick={() => { setError(''); props.handleChange(props.path, []); }}>
-          ×
-        </Button>
-      )}
-      </div>
-      {error && !props.cell && (props.FeedbackComponent ? <props.FeedbackComponent message={error} severity={severity} /> : <span role='alert'>{error}</span>)}
+      {error &&
+        !props.cell &&
+        (props.FeedbackComponent ? (
+          <props.FeedbackComponent message={error} severity={severity} />
+        ) : (
+          <span role='alert'>{error}</span>
+        ))}
     </div>
   );
 };

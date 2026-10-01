@@ -30,8 +30,9 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Menu } from 'primereact/menu';
 import { Sidebar } from 'primereact/sidebar';
-import { renderExample, WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 import {
+  renderExample,
+  WebComponentIcon,
   DemoShellProps,
   DemoWrapperProps,
 } from '@chobantonov/jsonforms-react-demo-common';

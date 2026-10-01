@@ -17,28 +17,32 @@ export const ShadcnNumberCell = ({
 }: CellProps) =>
   visible === false ? null : (
     <div className='group relative w-full'>
-    <Input
-      className='pr-10'
-      id={id}
-      type='number'
-      step={schema.type === 'integer' ? 1 : 'any'}
-      aria-label={path || 'Value'}
-      aria-invalid={Boolean(errors)}
-      value={data ?? ''}
-      disabled={!enabled}
-      onChange={(event) => {
-        const value = event.currentTarget.value;
-        handleChange(
-          path,
-          value === ''
-            ? undefined
-            : schema.type === 'integer'
-            ? Math.trunc(Number(value))
-            : Number(value)
-        );
-      }}
-    />
-    <ClearValueButton clearable={uischema.options?.clearable ?? config?.clearable ?? true}
-      data={data} enabled={enabled} onClear={() => handleChange(path, undefined)} />
+      <Input
+        className='pr-10'
+        id={id}
+        type='number'
+        step={schema.type === 'integer' ? 1 : 'any'}
+        aria-label={path || 'Value'}
+        aria-invalid={Boolean(errors)}
+        value={data ?? ''}
+        disabled={!enabled}
+        onChange={(event) => {
+          const value = event.currentTarget.value;
+          handleChange(
+            path,
+            value === ''
+              ? undefined
+              : schema.type === 'integer'
+              ? Math.trunc(Number(value))
+              : Number(value)
+          );
+        }}
+      />
+      <ClearValueButton
+        clearable={uischema.options?.clearable ?? config?.clearable ?? true}
+        data={data}
+        enabled={enabled}
+        onClear={() => handleChange(path, undefined)}
+      />
     </div>
   );

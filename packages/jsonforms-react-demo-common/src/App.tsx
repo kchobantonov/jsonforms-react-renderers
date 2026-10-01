@@ -5,10 +5,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { createFormsAjv } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
+  createFormsAjv,
   createAdditionalErrorStore,
   createAjvErrorTranslator,
+  ActionEvent,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { ajvLocalizers } from '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers';
 import type { JsonFormsI18nState } from '@jsonforms/core';
@@ -24,7 +25,6 @@ import {
   JsonFormsRendererRegistryEntry,
   ValidationMode,
 } from '@jsonforms/core';
-import { ActionEvent } from '@chobantonov/jsonforms-react-extended-renderers';
 import { DemoFormPanel } from './app/DemoFormPanel';
 import { DemoHome } from './app/DemoHome';
 import { useMonacoSchema } from './app/useMonacoSchema';

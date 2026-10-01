@@ -32,8 +32,13 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
-import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
+import {
+  WebComponentIcon,
+  renderExample,
+  DemoWrapperProps,
+  DemoShellProps,
+  ProviderSettingsProps,
+} from '@chobantonov/jsonforms-react-demo-common';
 import {
   createJsonFormsMuiTheme,
   defaultMuiRendererSettings,
@@ -44,11 +49,6 @@ import {
   JSON_FORMS_MUI_TAG,
   registerJsonFormsMui,
 } from '@chobantonov/jsonforms-react-mui-webcomponent';
-import {
-  DemoWrapperProps,
-  DemoShellProps,
-  ProviderSettingsProps,
-} from '@chobantonov/jsonforms-react-demo-common';
 import { muiDemoUi } from './DemoUi';
 
 const MUI_LOGO = new URL('./assets/mui.svg', import.meta.url).href;

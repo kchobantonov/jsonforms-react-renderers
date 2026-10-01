@@ -35,7 +35,9 @@ export const AntdEditorSurface = ({
         boxSizing: 'border-box',
         border: `${token.lineWidth}px ${token.lineType} ${borderColor}`,
         borderRadius: token.borderRadius,
-        background: disabled ? token.colorBgContainerDisabled : token.colorBgContainer,
+        background: disabled
+          ? token.colorBgContainerDisabled
+          : token.colorBgContainer,
         boxShadow: focused
           ? `0 0 0 ${token.controlOutlineWidth}px ${
               invalid ? token.colorErrorOutline : token.controlOutline

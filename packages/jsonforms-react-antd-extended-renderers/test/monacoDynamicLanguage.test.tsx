@@ -13,7 +13,7 @@ vi.mock('@monaco-editor/react', () => {
   const monaco = { editor: { defineTheme: () => {}, setTheme: () => {} } };
   const editor = { focus() {}, layout() {}, getAction: () => undefined };
   return {
-    default: (props: any) => {
+    default: function MockMonaco(props: any) {
       spy.language = props.language;
       props.beforeMount?.(monaco);
       React.useEffect(() => {
@@ -59,7 +59,10 @@ const renderWith = async (data: Record<string, unknown>) => {
           schema={schema as any}
           uischema={uischema as any}
           renderers={[
-            { tester: monacoControlTester, renderer: AntdMonacoControlRenderer },
+            {
+              tester: monacoControlTester,
+              renderer: AntdMonacoControlRenderer,
+            },
           ]}
           onChange={() => undefined}
         />
@@ -74,10 +77,13 @@ describe('Monaco dynamic language', () => {
   it.each([
     ['json', 'json'],
     ['javascript', 'javascript'],
-  ])('resolves ":language" from the form data (%s)', async (value, expected) => {
-    await renderWith({ language: value, code: 'x' });
-    expect(spy.language).toBe(expected);
-  });
+  ])(
+    'resolves ":language" from the form data (%s)',
+    async (value, expected) => {
+      await renderWith({ language: value, code: 'x' });
+      expect(spy.language).toBe(expected);
+    }
+  );
 
   it('falls back to plaintext when the bound property is unset', async () => {
     await renderWith({ code: 'x' });

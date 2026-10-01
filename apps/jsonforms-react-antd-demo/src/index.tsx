@@ -1,5 +1,9 @@
 import React from 'react';
-import { useAntdLocale } from '@chobantonov/jsonforms-react-antd-renderers';
+import {
+  useAntdLocale,
+  antdRenderers,
+  antdCells,
+} from '@chobantonov/jsonforms-react-antd-renderers';
 import {
   GithubOutlined,
   FullscreenOutlined,
@@ -23,16 +27,13 @@ import {
   Tooltip,
   theme as antTheme,
 } from 'antd';
-import { renderExample } from '@chobantonov/jsonforms-react-demo-common';
 import {
+  renderExample,
   DemoShellProps,
   DemoWrapperProps,
   ProviderSettingsProps,
+  WebComponentIcon,
 } from '@chobantonov/jsonforms-react-demo-common';
-import {
-  antdRenderers,
-  antdCells,
-} from '@chobantonov/jsonforms-react-antd-renderers';
 import {
   antdExtendedCells,
   antdExtendedRenderers,
@@ -42,7 +43,6 @@ import {
   registerJsonFormsAntd,
 } from '@chobantonov/jsonforms-react-antd-webcomponent';
 import { antdDemoUi } from './DemoUi';
-import { WebComponentIcon } from '@chobantonov/jsonforms-react-demo-common';
 
 const ANTD_LOGO = new URL('./antd-logo.svg', import.meta.url).href;
 
@@ -170,7 +170,7 @@ const AntdDemoShell = ({
                   window.open(
                     'https://github.com/kchobantonov/jsonforms-react-renderers',
                     '_blank',
-                    'noopener,noreferrer',
+                    'noopener,noreferrer'
                   )
                 }
                 type='text'
@@ -302,5 +302,5 @@ renderExample(
     Ui: antdDemoUi,
     ProviderSettings: AntdSettings,
     initialProviderSettings: { inputVariant: 'outlined' },
-  },
+  }
 );

@@ -326,6 +326,8 @@ describe('MUI file renderer', () => {
         result = 'data:text/plain;base64,bGF0ZQ==';
         abort = vi.fn();
         readAsDataURL() {
+          // Capture the pending reader so the test can complete it after unmount.
+          // eslint-disable-next-line @typescript-eslint/no-this-alias
           active = this;
         }
       }

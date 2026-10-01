@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-antd-renderers": patch
+'@chobantonov/jsonforms-react-antd-renderers': patch
 ---
 
 Keep dynamic-property name validation indicators and rename/delete actions in

@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
 ---
 
 Show compact removable pills for multi-select values and chips, with bounded

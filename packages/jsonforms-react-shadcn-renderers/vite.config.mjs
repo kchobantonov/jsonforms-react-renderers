@@ -18,7 +18,7 @@ const isExternal = (id) =>
   );
 
 export default defineConfig({
-  esbuild: { jsx: "automatic" },
+  esbuild: { jsx: 'automatic' },
   resolve: {
     alias: {
       '@': resolve(packageDir, 'src'),

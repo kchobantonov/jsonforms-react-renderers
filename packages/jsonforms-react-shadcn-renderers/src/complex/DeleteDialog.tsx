@@ -21,23 +21,21 @@ export const DeleteDialog = ({
 }) => {
   const t = useI18n();
   return (
-  <Dialog open={open} onOpenChange={(open) => !open && onCancel()}>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>{t('confirm.delete.title')}</DialogTitle>
-        <DialogDescription>
-          {t('confirm.delete.message')}
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <Button type='button' variant='outline' onClick={onCancel}>
-          {t('confirm.decline')}
-        </Button>
-        <Button type='button' variant='destructive' onClick={onConfirm}>
-          {t('confirm.accept')}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-);
+    <Dialog open={open} onOpenChange={(open) => !open && onCancel()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('confirm.delete.title')}</DialogTitle>
+          <DialogDescription>{t('confirm.delete.message')}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button type='button' variant='outline' onClick={onCancel}>
+            {t('confirm.decline')}
+          </Button>
+          <Button type='button' variant='destructive' onClick={onConfirm}>
+            {t('confirm.accept')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 };

@@ -204,7 +204,8 @@ export const CompositeDetailDialog = ({
   );
 
   return (
-    <DetailModal options={options.dialog}
+    <DetailModal
+      options={options.dialog}
       open={open}
       title={title}
       onCancel={cancel}

@@ -3,6 +3,7 @@ import {
   primeNullControlTester,
   primeDurationControlTester,
   primeColorControlTester,
+  primereactExtendedRenderers,
 } from '../../../jsonforms-react-primereact-extended-renderers/src';
 import {
   MixedRenderer,
@@ -10,7 +11,6 @@ import {
   primereactCells,
   primereactRenderers,
 } from '../../src';
-import { primereactExtendedRenderers } from '../../../jsonforms-react-primereact-extended-renderers/src';
 import {
   primereactWebcomponentCells,
   primereactWebcomponentRenderers,

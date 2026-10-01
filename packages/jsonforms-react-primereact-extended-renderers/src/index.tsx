@@ -1,6 +1,11 @@
-import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  extendedAgGridTester,
+  monacoControlTester,
+  createButtonRenderer,
+  createExtendedRenderers,
+  buttonRendererTester,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 import { PrimeAgGridControlRenderer } from './renderers/PrimeAgGridControlRenderer';
-import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import { PrimeMonacoControlRenderer } from './renderers/PrimeMonacoControlRenderer';
 import {
   PrimeNullControlRenderer,
@@ -19,11 +24,6 @@ import {
   primeSplitLayoutTester,
 } from './renderers/SplitLayoutRenderer';
 import { JsonFormsRendererRegistryEntry, RankedTester } from '@jsonforms/core';
-import {
-  createButtonRenderer,
-  createExtendedRenderers,
-  buttonRendererTester,
-} from '@chobantonov/jsonforms-react-extended-renderers';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import React from 'react';

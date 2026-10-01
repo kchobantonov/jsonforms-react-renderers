@@ -1,7 +1,10 @@
 import { ValidationIcon } from './ValidationIcon';
 import { ObjectDetailContext } from './ObjectDetailContext';
 import { Card, Typography } from 'antd';
-import { ObjectErrorContext, usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import {
+  ObjectErrorContext,
+  usePathErrorIndicator,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import isEmpty from 'lodash/isEmpty';
 import {
   ControlProps,
@@ -87,35 +90,84 @@ export const ObjectRenderer = ({
     return null;
   }
 
-  const additional = <AdditionalProperties
-    embedded={Boolean(path) || dispatchUiSchema.type === 'Group'}
-    cells={cells} config={config} data={data} enabled={enabled}
-    handleChange={handleChange} label={label} path={path} readonly={readonly}
-    renderers={renderers} rootSchema={rootSchema} schema={schema}
-    uischema={uischema} uischemas={uischemas}
-  />;
+  const additional = (
+    <AdditionalProperties
+      embedded={Boolean(path) || dispatchUiSchema.type === 'Group'}
+      cells={cells}
+      config={config}
+      data={data}
+      enabled={enabled}
+      handleChange={handleChange}
+      label={label}
+      path={path}
+      readonly={readonly}
+      renderers={renderers}
+      rootSchema={rootSchema}
+      schema={schema}
+      uischema={uischema}
+      uischemas={uischemas}
+    />
+  );
   const isGroup = dispatchUiSchema.type === 'Group';
-  const emptyLayout = Array.isArray((dispatchUiSchema as any).elements) && (dispatchUiSchema as any).elements.length === 0;
-  const detail = <ObjectErrorContext.Provider value={{ uischema: dispatchUiSchema, message: objectErrors }}>
-    <ObjectDetailContext.Provider value={{ uischema: dispatchUiSchema, additional }}>
-      <UiSchemaCycleProvider stack={stack}>
-        {(isGroup || !emptyLayout) && <JsonFormsDispatch visible={visible} enabled={enabled}
-          schema={schema} uischema={dispatchUiSchema} path={path} renderers={renderers}
-          cells={cells} readonly={readonly} />}
-      </UiSchemaCycleProvider>
-    </ObjectDetailContext.Provider>
-  </ObjectErrorContext.Provider>;
+  const emptyLayout =
+    Array.isArray((dispatchUiSchema as any).elements) &&
+    (dispatchUiSchema as any).elements.length === 0;
+  const detail = (
+    <ObjectErrorContext.Provider
+      value={{ uischema: dispatchUiSchema, message: objectErrors }}
+    >
+      <ObjectDetailContext.Provider
+        value={{ uischema: dispatchUiSchema, additional }}
+      >
+        <UiSchemaCycleProvider stack={stack}>
+          {(isGroup || !emptyLayout) && (
+            <JsonFormsDispatch
+              visible={visible}
+              enabled={enabled}
+              schema={schema}
+              uischema={dispatchUiSchema}
+              path={path}
+              renderers={renderers}
+              cells={cells}
+              readonly={readonly}
+            />
+          )}
+        </UiSchemaCycleProvider>
+      </ObjectDetailContext.Provider>
+    </ObjectErrorContext.Provider>
+  );
   if (isGroup) return detail;
   const title = label && path && uischema.label !== false ? label : undefined;
-  const content = <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-    {!title && objectErrors && <Typography.Text type='danger' role='alert'>{objectErrors}</Typography.Text>}
-    {detail}{additional}
-  </div>;
-  return path ? <Card className='jsonforms-object' title={title}
-    extra={title && objectErrors ? <ValidationIcon local errorMessages={objectErrors} id={`${path}-object-errors`} /> : undefined}>
-    {content}
-  </Card> : content;
-
+  const content = (
+    <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
+      {!title && objectErrors && (
+        <Typography.Text type='danger' role='alert'>
+          {objectErrors}
+        </Typography.Text>
+      )}
+      {detail}
+      {additional}
+    </div>
+  );
+  return path ? (
+    <Card
+      className='jsonforms-object'
+      title={title}
+      extra={
+        title && objectErrors ? (
+          <ValidationIcon
+            local
+            errorMessages={objectErrors}
+            id={`${path}-object-errors`}
+          />
+        ) : undefined
+      }
+    >
+      {content}
+    </Card>
+  ) : (
+    content
+  );
 };
 
 export const objectControlTester: RankedTester = rankWith(2, isObjectControl);

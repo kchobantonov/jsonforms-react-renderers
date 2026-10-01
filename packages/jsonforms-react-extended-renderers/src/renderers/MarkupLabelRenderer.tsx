@@ -172,7 +172,9 @@ export const MarkupLabelRendererComponent = ({
   const namespaceScope = expressions
     ? buildNamespaceScope({
         data: ctx.core?.data,
-        get item() { return (ctx as typeof ctx & ItemContext).item; },
+        get item() {
+          return (ctx as typeof ctx & ItemContext).item;
+        },
         locale: ctx.i18n?.locale,
         config,
         dynamicAllowed: dynamicValuesEnabled(config),

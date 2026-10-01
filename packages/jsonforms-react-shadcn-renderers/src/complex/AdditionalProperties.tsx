@@ -1,4 +1,8 @@
-import { toObjectSchema, hasAdditionalProperties, toAdditionalPropertyItem } from '@chobantonov/jsonforms-react-renderer-common/additionalProperties';
+import {
+  toObjectSchema,
+  hasAdditionalProperties,
+  toAdditionalPropertyItem,
+} from '@chobantonov/jsonforms-react-renderer-common/additionalProperties';
 import { ShadcnIsolatedPropertyEditor } from './IsolatedPropertyEditor';
 import {
   needsIsolatedEditor,
@@ -279,7 +283,11 @@ export const AdditionalProperties = ({
         />
         <Card
           className='jsonforms-additional-properties my-1 min-w-full'
-          style={embedded ? { border: 0, boxShadow: 'none', padding: 0, margin: 0 } : undefined}
+          style={
+            embedded
+              ? { border: 0, boxShadow: 'none', padding: 0, margin: 0 }
+              : undefined
+          }
         >
           <div className={embedded ? 'py-2' : 'px-4 py-2'}>
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
@@ -345,7 +353,11 @@ export const AdditionalProperties = ({
               </div>
             </div>
           </div>
-          <div className={`jsonforms-additional-properties-list flex flex-col gap-2${embedded ? '' : ' px-4'}`}>
+          <div
+            className={`jsonforms-additional-properties-list flex flex-col gap-2${
+              embedded ? '' : ' px-4'
+            }`}
+          >
             {page.indices
               .map((index) => additionalPropertyItems[index])
               .map((item) => (

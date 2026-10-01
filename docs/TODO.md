@@ -36,13 +36,13 @@ worked example
 `ObjectRenderer` renders no `errors` prop, so an error at an object's own path
 has nowhere to go. What is actually lost depends on where core maps each error:
 
-| Error | Mapped to | Shown? |
-| --- | --- | --- |
-| `dependencies` | the missing property | yes, on that control |
-| `additionalProperties` | the offending key | no |
-| `minProperties` | the object itself | no |
+| Error                  | Mapped to            | Shown?               |
+| ---------------------- | -------------------- | -------------------- |
+| `dependencies`         | the missing property | yes, on that control |
+| `additionalProperties` | the offending key    | no                   |
+| `minProperties`        | the object itself    | no                   |
 
-The specification's harder requirements *are* met — no field is mislabelled as
+The specification's harder requirements _are_ met — no field is mislabelled as
 required and no value is invented — so this is a missing message, not corrupted
 data.
 
@@ -82,7 +82,7 @@ what to delete once the fix lands.
 >
 > **Known limit, deliberately documented rather than hidden:** Ractive owns its
 > DOM and exposes no hook for a bound attribute value, so the check runs
-> immediately *after* the attribute is written — same synchronous block, nothing
+> immediately _after_ the attribute is written — same synchronous block, nothing
 > painted, no click possible. A `src` may already have begun loading. The `jsx`
 > profile has no such window. The native TSX profile is code rather than data
 > and applies the policy itself, with `urlPolicy` handed to the template.
@@ -117,7 +117,7 @@ Implemented for every control that prints its own errors. An array header keeps
 showing its child-error summary regardless of touch state.
 
 Deliberate, not an oversight: the specification asks for summary participation
-to be *documented* per renderer rather than assumed, and the Svelte family these
+to be _documented_ per renderer rather than assumed, and the Svelte family these
 options come from does not claim it either. Listed here so it is a decision on
 the record rather than a surprise.
 
@@ -150,12 +150,12 @@ What is already decided, so this does not restart the design:
   late, the link already exists. `escapeMarkdown` in `util/markdown.tsx` is
   written and tested; it has no caller yet.
 - **No security gate is needed**, provided the ICU implementation
-  *interprets*. ICU MessageFormat has no property access and no function
+  _interprets_. ICU MessageFormat has no property access and no function
   calls, and `intl-messageformat` walks an AST rather than compiling one —
   **verified** against 10.7.18 with `@formatjs/icu-messageformat-parser`
   2.11.4: no `eval` and no `new Function` anywhere in either package's
   runtime, and `parse()` returns a plain AST the formatter walks. An
-  implementation that *compiles* messages to JavaScript would need the same
+  implementation that _compiles_ messages to JavaScript would need the same
   gate as a template engine. The package is not yet a dependency here, so
   re-confirm on whatever version actually lands.
 - **The tester must widen**, from the markup-only predicate in
@@ -189,12 +189,12 @@ Four files have now each failed **once**, during a back-to-back run of all
 package suites, and each passed on re-run and in isolation — repeatedly, never
 reproducing:
 
-| File | Symptom |
-| --- | --- |
+| File                                  | Symptom                                           |
+| ------------------------------------- | ------------------------------------------------- |
 | `confirmationExampleRenders.test.tsx` | `flushUntil: condition still false after N ticks` |
-| `monacoTheme.test.tsx` | "never mutates the global theme registry (dark)" |
-| `agGridCells.test.tsx` | "renders the field control inside a data cell" |
-| `cellErrors.test.tsx` | "marks the invalid cell with an error state" |
+| `monacoTheme.test.tsx`                | "never mutates the global theme registry (dark)"  |
+| `agGridCells.test.tsx`                | "renders the field control inside a data cell"    |
+| `cellErrors.test.tsx`                 | "marks the invalid cell with an error state"      |
 
 All four mount heavy components behind `React.lazy` (AG Grid, Monaco) and
 measure layout through stubbed `ResizeObserver`s. The grid fixture's tick
@@ -226,7 +226,7 @@ hypotheses cheaply.
 
 **One cause found, in the sibling package — and it may be the whole of it.**
 A full-suite run failed `@chobantonov/jsonforms-react-antd-renderers` while
-reporting **829 of 829 tests passing**: the failure was an *unhandled error*,
+reporting **829 of 829 tests passing**: the failure was an _unhandled error_,
 not an assertion —
 
 ```
@@ -250,12 +250,12 @@ hunt kept missing:
   counts — including the ones in this file — would have called that run clean.
   Check the exit code and the `Errors` line, not just `Tests`.
 - **With the shim removed it reproduces in isolation, immediately.** So this
-  part was never a race at all; only its *escalation to a run failure* was
+  part was never a race at all; only its _escalation to a run failure_ was
   load-dependent. Before assuming contention, check whether the environment
   differs between the two ways of running.
 
 **A second cause, in the extended package itself.** Once the first was fixed
-the run still exited non-zero, now *reproducibly*, and for the same reason —
+the run still exited non-zero, now _reproducibly_, and for the same reason —
 an unhandled rejection with every test passing:
 
 ```
@@ -273,8 +273,8 @@ a `process.on('unhandledRejection')` capture and **asserts** the propagation,
 which is the claim it should have been making anyway. Proven to bite: adding a
 `catch` to the renderer fails it.
 
-**Status of entry 5.** Both causes share a shape — *the run fails while every
-test passes* — and neither is a race in the component under test. With both
+**Status of entry 5.** Both causes share a shape — _the run fails while every
+test passes_ — and neither is a race in the component under test. With both
 fixed, three consecutive full runs exit 0 with no `Errors` line, where
 previously they did not. The four files listed above have not failed since, but
 they were never reproducible on demand, so this is not yet proof. Leave the
@@ -322,7 +322,7 @@ need neither, their tests rendering no React.
 
 **Verdict on entry 5: resolved, pending a soak.** Three causes, all of the same
 family — a budget or an error path that only misbehaves when the machine is
-busy. Re-open it if a full run fails again, and read the failure *message*
+busy. Re-open it if a full run fails again, and read the failure _message_
 first.
 
 ## Open designs
@@ -341,8 +341,8 @@ deployed UI schema, and the form JSON ships with the process archive.
 
 **What is settled.**
 
-- `$dynamic` is the right mechanism for *placing* a value onto an element, and
-  the wrong one for *obtaining* it — §11 has no I/O by design.
+- `$dynamic` is the right mechanism for _placing_ a value onto an element, and
+  the wrong one for _obtaining_ it — §11 has no I/O by design.
 - `bind` preserves the source type, so booleans, numbers, objects and arrays
   all work; `template` only ever yields a string. Only `undefined` means "no
   override", and arrays replace wholesale.
@@ -351,7 +351,7 @@ deployed UI schema, and the form JSON ships with the process archive.
   schema's `enum`. What is missing is a UI-schema-level way to fill it — one
   bridge, not a renderer per lookup, which is where the legacy Vue 2 family
   ended up.
-- The legacy `DataProvider` is the right *idea* and the wrong *implementation*:
+- The legacy `DataProvider` is the right _idea_ and the wrong _implementation_:
   its lodash templates compile JavaScript, and it never refetches when its URL
   changes. Both are recorded in gaps §3.1a.
 
@@ -360,7 +360,7 @@ deployed UI schema, and the form JSON ships with the process archive.
 resolution at all — the same split that made renderer-published
 `additionalErrors` awkward (gaps §3.5). The alternative is resolving inside a
 dispatch wrapper, which reaches every form at the cost of touching every
-dispatch path. *Everything else follows from this one.*
+dispatch path. _Everything else follows from this one._
 
 **Decision 2 — the option that carries supplied choices.** Working name
 `options.choices`, shape `EnumOption[]` (`{label, value}`). It is the contract
@@ -406,7 +406,7 @@ the second as sugar.
 > [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md) and §9 of the
 > consolidated spec. Nothing was removed from the code, because nothing
 > implemented it; what was removed is the licence to add it later. **What
-> remains open below is `template` for strings that are *not* messages** — an
+> remains open below is `template` for strings that are _not_ messages** — an
 > `href`, an `src`, a `placeholder`.
 
 §9 formats display text with ICU MessageFormat; §11.4 defines a second,
@@ -421,7 +421,7 @@ Note first how small the overlap actually is. §9's own example resolves
 there is already exactly one interpolation language (ICU) plus a **path
 expression** (`bind`) that has no placeholders at all. `bind` is not a
 templating language and does not compete with ICU. The duplication is
-`template` alone, which exists to build a string for an option that is *not*
+`template` alone, which exists to build a string for an option that is _not_
 display text: an `href`, an `src`, a `placeholder`.
 
 Three ways out, and the middle one is a trap.
@@ -430,21 +430,21 @@ Three ways out, and the middle one is a trap.
 Honest and cheap; the cost is a second grammar with an inverted brace rule
 that §11.4 itself flags as a trap.
 
-**(B) Make `template` an ICU pattern.** *Does not work as a straight swap* —
+**(B) Make `template` an ICU pattern.** _Does not work as a straight swap_ —
 measured against intl-messageformat 10.7.18:
 
-| Probe | Result |
-| --- | --- |
-| `{data.sku}` | `SyntaxError: MALFORMED_ARGUMENT` |
-| `{data.items.0.price}` | `SyntaxError: MALFORMED_ARGUMENT` |
-| `{data['some key']}` | `SyntaxError: MALFORMED_ARGUMENT` |
+| Probe                            | Result                            |
+| -------------------------------- | --------------------------------- |
+| `{data.sku}`                     | `SyntaxError: MALFORMED_ARGUMENT` |
+| `{data.items.0.price}`           | `SyntaxError: MALFORMED_ARGUMENT` |
+| `{data['some key']}`             | `SyntaxError: MALFORMED_ARGUMENT` |
 | `a {{ b` (§11.4's literal brace) | `SyntaxError: MALFORMED_ARGUMENT` |
-| `a '{' b` (ICU's literal brace) | `"a { b"` |
+| `a '{' b` (ICU's literal brace)  | `"a { b"`                         |
 
-An ICU argument name cannot be a path: `.`, `[` and `]` are Pattern_Syntax
+An ICU argument name cannot be a path: `.`, `[` and `]` are Pattern*Syntax
 characters and the grammar excludes them. Making it work means pre-scanning
 the pattern and renaming `data.sku` to a generated safe name before parsing —
-at which point the authored text is ICU-*shaped* but is not ICU, and no ICU
+at which point the authored text is ICU-\_shaped* but is not ICU, and no ICU
 linter, editor or translation platform will accept it. That is a third
 language wearing ICU's clothes.
 
@@ -469,11 +469,11 @@ available to non-display strings too.
 **Two hazards this was expected to have, and does not** — both measured, both
 absent:
 
-- *Locale formatting leaking into a URL.* A **bare** `{n}` does no number
+- _Locale formatting leaking into a URL._ A **bare** `{n}` does no number
   formatting: `1234.5` renders as `1234.5` in `en`, `de` and `bg` alike, and
   `https://cdn.example.com/{id}.png` with `1234567` comes out intact. Only an
   explicit `{n, number}` localizes.
-- *Re-entrancy.* A substituted value is not re-parsed: `{name: "{other}"}`
+- _Re-entrancy._ A substituted value is not re-parsed: `{name: "{other}"}`
   renders the literal text `{other}`. ICU has no injection path of its own —
   which is why §9's escaping rule is about **Markdown**, not about ICU.
 
@@ -491,7 +491,7 @@ with a hole is a broken link. Same language, different policy — the same
 distinction as [portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
 
 **`TemplateLayout` (§22) is not part of this question.** Ractive and JSX
-produce *structure*, not a value, and no amount of ICU replaces a layout
+produce _structure_, not a value, and no amount of ICU replaces a layout
 engine. Worth knowing only because Ractive's `{{ }}` is a third brace
 convention that can appear in the same document.
 
@@ -545,18 +545,18 @@ Portable design proposals remain in the spec project’s `docs/todo.md`.
 
 ### Implementation and support verification
 
-| Feature | Remaining work | Published schemas |
-| --- | --- | --- |
-| Mixed-control `<type>-detail` options | Implement lookup and dispatch for each supported type; test nested paths and registry precedence. The current mixed renderer does not consume these keys. | Removed seven type-specific detail definitions. Ordinary `detail` remains supported. |
-| Composite dialog Remove action | Implement `showRemoveButton` and `removeLabel`, including ownership, confirmation and mutation guards, or formally retire this proposed footer action. A cell's existing remove action is a separate feature. | Removed both option definitions from UI/cell/global configuration. |
-| `showClearButton` | Resolve whether a separate option is needed alongside `clearable`, and implement a consumer before exposing it. | Removed the unused global definition. |
-| Separate read-only and disabled presentation | Core provides the setting, but the reference adapter does not consistently consume separate read-only state. Verify mutation guards and presentation throughout controls/cells before advertising the opt-in. | `separateReadonlyFromDisabled` is typed as an existing core setting, with an explicit adapter-support caveat. It is not a promise of renderer support. |
-| Config resolution and compound defaults | Align namespace consumption, temporal versus flat restrict resolution, and compound-value merging across adapters. Base lodash merges arrays by index; Monaco/grid replace local option bags wholesale. | Only traced config locations are declared. Unsupported namespaced defaults, global structural control options and layoutDefaults.minItemWidth were removed. See the complete configuration review in jsonforms-react-antd-implementation-gaps.md. |
-| Interpolation/markup beyond Label | Integrate the text pipeline into other text-bearing elements and test translation ordering. | Shared option shapes do not promise support on every element. |
-| Pending validation and submit integration | Finish a consistent pending-analysis contract, stale-result handling and host submit policy. Preserve the implemented owner-based additional-error store. | No speculative pending-state configuration. |
-| File additional-error publication | Verify/publish local read and conversion failures through the existing owner-based error integration; test cleanup and valid committed data. | Duration and registered cron validation use the schema validator; invalid duration drafts retain local feedback and pending-edit validity without additional-error publication. |
-| Container pre-touch summaries | Define and implement touch-aware descendant summaries consistently across container families. | Existing indicator/filter options describe their implemented uses, not universal coverage. |
-| Structured diagnostics | Implement consistent stable codes and reporting across all required paths. | A diagnostic requirement in prose is not proof of a runtime emitter. |
+| Feature                                      | Remaining work                                                                                                                                                                                                | Published schemas                                                                                                                                                                                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mixed-control `<type>-detail` options        | Implement lookup and dispatch for each supported type; test nested paths and registry precedence. The current mixed renderer does not consume these keys.                                                     | Removed seven type-specific detail definitions. Ordinary `detail` remains supported.                                                                                                                                                              |
+| Composite dialog Remove action               | Implement `showRemoveButton` and `removeLabel`, including ownership, confirmation and mutation guards, or formally retire this proposed footer action. A cell's existing remove action is a separate feature. | Removed both option definitions from UI/cell/global configuration.                                                                                                                                                                                |
+| `showClearButton`                            | Resolve whether a separate option is needed alongside `clearable`, and implement a consumer before exposing it.                                                                                               | Removed the unused global definition.                                                                                                                                                                                                             |
+| Separate read-only and disabled presentation | Core provides the setting, but the reference adapter does not consistently consume separate read-only state. Verify mutation guards and presentation throughout controls/cells before advertising the opt-in. | `separateReadonlyFromDisabled` is typed as an existing core setting, with an explicit adapter-support caveat. It is not a promise of renderer support.                                                                                            |
+| Config resolution and compound defaults      | Align namespace consumption, temporal versus flat restrict resolution, and compound-value merging across adapters. Base lodash merges arrays by index; Monaco/grid replace local option bags wholesale.       | Only traced config locations are declared. Unsupported namespaced defaults, global structural control options and layoutDefaults.minItemWidth were removed. See the complete configuration review in jsonforms-react-antd-implementation-gaps.md. |
+| Interpolation/markup beyond Label            | Integrate the text pipeline into other text-bearing elements and test translation ordering.                                                                                                                   | Shared option shapes do not promise support on every element.                                                                                                                                                                                     |
+| Pending validation and submit integration    | Finish a consistent pending-analysis contract, stale-result handling and host submit policy. Preserve the implemented owner-based additional-error store.                                                     | No speculative pending-state configuration.                                                                                                                                                                                                       |
+| File additional-error publication            | Verify/publish local read and conversion failures through the existing owner-based error integration; test cleanup and valid committed data.                                                                  | Duration and registered cron validation use the schema validator; invalid duration drafts retain local feedback and pending-edit validity without additional-error publication.                                                                   |
+| Container pre-touch summaries                | Define and implement touch-aware descendant summaries consistently across container families.                                                                                                                 | Existing indicator/filter options describe their implemented uses, not universal coverage.                                                                                                                                                        |
+| Structured diagnostics                       | Implement consistent stable codes and reporting across all required paths.                                                                                                                                    | A diagnostic requirement in prose is not proof of a runtime emitter.                                                                                                                                                                              |
 
 The implementation audit uses the Ant Design adapter plus its shared renderer
 logic and installed JSON Forms core. Relevant evidence includes

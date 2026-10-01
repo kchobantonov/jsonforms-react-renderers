@@ -33,7 +33,9 @@
     "build": "vite build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
     "typecheck": "tsc --noEmit && tsc --noEmit -p test/tsconfig.json",
     "test": "vitest run",
-    "clean": "rimraf lib coverage"
+    "clean": "rimraf lib coverage",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
+    "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
     "lodash": "^4.18.1",

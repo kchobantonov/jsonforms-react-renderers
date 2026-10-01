@@ -22,10 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import {
-  MixedRenderer,
-  mixedControlTester,
-} from './complex/MixedRenderer';
+import { MixedRenderer, mixedControlTester } from './complex/MixedRenderer';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,

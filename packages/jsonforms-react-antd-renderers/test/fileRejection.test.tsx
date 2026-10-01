@@ -6,9 +6,18 @@ import { Upload } from 'antd';
 import { AntdFile } from '../src/antd-controls/AntdFile';
 
 const upload = vi.hoisted(() => ({ props: undefined as any }));
-vi.mock('antd', async importOriginal => {
+vi.mock('antd', async (importOriginal) => {
   const actual = await importOriginal<typeof import('antd')>();
-  return { ...actual, Upload: Object.assign((props: any) => { upload.props = props; return null; }, { LIST_IGNORE: actual.Upload.LIST_IGNORE }) };
+  return {
+    ...actual,
+    Upload: Object.assign(
+      (props: any) => {
+        upload.props = props;
+        return null;
+      },
+      { LIST_IGNORE: actual.Upload.LIST_IGNORE }
+    ),
+  };
 });
 
 const schema = {

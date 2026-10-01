@@ -27,7 +27,7 @@ vi.mock('@monaco-editor/react', () => {
   };
   const editor = { focus() {}, layout() {}, getAction: () => undefined };
   return {
-    default: (props: any) => {
+    default: function MockMonaco(props: any) {
       spy.themeProp = props.theme;
       // Faithful to @monaco-editor/react's ordering, which is what the bug
       // hinged on: beforeMount runs during render with the monaco instance,
@@ -74,7 +74,10 @@ const renderForm = async (dark: boolean) => {
           schema={schema}
           uischema={uischema}
           renderers={[
-            { tester: monacoControlTester, renderer: AntdMonacoControlRenderer },
+            {
+              tester: monacoControlTester,
+              renderer: AntdMonacoControlRenderer,
+            },
           ]}
           onChange={() => undefined}
         />

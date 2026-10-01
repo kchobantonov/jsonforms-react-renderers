@@ -39,6 +39,10 @@ jobs:
         run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Check formatting
+        run: pnpm check-format
       - name: Test release tooling
         run: pnpm test:release
       - name: Build

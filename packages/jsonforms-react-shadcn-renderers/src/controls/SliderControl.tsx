@@ -17,7 +17,8 @@ export const ShadcnSliderControl = (props: ControlProps) => {
       ? Math.max(0, Math.min(100, (((value ?? min) - min) / (max - min)) * 100))
       : 0;
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}

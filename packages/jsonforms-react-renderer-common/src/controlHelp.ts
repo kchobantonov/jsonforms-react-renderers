@@ -19,7 +19,10 @@ export const getControlHelp = (
     visible,
     description,
     focused,
-    uischema?.options?.showUnfocusedDescription ?? config?.showUnfocusedDescription ?? false
-  ) ? undefined : description;
+    uischema?.options?.showUnfocusedDescription ??
+      config?.showUnfocusedDescription ??
+      false
+  )
+    ? undefined
+    : description;
 };
-

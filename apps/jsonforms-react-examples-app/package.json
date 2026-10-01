@@ -9,7 +9,9 @@
     "dev": "vite dist",
     "preview": "vite preview --outDir dist",
     "clean": "rimraf dist",
-    "test": "echo 'Nothing to do'"
+    "test": "echo 'Nothing to do'",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
+    "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
     "jsonforms-react-antd-demo": "workspace:*",

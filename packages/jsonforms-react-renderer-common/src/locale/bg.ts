@@ -22,7 +22,8 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'collection.showDetails': 'Показване на подробностите',
   'collection.hideDetails': 'Скриване на подробностите',
   'collection.deleteSelected': 'Изтриване на избраните редове',
-  'collection.deleteSelectedMessage': 'Да се изтрият ли избраните редове и техните данни?',
+  'collection.deleteSelectedMessage':
+    'Да се изтрият ли избраните редове и техните данни?',
   'collection.selectPage': 'Избиране на всички редове на тази страница',
   'collection.selectRow': 'Избиране на ред {index}',
   'collection.resizeColumn': 'Промяна на ширината на колоната {field}',
@@ -39,9 +40,11 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'validation.containerErrors': '{count} грешки в тази секция',
   'validation.containerHasErrors': 'Тази секция съдържа грешки',
   'file.rejected': '„{name}“ не беше прикачен: {reason}',
-  'file.maxItems': 'Файловете не са добавени. Допускат се най-много {limit} прикачени файла; съществуващите са запазени.',
+  'file.maxItems':
+    'Файловете не са добавени. Допускат се най-много {limit} прикачени файла; съществуващите са запазени.',
   'file.sizeBound': '{name} трябва да съдържа {bound} {limit} байта.',
-  'file.readFailed': 'Файловете не могат да бъдат прочетени. Съществуващите файлове са запазени.',
+  'file.readFailed':
+    'Файловете не могат да бъдат прочетени. Съществуващите файлове са запазени.',
   'file.reading': 'Четене на файлове…',
   'file.numbered': 'Файл {index}',
   'file.atLeast': 'поне',

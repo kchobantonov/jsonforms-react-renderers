@@ -149,27 +149,31 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
         })}
     </div>
   );
-  const pills = <>
-          {values.map((value, index) => (
-            <span
-              key={index}
-              className='inline-flex max-w-full items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-sm text-secondary-foreground'
-            >
-              <span className='min-w-0 truncate' title={label(value)}>{label(value)}</span>
-              <Button
-                type='button'
-                variant='ghost'
-                size='icon'
-                className='h-4 w-4 shrink-0 rounded-sm p-0'
-                disabled={disabled || !canRemoveChoice(values, limits)}
-                aria-label={t('composite.remove', { label: label(value) })}
-                onClick={() => remove(index)}
-              >
-                <X className='h-3 w-3' />
-              </Button>
-            </span>
-          ))}
-  </>;
+  const pills = (
+    <>
+      {values.map((value, index) => (
+        <span
+          key={index}
+          className='inline-flex max-w-full items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-sm text-secondary-foreground'
+        >
+          <span className='min-w-0 truncate' title={label(value)}>
+            {label(value)}
+          </span>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            className='h-4 w-4 shrink-0 rounded-sm p-0'
+            disabled={disabled || !canRemoveChoice(values, limits)}
+            aria-label={t('composite.remove', { label: label(value) })}
+            onClick={() => remove(index)}
+          >
+            <X className='h-3 w-3' />
+          </Button>
+        </span>
+      ))}
+    </>
+  );
   return (
     <InputShell {...props} id={id}>
       {chips ? (
@@ -214,11 +218,24 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
         <Popover>
           <div className='flex min-h-9 w-full min-w-0 items-center gap-1 rounded-md border border-input bg-background px-2 py-1'>
             <div className='flex min-w-0 flex-1 flex-wrap gap-1 max-h-32 overflow-auto'>
-              {values.length ? pills : <span className='text-sm text-muted-foreground'>{options.placeholder || props.label}</span>}
+              {values.length ? (
+                pills
+              ) : (
+                <span className='text-sm text-muted-foreground'>
+                  {options.placeholder || props.label}
+                </span>
+              )}
             </div>
             <PopoverTrigger asChild>
-              <Button id={id} type='button' variant='ghost' size='icon'
-                aria-label={props.label} disabled={disabled} className='h-7 w-7 shrink-0'>
+              <Button
+                id={id}
+                type='button'
+                variant='ghost'
+                size='icon'
+                aria-label={props.label}
+                disabled={disabled}
+                className='h-7 w-7 shrink-0'
+              >
                 <ChevronDown className='h-4 w-4' />
               </Button>
             </PopoverTrigger>

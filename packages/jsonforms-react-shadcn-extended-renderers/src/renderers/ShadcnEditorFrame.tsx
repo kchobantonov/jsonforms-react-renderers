@@ -6,7 +6,8 @@ export const ShadcnEditorFrame = ({
   children,
   ...props
 }: EditorControlFrameProps) => (
-  <InputShell {...props}
+  <InputShell
+    {...props}
     id={props.id}
     label={props.label}
     required={props.required}

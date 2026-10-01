@@ -51,9 +51,15 @@ const schema: any = {
 };
 
 /** Permission is off by default, so every rendering case has to opt in. */
-const allowed = { jsonformsExtended: { security: { allowScriptEvaluation: true } } };
+const allowed = {
+  jsonformsExtended: { security: { allowScriptEvaluation: true } },
+};
 
-const draw = (uischema: any, config?: any, data: any = { firstName: 'Ada', note: 'keep me' }) => {
+const draw = (
+  uischema: any,
+  config?: any,
+  data: any = { firstName: 'Ada', note: 'keep me' }
+) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -95,7 +101,7 @@ const draw = (uischema: any, config?: any, data: any = { firstName: 'Ada', note:
 const jsxLayout = (extra: any = {}) => ({
   type: 'TemplateLayout',
   lang: 'jsx',
-  template: "<div data-out>Hello {data.firstName}</div>",
+  template: '<div data-out>Hello {data.firstName}</div>',
   ...extra,
 });
 
@@ -127,7 +133,11 @@ describe('choosing the engine', () => {
   */
   it('keeps the two syntaxes apart', async () => {
     const jsxSyntaxUnderRactive = draw(
-      { type: 'TemplateLayout', lang: 'ractive', template: '<div>{data.firstName}</div>' },
+      {
+        type: 'TemplateLayout',
+        lang: 'ractive',
+        template: '<div>{data.firstName}</div>',
+      },
       allowed
     );
     await settle();
@@ -139,7 +149,10 @@ describe('choosing the engine', () => {
   /* "Resolve the language from explicit lang, then config.defaultTemplateLang" */
   it('falls back to defaultTemplateLang when lang is absent', async () => {
     const view = draw(
-      { type: 'TemplateLayout', template: '<div data-out>Hi {data.firstName}</div>' },
+      {
+        type: 'TemplateLayout',
+        template: '<div data-out>Hi {data.firstName}</div>',
+      },
       { ...allowed, defaultTemplateLang: 'jsx' }
     );
     await settle();
@@ -150,7 +163,10 @@ describe('choosing the engine', () => {
   /* "then ractive for the default web profile" */
   it('defaults to ractive when nothing says otherwise', async () => {
     const view = draw(
-      { type: 'TemplateLayout', template: '<div data-out>Hi {{data.firstName}}</div>' },
+      {
+        type: 'TemplateLayout',
+        template: '<div data-out>Hi {{data.firstName}}</div>',
+      },
       allowed
     );
     await settle();
@@ -248,9 +264,9 @@ describe('the ractive profile', () => {
     const view = draw(withSlot, allowed);
     await settle();
     expect(view.container.querySelector('input')).toBeTruthy();
-    expect(
-      view.container.querySelector<HTMLInputElement>('input')?.value
-    ).toBe('keep me');
+    expect(view.container.querySelector<HTMLInputElement>('input')?.value).toBe(
+      'keep me'
+    );
     view.unmount();
   });
 
@@ -319,7 +335,7 @@ describe('the ractive profile', () => {
   child came last won the slot map and the other was never placed: no
   partial, no dispatch, no error, and a control simply missing from the form.
 */
-describe('naming a template\'s children', () => {
+describe("naming a template's children", () => {
   const twoChildren = (names: (string | undefined)[]) => ({
     type: 'TemplateLayout',
     lang: 'ractive',
@@ -367,9 +383,9 @@ describe('naming a template\'s children', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const view = draw(twoChildren(['body', 'body']), allowed);
     await settle();
-    expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
-    ).toContain('template.duplicateChildName');
+    expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
+      'template.duplicateChildName'
+    );
     warn.mockRestore();
     view.unmount();
   });
@@ -470,9 +486,9 @@ describe('ractive attribute names', () => {
   it('keeps an ordinary data attribute', async () => {
     const view = draw(marker('data-greeting'), allowed);
     await settle();
-    expect(
-      view.container.querySelector('[data-greeting]')?.textContent
-    ).toBe('Hi Ada');
+    expect(view.container.querySelector('[data-greeting]')?.textContent).toBe(
+      'Hi Ada'
+    );
     view.unmount();
   });
 

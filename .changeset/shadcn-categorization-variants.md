@@ -1,5 +1,5 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
 ---
 
 Implement accordion and stepper categorization variants instead of falling back

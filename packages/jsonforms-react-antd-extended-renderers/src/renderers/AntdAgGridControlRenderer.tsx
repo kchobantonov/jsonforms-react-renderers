@@ -1,12 +1,18 @@
 import React from 'react';
-import { ValidationIcon } from '@chobantonov/jsonforms-react-antd-renderers';
-import { createAgGridControlRenderer } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
+  ValidationIcon,
   ConnectedCellFrame,
   RowDetailFrame,
   useConfirmation,
 } from '@chobantonov/jsonforms-react-antd-renderers';
-import { DeleteOutlined, PlusOutlined, EditOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { createAgGridControlRenderer } from '@chobantonov/jsonforms-react-extended-renderers';
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  EditOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+} from '@ant-design/icons';
 import { AntdEditorButton } from './AntdEditorButton';
 import { AntdArrayFrame } from './AntdArrayFrame';
 import { AntdEditorFrame } from './AntdEditorFrame';
@@ -39,7 +45,9 @@ const useAgGridRemoveConfirmation = () => {
 };
 
 export const AntdAgGridControlRenderer = createAgGridControlRenderer({
-  RowErrorIndicator: ({ message }) => <ValidationIcon errorMessages={message} id={React.useId()} />,
+  RowErrorIndicator: ({ message }) => (
+    <ValidationIcon errorMessages={message} id={React.useId()} />
+  ),
   Frame: AntdEditorFrame,
   RowDetailFrame,
   EditIcon: EditOutlined,

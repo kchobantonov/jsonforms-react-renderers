@@ -17,7 +17,7 @@ export * from './i18nDefaults';
 export * from './layoutContext';
 export * from './layoutSizing';
 export * from './literalPropertySchema';
-export * from './maskControls';
+export { hasMaskPattern, extendedMaskTester } from './maskControls';
 export * from './maskFormat';
 export * from './numeric';
 export * from './pendingChanges';

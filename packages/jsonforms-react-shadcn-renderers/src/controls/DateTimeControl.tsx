@@ -63,7 +63,8 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
   };
 
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={label}
       required={required}

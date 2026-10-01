@@ -147,7 +147,6 @@ export const validateAdditionalPropertyName = ({
 
   // Renaming a property to what it is already called is not a collision.
 
-
   const taken = [...Object.keys(schema.properties ?? {}), ...disallowedNames];
   const isTaken =
     taken.includes(name) ||
@@ -166,7 +165,7 @@ export const validateAdditionalPropertyName = ({
   try {
     permitted = validate
       ? validate(nameSchema, name)
-      : defaultNameValidator.validate(nameSchema, name) as boolean;
+      : (defaultNameValidator.validate(nameSchema, name) as boolean);
     if (!permitted) {
       defaultNameValidator.validate(nameSchema, name);
       errors = [...(defaultNameValidator.errors ?? [])];

@@ -107,10 +107,16 @@ export const TupleAdditionalItems = ({
   };
 
   const deletion = useCollectionDelete<number>({
-    data, identity: path, catalogId: 'additionalItems', options, config,
-    canRemove: (index) => canDelete && index >= definition.prefix.length && index < data.length,
+    data,
+    identity: path,
+    catalogId: 'additionalItems',
+    options,
+    config,
+    canRemove: (index) =>
+      canDelete && index >= definition.prefix.length && index < data.length,
     value: (index) => data[index],
-    remove: (index) => onChange(data.filter((_, position) => position !== index)),
+    remove: (index) =>
+      onChange(data.filter((_, position) => position !== index)),
   });
 
   const trailing: number[] = [];
@@ -122,7 +128,12 @@ export const TupleAdditionalItems = ({
     trailing.push(index);
   }
 
-  const page = useCollectionPagination(trailing, options.additionalItems?.pagination, config, 'additionalItems');
+  const page = useCollectionPagination(
+    trailing,
+    options.additionalItems?.pagination,
+    config,
+    'additionalItems'
+  );
 
   return (
     <section
@@ -133,7 +144,11 @@ export const TupleAdditionalItems = ({
         borderTop: `1px solid ${token.colorBorderSecondary}`,
       }}
     >
-      <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
+      <DeleteDialog
+        open={deletion.confirming}
+        onCancel={deletion.cancel}
+        onConfirm={deletion.confirm}
+      />
       <header
         style={{
           display: 'flex',
@@ -156,32 +171,34 @@ export const TupleAdditionalItems = ({
         />
       </header>
       <PendingChangesProvider changes={page.pending}>
-        {page.indices.map((offset) => trailing[offset]).map((index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: token.paddingXS,
-              marginBottom: token.paddingXS,
-            }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
-            <Button
-              size='small'
-              type='text'
-              danger
-              icon={<DeleteOutlined />}
-              disabled={!canDelete}
-              onClick={() => deletion.request(index)}
-              title={t('tuple.delete', { label: positionLabel(index) })}
-              aria-label={t('tuple.delete', {
-                label: positionLabel(index),
-              })}
-              data-tuple-delete={index}
-            />
-          </div>
-        ))}
+        {page.indices
+          .map((offset) => trailing[offset])
+          .map((index) => (
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: token.paddingXS,
+                marginBottom: token.paddingXS,
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>{renderItem(index)}</div>
+              <Button
+                size='small'
+                type='text'
+                danger
+                icon={<DeleteOutlined />}
+                disabled={!canDelete}
+                onClick={() => deletion.request(index)}
+                title={t('tuple.delete', { label: positionLabel(index) })}
+                aria-label={t('tuple.delete', {
+                  label: positionLabel(index),
+                })}
+                data-tuple-delete={index}
+              />
+            </div>
+          ))}
       </PendingChangesProvider>
       <CollectionPager page={page} />
       {message && (

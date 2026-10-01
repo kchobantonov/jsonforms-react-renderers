@@ -55,7 +55,8 @@ export const ShadcnDurationControl = (props: ControlProps) => {
   const unitLabel = (field: keyof ExtendedDurationParts) =>
     label(`duration.${field}` as any);
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}

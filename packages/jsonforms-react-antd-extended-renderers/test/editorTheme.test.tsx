@@ -95,6 +95,8 @@ describe('useEditorAppearance', () => {
   });
 
   it('passes a custom theme name through untouched', () => {
-    expect(capture('my-monaco-theme', true).customTheme).toBe('my-monaco-theme');
+    expect(capture('my-monaco-theme', true).customTheme).toBe(
+      'my-monaco-theme'
+    );
   });
 });

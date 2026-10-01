@@ -37,7 +37,9 @@ describe('ShadcnTimeControl', () => {
 
     await act(async () => root.render(<ShadcnTimeControl {...props} />));
     await act(async () => {
-      container.querySelector<HTMLButtonElement>('#shadcn-jsonforms-startTime')?.click();
+      container
+        .querySelector<HTMLButtonElement>('#shadcn-jsonforms-startTime')
+        ?.click();
     });
 
     const picker = document.body.querySelector('[data-slot="time-picker"]');

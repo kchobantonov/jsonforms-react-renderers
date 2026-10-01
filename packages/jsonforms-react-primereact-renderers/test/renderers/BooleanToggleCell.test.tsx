@@ -32,7 +32,6 @@ import {
 import BooleanToggleCell, {
   booleanToggleCellTester,
 } from '../../src/cells/BooleanToggleCell';
-import * as ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { primereactRenderers } from '../../src';
 
@@ -170,13 +169,6 @@ describe('PrimeReact boolean toggle cell', () => {
   let wrapper: ReactWrapper;
 
   afterEach(() => wrapper.unmount());
-
-  /** Use this container to render components */
-  const container = document.createElement('div');
-
-  afterEach(() => {
-    ReactDOM.unmountComponentAtNode(container);
-  });
 
   // seems to be broken in material-ui
   it('should autofocus via option', () => {

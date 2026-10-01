@@ -28,7 +28,8 @@ export const ShadcnNullControl = (props: ControlProps) => {
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       description={props.description}
       errors={props.errors}

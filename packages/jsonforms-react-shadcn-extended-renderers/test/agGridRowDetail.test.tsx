@@ -60,7 +60,12 @@ const button = (text: string) =>
   Array.from(document.querySelectorAll('button')).find(
     (el) => el.textContent?.trim() === text
   )!;
-const mount = async (rowDetail: any, readonly = false, columnOptions = {}, invalid = false) => {
+const mount = async (
+  rowDetail: any,
+  readonly = false,
+  columnOptions = {},
+  invalid = false
+) => {
   captured.props = undefined;
   const host = document.createElement('div');
   document.body.append(host);
@@ -142,10 +147,15 @@ it('uses the custom row form with a nested source path and stages dialog changes
     await click(button('Cancel'));
     expect(captured.props.rowData[1].value.name).toBe('Second');
     await click(document.querySelectorAll('[aria-label="Edit details"]')[1]);
-    const nameRenderer = captured.props.columnDefs.find((column: any) => column.colId === 'name').cellRenderer;
+    const nameRenderer = captured.props.columnDefs.find(
+      (column: any) => column.colId === 'name'
+    ).cellRenderer;
     await input('Applied');
     await click(button('Apply'));
-    expect(captured.props.columnDefs.find((column: any) => column.colId === 'name').cellRenderer).toBe(nameRenderer);
+    expect(
+      captured.props.columnDefs.find((column: any) => column.colId === 'name')
+        .cellRenderer
+    ).toBe(nameRenderer);
     expect(captured.props.rowData.map((r: any) => r.value)).toEqual([
       { name: 'First', hidden: 'Keep' },
       { name: 'Applied', hidden: 'Also keep' },
@@ -202,7 +212,9 @@ it('allows read-only inspection without applying changes', async () => {
 it('reveals the added row page once, using its sorted display index', async () => {
   const app = await mount({ presentation: 'dialog' });
   try {
-    const add = Array.from(document.querySelectorAll('button')).find(el => /add/i.test(el.getAttribute('aria-label') ?? el.title));
+    const add = Array.from(document.querySelectorAll('button')).find((el) =>
+      /add/i.test(el.getAttribute('aria-label') ?? el.title)
+    );
     expect(add).toBeTruthy();
     await click(add!);
     expect(captured.props.rowData).toHaveLength(3);
@@ -226,23 +238,44 @@ it('reveals the added row page once, using its sorted display index', async () =
 it('binds a presentation column to the source row instead of a synthetic property', async () => {
   const app = await mount({ presentation: 'dialog' }, false, {
     columnDefs: [{ field: 'preview', scope: '#', headerName: 'Preview' }],
-    cells: { preview: { summary: { type: 'Label', text: '{name}', options: { interpolate: true, textParams: { name: '{item.name}' } } } } },
+    cells: {
+      preview: {
+        summary: {
+          type: 'Label',
+          text: '{name}',
+          options: { interpolate: true, textParams: { name: '{item.name}' } },
+        },
+      },
+    },
   });
   try {
-    const column = captured.props.columnDefs.find((c: any) => c.colId === 'preview');
+    const column = captured.props.columnDefs.find(
+      (c: any) => c.colId === 'preview'
+    );
     expect(column.headerName).toBe('Preview');
     const rows = [...captured.props.rowData].reverse();
     const sorted = rows.sort((a: any, b: any) =>
-      column.valueGetter({ data: a }).localeCompare(column.valueGetter({ data: b })));
-    expect(sorted.map((row: any) => row.value.name)).toEqual(['First', 'Second']);
+      column
+        .valueGetter({ data: a })
+        .localeCompare(column.valueGetter({ data: b }))
+    );
+    expect(sorted.map((row: any) => row.value.name)).toEqual([
+      'First',
+      'Second',
+    ]);
     expect(column.valueGetter({ data: sorted[0] })).toBe('First');
     const element = column.cellRenderer({ data: { index: 1 } });
     expect(element.props.path).toBe('rows.1');
-    expect(element.props.children.props.children.props.schema.properties.name).toEqual({ type: 'string' });
-    expect(element.props.children.props.children.props.uischema.options.summaryOnly).toBe(true);
-  } finally { app.close(); }
+    expect(
+      element.props.children.props.children.props.schema.properties.name
+    ).toEqual({ type: 'string' });
+    expect(
+      element.props.children.props.children.props.uischema.options.summaryOnly
+    ).toBe(true);
+  } finally {
+    app.close();
+  }
 });
-
 
 it('shows descendant row errors beside the grid heading', async () => {
   const mounted = await mount({}, false, {}, true);
@@ -251,5 +284,7 @@ it('shows descendant row errors beside the grid heading', async () => {
     expect(heading).toBeTruthy();
     const indicator = heading!.parentElement!.querySelector('button');
     expect(indicator?.getAttribute('aria-label')).toContain('missing');
-  } finally { mounted.close(); }
+  } finally {
+    mounted.close();
+  }
 });

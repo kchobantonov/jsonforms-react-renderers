@@ -243,7 +243,10 @@ describe('AdditionalProperties', () => {
       initialValue,
       expectedValue,
       defaultValue?,
+      // Widen the literal types inferred from the it.each tuple cases.
+      // eslint-disable-next-line @typescript-eslint/no-inferrable-types
       providerPath: string = 'dynamic',
+      // eslint-disable-next-line @typescript-eslint/no-inferrable-types
       controlPath: string = 'dynamic'
     ) => {
       const handleChange = vi.fn();

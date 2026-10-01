@@ -93,7 +93,13 @@ export const InterpolatedText = ({
     template. The caller supplies safe literal content for a failed load.
   */
   <LoadBoundary fallback={fallback}>
-    <Suspense fallback={<span role="status" aria-busy="true">…</span>}>
+    <Suspense
+      fallback={
+        <span role='status' aria-busy='true'>
+          …
+        </span>
+      }
+    >
       <LazyEvaluate
         segments={segments}
         textParams={textParams}

@@ -1,9 +1,22 @@
 import React from 'react';
 import { CircleAlert } from 'lucide-react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '@jsonforms-react-shadcn-ui/popover';
-import { ErrorSummaryList, useErrorSummary, useErrorSummaryCount } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from '@jsonforms-react-shadcn-ui/tooltip';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@jsonforms-react-shadcn-ui/popover';
+import {
+  ErrorSummaryList,
+  useErrorSummary,
+  useErrorSummaryCount,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 
 export const ErrorIndicator = ({
   errors,
@@ -17,7 +30,10 @@ export const ErrorIndicator = ({
   local?: boolean;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const count = useErrorSummaryCount(local ? '' : errors, local ? undefined : path);
+  const count = useErrorSummaryCount(
+    local ? '' : errors,
+    local ? undefined : path
+  );
   const entries = useErrorSummary(errors, path, open && !local);
   const timer = React.useRef<ReturnType<typeof setTimeout>>();
   const trigger = React.useRef<HTMLButtonElement>(null);
@@ -63,7 +79,9 @@ export const ErrorIndicator = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent className='max-w-sm whitespace-pre-line'>
-            {!local && entries[0] ? [entries[0].path, entries[0].message].filter(Boolean).join(': ') : errors}
+            {!local && entries[0]
+              ? [entries[0].path, entries[0].message].filter(Boolean).join(': ')
+              : errors}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

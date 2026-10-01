@@ -124,7 +124,9 @@ const draw = (schedule?: string) => {
       select!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     await settle(200);
-    const lists = document.querySelectorAll<HTMLElement>('.ant-select-dropdown');
+    const lists = document.querySelectorAll<HTMLElement>(
+      '.ant-select-dropdown'
+    );
     const list = lists[lists.length - 1];
     return Array.from(
       list?.querySelectorAll<HTMLElement>('.ant-select-item-option-selected') ??

@@ -147,21 +147,53 @@ describe('deciding whether to prompt', () => {
 });
 
 it('defaults composite cell deletion to complex while preserving policy overrides', () => {
-  const resolve = (options = {}, config = {}) => resolveConfirmationPolicy({
-    catalogId: 'compositeCell', operation: 'delete', options, config,
-  });
+  const resolve = (options = {}, config = {}) =>
+    resolveConfirmationPolicy({
+      catalogId: 'compositeCell',
+      operation: 'delete',
+      options,
+      config,
+    });
   expect(resolve()).toBe('complex');
-  for (const value of [{}, []]) expect(confirmationRequired(resolve(), [value])).toBe(false);
-  for (const value of [{ key: undefined }, [{}]]) expect(confirmationRequired(resolve(), [value])).toBe(true);
-  expect(resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('always');
-  expect(resolve({}, { jsonformsExtended: { confirmation: { renderers: { compositeCell: { delete: 'never' } } } } })).toBe('never');
-  expect(resolve({ confirmation: { delete: 'never' } }, { jsonformsExtended: { confirmation: { default: 'always' } } })).toBe('never');
+  for (const value of [{}, []])
+    expect(confirmationRequired(resolve(), [value])).toBe(false);
+  for (const value of [{ key: undefined }, [{}]])
+    expect(confirmationRequired(resolve(), [value])).toBe(true);
+  expect(
+    resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } })
+  ).toBe('always');
+  expect(
+    resolve(
+      {},
+      {
+        jsonformsExtended: {
+          confirmation: { renderers: { compositeCell: { delete: 'never' } } },
+        },
+      }
+    )
+  ).toBe('never');
+  expect(
+    resolve(
+      { confirmation: { delete: 'never' } },
+      { jsonformsExtended: { confirmation: { default: 'always' } } }
+    )
+  ).toBe('never');
 });
 
-
-it.each(['mixed', 'arrayTable', 'arrayLayout', 'listWithDetail', 'agGrid', 'additionalItems', 'additionalProperties', 'compositeCell'])('defaults %s deletion to complex', (catalogId) => {
+it.each([
+  'mixed',
+  'arrayTable',
+  'arrayLayout',
+  'listWithDetail',
+  'agGrid',
+  'additionalItems',
+  'additionalProperties',
+  'compositeCell',
+])('defaults %s deletion to complex', (catalogId) => {
   const policy = fallbackConfirmationPolicy(catalogId, 'delete');
   expect(policy).toBe('complex');
-  for (const value of ['', 'text', 0, false, null, {}, []]) expect(confirmationRequired(policy, [value])).toBe(false);
-  for (const value of [{ field: '' }, [null]]) expect(confirmationRequired(policy, [value])).toBe(true);
+  for (const value of ['', 'text', 0, false, null, {}, []])
+    expect(confirmationRequired(policy, [value])).toBe(false);
+  for (const value of [{ field: '' }, [null]])
+    expect(confirmationRequired(policy, [value])).toBe(true);
 });

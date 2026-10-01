@@ -1,7 +1,7 @@
 ---
-"@chobantonov/jsonforms-react-shadcn-renderers": patch
-"@chobantonov/jsonforms-react-extended-renderers": patch
-"@chobantonov/jsonforms-react-shadcn-extended-renderers": patch
+'@chobantonov/jsonforms-react-shadcn-renderers': patch
+'@chobantonov/jsonforms-react-extended-renderers': patch
+'@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 ---
 
 Render object and array columns with compact summaries and shadcn detail dialogs,

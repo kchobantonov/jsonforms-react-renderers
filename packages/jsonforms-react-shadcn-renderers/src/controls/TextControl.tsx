@@ -20,7 +20,8 @@ export const ShadcnTextControl = (props: ControlProps) => {
   }
   const id = makeId(props.path, props.label);
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}

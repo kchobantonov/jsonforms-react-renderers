@@ -15,12 +15,8 @@ import {
   antdNullControlTester,
   antdSplitLayoutTester,
 } from '../../../jsonforms-react-antd-extended-renderers/src';
-import { markupLabelTester } from '../../../jsonforms-react-extended-renderers/src';
 import {
-  antdWebcomponentCells,
-  antdWebcomponentRenderers,
-} from '../../../jsonforms-react-antd-webcomponent/src/renderers';
-import {
+  markupLabelTester,
   extendedAgGridTester,
   monacoControlTester,
   sharedSplitLayoutTester,
@@ -31,6 +27,10 @@ import {
   namedTemplateTester,
   slotRendererTester,
 } from '../../../jsonforms-react-extended-renderers/src';
+import {
+  antdWebcomponentCells,
+  antdWebcomponentRenderers,
+} from '../../../jsonforms-react-antd-webcomponent/src/renderers';
 
 describe('Ant Design renderer registries', () => {
   it('registers the mixed renderer from its dedicated module', () => {

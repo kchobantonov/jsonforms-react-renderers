@@ -78,7 +78,8 @@ export const ShadcnColorControl = (props: ControlProps) => {
   const value = typeof displayed === 'string' ? displayed : '';
 
   return (
-    <InputShell {...props}
+    <InputShell
+      {...props}
       id={id}
       label={props.label}
       required={props.required}
