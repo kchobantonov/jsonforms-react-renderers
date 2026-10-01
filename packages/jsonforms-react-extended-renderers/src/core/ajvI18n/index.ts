@@ -204,7 +204,8 @@ export const createAjvErrorTranslator = (
     */
     const copy = { ...error } as ErrorObject;
     localize([copy]);
-    return copy.message ?? defaultErrorTranslator(error, translate, uischema);
+    // Preserve JSON Forms field/keyword overrides before using localized AJV text.
+    return defaultErrorTranslator(copy, translate, uischema);
   };
 };
 

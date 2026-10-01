@@ -281,3 +281,11 @@ describe('portable grid options', () => {
     app.unmount();
   });
 });
+
+it('uses a Control summary for the grid value used by text filtering', async () => {
+  const app = await render({ cells: { name: { summary: { type: 'Control', scope: '#/properties/city' } } } });
+  const column = captured.props.columnDefs.find((c: any) => c.colId === 'name');
+  expect(column.valueGetter({ data: { value: { name: { city: 'Boston', phone: '555' } } } })).toBe('Boston');
+  expect(column.valueGetter({ data: { value: { name: { city: 'Seattle' } } } })).toBe('Seattle');
+  app.unmount();
+});

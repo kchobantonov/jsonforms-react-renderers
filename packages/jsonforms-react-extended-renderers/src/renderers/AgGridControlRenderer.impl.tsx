@@ -1,3 +1,5 @@
+import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
+import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
@@ -136,6 +138,7 @@ export const createAgGridControl = ({
     const hostTheme = useHostTheme();
     const confirmation = useConfirm();
     const t = useExtendedTranslator();
+    const summaryDefault = useI18nDefault();
     const { isDark } = useEditorAppearance(
       anchor,
       props.uischema.options?.theme,
@@ -279,6 +282,12 @@ export const createAgGridControl = ({
       values.set(item, text);
       return text;
     };
+    const controlSummaryRef = useRef<(summary: any, value: unknown, schema: JsonSchema) => string>(() => '');
+    controlSummaryRef.current = (summary, value, schema) => compositeSummary(
+      value, summary, schema.title,
+      formContext.i18n?.translate ?? ((_key, fallback) => fallback ?? ''),
+      summaryDefault, schema
+    );
     const summaryValueRef = useRef(summaryValue);
     summaryValueRef.current = summaryValue;
     const columns: ColDef[] = useMemo(
@@ -305,7 +314,10 @@ export const createAgGridControl = ({
           valueGetter: (event) =>
             (cellOptions?.[field]?.summary as any)?.type === 'Label'
               ? summaryValueRef.current(cellOptions[field].summary, event.data?.value)
-              : object ? event.data?.value?.[field] : event.data?.value,
+              : (cellOptions?.[field]?.summary as any)?.type === 'Control'
+                ? controlSummaryRef.current(cellOptions[field].summary,
+                    object ? event.data?.value?.[field] : event.data?.value, schema)
+                : object ? event.data?.value?.[field] : event.data?.value,
           cellRenderer: (event: { data: { index: number } }) => {
             const rowBound = props.uischema.options?.columnDefs?.some((c: TableColumnDefinition) => c.field === field && c.scope === '#');
             const cellSchema = object && !rowBound
