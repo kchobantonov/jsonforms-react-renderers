@@ -34,22 +34,17 @@ export const uischema = {
       type: 'Control',
       scope: '#/properties/imageDataUri',
       options: {
-        showUnfocusedDescription: true,
         formatMaximum: '1048576',
       },
     },
     {
       type: 'Control',
       scope: '#/properties/fileDataUriWithFileName',
-      options: {
-        showUnfocusedDescription: true,
-      },
     },
     {
       type: 'Control',
       scope: '#/properties/base64String',
       options: {
-        showUnfocusedDescription: true,
         formatMaximum: 1048576,
       },
     },

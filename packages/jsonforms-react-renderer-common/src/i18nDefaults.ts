@@ -10,6 +10,9 @@ export const i18nDefaults = {
   'collection.next': 'Next page',
   'collection.showDetails': 'Show details',
   'collection.hideDetails': 'Hide details',
+  'collection.addedHidden': 'The new item is hidden by the current filter.',
+  'collection.clearFilters': 'Clear filters',
+  'collection.firstError': 'Go to first error',
   'collection.editDetails': 'Edit details',
   'collection.selectItem': 'Select an item to view its details.',
 
@@ -31,6 +34,9 @@ export const i18nDefaults = {
   // the indicator may show after validationMode filtering, not the raw total.
   'validation.showMore': 'Show {count} more',
   'validation.showLess': 'Show less',
+  'validation.childrenErrorCount': '1 error in items.',
+  'validation.childrenErrors': 'Some items contain errors.',
+  'validation.childrenErrorsCount': '{count} errors in items.',
   'validation.containerError': '{count} error in this section',
   'validation.containerErrors': '{count} errors in this section',
   // Used when showValidationIndicatorCount is off.
@@ -39,6 +45,17 @@ export const i18nDefaults = {
   // the attachment that is still committed - without the name it reads as an
   // error about *that* file rather than the one that was turned away.
   'file.rejected': '"{name}" was not attached: {reason}',
+  'file.maxItems': 'These files were not added. A maximum of {limit} attachments is allowed; existing files were kept.',
+  'file.sizeBound': '{name} must contain {bound} {limit} bytes.',
+  'file.readFailed': 'The files could not be read. Existing attachments were kept.',
+  'file.reading': 'Reading files…',
+  'file.numbered': 'File {index}',
+  'file.atLeast': 'at least',
+  'file.moreThan': 'more than',
+  'file.atMost': 'at most',
+  'file.lessThan': 'less than',
+  'file.attached': 'File attached',
+  'file.clearAll': 'Clear all files',
   'file.select': 'Select File',
 
   // Clear affordance shared by the input controls

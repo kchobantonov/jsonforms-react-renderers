@@ -1,3 +1,6 @@
+import { ObjectDetailContext } from '../complex/ObjectDetailContext';
+import { ErrorIndicator } from '../complex/ErrorIndicator';
+import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from './ValidationIndicator';
 import { LayoutProps, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
@@ -22,14 +25,26 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
     props.config,
     false
   );
+  const detail = React.useContext(ObjectDetailContext);
+  const additional =
+    detail?.uischema === props.uischema ? detail.additional : null;
+  const object = React.useContext(ObjectErrorContext);
+  const objectOwned = object?.uischema === props.uischema;
+  const objectErrors = objectOwned ? object.message : '';
   if (!props.visible) return null;
 
   const header = (
     <>
       <span className='shadcn-jsonforms-group-title'>{props.label}</span>
       <span className='shadcn-jsonforms-group-actions'>
-        {validation.show && (
-          <ContainerValidationIndicator count={validation.count} />
+        {objectOwned ? (
+          objectErrors ? (
+            <ErrorIndicator local errors={objectErrors} />
+          ) : null
+        ) : (
+          validation.show && (
+            <ContainerValidationIndicator count={validation.count} />
+          )
         )}
         {group.hasData && (
           <span
@@ -71,7 +86,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
         >
           {header}
         </CollapsibleTrigger>
-      ) : props.label || group.hasData || validation.show ? (
+      ) : props.label || group.hasData || objectErrors || validation.show ? (
         <div className='shadcn-jsonforms-group-header'>{header}</div>
       ) : null}
       <CollapsibleContent
@@ -80,7 +95,10 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
         keepMounted
         hidden={group.collapsed}
       >
-        <ShadcnLayout {...props} direction='column' />
+        {(props.uischema as any).elements?.length > 0 && (
+          <ShadcnLayout {...props} direction='column' />
+        )}
+        {additional}
       </CollapsibleContent>
     </Collapsible>
   );

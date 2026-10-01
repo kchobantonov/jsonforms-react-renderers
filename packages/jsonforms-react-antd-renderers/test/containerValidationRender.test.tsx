@@ -94,7 +94,7 @@ describe('container error indicator', () => {
   it('marks a Group whose descendant fails, even while collapsed', () => {
     const { marker, unmount } = render(
       group({
-        showValidationIndicator: true,
+        showValidationIndicator: true, showValidationIndicatorCount: true,
         collapsible: true,
         collapsed: true,
       }),
@@ -107,7 +107,7 @@ describe('container error indicator', () => {
 
   it('says nothing when everything below it is valid', () => {
     const { marker, unmount } = render(
-      group({ showValidationIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true }),
       valid
     );
     expect(marker).toBeNull();
@@ -118,7 +118,7 @@ describe('container error indicator', () => {
     const outside = {
       type: 'Group',
       label: 'Elsewhere',
-      options: { showValidationIndicator: true },
+      options: { showValidationIndicator: true, showValidationIndicatorCount: true },
       elements: [{ type: 'Control', scope: '#/properties/other' }],
     };
     const { marker, unmount } = render(outside, invalid);
@@ -128,7 +128,7 @@ describe('container error indicator', () => {
 
   it('turns on globally through the namespaced config key', () => {
     const { marker, unmount } = render(group({}), invalid, {
-      jsonformsExtended: { showValidationIndicator: true },
+      jsonformsExtended: { showValidationIndicator: true, showValidationIndicatorCount: true },
     });
     expect(marker).toBeTruthy();
     unmount();
@@ -138,7 +138,7 @@ describe('container error indicator', () => {
     const { marker, unmount } = render(
       group({ showValidationIndicator: false }),
       invalid,
-      { jsonformsExtended: { showValidationIndicator: true } }
+      { jsonformsExtended: { showValidationIndicator: true, showValidationIndicatorCount: true } }
     );
     expect(marker).toBeNull();
     unmount();
@@ -146,7 +146,7 @@ describe('container error indicator', () => {
 
   it('carries a localized accessible name and a tooltip', () => {
     const { marker, unmount } = render(
-      group({ showValidationIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true }),
       invalid
     );
     expect(marker!.getAttribute('aria-label')).toBe('1 error in this section');
@@ -160,12 +160,12 @@ describe('container error indicator', () => {
   it('marks the category containing the failure', () => {
     const uischema = {
       type: 'Categorization',
-      options: { showValidationIndicator: true },
+      options: { showValidationIndicator: true, showValidationIndicatorCount: true },
       elements: [
         {
           type: 'Category',
           label: 'Contact',
-          options: { showValidationIndicator: true },
+          options: { showValidationIndicator: true, showValidationIndicatorCount: true },
           elements: [group({})],
         },
       ],
@@ -182,7 +182,7 @@ describe('container error indicator', () => {
     // /contact/phone into a required error on /contact, which ajv reports on
     // the containing object. Matching raw instancePaths made the indicator
     // vanish; core's getControlPath relocates it back to contact.phone.
-    const ui = group({ showValidationIndicator: true });
+    const ui = group({ showValidationIndicator: true, showValidationIndicatorCount: true });
     const shown = render(ui, invalid);
     expect(shown.marker!.getAttribute('data-error-count')).toBe('1');
     shown.unmount();
@@ -195,7 +195,7 @@ describe('container error indicator', () => {
 
   it('counts every failing field in the section', () => {
     const { marker, unmount } = render(
-      group({ showValidationIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true }),
       { contact: { name: '', phone: '112' } }
     );
     expect(marker!.getAttribute('data-error-count')).toBe('2');
@@ -205,7 +205,7 @@ describe('container error indicator', () => {
 
   it('counts two missing required fields as two', () => {
     const { marker, unmount } = render(
-      group({ showValidationIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true }),
       { contact: {} }
     );
     expect(marker!.getAttribute('data-error-count')).toBe('2');
@@ -218,7 +218,7 @@ describe('container error indicator', () => {
     const twice = {
       type: 'Group',
       label: 'Twice',
-      options: { showValidationIndicator: true },
+      options: { showValidationIndicator: true, showValidationIndicatorCount: true },
       elements: [
         { type: 'Control', scope: '#/properties/contact/properties/phone' },
         { type: 'Control', scope: '#/properties/contact/properties/phone' },
@@ -247,7 +247,7 @@ describe('container error indicator', () => {
 
   it('draws both markers the same way: SVG in one icon box', () => {
     const { container, unmount } = render(
-      group({ showValidationIndicator: true, showDataIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true, showDataIndicator: true }),
       invalid
     );
     const error = container.querySelector<HTMLElement>(
@@ -268,7 +268,7 @@ describe('container error indicator', () => {
 
   it('cannot stretch the header: icons are body size with no leading', () => {
     const { container, unmount } = render(
-      group({ showValidationIndicator: true, showDataIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true, showDataIndicator: true }),
       invalid
     );
     const row = container.querySelector<HTMLElement>(
@@ -288,7 +288,7 @@ describe('container error indicator', () => {
 
   it('keeps both markers on one centre line, with a gap', () => {
     const { container, unmount } = render(
-      group({ showValidationIndicator: true, showDataIndicator: true }),
+      group({ showValidationIndicator: true, showValidationIndicatorCount: true, showDataIndicator: true }),
       invalid
     );
     const error = container.querySelector<HTMLElement>(

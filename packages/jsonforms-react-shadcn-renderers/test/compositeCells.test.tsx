@@ -265,18 +265,26 @@ it('renders combinator cells with errors only on the invalid example row', () =>
   }
 });
 
-it('renders a row-bound Label summary without edit or clear actions', () => {
+it.each([false, true])('shows a Label edit action only with explicit detail (detail=%s)', (withDetail) => {
 
   const presentation = {
     type: 'Control', scope: '#/properties/rows', options: {
       table: true,
       columnDefs: [{ field: 'preview', scope: '#', headerName: 'Preview' }],
-      cells: { preview: { summary: { type: 'Label', text: 'Row presentation' } } },
+      cells: { preview: { summary: { type: 'Label', text: 'Row presentation' }, ...(withDetail ? { detail: { type: 'VerticalLayout', elements: [] } } : {}) } },
     },
   };
   mount(false, initial, schema, presentation);
   expect(container.textContent).toContain('Row presentation');
   expect(container.textContent).toContain('Preview');
-  expect(container.querySelector('[aria-label^="Edit "]')).toBeNull();
+  const edit = container.querySelector<HTMLButtonElement>('[aria-label^="Edit "]');
+    expect(Boolean(edit)).toBe(withDetail);
+    const label = Array.from(container.querySelectorAll('span')).find(el => el.textContent === 'Row presentation');
+    act(() => label?.click());
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+    if (edit) {
+      act(() => edit.click());
+      expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+    }
   expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
 });

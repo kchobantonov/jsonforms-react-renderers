@@ -168,7 +168,7 @@ export const useContainerValidation = (
   const wantCount = resolveIndicatorOption(
     uischema,
     config,
-    true,
+    false,
     'showValidationIndicatorCount'
   );
   const [errors, additionalErrors] = core

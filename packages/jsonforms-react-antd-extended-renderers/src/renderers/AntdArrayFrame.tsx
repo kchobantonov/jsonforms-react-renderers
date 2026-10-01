@@ -38,7 +38,7 @@ export const AntdArrayFrame = ({
             </Title>
           </Col>
           <Col style={{ paddingLeft: 8 }}>
-            <ValidationIcon
+            <ValidationIcon local
               id='tooltip-validation'
               errorMessages={errors ?? ''}
             />

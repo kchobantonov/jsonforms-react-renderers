@@ -1,3 +1,4 @@
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ArrayPanel } from '../layouts/ArrayPanel';
 import React from 'react';
 import {
@@ -33,8 +34,7 @@ const { Title } = Typography;
 const renderTitle = (
   label: string,
   errors: string,
-  description: string,
-  path: string
+  description: string
 ) => (
   <>
     <Row align='middle'>
@@ -48,7 +48,7 @@ const renderTitle = (
           <ValidationIcon
             id='tooltip-validation'
             errorMessages={errors}
-            path={path}
+            local
           />
         )}
       </Col>
@@ -58,7 +58,6 @@ const renderTitle = (
 );
 
 const TableToolbar = React.memo(function TableToolbar({
-  errors,
   label,
   description,
   path,
@@ -74,6 +73,7 @@ const TableToolbar = React.memo(function TableToolbar({
   uischema,
   config,
 }: TableToolbarProps) {
+  const arrayErrors = usePathErrorIndicator(path, options ?? uischema.options);
   return (
     <ArrayPanel
       options={options ?? uischema.options}
@@ -82,7 +82,7 @@ const TableToolbar = React.memo(function TableToolbar({
       style={{ width: '100%' }}
       size='small'
       type='inner'
-      title={renderTitle(label, errors, description, path)}
+      title={renderTitle(label, arrayErrors, description)}
       extra={[
         actions,
         <Tooltip

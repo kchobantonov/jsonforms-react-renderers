@@ -319,3 +319,14 @@ export const renderMarkdown = (
   walk(markdownParser(context.profile).parse(markdown, {}), context, {
     next: 0,
   });
+
+/** Visible text using the same Markdown profile as the renderer. */
+export const markdownPlainText = (source: string, profile: MarkdownProfile): string => {
+  const collect = (tokens: any[]): string => tokens.map(token => {
+    if (token.children) return collect(token.children);
+    if (['text', 'code_inline', 'code_block', 'fence'].includes(token.type)) return token.content;
+    if (['softbreak', 'hardbreak'].includes(token.type) || token.block && token.nesting === -1) return ' ';
+    return '';
+  }).join('');
+  return collect(markdownParser(profile).parse(source, {})).replace(/\s+/g, ' ').trim();
+};

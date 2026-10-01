@@ -2,9 +2,9 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext } from '@jsonforms/react';
 import { ErrorFeedback } from '../src/complex/ErrorFeedback';
-it.each([1, 4])(
+it.each([[1, false], [4, false], [4, true]] as const)(
   'uses the appropriate feedback for %i structured errors',
-  async (count) => {
+  async (count, local) => {
     const host = document.createElement('div');
     document.body.append(host);
     const root = createRoot(host);
@@ -19,7 +19,7 @@ it.each([1, 4])(
       act(() =>
         root.render(
           <JsonFormsContext.Provider value={{ core: { errors } } as any}>
-            <ErrorFeedback errors='The usual control message' path='value'>
+            <ErrorFeedback errors='The usual control message' path='value' local={local}>
               <button>Errors</button>
             </ErrorFeedback>
           </JsonFormsContext.Provider>
@@ -29,10 +29,10 @@ it.each([1, 4])(
         host.querySelector('button')!.focus();
         await new Promise((resolve) => setTimeout(resolve, 150));
       });
-      if (count === 1) {
+      if (count === 1 || local) {
         expect(
           document.querySelector('.ant-tooltip [role="tooltip"]')?.textContent
-        ).toBe('The usual control message');
+        ).toBe(local ? 'The usual control message' : 'value: Please check this value');
         expect(document.querySelector('.ant-popover')).toBeNull();
       } else {
         expect(

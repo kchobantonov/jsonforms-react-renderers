@@ -1,13 +1,15 @@
+import { ValidationIcon } from './ValidationIcon';
+import { ObjectDetailContext } from './ObjectDetailContext';
+import { Card, Typography } from 'antd';
+import { ObjectErrorContext, usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import isEmpty from 'lodash/isEmpty';
 import {
   ControlProps,
   findUISchema,
   Generate,
-  GroupLayout,
   isObjectControl,
   RankedTester,
   rankWith,
-  UISchemaElement,
 } from '@jsonforms/core';
 import {
   JsonFormsDispatch,
@@ -20,18 +22,6 @@ import {
   UiSchemaCycleProvider,
   useUiSchemaCycleGuard,
 } from '../util/uiSchemaCycle';
-
-const withoutGroupFrame = (uischema: UISchemaElement): UISchemaElement => {
-  if (uischema.type !== 'Group') {
-    return uischema;
-  }
-
-  const { label: _label, ...layout } = uischema as GroupLayout;
-  return {
-    ...layout,
-    type: 'VerticalLayout',
-  };
-};
 
 export const ObjectRenderer = ({
   renderers,
@@ -80,11 +70,6 @@ export const ObjectRenderer = ({
       ),
     [uischemas, schema, uischema.scope, path, generated, uischema, rootSchema]
   );
-  const resolved = useMemo(
-    () => (isEmpty(path) ? detailUiSchema : withoutGroupFrame(detailUiSchema)),
-    [detailUiSchema, path]
-  );
-
   /*
     A registry entry that is a Control matching this object's schema resolves
     to itself: dispatching it selects this renderer again, which asks the
@@ -92,51 +77,45 @@ export const ObjectRenderer = ({
     the heap runs out - so the guard has to notice rather than catch.
   */
   const { cycle, stack } = useUiSchemaCycleGuard(
-    resolved,
+    detailUiSchema,
     path,
     'the object renderer'
   );
-  const dispatchUiSchema = cycle
-    ? isEmpty(path)
-      ? generated
-      : withoutGroupFrame(generated as UISchemaElement)
-    : resolved;
-
+  const dispatchUiSchema = cycle ? generated : detailUiSchema;
+  const objectErrors = usePathErrorIndicator(path, undefined, false);
   if (!visible) {
     return null;
   }
 
-  return (
-    <>
+  const additional = <AdditionalProperties
+    embedded={Boolean(path) || dispatchUiSchema.type === 'Group'}
+    cells={cells} config={config} data={data} enabled={enabled}
+    handleChange={handleChange} label={label} path={path} readonly={readonly}
+    renderers={renderers} rootSchema={rootSchema} schema={schema}
+    uischema={uischema} uischemas={uischemas}
+  />;
+  const isGroup = dispatchUiSchema.type === 'Group';
+  const emptyLayout = Array.isArray((dispatchUiSchema as any).elements) && (dispatchUiSchema as any).elements.length === 0;
+  const detail = <ObjectErrorContext.Provider value={{ uischema: dispatchUiSchema, message: objectErrors }}>
+    <ObjectDetailContext.Provider value={{ uischema: dispatchUiSchema, additional }}>
       <UiSchemaCycleProvider stack={stack}>
-        <JsonFormsDispatch
-          visible={visible}
-          enabled={enabled}
-          schema={schema}
-          uischema={dispatchUiSchema}
-          path={path}
-          renderers={renderers}
-          cells={cells}
-          readonly={readonly}
-        />
+        {(isGroup || !emptyLayout) && <JsonFormsDispatch visible={visible} enabled={enabled}
+          schema={schema} uischema={dispatchUiSchema} path={path} renderers={renderers}
+          cells={cells} readonly={readonly} />}
       </UiSchemaCycleProvider>
-      <AdditionalProperties
-        cells={cells}
-        config={config}
-        data={data}
-        enabled={enabled}
-        handleChange={handleChange}
-        label={label}
-        path={path}
-        readonly={readonly}
-        renderers={renderers}
-        rootSchema={rootSchema}
-        schema={schema}
-        uischema={uischema}
-        uischemas={uischemas}
-      />
-    </>
-  );
+    </ObjectDetailContext.Provider>
+  </ObjectErrorContext.Provider>;
+  if (isGroup) return detail;
+  const title = label && path && uischema.label !== false ? label : undefined;
+  const content = <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
+    {!title && objectErrors && <Typography.Text type='danger' role='alert'>{objectErrors}</Typography.Text>}
+    {detail}{additional}
+  </div>;
+  return path ? <Card className='jsonforms-object' title={title}
+    extra={title && objectErrors ? <ValidationIcon local errorMessages={objectErrors} id={`${path}-object-errors`} /> : undefined}>
+    {content}
+  </Card> : content;
+
 };
 
 export const objectControlTester: RankedTester = rankWith(2, isObjectControl);

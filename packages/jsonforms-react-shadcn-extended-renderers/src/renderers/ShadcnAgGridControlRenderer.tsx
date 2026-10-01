@@ -1,3 +1,4 @@
+import { ErrorIndicator } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import React from 'react';
 import {
   ShadcnGridCellFrame,
@@ -10,6 +11,7 @@ import { createAgGridControlRenderer } from '@chobantonov/jsonforms-react-extend
 import { ShadcnEditorButton } from './ShadcnEditorButton';
 import { ShadcnEditorFrame } from './ShadcnEditorFrame';
 export const ShadcnAgGridControlRenderer = createAgGridControlRenderer({
+  RowErrorIndicator: ({ message }) => <ErrorIndicator errors={message} />,
   Frame: ShadcnEditorFrame,
   RowDetailButton: (props) => <RowDetailEditButton
     label={props['aria-label'] ?? props.title ?? ''}

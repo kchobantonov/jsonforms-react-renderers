@@ -132,3 +132,20 @@ describe('suppression is local only', () => {
     ).toBe(false);
   });
 });
+
+
+it('maps list detail scopes and nested root controls without a trailing separator', () => {
+  const ui = { type: 'Category', elements: [
+    { type: 'ListWithDetail', scope: '#/properties/people' },
+    { type: 'Control', scope: '#' },
+  ] };
+  expect(boundDataPaths(ui as any, 'rows.1')).toEqual(['rows.1.people', 'rows.1']);
+  expect(boundDataPaths(ui as any)).toEqual(['people', '']);
+});
+it('counts require an explicit local or global request', () => {
+  const resolve = (ui?: any, config?: any) => resolveIndicatorOption(ui, config, false, 'showValidationIndicatorCount');
+  expect(resolve({ type: 'Category', options: { showValidationIndicator: true } })).toBe(false);
+  expect(resolve(undefined, { jsonformsExtended: { showValidationIndicatorCount: true } })).toBe(true);
+  expect(resolve({ type: 'Category', options: { showValidationIndicatorCount: false } },
+    { jsonformsExtended: { showValidationIndicatorCount: true } })).toBe(false);
+});

@@ -241,6 +241,15 @@
   box-shadow: inset 0 0 0 2px hsl(var(--ring, 222.2 84% 4.9%));
 }
 
+/* A compact focus halo fits table rows without the full-size input ring. */
+.shadcn-jsonforms-table-cell input:not([type='checkbox']):not([type='color']):focus-visible,
+.shadcn-jsonforms-table-cell button[role='combobox']:focus-visible {
+  outline: none;
+  border-color: var(--shadcn-jsonforms-accent, #0f172a);
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--shadcn-jsonforms-accent, #0f172a) 20%, transparent);
+}
+
 .shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error) {
   position: relative;
   padding-inline-end: 40px;

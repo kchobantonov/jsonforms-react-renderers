@@ -1,3 +1,9 @@
+import { FileFeedback } from './FileFeedback';
+import { AntdClearableInput } from './AntdClearableInput';
+import { FileArrayInput, fileItemSchema, attachmentName } from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+import { Input, Tooltip, theme } from 'antd';
+import FileOutlined from '@ant-design/icons/FileOutlined';
+import { useCellMode } from '../util/cellMode';
 import React, { useState } from 'react';
 import {
   CellProps,
@@ -5,10 +11,17 @@ import {
   WithClassname,
   getI18nKey,
 } from '@jsonforms/core';
-import { Typography, Upload } from 'antd';
+import { Button, Upload } from 'antd';
 import toNumber from 'lodash/toNumber';
 import { TranslateProps } from '@jsonforms/react';
 import { useI18nDefault } from '../util/translate';
+
+const FileActionButton = ({ type: _type, color: _color, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) =>
+  <Button {...props} htmlType='button' type='text' size='small' />;
+const FilePill = ({ style, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
+  const { token } = theme.useToken();
+  return <span {...props} style={{ ...style, background: token.colorFillSecondary, color: token.colorText, fontSize: token.fontSizeSM }} />;
+};
 
 interface UploadProgressEvent extends Partial<ProgressEvent> {
   percent?: number;
@@ -131,7 +144,7 @@ export const AntdFile = React.memo(function AntdFile(
   props: CellProps &
     WithClassname &
     TranslateProps & {
-      inputProps?: React.ComponentProps<typeof Upload.Dragger>;
+      inputProps?: React.ComponentProps<typeof Upload>;
     }
 ) {
   const { schema, uischema, path, handleChange, enabled, t, inputProps } =
@@ -141,6 +154,10 @@ export const AntdFile = React.memo(function AntdFile(
     read straight out of the English table.
   */
   const d = useI18nDefault();
+  const cell = useCellMode();
+  const [attachment, setAttachment] = useState<{ value: unknown; name: string }>();
+  const [severity, setSeverity] = useState<'warning' | 'error'>('warning');
+  React.useEffect(() => { setRejection(undefined); }, [props.data]);
   const [rejection, setRejection] = useState<string | undefined>(undefined);
 
   /** Why a selection breaks its size bounds, or undefined if it passes. */
@@ -235,6 +252,7 @@ export const AntdFile = React.memo(function AntdFile(
    * perfectly good attachment.
    */
   const beforeUpload = (file: { size: number; name?: string }) => {
+    setSeverity('warning');
     const message = rejectionMessage(file);
     setRejection(message);
     return message ? Upload.LIST_IGNORE : true;
@@ -250,26 +268,38 @@ export const AntdFile = React.memo(function AntdFile(
         schema.format
       );
       setRejection(undefined);
+      setAttachment({ value: base64, name: file.name });
       handleChange(path, base64);
       onSuccess('Ok');
     } catch (err: any) {
       // A failed read of a *new* file is not a reason to discard the value
       // that is already committed, for the same reason a size rejection is
       // not. Report it and leave the form data untouched.
-      const message = err?.message ?? String(err);
+      setSeverity('error');
+      const message = t('file.readFailed', d('file.readFailed'));
       setRejection(message);
       onError({ message });
     }
   };
 
+  if (fileItemSchema(props.schema, props.rootSchema)) {
+    return <FileArrayInput {...props} cell={cell} FeedbackComponent={FileFeedback} ButtonComponent={FileActionButton} PillComponent={FilePill} />;
+  }
+  const name = props.data ? attachmentName(props.data) ?? (attachment?.value === props.data ? attachment.name : t('file.attached', d('file.attached'))) : '';
   return (
-    <>
-      <Upload.Dragger
+    <div style={{ minWidth: 0, width: '100%' }}>
+      <AntdClearableInput data={props.data} enabled={enabled}
+        clearable={props.uischema.options?.clearable !== false}
+        onClear={() => { setRejection(undefined); handleChange(path, undefined); }}>
+      {clear => <Input readOnly disabled={!enabled} value={name} title={name} id={props.id}
+        aria-label={props.path} aria-invalid={Boolean(props.errors)}
+        prefix={<Upload
         disabled={!enabled}
         accept={(props.schema as any).contentMediaType}
         beforeUpload={beforeUpload}
         customRequest={uploadImage}
-        listType='picture'
+        listType='text'
+        showUploadList={false}
         maxCount={1}
         onRemove={() => {
           // An explicit removal is the one case that should clear the value.
@@ -278,13 +308,14 @@ export const AntdFile = React.memo(function AntdFile(
         }}
         {...inputProps}
       >
-        {t('file.select', d('file.select'))}
-      </Upload.Dragger>
-      {rejection ? (
-        <Typography.Text type='danger' role='alert' data-file-rejection>
-          {rejection}
-        </Typography.Text>
-      ) : null}
-    </>
+        <Tooltip title={t('file.select', d('file.select'))}>
+          <Button type='text' size='small' disabled={!enabled}
+            aria-label={t('file.select', d('file.select'))} icon={<FileOutlined />} />
+        </Tooltip>
+      </Upload>}
+      suffix={<>{cell && rejection && <FileFeedback message={rejection} cell severity={severity} />}{clear}</>} />}
+      </AntdClearableInput>
+      {rejection && !cell && <FileFeedback message={rejection} severity={severity} />}
+    </div>
   );
 });

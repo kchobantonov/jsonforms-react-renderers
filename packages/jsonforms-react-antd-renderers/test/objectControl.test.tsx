@@ -63,7 +63,7 @@ const draw = (locale = 'en') => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={{ type: 'VerticalLayout', elements: (uischema as any).elements.flatMap((category: any) => category.elements) } as any}
           uischemas={uischemas}
           config={config}
           i18n={{
@@ -205,19 +205,11 @@ describe('where an object gets its layout', () => {
     view.unmount();
   });
 
-  /*
-    The outermost element of a detail is the **object control's own frame**, so
-    the renderer unwraps it - a Group there would nest a box inside whatever
-    the parent layout already drew, at every level of nesting.
-
-    Anything *inside* is the author's and is left alone. Same Group, two
-    positions, two outcomes.
-  */
-  it('unwraps only the outermost Group of a detail', async () => {
+  it('preserves outer and nested Groups of a detail', async () => {
     const view = draw();
     await settle();
-    expect(view.text()).not.toContain('Dropped, because it is outermost');
-    expect(view.text()).toContain('Kept, because it is inside');
+    expect(view.text()).toContain('Object group');
+    expect(view.text()).toContain('Nested group');
     // The controls inside it render either way.
     expect(view.valueOf('Approval status')).toBe('none');
     view.unmount();

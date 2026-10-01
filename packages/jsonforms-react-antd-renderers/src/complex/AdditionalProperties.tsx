@@ -1,3 +1,5 @@
+import { ValidationIcon } from './ValidationIcon';
+import { useNameConstraintMessage, usePropertyNameErrors, useAdditionalPropertyErrors } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
 import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
@@ -58,9 +60,11 @@ export type AdditionalPropertiesProps = {
   schema: JsonSchema;
   uischema: ControlElement;
   uischemas?: JsonFormsUISchemaRegistryEntry[];
+  embedded?: boolean;
 };
 
 export const AdditionalProperties = ({
+  embedded = false,
   cells,
   config,
   data,
@@ -151,6 +155,7 @@ export const AdditionalProperties = ({
         return t('additionalProperties.nameInvalid', { name });
     }
   };
+  const constraintMessage = useNameConstraintMessage();
   const ajv = context.core?.ajv;
   const validateName = (name: string, currentName?: string) => {
     const result: AdditionalPropertyNameResult = validateAdditionalPropertyName(
@@ -169,7 +174,7 @@ export const AdditionalProperties = ({
     );
     return result.error === undefined
       ? undefined
-      : nameMessage(result.error, result.name);
+      : constraintMessage(result.errors) ?? nameMessage(result.error, result.name);
   };
   const propertyNameError = validateName(propertyName);
   /*
@@ -264,17 +269,20 @@ export const AdditionalProperties = ({
     setRenameValue('');
   };
 
+  const propertyErrors = useAdditionalPropertyErrors(path);
+  const nameErrors = usePropertyNameErrors(path);
   if (!shouldShow) return null;
 
   return (
     <PendingChangesProvider changes={page.pending}>
-      <Card className='jsonforms-additional-properties' size='small'>
+      <Card className='jsonforms-additional-properties' size='small' variant={embedded ? 'borderless' : 'outlined'} styles={embedded ? { body: { padding: 0 } } : undefined}>
         <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
         <Flex vertical gap='middle'>
           <Row align='bottom' gutter={[12, 8]}>
             <Col md={5} xs={24}>
               <Typography.Text>
                 {t('additionalProperties.title')}
+                {propertyErrors && <ValidationIcon local errorMessages={propertyErrors} id={`${path}-additional-property-errors`} />}
               </Typography.Text>
             </Col>
             <Col md={18} xs={20}>
@@ -323,7 +331,7 @@ export const AdditionalProperties = ({
           <Flex
             className='jsonforms-additional-properties-list'
             vertical
-            gap='middle'
+            gap={0}
           >
             {page.indices
               .map((index) => additionalPropertyItems[index])
@@ -335,7 +343,7 @@ export const AdditionalProperties = ({
             */
                 const isolated = needsIsolatedEditor(item.propertyName);
                 const rendersOwnHeading =
-                  !isolated &&
+                  !isolated && !nameErrors.has(item.propertyName) &&
                   !(
                     typeof item.schema === 'object' &&
                     item.schema.type === 'object'
@@ -367,15 +375,20 @@ export const AdditionalProperties = ({
                     vertical
                   >
                     {rendersOwnHeading ? (
-                      actions ? (
+                      actions || nameErrors.get(item.propertyName) ? (
                         <div
                           style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexWrap: 'nowrap',
+                            gap: 4,
                             insetInlineEnd: 0,
                             position: 'absolute',
                             top: 0,
                             zIndex: 1,
                           }}
                         >
+                          {nameErrors.get(item.propertyName) && <ValidationIcon local errorMessages={nameErrors.get(item.propertyName)!} id={`${item.path}-name-errors`} />}
                           {actions}
                         </div>
                       ) : null
@@ -392,7 +405,9 @@ export const AdditionalProperties = ({
                       Rename and Delete stay above the value input rather than
                       dropping into a row of their own.
                     */}
+                        <Flex align='center' gap={4}>
                         <Typography.Text
+                          type={nameErrors.has(item.propertyName) ? 'danger' : undefined}
                           strong
                           data-property-name={item.propertyName}
                         >
@@ -400,6 +415,8 @@ export const AdditionalProperties = ({
                             ? '\u00a0'
                             : item.propertyName}
                         </Typography.Text>
+                          {nameErrors.get(item.propertyName) && <ValidationIcon local errorMessages={nameErrors.get(item.propertyName)!} id={`${item.path}-name-errors`} />}
+                        </Flex>
                         {actions}
                       </Flex>
                     )}
@@ -451,7 +468,7 @@ export const AdditionalProperties = ({
                         <DynamicPropertyProvider path={item.path}>
                           <JsonFormsDispatch
                             schema={item.schema}
-                            uischema={item.uischema}
+                            uischema={nameErrors.has(item.propertyName) ? { ...item.uischema, label: false } as any : item.uischema}
                             path={item.path}
                             enabled={enabled}
                             renderers={renderers}

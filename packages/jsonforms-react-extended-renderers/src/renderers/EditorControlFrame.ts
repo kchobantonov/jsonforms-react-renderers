@@ -65,6 +65,7 @@ export type EditorArrayFrameProps = React.PropsWithChildren<{
 export type EditorRendererComponents = {
   Frame: React.ComponentType<EditorControlFrameProps>;
   Button: React.ComponentType<EditorActionProps>;
+  RowErrorIndicator?: React.ComponentType<{ message: string }>;
   RowDetailButton?: React.ComponentType<EditorActionProps>;
   /**
    * Optional icons for the editor's maximize/restore toggle. When omitted the

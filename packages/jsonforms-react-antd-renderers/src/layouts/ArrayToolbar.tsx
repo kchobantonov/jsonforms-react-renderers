@@ -1,3 +1,4 @@
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ArrayPanel } from '../layouts/ArrayPanel';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import { ArrayTranslations } from '@jsonforms/core';
@@ -24,8 +25,7 @@ const { Title } = Typography;
 const renderTitle = (
   label: string,
   errors: string,
-  description: string,
-  path: string
+  description: string
 ) => (
   <>
     <Row align='middle'>
@@ -38,7 +38,7 @@ const renderTitle = (
         <ValidationIcon
           id='tooltip-validation'
           errorMessages={errors}
-          path={path}
+          local
         />
       </Col>
     </Row>
@@ -49,7 +49,6 @@ const renderTitle = (
 export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   label,
   description,
-  errors,
   addItem,
   path,
   enabled,
@@ -60,6 +59,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   options,
   config,
 }: ArrayLayoutToolbarProps) {
+  const arrayErrors = usePathErrorIndicator(path, options);
   return (
     <ArrayPanel
       options={options}
@@ -68,7 +68,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
       style={{ width: '100%' }}
       size='small'
       type='inner'
-      title={renderTitle(label, errors, description, path)}
+      title={renderTitle(label, arrayErrors, description)}
       extra={[
         <Tooltip key='1' title={translations.addTooltip}>
           <Button

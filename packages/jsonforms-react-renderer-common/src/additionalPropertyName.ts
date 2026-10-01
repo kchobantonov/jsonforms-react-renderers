@@ -1,4 +1,4 @@
-import { JsonSchema, JsonSchema7, Resolve } from '@jsonforms/core';
+import { createAjv, JsonSchema, JsonSchema7, Resolve } from '@jsonforms/core';
 
 /**
  * Naming a dynamic property, with no React in it.
@@ -24,6 +24,7 @@ export type AdditionalPropertyNameError =
 export interface AdditionalPropertyNameResult {
   name: string;
   error?: AdditionalPropertyNameError;
+  errors?: import('ajv').ErrorObject[];
 }
 
 export interface ValidateAdditionalPropertyNameOptions {
@@ -121,41 +122,7 @@ export const createAdditionalPropertyNameSchema = (
   };
 };
 
-/**
- * The reduced check used when no validator is available.
- *
- * It evaluates only the `pattern` constraints - what a regular expression can
- * express - and accepts anything else, so `minLength`, `enum` and the rest are
- * simply not checked. That is a real reduction, and it is preferred to skipping
- * name validation altogether when a caller renders this outside a form: a
- * pattern is by far the most common way to constrain a key, and silently
- * accepting every name would be the worse failure.
- */
-const matchesPatternConstraints = (nameSchema: JsonSchema7, name: string) => {
-  const constraints = (nameSchema.allOf ?? []) as JsonSchema7[];
-  for (const constraint of constraints) {
-    if (constraint.not !== undefined) {
-      return false;
-    }
-    if (typeof constraint.pattern === 'string') {
-      if (!new RegExp(constraint.pattern).test(name)) {
-        return false;
-      }
-    }
-    const alternatives = (constraint.anyOf ?? []) as JsonSchema7[];
-    if (
-      alternatives.length > 0 &&
-      !alternatives.some(
-        (alternative) =>
-          typeof alternative.pattern === 'string' &&
-          new RegExp(alternative.pattern).test(name)
-      )
-    ) {
-      return false;
-    }
-  }
-  return true;
-};
+const defaultNameValidator = createAjv();
 
 export const validateAdditionalPropertyName = ({
   name,
@@ -179,9 +146,7 @@ export const validateAdditionalPropertyName = ({
   }
 
   // Renaming a property to what it is already called is not a collision.
-  if (name === currentName) {
-    return { name };
-  }
+
 
   const taken = [...Object.keys(schema.properties ?? {}), ...disallowedNames];
   const isTaken =
@@ -191,16 +156,21 @@ export const validateAdditionalPropertyName = ({
       !Array.isArray(data) &&
       Object.prototype.hasOwnProperty.call(data, name));
 
-  if (isTaken) {
+  if (isTaken && name !== currentName) {
     return { name, error: 'already-defined' };
   }
 
   const nameSchema = createAdditionalPropertyNameSchema(schema, rootSchema);
   let permitted = true;
+  let errors: import('ajv').ErrorObject[] = [];
   try {
     permitted = validate
       ? validate(nameSchema, name)
-      : matchesPatternConstraints(nameSchema, name);
+      : defaultNameValidator.validate(nameSchema, name) as boolean;
+    if (!permitted) {
+      defaultNameValidator.validate(nameSchema, name);
+      errors = [...(defaultNameValidator.errors ?? [])];
+    }
   } catch {
     // A malformed `propertyNames`, or a pattern that is not a valid regular
     // expression, cannot be evaluated here. The form's own validator reports it
@@ -209,7 +179,7 @@ export const validateAdditionalPropertyName = ({
     permitted = true;
   }
   if (!permitted) {
-    return { name, error: 'invalid' };
+    return { name, error: 'invalid', errors };
   }
 
   return { name };

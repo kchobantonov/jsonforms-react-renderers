@@ -76,7 +76,7 @@ export const ControlFormItem = ({
     warning: false,
     validating: false,
     error: (
-      <ErrorFeedback errors={errors ?? ''} path={path}>
+      <ErrorFeedback errors={errors ?? ''} path={path} local>
         <ExclamationCircleFilled
           // In a cell the message exists only inside the tooltip, which opens
           // on hover and so is not reachable by a screen reader. Naming the

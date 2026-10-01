@@ -1,3 +1,5 @@
+import { ValidationIcon } from './ValidationIcon';
+import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { ColumnResizeHandle, useColumnWidths } from '@chobantonov/jsonforms-react-renderer-common/columnResize';
 import { tableColumnFields, tableColumnStyle, TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
@@ -315,6 +317,7 @@ const CollectionTable = ({
                   }}
                 />
               </Tooltip>
+              <RowErrorCount path={props.path} index={row.index} renderIndicator={(message) => <ValidationIcon errorMessages={message} id={`${props.path}-${row.index}-row-errors`} />} />
               {actionColumn?.render(value, row, index)}
             </div>
           ),
@@ -365,6 +368,12 @@ const CollectionTable = ({
               },
             })}
           />
+          <CollectionErrorNavigation options={props.uischema.options} renderAction={(label, onClick, icon) =>
+            <Tooltip title={label}><Button size='small' icon={icon} aria-label={label} onClick={onClick} /></Tooltip>}
+            path={props.path} reveal={(index) => {
+            page.change(Math.floor(index / page.size) + 1);
+            if (detail.options) { detail.setPanelOpen(true); detail.open(index); }
+          }} />
           <CollectionPager page={page} />
         </div>
       </RowDetailFrame>, <React.Fragment key='table-actions'>

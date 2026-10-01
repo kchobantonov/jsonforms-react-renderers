@@ -1,5 +1,5 @@
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { usePathErrorMessages } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { usePathErrorMessages, labelDetailErrorPaths } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ValidationIcon } from '../complex/ValidationIcon';
 import React, { useState, useRef } from 'react';
 import { Button, theme } from 'antd';
@@ -38,7 +38,7 @@ import {
 export const AntdCompositeCell = (props: CompositeCellProps) => {
   const { t } = props;
   const { token } = theme.useToken();
-  const errors = usePathErrorMessages(props.path);
+  const errors = usePathErrorMessages(props.path, labelDetailErrorPaths(props.path, props.uischema.options));
   /*
     The default message carries the locale bundle (§6.5), so it must not be
     read straight out of the English table.

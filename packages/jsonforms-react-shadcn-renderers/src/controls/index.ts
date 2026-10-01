@@ -15,3 +15,5 @@ export * from './RadioGroupControl';
 export * from './SliderControl';
 
 export * from './AnyOfStringOrEnumControl';
+
+export * from './PasswordControl';

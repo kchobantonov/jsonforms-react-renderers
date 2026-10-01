@@ -1,5 +1,5 @@
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { usePathErrorMessages } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { usePathErrorMessages, labelDetailErrorPaths } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ErrorIndicator } from '../complex/ErrorIndicator';
 import { DetailDialogContent } from '../complex/DetailDialogContent';
 import React, { useRef, useState } from 'react';
@@ -48,7 +48,7 @@ type Props = CellProps & {
 /** A compact summary with isolated editing; only Apply writes to the form. */
 export const ShadcnCompositeCell = (props: Props) => {
   const parent = useJsonForms();
-  const errors = usePathErrorMessages(props.path);
+  const errors = usePathErrorMessages(props.path, labelDetailErrorPaths(props.path, props.uischema.options));
   const t = useTranslator();
   const d = useI18nDefault();
   const text = useI18n();

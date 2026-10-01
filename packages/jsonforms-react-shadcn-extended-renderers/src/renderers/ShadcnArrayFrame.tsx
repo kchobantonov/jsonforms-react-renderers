@@ -1,3 +1,4 @@
+import { ErrorIndicator } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React from 'react';
@@ -17,7 +18,10 @@ export const ShadcnArrayFrame = ({
   return (
     <div className='shadcn-jsonforms-array'>
       <div className='flex items-center justify-between gap-2 pb-2'>
-        {label && <h3>{label}</h3>}
+        <div className='flex items-center gap-2'>
+          {label && <h3>{label}</h3>}
+          {errors && <ErrorIndicator local errors={errors} />}
+        </div>
         <div className='ml-auto flex gap-1'>
           {actions?.map((action) => (
             <Button
@@ -58,11 +62,6 @@ export const ShadcnArrayFrame = ({
       <div id={panel.contentId} hidden={panel.collapsed}>
         {children}
       </div>
-      {errors && (
-        <div role='alert' className='shadcn-jsonforms-error'>
-          {errors}
-        </div>
-      )}
     </div>
   );
 };

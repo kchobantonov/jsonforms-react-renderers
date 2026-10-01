@@ -52,7 +52,7 @@ export const collectBoundPaths = (element: UISchemaElement): BoundPath[] => {
       scope?: string;
       elements?: UISchemaElement[];
     };
-    if (candidate.type === 'Control' && typeof candidate.scope === 'string') {
+    if ((candidate.type === 'Control' || candidate.type === 'ListWithDetail') && typeof candidate.scope === 'string') {
       const segments = toDataPathSegments(candidate.scope);
       paths.push({ segments, relative: segments.join('.') });
     }
@@ -65,12 +65,11 @@ export const collectBoundPaths = (element: UISchemaElement): BoundPath[] => {
 
 /**
  * Absolute data paths of everything bound below a container, for looking each
- * one up in an error index. Not yet consumed: the error indicator it exists
- * for is still a proposal. See Adjustment 5 in the docs.
+ * one up in the shared error index.
  */
 export const boundDataPaths = (element: UISchemaElement, path = ''): string[] =>
   collectBoundPaths(element).map(({ relative }) =>
-    path ? `${path}.${relative}` : relative
+    [path, relative].filter(Boolean).join('.')
   );
 
 const resolveSegments = (context: unknown, segments: string[]): unknown =>

@@ -1,5 +1,7 @@
 import React, { createContext } from 'react';
-import { UISchemaElement } from '@jsonforms/core';
+import { CellProps, ControlElement, JsonSchema, UISchemaElement } from '@jsonforms/core';
+import { withJsonFormsCellProps } from '@jsonforms/react';
+import { ErrorIndicator } from '../complex/ErrorIndicator';
 
 export const ShadcnCellMode = createContext(false);
 
@@ -19,7 +21,7 @@ export const asShadcnCell = <P extends { uischema?: UISchemaElement }>(
 };
 
 /** AG Grid cells fill a row; center short controls such as checkboxes vertically. */
-export const ShadcnGridCellFrame = ({ children }: React.PropsWithChildren) => (
+const ConnectedGridCellFrame = withJsonFormsCellProps(({ children, errors, path, schema, uischema }: React.PropsWithChildren<CellProps>) => (
   <div
     className='shadcn-jsonforms-grid-cell'
     style={{
@@ -32,9 +34,16 @@ export const ShadcnGridCellFrame = ({ children }: React.PropsWithChildren) => (
   >
     <div
       className='shadcn-jsonforms-grid-cell-content'
-      style={{ width: '100%', minWidth: 0 }}
+      style={{ flex: 1, minWidth: 0 }}
     >
       {children}
     </div>
+    {errors && uischema.options?.summary?.type !== 'Label' && schema.type !== 'object' && schema.type !== 'array' && (
+      <ErrorIndicator local errors={errors} path={path} className='shadcn-jsonforms-cell-error' />
+    )}
   </div>
+));
+
+export const ShadcnGridCellFrame = (props: React.PropsWithChildren<{ schema?: JsonSchema; uischema?: UISchemaElement; path: string }>) => (
+  <ConnectedGridCellFrame {...props} uischema={props.uischema as ControlElement} />
 );

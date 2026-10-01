@@ -31,3 +31,11 @@ it('resolves item only when an expression reads it', async () => {
   expect(evaluateWith('item.name', scope, 'en')).toBe('Applicant');
   expect(reads).toBeGreaterThan(0);
 });
+
+it('sorts and filters visible Markdown text while escaping interpolated data', () => {
+  const config = { jsonformsExtended: { dynamicValues: { enabled: true } } };
+  const label = { type: 'Label', text: '**{city}** · [Phone](https://example.com)',
+    options: { markup: 'markdown', interpolate: true, textParams: { city: '{item.city}' } } };
+  expect(labelFilterValue(label, {}, { city: 'Boston' }, config)).toBe('Boston · Phone');
+  expect(labelFilterValue(label, {}, { city: '**Boston**' }, config)).toBe('**Boston** · Phone');
+});

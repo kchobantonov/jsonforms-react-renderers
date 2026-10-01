@@ -60,7 +60,7 @@ const button = (text: string) =>
   Array.from(document.querySelectorAll('button')).find(
     (el) => el.textContent?.trim() === text
   )!;
-const mount = async (rowDetail: any, readonly = false, columnOptions = {}) => {
+const mount = async (rowDetail: any, readonly = false, columnOptions = {}, invalid = false) => {
   captured.props = undefined;
   const host = document.createElement('div');
   document.body.append(host);
@@ -83,6 +83,7 @@ const mount = async (rowDetail: any, readonly = false, columnOptions = {}) => {
               type: 'array',
               items: {
                 type: 'object',
+                required: invalid ? ['missing'] : [],
                 properties: {
                   name: { type: 'string' },
                   hidden: { type: 'string' },
@@ -141,8 +142,10 @@ it('uses the custom row form with a nested source path and stages dialog changes
     await click(button('Cancel'));
     expect(captured.props.rowData[1].value.name).toBe('Second');
     await click(document.querySelectorAll('[aria-label="Edit details"]')[1]);
+    const nameRenderer = captured.props.columnDefs.find((column: any) => column.colId === 'name').cellRenderer;
     await input('Applied');
     await click(button('Apply'));
+    expect(captured.props.columnDefs.find((column: any) => column.colId === 'name').cellRenderer).toBe(nameRenderer);
     expect(captured.props.rowData.map((r: any) => r.value)).toEqual([
       { name: 'First', hidden: 'Keep' },
       { name: 'Applied', hidden: 'Also keep' },
@@ -238,4 +241,15 @@ it('binds a presentation column to the source row instead of a synthetic propert
     expect(element.props.children.props.children.props.schema.properties.name).toEqual({ type: 'string' });
     expect(element.props.children.props.children.props.uischema.options.summaryOnly).toBe(true);
   } finally { app.close(); }
+});
+
+
+it('shows descendant row errors beside the grid heading', async () => {
+  const mounted = await mount({}, false, {}, true);
+  try {
+    const heading = document.querySelector('.shadcn-jsonforms-array h3');
+    expect(heading).toBeTruthy();
+    const indicator = heading!.parentElement!.querySelector('button');
+    expect(indicator?.getAttribute('aria-label')).toContain('missing');
+  } finally { mounted.close(); }
 });

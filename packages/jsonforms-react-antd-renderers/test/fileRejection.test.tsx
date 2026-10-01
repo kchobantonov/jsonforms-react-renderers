@@ -5,6 +5,12 @@ import { describe, expect, it, vi } from 'vitest';
 import { Upload } from 'antd';
 import { AntdFile } from '../src/antd-controls/AntdFile';
 
+const upload = vi.hoisted(() => ({ props: undefined as any }));
+vi.mock('antd', async importOriginal => {
+  const actual = await importOriginal<typeof import('antd')>();
+  return { ...actual, Upload: Object.assign((props: any) => { upload.props = props; return null; }, { LIST_IGNORE: actual.Upload.LIST_IGNORE }) };
+});
+
 const schema = {
   type: 'string',
   contentEncoding: 'base64',
@@ -19,13 +25,6 @@ describe('file size rejection', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const root = createRoot(container);
-    let uploadProps: any;
-    const spy = vi
-      .spyOn(Upload, 'Dragger' as any, 'get')
-      .mockImplementation(() => (p: any) => {
-        uploadProps = p;
-        return null;
-      });
     act(() =>
       root.render(
         <AntdFile
@@ -49,12 +48,12 @@ describe('file size rejection', () => {
     return {
       container,
       get props() {
-        return uploadProps;
+        return upload.props;
       },
       handleChange,
       unmount: () => {
         act(() => root.unmount());
-        spy.mockRestore();
+        container.remove();
       },
     };
   };

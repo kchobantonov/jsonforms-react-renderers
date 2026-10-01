@@ -1,3 +1,5 @@
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@jsonforms-react-shadcn-ui/tooltip';
 import { ErrorIndicator } from './ErrorIndicator';
@@ -117,6 +119,7 @@ const ArrayItemPanel = ({
 const TableCellErrors = withJsonFormsCellProps(({ errors, path, schema, uischema }: CellProps) =>
   errors && uischema.options?.summary?.type !== 'Label' && schema.type !== 'object' && schema.type !== 'array' ? (
     <ErrorIndicator
+      local
       errors={errors}
       path={path}
       className='shadcn-jsonforms-cell-error'
@@ -131,7 +134,6 @@ export const ShadcnArrayRenderer = ({
   readonly,
   data,
   enabled,
-  errors,
   label,
   required,
   path,
@@ -146,6 +148,7 @@ export const ShadcnArrayRenderer = ({
   visible,
 }: ArrayLayoutProps) => {
   const ctx = useJsonForms();
+  const arrayErrors = usePathErrorIndicator(path, uischema.options);
   const translate = (key: string, fallback: string) =>
     ctx.i18n?.translate?.(key, fallback) ?? fallback;
   const translations = {
@@ -285,10 +288,10 @@ export const ShadcnArrayRenderer = ({
               {label}
               {required && <span aria-hidden='true'> *</span>}
             </h3>
-            {errors && (
+            {arrayErrors && (
               <ErrorIndicator
-                errors={errors}
-                path={path}
+                local
+                errors={arrayErrors}
                 className='shadcn-jsonforms-array-errors'
               />
             )}
@@ -525,6 +528,7 @@ export const ShadcnArrayRenderer = ({
                                 }} />
 
                             )}
+                            <RowErrorCount path={path} index={index} renderIndicator={(message) => <ErrorIndicator errors={message} />} />
                             {options.showSortButtons && (
                               <>
                                 <Button
@@ -573,6 +577,14 @@ export const ShadcnArrayRenderer = ({
                     })}
                   </tbody>
                 </table>
+                <CollectionErrorNavigation options={uischema.options} renderAction={(label, onClick, icon) =>
+                  <TooltipProvider><Tooltip><TooltipTrigger asChild>
+                    <Button type='button' variant='outline' size='icon' className='h-7 w-7' aria-label={label} onClick={onClick}>{icon}</Button>
+                  </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip></TooltipProvider>}
+                  path={path} reveal={(index) => {
+                  page.change(Math.floor(index / page.size) + 1);
+                  if (rowDetail.options) { rowDetail.setPanelOpen(true); rowDetail.open(index); }
+                }} />
                 <CollectionPager page={page} />
               </div>
             </RowDetailFrame>

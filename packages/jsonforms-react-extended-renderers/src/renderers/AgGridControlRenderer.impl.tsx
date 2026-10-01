@@ -1,3 +1,5 @@
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { CollectionErrorNavigation, RowErrorCount } from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
 import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
 import {
@@ -97,6 +99,7 @@ const gridTheme = themeQuartz.withParams({
 export const createAgGridControl = ({
   Button,
   RowDetailButton = Button,
+  RowErrorIndicator,
   EditIcon,
   ShowDetailsIcon,
   HideDetailsIcon,
@@ -126,7 +129,9 @@ export const createAgGridControl = ({
   const CellShell =
     CellFrame ?? (({ children }: React.PropsWithChildren) => <>{children}</>);
   const AgGridControl = (props: ControlProps) => {
+    const collectionErrors = usePathErrorIndicator(props.path, props.uischema.options);
     const anchor = useRef<HTMLDivElement>(null);
+    const gridApi = useRef<any>();
     const formContext = useJsonForms();
     const hostTheme = useHostTheme();
     const confirmation = useConfirm();
@@ -163,6 +168,7 @@ export const createAgGridControl = ({
     // breaks that correspondence, so dragging is suppressed until both clear.
     const [sorted, setSorted] = useState(false);
     const [filtered, setFiltered] = useState(false);
+    const [addedHidden, setAddedHidden] = useState(false);
     const rows: any[] = Array.isArray(props.data) ? props.data : [];
     const items = (
       Array.isArray(props.schema.items)
@@ -220,16 +226,17 @@ export const createAgGridControl = ({
         colId: '$detail',
         pinned: 'right',
         lockPinned: true,
-        maxWidth: EditIcon ? 64 : 140,
+        maxWidth: EditIcon ? 104 : 180,
         headerName: '',
         sortable: false,
         filter: false,
         resizable: false,
         suppressMovable: true,
         flex: 0,
-        width: EditIcon ? 64 : 140,
-        minWidth: EditIcon ? 64 : 140,
+        width: EditIcon ? 104 : 180,
+        minWidth: EditIcon ? 104 : 180,
         cellRenderer: (event: { data?: { index: number } }) => (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <RowDetailButton
             aria-label={detailRef.current.t('collection.editDetails')}
             title={detailRef.current.t('collection.editDetails')}
@@ -246,6 +253,9 @@ export const createAgGridControl = ({
               ? undefined
               : detailRef.current.t('collection.editDetails')}
           </RowDetailButton>
+          {event.data && <RowErrorCount path={props.path} index={event.data.index}
+            renderIndicator={RowErrorIndicator ? (message) => <RowErrorIndicator message={message} /> : undefined} />}
+          </span>
         ),
       }),
       []
@@ -257,6 +267,20 @@ export const createAgGridControl = ({
       string,
       Record<string, unknown>
     >;
+    const summaryCache = useMemo(() => new Map<unknown, Map<unknown, string>>(),
+      [formContext.core?.data, formContext.i18n, props.config, cellOptions]);
+    const summaryValue = (label: any, item: unknown) => {
+      let values = summaryCache.get(label);
+      if (!values) { values = new Map(); summaryCache.set(label, values); }
+      if (values.has(item)) return values.get(item)!;
+      const text = labelFilterValue(label, formContext.core?.data, item, props.config,
+        formContext.i18n?.locale, formContext.i18n?.translate);
+      if (values.size >= 1000) values.delete(values.keys().next().value);
+      values.set(item, text);
+      return text;
+    };
+    const summaryValueRef = useRef(summaryValue);
+    summaryValueRef.current = summaryValue;
     const columns: ColDef[] = useMemo(
       () =>
         Object.entries(
@@ -280,10 +304,7 @@ export const createAgGridControl = ({
           // the cell editor still binds to the original row/property below.
           valueGetter: (event) =>
             (cellOptions?.[field]?.summary as any)?.type === 'Label'
-              ? labelFilterValue(
-                  cellOptions[field].summary, formContext.core?.data, event.data?.value,
-                  props.config, formContext.i18n?.locale, formContext.i18n?.translate
-                )
+              ? summaryValueRef.current(cellOptions[field].summary, event.data?.value)
               : object ? event.data?.value?.[field] : event.data?.value,
           cellRenderer: (event: { data: { index: number } }) => {
             const rowBound = props.uischema.options?.columnDefs?.some((c: TableColumnDefinition) => c.field === field && c.scope === '#');
@@ -341,9 +362,6 @@ export const createAgGridControl = ({
         props.cells,
         editable,
         cellOptions,
-        formContext.core?.data,
-        formContext.i18n,
-        props.config,
         props.uischema.options?.columnDefs,
       ]
     );
@@ -509,10 +527,16 @@ export const createAgGridControl = ({
         config={props.config}
         label={props.label}
         description={props.description}
-        errors={props.errors}
+        errors={collectionErrors}
         actions={actions}
       >
         {confirmation?.dialog}
+        {addedHidden && <div role='status'>
+          {detail.t('collection.addedHidden')}
+          <button type='button' onClick={() => { gridApi.current?.setFilterModel(null); setAddedHidden(false); }}>
+            {detail.t('collection.clearFilters')}
+          </button>
+        </div>}
         <DetailShell state={detail}>
           <div
             ref={anchor}
@@ -551,6 +575,7 @@ export const createAgGridControl = ({
                     pendingAddedRow.current = undefined;
                     // Use the displayed position so sorting is respected. A row
                     // excluded by an active filter has no page to reveal.
+                    setAddedHidden(node.rowIndex == null);
                     if (node.rowIndex != null) {
                       event.api.paginationGoToPage(Math.floor(node.rowIndex / event.api.paginationGetPageSize()));
                       event.api.ensureIndexVisible(node.rowIndex);
@@ -621,6 +646,7 @@ export const createAgGridControl = ({
                 }
                 userRowDragEnd?.(event);
               }}
+              onGridReady={(event) => { gridApi.current = event.api; agGridOptions.onGridReady?.(event); }}
               onSelectionChanged={(event) =>
                 setSelected(event.api.getSelectedRows().map((row) => row.index))
               }
@@ -637,6 +663,17 @@ export const createAgGridControl = ({
               }}
             />
           </div>
+          <CollectionErrorNavigation options={props.uischema.options} renderAction={(label, onClick, icon) =>
+            <Button icon={icon} title={label} aria-label={label} onClick={onClick} />}
+            path={props.path} reveal={(index) => {
+            const api = gridApi.current;
+            const node = api?.getRowNode(String(index));
+            if (node?.rowIndex != null) {
+              api.paginationGoToPage(Math.floor(node.rowIndex / api.paginationGetPageSize()));
+              api.ensureIndexVisible(node.rowIndex);
+            }
+            if (detail.options) { detail.setPanelOpen(true); detail.open(index); }
+          }} />
         </DetailShell>
       </ArrayShell>
     );

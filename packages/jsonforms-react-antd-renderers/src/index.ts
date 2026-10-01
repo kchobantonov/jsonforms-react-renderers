@@ -1,3 +1,5 @@
+import { withJsonFormsCellProps, withTranslateProps } from '@jsonforms/react';
+import { AntdFile } from './antd-controls/AntdFile';
 import AntdCompositeCell, {
   antdCompositeCellTester,
 } from './cells/AntdCompositeCell';
@@ -216,6 +218,7 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
 export const antdCells: JsonFormsCellRendererRegistryEntry[] = [
   // Rank 1 fallback: objects and arrays that no specialised cell handles get a
   // summary plus a detail dialog instead of rendering nothing.
+  { tester: fileControlTester, cell: withJsonFormsCellProps(withTranslateProps(AntdFile)) },
   { tester: antdCompositeCellTester, cell: AntdCompositeCell },
   { tester: booleanCellTester, cell: BooleanCell },
   { tester: booleanToggleCellTester, cell: BooleanToggleCell },
@@ -245,3 +248,5 @@ export const Unwrapped = {
 export * from './antd-controls';
 
 export { RowDetailFrame } from './complex/RowDetailFrame';
+
+export { ValidationIcon } from './complex/ValidationIcon';

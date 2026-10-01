@@ -1,3 +1,6 @@
+import { ObjectDetailContext } from '../complex/ObjectDetailContext';
+import { ValidationIcon } from '../complex/ValidationIcon';
+import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import React from 'react';
 import { Card, Collapse, theme as antTheme } from 'antd';
 import {
@@ -40,6 +43,11 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
     props.config,
     false
   );
+  const object = React.useContext(ObjectErrorContext);
+  const objectOwned = object?.uischema === props.uischema;
+  const objectErrors = objectOwned ? object.message : '';
+  const objectDetail = React.useContext(ObjectDetailContext);
+  const additional = objectDetail?.uischema === props.uischema ? objectDetail.additional : null;
   const layout = props.uischema as GroupLayout;
   if (!props.visible) return null;
   // One string for the tooltip and the accessible name, so the two cannot
@@ -57,7 +65,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   // Two different signals, deliberately side by side: the dot says data is
   // present, the error marker says something below needs fixing.
   const extra =
-    validation.show || indicator ? (
+    (objectOwned ? Boolean(objectErrors) : validation.show) || indicator ? (
       // One flex row so the two markers share a centre line and a gap,
       // whichever of them is present.
       <span
@@ -71,18 +79,21 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
           lineHeight: 0,
         }}
       >
-        {validation.show ? (
+        {objectOwned ? (objectErrors ? <ValidationIcon local errorMessages={objectErrors} id={`${props.path}-object-errors`} /> : null) : validation.show ? (
           <ContainerValidationIndicator count={validation.count} />
         ) : null}
         {indicator}
       </span>
     ) : undefined;
   const content = (
-    <AntdLayoutRenderer
+    <>
+    {layout.elements.length > 0 && <AntdLayoutRenderer
       {...props}
       direction='column'
       elements={layout.elements}
-    />
+    />}
+    {additional}
+    </>
   );
   const style = { marginBottom: '10px', width: '100%' };
 

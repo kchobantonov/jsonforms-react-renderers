@@ -1,3 +1,16 @@
+import { ShadcnIsolatedPropertyEditor } from './IsolatedPropertyEditor';
+import {
+  needsIsolatedEditor,
+  assignOwnProperty,
+  validateAdditionalPropertyName,
+} from '@chobantonov/jsonforms-react-renderer-common/additionalPropertyName';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { ErrorIndicator } from './ErrorIndicator';
+import {
+  useNameConstraintMessage,
+  usePropertyNameErrors,
+  useAdditionalPropertyErrors,
+} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
 import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
@@ -51,6 +64,7 @@ type AdditionalPropertyItem = {
 };
 
 export type AdditionalPropertiesProps = {
+  embedded?: boolean;
   cells?: JsonFormsCellRendererRegistryEntry[];
   config?: any;
   data: any;
@@ -179,74 +193,8 @@ const toAdditionalPropertyItem = (
   };
 };
 
-const getPropertyNamePattern = (
-  schema: JsonSchema,
-  rootSchema: JsonSchema
-): string | undefined => {
-  const objectSchema = toObjectSchema(schema);
-  let propertyNames = objectSchema.propertyNames as JsonSchema7 | undefined;
-  if (
-    typeof propertyNames === 'object' &&
-    typeof propertyNames.$ref === 'string'
-  ) {
-    propertyNames =
-      (resolveSchema(rootSchema, propertyNames.$ref, rootSchema) as
-        | JsonSchema7
-        | undefined) ?? propertyNames;
-  }
-
-  if (typeof propertyNames === 'object' && propertyNames.pattern) {
-    return propertyNames.pattern;
-  }
-
-  if (
-    objectSchema.additionalProperties === false &&
-    objectSchema.patternProperties
-  ) {
-    const patterns = Object.keys(objectSchema.patternProperties);
-    return patterns.length > 0 ? patterns.join('|') : undefined;
-  }
-
-  return undefined;
-};
-
-const validatePropertyName = (
-  propertyName: string,
-  data: any,
-  schema: JsonSchema,
-  rootSchema: JsonSchema,
-  currentPropertyName?: string
-): string | undefined => {
-  if (!propertyName) {
-    return undefined;
-  }
-
-  if (
-    typeof data === 'object' &&
-    data !== null &&
-    Object.prototype.hasOwnProperty.call(data, propertyName) &&
-    propertyName !== currentPropertyName
-  ) {
-    return `Property '${propertyName}' already defined`;
-  }
-
-  if (
-    propertyName.includes('[') ||
-    propertyName.includes(']') ||
-    propertyName.includes('.')
-  ) {
-    return `Property name '${propertyName}' is invalid`;
-  }
-
-  const pattern = getPropertyNamePattern(schema, rootSchema);
-  if (pattern && !new RegExp(pattern).test(propertyName)) {
-    return `Property name must match pattern: ${pattern}`;
-  }
-
-  return undefined;
-};
-
 export const AdditionalProperties = ({
+  embedded = false,
   cells,
   config,
   data,
@@ -307,8 +255,38 @@ export const AdditionalProperties = ({
     allowIfMissing ||
     additionalKeys.length > 0;
 
-
-  const propertyName = newPropertyName.trim();
+  const t = useI18n();
+  const constraintMessage = useNameConstraintMessage();
+  const validatePropertyName = (
+    name: string,
+    value: any,
+    nameSchema: JsonSchema,
+    root: JsonSchema,
+    currentName?: string
+  ) => {
+    const result = validateAdditionalPropertyName({
+      name,
+      data: value,
+      schema: nameSchema,
+      rootSchema: root,
+      currentName,
+      allowEmptyName: appliedOptions.allowEmptyPropertyNames === true,
+    });
+    return (
+      constraintMessage(result.errors) ??
+      (result.error
+        ? t(
+            result.error === 'already-defined'
+              ? 'additionalProperties.nameTaken'
+              : result.error === 'required'
+              ? 'additionalProperties.nameRequired'
+              : 'additionalProperties.nameInvalid',
+            { name }
+          )
+        : undefined)
+    );
+  };
+  const propertyName = newPropertyName;
   const propertyNameError = validatePropertyName(
     propertyName,
     data,
@@ -327,8 +305,7 @@ export const AdditionalProperties = ({
     !enabled ||
     readonly ||
     (appliedOptions.restrict && maxPropertiesReached) ||
-    Boolean(propertyNameError) ||
-    !propertyName;
+    Boolean(propertyNameError);
   const removePropertyDisabled =
     !enabled || readonly || (appliedOptions.restrict && minPropertiesReached);
 
@@ -355,9 +332,21 @@ export const AdditionalProperties = ({
   };
 
   const deletion = useCollectionDelete<string>({
-    data: objectData, identity: path, catalogId: 'additionalProperties',
-    options: uischema.options, config,
-    canRemove: (key) => !removePropertyDisabled && !appliedOptions.disableRemove && !!objectData && Object.prototype.hasOwnProperty.call(objectData, key) && !reservedPropertyNames.includes(key) && !(appliedOptions.restrict !== false && objectSchema.required?.includes(key)),
+    data: objectData,
+    identity: path,
+    catalogId: 'additionalProperties',
+    options: uischema.options,
+    config,
+    canRemove: (key) =>
+      !removePropertyDisabled &&
+      !appliedOptions.disableRemove &&
+      !!objectData &&
+      Object.prototype.hasOwnProperty.call(objectData, key) &&
+      !reservedPropertyNames.includes(key) &&
+      !(
+        appliedOptions.restrict !== false &&
+        objectSchema.required?.includes(key)
+      ),
     value: (key) => objectData?.[key],
     remove: (key) => {
       const updatedData = { ...objectData };
@@ -368,7 +357,7 @@ export const AdditionalProperties = ({
   const removeProperty = deletion.request;
 
   const renameProperty = (propertyToRename: string) => {
-    const trimmed = renameValue.trim();
+    const trimmed = renameValue;
     const renameError = validatePropertyName(
       trimmed,
       data,
@@ -381,7 +370,7 @@ export const AdditionalProperties = ({
       setRenameValue('');
       return;
     }
-    if (renameError || !trimmed || !objectData) {
+    if (renameError || !objectData) {
       return;
     }
 
@@ -403,29 +392,40 @@ export const AdditionalProperties = ({
 
   const renameError = renamingPropertyName
     ? validatePropertyName(
-        renameValue.trim(),
+        renameValue,
         data,
         schema,
         rootSchema,
         renamingPropertyName
       )
     : undefined;
-  const renameDisabled =
-    !enabled || readonly || Boolean(renameError) || !renameValue.trim();
+  const renameDisabled = !enabled || readonly || Boolean(renameError);
 
+  const propertyErrors = useAdditionalPropertyErrors(path);
+  const nameErrors = usePropertyNameErrors(path);
   if (!shouldShow) return null;
 
   return (
     <PendingChangesProvider changes={page.pending}>
       <>
-        <DeleteDialog open={deletion.confirming} onCancel={deletion.cancel} onConfirm={deletion.confirm} />
-        <Card className='jsonforms-additional-properties my-1 min-w-full'>
-          <div className='px-4 py-2'>
+        <DeleteDialog
+          open={deletion.confirming}
+          onCancel={deletion.cancel}
+          onConfirm={deletion.confirm}
+        />
+        <Card
+          className='jsonforms-additional-properties my-1 min-w-full'
+          style={embedded ? { border: 0, boxShadow: 'none', padding: 0, margin: 0 } : undefined}
+        >
+          <div className={embedded ? 'py-2' : 'px-4 py-2'}>
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
               {additionalPropertiesTitle ? (
                 <div className='md:flex md:h-10 md:items-center md:pt-6'>
                   <span className='text-sm text-foreground'>
                     {additionalPropertiesTitle}
+                    {propertyErrors && (
+                      <ErrorIndicator local errors={propertyErrors} />
+                    )}
                   </span>
                 </div>
               ) : null}
@@ -443,7 +443,9 @@ export const AdditionalProperties = ({
                     aria-label={
                       label ? `Add property to ${label}` : 'Add property'
                     }
-                    aria-invalid={Boolean(propertyNameError)}
+                    aria-invalid={
+                      newPropertyName !== '' && Boolean(propertyNameError)
+                    }
                     disabled={!enabled || readonly}
                     type='text'
                     value={newPropertyName}
@@ -468,7 +470,7 @@ export const AdditionalProperties = ({
                     <Plus className='h-4 w-4' />
                   </Button>
                 </div>
-                {propertyNameError ? (
+                {newPropertyName !== '' && propertyNameError ? (
                   <div
                     className='jsonforms-additional-properties-error mt-1 text-sm text-destructive'
                     role='alert'
@@ -479,7 +481,7 @@ export const AdditionalProperties = ({
               </div>
             </div>
           </div>
-          <div className='jsonforms-additional-properties-list flex flex-col gap-2 px-4'>
+          <div className={`jsonforms-additional-properties-list flex flex-col gap-2${embedded ? '' : ' px-4'}`}>
             {page.indices
               .map((index) => additionalPropertyItems[index])
               .map((item) => (
@@ -518,21 +520,67 @@ export const AdditionalProperties = ({
                       </Button>
                     </div>
                   ) : null}
+                  {nameErrors.get(item.propertyName) && (
+                    <div className='flex min-h-6 items-center gap-1 pr-16 text-sm font-medium text-destructive'>
+                      <span>{item.propertyName}</span>
+                      <ErrorIndicator
+                        local
+                        errors={nameErrors.get(item.propertyName)!}
+                      />
+                    </div>
+                  )}
                   <div className='jsonforms-additional-property-control min-w-0'>
-                    <JsonFormsDispatch
-                      schema={item.schema}
-                      uischema={item.uischema}
-                      path={item.path}
-                      enabled={enabled}
-                      renderers={renderers}
-                      cells={cells}
-                      readonly={readonly}
-                    />
+                    {needsIsolatedEditor(item.propertyName) ? (
+                      <>
+                        {!nameErrors.has(item.propertyName) && (
+                          <div style={{ minHeight: 24 }}>
+                            {item.propertyName || '\u00a0'}
+                          </div>
+                        )}
+                        <ShadcnIsolatedPropertyEditor
+                          value={objectData?.[item.propertyName]}
+                          schema={item.schema}
+                          uischema={{
+                            type: 'Control',
+                            scope: '#',
+                            label: false,
+                          }}
+                          enabled={Boolean(enabled)}
+                          readonly={readonly}
+                          renderers={renderers}
+                          cells={cells}
+                          onChange={(value) =>
+                            handleChange(
+                              path,
+                              assignOwnProperty(
+                                { ...objectData },
+                                item.propertyName,
+                                value
+                              )
+                            )
+                          }
+                        />
+                      </>
+                    ) : (
+                      <JsonFormsDispatch
+                        schema={item.schema}
+                        uischema={
+                          nameErrors.has(item.propertyName)
+                            ? ({ ...item.uischema, label: false } as any)
+                            : item.uischema
+                        }
+                        path={item.path}
+                        enabled={enabled}
+                        renderers={renderers}
+                        cells={cells}
+                        readonly={readonly}
+                      />
+                    )}
                   </div>
                 </div>
               ))}
           </div>
-          <div className='px-4 pb-4'>
+          <div className={embedded ? undefined : 'px-4 pb-4'}>
             <CollectionPager page={page} />
           </div>
         </Card>

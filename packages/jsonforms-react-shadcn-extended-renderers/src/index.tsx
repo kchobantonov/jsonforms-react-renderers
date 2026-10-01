@@ -1,3 +1,5 @@
+import { MaskControlRenderer, maskControlTester } from './renderers/MaskControlRenderer';
+export * from './renderers/MaskControlRenderer';
 import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import { ShadcnAgGridControlRenderer } from './renderers/ShadcnAgGridControlRenderer';
 import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
@@ -28,6 +30,7 @@ import {
 export const createShadcnExtendedRenderers =
   (): JsonFormsRendererRegistryEntry[] => {
     return [
+      { tester: maskControlTester, renderer: MaskControlRenderer },
       { tester: extendedAgGridTester, renderer: ShadcnAgGridControlRenderer },
       { tester: monacoControlTester, renderer: ShadcnMonacoControlRenderer },
       {
@@ -60,6 +63,7 @@ export * from './renderers/ShadcnAgGridControlRenderer';
 
 export const createShadcnExtendedCells =
   (): JsonFormsCellRendererRegistryEntry[] => [
+    { tester: fileControlTester, cell: asShadcnCell(FileControlRenderer) as any },
     {
       tester: colorControlTester,
       cell: asShadcnCell(ColorControlRenderer) as any,

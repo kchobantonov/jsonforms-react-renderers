@@ -6,14 +6,16 @@ export interface ValidationProps {
   errorMessages: string;
   id: string;
   path?: string;
+  local?: boolean;
 }
 export const ValidationIcon: React.FC<ValidationProps> = ({
   errorMessages,
   id,
   path,
+  local,
 }) => {
   return errorMessages ? (
-    <ErrorFeedback errors={errorMessages} path={path}>
+    <ErrorFeedback errors={errorMessages} path={path} local={local}>
       <Button
         id={id}
         data-validation-summary
