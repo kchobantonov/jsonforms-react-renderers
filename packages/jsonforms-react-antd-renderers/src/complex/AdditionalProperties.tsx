@@ -450,7 +450,6 @@ export const AdditionalProperties = ({
                                 ? 'danger'
                                 : undefined
                             }
-                            strong
                             data-property-name={item.propertyName}
                           >
                             {item.propertyName === ''
