@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import React from 'react';
 import {
   ControlProps,
@@ -20,7 +21,7 @@ export const ShadcnRadioGroupControl = (
   const id = makeId(props.path, props.label);
   const options = props.options ?? [];
   const selected = options.findIndex((option) =>
-    Object.is(option.value, props.data)
+    isEqual(option.value, props.data)
   );
   const orientation =
     (props.uischema.options?.vertical ??

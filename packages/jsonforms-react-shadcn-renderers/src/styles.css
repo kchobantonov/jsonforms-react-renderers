@@ -356,3 +356,15 @@
 .shadcn-jsonforms-collection-pane > [data-slot='scroll-area-viewport'] > div {
   height: 100%;
 }
+
+/* Tab labels must not determine the minimum width of a form or split pane. */
+.shadcn-jsonforms-categorization > [role='tablist'] {
+  max-width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.shadcn-jsonforms-categorization > [role='tablist'] > [role='tab'] {
+  flex: 0 0 auto;
+}

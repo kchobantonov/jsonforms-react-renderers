@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import {
   ControlProps,
   isEnumControl,
@@ -53,7 +54,7 @@ export const ShadcnEnumControl = ({
           disabled={!enabled || readonly}
           value={(() => {
             const index = (options ?? []).findIndex((option) =>
-              Object.is(option.value, data)
+              isEqual(option.value, data)
             );
             return index < 0 ? '' : `option-${index}`;
           })()}

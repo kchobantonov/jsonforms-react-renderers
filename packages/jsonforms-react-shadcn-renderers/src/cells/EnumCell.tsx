@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import React from 'react';
 import { CellProps } from '@jsonforms/core';
 import {
@@ -29,7 +30,7 @@ export const ShadcnEnumCell = ({
     (Object.prototype.hasOwnProperty.call(schema, 'const')
       ? [schema.const]
       : []);
-  const index = values.findIndex((value) => Object.is(value, data));
+  const index = values.findIndex((value) => isEqual(value, data));
   return (
     <Select
       value={index < 0 ? '' : `option-${index}`}

@@ -196,6 +196,8 @@ body {
 
 .shadcn-jsonforms-root .demo-tabs {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 0;
   overflow: hidden;
   border: 1px solid hsl(var(--border));
@@ -205,7 +207,9 @@ body {
 }
 
 .shadcn-jsonforms-root .demo-tabs > [data-orientation='horizontal'] {
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
   border-bottom: 1px solid hsl(var(--border));
   padding: 1.25rem 1.25rem 0;
 }
@@ -223,16 +227,13 @@ body {
 }
 
 .shadcn-demo-tabs-list button {
+  flex: 0 0 auto;
   border-radius: 0;
   border-bottom: 2px solid transparent;
   background: transparent !important;
   box-shadow: none !important;
   color: hsl(var(--muted-foreground));
   padding: 0.65rem 0.75rem;
-}
-
-.shadcn-demo-tabs-list button:nth-child(2) {
-  margin-inline-start: auto;
 }
 
 .shadcn-demo-tabs-list button[data-state='active'] {
@@ -268,7 +269,8 @@ body {
 }
 
 .demo-data-splitter {
-  overflow: visible;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .demo-data-splitter-handle {
