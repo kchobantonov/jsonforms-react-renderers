@@ -115,7 +115,6 @@
   margin: 0;
 }
 
-.shadcn-jsonforms-button,
 .shadcn-jsonforms-tab {
   background: var(--shadcn-jsonforms-accent, #0f172a);
   border: 0;
@@ -127,15 +126,9 @@
   padding: 7px 12px;
 }
 
-.shadcn-jsonforms-button:disabled,
 .shadcn-jsonforms-tab:disabled {
   cursor: not-allowed;
   opacity: 0.5;
-}
-
-.shadcn-jsonforms-button-danger {
-  background: #dc2626;
-  justify-self: flex-start;
 }
 
 .shadcn-jsonforms-tabs {

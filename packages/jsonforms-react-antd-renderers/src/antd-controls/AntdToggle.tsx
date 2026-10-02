@@ -7,7 +7,9 @@ import { visuallyHidden } from '../util/visuallyHidden';
 
 export const AntdToggle = React.memo(function AntdToggle(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof Switch> }
+    WithClassname & {
+      inputProps?: React.ComponentProps<typeof Switch> & React.AriaAttributes;
+    }
 ) {
   const {
     data,

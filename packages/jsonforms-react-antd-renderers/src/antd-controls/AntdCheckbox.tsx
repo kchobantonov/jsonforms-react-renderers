@@ -10,7 +10,9 @@ type Props = {
 export const AntdCheckbox = React.memo(function AntdCheckbox(
   props: CellProps &
     WithClassname &
-    Props & { inputProps?: React.ComponentProps<typeof Checkbox> }
+    Props & {
+      inputProps?: React.ComponentProps<typeof Checkbox> & React.AriaAttributes;
+    }
 ) {
   const {
     data,

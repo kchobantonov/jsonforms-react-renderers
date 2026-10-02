@@ -1,3 +1,5 @@
+import { ChoiceCards } from './controls/ChoiceCards';
+import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
 import { withJsonFormsCellProps, withTranslateProps } from '@jsonforms/react';
 import { AntdFile } from './antd-controls/AntdFile';
 import AntdCompositeCell, {
@@ -128,6 +130,7 @@ export * from './util';
 export * from './locale';
 
 export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: choiceCardsTester, renderer: ChoiceCards },
   // controls
   { tester: mixedControlTester, renderer: MixedRenderer },
   { tester: multiSelectControlTester, renderer: MultiSelectControl },

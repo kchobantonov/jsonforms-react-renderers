@@ -1,3 +1,5 @@
+import { ChoiceCards } from './controls/ChoiceCards';
+import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
 import {
   ShadcnArrayChoicesControl,
   chipsControlTester,
@@ -98,6 +100,7 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: choiceCardsTester, renderer: ChoiceCards },
   ...[chipsControlTester, multiSelectControlTester, enumArrayControlTester].map(
     (tester) => ({
       tester,

@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import type { JsonSchema } from '@jsonforms/core';
 
 /**
@@ -35,7 +36,8 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
  */
 export const discardedByBranchChange = (
   data: unknown,
-  schema: JsonSchema | undefined
+  schema: JsonSchema | undefined,
+  excludeDiscriminator = false
 ): unknown => {
   if (!isPlainObject(data)) {
     return data;
@@ -43,7 +45,24 @@ export const discardedByBranchChange = (
   const preserved = new Set(enclosingPropertyNames(schema));
   const discarded: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(data)) {
-    if (!preserved.has(key)) {
+    const branches = schema?.oneOf as JsonSchema[] | undefined;
+    // Only distinct, fixed primitive values identify a branch. An arbitrary
+    // default or an invalid imported value is still user data.
+    const fixed = branches?.map((branch) => branch.properties?.[key]);
+    const discriminator =
+      excludeDiscriminator &&
+      fixed &&
+      fixed.length > 1 &&
+      fixed.every(
+        (property) =>
+          property &&
+          Object.prototype.hasOwnProperty.call(property, 'const') &&
+          (property.const === null || typeof property.const !== 'object')
+      ) &&
+      new Set(fixed.map((property) => JSON.stringify(property!.const))).size ===
+        fixed.length &&
+      fixed.some((property) => isEqual(property!.const, value));
+    if (!preserved.has(key) && !discriminator) {
       discarded[key] = value;
     }
   }

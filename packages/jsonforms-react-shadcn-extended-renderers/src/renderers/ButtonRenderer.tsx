@@ -17,6 +17,7 @@ export type ShadcnButtonElement = UISchemaElement & {
   name?: string;
   action?: string;
   icon?: string;
+  color?: string;
   params?: Record<string, unknown>;
   script?: string;
   options?: Record<string, any>;
@@ -48,11 +49,22 @@ export const ShadcnButtonRenderer = ({
   const action = configuredAction ?? uischema.name ?? label;
   const params = options.params ?? uischema.params;
   const script = options.script ?? uischema.script;
+  const color = options.color ?? uischema.color;
+  const variants = {
+    primary: 'default',
+    secondary: 'outline',
+    alternative: 'secondary',
+    success: 'default',
+    warning: 'outline',
+    error: 'destructive',
+  } as const;
+  const variant =
+    options.variant ?? variants[color as keyof typeof variants] ?? 'default';
   return (
     <Button
-      className='shadcn-jsonforms-button'
+      className={color === 'warning' ? 'text-destructive' : undefined}
       type='button'
-      variant={options.variant}
+      variant={variant}
       disabled={!enabled || options.disabled || loading}
       aria-busy={loading || undefined}
       onClick={async () => {
