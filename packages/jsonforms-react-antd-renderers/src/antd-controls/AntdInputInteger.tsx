@@ -53,7 +53,9 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
         onChange={(value) =>
           value === null || value === undefined
             ? onClear()
-            : onChange(value as never)
+            : Number.isInteger(Number(value))
+            ? onChange(value as never)
+            : undefined
         }
         className={className}
         id={id}

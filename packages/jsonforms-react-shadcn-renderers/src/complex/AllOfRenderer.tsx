@@ -9,6 +9,7 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch, withJsonFormsAllOfProps } from '@jsonforms/react';
 import React from 'react';
+import { CombinatorProperties } from './CombinatorProperties';
 
 export const ShadcnAllOfRenderer = ({
   schema,
@@ -53,6 +54,12 @@ export const ShadcnAllOfRenderer = ({
 
   return (
     <>
+      <CombinatorProperties
+        schema={schema}
+        combinatorKeyword='allOf'
+        path={path}
+        rootSchema={rootSchema}
+      />
       {allOfRenderInfos.map((renderInfo, index) => (
         <JsonFormsDispatch
           key={index}

@@ -98,6 +98,7 @@ export const bgRendererLocale: RendererLocaleCatalog = {
     'Името на свойството не съответства на разрешен шаблон.',
   'mixed.typeLabel': 'Тип на стойността',
   'mixed.typePlaceholder': 'Изберете тип',
+  'mixed.integerRequired': 'Въведете цяло число.',
   'mixed.required': 'Задължително',
   'mixed.treeLabel': 'Структура на стойността',
   'mixed.searchLabel': 'Търсене в структурата',

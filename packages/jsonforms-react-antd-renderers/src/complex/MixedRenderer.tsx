@@ -1,7 +1,7 @@
+import { useMixedType } from '@chobantonov/jsonforms-react-renderer-common/useMixedType';
 import {
   ANY_TYPES,
   JsonDataType,
-  getJsonDataType,
   getSchemaTypes,
   schemaForType,
   isArrayElementPath,
@@ -95,13 +95,13 @@ export const MixedRendererComponent = ({
   const [expanded, setExpanded] = useState(true);
   const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
-  const dataType = getJsonDataType(data);
-  const selectedType =
-    dataType && types.includes(dataType)
-      ? dataType
-      : dataType === 'integer' && types.includes('number')
-      ? 'number'
-      : null;
+  const { selectedType, selectNumericType } = useMixedType(data, types, path);
+  const numericError =
+    selectedType === 'integer' &&
+    typeof data === 'number' &&
+    !Number.isInteger(data)
+      ? t('mixed.integerRequired')
+      : undefined;
   const selectedSchema = useMemo(
     () =>
       selectedType
@@ -278,8 +278,17 @@ export const MixedRendererComponent = ({
     if (nextType === selectedType) {
       return;
     }
+    if (
+      typeof data === 'number' &&
+      (nextType === 'number' || nextType === 'integer')
+    ) {
+      selectNumericType(nextType);
+      return;
+    }
     const nextSchema = schemaForType(schema, nextType, rootSchema);
     requestTypeChange(() => {
+      if (nextType === 'number' || nextType === 'integer')
+        selectNumericType(nextType);
       handleChange(path, createDefaultValue(nextSchema, rootSchema));
       setSelectedPath([]);
       if (nextType === 'object' || nextType === 'array') setExpanded(true);
@@ -289,7 +298,7 @@ export const MixedRendererComponent = ({
     <AntdMixedTypeSelector
       clearable={!preserveDynamicPropertyKey && !arrayElement}
       disabled={!enabled || Boolean(readonly)}
-      error={!selectedType ? errors : undefined}
+      error={numericError ?? (!selectedType ? errors : undefined)}
       fullWidth={!selectedType}
       onChange={(value) => changeType(value as JsonDataType | undefined)}
       required={required}

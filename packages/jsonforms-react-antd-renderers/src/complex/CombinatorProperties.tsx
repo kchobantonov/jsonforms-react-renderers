@@ -23,6 +23,8 @@ export class CombinatorProperties extends React.Component<
 > {
   render() {
     const { schema, combinatorKeyword, path, rootSchema } = this.props;
+    if (!schema.properties || Object.keys(schema.properties).length === 0)
+      return null;
 
     const otherProps: JsonSchema = omit(
       schema,

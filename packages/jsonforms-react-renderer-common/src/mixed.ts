@@ -10,6 +10,7 @@ import {
   RankedTester,
 } from '@jsonforms/core';
 import get from 'lodash/get';
+import { narrowMixedComposition } from './mixedComposition';
 export type JsonDataType =
   | 'array'
   | 'boolean'
@@ -112,13 +113,12 @@ export const schemaForType = (
   type: JsonDataType,
   rootSchema: JsonSchema
 ): JsonSchema => {
+  const narrowed = narrowMixedComposition(schema, type);
   const nextSchema: JsonSchema7 = {
-    ...(typeof schema === 'object' ? (schema as JsonSchema7) : {}),
-    type,
+    ...(typeof narrowed === 'object' ? (narrowed as JsonSchema7) : {}),
+    ...(narrowed === (false as unknown) ? { not: {} } : {}),
+    type: typeof narrowed === 'object' ? narrowed.type ?? type : type,
   };
-  delete nextSchema.anyOf;
-  delete nextSchema.oneOf;
-  delete nextSchema.allOf;
   if (type !== 'array') removeKeywords(nextSchema, ARRAY_KEYWORDS);
   if (type !== 'object') removeKeywords(nextSchema, OBJECT_KEYWORDS);
   if (type !== 'string') removeKeywords(nextSchema, STRING_KEYWORDS);
@@ -148,7 +148,7 @@ export const schemaForType = (
           ) ?? nextSchema.items
         : nextSchema.items;
     nextSchema.items =
-      items && typeof items === 'object'
+      items !== undefined
         ? (items as JsonSchema7 | JsonSchema7[])
         : { type: ANY_TYPES as JsonSchema7['type'] };
   }

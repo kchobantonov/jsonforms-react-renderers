@@ -1,3 +1,4 @@
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
@@ -42,6 +43,7 @@ export const AnyOfRenderer = ({
   rootSchema,
   indexOfFittingSchema,
   visible,
+  enabled,
   path,
   renderers,
   cells,
@@ -85,6 +87,34 @@ export const AnyOfRenderer = ({
     return null;
   }
 
+  if (anyOfRenderInfos.length === 1) {
+    const branch = anyOfRenderInfos[0];
+    return (
+      <>
+        <CombinatorProperties
+          schema={schema}
+          combinatorKeyword={'anyOf'}
+          path={path}
+          rootSchema={rootSchema}
+        />
+        <CombinatorBranch
+          options={uischema.options}
+          schema={branch.schema}
+          path={path}
+        >
+          <JsonFormsDispatch
+            schema={branch.schema}
+            uischema={branch.uischema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+            enabled={enabled}
+          />
+        </CombinatorBranch>
+      </>
+    );
+  }
+
   return (
     <>
       <CombinatorProperties
@@ -102,13 +132,19 @@ export const AnyOfRenderer = ({
               label: anyOfRenderInfo.label,
               key: String(anyOfIndex),
               children: selectedAnyOf === anyOfIndex && (
-                <JsonFormsDispatch
+                <CombinatorBranch
+                  options={uischema.options}
                   schema={anyOfRenderInfo.schema}
-                  uischema={anyOfRenderInfo.uischema}
                   path={path}
-                  renderers={renderers}
-                  cells={cells}
-                />
+                >
+                  <JsonFormsDispatch
+                    schema={anyOfRenderInfo.schema}
+                    uischema={anyOfRenderInfo.uischema}
+                    path={path}
+                    renderers={renderers}
+                    cells={cells}
+                  />
+                </CombinatorBranch>
               ),
             } as any)
         )}

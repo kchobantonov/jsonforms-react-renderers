@@ -1,3 +1,4 @@
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import {
   Select,
   SelectTrigger,
@@ -94,6 +95,34 @@ export const ShadcnAnyOfRenderer = ({
     return null;
   }
 
+  if (renderInfos.length === 1) {
+    const branch = renderInfos[0];
+    return (
+      <>
+        <CombinatorProperties
+          schema={schema}
+          combinatorKeyword={combinator}
+          path={path}
+          rootSchema={rootSchema}
+        />
+        <CombinatorBranch
+          options={uischema.options}
+          schema={branch.schema}
+          path={path}
+        >
+          <JsonFormsDispatch
+            schema={branch.schema}
+            uischema={branch.uischema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+            enabled={enabled}
+          />
+        </CombinatorBranch>
+      </>
+    );
+  }
+
   return (
     <div className='shadcn-jsonforms-combinator'>
       <CombinatorProperties
@@ -121,14 +150,20 @@ export const ShadcnAnyOfRenderer = ({
             </SelectContent>
           </Select>
           {renderInfos[selectedIndex] && (
-            <JsonFormsDispatch
+            <CombinatorBranch
+              options={uischema.options}
               schema={renderInfos[selectedIndex].schema}
-              uischema={renderInfos[selectedIndex].uischema}
               path={path}
-              renderers={renderers}
-              cells={cells}
-              enabled={enabled}
-            />
+            >
+              <JsonFormsDispatch
+                schema={renderInfos[selectedIndex].schema}
+                uischema={renderInfos[selectedIndex].uischema}
+                path={path}
+                renderers={renderers}
+                cells={cells}
+                enabled={enabled}
+              />
+            </CombinatorBranch>
           )}
         </>
       ) : (
@@ -143,13 +178,19 @@ export const ShadcnAnyOfRenderer = ({
           {renderInfos.map((renderInfo, index) => (
             <TabsContent key={index} value={String(index)}>
               {selectedIndex === index ? (
-                <JsonFormsDispatch
+                <CombinatorBranch
+                  options={uischema.options}
                   schema={renderInfo.schema}
-                  uischema={renderInfo.uischema}
                   path={path}
-                  renderers={renderers}
-                  cells={cells}
-                />
+                >
+                  <JsonFormsDispatch
+                    schema={renderInfo.schema}
+                    uischema={renderInfo.uischema}
+                    path={path}
+                    renderers={renderers}
+                    cells={cells}
+                  />
+                </CombinatorBranch>
               ) : null}
             </TabsContent>
           ))}

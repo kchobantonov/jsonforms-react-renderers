@@ -1,3 +1,4 @@
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { shouldConfirm } from '../util/confirmation';
@@ -178,6 +179,34 @@ export const OneOfRenderer = ({
     return null;
   }
 
+  if (oneOfRenderInfos.length === 1) {
+    const branch = oneOfRenderInfos[0];
+    return (
+      <>
+        <CombinatorProperties
+          schema={schema}
+          combinatorKeyword={'oneOf'}
+          path={path}
+          rootSchema={rootSchema}
+        />
+        <CombinatorBranch
+          options={uischema.options}
+          schema={branch.schema}
+          path={path}
+        >
+          <JsonFormsDispatch
+            schema={branch.schema}
+            uischema={branch.uischema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+            enabled={enabled}
+          />
+        </CombinatorBranch>
+      </>
+    );
+  }
+
   return (
     <>
       <CombinatorProperties
@@ -214,13 +243,19 @@ export const OneOfRenderer = ({
       </Form.Item>
 
       {selectedIndex !== undefined && selectedIndex !== null && (
-        <JsonFormsDispatch
-          uischema={oneOfRenderInfos[selectedIndex].uischema}
+        <CombinatorBranch
+          options={uischema.options}
           schema={oneOfRenderInfos[selectedIndex].schema}
           path={path}
-          renderers={renderers}
-          cells={cells}
-        />
+        >
+          <JsonFormsDispatch
+            uischema={oneOfRenderInfos[selectedIndex].uischema}
+            schema={oneOfRenderInfos[selectedIndex].schema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+          />
+        </CombinatorBranch>
       )}
 
       <TabSwitchConfirmDialog

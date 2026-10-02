@@ -139,6 +139,7 @@ export const i18nDefaults = {
   // Mixed-value control: tree, type selector and their actions
   'mixed.typeLabel': 'Value type',
   'mixed.typePlaceholder': 'Select a type',
+  'mixed.integerRequired': 'Enter a whole number.',
   'mixed.required': 'Required',
   'mixed.treeLabel': 'Value structure',
   'mixed.searchLabel': 'Search value tree',
