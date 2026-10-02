@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputNumber } from 'antd';
@@ -19,16 +20,25 @@ export const AntdInputNumber = React.memo(function AntdInputNumber(
     enabled,
     uischema,
     path,
-    handleChange,
+    handleChange: originalHandleChange,
     config,
     inputProps,
   } = props;
+  const keepSelectedType = useMixedScalar(path);
+  const handleChange = React.useCallback(
+    (target: string, value: any) =>
+      originalHandleChange(
+        target,
+        keepSelectedType && value === undefined ? 0 : value
+      ),
+    [originalHandleChange, keepSelectedType]
+  );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = { width: '100%' };
 
   const [inputValue, onChange, onClear] = useDebouncedChange(
     handleChange,
-    '',
+    keepSelectedType ? 0 : '',
     data,
     path,
     eventToValue

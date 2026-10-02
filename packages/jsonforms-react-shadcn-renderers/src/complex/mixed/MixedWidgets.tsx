@@ -132,6 +132,8 @@ export const NestedMixedNavigation = ({
 );
 
 type TreeProps = {
+  domainTree?: boolean;
+  renderIndicator?: (node: MixedTreeNode) => React.ReactNode;
   root: MixedTreeNode;
   selectedPath: MixedTreePath;
   onSelect: (node: MixedTreeNode) => void;
@@ -193,7 +195,10 @@ export const MixedTree = (props: TreeProps) => {
     )
       return null;
     return (
-      <Collapsible key={mixedPathKey(node.path)} defaultOpen={false}>
+      <Collapsible
+        key={mixedPathKey(node.path)}
+        defaultOpen={props.domainTree && node.path.length === 0}
+      >
         <div className='group/tree-row flex min-w-0 items-center gap-1'>
           {node.children.length > 0 ? (
             <CollapsibleTrigger
@@ -244,6 +249,9 @@ export const MixedTree = (props: TreeProps) => {
               type='button'
               variant={selected ? 'secondary' : 'ghost'}
               className='min-w-0 flex-1 justify-start'
+              data-recursive-node={
+                props.domainTree ? mixedPathKey(node.path) : undefined
+              }
               aria-pressed={selected}
               onClick={() => props.onSelect(node)}
             >
@@ -253,7 +261,9 @@ export const MixedTree = (props: TreeProps) => {
               </span>
             </Button>
           )}
-          {node.path.length === 0 &&
+          {props.renderIndicator?.(node)}
+          {!props.domainTree &&
+            node.path.length === 0 &&
             action(
               t(
                 showPrimitives ? 'mixed.hidePrimitives' : 'mixed.showPrimitives'
@@ -274,7 +284,11 @@ export const MixedTree = (props: TreeProps) => {
               <Pencil aria-hidden='true' />,
               () => {
                 setRenaming(node);
-                setName(String(node.path[node.path.length - 1]));
+                setName(
+                  props.domainTree
+                    ? node.label
+                    : String(node.path[node.path.length - 1])
+                );
               },
               true
             )}

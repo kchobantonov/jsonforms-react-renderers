@@ -62,6 +62,7 @@ export const createMonacoControl = ({
     const encoded = encodeEditorValue(props.data, convert);
     const [text, setText] = useState(encoded);
     const lastCommitted = useRef<string>();
+    const lastExternal = useRef(encoded);
     const [invalid, setInvalid] = useState(false);
 
     /*
@@ -85,25 +86,83 @@ export const createMonacoControl = ({
       that component's renders, which is exactly the lifetime an owner needs.
     */
     const owner = useId();
+    const [monacoApi, setMonacoApi] = useState<any>(null);
+    const modelUri = `inmemory://jsonforms/mixed-${encodeURIComponent(
+      owner
+    )}.json`;
+    const schemaValidation = options.validateJsonSchema === true;
+    useEffect(() => {
+      if (!monacoApi || !schemaValidation) return;
+      const defaults = monacoApi.languages.json.jsonDefaults;
+      const rootUri = `${modelUri}.root-schema.json`;
+      const sectionUri = `${modelUri}.schema.json`;
+      // Local references in the section still refer to the document schema.
+      const rebase = (value: any): any => {
+        if (Array.isArray(value)) return value.map(rebase);
+        if (!value || typeof value !== 'object') return value;
+        return Object.fromEntries(
+          Object.entries(value).map(([key, child]) => [
+            key,
+            key === '$ref' && typeof child === 'string' && child.startsWith('#')
+              ? rootUri + child
+              : rebase(child),
+          ])
+        );
+      };
+      const registrations = [
+        { uri: rootUri, schema: { ...context.core?.schema, $id: rootUri } },
+        {
+          uri: sectionUri,
+          fileMatch: [modelUri],
+          schema: rebase(props.schema),
+        },
+      ];
+      const owned = (entry: { uri: string }) =>
+        entry.uri === rootUri || entry.uri === sectionUri;
+      defaults.setDiagnosticsOptions({
+        ...defaults.diagnosticsOptions,
+        validate: true,
+        schemas: [
+          ...(defaults.diagnosticsOptions.schemas ?? []).filter(
+            (entry) => !owned(entry)
+          ),
+          ...registrations,
+        ],
+      });
+      return () =>
+        defaults.setDiagnosticsOptions({
+          ...defaults.diagnosticsOptions,
+          schemas: (defaults.diagnosticsOptions.schemas ?? []).filter(
+            (entry) => !owned(entry)
+          ),
+        });
+    }, [
+      monacoApi,
+      schemaValidation,
+      modelUri,
+      props.schema,
+      context.core?.schema,
+    ]);
     const propagate = resolvePropagateErrors(
       props.uischema.options,
       props.config
     );
     const summary =
-      propagate && errorCount > 0
+      propagate && (schemaValidation ? invalid : errorCount > 0)
         ? [
             editorSummaryError({
               owner,
               path: props.path,
               language,
-              errorCount,
-              message:
-                errorCount === 1
-                  ? t('editor.languageError')
-                  : t('editor.languageErrors').replace(
-                      '{count}',
-                      String(errorCount)
-                    ),
+              errorCount: schemaValidation ? 1 : errorCount,
+              message: schemaValidation
+                ? t('editor.invalidJson')
+                : errorCount === 1
+                ? t('editor.languageError')
+                : t('editor.languageErrors').replace(
+                    '{count}',
+                    String(errorCount)
+                  ),
             }),
           ]
         : [];
@@ -145,9 +204,20 @@ export const createMonacoControl = ({
       // forceMoveMarkers, which moves the caret to the end of the document, so a
       // re-sync mid-typing reads as "the cursor will not go past this line".
       // Anything that arrives while focused is picked up on blur.
+      if (schemaValidation) {
+        if (lastExternal.current !== encoded) {
+          lastExternal.current = encoded;
+          if (lastCommitted.current !== encoded) {
+            setText(encoded);
+            setInvalid(false);
+          }
+        }
+        return;
+      }
       if (focused) return;
-      if (lastCommitted.current !== encoded) setText(encoded);
-      setInvalid(false);
+      if (lastCommitted.current !== encoded && (!schemaValidation || !invalid))
+        setText(encoded);
+      if (!schemaValidation) setInvalid(false);
     }, [encoded, language, convert, focused]);
 
     useEffect(() => {
@@ -208,6 +278,7 @@ export const createMonacoControl = ({
             maximized={maximized}
           >
             <Editor
+              path={schemaValidation ? modelUri : undefined}
               value={text}
               language={language}
               width={options.width}
@@ -222,7 +293,8 @@ export const createMonacoControl = ({
                 readOnly: disabled,
                 ariaLabel: props.label || t('editor.ariaLabel'),
               }}
-              onMount={(editor) => {
+              onMount={(editor, api) => {
+                setMonacoApi(api);
                 editorRef.current = editor;
                 if (options.focus) editor.focus();
                 for (const action of monaco.initActions ?? [])

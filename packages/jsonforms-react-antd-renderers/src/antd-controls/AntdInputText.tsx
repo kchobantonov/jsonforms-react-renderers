@@ -1,3 +1,4 @@
+import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { AutoComplete, AutoCompleteProps, Input } from 'antd';
 import every from 'lodash/every';
@@ -39,10 +40,19 @@ export const AntdInputText = React.memo(function AntdInputText(
     enabled,
     uischema,
     path,
-    handleChange,
+    handleChange: originalHandleChange,
     schema,
     inputProps,
   } = props;
+  const keepEmptyString = useMixedScalar(path);
+  const handleChange = React.useCallback(
+    (target: string, value: any) =>
+      originalHandleChange(
+        target,
+        keepEmptyString && value === undefined ? '' : value
+      ),
+    [originalHandleChange, keepEmptyString]
+  );
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 

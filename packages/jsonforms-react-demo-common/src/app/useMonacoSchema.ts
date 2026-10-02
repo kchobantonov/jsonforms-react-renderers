@@ -28,18 +28,24 @@ export const useMonacoSchema = (schemaText: string): void => {
     } catch {
       return; // mid-edit; keep the last schema that parsed
     }
-    if (!schema) {
-      return;
-    }
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+    const defaults = monaco.languages.json.jsonDefaults;
+    defaults.setDiagnosticsOptions({
+      ...defaults.diagnosticsOptions,
       validate: true,
       enableSchemaRequest: false,
       schemas: [
-        {
-          uri: 'inmemory://demo/schema.json',
-          fileMatch: [DATA_MODEL_PATH],
-          schema: schema as Record<string, unknown>,
-        },
+        ...(defaults.diagnosticsOptions.schemas ?? []).filter(
+          (entry) => entry.uri !== 'inmemory://demo/schema.json'
+        ),
+        ...(schema === undefined
+          ? []
+          : [
+              {
+                uri: 'inmemory://demo/schema.json',
+                fileMatch: [DATA_MODEL_PATH],
+                schema: schema as Record<string, unknown>,
+              },
+            ]),
       ],
     });
   }, [monaco, schemaText]);

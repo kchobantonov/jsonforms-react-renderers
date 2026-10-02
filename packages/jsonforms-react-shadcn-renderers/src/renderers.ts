@@ -1,3 +1,7 @@
+import {
+  RecursiveTreeRenderer,
+  recursiveTreeTester,
+} from './complex/RecursiveTreeRenderer';
 import { ChoiceCards } from './controls/ChoiceCards';
 import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
 import {
@@ -100,6 +104,7 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: recursiveTreeTester, renderer: RecursiveTreeRenderer },
   { tester: choiceCardsTester, renderer: ChoiceCards },
   ...[chipsControlTester, multiSelectControlTester, enumArrayControlTester].map(
     (tester) => ({

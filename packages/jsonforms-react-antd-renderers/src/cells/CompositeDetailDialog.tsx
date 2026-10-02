@@ -69,6 +69,19 @@ export const CompositeDetailDialog = ({
   children,
 }: Props) => {
   const parent = useJsonForms();
+  const pointer =
+    '/' +
+    path
+      .split('.')
+      .map((part) => part.replace(/~/g, '~0').replace(/\//g, '~1'))
+      .join('/');
+  const invalidEditorDraft = (parent.core?.additionalErrors ?? []).some(
+    (error) =>
+      error.params?.source === 'monaco' &&
+      (error.instancePath === pointer ||
+        error.instancePath.startsWith(pointer + '/'))
+  );
+
   /*
     The default message carries the locale bundle (§6.5), so it must not be
     read straight out of the English table.
@@ -122,6 +135,7 @@ export const CompositeDetailDialog = ({
   }, [release, onClose]);
 
   const apply = useCallback(() => {
+    if (invalidEditorDraft) return;
     // Whatever a debounced control is still holding belongs in this Apply.
     pending.forEach((change) => change.flush());
     const next = cloneDeep(at(draftRef.current?.data, path));
@@ -129,7 +143,7 @@ export const CompositeDetailDialog = ({
     release();
     if (changed) onApply(next);
     onClose();
-  }, [pending, path, release, onApply, onClose]);
+  }, [pending, path, release, onApply, onClose, invalidEditorDraft]);
 
   const context = useMemo(
     () => ({ ...parent, core: draft ?? parent.core, dispatch: localDispatch }),
@@ -193,7 +207,7 @@ export const CompositeDetailDialog = ({
         <span>
           <Button
             type='primary'
-            disabled={!enabled || !draft || conflicted}
+            disabled={!enabled || !draft || conflicted || invalidEditorDraft}
             onClick={apply}
           >
             {text(options.okLabel, 'composite.apply')}

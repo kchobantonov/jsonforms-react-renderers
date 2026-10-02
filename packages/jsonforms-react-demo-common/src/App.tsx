@@ -1,3 +1,4 @@
+import { demoSchema } from './app/demoSchema';
 import { isSpecExample, isPrefixedOfficialExample } from './examples';
 import React, {
   useCallback,
@@ -470,6 +471,8 @@ const App = ({
   const jsonFormsProps = useMemo(
     () => ({
       ...exampleProps,
+      // Temporary upstream inference workaround; removal criteria are in demoSchema.ts.
+      schema: demoSchema(exampleProps.schema, exampleProps.data),
       config: {
         ...(exampleProps.config ?? {}),
         ...configOptions,

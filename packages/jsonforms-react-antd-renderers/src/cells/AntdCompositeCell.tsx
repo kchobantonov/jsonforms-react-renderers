@@ -223,7 +223,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
 };
 
 /**
- * Objects and arrays only. A catch-all would tie with the scalar cells (also
+ * Structured, mixed and composed values. A catch-all would tie with scalar cells (also
  * rank 1) and win on registration order, swallowing every string column.
  */
 export const antdCompositeCellTester: RankedTester = (_ui, schema, context) =>
@@ -231,6 +231,9 @@ export const antdCompositeCellTester: RankedTester = (_ui, schema, context) =>
     ? 6
     : schema?.type === 'object' ||
       schema?.type === 'array' ||
+      Boolean(
+        schema?.anyOf?.length || schema?.oneOf?.length || schema?.allOf?.length
+      ) ||
       isMixedSchema({ ..._ui, scope: '#' }, schema, context)
     ? 1
     : -1;

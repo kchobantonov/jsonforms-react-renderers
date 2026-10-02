@@ -14,6 +14,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
  * is the real code.
  */
 const harness = vi.hoisted(() => ({
+  change: undefined as undefined | ((text: string) => void),
   emit: undefined as undefined | ((markers: unknown[]) => void),
   reset() {
     this.emit = undefined;
@@ -22,6 +23,7 @@ const harness = vi.hoisted(() => ({
 
 vi.mock('@monaco-editor/react', () => ({
   default: (props: any) => {
+    harness.change = props.onChange;
     harness.emit = (markers: unknown[]) => props.onValidate?.(markers);
     return React.createElement('textarea', {
       'data-monaco': true,
@@ -445,4 +447,75 @@ describe('a server error and an editor error on one field', () => {
     expect(view.messages()).toContain('1 error.');
     view.unmount();
   });
+});
+
+it('keeps malformed JSON drafts and publishes only syntax errors in schema-aware mode', async () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const store = createAdditionalErrorStore();
+  let latest: any;
+  try {
+    act(() =>
+      root.render(
+        <ExtendedJsonForms
+          store={store}
+          schema={
+            {
+              type: 'object',
+              properties: {
+                value: {
+                  type: ['object', 'string'],
+                  properties: { name: { type: 'string' } },
+                },
+              },
+            } as any
+          }
+          data={{ value: { name: 'Ada' } }}
+          uischema={{
+            type: 'Control',
+            scope: '#/properties/value',
+            options: {
+              format: 'code',
+              language: 'json',
+              convertJson: true,
+              validateJsonSchema: true,
+              propagateErrors: true,
+            },
+          }}
+          renderers={[
+            ...antdRenderers,
+            {
+              tester: monacoControlTester,
+              renderer: AntdMonacoControlRenderer,
+            },
+          ]}
+          cells={antdCells}
+          onChange={(event) => {
+            latest = event.data;
+          }}
+        />
+      )
+    );
+    await settle(100);
+    await act(async () => harness.change?.('{'));
+    await settle();
+    expect(latest.value).toEqual({ name: 'Ada' });
+    expect(store.all()).toHaveLength(1);
+    expect(
+      (container.querySelector('[data-monaco]') as HTMLTextAreaElement).value
+    ).toBe('{');
+    await act(async () => harness.change?.('{"name":42}'));
+    await settle();
+    expect(latest.value).toEqual({ name: 42 });
+    expect(store.all()).toHaveLength(0);
+    await act(async () =>
+      harness.emit?.([{ severity: 8, message: 'Schema mismatch' }])
+    );
+    await settle();
+    expect(store.all()).toHaveLength(0);
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
 });

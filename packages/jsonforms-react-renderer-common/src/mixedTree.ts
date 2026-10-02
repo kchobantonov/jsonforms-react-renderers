@@ -3,6 +3,7 @@ import { JsonSchema, resolveSchema } from '@jsonforms/core';
 export type MixedTreePath = Array<string | number>;
 
 export interface MixedTreeNode {
+  named?: boolean;
   children: MixedTreeNode[];
   data: unknown;
   dynamic: boolean;
@@ -127,7 +128,7 @@ export const findMixedTreeNode = (
 };
 
 export const mixedTreeLabel = (node: MixedTreeNode) =>
-  node.path.length === 0
+  node.path.length === 0 && !node.named
     ? node.type === 'array'
       ? '[]'
       : node.type === 'object'

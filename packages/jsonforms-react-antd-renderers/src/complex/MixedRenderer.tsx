@@ -1,3 +1,4 @@
+import { MixedScalarContext } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
 import { useGroupExpansion } from '@chobantonov/jsonforms-react-renderer-common/groupState';
@@ -91,6 +92,10 @@ export const MixedRendererComponent = ({
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
+  const structuredLayout =
+    uischema.options?.structuredLayout ??
+    config?.jsonformsExtended?.mixed?.structuredLayout ??
+    'tree';
   const validation = useContainerValidation(
     { ...uischema, scope: '#' },
     path,
@@ -205,19 +210,27 @@ export const MixedRendererComponent = ({
     const nodeControl =
       node.type === 'null' ? null : (
         <div className='jsonforms-mixed-renderer-detail-control'>
-          <JsonFormsDispatch
-            schema={nodeSchema}
-            uischema={
-              isNestedPrimitive
-                ? withoutControlLabel(nodeUiSchema)
-                : nodeUiSchema
+          <MixedScalarContext.Provider
+            value={
+              ['string', 'number', 'integer'].includes(node.type)
+                ? nodePath
+                : undefined
             }
-            path={nodePath}
-            enabled={enabled}
-            renderers={renderers}
-            cells={cells}
-            readonly={readonly}
-          />
+          >
+            <JsonFormsDispatch
+              schema={nodeSchema}
+              uischema={
+                isNestedPrimitive
+                  ? withoutControlLabel(nodeUiSchema)
+                  : nodeUiSchema
+              }
+              path={nodePath}
+              enabled={enabled}
+              renderers={renderers}
+              cells={cells}
+              readonly={readonly}
+            />
+          </MixedScalarContext.Provider>
         </div>
       );
 
@@ -235,15 +248,23 @@ export const MixedRendererComponent = ({
   };
   const renderedControl =
     selectedType !== 'null' && selectedSchema && detailUiSchema ? (
-      <JsonFormsDispatch
-        schema={selectedSchema}
-        uischema={withoutControlLabel(detailUiSchema)}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-        readonly={readonly}
-      />
+      <MixedScalarContext.Provider
+        value={
+          selectedType && ['string', 'number', 'integer'].includes(selectedType)
+            ? path
+            : undefined
+        }
+      >
+        <JsonFormsDispatch
+          schema={selectedSchema}
+          uischema={withoutControlLabel(detailUiSchema)}
+          path={path}
+          enabled={enabled}
+          renderers={renderers}
+          cells={cells}
+          readonly={readonly}
+        />
+      </MixedScalarContext.Provider>
     ) : null;
   const isStructuredType =
     selectedType === 'object' || selectedType === 'array';
@@ -482,7 +503,39 @@ export const MixedRendererComponent = ({
     setSelectedPath([...node.path.slice(0, -1), nextName]);
   };
 
-  if (parentNavigation && isStructuredType) {
+  if (structuredLayout === 'code') {
+    if (uischema.options?.format === 'code')
+      return (
+        <div role='alert'>
+          Code presentation requires the Monaco renderer from the extended
+          renderer registry.
+        </div>
+      );
+    return visible ? (
+      <JsonFormsDispatch
+        schema={schema}
+        uischema={{
+          ...uischema,
+          scope: '#',
+          options: {
+            ...uischema.options,
+            format: 'code',
+            language: 'json',
+            convertJson: true,
+            validateJsonSchema: true,
+            propagateErrors: true,
+          },
+        }}
+        path={path}
+        enabled={enabled}
+        readonly={readonly}
+        renderers={renderers}
+        cells={cells}
+      />
+    ) : null;
+  }
+
+  if (structuredLayout === 'tree' && parentNavigation && isStructuredType) {
     return (
       <AntdNestedMixedNavigation
         description={description}
@@ -494,7 +547,12 @@ export const MixedRendererComponent = ({
   }
 
   const content = (
-    <Flex className='jsonforms-mixed-renderer' vertical gap='small'>
+    <Flex
+      data-structured-layout={structuredLayout}
+      className='jsonforms-mixed-renderer'
+      vertical
+      gap='small'
+    >
       {confirmation.dialog}
       <style>{`
         .jsonforms-mixed-renderer-primitive,
@@ -519,83 +577,63 @@ export const MixedRendererComponent = ({
         }
       `}</style>
       {isStructuredType ? (
-        <Collapse
-          activeKey={expanded ? ['value'] : []}
-          className='jsonforms-mixed-renderer-structured'
-          expandIconPlacement='end'
-          onChange={(keys) => setExpanded(keys.includes('value'))}
-          items={[
-            {
-              key: 'value',
-              collapsible: collapsible ? undefined : 'disabled',
-              showArrow: collapsible,
-              label: (
-                <Flex
-                  align='center'
-                  gap='middle'
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  {selector}
-                  {validation.show && (
-                    <ContainerValidationIndicator count={validation.count} />
-                  )}
-                  {label &&
-                  label.trim().toLocaleLowerCase() !== selectedType ? (
-                    <Typography.Text>{label}</Typography.Text>
-                  ) : null}
-                </Flex>
-              ),
-              children:
-                tree && selectedNode ? (
-                  <AntdMixedSplitPane
-                    tree={
-                      <AntdMixedTree
-                        canDelete={canDeleteNode}
-                        canRename={canRenameNode}
-                        onDelete={deleteNode}
-                        onRename={renameNode}
-                        onSelect={(node) => setSelectedPath(node.path)}
-                        root={tree}
-                        selectedPath={selectedNode.path}
-                        validateRename={validateNodeRename}
-                      />
-                    }
-                    detail={
-                      <Flex vertical gap='small'>
-                        <Breadcrumb
-                          items={[
-                            {
-                              title: <AntdJsonTypeIcon type={tree.type} />,
-                              ...(selectedNode.path.length > 0
-                                ? {
-                                    href: '#',
-                                    onClick: (
-                                      event: React.MouseEvent<
-                                        HTMLAnchorElement | HTMLSpanElement
-                                      >
-                                    ) => {
-                                      event.preventDefault();
-                                      setSelectedPath([]);
-                                    },
-                                  }
-                                : {}),
-                            },
-                            ...selectedNode.path.map((segment, index) => {
-                              const breadcrumbPath = selectedNode.path.slice(
-                                0,
-                                index + 1
-                              );
-                              const breadcrumbLabel =
-                                typeof segment === 'number'
-                                  ? `Item ${segment}`
-                                  : segment;
-                              const current =
-                                index === selectedNode.path.length - 1;
-                              return {
-                                title: breadcrumbLabel,
-                                ...(current
-                                  ? {}
-                                  : {
+        <>
+          {label && uischema.label !== false && (
+            <Typography.Text>{label}</Typography.Text>
+          )}
+          <Collapse
+            ghost
+            styles={{
+              header: { padding: 0, alignItems: 'center' },
+              body: { padding: '12px 0' },
+            }}
+            activeKey={expanded ? ['value'] : []}
+            className='jsonforms-mixed-renderer-structured'
+            expandIconPlacement='end'
+            onChange={(keys) => setExpanded(keys.includes('value'))}
+            items={[
+              {
+                key: 'value',
+                collapsible: collapsible ? undefined : 'disabled',
+                showArrow: collapsible,
+                label: (
+                  <Flex align='center' gap='middle'>
+                    <div
+                      onClick={(event) => event.stopPropagation()}
+                      onKeyDown={(event) => event.stopPropagation()}
+                    >
+                      {selector}
+                    </div>
+                    {validation.show && (
+                      <ContainerValidationIndicator count={validation.count} />
+                    )}
+                  </Flex>
+                ),
+                children:
+                  structuredLayout === 'nested' ? (
+                    renderedControl
+                  ) : tree && selectedNode ? (
+                    <AntdMixedSplitPane
+                      tree={
+                        <AntdMixedTree
+                          canDelete={canDeleteNode}
+                          canRename={canRenameNode}
+                          onDelete={deleteNode}
+                          onRename={renameNode}
+                          onSelect={(node) => setSelectedPath(node.path)}
+                          root={tree}
+                          selectedPath={selectedNode.path}
+                          validateRename={validateNodeRename}
+                        />
+                      }
+                      detail={
+                        <Flex vertical gap='small'>
+                          <Breadcrumb
+                            items={[
+                              {
+                                title: <AntdJsonTypeIcon type={tree.type} />,
+                                ...(selectedNode.path.length > 0
+                                  ? {
                                       href: '#',
                                       onClick: (
                                         event: React.MouseEvent<
@@ -603,21 +641,50 @@ export const MixedRendererComponent = ({
                                         >
                                       ) => {
                                         event.preventDefault();
-                                        setSelectedPath(breadcrumbPath);
+                                        setSelectedPath([]);
                                       },
-                                    }),
-                              };
-                            }),
-                          ]}
-                        />
-                        {renderNodeControl(selectedNode)}
-                      </Flex>
-                    }
-                  />
-                ) : null,
-            },
-          ]}
-        />
+                                    }
+                                  : {}),
+                              },
+                              ...selectedNode.path.map((segment, index) => {
+                                const breadcrumbPath = selectedNode.path.slice(
+                                  0,
+                                  index + 1
+                                );
+                                const breadcrumbLabel =
+                                  typeof segment === 'number'
+                                    ? `Item ${segment}`
+                                    : segment;
+                                const current =
+                                  index === selectedNode.path.length - 1;
+                                return {
+                                  title: breadcrumbLabel,
+                                  ...(current
+                                    ? {}
+                                    : {
+                                        href: '#',
+                                        onClick: (
+                                          event: React.MouseEvent<
+                                            HTMLAnchorElement | HTMLSpanElement
+                                          >
+                                        ) => {
+                                          event.preventDefault();
+                                          setSelectedPath(breadcrumbPath);
+                                        },
+                                      }),
+                                };
+                              }),
+                            ]}
+                          />
+                          {renderNodeControl(selectedNode)}
+                        </Flex>
+                      }
+                    />
+                  ) : null,
+              },
+            ]}
+          />
+        </>
       ) : (
         <>
           {label && uischema.label !== false ? (
@@ -642,7 +709,7 @@ export const MixedRendererComponent = ({
       ) : null}
     </Flex>
   );
-  return parentNavigation ? (
+  return structuredLayout === 'nested' || parentNavigation ? (
     content
   ) : (
     <AntdMixedNavigationContext.Provider value={navigation}>

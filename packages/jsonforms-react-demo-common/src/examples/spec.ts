@@ -23,7 +23,13 @@ const specExampleNames = new Set<string>();
 export const isSpecExample = (name: string): boolean =>
   specExampleNames.has(name);
 
-export type SpecExampleInput = Omit<ExampleDescription, 'name' | 'label'> & {
+export type SpecExampleInput = Omit<
+  ExampleDescription,
+  'name' | 'label' | 'schema' | 'uischema' | 'data'
+> & {
+  schema?: ExampleDescription['schema'];
+  uischema?: ExampleDescription['uischema'];
+  data?: unknown;
   /** Folder name, without the prefix. */
   id: string;
   /** Human-readable name, without the prefix. */

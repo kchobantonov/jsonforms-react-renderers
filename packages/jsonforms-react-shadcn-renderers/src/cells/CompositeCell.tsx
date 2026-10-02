@@ -52,6 +52,19 @@ type Props = CellProps & {
 /** A compact summary with isolated editing; only Apply writes to the form. */
 export const ShadcnCompositeCell = (props: Props) => {
   const parent = useJsonForms();
+  const pointer =
+    '/' +
+    props.path
+      .split('.')
+      .map((part) => part.replace(/~/g, '~0').replace(/\//g, '~1'))
+      .join('/');
+  const invalidEditorDraft = (parent.core?.additionalErrors ?? []).some(
+    (error) =>
+      error.params?.source === 'monaco' &&
+      (error.instancePath === pointer ||
+        error.instancePath.startsWith(pointer + '/'))
+  );
+
   const errors = usePathErrorMessages(
     props.path,
     labelDetailErrorPaths(props.path, props.uischema.options)
@@ -259,10 +272,10 @@ export const ShadcnCompositeCell = (props: Props) => {
             </Button>
             <Button
               type='button'
-              disabled={!enabled || conflicted}
+              disabled={!enabled || conflicted || invalidEditorDraft}
               title={conflicted ? text('composite.applyConflict') : undefined}
               onClick={() => {
-                if (!enabled || conflicted) return;
+                if (!enabled || conflicted || invalidEditorDraft) return;
                 const next = copy(
                   Resolve.data(draftRef.current?.data, props.path)
                 );
@@ -288,6 +301,9 @@ export const shadcnCompositeCellTester = (
     ? 6
     : schema?.type === 'object' ||
       schema?.type === 'array' ||
+      Boolean(
+        schema?.anyOf?.length || schema?.oneOf?.length || schema?.allOf?.length
+      ) ||
       isMixedSchema({ ..._ui, scope: '#' }, schema, context)
     ? 1
     : -1;

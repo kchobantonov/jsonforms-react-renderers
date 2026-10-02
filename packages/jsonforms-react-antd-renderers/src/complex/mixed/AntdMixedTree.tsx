@@ -16,6 +16,8 @@ import {
 } from './mixedTree';
 
 export interface AntdMixedTreeProps {
+  domainTree?: boolean;
+  renderIndicator?: (node: MixedTreeNode) => React.ReactNode;
   canDelete: (node: MixedTreeNode) => boolean;
   canRename: (node: MixedTreeNode) => boolean;
   onDelete: (node: MixedTreeNode) => void;
@@ -31,6 +33,8 @@ const containsSearch = (node: MixedTreeNode, search: string): boolean =>
   node.children.some((child) => containsSearch(child, search));
 
 export const AntdMixedTree = ({
+  domainTree,
+  renderIndicator,
   canDelete,
   canRename,
   onDelete,
@@ -98,13 +102,18 @@ export const AntdMixedTree = ({
     nodeMap.set(key, node);
     const rootNode = node.path.length === 0;
     const deletable = !rootNode && canDelete(node);
-    const renameable = !rootNode && canRename(node);
+    const renameable = (!rootNode || domainTree) && canRename(node);
     return {
       icon: <AntdJsonTypeIcon type={node.type} />,
       key,
       title: (
-        <Flex align='center' className='jsonforms-mixed-tree-row' gap={4}>
-          {rootNode ? null : (
+        <Flex
+          align='center'
+          className='jsonforms-mixed-tree-row'
+          gap={4}
+          data-recursive-node={domainTree ? mixedPathKey(node.path) : undefined}
+        >
+          {rootNode && !domainTree ? null : (
             <Typography.Text
               className='jsonforms-mixed-tree-label'
               ellipsis={{ tooltip: mixedTreeLabel(node) }}
@@ -112,13 +121,14 @@ export const AntdMixedTree = ({
               {mixedTreeLabel(node)}
             </Typography.Text>
           )}
+          {renderIndicator?.(node)}
           <Flex
             className={`jsonforms-mixed-tree-actions${
-              rootNode ? ' root-actions' : ''
+              rootNode && !domainTree ? ' root-actions' : ''
             }`}
             gap={2}
           >
-            {rootNode ? (
+            {rootNode && !domainTree ? (
               <Tooltip
                 title={t(
                   showPrimitives
@@ -152,7 +162,11 @@ export const AntdMixedTree = ({
                   onClick={(event) => {
                     event.stopPropagation();
                     setRenamingNode(node);
-                    setRenameValue(String(node.path[node.path.length - 1]));
+                    setRenameValue(
+                      domainTree
+                        ? node.label
+                        : String(node.path[node.path.length - 1])
+                    );
                   }}
                   size='small'
                   type='text'
@@ -241,12 +255,16 @@ export const AntdMixedTree = ({
           Boolean(renameError) ||
           !renameValue.trim() ||
           renameValue.trim() ===
-            String(renamingNode.path[renamingNode.path.length - 1])
+            (domainTree
+              ? renamingNode.label
+              : String(renamingNode.path[renamingNode.path.length - 1]))
         }
         error={renameError}
         oldName={
           renamingNode
-            ? String(renamingNode.path[renamingNode.path.length - 1])
+            ? domainTree
+              ? renamingNode.label
+              : String(renamingNode.path[renamingNode.path.length - 1])
             : null
         }
         onCancel={closeRename}

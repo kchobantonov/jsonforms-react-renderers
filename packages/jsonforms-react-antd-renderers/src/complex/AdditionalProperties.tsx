@@ -362,7 +362,7 @@ export const AdditionalProperties = ({
           <Flex
             className='jsonforms-additional-properties-list'
             vertical
-            gap={0}
+            gap='middle'
           >
             {page.indices
               .map((index) => additionalPropertyItems[index])
@@ -373,13 +373,6 @@ export const AdditionalProperties = ({
               actions in that case, because the isolated editor draws no label.
             */
                 const isolated = needsIsolatedEditor(item.propertyName);
-                const rendersOwnHeading =
-                  !isolated &&
-                  !nameErrors.has(item.propertyName) &&
-                  !(
-                    typeof item.schema === 'object' &&
-                    item.schema.type === 'object'
-                  );
                 const actions = enabled ? (
                   <AntdAdditionalPropertyActions
                     deleteDisabled={
@@ -406,31 +399,7 @@ export const AdditionalProperties = ({
                     style={{ position: 'relative', width: '100%' }}
                     vertical
                   >
-                    {rendersOwnHeading ? (
-                      actions || nameErrors.get(item.propertyName) ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            flexWrap: 'nowrap',
-                            gap: 4,
-                            insetInlineEnd: 0,
-                            position: 'absolute',
-                            top: 0,
-                            zIndex: 1,
-                          }}
-                        >
-                          {nameErrors.get(item.propertyName) && (
-                            <ValidationIcon
-                              local
-                              errorMessages={nameErrors.get(item.propertyName)!}
-                              id={`${item.path}-name-errors`}
-                            />
-                          )}
-                          {actions}
-                        </div>
-                      ) : null
-                    ) : (
+                    {
                       <Flex
                         align='center'
                         justify='space-between'
@@ -466,7 +435,7 @@ export const AdditionalProperties = ({
                         </Flex>
                         {actions}
                       </Flex>
-                    )}
+                    }
                     <div
                       className='jsonforms-additional-property-control'
                       style={{ width: '100%' }}
@@ -515,11 +484,7 @@ export const AdditionalProperties = ({
                         <DynamicPropertyProvider path={item.path}>
                           <JsonFormsDispatch
                             schema={item.schema}
-                            uischema={
-                              nameErrors.has(item.propertyName)
-                                ? ({ ...item.uischema, label: false } as any)
-                                : item.uischema
-                            }
+                            uischema={{ ...item.uischema, label: false } as any}
                             path={item.path}
                             enabled={enabled}
                             renderers={renderers}

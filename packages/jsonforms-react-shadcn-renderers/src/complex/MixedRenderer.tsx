@@ -1,3 +1,4 @@
+import { MixedScalarContext } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
 import { useGroupExpansion } from '@chobantonov/jsonforms-react-renderer-common/groupState';
@@ -112,6 +113,10 @@ export const MixedRendererComponent = ({
   const latest = useRef({ data, path, enabled, readonly });
   latest.current = { data, path, enabled, readonly };
   const jsonforms = useJsonForms();
+  const structuredLayout =
+    uischema.options?.structuredLayout ??
+    config?.jsonformsExtended?.mixed?.structuredLayout ??
+    'tree';
   const validation = useContainerValidation(
     { ...uischema, scope: '#' },
     path,
@@ -250,19 +255,27 @@ export const MixedRendererComponent = ({
     const nodeControl =
       node.type === 'null' ? null : (
         <div className='jsonforms-mixed-renderer-detail-control'>
-          <JsonFormsDispatch
-            schema={nodeSchema}
-            uischema={
-              isNestedPrimitive
-                ? withoutControlLabel(nodeUiSchema)
-                : nodeUiSchema
+          <MixedScalarContext.Provider
+            value={
+              ['string', 'number', 'integer'].includes(node.type)
+                ? nodePath
+                : undefined
             }
-            path={nodePath}
-            enabled={enabled}
-            renderers={renderers}
-            cells={cells}
-            readonly={readonly}
-          />
+          >
+            <JsonFormsDispatch
+              schema={nodeSchema}
+              uischema={
+                isNestedPrimitive
+                  ? withoutControlLabel(nodeUiSchema)
+                  : nodeUiSchema
+              }
+              path={nodePath}
+              enabled={enabled}
+              renderers={renderers}
+              cells={cells}
+              readonly={readonly}
+            />
+          </MixedScalarContext.Provider>
         </div>
       );
 
@@ -280,15 +293,23 @@ export const MixedRendererComponent = ({
   };
   const renderedControl =
     selectedType !== 'null' && selectedSchema && detailUiSchema ? (
-      <JsonFormsDispatch
-        schema={selectedSchema}
-        uischema={withoutControlLabel(detailUiSchema)}
-        path={path}
-        enabled={enabled}
-        renderers={renderers}
-        cells={cells}
-        readonly={readonly}
-      />
+      <MixedScalarContext.Provider
+        value={
+          selectedType && ['string', 'number', 'integer'].includes(selectedType)
+            ? path
+            : undefined
+        }
+      >
+        <JsonFormsDispatch
+          schema={selectedSchema}
+          uischema={withoutControlLabel(detailUiSchema)}
+          path={path}
+          enabled={enabled}
+          renderers={renderers}
+          cells={cells}
+          readonly={readonly}
+        />
+      </MixedScalarContext.Provider>
     ) : null;
   const isStructuredType =
     selectedType === 'object' || selectedType === 'array';
@@ -506,7 +527,39 @@ export const MixedRendererComponent = ({
 
   if (!visible) return null;
 
-  if (parentNavigation && isStructuredType) {
+  if (structuredLayout === 'code') {
+    if (uischema.options?.format === 'code')
+      return (
+        <div role='alert'>
+          Code presentation requires the Monaco renderer from the extended
+          renderer registry.
+        </div>
+      );
+    return visible ? (
+      <JsonFormsDispatch
+        schema={schema}
+        uischema={{
+          ...uischema,
+          scope: '#',
+          options: {
+            ...uischema.options,
+            format: 'code',
+            language: 'json',
+            convertJson: true,
+            validateJsonSchema: true,
+            propagateErrors: true,
+          },
+        }}
+        path={path}
+        enabled={enabled}
+        readonly={readonly}
+        renderers={renderers}
+        cells={cells}
+      />
+    ) : null;
+  }
+
+  if (structuredLayout === 'tree' && parentNavigation && isStructuredType) {
     return (
       <NestedMixedNavigation
         description={description}
@@ -518,7 +571,10 @@ export const MixedRendererComponent = ({
   }
 
   const content = (
-    <div className='jsonforms-mixed-renderer min-w-0 space-y-2'>
+    <div
+      data-structured-layout={structuredLayout}
+      className='jsonforms-mixed-renderer min-w-0 space-y-2'
+    >
       {confirmation.dialog}
       {isStructuredType ? (
         <Collapsible
@@ -526,6 +582,9 @@ export const MixedRendererComponent = ({
           onOpenChange={setExpanded}
           className='min-w-0'
         >
+          {label && uischema.label !== false && (
+            <div className='shadcn-jsonforms-label mb-2'>{label}</div>
+          )}
           <div className='flex items-center gap-3'>
             <div className='w-36 shrink-0'>{selector}</div>
             {validation.show && (
@@ -534,10 +593,9 @@ export const MixedRendererComponent = ({
             {collapsible ? (
               <CollapsibleTrigger
                 render={<Button type='button' variant='ghost' />}
-                className='flex-1 justify-between'
+                className='flex-1 justify-end'
                 aria-label={label || 'Value'}
               >
-                <span>{label}</span>
                 {expanded ? (
                   <ChevronUp aria-hidden='true' />
                 ) : (
@@ -545,11 +603,12 @@ export const MixedRendererComponent = ({
                 )}
               </CollapsibleTrigger>
             ) : (
-              <span>{label}</span>
+              <span className='flex-1' />
             )}
           </div>
           <CollapsibleContent keepMounted hidden={!expanded} className='pt-3'>
-            {tree && selectedNode && (
+            {structuredLayout === 'nested' && renderedControl}
+            {structuredLayout === 'tree' && tree && selectedNode && (
               <ResizablePanelGroup orientation='horizontal' className='min-w-0'>
                 <ResizablePanel
                   defaultSize='30%'
@@ -633,7 +692,7 @@ export const MixedRendererComponent = ({
       )}
     </div>
   );
-  return parentNavigation ? (
+  return structuredLayout === 'nested' || parentNavigation ? (
     content
   ) : (
     <MixedNavigationContext.Provider value={navigation}>

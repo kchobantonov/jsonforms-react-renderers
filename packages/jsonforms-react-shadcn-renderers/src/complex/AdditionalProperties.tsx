@@ -365,40 +365,44 @@ export const AdditionalProperties = ({
                   className='jsonforms-additional-property relative'
                   key={item.propertyName}
                 >
-                  {enabled ? (
-                    <div className='jsonforms-additional-property-actions absolute right-1 top-0 z-20 flex items-center gap-0.5'>
-                      <Button
-                        className='h-6 w-6 text-muted-foreground [&_svg]:size-3'
-                        variant='ghost'
-                        size='icon'
-                        disabled={readonly}
-                        type='button'
-                        aria-label={`Rename ${item.propertyName}`}
-                        title={`Rename ${item.propertyName}`}
-                        onClick={() => {
-                          setRenamingPropertyName(item.propertyName);
-                          setRenameValue(item.propertyName);
-                        }}
-                      >
-                        <Pencil className='h-4 w-4' />
-                      </Button>
-                      <Button
-                        className='h-6 w-6 bg-destructive/10 text-destructive hover:bg-destructive/20 [&_svg]:size-3'
-                        variant='destructive'
-                        size='icon'
-                        disabled={removePropertyDisabled}
-                        type='button'
-                        aria-label={`Delete ${item.propertyName}`}
-                        title={`Delete ${item.propertyName}`}
-                        onClick={() => removeProperty(item.propertyName)}
-                      >
-                        <Trash2 className='h-4 w-4' />
-                      </Button>
-                    </div>
-                  ) : null}
+                  <div className='flex min-h-6 items-center justify-between gap-2 mb-2'>
+                    <span className='min-w-0 text-sm font-medium'>
+                      {item.propertyName || '\u00a0'}
+                    </span>
+                    {enabled ? (
+                      <div className='jsonforms-additional-property-actions flex shrink-0 items-center gap-0.5'>
+                        <Button
+                          className='h-6 w-6 text-muted-foreground [&_svg]:size-3'
+                          variant='ghost'
+                          size='icon'
+                          disabled={readonly}
+                          type='button'
+                          aria-label={`Rename ${item.propertyName}`}
+                          title={`Rename ${item.propertyName}`}
+                          onClick={() => {
+                            setRenamingPropertyName(item.propertyName);
+                            setRenameValue(item.propertyName);
+                          }}
+                        >
+                          <Pencil className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          className='h-6 w-6 bg-destructive/10 text-destructive hover:bg-destructive/20 [&_svg]:size-3'
+                          variant='destructive'
+                          size='icon'
+                          disabled={removePropertyDisabled}
+                          type='button'
+                          aria-label={`Delete ${item.propertyName}`}
+                          title={`Delete ${item.propertyName}`}
+                          onClick={() => removeProperty(item.propertyName)}
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
                   {nameErrors.get(item.propertyName) && (
                     <div className='flex min-h-6 items-center gap-1 pr-16 text-sm font-medium text-destructive'>
-                      <span>{item.propertyName}</span>
                       <ErrorIndicator
                         local
                         errors={nameErrors.get(item.propertyName)!}
@@ -408,11 +412,6 @@ export const AdditionalProperties = ({
                   <div className='jsonforms-additional-property-control min-w-0'>
                     {needsIsolatedEditor(item.propertyName) ? (
                       <>
-                        {!nameErrors.has(item.propertyName) && (
-                          <div style={{ minHeight: 24 }}>
-                            {item.propertyName || '\u00a0'}
-                          </div>
-                        )}
                         <ShadcnIsolatedPropertyEditor
                           value={objectData?.[item.propertyName]}
                           schema={item.schema}
@@ -440,11 +439,7 @@ export const AdditionalProperties = ({
                     ) : (
                       <JsonFormsDispatch
                         schema={item.schema}
-                        uischema={
-                          nameErrors.has(item.propertyName)
-                            ? ({ ...item.uischema, label: false } as any)
-                            : item.uischema
-                        }
+                        uischema={{ ...item.uischema, label: false } as any}
                         path={item.path}
                         enabled={enabled}
                         renderers={renderers}

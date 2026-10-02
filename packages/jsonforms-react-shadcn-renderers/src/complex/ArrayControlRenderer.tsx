@@ -45,11 +45,13 @@ import {
   and,
   ArrayLayoutProps,
   CellProps,
+  JsonSchema,
   composePaths,
   createDefaultValue,
   createCleanLabel,
   Generate,
   getFirstPrimitiveProp,
+  isObjectArrayWithNesting,
   schemaTypeIs,
   or,
   uiTypeIs,
@@ -264,12 +266,18 @@ export const ShadcnArrayRenderer = ({
     getFirstPrimitiveProp(schema);
 
   const listWithDetail = (uischema.type as string) === 'ListWithDetail';
+  const nestedItems = isObjectArrayWithNesting(
+    { type: 'Control', scope: '#' } as any,
+    arraySchema ?? ({ type: 'array', items: schema } as JsonSchema),
+    { rootSchema, config }
+  );
   const table =
     !listWithDetail &&
     (options.table === true ||
       options.format === 'table' ||
       (options.table !== false &&
         !options.detail &&
+        !nestedItems &&
         (Boolean(schema.properties) ||
           ['string', 'number', 'integer', 'boolean', 'null'].includes(
             schema.type as string

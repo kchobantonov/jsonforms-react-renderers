@@ -30,6 +30,17 @@ export const useMixedType = (
     types.includes(numeric.type)
       ? numeric.type
       : inferred;
+  // Retain an inferred numeric editor too: resetting a number to zero must not
+  // switch the editor to integer merely because zero satisfies both types.
+  useEffect(() => {
+    if (
+      typeof data === 'number' &&
+      selectedType &&
+      (numeric?.path !== path || numeric.types !== typeKey)
+    ) {
+      setNumeric({ type: selectedType, path, types: typeKey });
+    }
+  }, [data, selectedType, numeric, path, typeKey]);
   const selectNumericType = (type: JsonDataType) =>
     setNumeric({ type, path, types: typeKey });
   return { selectedType, selectNumericType };

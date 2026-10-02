@@ -1,3 +1,7 @@
+import {
+  RecursiveTreeRenderer,
+  recursiveTreeTester,
+} from './complex/RecursiveTreeRenderer';
 import { ChoiceCards } from './controls/ChoiceCards';
 import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
 import { withJsonFormsCellProps, withTranslateProps } from '@jsonforms/react';
@@ -130,6 +134,7 @@ export * from './util';
 export * from './locale';
 
 export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
+  { tester: recursiveTreeTester, renderer: RecursiveTreeRenderer },
   { tester: choiceCardsTester, renderer: ChoiceCards },
   // controls
   { tester: mixedControlTester, renderer: MixedRenderer },

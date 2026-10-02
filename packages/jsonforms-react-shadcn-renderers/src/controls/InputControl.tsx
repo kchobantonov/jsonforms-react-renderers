@@ -1,3 +1,4 @@
+import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { usePreTouchErrors } from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
 import { useJsonForms } from '@jsonforms/react';
 import {
@@ -31,6 +32,7 @@ export const InputShell = ({
   ControlHelpProps & {
     config?: ControlHelpProps['config'] & { hideRequiredAsterisk?: boolean };
     uischema?: ControlHelpProps['uischema'] & {
+      label?: ControlProps['uischema']['label'];
       options?: { hideRequiredAsterisk?: boolean };
     };
     id: string;
@@ -111,7 +113,7 @@ export const ShadcnInputControl = ({
   description,
   enabled,
   errors,
-  handleChange,
+  handleChange: originalHandleChange,
   label,
   path,
   required,
@@ -121,6 +123,12 @@ export const ShadcnInputControl = ({
   type = 'text',
   suggestions,
 }: ControlProps & { type?: string; suggestions?: string[] }) => {
+  const keepEmptyString = useMixedScalar(path);
+  const handleChange = (target: string, value: any) =>
+    originalHandleChange(
+      target,
+      keepEmptyString && value === undefined ? '' : value
+    );
   if (!visible) return null;
   const id = makeId(path, label);
   const inputType = uischema.options?.format ?? type;
@@ -182,12 +190,18 @@ export const ShadcnNumberControl = (
     config,
     data,
     enabled,
-    handleChange,
+    handleChange: originalHandleChange,
     path,
     readonly,
     uischema,
     visible,
   } = props;
+  const keepSelectedType = useMixedScalar(path);
+  const handleChange = (target: string, value: any) =>
+    originalHandleChange(
+      target,
+      keepSelectedType && value === undefined ? 0 : value
+    );
   if (!visible) return null;
   const id = makeId(path, props.label);
 
