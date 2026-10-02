@@ -276,7 +276,7 @@ describe('a template that throws', () => {
   spec fixture beside it did, which is why the suite stayed green while the
   demo threw on mount.
 */
-describe('the demo template-layout example', () => {
+describe('the spec nested template-layout example', () => {
   it('mounts', async () => {
     const [
       { default: exampleSchema },
@@ -285,16 +285,16 @@ describe('the demo template-layout example', () => {
       { default: exampleConfig },
     ] = await Promise.all([
       import(
-        '../../jsonforms-react-demo-common/src/examples/template-layout/schema.json'
+        '@chobantonov/jsonforms-extended-spec/examples/template-layout/schema.json'
       ),
       import(
-        '../../jsonforms-react-demo-common/src/examples/template-layout/uischema.json'
+        '@chobantonov/jsonforms-extended-spec/examples/template-layout/uischema.json'
       ),
       import(
-        '../../jsonforms-react-demo-common/src/examples/template-layout/data.json'
+        '@chobantonov/jsonforms-extended-spec/examples/template-layout/data.json'
       ),
       import(
-        '../../jsonforms-react-demo-common/src/examples/template-layout/config.json'
+        '@chobantonov/jsonforms-extended-spec/examples/template-layout/config.json'
       ),
     ]);
 
@@ -307,7 +307,14 @@ describe('the demo template-layout example', () => {
           <JsonForms
             data={exampleData}
             schema={exampleSchema as any}
-            uischema={exampleUischema as any}
+            uischema={
+              {
+                type: 'VerticalLayout',
+                elements: (exampleUischema as any).elements
+                  .find((e: any) => e.type === 'Categorization')
+                  .elements.find((e: any) => e.name === 'nested').elements,
+              } as any
+            }
             config={exampleConfig}
             renderers={[...antdRenderers, ...antdExtendedRenderers]}
             cells={antdCells}

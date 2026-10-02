@@ -58,7 +58,7 @@ export const EnumArrayRenderer = ({
 
   return (
     <Form.Item
-      required={required}
+      required={required && !appliedUiSchemaOptions.hideRequiredAsterisk}
       hasFeedback={!isValid}
       validateStatus={isValid ? 'success' : 'error'}
       label={label}

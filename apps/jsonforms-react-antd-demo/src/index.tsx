@@ -60,6 +60,7 @@ const AntdDemoShell = ({
   settingsOpen,
   useWebComponent,
   webComponentAvailable,
+  exampleFilter,
   search,
   examples,
   currentExampleName,
@@ -78,6 +79,7 @@ const AntdDemoShell = ({
   const desktop = Boolean(screens.md);
   const navigation = (
     <>
+      {exampleFilter}
       <Input.Search
         allowClear
         placeholder='Search examples'

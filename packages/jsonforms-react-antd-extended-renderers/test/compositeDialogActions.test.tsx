@@ -1,3 +1,4 @@
+import { beforeAll, afterAll, vi } from 'vitest';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -230,3 +231,16 @@ describe('composite detail dialog', () => {
     dialog.unmount();
   });
 });
+
+// jsdom has no layout observer; dialog behavior does not depend on measured sizes.
+beforeAll(() => {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+  );
+});
+afterAll(() => vi.unstubAllGlobals());

@@ -28,7 +28,7 @@ export const ContainerValidationIndicator = ({ count }: { count?: number }) => {
             tabIndex={0}
             data-container-validation-indicator
             data-error-count={count}
-            className='inline-flex shrink-0 items-center text-destructive'
+            className='inline-flex shrink-0 items-center align-middle leading-none text-destructive'
           >
             <CircleAlert className='h-4 w-4' aria-hidden='true' />
           </span>

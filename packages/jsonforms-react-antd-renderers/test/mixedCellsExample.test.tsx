@@ -25,9 +25,26 @@ it('renders mixed table cells from the spec example', async () => {
         />
       )
     );
+    expect(host.textContent).not.toContain('No applicable cell');
     expect(host.querySelector('table')).not.toBeNull();
     expect(host.textContent).not.toContain('No applicable renderer');
     expect(host.querySelectorAll('tbody tr').length).toBeGreaterThanOrEqual(8);
+    const edit = host.querySelector<HTMLButtonElement>(
+      'button[aria-label^="Edit"]'
+    );
+    expect(edit).toBeTruthy();
+    await act(async () => edit!.click());
+    const dialog = document.querySelector('[role="dialog"]');
+    expect(dialog).toBeTruthy();
+    expect(
+      dialog!.querySelector('.jsonforms-mixed-renderer-value input')
+    ).toBeTruthy();
+    expect(dialog!.querySelectorAll('.ant-form-item-label').length).toBe(0);
+    expect(
+      Array.from(dialog!.querySelectorAll('.ant-typography')).filter(
+        (node) => node.textContent === 'Value'
+      )
+    ).toHaveLength(0);
   } finally {
     act(() => root.unmount());
     host.remove();

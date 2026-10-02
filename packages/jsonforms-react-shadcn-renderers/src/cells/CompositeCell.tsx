@@ -1,3 +1,4 @@
+import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import {
   usePathErrorMessages,
@@ -278,9 +279,15 @@ export const ShadcnCompositeCell = (props: Props) => {
     </div>
   );
 };
-export const shadcnCompositeCellTester = (_ui: any, schema: any) =>
+export const shadcnCompositeCellTester = (
+  _ui: any,
+  schema: any,
+  context: any
+) =>
   _ui.options?.summary?.type === 'Label'
     ? 6
-    : schema?.type === 'object' || schema?.type === 'array'
+    : schema?.type === 'object' ||
+      schema?.type === 'array' ||
+      isMixedSchema({ ..._ui, scope: '#' }, schema, context)
     ? 1
     : -1;

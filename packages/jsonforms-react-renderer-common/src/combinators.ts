@@ -108,3 +108,14 @@ export const branchChangeData = (
   // Preserved values take precedence over the generated defaults.
   return { ...defaults, ...preserved };
 };
+
+/** An object-only array slot remains an editable object when its choice is cleared. */
+export const clearedBranchValue = (
+  arrayItem: boolean,
+  branches: JsonSchema[]
+): {} | undefined =>
+  arrayItem &&
+  branches.length > 0 &&
+  branches.every((branch) => branch.type === 'object')
+    ? {}
+    : undefined;

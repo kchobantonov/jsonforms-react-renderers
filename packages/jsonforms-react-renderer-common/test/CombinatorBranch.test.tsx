@@ -2,7 +2,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext, useJsonForms } from '@jsonforms/react';
 import { expect, it, vi } from 'vitest';
-import { CombinatorBranch } from '../src/CombinatorBranch';
+import { CombinatorBranch, mergeBranchErrors } from '../src/CombinatorBranch';
 
 it('honors control overrides, skips disabled work and reuses compilation', () => {
   const validate = vi.fn(() => true);
@@ -57,4 +57,41 @@ it('honors control overrides, skips disabled work and reuses compilation', () =>
   } finally {
     act(() => root.unmount());
   }
+});
+
+it('deduplicates equivalent branch feedback but retains distinct targets and constraints', () => {
+  const required = (schemaPath: string, missingProperty = 'name') => ({
+    keyword: 'required',
+    instancePath: '/tree/children/0',
+    schemaPath,
+    params: { missingProperty },
+    message: 'is a required property',
+  });
+  const errors = mergeBranchErrors(
+    [
+      required('#/definitions/file/required'),
+      required('#/definitions/folder/required'),
+    ],
+    [
+      required('#/required'),
+      required('#/required', 'kind'),
+      { ...required('#/required'), instancePath: '/tree/children/1' },
+      {
+        keyword: 'minLength',
+        instancePath: '/tree/children/0/name',
+        schemaPath: '#/minLength',
+        params: { limit: 2 },
+        message: 'too short',
+      },
+      {
+        keyword: 'minLength',
+        instancePath: '/tree/children/0/name',
+        schemaPath: '#/minLength',
+        params: { limit: 5 },
+        message: 'too short',
+      },
+    ]
+  );
+  expect(errors).toHaveLength(5);
+  expect(errors[0].schemaPath).toBe('#/definitions/file/required');
 });

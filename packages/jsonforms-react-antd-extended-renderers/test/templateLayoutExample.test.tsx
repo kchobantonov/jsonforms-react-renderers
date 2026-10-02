@@ -126,6 +126,7 @@ describe('the two engines, split into categories', () => {
       'lang: ractive',
       'native (TypeScript)',
       'Language resolution',
+      'Nested slots',
     ]);
     view.unmount();
   });

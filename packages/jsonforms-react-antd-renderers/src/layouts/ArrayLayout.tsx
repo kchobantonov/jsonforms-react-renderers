@@ -1,3 +1,6 @@
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ContainerValidationIndicator } from './ValidationIndicator';
+import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
@@ -74,14 +77,18 @@ const ArrayLayoutComponent = (
     `handleChange(panel)(event, expanded)` that the `Collapse` called as
     `handleChange(value)` - producing the inner function and discarding it. So
     `setExpanded` never ran, the state was permanently `false`, and the
-    `Collapse` was left uncontrolled. `initCollapsed` and `collapseNewItems`
+    `Collapse` was left uncontrolled. `collapsed` and `collapseNewItems`
     could not be implemented on top of that, and the only visible symptom was
     an avatar highlight that never appeared.
   */
   const [expandedIndex, setExpandedIndex] = useState<number | undefined>(() => {
-    const initial = merge({}, props.config, props.uischema.options);
     // "False: initially open the first item if present." Initialization only.
-    return initial.initCollapsed || props.data === 0 ? undefined : 0;
+    const collapsed = resolveCollapsed(
+      props.uischema.options,
+      props.config,
+      'array'
+    );
+    return collapsed || props.data === 0 ? undefined : 0;
   });
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
@@ -370,7 +377,18 @@ const ArrayLayoutComponent = (
                         {index + 1}
                       </Avatar>
                     )}
-                    {text ? <Typography.Text>{text}</Typography.Text> : null}
+                    <Space
+                      size='small'
+                      align='center'
+                      style={{ verticalAlign: 'middle' }}
+                    >
+                      {text ? <Typography.Text>{text}</Typography.Text> : null}
+                      <ItemValidationIndicator
+                        path={childPath}
+                        options={props.uischema.options}
+                        config={props.config}
+                      />
+                    </Space>
                   </>
                 ),
                 extra: (
@@ -420,3 +438,23 @@ export const ArrayLayout = React.memo(
     withContextToJsonFormsRendererProps(ArrayLayoutComponent)
   )
 );
+
+const ItemValidationIndicator = ({
+  path,
+  options,
+  config,
+}: {
+  path: string;
+  options?: Record<string, any>;
+  config?: Record<string, any>;
+}) => {
+  const indicator = useContainerValidation(
+    { type: 'Control', scope: '#', options } as any,
+    path,
+    config,
+    false
+  );
+  return indicator.show ? (
+    <ContainerValidationIndicator count={indicator.count} />
+  ) : null;
+};

@@ -1,4 +1,4 @@
-import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 import { Tooltip, theme as antTheme } from 'antd';
 import React from 'react';
 
@@ -44,6 +44,7 @@ export const ContainerIndicator = ({
         style={{
           color,
           display: 'inline-flex',
+          verticalAlign: 'middle',
           alignItems: 'center',
           // Body size, not the header's: large enough to read, never tall
           // enough to stretch the row.
@@ -78,5 +79,5 @@ export const DataDotIcon = () => (
   </svg>
 );
 
-/** The failure marker: antd's own filled exclamation. */
-export const ErrorIcon = () => <ExclamationCircleFilled rev={undefined} />;
+/** The failure marker: antd's outlined exclamation, shared with array error summaries. */
+export const ErrorIcon = () => <ExclamationCircleOutlined rev={undefined} />;

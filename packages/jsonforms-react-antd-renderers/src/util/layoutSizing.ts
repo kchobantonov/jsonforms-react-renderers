@@ -26,9 +26,9 @@ export type {
   ItemSizing,
 } from '@chobantonov/jsonforms-react-renderer-common/layoutSizing';
 
-// Ant Design Form.Item already supplies vertical rhythm; rows need a gutter.
+// Portable spacing; layout-owned Form.Item margins are suppressed by the layout.
 export const DEFAULT_ROW_GAP = 16;
-export const DEFAULT_COLUMN_GAP = 0;
+export const DEFAULT_COLUMN_GAP = 16;
 const gaps = { row: DEFAULT_ROW_GAP, column: DEFAULT_COLUMN_GAP };
 export const resolveGap = (
   options: LayoutContainerOptions | undefined,

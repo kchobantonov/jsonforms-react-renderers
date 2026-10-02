@@ -116,6 +116,7 @@ export const ChipsControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      hideRequiredAsterisk={uischema.options?.hideRequiredAsterisk}
       id={id}
       label={label}
       required={required}

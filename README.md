@@ -67,11 +67,12 @@ from the form configuration, with UI Schema options taking precedence.
 `Spacer` uses a height in pixels (default 32, negative values clamped to zero).
 `ImageView` preserves aspect ratio, fits its container, and omits images without a
 nonempty string source. `Separator` renders a horizontal rule. The shared demo
-includes **Presentation Renderers**, matching Svelte's image banner, default and
-custom spacers, separators, and input fields. Search for **Presentation** in the
-example menu or open `#presentation-renderers` in any demo.
-There are also individual **Spacer**, **ImageView**, and **Separator** examples, plus
-the combined **Spacer, ImageView and Separator** example.
+includes **Spec: Presentation elements**, with image banners, default and custom
+spacers, separators, links and visibility rules. Open `#spec-presentation`.
+
+The default catalog contains spec examples and original JSON Forms examples.
+See [Demo examples](docs/demo-examples.md) for the coverage map and instructions
+for adding host examples or native spec tabs.
 
 ### Horizontal layout columns
 
@@ -93,7 +94,7 @@ Select **Horizontal Layout Sizing** in any demo to explore the Svelte examples.
 
 ### Split layouts
 
-Select **Split Layout** (or open `#split-layout`) in any React demo for the
+Select **Spec: Split layout** (or open `#spec-split-layout`) in any React demo for the
 same horizontal and vertical split-pane example as Svelte. Set
 `options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
 Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.

@@ -1,3 +1,4 @@
+import { useJsonForms } from '@jsonforms/react';
 import React, { useEffect, useState } from 'react';
 
 export type DetailDialogOptions = {
@@ -11,8 +12,11 @@ export type DetailDialogOptions = {
 /** Geometry only; each renderer supplies its own dialog and controls. */
 export const useDetailDialog = (
   open: boolean,
-  options: DetailDialogOptions = {}
+  options: DetailDialogOptions = {},
+  getSurface?: () => HTMLElement | null | undefined
 ) => {
+  const config = useJsonForms().config;
+  options = { ...config?.jsonformsExtended?.dialog, ...options };
   const [maximized, setMaximized] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   useEffect(() => {
@@ -40,6 +44,7 @@ export const useDetailDialog = (
     y: number;
     left: number;
     top: number;
+    bounds: { left: number; top: number; right: number; bottom: number };
   }>();
   const onPointerDown: React.PointerEventHandler<HTMLElement> = (event) => {
     if (
@@ -50,15 +55,29 @@ export const useDetailDialog = (
     )
       return;
     event.preventDefault();
+    const surface =
+      getSurface?.() ??
+      event.currentTarget.closest<HTMLElement>('[role="dialog"]');
+    if (!surface) return;
+    const rect = surface.getBoundingClientRect();
     drag.current = {
       x: event.clientX,
       y: event.clientY,
       left: offset.x,
       top: offset.y,
+      bounds: {
+        left: offset.x - rect.left,
+        top: offset.y - rect.top,
+        right:
+          offset.x + Math.max(0, window.innerWidth - rect.width) - rect.left,
+        bottom:
+          offset.y + Math.max(0, window.innerHeight - rect.height) - rect.top,
+      },
     };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
   return {
+    options,
     offset: maximized ? { x: 0, y: 0 } : offset,
     maximized,
     toggle: () => setMaximized((value) => !value),
@@ -83,16 +102,16 @@ export const useDetailDialog = (
         if (!drag.current) return;
         nextOffset.current = {
           x: Math.max(
-            -window.innerWidth / 3,
+            drag.current.bounds.left,
             Math.min(
-              window.innerWidth / 3,
+              drag.current.bounds.right,
               drag.current.left + event.clientX - drag.current.x
             )
           ),
           y: Math.max(
-            0,
+            drag.current.bounds.top,
             Math.min(
-              window.innerHeight / 3,
+              drag.current.bounds.bottom,
               drag.current.top + event.clientY - drag.current.y
             )
           ),

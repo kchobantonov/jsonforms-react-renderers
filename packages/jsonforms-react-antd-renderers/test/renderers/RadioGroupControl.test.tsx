@@ -62,7 +62,7 @@ describe('Ant Design radio group control', () => {
     const radioButtons = wrapper.find('input[type="radio"]');
     const currentlyChecked = wrapper.find('input[type="radio"][checked=true]');
     expect(radioButtons.length).toBe(4);
-    expect(currentlyChecked.first().props().value).toBe('D');
+    expect(currentlyChecked.first().closest('label').text()).toBe('D');
   });
 
   it('should have only update selected option ', () => {
@@ -80,7 +80,7 @@ describe('Ant Design radio group control', () => {
     );
     const currentlyChecked = wrapper.find('input[type="radio"][checked=true]');
     expect(currentlyChecked.length).toBe(1);
-    expect(currentlyChecked.first().props().value).toBe('B');
+    expect(currentlyChecked.first().closest('label').text()).toBe('B');
   });
 
   it('should be hideable ', () => {

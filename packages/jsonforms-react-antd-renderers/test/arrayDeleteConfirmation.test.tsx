@@ -372,7 +372,7 @@ describe('deleting from the expandable array layout', () => {
   it('does not expand the panel whose Delete was pressed', async () => {
     const layout = draw();
     await settle();
-    // `initCollapsed` defaults to false, so the first item starts open.
+    // `collapsed` defaults to false, so the first item starts open.
     expect(layout.openIndex()).toBe(0);
     await layout.deleteAt(1);
     expect(document.querySelector('[data-confirm]')).toBeTruthy();

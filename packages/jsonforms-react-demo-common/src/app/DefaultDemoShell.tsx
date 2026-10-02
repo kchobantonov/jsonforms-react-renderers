@@ -18,6 +18,7 @@ export const DefaultDemoShell = ({
   settingsOpen,
   useWebComponent,
   webComponentAvailable,
+  exampleFilter,
   search,
   examples,
   currentExampleName,
@@ -82,11 +83,13 @@ export const DefaultDemoShell = ({
 
     {!formOnly && sidebarOpen && (
       <aside className='sidebar'>
+        {exampleFilter}
         <input
           value={search}
           placeholder='Search examples'
           onChange={(event) => onSearch(event.target.value)}
         />
+        {examples.length === 0 && <p role='status'>No examples found.</p>}
         <nav>
           {examples.map((example) => (
             <button

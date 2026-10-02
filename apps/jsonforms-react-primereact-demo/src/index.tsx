@@ -61,6 +61,7 @@ const PrimeReactDemoShell = ({
   settingsOpen,
   useWebComponent,
   webComponentAvailable,
+  exampleFilter,
   search,
   examples,
   currentExampleName,
@@ -120,6 +121,7 @@ const PrimeReactDemoShell = ({
 
       {!formOnly && sidebarOpen && (
         <aside className='renderer-demo-sidebar'>
+          {exampleFilter}
           <span className='p-input-icon-left' style={{ width: '100%' }}>
             <i className='pi pi-search' />
             <InputText
@@ -129,6 +131,7 @@ const PrimeReactDemoShell = ({
               style={{ width: '100%' }}
             />
           </span>
+          {examples.length === 0 && <p role='status'>No examples found.</p>}
           <Menu
             model={examples.map(({ name, label }) => ({
               label,

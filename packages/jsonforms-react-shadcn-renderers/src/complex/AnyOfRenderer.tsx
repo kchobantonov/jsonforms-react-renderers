@@ -1,3 +1,18 @@
+import { X } from 'lucide-react';
+import { missingDiscriminatorError } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { useJsonForms } from '@jsonforms/react';
+import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
+import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/combinators';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import { useId, useEffect } from 'react';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import {
+  branchChangeData,
+  discardedByBranchChange,
+} from '@chobantonov/jsonforms-react-renderer-common/combinators';
+import { useConfirmation } from './mixed/useConfirmation';
+import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
 import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import {
   Select,
@@ -49,10 +64,46 @@ export const ShadcnAnyOfRenderer = ({
   data,
   enabled,
   label,
+  config,
   combinator = 'anyOf',
 }: CombinatorRendererProps & { combinator?: 'anyOf' | 'oneOf' }) => {
-  const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema ?? 0);
+  const formContext = useJsonForms();
+  indexOfFittingSchema =
+    discriminatorBranch(schema, rootSchema, combinator, data) ??
+    indexOfFittingSchema;
+  const selectorId = useId();
+  const [selectedIndex, setSelectedIndex] = useState(
+    indexOfFittingSchema ??
+      (combinator === 'oneOf' && isEmptyData(data) ? -1 : 0)
+  );
+  const confirmation = useConfirmation();
   const [pendingIndex, setPendingIndex] = useState<number>();
+  useEffect(() => {
+    if (
+      combinator === 'oneOf' &&
+      (data === undefined ||
+        (data !== null &&
+          typeof data === 'object' &&
+          !Array.isArray(data) &&
+          Object.keys(data).length === 0 &&
+          (indexOfFittingSchema == null || indexOfFittingSchema < 0)))
+    ) {
+      setSelectedIndex(-1);
+      setPendingIndex(undefined);
+    }
+  }, [data, indexOfFittingSchema, combinator]);
+
+  const translate = useTranslator();
+  const [primaryErrors, additionalErrors] = displayableErrors(
+    formContext.core ?? {}
+  );
+  const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
+    ...(primaryErrors ?? []),
+    ...(additionalErrors ?? []),
+  ]);
+  const selectionError = missingKind
+    ? translate('oneOf.chooseKind', 'Choose a kind.')
+    : '';
 
   const renderInfos = createCombinatorRenderInfos(
     (schema as JsonSchema)[combinator],
@@ -61,7 +112,15 @@ export const ShadcnAnyOfRenderer = ({
     uischema,
     path,
     uischemas
-  );
+  ).map((info) => {
+    const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
+    return typeof prefix === 'string'
+      ? {
+          ...info,
+          label: translate(`${prefix}.label`, info.label) ?? info.label,
+        }
+      : info;
+  });
 
   const selectSchema = useCallback(
     (index: number, resetData: boolean) => {
@@ -77,7 +136,34 @@ export const ShadcnAnyOfRenderer = ({
   );
 
   const handleTabChange = (value: string) => {
-    const index = Number(value);
+    const index = value === '' ? -1 : Number(value);
+    if (enabled === false || index === selectedIndex) return;
+    if (combinator === 'oneOf') {
+      confirmation.request({
+        catalogId: 'oneOf',
+        operation: 'branchChange',
+        config,
+        options: uischema.options,
+        discarded: [discardedByBranchChange(data, schema)],
+        perform: () => {
+          handleChange(
+            path,
+            branchChangeData(
+              data,
+              index < 0
+                ? clearedBranchValue(
+                    isArrayElementPath(formContext.core?.data, path),
+                    renderInfos.map((info) => info.schema)
+                  )
+                : createDefaultValue(renderInfos[index].schema, rootSchema),
+              schema
+            )
+          );
+          setSelectedIndex(index);
+        },
+      });
+      return;
+    }
     const nextDefault = createDefaultValue(
       renderInfos[index].schema,
       rootSchema
@@ -133,22 +219,63 @@ export const ShadcnAnyOfRenderer = ({
       />
       {combinator === 'oneOf' ? (
         <>
-          <Select
-            value={selectedIndex >= 0 ? String(selectedIndex) : ''}
-            disabled={enabled === false}
-            onValueChange={handleTabChange}
-          >
-            <SelectTrigger aria-label={label || schema.title || 'oneOf'}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {renderInfos.map((info, index) => (
-                <SelectItem key={index} value={String(index)}>
-                  {info.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {label && (
+            <label
+              htmlFor={selectorId}
+              className='mb-2 block text-sm font-medium'
+            >
+              {label}
+            </label>
+          )}
+          <div className='relative w-full'>
+            <Select
+              value={selectedIndex >= 0 ? String(selectedIndex) : ''}
+              disabled={enabled === false}
+              onValueChange={handleTabChange}
+            >
+              <SelectTrigger
+                className={selectedIndex >= 0 ? 'w-full pe-16' : 'w-full'}
+                id={selectorId}
+                aria-invalid={Boolean(selectionError)}
+                aria-describedby={
+                  selectionError ? selectorId + '-error' : undefined
+                }
+                aria-label={label || schema.title || 'oneOf'}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {renderInfos.map((info, index) => (
+                  <SelectItem key={index} value={String(index)}>
+                    {info.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedIndex >= 0 && (
+              <Button
+                type='button'
+                variant='ghost'
+                size='icon'
+                className='absolute end-8 top-1/2 size-7 -translate-y-1/2'
+                aria-label={translate('oneOf.clear', 'Clear selection')}
+                title={translate('oneOf.clear', 'Clear selection')}
+                disabled={enabled === false}
+                onClick={() => handleTabChange('')}
+              >
+                <X className='size-4' aria-hidden='true' />
+              </Button>
+            )}
+          </div>
+          {selectionError && (
+            <p
+              id={selectorId + '-error'}
+              role='alert'
+              className='text-sm text-destructive'
+            >
+              {selectionError}
+            </p>
+          )}
           {renderInfos[selectedIndex] && (
             <CombinatorBranch
               options={uischema.options}
@@ -196,6 +323,7 @@ export const ShadcnAnyOfRenderer = ({
           ))}
         </Tabs>
       )}
+      {confirmation.dialog}
       <CombinatorSwitchDialog
         open={pendingIndex !== undefined}
         onCancel={() => setPendingIndex(undefined)}

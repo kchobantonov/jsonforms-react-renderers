@@ -1,3 +1,4 @@
+import { exampleElements } from './exampleElements';
 import { describe, expect, test } from 'vitest';
 import catalog from '@chobantonov/jsonforms-extended-spec/examples/catalog.json';
 import examples, {
@@ -80,7 +81,7 @@ describe('numeric controls example', () => {
   const example = examples.find((e) => e.name === 'spec-numeric-controls');
 
   test('is registered with the Spec prefix', () => {
-    expect(example?.label).toBe('Spec: Number and integer controls');
+    expect(example?.label).toBe('Spec: Numeric controls: numbers and integers');
     expect(isSpecExample(example!.name)).toBe(true);
   });
 
@@ -95,7 +96,7 @@ describe('numeric controls example', () => {
   });
 
   test('covers integer entry, number entry and a slider', () => {
-    const controls = (example!.uischema as any).elements.filter(
+    const controls = exampleElements(example!.uischema as any).filter(
       (e: any) => e.type === 'Control'
     );
     expect(controls.map((c: any) => c.scope)).toEqual([
@@ -142,7 +143,7 @@ describe('boolean controls example', () => {
   });
 
   test('covers every renderer that handles a boolean', () => {
-    const elements = (example!.uischema as any).elements;
+    const elements = exampleElements(example!.uischema as any);
     const controls = elements.filter((e: any) => e.type === 'Control');
     const scopes = controls.map((c: any) => c.scope);
     // checkbox, switch, checkbox group, and a table carrying both cells
@@ -183,7 +184,9 @@ describe('choice and password examples', () => {
   const choice = examples.find((e) => e.name === 'spec-choice-controls');
   const password = examples.find((e) => e.name === 'spec-password-control');
   const controls = (example: any) =>
-    (example.uischema as any).elements.filter((e: any) => e.type === 'Control');
+    exampleElements(example.uischema as any).filter(
+      (e: any) => e.type === 'Control'
+    );
 
   test('choice example shows radio groups in both orientations', () => {
     const radios = controls(choice).filter(
@@ -267,7 +270,7 @@ describe('choice and password examples', () => {
 describe('color controls example', () => {
   const example = examples.find((e) => e.name === 'spec-color-control');
   const controls = () =>
-    (example!.uischema as any).elements.filter(
+    exampleElements(example!.uischema as any).filter(
       (e: any) => e.type === 'Control'
     );
   const data = () => example!.data as Record<string, string>;
@@ -367,8 +370,10 @@ describe('color controls example', () => {
 describe('categorization example', () => {
   const example = examples.find((e) => e.name === 'spec-categorization');
   const categorizations = () =>
-    (example!.uischema as any).elements.filter(
-      (e: any) => e.type === 'Categorization'
+    exampleElements(example!.uischema as any).filter(
+      (e: any) =>
+        e.type === 'Categorization' &&
+        e.elements.some((c: any) => c.name === 'contact')
     );
   const variantOf = (c: any) => c.options?.variant;
 

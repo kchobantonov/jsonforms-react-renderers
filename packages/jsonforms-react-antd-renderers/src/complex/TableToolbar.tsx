@@ -35,7 +35,7 @@ const renderTitle = (label: string, errors: string, description: string) => (
   <>
     <Row align='middle'>
       <Col>
-        <Title level={5} style={{ marginBottom: 0 }}>
+        <Title level={5} style={{ margin: 0 }}>
           {label}
         </Title>
       </Col>

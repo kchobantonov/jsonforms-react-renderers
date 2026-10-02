@@ -3,6 +3,7 @@ import { EnumCellProps, WithClassname } from '@jsonforms/core';
 
 import { Select } from 'antd';
 import merge from 'lodash/merge';
+import isEqual from 'lodash/isEqual';
 import { useI18nDefault } from '../util';
 import { TranslateProps } from '@jsonforms/react';
 
@@ -36,6 +37,10 @@ export const AntdSelect = (
     [t, d, schema, uischema, path]
   );
 
+  const selectedIndex = options.findIndex((option) =>
+    isEqual(option.value, data)
+  );
+
   const selectStyle = { width: '100%' };
 
   /*
@@ -56,8 +61,15 @@ export const AntdSelect = (
       id={id}
       disabled={!enabled}
       autoFocus={appliedUiSchemaOptions.focus}
-      value={data}
-      onChange={(value) => handleChange(path, value)}
+      value={selectedIndex < 0 ? undefined : selectedIndex}
+      onChange={(index) => {
+        if (enabled) {
+          handleChange(
+            path,
+            typeof index === 'number' ? options[index]?.value : undefined
+          );
+        }
+      }}
       style={selectStyle}
       placeholder={appliedUiSchemaOptions.placeholder ?? noneOptionLabel}
       allowClear={enabled}
@@ -94,7 +106,7 @@ export const AntdSelect = (
       // `options` rather than `<Select.Option>` children: the component form is
       // deprecated in antd 6, and it also keyed each entry by its value, which
       // collides when two choices share one.
-      options={options.map(({ value, label }) => ({ value, label }))}
+      options={options.map(({ label }, index) => ({ value: index, label }))}
       {...inputProps}
     />
   );

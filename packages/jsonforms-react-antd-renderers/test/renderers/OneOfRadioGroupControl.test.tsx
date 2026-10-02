@@ -69,6 +69,6 @@ describe('Ant Design oneof radio group control', () => {
     expect(inputs.length).toBe(3);
     const currentlyChecked = inputs.find('[checked=true]');
     expect(currentlyChecked.length).toBe(1);
-    expect(currentlyChecked.first().props().value).toBe('B');
+    expect(currentlyChecked.first().closest('label').text()).toBe('B');
   });
 });

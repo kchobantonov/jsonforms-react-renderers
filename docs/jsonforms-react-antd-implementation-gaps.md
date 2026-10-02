@@ -1398,7 +1398,7 @@ Source:
 | `showSortButtons`                                         | Implemented                                                                                                                                               |
 | `restrict` (`minItems`/`maxItems`)                        | Implemented                                                                                                                                               |
 | `disableAdd` / `disableRemove`                            | Implemented                                                                                                                                               |
-| `initCollapsed`                                           | **Implemented** — the first item opens by default ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)) |
+| `collapsed`                                           | **Implemented** — the first item opens by default ([portable contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md)) |
 | `collapseNewItems`                                        | **Implemented** — a newly added item opens unless set                                                                                                     |
 | `hideAvatar`                                              | **Implemented** — the marker goes, the index stays readable                                                                                               |
 | `hideArraySummaryValidation`                              | **Implemented** — hides the child summary, keeps the array's own errors                                                                                   |
@@ -2196,7 +2196,7 @@ Grouped by what unblocks the most, rather than by renderer.
 
 20. Temporal schema bounds, `showActions`, `views`, `mask`, `clearable`.
 21. Monaco schema inference, schema association, and `propagateErrors`.
-22. ~~Array option coverage: `initCollapsed`, `collapseNewItems`, `hideAvatar`,
+22. ~~Array option coverage: `collapsed`, `collapseNewItems`, `hideAvatar`,
     `hideArraySummaryValidation`~~ — done; table `restrict` remains.
 23. ~~The shared confirmation policy~~ — done.
 24. Numeric `step`, bounds and the incompatible-value hint.
@@ -2371,7 +2371,7 @@ location explained in the evidence record.
 | `config.hideArraySummaryValidation`                              | Consumed             | Yes          |
 | `config.hideAvatar`                                              | Consumed             | Yes          |
 | `config.hideRequiredAsterisk`                                    | Consumed             | Yes          |
-| `config.initCollapsed`                                           | Consumed             | Yes          |
+| `config.collapsed`                                           | Consumed             | Yes          |
 | `config.jsonformsExtended`                                       | Container            | Yes          |
 | `config.jsonformsExtended.accept`                                | Unsupported location | No           |
 | `config.jsonformsExtended.agGridOptions`                         | Unsupported location | No           |

@@ -1,3 +1,4 @@
+import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import {
   usePathErrorMessages,
@@ -225,10 +226,12 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
  * Objects and arrays only. A catch-all would tie with the scalar cells (also
  * rank 1) and win on registration order, swallowing every string column.
  */
-export const antdCompositeCellTester: RankedTester = (_ui, schema) =>
+export const antdCompositeCellTester: RankedTester = (_ui, schema, context) =>
   _ui.options?.summary?.type === 'Label'
     ? 6
-    : schema?.type === 'object' || schema?.type === 'array'
+    : schema?.type === 'object' ||
+      schema?.type === 'array' ||
+      isMixedSchema({ ..._ui, scope: '#' }, schema, context)
     ? 1
     : -1;
 

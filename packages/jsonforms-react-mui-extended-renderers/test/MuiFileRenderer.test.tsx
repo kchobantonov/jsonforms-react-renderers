@@ -8,10 +8,26 @@ import {
 import { JsonSchema } from '@jsonforms/core';
 import { muiExtendedRenderers, muiFileRendererTester } from '../src';
 import { fileSizeLimit } from '../src/util/file';
-import {
-  schema as exampleSchema,
-  uischema as exampleUi,
-} from '../../jsonforms-react-demo-common/src/examples/file';
+import fileSchema from '@chobantonov/jsonforms-extended-spec/examples/file-control/schema.json';
+
+// Exercise the three storage encodings from the spec without mounting its
+// unrelated array and cell demonstrations.
+const exampleSchema = {
+  type: 'object',
+  properties: {
+    logo: fileSchema.properties.logo,
+    contract: fileSchema.properties.contract,
+    payload: fileSchema.properties.payload,
+  },
+};
+const exampleUi = {
+  type: 'VerticalLayout',
+  elements: ['logo', 'contract', 'payload'].map((name) => ({
+    type: 'Control',
+    scope: `#/properties/${name}`,
+    options: { formatMaximum: 1048576 },
+  })),
+};
 
 const mount = async (
   schema: any,
@@ -72,12 +88,12 @@ describe('MUI file renderer', () => {
         type: 'text/plain',
       });
       const expected = [
-        ['imageDataUri', 'data:text/plain;base64,aGVsbG8='],
+        ['logo', 'data:text/plain;base64,aGVsbG8='],
         [
-          'fileDataUriWithFileName',
+          'contract',
           'data:text/plain;filename=hello%20world.txt;base64,aGVsbG8=',
         ],
-        ['base64String', 'aGVsbG8='],
+        ['payload', 'aGVsbG8='],
       ];
       for (const [index, [key, value]] of expected.entries()) {
         await choose(inputs[index], file);
@@ -90,16 +106,14 @@ describe('MUI file renderer', () => {
           ?.value
       ).toBe('hello world.txt (5 B)');
       await choose(inputs[0]); // Canceling the OS chooser leaves the value alone.
-      expect(view.changed.mock.calls.at(-1)?.[0].imageDataUri).toBe(
-        expected[0][1]
-      );
+      expect(view.changed.mock.calls.at(-1)?.[0].logo).toBe(expected[0][1]);
       await act(async () =>
         view.container
           .querySelector<HTMLButtonElement>('button[aria-label="Clear value"]')!
           .click()
       );
       await vi.waitFor(() =>
-        expect(view.changed.mock.calls.at(-1)?.[0].imageDataUri).toBeUndefined()
+        expect(view.changed.mock.calls.at(-1)?.[0].logo).toBeUndefined()
       );
     } finally {
       await view.cleanup();

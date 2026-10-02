@@ -451,6 +451,21 @@ const CollectionTable = ({
                   title: (
                     <>
                       {column.title}
+                      {props.schema.required?.includes(field) &&
+                        !(
+                          props.uischema.options?.cells?.[field]
+                            ?.hideRequiredAsterisk ??
+                          props.uischema.options?.hideRequiredAsterisk ??
+                          props.config?.hideRequiredAsterisk
+                        ) && (
+                          <span
+                            aria-hidden='true'
+                            style={{ color: token.colorError }}
+                          >
+                            {' '}
+                            *
+                          </span>
+                        )}
                       <ColumnResizeHandle
                         colors={{
                           border: token.colorSplit,

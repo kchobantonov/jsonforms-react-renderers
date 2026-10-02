@@ -25,6 +25,7 @@ it('renders mixed table cells from the spec example', async () => {
         />
       )
     );
+    expect(host.textContent).not.toContain('No applicable cell');
     expect(host.querySelector('table')).not.toBeNull();
     expect(host.textContent).not.toContain('No applicable renderer');
     expect(host.querySelectorAll('tbody tr').length).toBeGreaterThanOrEqual(8);

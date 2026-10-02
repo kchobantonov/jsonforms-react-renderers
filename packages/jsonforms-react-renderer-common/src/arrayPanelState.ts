@@ -1,3 +1,4 @@
+import { resolveCollapsed } from './groupState';
 import { useEffect, useId, useState } from 'react';
 
 /** Array panel state is independent of expansion of individual array items. */
@@ -8,7 +9,7 @@ export const useArrayPanelState = (
   const option = (key: string) =>
     options[key] ?? config?.jsonformsExtended?.[key] ?? config?.[key];
   const collapsible = option('collapsible') === true;
-  const initial = option('collapsed') === true;
+  const initial = resolveCollapsed(options, config, 'array');
   const [collapsed, setCollapsed] = useState(initial);
   useEffect(() => setCollapsed(initial), [initial]);
   return {

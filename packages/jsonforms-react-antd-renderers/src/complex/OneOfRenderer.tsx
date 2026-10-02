@@ -1,3 +1,10 @@
+import { missingDiscriminatorError } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { useJsonForms } from '@jsonforms/react';
+import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
+import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/combinators';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
 import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
@@ -47,6 +54,10 @@ export const OneOfRenderer = ({
   label,
   description,
 }: CombinatorRendererProps) => {
+  const formContext = useJsonForms();
+  indexOfFittingSchema =
+    discriminatorBranch(schema, rootSchema, 'oneOf', data) ??
+    indexOfFittingSchema;
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(
     indexOfFittingSchema !== null && indexOfFittingSchema !== undefined
@@ -77,13 +88,30 @@ export const OneOfRenderer = ({
   const chosen = useRef(false);
   useEffect(() => {
     if (
+      data === undefined ||
+      (data !== null &&
+        typeof data === 'object' &&
+        !Array.isArray(data) &&
+        Object.keys(data).length === 0 &&
+        (indexOfFittingSchema == null || indexOfFittingSchema < 0))
+    ) {
+      chosen.current = false;
+      setSelectedIndex(null);
+      setConfirmDialogOpen(false);
+    }
+  }, [data, indexOfFittingSchema]);
+
+  useEffect(() => {
+    if (
+      data !== undefined &&
       !chosen.current &&
       indexOfFittingSchema !== null &&
-      indexOfFittingSchema !== undefined
+      indexOfFittingSchema !== undefined &&
+      indexOfFittingSchema >= 0
     ) {
       setSelectedIndex(indexOfFittingSchema);
     }
-  }, [indexOfFittingSchema]);
+  }, [indexOfFittingSchema, data]);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
     [setConfirmDialogOpen]
@@ -91,6 +119,18 @@ export const OneOfRenderer = ({
   const cancel = useCallback(() => {
     setConfirmDialogOpen(false);
   }, [setConfirmDialogOpen]);
+  const translate = useTranslator();
+  const [primaryErrors, additionalErrors] = displayableErrors(
+    formContext.core ?? {}
+  );
+  const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
+    ...(primaryErrors ?? []),
+    ...(additionalErrors ?? []),
+  ]);
+  const selectionError = missingKind
+    ? translate('oneOf.chooseKind', 'Choose a kind.')
+    : '';
+
   const oneOfRenderInfos = createCombinatorRenderInfos(
     (schema as JsonSchema).oneOf,
     rootSchema,
@@ -98,7 +138,15 @@ export const OneOfRenderer = ({
     uischema,
     path,
     uischemas
-  );
+  ).map((info) => {
+    const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
+    return typeof prefix === 'string'
+      ? {
+          ...info,
+          label: translate(`${prefix}.label`, info.label) ?? info.label,
+        }
+      : info;
+  });
 
   /*
     A branch change initializes from the new branch's generated defaults and
@@ -111,7 +159,10 @@ export const OneOfRenderer = ({
     const defaults =
       newIndex !== null
         ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
-        : undefined;
+        : clearedBranchValue(
+            isArrayElementPath(formContext.core?.data, path),
+            oneOfRenderInfos.map((info) => info.schema)
+          );
     handleChange(path, branchChangeData(data, defaults, schema));
     setSelectedIndex(newIndex);
   };
@@ -164,7 +215,7 @@ export const OneOfRenderer = ({
   const [focused, onFocus, onBlur] = useFocus();
 
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const isValid = errors.length === 0;
+  const isValid = errors.length === 0 && !selectionError;
   const showDescription = !isDescriptionHidden(
     visible,
     description,
@@ -172,7 +223,11 @@ export const OneOfRenderer = ({
     appliedUiSchemaOptions.showUnfocusedDescription
   );
 
-  const help = !isValid ? errors : showDescription ? description : null;
+  const help = !isValid
+    ? selectionError || errors
+    : showDescription
+    ? description
+    : null;
   const style = { width: '100%' };
 
   if (!visible) {
@@ -216,7 +271,7 @@ export const OneOfRenderer = ({
         rootSchema={rootSchema}
       />
       <Form.Item
-        required={required}
+        required={required && !appliedUiSchemaOptions.hideRequiredAsterisk}
         hasFeedback={!isValid}
         validateStatus={isValid ? 'success' : 'error'}
         label={label}
@@ -227,6 +282,7 @@ export const OneOfRenderer = ({
       >
         <Select
           id={id + '-input'}
+          aria-invalid={!isValid}
           disabled={!enabled}
           autoFocus={appliedUiSchemaOptions.focus}
           placeholder={appliedUiSchemaOptions.placeholder}

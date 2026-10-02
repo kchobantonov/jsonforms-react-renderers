@@ -1,3 +1,4 @@
+import { exampleElements } from './exampleElements';
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
@@ -9,7 +10,7 @@ import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-c
 
 const example = examples.find((e) => e.name === 'spec-tuple-control');
 
-const controls = (uischema as any).elements.filter(
+const controls = exampleElements(uischema as any).filter(
   (element: any) => element.type === 'Control'
 );
 const optionsFor = (property: string) =>

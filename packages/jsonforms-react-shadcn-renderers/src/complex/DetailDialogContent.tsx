@@ -18,7 +18,7 @@ export const DetailDialogContent = ({
   options?: DetailDialogOptions;
   open: boolean;
 }) => {
-  const geometry = useDetailDialog(open, { width: 640, ...options });
+  const geometry = useDetailDialog(open, options);
   const t = useTranslator();
   const label = geometry.maximized
     ? t('dialog.restore', 'Restore dialog')
@@ -31,6 +31,7 @@ export const DetailDialogContent = ({
       style={{
         ...props.style,
         ...geometry.style,
+        width: geometry.style.width ?? 640,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -46,7 +47,7 @@ export const DetailDialogContent = ({
         (event.target as HTMLElement).focus();
       }}
     >
-      {options.maximizable !== false && (
+      {geometry.options.maximizable !== false && (
         <Button
           type='button'
           variant='ghost'

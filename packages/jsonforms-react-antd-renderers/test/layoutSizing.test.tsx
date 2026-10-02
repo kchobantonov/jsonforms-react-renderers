@@ -109,11 +109,6 @@ describe('resolving container options', () => {
     expect(resolveWrap(undefined, undefined)).toBe(false);
   });
 
-  /*
-    "Recommended fallback gap is 0 unless renderer capability documents
-    another portable default" - antd documents one, and it depends on the
-    direction. See DEFAULT_ROW_GAP.
-  */
   it('resolves gap through its documented chain', () => {
     const defaults = { jsonformsExtended: { layoutDefaults: { gap: 8 } } };
     expect(resolveGap({ gap: '1rem' }, defaults, 'row')).toBe('1rem');
@@ -131,12 +126,8 @@ describe('resolving container options', () => {
     expect(DEFAULT_ROW_GAP).toBeGreaterThan(0);
   });
 
-  /*
-    And a column none: `Form.Item` already carries `marginBottom`, so a
-    column gap is added on top of spacing that is already there.
-  */
-  it("leaves a column to antd's own vertical rhythm", () => {
-    expect(resolveGap(undefined, undefined, 'column')).toBe(0);
+  it('uses the portable 16px column gap', () => {
+    expect(resolveGap(undefined, undefined, 'column')).toBe(16);
   });
 
   /* The default is a default, not a floor. */
@@ -300,9 +291,9 @@ describe('a rendered horizontal layout', () => {
   /*
     The end-to-end shape of it: a uischema that says nothing about spacing -
     which is what the upstream JSON Forms examples look like - gets a row
-    gutter and no column gutter.
+    gutter and column gutter.
   */
-  it('spaces an unconfigured row and not an unconfigured column', async () => {
+  it('spaces unconfigured rows and columns', async () => {
     const row = render({
       type: 'HorizontalLayout',
       elements: [control('#/properties/a'), control('#/properties/b')],
@@ -324,7 +315,7 @@ describe('a rendered horizontal layout', () => {
     expect(
       column.container.querySelector<HTMLElement>('[data-layout="column"]')!
         .style.gap
-    ).toBe('0px');
+    ).toBe('16px');
     column.unmount();
   });
 

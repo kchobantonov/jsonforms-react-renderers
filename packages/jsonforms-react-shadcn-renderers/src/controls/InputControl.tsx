@@ -29,6 +29,10 @@ export const InputShell = ({
   uischema,
 }: React.PropsWithChildren<
   ControlHelpProps & {
+    config?: ControlHelpProps['config'] & { hideRequiredAsterisk?: boolean };
+    uischema?: ControlHelpProps['uischema'] & {
+      options?: { hideRequiredAsterisk?: boolean };
+    };
     id: string;
     path?: string;
     schema?: ControlProps['schema'];
@@ -71,10 +75,16 @@ export const InputShell = ({
           onBlur();
       }}
     >
-      {label ? (
+      {label && uischema?.label !== false ? (
         <label className='shadcn-jsonforms-label' htmlFor={id}>
           {label}
-          {required ? <span aria-hidden='true'> *</span> : null}
+          {required &&
+          !(
+            uischema?.options?.hideRequiredAsterisk ??
+            (config ?? ctx.config)?.hideRequiredAsterisk
+          ) ? (
+            <span aria-hidden='true'> *</span>
+          ) : null}
         </label>
       ) : null}
       {children}
@@ -132,6 +142,11 @@ export const ShadcnInputControl = ({
           id={id}
           className='shadcn-jsonforms-input pr-10'
           type={inputType}
+          maxLength={
+            uischema.options?.restrict ?? config?.restrict
+              ? schema.maxLength
+              : undefined
+          }
           disabled={!enabled || readonly}
           aria-invalid={Boolean(errors)}
           aria-describedby={errors ? `${id}-errors` : undefined}

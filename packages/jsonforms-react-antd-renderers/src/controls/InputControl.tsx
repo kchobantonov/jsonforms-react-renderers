@@ -64,10 +64,13 @@ export const InputControl = (props: ControlProps & WithInput) => {
 
   return (
     <ControlFormItem
+      hideRequiredAsterisk={props.uischema.options?.hideRequiredAsterisk}
       path={props.path}
       required={required}
       errors={isValid ? undefined : errors}
-      label={input !== AntdCheckbox ? label : ''}
+      label={
+        input !== AntdCheckbox && props.uischema.label !== false ? label : ''
+      }
       help={help ? <span id={helpId}>{help}</span> : null}
       style={style}
       htmlFor={id + '-input'}
@@ -76,7 +79,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       <InnerComponent
         {...props}
         handleChange={handleInputChange}
-        label={cell ? '' : label}
+        label={cell || props.uischema.label === false ? '' : label}
         inputProps={{
           onFocus,
           onBlur,

@@ -11,9 +11,13 @@ export const DetailModal = ({
   options = {},
   ...props
 }: React.ComponentProps<typeof Modal> & { options?: DetailDialogOptions }) => {
-  const geometry = useDetailDialog(!!props.open, options);
   const t = useTranslator();
   const surface = React.useRef<HTMLDivElement>(null);
+  const geometry = useDetailDialog(
+    !!props.open,
+    options,
+    () => surface.current?.firstElementChild as HTMLElement | null
+  );
   const [restoredWidth, setRestoredWidth] = React.useState<string>();
   React.useEffect(() => {
     if (!props.open) setRestoredWidth(undefined);
@@ -35,10 +39,11 @@ export const DetailModal = ({
   return (
     <Modal
       {...props}
+      centered={props.centered ?? true}
       width={geometry.style.width ?? props.width}
       style={{
         ...props.style,
-        top: geometry.maximized ? 16 : undefined,
+        top: props.centered === false ? 16 : 0,
         paddingBottom: 0,
       }}
       styles={{
@@ -83,7 +88,7 @@ export const DetailModal = ({
           style={{ ...geometry.dragProps.style, paddingRight: 56 }}
         >
           {props.title}
-          {options.maximizable !== false && (
+          {geometry.options.maximizable !== false && (
             <Tooltip title={label}>
               <Button
                 type='text'

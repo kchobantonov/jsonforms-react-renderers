@@ -60,7 +60,7 @@ export const DEFAULT_GRID_COLUMNS = 16;
 
 /** Fallback spacing is chosen by the renderer family, not the model. */
 export type LayoutGapDefaults = Record<LayoutDirection, Dimension>;
-const DEFAULT_GAPS: LayoutGapDefaults = { row: 0, column: 0 };
+const DEFAULT_GAPS: LayoutGapDefaults = { row: 16, column: 16 };
 
 export interface LayoutDiagnostic {
   /** Index of the child it concerns, or -1 for the container. */

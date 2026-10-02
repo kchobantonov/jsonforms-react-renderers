@@ -1,7 +1,7 @@
 import { Resolve, toDataPathSegments, UISchemaElement } from '@jsonforms/core';
 import { JSONFORMS_EXTENDED_CONFIG_KEY } from './configNamespaces';
 import { useJsonForms } from '@jsonforms/react';
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 /** Matches Svelte Group semantics: false and zero count, empty containers do not. */
 export const hasGroupValue = (value: unknown): boolean => {
@@ -103,29 +103,14 @@ export const useGroupState = (
   config?: Record<string, unknown>
 ) => {
   const context = useJsonForms();
-  /*
-    Element option, then the `jsonformsExtended` namespace, then the flat
-    config key. These are project extensions, so Adjustment 1 puts them in the
-    namespace; the flat lookup stays as a fallback because the demo and the
-    existing examples were written against it, and dropping it would silently
-    turn off indicators in forms that already work.
-  */
-  const option = (name: string) => {
-    if (uischema.options?.[name] !== undefined) {
-      return uischema.options[name];
-    }
-    const namespaced = config?.[JSONFORMS_EXTENDED_CONFIG_KEY] as
-      | Record<string, unknown>
-      | undefined;
-    return namespaced?.[name] !== undefined ? namespaced[name] : config?.[name];
-  };
-  const collapsible = option('collapsible') === true;
-  const initiallyCollapsed = option('collapsed') === true;
-  const showDataIndicator = option('showDataIndicator') === true;
+  const { collapsible, collapsed, setExpanded } = useGroupExpansion(
+    uischema,
+    config
+  );
+  const showDataIndicator =
+    groupOption(uischema, config, 'showDataIndicator') === true;
   const data = context.core?.data;
-  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
   const contentId = useId();
-  useEffect(() => setCollapsed(initiallyCollapsed), [initiallyCollapsed]);
   // Only re-resolve when the data actually changes. Collapsing a panel, a
   // locale change or any unrelated parent render no longer walks the group.
   const hasData = useMemo(
@@ -137,6 +122,62 @@ export const useGroupState = (
     collapsible,
     collapsed: collapsible && collapsed,
     hasData,
-    toggle: () => setCollapsed((value) => !value),
+    toggle: () => setExpanded(collapsed),
   };
 };
+
+/** Element options override namespaced defaults, then legacy flat defaults. */
+const groupOption = (
+  uischema: UISchemaElement,
+  config: Record<string, unknown> | undefined,
+  name: string
+) => {
+  const namespaced = config?.[JSONFORMS_EXTENDED_CONFIG_KEY] as
+    | Record<string, unknown>
+    | undefined;
+  return (
+    uischema.options?.[name] ??
+    namespaced?.[name] ??
+    (name === 'collapsed' ? undefined : config?.[name])
+  );
+};
+
+/** Shared outer-frame expansion; independent of tree and array-item state. */
+export const useGroupExpansion = (
+  uischema: UISchemaElement,
+  config?: Record<string, unknown>,
+  defaultCollapsible = false,
+  component: CollapseComponent = 'group'
+) => {
+  const collapsible =
+    (groupOption(uischema, config, 'collapsible') ?? defaultCollapsible) ===
+    true;
+  const initiallyCollapsed = resolveCollapsed(
+    uischema.options,
+    config,
+    component
+  );
+  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
+  useEffect(() => setCollapsed(initiallyCollapsed), [initiallyCollapsed]);
+  return {
+    collapsible,
+    collapsed: collapsible && collapsed,
+    setExpanded: useCallback(
+      (expanded: boolean) => setCollapsed(!expanded),
+      []
+    ),
+  };
+};
+
+export type CollapseComponent = 'group' | 'mixed' | 'accordion' | 'array';
+
+/** False overrides true; omitted component settings inherit the shared default. */
+export const resolveCollapsed = (
+  options: Record<string, any> | undefined,
+  config: any,
+  component: CollapseComponent
+): boolean =>
+  (options?.collapsed ??
+    config?.jsonformsExtended?.[component]?.collapsed ??
+    config?.jsonformsExtended?.collapsed ??
+    false) === true;

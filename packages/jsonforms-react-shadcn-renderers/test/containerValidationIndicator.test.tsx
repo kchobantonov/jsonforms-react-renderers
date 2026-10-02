@@ -12,6 +12,7 @@ it.each(['group', 'tabs', 'stepper', 'accordion'])(
     const elements = [{ type: 'Control', scope: '#/properties/name' }];
     const options = {
       showValidationIndicator: true,
+      showValidationIndicatorCount: true,
       collapsible: true,
       collapsed: true,
     };

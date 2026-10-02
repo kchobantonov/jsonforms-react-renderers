@@ -64,6 +64,7 @@ const MuiDemoShell = ({
   settingsOpen,
   useWebComponent,
   webComponentAvailable,
+  exampleFilter,
   search,
   examples,
   currentExampleName,
@@ -188,6 +189,7 @@ const MuiDemoShell = ({
             elevation={0}
             className='renderer-demo-sidebar'
           >
+            {exampleFilter}
             <TextField
               fullWidth
               size='small'
@@ -195,6 +197,7 @@ const MuiDemoShell = ({
               value={search}
               onChange={(event) => onSearch(event.target.value)}
             />
+            {examples.length === 0 && <p role='status'>No examples found.</p>}
             <List dense>
               {examples.map(({ name, label }) => (
                 <ListItemButton

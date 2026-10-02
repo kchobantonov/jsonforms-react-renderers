@@ -44,6 +44,7 @@ export type DemoShellProps = React.PropsWithChildren<{
   settingsOpen: boolean;
   useWebComponent: boolean;
   webComponentAvailable: boolean;
+  exampleFilter?: React.ReactNode;
   search: string;
   examples: Array<{ name: string; label: string }>;
   currentExampleName?: string;

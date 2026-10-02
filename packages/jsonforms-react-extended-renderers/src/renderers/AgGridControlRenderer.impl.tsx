@@ -24,6 +24,7 @@ import {
   JsonSchema,
 } from '@jsonforms/core';
 import { DispatchCell, useJsonForms } from '@jsonforms/react';
+import { fileFilterValue } from '../util/fileFilterValue';
 import { labelFilterValue } from '../util/labelFilterValue';
 import {
   AllCommunityModule,
@@ -366,9 +367,11 @@ export const createAgGridControl = ({
                   object ? event.data?.value?.[field] : event.data?.value,
                   schema
                 )
-              : object
-              ? event.data?.value?.[field]
-              : event.data?.value,
+              : fileFilterValue(
+                  object ? event.data?.value?.[field] : event.data?.value,
+                  schema,
+                  props.rootSchema
+                ) ?? (object ? event.data?.value?.[field] : event.data?.value),
           cellRenderer: (event: { data: { index: number } }) => {
             const rowBound = props.uischema.options?.columnDefs?.some(
               (c: TableColumnDefinition) => c.field === field && c.scope === '#'
@@ -493,6 +496,23 @@ export const createAgGridControl = ({
               ),
             } as ColDef)
           );
+    const markRequiredHeaders = (definitions: ColDef[]) => {
+      definitions.forEach((definition: any) => {
+        if (definition.children) markRequiredHeaders(definition.children);
+        else if (
+          items?.required?.includes(definition.field) &&
+          !(
+            cellOptions?.[definition.field]?.hideRequiredAsterisk ??
+            options.hideRequiredAsterisk
+          )
+        ) {
+          definition.headerName = `${
+            definition.headerName ?? definition.field
+          } *`;
+        }
+      });
+    };
+    markRequiredHeaders(resolvedColumns);
     // `showSortButtons` is the same option the table renderer uses for its
     // per-row up/down buttons; in a grid the equivalent affordance is a drag
     // handle column. A column the uischema already marks `rowDrag` wins.

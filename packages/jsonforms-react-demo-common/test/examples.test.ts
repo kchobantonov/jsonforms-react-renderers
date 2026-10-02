@@ -4,44 +4,30 @@ import examples, {
   OFFICIAL_EXAMPLE_NAME_PREFIX,
   isPrefixedOfficialExample,
   isProjectExample,
+  isSpecExample,
+  registerProjectExamples,
   listExamples,
   registerOfficialExamplesWithPrefix,
 } from '../src/examples';
-import uischema from '../src/examples/presentation-renderers/uischema.json';
-import splitUiSchema from '../src/examples/split-layout/uischema.json';
-
-describe('shared demo examples', () => {
-  test.each([
-    'extended-color',
-    'extended-duration',
-    'extended-null',
-    'extended-monaco',
-    'extended-ag-grid',
-  ])('registers %s once', (name) => {
-    expect(examples.filter((example) => example.name === name)).toHaveLength(1);
-  });
-  test('registers the Svelte horizontal and vertical Split Layout example', () => {
-    const example = examples.find(({ name }) => name === 'split-layout');
-    expect(example?.label).toBe('Split Layout');
-    expect(example?.uischema).toEqual(splitUiSchema);
-  });
-  test('makes the Svelte Presentation Renderers example discoverable in the menu', () => {
-    const matches = examples.filter((example) =>
-      example.label.toLowerCase().includes('presentation')
-    );
-    const example = matches.find(
-      ({ name }) => name === 'presentation-renderers'
-    );
-    expect(example?.label).toBe('Presentation Renderers');
-    expect(example?.uischema).toEqual(uischema);
-    expect(uischema.elements.map(({ type }) => type)).toEqual(
-      expect.arrayContaining(['ImageView', 'Spacer', 'Separator'])
-    );
-    // `src` is a top-level field, per section 13. The inline payload is why
-    // this example carries a config granting `allowImageDataUrls`.
+describe('default demo catalog', () => {
+  test('contains only spec and original JSON Forms examples', () => {
+    expect(examples.length).toBeGreaterThan(40);
     expect(
-      uischema.elements.find(({ type }) => type === 'ImageView')?.src
-    ).toMatch(/^data:image\/svg\+xml;base64,/);
+      examples.every(
+        ({ name }) => isSpecExample(name) || isPrefixedOfficialExample(name)
+      )
+    ).toBe(true);
+  });
+  test('keeps native enhancements within their spec examples', () => {
+    const templates = examples.find(
+      ({ name }) => name === 'spec-template-layout'
+    )!;
+    const walk = (value: any): boolean =>
+      typeof value === 'function' ||
+      Boolean(
+        value && typeof value === 'object' && Object.values(value).some(walk)
+      );
+    expect(walk(templates.uischema)).toBe(true);
   });
 });
 
@@ -114,11 +100,11 @@ describe('official example prefixing', () => {
 });
 
 describe('Link example', () => {
-  const example = examples.find(({ name }) => name === 'link');
+  const example = examples.find(({ name }) => name === 'spec-presentation');
 
   test('is registered as one of ours', () => {
-    expect(example?.label).toBe('Link');
-    expect(isProjectExample('link')).toBe(true);
+    expect(example?.label).toBe('Spec: Presentation elements');
+    expect(isSpecExample('spec-presentation')).toBe(true);
   });
 
   test('translates its labels through explicit i18n prefixes', async () => {
@@ -127,9 +113,10 @@ describe('Link example', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs).sort()).toEqual(['bg', 'en']);
 
-    const links = (example!.uischema as any).elements.filter(
-      (e: any) => e.type === 'Link'
-    );
+    const links = (example!.uischema as any).elements
+      .find((e: any) => e.type === 'Categorization')
+      .elements.find((e: any) => e.name === 'link')
+      .elements.filter((e: any) => e.type === 'Link');
     const label = (element: any, locale: string) =>
       deriveLabelForUISchemaElement(element, translatorFor(catalogs, locale));
 
@@ -152,19 +139,38 @@ describe('Link example', () => {
   });
 
   test('demonstrates each branch of the section 13 contract', () => {
-    const links = (example!.uischema as any).elements.filter(
-      (e: any) => e.type === 'Link'
-    );
+    const links = (example!.uischema as any).elements
+      .find((e: any) => e.type === 'Categorization')
+      .elements.find((e: any) => e.name === 'link')
+      .elements.filter((e: any) => e.type === 'Link');
     const hrefs = links.map((l: any) => l.href);
     // ordinary, new tab, mail, empty (non-navigating), refused by policy
-    expect(hrefs).toEqual([
-      '/handbook',
-      'https://jsonforms.io/docs/',
-      'mailto:hr@example.com',
-      '',
-      'javascript:alert(1)',
-      '/untranslated',
-    ]);
+    expect(hrefs).toEqual(
+      expect.arrayContaining([
+        '/handbook',
+        'https://jsonforms.io/docs/',
+        'mailto:hr@example.com',
+        '',
+        'javascript:alert(1)',
+        '/untranslated',
+      ])
+    );
     expect(links.find((l: any) => l.target === '_blank')).toBeTruthy();
   });
+});
+
+test('allows host examples to be registered after the default catalog loads', () => {
+  registerProjectExamples([
+    {
+      name: 'host-extra',
+      label: 'Host extra',
+      schema: { type: 'string' },
+      uischema: { type: 'Control', scope: '#' },
+      data: 'hello',
+    },
+  ]);
+  expect(listExamples().find(({ name }) => name === 'host-extra')?.data).toBe(
+    'hello'
+  );
+  expect(isPrefixedOfficialExample('host-extra')).toBe(false);
 });

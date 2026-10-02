@@ -1,3 +1,4 @@
+import { isSpecExample, isPrefixedOfficialExample } from './examples';
 import React, {
   useCallback,
   useEffect,
@@ -243,6 +244,10 @@ const App = ({
 
   const [activeTab, setActiveTab] = useState<DemoTab>(initialQuery.activeTab);
   const [search, setSearch] = useState('');
+  const [exampleSource, setExampleSource] = useState(() =>
+    examples.some((e) => isSpecExample(e.name)) ? 'spec' : 'all'
+  );
+  const ExampleSourceSelect = Ui.Select;
   const [sidebarOpen, setSidebarOpen] = useState(initialQuery.drawer);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [formOnly, setFormOnly] = useState(initialQuery.formOnly);
@@ -450,14 +455,17 @@ const App = ({
 
   const filteredExamples = useMemo(() => {
     const needle = search.trim().toLowerCase();
-    return (
-      needle
-        ? examples.filter((example) =>
-            example.label.toLowerCase().includes(needle)
-          )
-        : examples
-    ).map(({ name, label }) => ({ name, label }));
-  }, [examples, search]);
+    return examples
+      .filter(
+        (example) =>
+          (exampleSource === 'all' ||
+            (exampleSource === 'spec'
+              ? isSpecExample(example.name)
+              : isPrefixedOfficialExample(example.name))) &&
+          example.label.toLowerCase().includes(needle)
+      )
+      .map(({ name, label }) => ({ name, label }));
+  }, [examples, search, exampleSource]);
 
   const jsonFormsProps = useMemo(
     () => ({
@@ -670,6 +678,18 @@ const App = ({
       settingsOpen={settingsOpen}
       useWebComponent={useWebComponent}
       webComponentAvailable={Boolean(webComponentTag)}
+      exampleFilter={
+        <ExampleSourceSelect
+          label='Example source'
+          value={exampleSource}
+          options={[
+            { value: 'spec', label: 'Spec examples' },
+            { value: 'jsonforms', label: 'JSON Forms originals' },
+            { value: 'all', label: 'All examples' },
+          ]}
+          onChange={setExampleSource}
+        />
+      }
       search={search}
       examples={filteredExamples}
       currentExampleName={isHome ? undefined : currentExample.name}

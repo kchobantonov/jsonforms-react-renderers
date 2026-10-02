@@ -1,3 +1,5 @@
+import type { ErrorObject } from 'ajv';
+import isEqual from 'lodash/isEqual';
 import React, { useMemo } from 'react';
 import { JsonSchema, Resolve } from '@jsonforms/core';
 import { JsonFormsContext, useJsonForms } from '@jsonforms/react';
@@ -59,7 +61,7 @@ export const CombinatorBranch = ({
       core: context.core
         ? {
             ...context.core,
-            errors: [...(context.core.errors ?? []), ...localErrors],
+            errors: mergeBranchErrors(context.core.errors ?? [], localErrors),
           }
         : context.core,
     }),
@@ -71,4 +73,26 @@ export const CombinatorBranch = ({
       {children}
     </JsonFormsContext.Provider>
   );
+};
+
+/** Schema locations differ between document and independently compiled branches.
+ * Deduplicate equivalent feedback, retaining distinct constraints and targets. */
+export const mergeBranchErrors = (
+  documentErrors: ErrorObject[],
+  branchErrors: ErrorObject[]
+): ErrorObject[] => {
+  const buckets = new Map<string, ErrorObject[]>();
+  return [...documentErrors, ...branchErrors].filter((error) => {
+    const key = JSON.stringify([
+      error.instancePath,
+      error.keyword,
+      error.message,
+    ]);
+    const bucket = buckets.get(key) ?? [];
+    if (bucket.some((previous) => isEqual(previous.params, error.params)))
+      return false;
+    bucket.push(error);
+    buckets.set(key, bucket);
+    return true;
+  });
 };

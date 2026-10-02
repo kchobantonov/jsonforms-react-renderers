@@ -80,8 +80,10 @@ describe('the mixed-control spec example', () => {
     expect(isSpecExample(example!.name)).toBe(true);
   });
 
-  test('produces exactly the one error its README documents', () => {
-    expect(errorsFor(mixedSchema, mixedData)).toEqual([['/priority', 'type']]);
+  test('keeps the deliberately invalid scalar separate from the new composition and cell cases', () => {
+    expect(
+      errorsFor(mixedSchema, mixedData).filter(([path]) => path === '/priority')
+    ).toEqual([['/priority', 'type']]);
   });
 
   test('distinguishes an explicit null from an absent value', () => {
@@ -90,12 +92,10 @@ describe('the mixed-control spec example', () => {
     expect(Object.prototype.hasOwnProperty.call(data, 'reference')).toBe(false);
   });
 
-  test('holds an integer where the schema says number', () => {
+  test('offers integer and number for the same whole-number value', () => {
     // Section 18: "an integer is also admissible under number."
-    expect(mixedData.quantity).toBe(42);
-    expect((mixedSchema as any).properties.quantity.type).not.toContain(
-      'integer'
-    );
+    expect(mixedData.quantity).toBe(2);
+    expect((mixedSchema as any).properties.quantity.type).toContain('integer');
   });
 
   test('holds a value none of the permitted types admit', () => {

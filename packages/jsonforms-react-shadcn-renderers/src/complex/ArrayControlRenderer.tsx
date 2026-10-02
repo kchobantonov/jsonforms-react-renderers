@@ -1,3 +1,6 @@
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
+import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import {
   CollectionErrorNavigation,
@@ -85,6 +88,7 @@ const ArrayItemPanel = ({
   initiallyOpen,
   hideAvatar,
   actions,
+  indicator,
   children,
 }: React.PropsWithChildren<{
   label: string;
@@ -92,6 +96,7 @@ const ArrayItemPanel = ({
   initiallyOpen: boolean;
   hideAvatar: boolean;
   actions: React.ReactNode;
+  indicator: React.ReactNode;
 }>) => {
   const [open, setOpen] = React.useState(initiallyOpen);
   return (
@@ -111,7 +116,12 @@ const ArrayItemPanel = ({
               {index + 1}
             </span>
           )}
-          <span className='min-w-0 flex-1 pr-10'>{label}</span>
+          <span className='flex min-w-0 flex-1 items-center gap-2 pe-10'>
+            <span className='min-w-0'>{label}</span>
+            <span className='flex shrink-0 items-center leading-none'>
+              {indicator}
+            </span>
+          </span>
           {open ? (
             <ChevronUp aria-hidden='true' />
           ) : (
@@ -165,7 +175,16 @@ export const ShadcnArrayRenderer = ({
   visible,
 }: ArrayLayoutProps) => {
   const ctx = useJsonForms();
-  const arrayErrors = usePathErrorIndicator(path, uischema.options);
+  const options = { ...config, ...uischema.options };
+  const arrayErrors = usePathErrorIndicator(
+    path,
+    uischema.options,
+    !options.hideArraySummaryValidation
+  );
+  const [addedItem, setAddedItem] = React.useState<{
+    index: number;
+    open: boolean;
+  }>();
   const translate = (key: string, fallback: string) =>
     ctx.i18n?.translate?.(key, fallback) ?? fallback;
   const translations = {
@@ -190,7 +209,6 @@ export const ShadcnArrayRenderer = ({
   const [columnWidths, setColumnWidths] = useColumnWidths();
   const [selectedItem, setSelectedItem] = React.useState(0);
   const [pendingIndex, setPendingIndex] = React.useState<number>();
-  const options = { ...config, ...uischema.options };
   const panel = useArrayPanelState(uischema.options, config);
   const canAdd =
     enabled &&
@@ -327,7 +345,9 @@ export const ShadcnArrayRenderer = ({
           <div className='flex items-center gap-2'>
             <h3>
               {label}
-              {required && <span aria-hidden='true'> *</span>}
+              {required && !options.hideRequiredAsterisk && (
+                <span aria-hidden='true'> *</span>
+              )}
             </h3>
             {arrayErrors && (
               <ErrorIndicator
@@ -366,7 +386,11 @@ export const ShadcnArrayRenderer = ({
               aria-label={translations?.addAriaLabel || 'Add'}
               title={translations?.addTooltip || 'Add item'}
               disabled={!canAdd}
-              onClick={addItem(path, createDefaultValue(schema, rootSchema))}
+              onClick={() => {
+                if (!canAdd) return;
+                setAddedItem({ index: data, open: !options.collapseNewItems });
+                addItem(path, createDefaultValue(schema, rootSchema))();
+              }}
             >
               <Plus className='h-4 w-4' aria-hidden='true' />
             </Button>
@@ -586,6 +610,11 @@ export const ShadcnArrayRenderer = ({
                               ?.headerName ??
                               column.title ??
                               createCleanLabel(field)}
+                            {schema.required?.includes(field) &&
+                              !(
+                                options.cells?.[field]?.hideRequiredAsterisk ??
+                                options.hideRequiredAsterisk
+                              ) && <span aria-hidden='true'> *</span>}
                             <ColumnResizeHandle
                               colors={{
                                 border: 'hsl(var(--muted-foreground) / 0.5)',
@@ -890,8 +919,20 @@ export const ShadcnArrayRenderer = ({
                 <ArrayItemPanel
                   key={childPath}
                   label={childLabel}
+                  indicator={
+                    <ItemValidationIndicator
+                      path={childPath}
+                      options={uischema.options}
+                      config={config}
+                    />
+                  }
                   index={index}
-                  initiallyOpen={index === 0 && !options.initCollapsed}
+                  initiallyOpen={
+                    index === addedItem?.index
+                      ? addedItem.open
+                      : index === 0 &&
+                        !resolveCollapsed(uischema.options, config, 'array')
+                  }
                   hideAvatar={Boolean(options.hideAvatar)}
                   actions={
                     <>
@@ -951,3 +992,23 @@ export const arrayControlTester: RankedTester = rankWith(
     schemaTypeIs('array')
   )
 );
+
+const ItemValidationIndicator = ({
+  path,
+  options,
+  config,
+}: {
+  path: string;
+  options?: Record<string, any>;
+  config?: Record<string, any>;
+}) => {
+  const indicator = useContainerValidation(
+    { type: 'Control', scope: '#', options } as any,
+    path,
+    config,
+    false
+  );
+  return indicator.show ? (
+    <ContainerValidationIndicator count={indicator.count} />
+  ) : null;
+};

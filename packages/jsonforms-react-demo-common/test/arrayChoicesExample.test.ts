@@ -1,3 +1,4 @@
+import { exampleElements } from './exampleElements';
 import { describe, expect, test } from 'vitest';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
@@ -9,7 +10,7 @@ import choiceUischema from '@chobantonov/jsonforms-extended-spec/examples/choice
 import choiceSchema from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/schema.json';
 
 const optionsFor = (doc: any, property: string) =>
-  doc.elements.find((e: any) => e.scope === `#/properties/${property}`)
+  exampleElements(doc).find((e: any) => e.scope === `#/properties/${property}`)
     ?.options ?? {};
 
 describe('the array-choices spec example', () => {
@@ -84,7 +85,7 @@ describe('the array-choices spec example', () => {
 
 describe('the choice-controls example, extended for autocomplete', () => {
   test('asks for searchable choices, and shows the default beside them', () => {
-    const controls = (choiceUischema as any).elements.filter(
+    const controls = exampleElements(choiceUischema as any).filter(
       (e: any) => e.scope === '#/properties/origin'
     );
     // The same property twice: once searchable, once at the family default.

@@ -150,11 +150,11 @@ const draw = (
   };
 };
 
-describe('initCollapsed', () => {
+describe('collapsed', () => {
   /*
     "False: initially open the first item if present." The previous state was
     `useState(false)` with an uncontrolled Collapse, so every item started
-    closed - which happened to look like `initCollapsed: true`, permanently.
+    closed - which happened to look like `collapsed: true`, permanently.
   */
   it('opens the first item by default', async () => {
     const view = draw();
@@ -164,7 +164,7 @@ describe('initCollapsed', () => {
   });
 
   it('opens nothing when set', async () => {
-    const view = draw({ initCollapsed: true });
+    const view = draw({ jsonformsExtended: { collapsed: true } });
     await settle();
     expect(view.openIndex()).toBe(-1);
     view.unmount();
@@ -179,7 +179,7 @@ describe('initCollapsed', () => {
 
   /* "Initialization only, not a continuously controlled expansion value." */
   it('does not fight the user afterwards', async () => {
-    const view = draw({ initCollapsed: true });
+    const view = draw({ jsonformsExtended: { collapsed: true } });
     await settle();
     await view.toggle(1);
     expect(view.openIndex()).toBe(1);
@@ -188,11 +188,11 @@ describe('initCollapsed', () => {
 
   it('is overridable on the element', async () => {
     const view = draw(
-      { initCollapsed: true },
+      { jsonformsExtended: { collapsed: true } },
       { milestones: milestones() },
       {
         ...uischema,
-        options: { initCollapsed: false },
+        options: { collapsed: false },
       }
     );
     await settle();
@@ -204,7 +204,7 @@ describe('initCollapsed', () => {
 describe('collapseNewItems', () => {
   /* "False: open the newly added item." */
   it('opens the item that was just added', async () => {
-    const view = draw({ initCollapsed: true });
+    const view = draw({ jsonformsExtended: { collapsed: true } });
     await settle();
     await view.add();
     expect(view.stored()).toHaveLength(3);

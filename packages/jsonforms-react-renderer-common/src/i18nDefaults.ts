@@ -1,4 +1,6 @@
 export const i18nDefaults = {
+  'oneOf.chooseKind': 'Choose a kind.',
+  'oneOf.clear': 'Clear selection',
   'collection.resizeColumn': 'Resize {field} column',
   'collection.deleteSelected': 'Delete selected rows',
   'collection.deleteSelectedMessage':

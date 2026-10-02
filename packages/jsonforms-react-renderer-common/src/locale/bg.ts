@@ -26,6 +26,8 @@ export const bgRendererLocale: RendererLocaleCatalog = {
     'Да се изтрият ли избраните редове и техните данни?',
   'collection.selectPage': 'Избиране на всички редове на тази страница',
   'collection.selectRow': 'Избиране на ред {index}',
+  'oneOf.chooseKind': 'Изберете вид.',
+  'oneOf.clear': 'Изчистване на избора',
   'collection.resizeColumn': 'Промяна на ширината на колоната {field}',
   'enum.none': 'Няма',
   'enum.noMatches': 'Няма съвпадения',

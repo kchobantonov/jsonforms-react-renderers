@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form } from 'antd';
+import { useJsonForms } from '@jsonforms/react';
 import { ErrorFeedback } from '../complex/ErrorFeedback';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 
@@ -15,6 +16,7 @@ export interface ControlFormItemProps {
   htmlFor?: string;
   label?: React.ReactNode;
   required?: boolean;
+  hideRequiredAsterisk?: boolean;
   /** Validation messages; drives the error state and, in cells, the tooltip. */
   errors?: string;
   /** Message shown under the control outside cells (errors or description). */
@@ -37,12 +39,16 @@ export const ControlFormItem = ({
   htmlFor,
   label,
   required,
+  hideRequiredAsterisk,
   errors,
   help,
   style,
   children,
 }: ControlFormItemProps) => {
   const cell = useCellMode();
+  const context = useJsonForms();
+  const showRequired =
+    required && !(hideRequiredAsterisk ?? context.config?.hideRequiredAsterisk);
   const isValid = !errors || errors.length === 0;
 
   /**
@@ -97,7 +103,7 @@ export const ControlFormItem = ({
   if (cell) {
     return (
       <Form.Item
-        required={required}
+        required={showRequired}
         hasFeedback={{ icons: feedbackIcons }}
         validateStatus={isValid ? 'success' : 'error'}
         style={{ marginBottom: 0, ...style }}
@@ -111,7 +117,7 @@ export const ControlFormItem = ({
 
   return (
     <Form.Item
-      required={required}
+      required={showRequired}
       hasFeedback={{ icons: feedbackIcons }}
       validateStatus={isValid ? 'success' : 'error'}
       label={label}

@@ -3,7 +3,10 @@ import React from 'react';
 import App, { DemoShell, DemoUi, ProviderSettingsProps } from './App';
 import { DemoSettingsStorage } from './demoPreferences';
 import { RankedTester } from '@jsonforms/core';
-import examples from './examples';
+import { listExamples } from './examples';
+import { ExampleDescription } from '@jsonforms/examples';
+
+export { registerProjectExamples, listExamples } from './examples';
 
 export * from './App';
 export * from './DemoSplitter';
@@ -15,6 +18,8 @@ export const renderExample = (
   cells: { tester: RankedTester; cell: any }[],
   Wrapper?: React.JSXElementConstructor<any>,
   options: {
+    /** Override the initial catalog, e.g. [...listExamples(), localExample]. */
+    examples?: ExampleDescription[];
     brand?: string;
     rendererName?: string;
     logoSrc?: string;
@@ -34,7 +39,7 @@ export const renderExample = (
       brand={options.brand ?? 'JSON Forms'}
       rendererName={options.rendererName ?? 'React'}
       logoSrc={options.logoSrc}
-      examples={examples}
+      examples={options.examples ?? listExamples()}
       renderers={renderers}
       cells={cells}
       Wrapper={Wrapper}

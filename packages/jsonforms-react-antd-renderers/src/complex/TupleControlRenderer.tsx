@@ -432,6 +432,7 @@ export const TupleControl = (props: Props) => {
       has no field to sit beside, so it is reported here instead, named.
     */
     <ControlFormItem
+      hideRequiredAsterisk={uischema.options?.hideRequiredAsterisk}
       id={props.id}
       label={label}
       required={required}

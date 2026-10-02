@@ -90,6 +90,7 @@ export const MultiSelectControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      hideRequiredAsterisk={uischema.options?.hideRequiredAsterisk}
       id={id}
       label={label}
       required={required}

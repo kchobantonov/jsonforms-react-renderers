@@ -49,6 +49,7 @@ const ShadcnDemoShell = ({
   settingsOpen,
   useWebComponent,
   webComponentAvailable,
+  exampleFilter,
   search,
   examples,
   currentExampleName,
@@ -170,6 +171,7 @@ const ShadcnDemoShell = ({
           onClick={onToggleSidebar}
         />
         <aside className='shadcn-demo-sidebar'>
+          {exampleFilter}
           <div className='shadcn-demo-search'>
             <Search aria-hidden='true' />
             <Input

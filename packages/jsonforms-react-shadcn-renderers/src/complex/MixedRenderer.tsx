@@ -1,3 +1,6 @@
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
+import { useGroupExpansion } from '@chobantonov/jsonforms-react-renderer-common/groupState';
 import { useMixedType } from '@chobantonov/jsonforms-react-renderer-common/useMixedType';
 import {
   Breadcrumb,
@@ -109,11 +112,23 @@ export const MixedRendererComponent = ({
   const latest = useRef({ data, path, enabled, readonly });
   latest.current = { data, path, enabled, readonly };
   const jsonforms = useJsonForms();
+  const validation = useContainerValidation(
+    { ...uischema, scope: '#' },
+    path,
+    config,
+    false
+  );
   const t = useI18n();
   const confirmation = useConfirmation();
   const parentNavigation = React.useContext(MixedNavigationContext);
   const uischemas = jsonforms.uischemas ?? [];
-  const [expanded, setExpanded] = useState(true);
+  const { collapsible, collapsed, setExpanded } = useGroupExpansion(
+    uischema,
+    config,
+    true,
+    'mixed'
+  );
+  const expanded = !collapsed;
   const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
   const { selectedType, selectNumericType } = useMixedType(data, types, path);
@@ -385,7 +400,7 @@ export const MixedRendererComponent = ({
         }
       },
     }),
-    [path, tree]
+    [path, tree, setExpanded]
   );
   const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
   const restrict = appliedOptions.restrict !== false;
@@ -513,18 +528,25 @@ export const MixedRendererComponent = ({
         >
           <div className='flex items-center gap-3'>
             <div className='w-36 shrink-0'>{selector}</div>
-            <CollapsibleTrigger
-              render={<Button type='button' variant='ghost' />}
-              className='flex-1 justify-between'
-              aria-label={label || 'Value'}
-            >
+            {validation.show && (
+              <ContainerValidationIndicator count={validation.count} />
+            )}
+            {collapsible ? (
+              <CollapsibleTrigger
+                render={<Button type='button' variant='ghost' />}
+                className='flex-1 justify-between'
+                aria-label={label || 'Value'}
+              >
+                <span>{label}</span>
+                {expanded ? (
+                  <ChevronUp aria-hidden='true' />
+                ) : (
+                  <ChevronDown aria-hidden='true' />
+                )}
+              </CollapsibleTrigger>
+            ) : (
               <span>{label}</span>
-              {expanded ? (
-                <ChevronUp aria-hidden='true' />
-              ) : (
-                <ChevronDown aria-hidden='true' />
-              )}
-            </CollapsibleTrigger>
+            )}
           </div>
           <CollapsibleContent keepMounted hidden={!expanded} className='pt-3'>
             {tree && selectedNode && (
@@ -591,10 +613,10 @@ export const MixedRendererComponent = ({
         </Collapsible>
       ) : (
         <>
-          {label && (
+          {label && uischema.label !== false && (
             <div className='shadcn-jsonforms-label'>
               {label}
-              {required && ' *'}
+              {required && !appliedOptions.hideRequiredAsterisk && ' *'}
             </div>
           )}
           <div

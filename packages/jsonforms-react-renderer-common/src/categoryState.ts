@@ -1,5 +1,6 @@
+import { resolveCollapsed } from './groupState';
 import { Categorization, Category, isVisible } from '@jsonforms/core';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * A category's stable identity, for keeping the selection across a reorder.
@@ -122,15 +123,30 @@ export const useCategorySelection = (
     later visibility change must not quietly undo - so it is a third value
     rather than a second meaning for `undefined`.
   */
+  const initiallyCollapsed = resolveCollapsed(
+    categorization.options,
+    config,
+    'accordion'
+  );
   const [selectedKey, setSelectedKey] = useState<string | null | undefined>(
     () =>
       initiallySelected === undefined
-        ? undefined
+        ? closable && initiallyCollapsed && !categorization.options?.initial
+          ? null
+          : undefined
         : categoryKey(
             (categorization.elements ?? [])[initiallySelected] as Category,
             initiallySelected
           )
   );
+
+  const previousCollapsed = useRef(initiallyCollapsed);
+  useEffect(() => {
+    if (previousCollapsed.current !== initiallyCollapsed) {
+      previousCollapsed.current = initiallyCollapsed;
+      if (closable) setSelectedKey(initiallyCollapsed ? null : undefined);
+    }
+  }, [initiallyCollapsed, closable]);
 
   const fromKey =
     typeof selectedKey !== 'string'

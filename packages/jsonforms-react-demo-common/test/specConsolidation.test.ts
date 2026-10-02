@@ -82,3 +82,89 @@ describe('consolidated spec fixtures', () => {
     ).toBe(true);
   });
 });
+
+const elementsOf = (ui: any): any[] => [
+  ui,
+  ...(ui.elements ?? []).flatMap(elementsOf),
+];
+
+it('retains the group and layout edge cases transferred from local demos', () => {
+  const groups = find('group-layout');
+  expect((groups.data as any).active).toBe(false);
+  expect((groups.data as any).count).toBe(0);
+  const indicator = elementsOf(groups.uischema).find(
+    (e) => e.i18n === 'presence.group'
+  );
+  expect(indicator.options).toEqual({
+    collapsible: true,
+    collapsed: true,
+    showDataIndicator: true,
+  });
+  const nested = elementsOf(find('layout-sizing').uischema).find(
+    (e) => e.i18n === 'nestedSizing.tab'
+  );
+  expect(
+    nested.elements[0].elements.map((e: any) => [e.type, e.options.layout.span])
+  ).toEqual([
+    ['Label', 4],
+    ['Group', 8],
+  ]);
+});
+
+it('retains scalar and composite cell coverage in tables and grids', () => {
+  const example = find('array-controls');
+  const controls = elementsOf(example.uischema).filter(
+    (e) => e.scope === '#/properties/staff'
+  );
+  expect(controls.some((e) => e.options.table === true)).toBe(true);
+  expect(controls.some((e) => e.options.variant === 'ag-grid')).toBe(true);
+  for (const control of controls) {
+    expect(control.options.showSortButtons).toBe(true);
+    expect(control.options.cells.address.showEmptyButton).toBe(true);
+    expect(control.options.cells.phoneNumbers.detail.scope).toBe('#');
+    expect(
+      elementsOf(control.options.cells.address.detail).some(
+        (e) => e.type === 'HorizontalLayout'
+      )
+    ).toBe(true);
+  }
+});
+
+it('offers row dialogs and both panel placements alongside complex cell dialogs', () => {
+  const example = find('array-controls');
+  const elements = elementsOf(example.uischema);
+  for (const [name, presentation, placement] of [
+    ['rowDialog', 'dialog', undefined],
+    ['rowSide', 'panel', 'right'],
+    ['rowBottom', 'panel', 'bottom'],
+  ]) {
+    const category = elements.find((element) => element.name === name);
+    const control = category.elements.find(
+      (element: any) => element.type === 'Control'
+    );
+    expect(control.scope).toBe('#/properties/sessions');
+    expect(control.options.table).toBe(true);
+    expect(control.options.rowDetail.presentation).toBe(presentation);
+    expect(control.options.rowDetail.placement).toBe(placement);
+    expect(control.options.cells.room.dialog).toMatchObject({
+      draggable: true,
+      resizable: true,
+      maximizable: true,
+    });
+    if (presentation === 'dialog') {
+      expect(control.options.rowDetail.dialog).toMatchObject({
+        draggable: true,
+        resizable: true,
+        maximizable: true,
+      });
+    }
+    expect(
+      control.options.rowDetail.detail.elements.map(
+        (element: any) => element.scope
+      )
+    ).toContain('#/properties/room');
+    const catalogs = (example as any).translations;
+    expect(catalogs.en[`${category.i18n}.label`]).toBeTruthy();
+    expect(catalogs.bg[`${category.i18n}.label`]).toBeTruthy();
+  }
+});

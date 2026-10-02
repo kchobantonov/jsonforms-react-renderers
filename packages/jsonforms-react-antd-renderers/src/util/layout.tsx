@@ -5,6 +5,7 @@ export {
 } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
 export type { AjvProps } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
 import isEmpty from 'lodash/isEmpty';
+import { ConfigProvider } from 'antd';
 import React from 'react';
 import type { UISchemaElement } from '@jsonforms/core';
 import {
@@ -45,40 +46,44 @@ export const renderLayoutElements = (
   const grid = resolveGridColumns(layoutOptions, config);
   const gap = resolveGap(layoutOptions, config, direction);
   return (
-    <div
-      data-layout={direction}
-      style={{
-        ...containerStyle(layoutOptions, config, direction),
-        width: '100%',
-      }}
-    >
-      {elements.map((child, index) => {
-        const { style, diagnostics } = itemSizing(
-          child,
-          direction,
-          grid,
-          gap,
-          layoutOptions?.minItemWidth
-        );
-        const all = [...diagnostics, ...legacySizingDiagnostics(child)];
-        return (
-          <div
-            key={`${path}-${index}`}
-            style={style}
-            {...(all.length ? { 'data-layout-diagnostic': all.join(' ') } : {})}
-          >
-            <JsonFormsDispatch
-              uischema={child}
-              schema={schema}
-              path={path}
-              enabled={enabled}
-              renderers={renderers}
-              cells={cells}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <ConfigProvider theme={{ components: { Form: { itemMarginBottom: 0 } } }}>
+      <div
+        data-layout={direction}
+        style={{
+          ...containerStyle(layoutOptions, config, direction),
+          width: '100%',
+        }}
+      >
+        {elements.map((child, index) => {
+          const { style, diagnostics } = itemSizing(
+            child,
+            direction,
+            grid,
+            gap,
+            layoutOptions?.minItemWidth
+          );
+          const all = [...diagnostics, ...legacySizingDiagnostics(child)];
+          return (
+            <div
+              key={`${path}-${index}`}
+              style={style}
+              {...(all.length
+                ? { 'data-layout-diagnostic': all.join(' ') }
+                : {})}
+            >
+              <JsonFormsDispatch
+                uischema={child}
+                schema={schema}
+                path={path}
+                enabled={enabled}
+                renderers={renderers}
+                cells={cells}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </ConfigProvider>
   );
 };
 

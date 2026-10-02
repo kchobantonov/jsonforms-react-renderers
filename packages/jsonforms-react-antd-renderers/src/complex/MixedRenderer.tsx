@@ -1,3 +1,6 @@
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
+import { useGroupExpansion } from '@chobantonov/jsonforms-react-renderer-common/groupState';
 import { useMixedType } from '@chobantonov/jsonforms-react-renderer-common/useMixedType';
 import {
   ANY_TYPES,
@@ -88,11 +91,23 @@ export const MixedRendererComponent = ({
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
+  const validation = useContainerValidation(
+    { ...uischema, scope: '#' },
+    path,
+    config,
+    false
+  );
   const t = useI18n();
   const confirmation = useConfirmation();
   const parentNavigation = React.useContext(AntdMixedNavigationContext);
   const uischemas = jsonforms.uischemas ?? [];
-  const [expanded, setExpanded] = useState(true);
+  const { collapsible, collapsed, setExpanded } = useGroupExpansion(
+    uischema,
+    config,
+    true,
+    'mixed'
+  );
+  const expanded = !collapsed;
   const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
   const types = useMemo(() => getSchemaTypes(schema), [schema]);
   const { selectedType, selectNumericType } = useMixedType(data, types, path);
@@ -330,7 +345,7 @@ export const MixedRendererComponent = ({
         }
       },
     }),
-    [path, tree]
+    [path, tree, setExpanded]
   );
   if (!visible) return null;
 
@@ -512,6 +527,8 @@ export const MixedRendererComponent = ({
           items={[
             {
               key: 'value',
+              collapsible: collapsible ? undefined : 'disabled',
+              showArrow: collapsible,
               label: (
                 <Flex
                   align='center'
@@ -519,6 +536,9 @@ export const MixedRendererComponent = ({
                   onClick={(event) => event.stopPropagation()}
                 >
                   {selector}
+                  {validation.show && (
+                    <ContainerValidationIndicator count={validation.count} />
+                  )}
                   {label &&
                   label.trim().toLocaleLowerCase() !== selectedType ? (
                     <Typography.Text>{label}</Typography.Text>
@@ -600,7 +620,9 @@ export const MixedRendererComponent = ({
         />
       ) : (
         <>
-          {label ? <Typography.Text>{label}</Typography.Text> : null}
+          {label && uischema.label !== false ? (
+            <Typography.Text>{label}</Typography.Text>
+          ) : null}
           <div
             className={`jsonforms-mixed-renderer-primitive${
               selectedType ? '' : ' jsonforms-mixed-renderer-unselected'

@@ -201,10 +201,10 @@ describe('the expandable tab', () => {
 
   /*
     The two controls differ only in their options, which is the point of
-    showing them side by side: `initCollapsed` closes everything, and the
+    showing them side by side: `collapsed` closes everything, and the
     first array's default opens its first item.
   */
-  it('opens the first item by default and closes them all under initCollapsed', async () => {
+  it('opens the first item by default and closes them all under collapsed', async () => {
     const view = draw();
     await view.selectTab('Expandable');
     const panels = Array.from(
@@ -215,7 +215,7 @@ describe('the expandable tab', () => {
       (panel) => panel.querySelectorAll('.ant-collapse-item-active').length
     );
     expect(open[0], 'the first array should open its first item').toBe(1);
-    expect(open[1], 'initCollapsed should leave every item closed').toBe(0);
+    expect(open[1], 'collapsed should leave every item closed').toBe(0);
     view.unmount();
   });
 });

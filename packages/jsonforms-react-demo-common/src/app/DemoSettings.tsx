@@ -208,10 +208,87 @@ export const DemoSettingsPanel = ({
         }
       />
       <UiToggle
-        checked={effectiveConfigOption('initCollapsed')}
-        label='Collapse arrays initially'
-        description='Start array accordions collapsed.'
-        onChange={(value) => setConfigOption('initCollapsed', value)}
+        checked={Boolean(
+          configOptions.jsonformsExtended?.collapsed ??
+            (
+              exampleConfig?.jsonformsExtended as
+                | Record<string, unknown>
+                | undefined
+            )?.collapsed
+        )}
+        label='Start panels collapsed'
+        description='Collapse Groups, mixed panels and accordion categories. Array items use this setting when mounted; local options override it.'
+        onChange={(value) =>
+          setConfigOption('jsonformsExtended', {
+            ...(exampleConfig?.jsonformsExtended as
+              | Record<string, unknown>
+              | undefined),
+            ...configOptions.jsonformsExtended,
+            collapsed: value,
+          })
+        }
+      />
+      {(['group', 'mixed', 'accordion', 'array'] as const).map((component) => {
+        const extended = {
+          ...(exampleConfig?.jsonformsExtended as
+            | Record<string, any>
+            | undefined),
+          ...configOptions.jsonformsExtended,
+        };
+        const componentOptions = {
+          ...(
+            exampleConfig?.jsonformsExtended as Record<string, any> | undefined
+          )?.[component],
+          ...configOptions.jsonformsExtended?.[component],
+        };
+        const value = componentOptions.collapsed;
+        return (
+          <UiSelect
+            key={component}
+            label={`${component[0].toUpperCase()}${component.slice(
+              1
+            )} expansion`}
+            value={
+              value === undefined ? 'inherit' : value ? 'collapsed' : 'expanded'
+            }
+            options={[
+              { value: 'inherit', label: 'Use shared default' },
+              { value: 'collapsed', label: 'Collapsed' },
+              { value: 'expanded', label: 'Expanded' },
+            ]}
+            onChange={(value) =>
+              setConfigOption('jsonformsExtended', {
+                ...extended,
+                [component]: {
+                  ...componentOptions,
+                  collapsed:
+                    value === 'inherit' ? undefined : value === 'collapsed',
+                },
+              })
+            }
+          />
+        );
+      })}
+      <UiToggle
+        label='Show container error indicators'
+        description='Show validation indicators on containers; local UI schema options take precedence.'
+        checked={Boolean(
+          configOptions.jsonformsExtended?.showValidationIndicator ??
+            (
+              exampleConfig?.jsonformsExtended as
+                | Record<string, unknown>
+                | undefined
+            )?.showValidationIndicator
+        )}
+        onChange={(value) =>
+          setConfigOption('jsonformsExtended', {
+            ...(exampleConfig?.jsonformsExtended as
+              | Record<string, unknown>
+              | undefined),
+            ...configOptions.jsonformsExtended,
+            showValidationIndicator: value,
+          })
+        }
       />
       <UiToggle
         checked={effectiveConfigOption('hideAvatar')}

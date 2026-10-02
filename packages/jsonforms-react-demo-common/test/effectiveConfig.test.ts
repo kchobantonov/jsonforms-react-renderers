@@ -1,3 +1,4 @@
+import { exampleElements } from './exampleElements';
 import { describe, expect, test } from 'vitest';
 import examples from '../src/examples';
 
@@ -60,7 +61,7 @@ describe('settings toggles reflect what the form is using', () => {
     const additional = examples.find(
       (e) => e.name === 'spec-additional-properties'
     );
-    const quota = (additional!.uischema as any).elements.find(
+    const quota = exampleElements(additional!.uischema as any).find(
       (element: any) => element.scope === '#/properties/quota'
     );
     expect(quota.options.allowEmptyPropertyNames).toBe(false);

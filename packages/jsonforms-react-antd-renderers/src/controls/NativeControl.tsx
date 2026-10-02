@@ -54,6 +54,7 @@ export const NativeControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      hideRequiredAsterisk={props.uischema.options?.hideRequiredAsterisk}
       path={props.path}
       errors={!isValid ? errors : undefined}
       required={required}

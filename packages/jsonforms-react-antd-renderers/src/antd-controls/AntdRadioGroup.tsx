@@ -1,6 +1,7 @@
 import React from 'react';
 import { CellProps, OwnPropsOfEnum, WithClassname } from '@jsonforms/core';
 import { Flex, Radio } from 'antd';
+import isEqual from 'lodash/isEqual';
 
 export const AntdRadioGroup = React.memo(function AntdRadioGroup(
   props: CellProps &
@@ -26,7 +27,7 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
     <Radio.Group
       aria-orientation={vertical ? 'vertical' : 'horizontal'}
       disabled={!enabled}
-      value={data ?? ''}
+      value={(options || []).findIndex((option) => isEqual(option.value, data))}
       // Guarded as well as disabled: the specification requires mutation
       // handlers to enforce the same rules as the visible state, so that
       // neither a keyboard path nor a caller-supplied `inputProps.disabled`
@@ -35,15 +36,14 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
         if (!enabled) {
           return;
         }
-        handleChange(path, e.target.value);
+        handleChange(path, options[e.target.value].value);
       }}
       {...inputProps}
     >
       <Flex gap={vertical ? 4 : 8} vertical={vertical} wrap={!vertical}>
-        {(options || []).map((option) => (
-          // Keyed by value, not label: two distinct values may translate to
-          // the same label, and keying by label collapses them.
-          <Radio value={option.value} key={String(option.value)}>
+        {(options || []).map((option, index) => (
+          // UI tokens stay separate from JSON values and translated labels.
+          <Radio value={index} key={index}>
             {option.label}
           </Radio>
         ))}
