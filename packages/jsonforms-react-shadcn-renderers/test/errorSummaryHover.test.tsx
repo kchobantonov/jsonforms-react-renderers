@@ -2,7 +2,8 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
 import { shadcnCells, shadcnRenderers } from '../src';
-it('opens icon-only array and cell summaries on focus and allows expansion', async () => {
+import { ErrorIndicator } from '../src/complex/ErrorIndicator';
+it('opens the icon-only descendant summary on focus', async () => {
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
@@ -39,15 +40,12 @@ it('opens icon-only array and cell summaries on focus and allows expansion', asy
       expect(icon.querySelector('svg')).toBeTruthy();
     });
     await act(async () => icons[0].focus());
-    const summary = document.querySelector('[role="dialog"]')!;
-    expect(summary.textContent).toContain('4 errors');
-    expect(summary.querySelectorAll('li')).toHaveLength(3);
-    const more = Array.from(summary.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Show 1 more'
-    )!;
-    act(() => more.click());
-    expect(summary.querySelectorAll('li')).toHaveLength(4);
-    expect(summary.textContent).toContain('Show less');
+    await vi.waitFor(() =>
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
+        'Some items contain errors.'
+      )
+    );
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
   } finally {
     act(() => root.unmount());
     host.remove();
@@ -81,6 +79,42 @@ it('uses the usual control message in a simple tooltip for one cell error', asyn
       icon.getAttribute('aria-label')
     );
     expect(document.querySelector('[role="dialog"]')).toBeNull();
+  } finally {
+    act(() => root.unmount());
+    host.remove();
+  }
+});
+
+it('expands a detailed summary with more than three errors', async () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  try {
+    await act(async () =>
+      root.render(
+        <JsonForms
+          schema={{ type: 'array', items: { type: 'string', minLength: 3 } }}
+          data={['a', 'b', 'c', 'd']}
+          uischema={{ type: 'SummaryTest' }}
+          renderers={[
+            {
+              tester: () => 100,
+              renderer: () => <ErrorIndicator errors='Invalid items' path='' />,
+            },
+          ]}
+        />
+      )
+    );
+    await act(async () => host.querySelector('button')!.focus());
+    const summary = document.querySelector('[role="dialog"]')!;
+    expect(summary.textContent).toContain('4 errors');
+    expect(summary.querySelectorAll('li')).toHaveLength(3);
+    const more = Array.from(summary.querySelectorAll('button')).find(
+      (button) => button.textContent === 'Show 1 more'
+    )!;
+    act(() => more.click());
+    expect(summary.querySelectorAll('li')).toHaveLength(4);
+    expect(summary.textContent).toContain('Show less');
   } finally {
     act(() => root.unmount());
     host.remove();

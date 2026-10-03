@@ -311,7 +311,9 @@ describe('hideArraySummaryValidation', () => {
   });
 
   const summary = (view: ReturnType<typeof draw>) =>
-    view.container.querySelector('.ant-card-head [data-validation-summary]');
+    view.container
+      .querySelector('.ant-card-head')
+      ?.querySelector('[data-validation-summary]') ?? null;
 
   it('shows the child-error summary by default', async () => {
     const view = draw(undefined, invalid());
@@ -324,6 +326,26 @@ describe('hideArraySummaryValidation', () => {
     const view = draw({ hideArraySummaryValidation: true }, invalid());
     await settle();
     expect(summary(view)).toBeNull();
+    view.unmount();
+  });
+
+  it('lets local false override global hiding', async () => {
+    const view = draw({ hideArraySummaryValidation: true }, invalid(), {
+      ...uischema,
+      options: { hideArraySummaryValidation: false },
+    });
+    await settle();
+    expect(summary(view)).toBeTruthy();
+    view.unmount();
+  });
+
+  it('retains an array-level error while hiding child errors', async () => {
+    const view = draw(
+      { hideArraySummaryValidation: true },
+      { milestones: 'invalid' }
+    );
+    await settle();
+    expect(summary(view)?.getAttribute('aria-label')).toContain('array');
     view.unmount();
   });
 

@@ -1,3 +1,4 @@
+import { flattenExampleNavigation } from '../../jsonforms-react-antd-renderers/test/flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -62,7 +63,7 @@ const draw = async () => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={flattenExampleNavigation(uischema)}
           config={config}
           renderers={[...antdRenderers, ...antdExtendedRenderers]}
           cells={antdCells}
@@ -101,8 +102,8 @@ describe('the destructive-confirmation spec example', () => {
       the policy reaches all of them, and a scope that quietly fell through to
       a different renderer would still draw a control.
     */
-    // Order lines and Scratch lines: the array table.
-    expect(container.querySelectorAll('.ant-table')).toHaveLength(2);
+    // Order lines, Scratch lines and the payload's phases use tables.
+    expect(container.querySelectorAll('.ant-table')).toHaveLength(3);
     // Project milestones: the expandable array layout, one panel per item.
     const panels = Array.from(
       container.querySelectorAll('.ant-collapse-header')
@@ -174,12 +175,16 @@ describe('the destructive-confirmation spec example', () => {
       .find((input) => input.value === 'A-01')
       ?.closest('tr');
     expect(row, 'the order-lines row is not in the fixture').toBeTruthy();
-    const button = Array.from(
-      row!.querySelectorAll<HTMLButtonElement>('button')
-    ).find((entry) =>
-      (entry.getAttribute('aria-label') ?? '').toLowerCase().includes('delete')
-    );
-    expect(button, 'the order-lines table has no row delete').toBeTruthy();
+    const checkbox = row!.querySelector<HTMLInputElement>(
+      'input[type="checkbox"]'
+    )!;
+    act(() => checkbox.click());
+    const tableFrame = row!.closest('.ant-card')!;
+    const button = labelled(tableFrame, 'Delete selected rows')[0];
+    expect(
+      button,
+      'the order-lines table has no selection delete'
+    ).toBeTruthy();
     act(() => button!.click());
     await settle();
     /*

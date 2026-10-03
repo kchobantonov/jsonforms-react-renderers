@@ -65,7 +65,10 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
       </ConfigProvider>
     )
   );
-  const dialog = () => document.querySelector('[data-confirm]');
+  const dialog = () =>
+    document.querySelector(
+      '.ant-modal-wrap:not([style*="display: none"]) .ant-modal'
+    );
   return {
     container,
     dialog,
@@ -105,9 +108,13 @@ const deleteProperty = async (container: HTMLElement) => {
 };
 
 describe('a dynamic property delete', () => {
-  const uischema = { type: 'Control', scope: '#/properties/labels' } as any;
+  const uischema = {
+    type: 'Control',
+    scope: '#/properties/labels',
+    options: { confirmation: { delete: 'always' } },
+  } as any;
 
-  it('confirms by default, which it never used to', async () => {
+  it('confirms when the policy is always', async () => {
     const { container, dialog, stored, unmount } = render(mapSchema, uischema, {
       labels: { note: 'value' },
     });
@@ -165,7 +172,7 @@ describe('a dynamic property delete', () => {
   it('skips it for a config entry naming this renderer', async () => {
     const { container, dialog, unmount } = render(
       mapSchema,
-      uischema,
+      { ...uischema, options: {} },
       { labels: { note: 'value' } },
       {
         jsonformsExtended: {
@@ -181,7 +188,7 @@ describe('a dynamic property delete', () => {
     unmount();
   });
 
-  it('does not prompt for a property whose value is absent', async () => {
+  it('confirms deleting an empty string under always', async () => {
     // An empty string is a value and does prompt; nothing at all does not.
     const { container, dialog, unmount } = render(mapSchema, uischema, {
       labels: { note: '' },

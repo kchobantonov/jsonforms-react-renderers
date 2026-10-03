@@ -51,7 +51,11 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
   options,
   config,
 }: ArrayLayoutToolbarProps) {
-  const arrayErrors = usePathErrorIndicator(path, options);
+  const arrayErrors = usePathErrorIndicator(
+    path,
+    options,
+    !(options?.hideArraySummaryValidation ?? config?.hideArraySummaryValidation)
+  );
   return (
     <ArrayPanel
       options={options}

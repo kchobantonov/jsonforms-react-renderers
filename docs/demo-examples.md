@@ -30,6 +30,23 @@ explicit UI size limit. Unused translation assets and library-specific template
 component fallbacks are not separate portable features. Native components remain
 in the native template demonstration.
 
+## Recent spec examples
+
+The catalog also includes array-detail-modes, editor-details, template-slots,
+conditional-fields, recursive-tree, draft-07-metaschema, json-editor and
+json-inference. See each fixture's README for supported scope and host requirements.
+
+Template/Slot named UI-model composition is distinct from TemplateLayout source
+templates. Trusted uischemas.mjs modules are exported by the spec catalog and
+passed through to the demo; named lookup uses entry.uischema.name, while ordinary
+registered details use testers. Do not drop these registries when copying examples.
+
+An explicit empty schema {} permits any JSON value. An omitted schema requests
+inference, and omitted initial data must remain absent. demoSchema.ts currently
+wraps root values around core inference; its upstream #2478 TODO describes when
+to remove that workaround. Clearing the Schema editor and applying changes is
+how the demo switches from an explicit schema to inference.
+
 ## Add a host-specific example
 
 Pass an explicit catalog to the existing entry point:

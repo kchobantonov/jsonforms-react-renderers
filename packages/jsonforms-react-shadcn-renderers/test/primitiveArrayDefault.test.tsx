@@ -27,7 +27,7 @@ it.each(['string', 'number', 'integer', 'boolean'])(
       expect(host.querySelector('table')).not.toBeNull();
       expect(host.querySelector('thead')).toBeNull();
       expect(
-        host.querySelector('tbody tr [aria-label="Remove"]')
+        host.querySelector('tbody tr [aria-label="Select row 1"]')
       ).not.toBeNull();
       if (type === 'string') {
         expect(

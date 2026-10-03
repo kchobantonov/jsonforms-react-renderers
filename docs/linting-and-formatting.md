@@ -16,7 +16,9 @@ for hoisted mocks. Formatting runs separately from semantic lint checks.
 Generated builds, dependencies, coverage and synchronized shadcn UI copies are
 excluded. Run `pnpm shadcn:check` to verify those copies against their source.
 
-## Review of the other port
+## Historical context: review of the other port
+
+This records the earlier cleanup, not current pending work or a clean lint baseline.
 
 The supplied check folder identified useful defects also present here:
 conditional hooks in TemplateLayout and mixed renderers, unnamed runtime

@@ -1,3 +1,4 @@
+import { flattenExampleNavigation } from '../../jsonforms-react-antd-renderers/test/flattenExampleNavigation';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
@@ -88,7 +89,7 @@ const draw = (override?: any) => {
         <JsonForms
           data={{ ...data, ...(override ?? {}) }}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={flattenExampleNavigation(uischema)}
           config={config}
           renderers={[...antdRenderers, ...antdExtendedRenderers]}
           cells={antdCells}
@@ -268,7 +269,7 @@ describe('a pane that appears at runtime', () => {
             <JsonForms
               data={current}
               schema={schema as any}
-              uischema={uischema as any}
+              uischema={flattenExampleNavigation(uischema)}
               config={config}
               renderers={[...antdRenderers, ...antdExtendedRenderers]}
               cells={antdCells}

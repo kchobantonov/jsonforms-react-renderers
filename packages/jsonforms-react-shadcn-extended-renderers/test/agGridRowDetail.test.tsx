@@ -283,7 +283,9 @@ it('shows descendant row errors beside the grid heading', async () => {
     const heading = document.querySelector('.shadcn-jsonforms-array h3');
     expect(heading).toBeTruthy();
     const indicator = heading!.parentElement!.querySelector('button');
-    expect(indicator?.getAttribute('aria-label')).toContain('missing');
+    expect(indicator?.getAttribute('aria-label')).toBe(
+      'Some items contain errors.'
+    );
   } finally {
     mounted.close();
   }

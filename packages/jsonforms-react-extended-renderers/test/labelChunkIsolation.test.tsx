@@ -116,10 +116,10 @@ describe('a label reaches only for what it needs', () => {
 
   /*
     The control case. With a real placeholder the chunk IS required, so a
-    broken one must degrade to the unresolved text rather than throw - which
+    broken one must degrade to safe literal text rather than throw - which
     also proves the three assertions above are not passing vacuously.
   */
-  it('degrades to the unresolved text when it genuinely needs the evaluator', async () => {
+  it('degrades to safe literal text when it genuinely needs the evaluator', async () => {
     await draw({
       type: 'Label',
       text: 'Welcome, {name}!',
@@ -128,7 +128,8 @@ describe('a label reaches only for what it needs', () => {
         textParams: { name: '{data.firstName}' },
       },
     });
-    expect(container.textContent).toContain('Welcome, {name}!');
+    expect(container.textContent).toContain('Welcome, !');
+    expect(container.textContent).not.toContain('{name}');
     // The form is still standing.
     expect(container.querySelector('[data-markup-label]')).toBeTruthy();
   });

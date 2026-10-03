@@ -1,3 +1,4 @@
+import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -33,7 +34,7 @@ const render = () => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={flattenExampleNavigation(uischema)}
           uischemas={uischemas}
           config={config}
           renderers={antdRenderers}

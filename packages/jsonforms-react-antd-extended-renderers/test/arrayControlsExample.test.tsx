@@ -123,6 +123,9 @@ describe('the array example', () => {
       'AG Grid',
       'Scalar and composite cells',
       'Add, remove and bounds',
+      'Row and cell dialogs',
+      'Side panel',
+      'Bottom panel',
     ]);
     view.unmount();
   });
@@ -139,7 +142,7 @@ describe('the scalar and composite cells tab', () => {
       (header) => header.textContent?.trim()
     );
     expect(headers).toEqual(
-      expect.arrayContaining(['Name', 'Tenure', 'Address', 'Phone numbers'])
+      expect.arrayContaining(['Name *', 'Tenure', 'Address', 'Phone numbers'])
     );
     expect(view.active()?.querySelector('.ag-paging-panel')).toBeTruthy();
     expect(
@@ -162,7 +165,7 @@ describe('the table tab', () => {
     const headers = Array.from(view.active()?.querySelectorAll('th') ?? []).map(
       (th) => th.textContent?.trim()
     );
-    expect(headers).toContain('Title');
+    expect(headers).toContain('Title *');
     expect(headers).toContain('Room');
     // Not the expandable presentation: those draw disclosure panels.
     expect(view.active()?.querySelector('.ant-collapse')).toBeNull();

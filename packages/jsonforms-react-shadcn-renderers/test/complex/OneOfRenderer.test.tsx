@@ -116,7 +116,10 @@ describe('Shadcn oneOf renderer', () => {
 
     expect(container.textContent).not.toContain('No applicable renderer found');
     expect(container.textContent).toContain('oneOf-0');
-    expect(container.textContent).toContain('oneOf-1');
+    const selectors = container.querySelectorAll('[role="combobox"]');
+    expect(selectors).toHaveLength(2);
+    expect(selectors[0].textContent).toBe('oneOf-0');
+    expect(selectors[1].textContent).toBe('');
     expect(container.textContent).toContain(
       'Addresses or Users (OneOf Array Items)'
     );
@@ -125,7 +128,7 @@ describe('Shadcn oneOf renderer', () => {
       Array.from(container.querySelectorAll('button')).filter(
         (button) => button.getAttribute('aria-label') === 'Add'
       )
-    ).toHaveLength(2);
+    ).toHaveLength(1);
     expect(onChange).not.toHaveBeenCalled();
   });
 });

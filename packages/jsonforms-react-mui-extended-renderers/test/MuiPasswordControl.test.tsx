@@ -72,14 +72,18 @@ describe('MUI password control', () => {
   it('clears through JSON Forms', async () => {
     const view = await mount();
     try {
+      view.onChange.mockClear();
       await act(async () =>
         view.container
           .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
           .click()
       );
-      expect(
-        view.onChange.mock.calls.at(-1)?.[0].data.password
-      ).toBeUndefined();
+      await vi.waitFor(() => {
+        expect(view.onChange).toHaveBeenCalled();
+        expect(
+          view.onChange.mock.calls.at(-1)![0].data.password
+        ).toBeUndefined();
+      });
     } finally {
       await view.cleanup();
     }

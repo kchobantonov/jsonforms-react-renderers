@@ -1,3 +1,4 @@
+import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -46,7 +47,7 @@ const draw = (locale = 'en') => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={flattenExampleNavigation(uischema)}
           config={config}
           i18n={{
             locale,
@@ -157,7 +158,15 @@ describe('the group-layout spec example', () => {
       (alternatePhone). Insurance holds none, so it must not be marked - which
       is what makes the indicator worth anything.
     */
-    expect(view.indicators()).toBe(2);
+    expect(view.indicators()).toBe(3);
+    expect(
+      view.groupFor('Insurance')?.querySelector('[data-group-indicator]')
+    ).toBeNull();
+    expect(
+      view
+        .groupFor('False and zero count as data')
+        ?.querySelector('[data-group-indicator]')
+    ).toBeTruthy();
     view.unmount();
   });
 

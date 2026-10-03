@@ -5,6 +5,9 @@ export default defineConfig({
   esbuild: { jsx: 'automatic' },
   resolve: {
     alias: {
+      '@chobantonov/jsonforms-react-shadcn-renderers': fileURLToPath(
+        new URL('./src', import.meta.url)
+      ),
       '@jsonforms-react-shadcn-ui': fileURLToPath(
         new URL(
           '../../apps/jsonforms-react-shadcn-demo/src/components/ui',

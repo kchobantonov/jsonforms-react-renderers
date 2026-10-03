@@ -115,7 +115,7 @@ describe('AdditionalProperties', () => {
     expect(
       container.querySelector('.jsonforms-additional-properties-error')
         ?.textContent
-    ).toBe("'invalid-name' is not a permitted property name here.");
+    ).toContain('^[A-Za-z_][A-Za-z0-9_]*$');
     expect(
       (container.querySelector('button') as HTMLButtonElement).disabled
     ).toBe(true);

@@ -13,19 +13,14 @@ import uischema from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-er
 import translations from '@chobantonov/jsonforms-extended-spec/examples/pre-touch-errors/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
-/*
-  The pre-touch error filtering fixture.
-
-  **The feature itself is not implemented.** These tests describe the fixture,
-  not the filter: that the data really does produce the mix of errors the
-  example's README claims, and that every one of them is on screen today. They
-  are the floor the implementation starts from.
-
-  The filtering cases are deliberately written and skipped rather than left
-  out. Unwriting them would lose the part that is hard to reconstruct - which
-  DOM state each rule predicts - and a skipped test says "not yet" where a
-  missing one says nothing at all.
-*/
+// Keep every fixture control mounted: these tests exercise filtering across
+// fields, independently of the example's tab navigation.
+const filteringUiSchema = {
+  type: 'VerticalLayout',
+  elements: uischema.elements[0].elements.flatMap(
+    (category) => category.elements
+  ),
+};
 
 class ResizeObserverStub {
   observe() {
@@ -62,7 +57,7 @@ const draw = (extraConfig?: Record<string, unknown>, locale = 'en') => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={filteringUiSchema as any}
           config={{ ...config, ...(extraConfig ?? {}) }}
           i18n={{
             locale,

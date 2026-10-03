@@ -198,7 +198,7 @@ describe('a form with a locale and no catalog', () => {
       { name: 'a' }
     );
     const text = labelsIn(container);
-    expect(text).toContain('грешка в тази секция');
+    expect(text).toContain('Тази секция съдържа грешки');
     expect(text).not.toContain('error in this section');
     unmount();
   });
@@ -247,7 +247,7 @@ describe('a form with a locale and no catalog', () => {
       },
       {}
     );
-    const text = container.textContent ?? '';
+    const text = labelsIn(container);
     expect(text).toContain('Изберете файл');
     expect(text).not.toContain('Select File');
     unmount();

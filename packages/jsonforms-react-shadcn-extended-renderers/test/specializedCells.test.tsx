@@ -118,7 +118,11 @@ it.each([
 it('centers short controls within the full grid row height', () => {
   act(() =>
     root.render(
-      <ShadcnGridCellFrame>
+      <ShadcnGridCellFrame
+        schema={{ type: 'boolean' }}
+        uischema={{ type: 'Control', scope: '#' } as any}
+        path=''
+      >
         <button role='checkbox' />
       </ShadcnGridCellFrame>
     )

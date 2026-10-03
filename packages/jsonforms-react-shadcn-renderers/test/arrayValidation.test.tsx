@@ -48,7 +48,7 @@ it('renders const choices and both cell and table errors, respecting validation 
           host
             .querySelector('.shadcn-jsonforms-array-errors')
             ?.getAttribute('aria-label')
-        ).toContain('5');
+        ).toBe('Some items contain errors.');
       } else
         expect(
           host.querySelector(

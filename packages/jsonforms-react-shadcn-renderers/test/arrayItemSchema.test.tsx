@@ -78,7 +78,7 @@ it('uses the resolved nested array schema for restrictions', () => {
           {
             type: 'Control',
             scope: '#/properties/tags',
-            options: { restrict: true },
+            options: { restrict: true, detail: 'GENERATE' },
           },
         ],
       },

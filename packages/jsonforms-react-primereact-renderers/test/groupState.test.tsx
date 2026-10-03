@@ -115,7 +115,7 @@ describe('Group collapse and data indicator', () => {
       expect(content.hidden).toBe(false);
       await render({ ...group, options: {} }, 0, {
         collapsible: true,
-        collapsed: true,
+        jsonformsExtended: { collapsed: true },
       });
       expect(content.hidden).toBe(true);
       await render({

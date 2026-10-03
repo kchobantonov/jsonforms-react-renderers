@@ -194,21 +194,13 @@ describe('where an object gets its layout', () => {
     view.unmount();
   });
 
-  /*
-    `notes` carries `options.detail` with **no `type`**. `findUISchema` only
-    accepts a detail object whose `type` is a string, so this one is skipped
-    in silence and the layout is generated - which is why both properties
-    appear, though the detail names only one.
-
-    Worth a test because the failure is invisible: the form renders, it just
-    ignores what was written.
-  */
-  it('silently ignores a detail object with no type', async () => {
+  // Legacy elements-only details are normalized to a VerticalLayout.
+  it('uses an elements-only detail without generating extra fields', async () => {
     const view = draw();
     await settle();
     expect(view.valueOf('For coordinator')).toBe('Call on arrival');
-    // The detail named only `forCoordinator`; the generated layout has both.
-    expect(view.valueOf('For office')).toBe('Room 3');
+    // Only the explicitly authored field belongs in the detail.
+    expect(view.valueOf('For office')).toBeUndefined();
     view.unmount();
   });
 

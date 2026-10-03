@@ -58,7 +58,7 @@ export type LayoutDirection = 'row' | 'column';
 /** The renderer default, the last step of the `gridColumns` chain. */
 export const DEFAULT_GRID_COLUMNS = 16;
 
-/** Fallback spacing is chosen by the renderer family, not the model. */
+/** Portable fallbacks; an explicit adapter override remains available. */
 export type LayoutGapDefaults = Record<LayoutDirection, Dimension>;
 const DEFAULT_GAPS: LayoutGapDefaults = { row: 16, column: 16 };
 

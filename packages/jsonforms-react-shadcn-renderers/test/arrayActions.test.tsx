@@ -27,7 +27,11 @@ describe('array action contract', () => {
             items: { type: 'string' },
           }}
           data={['Ada']}
-          uischema={{ type: 'Control', scope: '#', options }}
+          uischema={{
+            type: 'Control',
+            scope: '#',
+            options: { detail: 'GENERATE', ...options },
+          }}
           renderers={shadcnRenderers}
           onChange={onChange}
           {...extra}
@@ -71,17 +75,17 @@ describe('array action contract', () => {
     expect(button('Remove').disabled).toBe(true);
   });
   it('cancels a confirmed delete without changing data', () => {
-    const onChange = render();
+    const onChange = render({ confirmation: { delete: 'always' } });
     onChange.mockClear();
     act(() => button('Remove').click());
     expect(document.querySelector('[role="dialog"]')).not.toBeNull();
-    act(() => button('Cancel').click());
+    act(() => button('No').click());
     expect(onChange).not.toHaveBeenCalled();
   });
   it('commits a confirmed delete', async () => {
-    const onChange = render();
+    const onChange = render({ confirmation: { delete: 'always' } });
     act(() => button('Remove').click());
-    act(() => button('Delete').click());
+    act(() => button('Yes').click());
     await vi.waitFor(() =>
       expect(onChange).toHaveBeenLastCalledWith(
         expect.objectContaining({ data: [] })

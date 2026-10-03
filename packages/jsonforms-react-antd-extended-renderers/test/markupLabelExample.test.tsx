@@ -1,3 +1,4 @@
+import { flattenExampleNavigation } from '../../jsonforms-react-antd-renderers/test/flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -55,7 +56,7 @@ const draw = (locale = 'en', configOverride?: any) => {
         <JsonForms
           data={data}
           schema={schema as any}
-          uischema={uischema as any}
+          uischema={flattenExampleNavigation(uischema)}
           config={configOverride ?? config}
           i18n={{
             locale,
@@ -296,7 +297,7 @@ describe('the host gate and the typography option', () => {
 
   it('lets one element override the form-wide typography default', async () => {
     const perElement = JSON.parse(JSON.stringify(uischema));
-    perElement.elements[0].options.typography = false;
+    perElement.elements[0].elements[0].elements[0].options.typography = false;
     const container = document.createElement('div');
     document.body.appendChild(container);
     const root = createRoot(container);
@@ -306,7 +307,7 @@ describe('the host gate and the typography option', () => {
           <JsonForms
             data={data}
             schema={schema as any}
-            uischema={perElement}
+            uischema={flattenExampleNavigation(perElement)}
             config={config}
             renderers={[...antdRenderers, ...antdExtendedRenderers]}
             cells={antdCells}

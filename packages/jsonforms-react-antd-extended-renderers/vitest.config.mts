@@ -38,7 +38,10 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./test/setup/matchMedia.ts'],
+    setupFiles: [
+      './test/setup/matchMedia.ts',
+      '../jsonforms-react-antd-renderers/test/setup/jsdomShims.ts',
+    ],
     globals: true,
     include: ['test/**/*.test.{ts,tsx}'],
   },

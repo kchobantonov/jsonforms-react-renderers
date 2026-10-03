@@ -7,7 +7,7 @@ import {
   ItemProvider,
 } from '../../jsonforms-react-renderer-common/src/CellSummary';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
-import { it, expect } from 'vitest';
+import { it, expect, vi } from 'vitest';
 
 it('interpolates summaries with separate root and row namespaces and updates with the row', async () => {
   const host = document.createElement('div');
@@ -55,8 +55,17 @@ it('interpolates summaries with separate root and row namespaces and updates wit
   };
   try {
     await render('Boston');
-    expect(host.textContent).toContain('Boston');
-    expect(host.textContent).toContain('Wrong root');
+    // The lazy label/evaluator chunks can take longer under a full suite run.
+    await vi.waitFor(
+      async () => {
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        });
+        expect(host.textContent).toContain('Boston');
+        expect(host.textContent).toContain('Wrong root');
+      },
+      { timeout: 5000 }
+    );
     await render('Seattle');
     expect(host.textContent).toContain('Seattle');
     expect(host.textContent).not.toContain('Boston');

@@ -62,7 +62,7 @@ describe('Ant Design object renderer tester', () => {
             foo: { type: 'string' },
           },
         },
-        undefined
+        { rootSchema: schema, config: {} }
       )
     ).toBe(NOT_APPLICABLE);
     expect(
@@ -75,7 +75,7 @@ describe('Ant Design object renderer tester', () => {
             bar: schema.properties.bar,
           },
         },
-        undefined
+        { rootSchema: schema, config: {} }
       )
     ).toBe(NOT_APPLICABLE);
   });
@@ -90,7 +90,7 @@ describe('Ant Design object renderer tester', () => {
             foo: schema.properties.foo,
           },
         },
-        undefined
+        { rootSchema: schema, config: {} }
       )
     ).toBe(2);
   });

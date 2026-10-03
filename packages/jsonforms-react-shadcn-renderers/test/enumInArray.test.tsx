@@ -82,10 +82,10 @@ it('humanizes property names while preserving explicit column titles', () => {
     expect(
       Array.from(host.querySelectorAll('th')).map((th) => th.textContent)
     ).toEqual([
+      '', // Row selection column.
       'Name No Default',
       'First Name',
       'Exact schema title',
-      'Actions',
     ]);
   } finally {
     act(() => root.unmount());

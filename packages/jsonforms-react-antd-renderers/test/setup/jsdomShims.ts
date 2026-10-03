@@ -38,3 +38,12 @@ class ResizeObserverStub {
   shows under load. Set package-wide here for the same reason.
 */
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+
+// rc-component measures this pseudo-element when locking modal scrolling.
+// jsdom has no scrollbar layout; keep normal computed styles intact and return
+// an empty declaration only for the unsupported scrollbar measurement.
+const getComputedStyle = window.getComputedStyle.bind(window);
+window.getComputedStyle = (element, pseudoElement) =>
+  pseudoElement === '::-webkit-scrollbar'
+    ? document.createElement('div').style
+    : getComputedStyle(element, pseudoElement);

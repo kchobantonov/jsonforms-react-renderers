@@ -134,7 +134,7 @@ describe('Group collapse and data indicator', () => {
       expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       await render({ ...group, options: {} }, 0, {
         collapsible: true,
-        collapsed: true,
+        jsonformsExtended: { collapsed: true },
       });
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
       await render({
