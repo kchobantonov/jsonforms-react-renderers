@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 /*
   Browser APIs jsdom does not implement and antd calls anyway.
 
