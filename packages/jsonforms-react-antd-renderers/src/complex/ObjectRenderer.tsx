@@ -1,3 +1,9 @@
+import {
+  useConditionalFields,
+  conditionalLayout,
+  conditionalFieldsEnabled,
+  hasConditionalFields,
+} from '@chobantonov/jsonforms-react-renderer-common/conditionalFields';
 import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { ValidationIcon } from './ValidationIcon';
 import { ObjectDetailContext } from './ObjectDetailContext';
@@ -9,10 +15,10 @@ import {
 import isEmpty from 'lodash/isEmpty';
 import {
   ControlProps,
+  JsonSchema,
   Generate,
   isObjectControl,
   RankedTester,
-  rankWith,
 } from '@jsonforms/core';
 import {
   JsonFormsDispatch,
@@ -29,7 +35,7 @@ import {
 export const ObjectRenderer = ({
   renderers,
   cells,
-  schema,
+  schema: originalSchema,
   label,
   path,
   visible,
@@ -43,6 +49,14 @@ export const ObjectRenderer = ({
 }: ControlProps) => {
   const jsonforms = useJsonForms();
   const uischemas = jsonforms.uischemas ?? [];
+  const conditional = useConditionalFields(
+    originalSchema,
+    rootSchema,
+    data,
+    uischema,
+    config
+  );
+  const schema = conditional.schema;
 
   /*
     The layout this renderer would draw with no registry entry at all. Named,
@@ -84,7 +98,11 @@ export const ObjectRenderer = ({
     path,
     'the object renderer'
   );
-  const dispatchUiSchema = cycle ? generated : detailUiSchema;
+  const dispatchUiSchema = conditionalLayout(
+    cycle ? generated : detailUiSchema,
+    schema,
+    conditional.known
+  );
   const objectErrors = usePathErrorIndicator(path, undefined, false);
   if (!visible) {
     return null;
@@ -103,7 +121,17 @@ export const ObjectRenderer = ({
       readonly={readonly}
       renderers={renderers}
       rootSchema={rootSchema}
-      schema={schema}
+      schema={
+        {
+          ...schema,
+          properties: {
+            ...Object.fromEntries(
+              [...conditional.known].map((key) => [key, {}])
+            ),
+            ...schema.properties,
+          },
+        } as JsonSchema
+      }
       uischema={uischema}
       uischemas={uischemas}
     />
@@ -112,7 +140,7 @@ export const ObjectRenderer = ({
   const emptyLayout =
     Array.isArray((dispatchUiSchema as any).elements) &&
     (dispatchUiSchema as any).elements.length === 0;
-  const detail = (
+  const detailContent = (
     <ObjectErrorContext.Provider
       value={{ uischema: dispatchUiSchema, message: objectErrors }}
     >
@@ -135,6 +163,16 @@ export const ObjectRenderer = ({
         </UiSchemaCycleProvider>
       </ObjectDetailContext.Provider>
     </ObjectErrorContext.Provider>
+  );
+  const detail = (
+    <>
+      {conditional.diagnostics.map((message) => (
+        <div key={message} role='alert'>
+          {message}
+        </div>
+      ))}
+      {detailContent}
+    </>
   );
   if (isGroup) return detail;
   const title = label && path && uischema.label !== false ? label : undefined;
@@ -170,6 +208,12 @@ export const ObjectRenderer = ({
   );
 };
 
-export const objectControlTester: RankedTester = rankWith(2, isObjectControl);
+export const objectControlTester: RankedTester = (ui, schema, context) =>
+  isObjectControl(ui, schema, context)
+    ? conditionalFieldsEnabled(ui, context.config) &&
+      hasConditionalFields(schema)
+      ? 25
+      : 2
+    : -1;
 
 export default withJsonFormsControlProps(ObjectRenderer);

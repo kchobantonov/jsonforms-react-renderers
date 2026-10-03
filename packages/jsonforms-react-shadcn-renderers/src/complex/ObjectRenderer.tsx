@@ -1,3 +1,9 @@
+import {
+  useConditionalFields,
+  conditionalLayout,
+  conditionalFieldsEnabled,
+  hasConditionalFields,
+} from '@chobantonov/jsonforms-react-renderer-common/conditionalFields';
 import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { ObjectDetailContext } from './ObjectDetailContext';
 import { ErrorIndicator } from './ErrorIndicator';
@@ -7,10 +13,10 @@ import {
 } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import {
   ControlProps,
+  JsonSchema,
   Generate,
   isObjectControl,
   RankedTester,
-  rankWith,
 } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React, { useMemo } from 'react';
@@ -27,12 +33,20 @@ export const ShadcnObjectRenderer = ({
   readonly,
   renderers,
   rootSchema,
-  schema,
+  schema: originalSchema,
   uischema,
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
   const uischemas = jsonforms.uischemas ?? [];
+  const conditional = useConditionalFields(
+    originalSchema,
+    rootSchema,
+    data,
+    uischema,
+    config
+  );
+  const schema = conditional.schema;
   const detailUiSchema = useMemo(
     () =>
       findUISchema(
@@ -56,7 +70,11 @@ export const ShadcnObjectRenderer = ({
       ),
     [path, rootSchema, schema, uischema, uischemas, label]
   ) as any;
-  const dispatchUiSchema = detailUiSchema;
+  const dispatchUiSchema = conditionalLayout(
+    detailUiSchema,
+    schema,
+    conditional.known
+  ) as any;
   const isGroup = dispatchUiSchema.type === 'Group';
   const emptyLayout =
     Array.isArray(dispatchUiSchema.elements) &&
@@ -76,12 +94,22 @@ export const ShadcnObjectRenderer = ({
       readonly={readonly}
       renderers={renderers}
       rootSchema={rootSchema}
-      schema={schema}
+      schema={
+        {
+          ...schema,
+          properties: {
+            ...Object.fromEntries(
+              [...conditional.known].map((key) => [key, {}])
+            ),
+            ...schema.properties,
+          },
+        } as JsonSchema
+      }
       uischema={uischema}
       uischemas={uischemas}
     />
   );
-  const detail = (
+  const detailContent = (
     <ObjectErrorContext.Provider
       value={{ uischema: dispatchUiSchema, message: objectErrors }}
     >
@@ -102,6 +130,16 @@ export const ShadcnObjectRenderer = ({
         )}
       </ObjectDetailContext.Provider>
     </ObjectErrorContext.Provider>
+  );
+  const detail = (
+    <>
+      {conditional.diagnostics.map((message) => (
+        <div key={message} role='alert'>
+          {message}
+        </div>
+      ))}
+      {detailContent}
+    </>
   );
   if (isGroup) return detail;
   const title = label && path && uischema.label !== false ? label : undefined;
@@ -127,4 +165,10 @@ export const ShadcnObjectRenderer = ({
   );
 };
 
-export const objectControlTester: RankedTester = rankWith(2, isObjectControl);
+export const objectControlTester: RankedTester = (ui, schema, context) =>
+  isObjectControl(ui, schema, context)
+    ? conditionalFieldsEnabled(ui, context.config) &&
+      hasConditionalFields(schema)
+      ? 25
+      : 2
+    : -1;
