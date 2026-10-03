@@ -138,7 +138,8 @@ export const resolveImageView = (
       diagnostics.push({
         code: 'image.urlRefused',
         severity: 'error',
-        message: `The URL policy refuses this image source: ${candidate}`,
+        message:
+          'The image source is blocked by the configured URL policy. Use an allowed image URL or adjust the image URL policy.',
       });
       return undefined;
     }
@@ -204,8 +205,98 @@ const DIAGNOSTIC_STYLE: React.CSSProperties = {
   border: '1px solid currentColor',
   borderRadius: 4,
   padding: '0.5rem 0.75rem',
-  opacity: 0.85,
+  boxSizing: 'border-box',
+  minWidth: 0,
+  maxWidth: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  overflowWrap: 'anywhere',
   fontSize: '0.85rem',
+};
+
+const ImageDiagnostic = ({
+  diagnostic,
+}: {
+  diagnostic: ImageViewDiagnostic;
+}) => {
+  const [open, setOpen] = React.useState(false);
+  const id = React.useId();
+  return (
+    <div
+      role='alert'
+      data-image-diagnostic={diagnostic.code}
+      style={DIAGNOSTIC_STYLE}
+    >
+      <span
+        style={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        <button
+          type='button'
+          aria-label='Image warning details'
+          aria-describedby={open ? id : undefined}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
+          onClick={() => setOpen(true)}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') setOpen(false);
+          }}
+          style={{
+            display: 'inline-flex',
+            padding: 0,
+            border: 0,
+            background: 'transparent',
+            color: 'inherit',
+            cursor: 'help',
+          }}
+        >
+          <svg
+            width='18'
+            height='18'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='1.75'
+            aria-hidden='true'
+          >
+            <path d='M12 3 2 21h20L12 3Z' />
+            <path d='M12 9v5' />
+            <circle cx='12' cy='17' r='.75' />
+          </svg>
+        </button>
+        {open && (
+          <span
+            id={id}
+            role='tooltip'
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              zIndex: 10,
+              width: 'min(22rem, 70vw)',
+              boxSizing: 'border-box',
+              padding: '0.5rem 0.75rem',
+              background: 'Canvas',
+              color: 'CanvasText',
+              border: '1px solid currentColor',
+              borderRadius: 4,
+              overflowWrap: 'anywhere',
+              fontWeight: 'normal',
+            }}
+          >
+            {diagnostic.message}
+          </span>
+        )}
+      </span>
+      <span>
+        {diagnostic.code === 'image.urlRefused'
+          ? 'Image blocked'
+          : 'Image configuration warning'}
+      </span>
+    </div>
+  );
 };
 
 export const ImageViewRendererComponent = ({
@@ -239,14 +330,7 @@ export const ImageViewRendererComponent = ({
         />
       )}
       {resolved.diagnostics.map((diagnostic) => (
-        <div
-          key={diagnostic.code}
-          role='alert'
-          data-image-diagnostic={diagnostic.code}
-          style={DIAGNOSTIC_STYLE}
-        >
-          {diagnostic.message}
-        </div>
+        <ImageDiagnostic key={diagnostic.code} diagnostic={diagnostic} />
       ))}
     </>
   );

@@ -1,3 +1,4 @@
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import {
@@ -240,13 +241,15 @@ export const ShadcnCompositeCell = (props: Props) => {
             >
               <JsonFormsDispatch
                 schema={props.schema}
-                uischema={
-                  options.detail ?? {
-                    type: 'Control',
-                    scope: '#',
-                    label: false,
-                  }
-                }
+                uischema={resolveEditorDetail(
+                  options.detail,
+                  parent.uischemas ?? [],
+                  props.schema,
+                  props.uischema.scope,
+                  props.path,
+                  props.rootSchema,
+                  { type: 'Control', scope: '#', label: false } as any
+                )}
                 path={props.path}
                 enabled={enabled}
                 renderers={props.renderers}

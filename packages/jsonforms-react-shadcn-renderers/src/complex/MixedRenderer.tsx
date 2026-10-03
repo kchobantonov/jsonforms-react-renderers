@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { MixedScalarContext } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
@@ -38,7 +39,6 @@ import {
   ControlProps,
   createControlElement,
   createDefaultValue,
-  findUISchema,
   JsonFormsUISchemaRegistryEntry,
   JsonSchema,
   JsonSchema7,
@@ -169,7 +169,7 @@ export const MixedRendererComponent = ({
             uischemas ?? []
           )
         : undefined,
-    [path, rootSchema, selectedSchema, uischema, uischemas]
+    [path, rootSchema, selectedSchema, selectedType, uischema, uischemas]
   );
   const tree = useMemo(
     () =>
@@ -183,7 +183,9 @@ export const MixedRendererComponent = ({
     : undefined;
   const preserveDynamicPropertyKey = useDynamicProperty(path);
   const withoutControlLabel = (element: UISchemaElement): UISchemaElement =>
-    isControl(element) ? { ...element, label: false } : element;
+    isControl(element) && element.scope === '#'
+      ? { ...element, label: false }
+      : element;
 
   useEffect(() => {
     if (tree && !findMixedTreeNode(tree, selectedPath)) setSelectedPath([]);

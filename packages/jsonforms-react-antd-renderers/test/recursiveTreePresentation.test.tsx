@@ -290,3 +290,46 @@ it('hides schema-forbidden rename and delete actions on tree rows', async () => 
     host.remove();
   }
 });
+
+it.each(['GENERATE', 'REGISTERED'])(
+  'resolves recursive node detail mode %s',
+  async (detail) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    try {
+      await act(async () =>
+        root.render(
+          <JsonForms
+            schema={schema as any}
+            data={exampleData}
+            uischema={{
+              ...ui,
+              options: {
+                ...ui.options,
+                recursiveTree: { ...ui.options.recursiveTree, detail },
+              },
+            }}
+            uischemas={[
+              {
+                tester: () => 20,
+                uischema: { type: 'Label', text: 'Registered node detail' },
+              },
+              ...uischemas,
+            ]}
+            renderers={antdRenderers}
+            cells={antdCells}
+          />
+        )
+      );
+      const pane = host.querySelector('[data-recursive-tree-detail]')!;
+      expect(pane.textContent?.includes('Registered node detail')).toBe(
+        detail === 'REGISTERED'
+      );
+      expect(pane.textContent).not.toContain('No applicable');
+    } finally {
+      act(() => root.unmount());
+      host.remove();
+    }
+  }
+);

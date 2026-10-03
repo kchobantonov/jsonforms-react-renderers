@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { ValidationIcon } from './ValidationIcon';
 import { ObjectDetailContext } from './ObjectDetailContext';
 import { Card, Typography } from 'antd';
@@ -8,7 +9,6 @@ import {
 import isEmpty from 'lodash/isEmpty';
 import {
   ControlProps,
-  findUISchema,
   Generate,
   isObjectControl,
   RankedTester,

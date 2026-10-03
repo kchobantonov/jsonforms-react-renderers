@@ -1,3 +1,4 @@
+import { resolveEditorDetail } from './detail';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import {
   ControlProps,
@@ -5,7 +6,6 @@ import {
   ControlElement,
   JsonFormsRendererRegistryEntry,
   RankedTester,
-  UISchemaElement,
   composePaths,
   schemaTypeIs,
   resolveSchema,
@@ -132,7 +132,8 @@ export const createRecursiveTreeRenderer = (
     const options = uischema.options!.recursiveTree;
     const confirmation = useConfirmation();
     const t = useI18n();
-    const ajv = useJsonForms().core?.ajv;
+    const context = useJsonForms();
+    const ajv = context.core?.ajv;
     const tree = useMemo(
       () =>
         buildRecursiveTree(
@@ -297,11 +298,15 @@ export const createRecursiveTreeRenderer = (
       ],
       [props.renderers, options.childrenProperty]
     );
-    const detail = (options.detail ?? {
-      type: 'Control',
-      scope: '#',
-      label,
-    }) as UISchemaElement;
+    const detail = resolveEditorDetail(
+      options.detail,
+      context.uischemas ?? [],
+      selected.schema,
+      '#',
+      nodePath(selected),
+      rootSchema,
+      { type: 'Control', scope: '#', label } as ControlElement
+    );
     if (!visible) return null;
     return (
       <Navigation.Provider

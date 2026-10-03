@@ -1,8 +1,8 @@
+import { findDetailUISchema as findUISchema } from './detail';
 import { PendingChange, PendingChangesProvider } from './pendingChanges';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   coreReducer,
-  findUISchema,
   Generate,
   JsonFormsCore,
   Resolve,
@@ -97,26 +97,24 @@ export const useRowDetail = (props: any) => {
       (current) => current && { ...current, draft: draftRef.current }
     );
   };
-  const detail =
-    options?.detail ??
-    findUISchema(
-      context.uischemas ?? [],
-      props.schema,
-      props.uischema.scope,
-      rowPath,
-      () =>
-        Generate.uiSchema(
-          props.schema,
-          'VerticalLayout',
-          undefined,
-          props.rootSchema
-        ),
-      {
-        ...props.uischema,
-        options: { ...props.uischema.options, detail: undefined },
-      },
-      props.rootSchema
-    );
+  const detail = findUISchema(
+    context.uischemas ?? [],
+    props.schema,
+    props.uischema.scope,
+    rowPath,
+    () =>
+      Generate.uiSchema(
+        props.schema,
+        'VerticalLayout',
+        undefined,
+        props.rootSchema
+      ),
+    {
+      ...props.uischema,
+      options: { ...props.uischema.options, detail: options?.detail },
+    },
+    props.rootSchema
+  );
   const form =
     selection && array && selection.index < array.length ? (
       <JsonFormsDispatch

@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { ObjectDetailContext } from './ObjectDetailContext';
 import { ErrorIndicator } from './ErrorIndicator';
 import {
@@ -6,7 +7,6 @@ import {
 } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import {
   ControlProps,
-  findUISchema,
   Generate,
   isObjectControl,
   RankedTester,

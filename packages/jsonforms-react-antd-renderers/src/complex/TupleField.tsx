@@ -1,3 +1,4 @@
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Typography, theme as antTheme } from 'antd';
 import EditOutlined from '@ant-design/icons/EditOutlined';
@@ -214,8 +215,17 @@ export const TupleField = ({
     the specification, so `detail` is used when present and the element itself
     otherwise.
   */
-  const detail: UISchemaElement =
-    (uischema.options?.detail as UISchemaElement | undefined) ?? uischema;
+  const detail = resolveEditorDetail(
+    uischema.options?.detail,
+    context.uischemas ?? [],
+    renderSchema,
+    '#',
+    path,
+    rootSchema,
+    // Strip the selection option from fallback controls to avoid forwarding
+    // REGISTERED back into the same position registration.
+    { ...uischema, options: { ...uischema.options, detail: undefined } }
+  );
 
   const body = () => {
     if (schema === false) {

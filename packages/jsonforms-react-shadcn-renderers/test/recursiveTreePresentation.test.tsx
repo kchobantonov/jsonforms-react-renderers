@@ -239,8 +239,10 @@ it('renames and deletes a child directly from the tree while preserving siblings
       host.querySelectorAll('[data-recursive-node]')
     ).find((el) => el.textContent?.includes('renamed.txt'))!;
     await act(async () =>
-      renamed.parentElement!
-        .querySelector<HTMLButtonElement>('button[aria-label^="Delete"]')!
+      renamed
+        .parentElement!.querySelector<HTMLButtonElement>(
+          'button[aria-label^="Delete"]'
+        )!
         .click()
     );
     await act(async () => {
@@ -285,10 +287,57 @@ it('hides schema-forbidden rename and delete actions on tree rows', async () => 
       (el) => el.textContent?.includes('locked.txt')
     )!;
     expect(row).toBeTruthy();
-    expect(row.parentElement!.querySelector('button[aria-label^="Rename"]')).toBeNull();
-    expect(row.parentElement!.querySelector('button[aria-label^="Delete"]')).toBeNull();
+    expect(
+      row.parentElement!.querySelector('button[aria-label^="Rename"]')
+    ).toBeNull();
+    expect(
+      row.parentElement!.querySelector('button[aria-label^="Delete"]')
+    ).toBeNull();
   } finally {
     act(() => root.unmount());
     host.remove();
   }
 });
+
+it.each(['GENERATE', 'REGISTERED'])(
+  'resolves recursive node detail mode %s',
+  async (detail) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    try {
+      await act(async () =>
+        root.render(
+          <JsonForms
+            schema={schema as any}
+            data={exampleData}
+            uischema={{
+              ...ui,
+              options: {
+                ...ui.options,
+                recursiveTree: { ...ui.options.recursiveTree, detail },
+              },
+            }}
+            uischemas={[
+              {
+                tester: () => 20,
+                uischema: { type: 'Label', text: 'Registered node detail' },
+              },
+              ...uischemas,
+            ]}
+            renderers={shadcnRenderers}
+            cells={shadcnCells}
+          />
+        )
+      );
+      const pane = host.querySelector('[data-recursive-tree-detail]')!;
+      expect(pane.textContent?.includes('Registered node detail')).toBe(
+        detail === 'REGISTERED'
+      );
+      expect(pane.textContent).not.toContain('No applicable');
+    } finally {
+      act(() => root.unmount());
+      host.remove();
+    }
+  }
+);

@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
 import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
@@ -49,7 +50,6 @@ import {
   composePaths,
   createDefaultValue,
   createCleanLabel,
-  Generate,
   getFirstPrimitiveProp,
   isObjectArrayWithNesting,
   schemaTypeIs,
@@ -250,9 +250,19 @@ export const ShadcnArrayRenderer = ({
       setPendingIndex(index);
     else removeItems(path, [index])();
   };
-  const detail =
-    (uischema.options?.detail as any) ??
-    Generate.uiSchema(schema, 'VerticalLayout', undefined, rootSchema);
+  const detail = React.useMemo(
+    () =>
+      findUISchema(
+        ctx.uischemas ?? [],
+        schema,
+        uischema.scope,
+        path,
+        undefined,
+        uischema,
+        rootSchema
+      ),
+    [ctx.uischemas, schema, uischema, path, rootSchema]
+  );
   const childLabelProp =
     uischema.options?.elementLabelProp ??
     uischema.options?.childLabelProp ??
@@ -276,7 +286,9 @@ export const ShadcnArrayRenderer = ({
     (options.table === true ||
       options.format === 'table' ||
       (options.table !== false &&
-        !options.detail &&
+        (!options.detail ||
+          (typeof options.detail === 'string' &&
+            options.detail.toUpperCase() === 'DEFAULT')) &&
         !nestedItems &&
         (Boolean(schema.properties) ||
           ['string', 'number', 'integer', 'boolean', 'null'].includes(

@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import { ContainerValidationIndicator } from './ValidationIndicator';
 import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
@@ -13,7 +14,6 @@ import {
   computeLabel,
   createDefaultValue,
   errorsAt,
-  findUISchema,
   formatErrorMessage,
   getFirstPrimitiveProp,
 } from '@jsonforms/core';

@@ -1,3 +1,4 @@
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Pencil } from 'lucide-react';
@@ -175,8 +176,17 @@ export const TupleField = ({
     ...(uischema.options ?? {}),
   } as CompositeDetailDialogOptions;
 
-  const detail: UISchemaElement =
-    (uischema.options?.detail as UISchemaElement | undefined) ?? uischema;
+  const detail = resolveEditorDetail(
+    uischema.options?.detail,
+    context.uischemas ?? [],
+    renderSchema,
+    '#',
+    path,
+    rootSchema,
+    // Strip the selection option from fallback controls to avoid forwarding
+    // REGISTERED back into the same position registration.
+    { ...uischema, options: { ...uischema.options, detail: undefined } }
+  );
 
   const body = () => {
     if (schema === false) {

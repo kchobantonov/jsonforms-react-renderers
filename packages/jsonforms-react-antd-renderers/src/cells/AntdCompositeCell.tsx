@@ -1,3 +1,4 @@
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import {
@@ -27,6 +28,7 @@ type CompositeCellProps = CellProps & {
 };
 import {
   JsonFormsDispatch,
+  useJsonForms,
   withJsonFormsCellProps,
   withTranslateProps,
 } from '@jsonforms/react';
@@ -40,6 +42,7 @@ import {
 
 export const AntdCompositeCell = (props: CompositeCellProps) => {
   const { t } = props;
+  const context = useJsonForms();
   const { token } = theme.useToken();
   const errors = usePathErrorMessages(
     props.path,
@@ -58,7 +61,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
   const options = (props.uischema?.options ??
     {}) as CompositeDetailDialogOptions & {
     summary?: UISchemaElement;
-    detail?: UISchemaElement;
+    detail?: UISchemaElement | string;
     clearable?: boolean;
     summaryOnly?: boolean;
     showTypeIndicator?: boolean;
@@ -79,8 +82,15 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
       : t('composite.detailsLabel', d('composite.detailsLabel')));
   const translateWithLabel = (key: 'composite.edit' | 'composite.remove') =>
     t(key, d(key), { label }).replace('{label}', label);
-  const detail: UISchemaElement =
-    options.detail ?? ({ type: 'Control', scope: '#', label: false } as any);
+  const detail = resolveEditorDetail(
+    options.detail,
+    context.uischemas ?? [],
+    props.schema,
+    props.uischema.scope,
+    props.path,
+    props.rootSchema,
+    { type: 'Control', scope: '#', label: false } as any
+  );
   // Cell removal shares the destructive-change policy.
   const canClear =
     props.enabled &&

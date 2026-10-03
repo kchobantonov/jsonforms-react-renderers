@@ -298,3 +298,22 @@ describe('visibility', () => {
     view.unmount();
   });
 });
+
+it('keeps long blocked sources out of the warning and exposes details on focus', () => {
+  const source = 'data:image/svg+xml;base64,' + 'A'.repeat(10000);
+  const view = draw({ type: 'ImageView', src: source, alt: 'Preview' });
+  expect(view.container.textContent).toBe('Image blocked');
+  expect(view.container.innerHTML).not.toContain(source);
+  const button = view.container.querySelector('button')!;
+  act(() => button.focus());
+  expect(
+    view.container.querySelector('[role="tooltip"]')?.textContent
+  ).toContain('configured URL policy');
+  act(() =>
+    button.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+    )
+  );
+  expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
+  view.unmount();
+});

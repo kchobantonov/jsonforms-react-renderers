@@ -1,3 +1,4 @@
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import {
   and,
   ArrayLayoutProps,
@@ -8,7 +9,6 @@ import {
   createDefaultValue,
   deriveTypes,
   errorsAt,
-  findUISchema,
   formatErrorMessage,
   RankedTester,
   rankWith,
