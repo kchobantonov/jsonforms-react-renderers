@@ -1,5 +1,4 @@
 import { createAjv } from '@jsonforms/core';
-// @ts-ignore Trusted example registry is published as JavaScript.
 import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/uischemas.mjs';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';

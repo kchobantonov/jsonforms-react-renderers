@@ -19,7 +19,6 @@ import {
 import schema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/schema.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/template-slots/data.json';
-// @ts-ignore Trusted executable example registry.
 import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischemas.mjs';
 
 const Layout = withJsonFormsLayoutProps((props: any) => (

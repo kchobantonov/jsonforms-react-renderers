@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { shadcnRenderers, shadcnCells } from '../src';
 
 it('selects typed cards, translates labels and swaps selected content', async () => {
@@ -170,6 +170,132 @@ it.each([false, true])(
       expect(value.shared).toBe('keep');
       expect(value.kind).toBe('post');
       expect(value.email).toBeUndefined();
+    } finally {
+      act(() => root.unmount());
+      host.remove();
+    }
+  }
+);
+
+it.each([
+  [undefined, true, 'Registered name'],
+  ['GENERATE', true, 'Name'],
+  ['generate', true, 'Name'],
+  ['REGISTERED', true, 'Registered name'],
+  ['DEFAULT', true, 'Registered name'],
+  ['GENERATED', true, 'Registered name'],
+  ['REGISTERED', false, 'Name'],
+  [
+    { type: 'Control', scope: '#/properties/name', label: 'Inline name' },
+    true,
+    'Inline name',
+  ],
+  [
+    {
+      elements: [
+        { type: 'Control', scope: '#/properties/name', label: 'Inline name' },
+      ],
+    },
+    true,
+    'Inline name',
+  ],
+])(
+  'resolves branch detail %j with registry=%s',
+  async (detail, registered, label) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    const tester = vi.fn((schema: any) =>
+      schema.title === 'Person' ? 10 : -1
+    );
+    const schema = {
+      type: 'object',
+      definitions: {
+        person: {
+          type: 'object',
+          title: 'Person',
+          properties: { name: { type: 'string' } },
+          required: ['name'],
+        },
+      },
+      properties: {
+        selection: {
+          oneOf: [
+            { $ref: '#/definitions/person' },
+            {
+              type: 'object',
+              properties: { count: { type: 'number' } },
+              required: ['count'],
+            },
+          ],
+        },
+        sibling: { type: 'string' },
+      },
+    };
+    let value: any;
+    try {
+      await act(async () =>
+        root.render(
+          <JsonForms
+            schema={schema}
+            uischema={{
+              type: 'Control',
+              scope: '#/properties/selection',
+              options: {
+                format: 'cards',
+                choices: [{ branch: 0, detail }],
+              },
+            }}
+            data={{ selection: { name: 'Ada' }, sibling: 'keep' }}
+            uischemas={
+              registered
+                ? [
+                    {
+                      tester,
+                      uischema: {
+                        type: 'Control',
+                        scope: '#/properties/name',
+                        label: 'Registered name',
+                      } as any,
+                    },
+                  ]
+                : []
+            }
+            renderers={shadcnRenderers}
+            cells={shadcnCells}
+            onChange={({ data }) => {
+              value = data;
+            }}
+          />
+        )
+      );
+      expect(host.textContent).toContain(label);
+      if (label !== 'Registered name')
+        expect(host.textContent).not.toContain('Registered name');
+      if (registered && label === 'Registered name') {
+        expect(tester).toHaveBeenCalledWith(
+          schema.definitions.person,
+          '#/properties/selection',
+          'selection'
+        );
+      } else if (registered) {
+        expect(
+          tester.mock.calls.some(([branch]) => branch.title === 'Person')
+        ).toBe(false);
+      }
+      const input = host.querySelector<HTMLInputElement>('input[type="text"]')!;
+      expect(input.value).toBe('Ada');
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          'value'
+        )!.set!.call(input, 'Grace');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 350));
+      });
+      expect(value).toEqual({ selection: { name: 'Grace' }, sibling: 'keep' });
     } finally {
       act(() => root.unmount());
       host.remove();

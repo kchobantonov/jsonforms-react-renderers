@@ -11,7 +11,6 @@ import { shadcnExtendedRenderers } from '../src';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/schema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/template-slots/data.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischema.json';
-// @ts-ignore Trusted example registry.
 import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischemas.mjs';
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 

@@ -113,7 +113,7 @@ export const branchChangeData = (
 export const clearedBranchValue = (
   arrayItem: boolean,
   branches: JsonSchema[]
-): {} | undefined =>
+): Record<string, unknown> | undefined =>
   arrayItem &&
   branches.length > 0 &&
   branches.every((branch) => branch.type === 'object')

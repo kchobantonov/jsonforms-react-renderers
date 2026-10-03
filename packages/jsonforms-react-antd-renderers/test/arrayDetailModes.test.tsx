@@ -91,7 +91,6 @@ it('renders the published detail-mode example with its trusted registry', async 
   const exampleData = await import(
     '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/data.json'
   );
-  // @ts-ignore Trusted host registrations contain executable testers.
   const registry = await import(
     '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischemas.mjs'
   );

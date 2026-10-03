@@ -181,7 +181,7 @@ export const ListWithDetailRenderer = (
               }}
             >
               {data > 0 ? (
-                <Listy
+                <Listy<number>
                   items={range(data)}
                   rowKey={(index) => index}
                   styles={{ item: { padding: 0 } }}

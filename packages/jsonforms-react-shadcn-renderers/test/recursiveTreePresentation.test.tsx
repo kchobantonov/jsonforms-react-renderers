@@ -5,7 +5,6 @@ import { createAjv } from '@jsonforms/core';
 import { shadcnRenderers, shadcnCells } from '../src';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/schema.json';
 import exampleData from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/data.json';
-// @ts-ignore Published trusted registry.
 import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/uischemas.mjs';
 const ui = {
   type: 'Control',

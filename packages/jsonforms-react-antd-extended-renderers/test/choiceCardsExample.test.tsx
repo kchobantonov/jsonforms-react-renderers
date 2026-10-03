@@ -13,6 +13,8 @@ import data from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/
 import ui from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/uischema.json';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/translations.json';
 
+import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/uischemas.mjs';
+
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 it.each([true, false])(
@@ -141,3 +143,55 @@ it('shows required and invalid choices from the validation example', async () =>
     host.remove();
   }
 });
+
+it.each(['en', 'bg'] as const)(
+  'renders the detail-mode example in %s',
+  async (locale) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    const category = ui.elements[0].elements.find(
+      (c) => c.i18n === 'cards.detailModes'
+    )!;
+    const render = async (contact: any) => {
+      await act(async () =>
+        root.render(
+          <JsonForms
+            schema={schema as any}
+            data={{ ...data, cardContact: contact }}
+            uischema={
+              { type: 'VerticalLayout', elements: category.elements } as any
+            }
+            uischemas={uischemas}
+            renderers={[...antdExtendedRenderers, ...antdRenderers]}
+            cells={antdCells}
+            i18n={{
+              locale,
+              translate: (key, fallback) =>
+                (translations[locale] as Record<string, string>)[key] ??
+                fallback,
+            }}
+          />
+        )
+      );
+    };
+    try {
+      await render(data.cardContact);
+      const registeredLabel =
+        translations[locale]['cards.registeredAddress.label'];
+      expect(host.textContent!.split(registeredLabel)).toHaveLength(2);
+      expect(
+        host.querySelectorAll('input[value="hello@example.com"]')
+      ).toHaveLength(2);
+      await render({ kind: 'postal', street: 'Main Street', city: 'Sofia' });
+      expect(host.textContent).not.toContain(registeredLabel);
+      expect(host.querySelectorAll('input[value="Main Street"]')).toHaveLength(
+        2
+      );
+      expect(host.querySelectorAll('input[value="Sofia"]')).toHaveLength(2);
+    } finally {
+      act(() => root.unmount());
+      host.remove();
+    }
+  }
+);

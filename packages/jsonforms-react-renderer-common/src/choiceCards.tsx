@@ -13,7 +13,7 @@ import {
   isEnumControl,
   isOneOfControl,
   or,
-  createCombinatorRenderInfos,
+  Resolve,
   createDefaultValue,
 } from '@jsonforms/core';
 import {
@@ -26,6 +26,7 @@ import {
 import isEqual from 'lodash/isEqual';
 import { resolveConfirmationPolicy } from './confirmation';
 import { branchChangeData, discardedByBranchChange } from './combinators';
+import { findDetailUISchema } from './detail';
 
 export interface CardChoice {
   value?: unknown;
@@ -35,7 +36,7 @@ export interface CardChoice {
   disabled?: boolean;
   content?: UISchemaElement;
   selectedContent?: UISchemaElement;
-  detail?: UISchemaElement;
+  detail?: string | UISchemaElement | { elements: UISchemaElement[] };
 }
 
 export const choiceCardsTester = rankWith(
@@ -109,17 +110,36 @@ export const createChoiceCards = (
     const selected = branchMode
       ? chosen ?? props.indexOfFittingSchema ?? -1
       : values.findIndex((value) => isEqual(value, data));
-    const infos = branchMode
-      ? createCombinatorRenderInfos(
-          branches!,
-          props.rootSchema!,
-          'oneOf',
-          uischema,
-          path,
-          props.uischemas
-        )
-      : [];
     const custom: CardChoice[] = uischema.options?.choices ?? [];
+    const infos = branchMode
+      ? branches!.map((branch, index) => {
+          const resolved =
+            branch.$ref &&
+            Resolve.schema(props.rootSchema!, branch.$ref, props.rootSchema!);
+          const branchSchema = resolved || branch;
+          const detail = custom.find(
+            (choice) => choice.branch === index
+          )?.detail;
+          return {
+            schema: branchSchema,
+            label: branch.title ?? resolved?.title ?? `oneOf-${index}`,
+            uischema: findDetailUISchema(
+              props.uischemas!,
+              branchSchema,
+              uischema.scope,
+              path,
+              undefined,
+              detail === undefined
+                ? uischema
+                : {
+                    ...uischema,
+                    options: { ...uischema.options, detail },
+                  },
+              props.rootSchema
+            ),
+          };
+        })
+      : [];
     const choices = (branchMode ? branches! : values).map((_, index) => {
       const choice =
         custom.find((item) =>
@@ -332,7 +352,7 @@ export const createChoiceCards = (
           <div style={{ marginTop: 16 }}>
             <JsonFormsDispatch
               schema={infos[selected].schema}
-              uischema={choices[selected].detail ?? infos[selected].uischema}
+              uischema={infos[selected].uischema}
               path={path}
               renderers={renderers}
               cells={cells}

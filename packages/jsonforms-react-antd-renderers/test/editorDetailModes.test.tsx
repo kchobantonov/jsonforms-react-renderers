@@ -251,7 +251,6 @@ it('renders the published editor-detail example', async () => {
   const data = await import(
     '@chobantonov/jsonforms-extended-spec/examples/editor-details/data.json'
   );
-  // @ts-ignore Trusted executable registry.
   const registrations = await import(
     '@chobantonov/jsonforms-extended-spec/examples/editor-details/uischemas.mjs'
   );
