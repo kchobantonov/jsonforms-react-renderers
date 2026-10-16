@@ -85,6 +85,7 @@ export type ButtonUiSchemaBase = BaseUISchemaElement & {
     label?: string;
     text?: string;
     disabled?: boolean;
+    fullWidth?: boolean;
     [key: string]: any;
   };
 };

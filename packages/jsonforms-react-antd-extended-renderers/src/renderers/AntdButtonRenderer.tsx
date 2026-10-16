@@ -40,9 +40,10 @@ const COLORS: Record<ButtonSemanticColor, Record<string, unknown>> = {
 export const AntdButtonRenderer = createButtonRenderer({
   ButtonComponent: Button,
   buttonProps: { htmlType: 'button', type: 'primary' },
-  getButtonProps: ({ pending, color }: any) => ({
+  getButtonProps: ({ pending, color, uischema }: any) => ({
     // "Pending/loading covers the complete fireActionEvent promise."
     loading: pending,
+    block: uischema.options?.fullWidth === true,
     ...(color ? COLORS[color] ?? {} : {}),
   }),
 });

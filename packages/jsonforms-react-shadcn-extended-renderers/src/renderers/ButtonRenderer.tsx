@@ -20,7 +20,7 @@ export type ShadcnButtonElement = UISchemaElement & {
   color?: string;
   params?: Record<string, unknown>;
   script?: string;
-  options?: Record<string, any>;
+  options?: Record<string, any> & { fullWidth?: boolean };
 };
 
 export const shadcnButtonRendererTester: RankedTester = rankWith(
@@ -62,7 +62,14 @@ export const ShadcnButtonRenderer = ({
     options.variant ?? variants[color as keyof typeof variants] ?? 'default';
   return (
     <Button
-      className={color === 'warning' ? 'text-destructive' : undefined}
+      className={
+        [
+          color === 'warning' && 'text-destructive',
+          options.fullWidth === true && 'w-full',
+        ]
+          .filter(Boolean)
+          .join(' ') || undefined
+      }
       type='button'
       variant={variant}
       disabled={!enabled || options.disabled || loading}
