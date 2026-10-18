@@ -95,8 +95,8 @@ export const ColumnResizeHandle = ({
           onResize(
             clamp(
               drag.current.width +
-                (event.clientX - drag.current.x) * drag.current.direction
-            )
+                (event.clientX - drag.current.x) * drag.current.direction,
+            ),
           );
       }}
       onPointerUp={(event) => {
@@ -126,10 +126,10 @@ export const ColumnResizeHandle = ({
             event.key === 'Home'
               ? min
               : event.key === 'End'
-              ? max
-              : measured(event.currentTarget) +
-                (event.key === 'ArrowRight' ? 10 : -10) * direction
-          )
+                ? max
+                : measured(event.currentTarget) +
+                  (event.key === 'ArrowRight' ? 10 : -10) * direction,
+          ),
         );
       }}
     >

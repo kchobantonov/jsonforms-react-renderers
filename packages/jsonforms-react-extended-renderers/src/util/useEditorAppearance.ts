@@ -19,7 +19,7 @@ export const useEditorAppearance = (
    * below, which only guesses and silently falls back to prefers-color-scheme
    * when no ancestor paints an opaque background.
    */
-  isDark?: boolean
+  isDark?: boolean,
 ) => {
   const [dark, setDark] = useState(false);
   useEffect(() => {
@@ -45,7 +45,7 @@ export const useEditorAppearance = (
           (values.length < 4 || values[3] > 0.5)
         ) {
           setDark(
-            values[0] * 0.299 + values[1] * 0.587 + values[2] * 0.114 < 128
+            values[0] * 0.299 + values[1] * 0.587 + values[2] * 0.114 < 128,
           );
           return;
         }
@@ -57,7 +57,7 @@ export const useEditorAppearance = (
       observer.observe(element, {
         attributes: true,
         attributeFilter: ['class', 'style', 'mode', 'dark'],
-      })
+      }),
     );
     media?.addEventListener('change', update);
     update();
@@ -78,9 +78,9 @@ export const useEditorAppearance = (
       explicitTheme === 'dark'
         ? true
         : explicitTheme === 'light'
-        ? false
-        : explicitTheme !== 'system' && isDark !== undefined
-        ? isDark
-        : dark,
+          ? false
+          : explicitTheme !== 'system' && isDark !== undefined
+            ? isDark
+            : dark,
   };
 };

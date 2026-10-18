@@ -51,7 +51,7 @@ describe.each(controls)(
       expect(renderMarkup(<Control {...defaults} />)).toContain('Value'));
     it('renders required state', () =>
       expect(renderMarkup(<Control {...defaults} required />)).toContain(
-        'aria-hidden="true"> *'
+        'aria-hidden="true"> *',
       ));
     it('displays descriptions', () =>
       expect(
@@ -60,18 +60,18 @@ describe.each(controls)(
             {...defaults}
             description='Instructions'
             config={{ showUnfocusedDescription: true }}
-          />
-        )
+          />,
+        ),
       ).toContain('Instructions'));
     it('displays validation errors', () =>
       expect(
-        renderMarkup(<Control {...defaults} errors='Invalid value' />)
+        renderMarkup(<Control {...defaults} errors='Invalid value' />),
       ).toContain('Invalid value'));
     it('disables its input', () =>
       expect(renderMarkup(<Control {...defaults} enabled={false} />)).toContain(
-        'disabled'
+        'disabled',
       ));
-  }
+  },
 );
 
 describe('editable app-owned controls', () => {
@@ -95,7 +95,7 @@ describe('editable app-owned controls', () => {
     act(() => {
       Object.getOwnPropertyDescriptor(prototype, 'value')!.set!.call(
         input,
-        value
+        value,
       );
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -111,15 +111,15 @@ describe('editable app-owned controls', () => {
             data='previous'
             handleChange={handleChange}
             uischema={{ ...defaults.uischema, options: { multi: true } }}
-          />
-        )
+          />,
+        ),
       );
       change(value);
       expect(handleChange).toHaveBeenLastCalledWith(
         'value',
-        value || undefined
+        value || undefined,
       );
-    }
+    },
   );
   it.each([
     ['0', 0],
@@ -135,8 +135,8 @@ describe('editable app-owned controls', () => {
           {...defaults}
           handleChange={handleChange}
           data={99}
-        />
-      )
+        />,
+      ),
     );
     change(value as string);
     expect(handleChange).toHaveBeenLastCalledWith('value', expected);
@@ -153,8 +153,8 @@ describe('editable app-owned controls', () => {
           integer
           data={8}
           handleChange={handleChange}
-        />
-      )
+        />,
+      ),
     );
     change(value as string);
     expect(handleChange).toHaveBeenLastCalledWith('value', expected);
@@ -162,7 +162,7 @@ describe('editable app-owned controls', () => {
   it.each(controls)('honors readonly for %s', (Control) => {
     act(() => root.render(<Control {...defaults} readonly />));
     expect(
-      Boolean(container.querySelector('[disabled], [data-disabled]'))
+      Boolean(container.querySelector('[disabled], [data-disabled]')),
     ).toBe(true);
   });
   it('clears a populated field through the app button', () => {
@@ -173,15 +173,15 @@ describe('editable app-owned controls', () => {
           {...defaults}
           data='Ada'
           handleChange={handleChange}
-        />
-      )
+        />,
+      ),
     );
     act(() =>
       (
         container.querySelector(
-          '[aria-label="Clear value"]'
+          '[aria-label="Clear value"]',
         ) as HTMLButtonElement
-      ).click()
+      ).click(),
     );
     expect(handleChange).toHaveBeenCalledWith('value', undefined);
   });
@@ -193,25 +193,25 @@ describe('editable app-owned controls', () => {
           {...defaults}
           data={false}
           handleChange={handleChange}
-        />
-      )
+        />,
+      ),
     );
     act(() =>
       (
         container.querySelector('[role="checkbox"]') as HTMLButtonElement
-      ).click()
+      ).click(),
     );
     expect(handleChange).toHaveBeenCalledWith('value', true);
   });
   it('associates validation feedback with the input', () => {
     act(() =>
-      root.render(<ShadcnInputControl {...defaults} errors='Required' />)
+      root.render(<ShadcnInputControl {...defaults} errors='Required' />),
     );
     const input = container.querySelector('input')!;
     expect(input.getAttribute('aria-invalid')).toBe('true');
     expect(
       document.getElementById(input.getAttribute('aria-describedby')!)
-        ?.textContent
+        ?.textContent,
     ).toBe('Required');
   });
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -67,7 +67,7 @@ const draw = (locale = 'en') => {
             {
               type: 'VerticalLayout',
               elements: (uischema as any).elements.flatMap(
-                (category: any) => category.elements
+                (category: any) => category.elements,
               ),
             } as any
           }
@@ -83,15 +83,15 @@ const draw = (locale = 'en') => {
             structured = errors ?? [];
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const items = () =>
     Array.from(container.querySelectorAll<HTMLElement>('.ant-form-item'));
   const itemFor = (title: string) =>
     items().find((item) =>
-      item.querySelector('label')?.textContent?.includes(title)
+      item.querySelector('label')?.textContent?.includes(title),
     );
 
   return {
@@ -113,7 +113,7 @@ const draw = (locale = 'en') => {
       container.querySelectorAll('.ant-form-item-has-error').length,
     tabs: () =>
       Array.from(container.querySelectorAll('.ant-tabs-tab')).map(
-        (tab) => tab.textContent ?? ''
+        (tab) => tab.textContent ?? '',
       ),
     text: () => container.textContent ?? '',
     unmount: () => act(() => root.unmount()),
@@ -132,7 +132,7 @@ describe('where an object gets its layout', () => {
     expect(view.valueOf('Trading name')).toBe('Cascade Supplies');
     const labels = view.labels();
     expect(labels.indexOf('Legal name')).toBeLessThan(
-      labels.indexOf('Trading name')
+      labels.indexOf('Trading name'),
     );
     view.unmount();
   });
@@ -180,7 +180,7 @@ describe('where an object gets its layout', () => {
     await settle();
     const labels = view.labels();
     expect(labels.indexOf('Contact name')).toBeLessThan(
-      labels.indexOf('Window')
+      labels.indexOf('Window'),
     );
     expect(labels.indexOf('Window')).toBeLessThan(labels.indexOf('Gate code'));
     view.unmount();
@@ -269,7 +269,7 @@ describe('errors that belong to the object itself', () => {
     ]) {
       expect(
         view.structured().some((error: any) => error.keyword === keyword),
-        `no ${keyword} error`
+        `no ${keyword} error`,
       ).toBe(true);
     }
     view.unmount();
@@ -285,7 +285,7 @@ describe('errors that belong to the object itself', () => {
     await settle();
     expect(view.hasError('Cost centre')).toBe(true);
     expect(view.messageFor('Cost centre')).toBe(
-      'A purchase order needs a cost centre.'
+      'A purchase order needs a cost centre.',
     );
     // Not on the property that triggered it.
     expect(view.hasError('Purchase order')).toBe(false);

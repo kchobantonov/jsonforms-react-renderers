@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { temporalBounds } from '../src/temporalBounds';
 const DATE_FORMATS = ['YYYY-MM-DD'];
 const TIME_FORMATS = ['HH:mm:ssZ', 'HH:mm:ss', 'HH:mm'];
@@ -7,7 +7,7 @@ describe('inclusive bounds', () => {
     const { min, max } = temporalBounds(
       { formatMinimum: '2026-09-19', formatMaximum: '2026-09-25' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(min?.format('YYYY-MM-DD')).toBe('2026-09-19');
     expect(max?.format('YYYY-MM-DD')).toBe('2026-09-25');
@@ -22,7 +22,7 @@ describe('inclusive bounds', () => {
     const { min } = temporalBounds(
       { formatMinimum: 'next Tuesday' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(min).toBeUndefined();
   });
@@ -38,7 +38,7 @@ describe('exclusive bounds, at the picker precision', () => {
     const { min } = temporalBounds(
       { formatExclusiveMinimum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(min?.format('YYYY-MM-DD')).toBe('2026-09-20');
   });
@@ -47,7 +47,7 @@ describe('exclusive bounds, at the picker precision', () => {
     const { max } = temporalBounds(
       { formatExclusiveMaximum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(max?.format('YYYY-MM-DD')).toBe('2026-09-18');
   });
@@ -62,13 +62,13 @@ describe('exclusive bounds, at the picker precision', () => {
       { formatMinimum: '09:30:00Z' },
       TIME_FORMATS,
       'minute',
-      true
+      true,
     );
     const exclusive = temporalBounds(
       { formatExclusiveMinimum: '09:30:00Z' },
       TIME_FORMATS,
       'minute',
-      true
+      true,
     );
     expect(exclusive.min!.diff(inclusive.min!, 'minute')).toBe(1);
   });
@@ -77,12 +77,12 @@ describe('exclusive bounds, at the picker precision', () => {
     const inclusive = temporalBounds(
       { formatMinimum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     const exclusive = temporalBounds(
       { formatExclusiveMinimum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(exclusive.min!.diff(inclusive.min!, 'day')).toBe(1);
   });
@@ -98,7 +98,7 @@ describe('several bounds at once', () => {
         formatExclusiveMaximum: '2026-09-25',
       },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(min?.format('YYYY-MM-DD')).toBe('2026-09-20');
     expect(max?.format('YYYY-MM-DD')).toBe('2026-09-24');
@@ -109,7 +109,7 @@ describe('several bounds at once', () => {
     const bounds = temporalBounds(
       { formatMinimum: '2026-09-25', formatMaximum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(bounds.empty).toBe(true);
   });

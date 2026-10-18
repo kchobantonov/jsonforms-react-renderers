@@ -19,11 +19,11 @@ import { horizontalLayoutWidths } from './horizontalLayout';
 // Above the base layouts, below specialized split layouts (rank 5).
 export const horizontalColumnsLayoutTester: RankedTester = rankWith(
   3,
-  uiTypeIs('HorizontalLayout')
+  uiTypeIs('HorizontalLayout'),
 );
 
 export const HorizontalColumnsLayoutRendererComponent = (
-  props: LayoutProps
+  props: LayoutProps,
 ) => {
   const context = useJsonForms();
   const state = { jsonforms: context };
@@ -35,13 +35,13 @@ export const HorizontalColumnsLayoutRendererComponent = (
         context.core?.data,
         props.path,
         getAjv(state),
-        getConfig(state)
-      )
+        getConfig(state),
+      ),
     );
   const gap = '1rem';
   const widths = horizontalLayoutWidths(
     elements.map(({ element }) => element.options?.columns),
-    gap
+    gap,
   );
   if (!props.visible) return null;
 
@@ -89,5 +89,5 @@ export const HorizontalColumnsLayoutRendererComponent = (
 };
 
 export const HorizontalColumnsLayoutRenderer = withJsonFormsLayoutProps(
-  HorizontalColumnsLayoutRendererComponent
+  HorizontalColumnsLayoutRendererComponent,
 );

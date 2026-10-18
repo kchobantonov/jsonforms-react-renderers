@@ -5,19 +5,15 @@ import { JsonForms } from '@jsonforms/react';
 import { shadcnRenderers, shadcnCells } from '../src';
 const staffSchema = JSON.parse(
   readFileSync(
-    require.resolve(
-      '@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json'
-    ),
-    'utf8'
-  )
+    require.resolve('@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json'),
+    'utf8',
+  ),
 );
 const staffData = JSON.parse(
   readFileSync(
-    require.resolve(
-      '@chobantonov/jsonforms-extended-spec/examples/array-controls/data.json'
-    ),
-    'utf8'
-  )
+    require.resolve('@chobantonov/jsonforms-extended-spec/examples/array-controls/data.json'),
+    'utf8',
+  ),
 );
 
 const schema = {
@@ -68,7 +64,7 @@ const mount = (
   data: any = initial,
   formSchema: any = schema,
   uischema: any = ui,
-  config: any = {}
+  config: any = {},
 ) => {
   act(() =>
     root.render(
@@ -83,14 +79,14 @@ const mount = (
         onChange={(event) => {
           latest = event.data;
         }}
-      />
-    )
+      />,
+    ),
   );
   act(() => vi.advanceTimersByTime(50));
 };
 const click = (name: string) => {
   const button = Array.from(document.querySelectorAll('button')).find(
-    (b) => (b.getAttribute('aria-label') ?? b.textContent) === name
+    (b) => (b.getAttribute('aria-label') ?? b.textContent) === name,
   );
   expect(button, name).toBeTruthy();
   act(() => button!.click());
@@ -101,7 +97,7 @@ const change = (value: string) => {
   act(() => {
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -144,7 +140,9 @@ it.each(['Address', 'Phones'])('applies isolated %s edits', (label) => {
   change('Changed');
   click('Apply');
   expect(
-    label === 'Address' ? latest.rows[0].address.city : latest.rows[0].phones[0]
+    label === 'Address'
+      ? latest.rows[0].address.city
+      : latest.rows[0].phones[0],
   ).toBe('Changed');
 });
 it.each(['Address', 'Phones'])('stages clearing %s until Apply', (label) => {
@@ -154,17 +152,17 @@ it.each(['Address', 'Phones'])('stages clearing %s until Apply', (label) => {
   expect(latest).toEqual(initial);
   click('Apply');
   expect(
-    label === 'Address' ? latest.rows[0].address : latest.rows[0].phones
+    label === 'Address' ? latest.rows[0].address : latest.rows[0].phones,
   ).toEqual(label === 'Address' ? {} : []);
 });
 it('permits readonly inspection but disables edits and Apply', () => {
   mount(true);
   click('Edit Address');
   expect(
-    document.querySelector<HTMLInputElement>('[role="dialog"] input')!.disabled
+    document.querySelector<HTMLInputElement>('[role="dialog"] input')!.disabled,
   ).toBe(true);
   const apply = Array.from(document.querySelectorAll('button')).find(
-    (b) => b.textContent === 'Apply'
+    (b) => b.textContent === 'Apply',
   )!;
   expect(apply.disabled).toBe(true);
   expect(document.querySelector('[aria-label="Remove Address"]')).toBeNull();
@@ -172,7 +170,7 @@ it('permits readonly inspection but disables edits and Apply', () => {
 it('renders every mixed column in the shared spec staff table', () => {
   mount(false, staffData, staffSchema, { ...ui, scope: '#/properties/staff' });
   expect(container.querySelectorAll('thead th').length).toBe(
-    Object.keys(staffSchema.properties.staff.items.properties).length + 1
+    Object.keys(staffSchema.properties.staff.items.properties).length + 1,
   );
   expect(container.textContent).not.toContain('No applicable cell');
 });
@@ -183,7 +181,7 @@ it('does not overwrite an external change while a draft is open', () => {
   change('Draft');
   mount(false, { rows: [{ ...initial.rows[0], address: { city: 'Paris' } }] });
   const apply = Array.from(document.querySelectorAll('button')).find(
-    (b) => b.textContent === 'Apply'
+    (b) => b.textContent === 'Apply',
   )!;
   expect(apply.disabled).toBe(true);
   click('Cancel');
@@ -194,7 +192,7 @@ it('reorders table rows with the requested move buttons', () => {
     false,
     { rows: [initial.rows[0], { ...initial.rows[0], name: 'Grace' }] },
     schema,
-    { ...ui, options: { ...ui.options, showSortButtons: true } }
+    { ...ui, options: { ...ui.options, showSortButtons: true } },
   );
   click('Move down');
   expect(latest.rows.map((row: any) => row.name)).toEqual(['Grace', 'Ada']);
@@ -207,8 +205,8 @@ it.each(['Address', 'Phones'])(
     const remove = () => {
       const buttons = Array.from(
         container.querySelectorAll<HTMLButtonElement>(
-          'button[aria-label^="Remove"]'
-        )
+          'button[aria-label^="Remove"]',
+        ),
       );
       act(() => buttons[label === 'Address' ? 0 : 1].click());
       act(() => vi.advanceTimersByTime(50));
@@ -220,9 +218,9 @@ it.each(['Address', 'Phones'])(
     remove();
     click('Yes');
     expect(
-      latest.rows[0][label === 'Address' ? 'address' : 'phones']
+      latest.rows[0][label === 'Address' ? 'address' : 'phones'],
     ).toBeUndefined();
-  }
+  },
 );
 
 it.each([{}, []])(
@@ -232,7 +230,7 @@ it.each([{}, []])(
     click('Remove Address');
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     expect(latest.rows[0].address).toBeUndefined();
-  }
+  },
 );
 
 it('shows descendant errors on object and array summaries without leaking sibling errors', () => {
@@ -247,11 +245,11 @@ it('shows descendant errors on object and array summaries without leaking siblin
         { name: 'Grace', address: { city: 'London' }, phones: ['123'] },
       ],
     },
-    invalidSchema
+    invalidSchema,
   );
   const composites = container.querySelectorAll('[class~="group/composite"]');
   expect(
-    composites[0].querySelector('button[aria-label*="city"]')
+    composites[0].querySelector('button[aria-label*="city"]'),
   ).toBeTruthy();
   expect(composites[1].querySelector('button[aria-label*="3"]')).toBeTruthy();
   expect(composites[2].querySelector('svg.lucide-circle-alert')).toBeNull();
@@ -265,10 +263,10 @@ it('renders combinator cells with errors only on the invalid example row', () =>
         require.resolve(
           '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/' +
             name +
-            '.json'
+            '.json',
         ),
-        'utf8'
-      )
+        'utf8',
+      ),
     );
   const exampleSchema = load('schema');
   const exampleData = load('data');
@@ -280,24 +278,24 @@ it('renders combinator cells with errors only on the invalid example row', () =>
   for (let index = 0; index < 5; index++) {
     expect(cells[index].querySelector('svg.lucide-circle-alert')).toBeTruthy();
     expect(
-      cells[index + 5].querySelector('svg.lucide-circle-alert')
+      cells[index + 5].querySelector('svg.lucide-circle-alert'),
     ).toBeNull();
   }
   for (const label of ['OneOf contact', 'AnyOf contact', 'AllOf contact']) {
     click('Edit ' + label);
     expect(document.querySelector('[role="dialog"]')).toBeTruthy();
     expect(
-      document.querySelector('[role="dialog"]')!.textContent
+      document.querySelector('[role="dialog"]')!.textContent,
     ).not.toContain('No applicable renderer');
     expect(
-      document.querySelector('[role="dialog"]')!.textContent
+      document.querySelector('[role="dialog"]')!.textContent,
     ).not.toContain('Full name');
     if (label === 'OneOf contact') {
       expect(
-        document.querySelector('[role="dialog"] [role="combobox"]')
+        document.querySelector('[role="dialog"] [role="combobox"]'),
       ).toBeTruthy();
       expect(
-        document.querySelector('[role="dialog"] [role="tablist"]')
+        document.querySelector('[role="dialog"] [role="tablist"]'),
       ).toBeNull();
     }
     click('Cancel');
@@ -327,11 +325,11 @@ it.each([false, true])(
     expect(container.textContent).toContain('Row presentation');
     expect(container.textContent).toContain('Preview');
     const edit = container.querySelector<HTMLButtonElement>(
-      '[aria-label^="Edit "]'
+      '[aria-label^="Edit "]',
     );
     expect(Boolean(edit)).toBe(withDetail);
     const label = Array.from(container.querySelectorAll('span')).find(
-      (el) => el.textContent === 'Row presentation'
+      (el) => el.textContent === 'Row presentation',
     );
     act(() => label?.click());
     expect(document.querySelector('[role="dialog"]')).toBeNull();
@@ -340,7 +338,7 @@ it.each([false, true])(
       expect(document.querySelector('[role="dialog"]')).not.toBeNull();
     }
     expect(container.querySelector('[aria-label^="Remove "]')).toBeNull();
-  }
+  },
 );
 
 it('uses the global type indicator default and honors explicit cell overrides', () => {

@@ -2,7 +2,7 @@ import './renderers/MatchMediaMock';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { antdRenderers } from '../src';
 
 it('marks required table columns and honors live hide settings and cell overrides', async () => {
@@ -42,8 +42,8 @@ it('marks required table columns and honors live hide settings and cell override
           data={{ rows: [{ city: 'Paris', code: 'PAR' }] }}
           config={{ hideRequiredAsterisk: hide }}
           renderers={antdRenderers}
-        />
-      )
+        />,
+      ),
     );
   };
   const headers = () =>
@@ -51,16 +51,16 @@ it('marks required table columns and honors live hide settings and cell override
   try {
     await render(false);
     expect(headers().some((t) => t?.includes('City') && t.includes('*'))).toBe(
-      true
+      true,
     );
     expect(headers().some((t) => t?.includes('Code') && t.includes('*'))).toBe(
-      false
+      false,
     );
     await render(true);
     expect(headers().some((t) => t?.includes('*'))).toBe(false);
     await render(true, false);
     expect(headers().some((t) => t?.includes('City') && t.includes('*'))).toBe(
-      true
+      true,
     );
   } finally {
     act(() => root.unmount());

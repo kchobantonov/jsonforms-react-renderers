@@ -64,10 +64,10 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
     return tableColumnFields(
       schema.properties ?? {},
       definitions,
-      getValidColumnProps(schema, cellOptions)
+      getValidColumnProps(schema, cellOptions),
     ).map((prop) => {
       const style = tableColumnStyle(
-        definitions?.find((column) => column.field === prop)
+        definitions?.find((column) => column.field === prop),
       );
       const props = {
         propName: prop,
@@ -89,7 +89,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
         render: (
           _field: any,
           row: { index: number; key: number },
-          _index: number
+          _index: number,
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
           if (definitions?.some((c) => c.field === prop && c.scope === '#'))
@@ -136,7 +136,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
         render: (
           _field: any,
           row: { index: number; key: number },
-          _index: number
+          _index: number,
         ) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
@@ -149,7 +149,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
 
 const getValidColumnProps = (
   scopedSchema: JsonSchema,
-  cellOptions?: Record<string, unknown>
+  cellOptions?: Record<string, unknown>,
 ) => {
   if (
     scopedSchema.type === 'object' &&
@@ -160,7 +160,7 @@ const getValidColumnProps = (
         // Array columns are skipped by default because a plain cell cannot show
         // them, but a `cells` entry says how to summarise one, so keep it.
         scopedSchema.properties[prop].type !== 'array' ||
-        Boolean(cellOptions?.[prop])
+        Boolean(cellOptions?.[prop]),
     );
   }
   // primitives
@@ -180,7 +180,7 @@ interface RowDataCellProps {
 
 const ctxToDataCellProps = (
   ctx: JsonFormsStateContext,
-  ownProps: RowDataCellProps
+  ownProps: RowDataCellProps,
 ): DataCellProps => {
   const path =
     ownProps.rowPath +
@@ -190,9 +190,9 @@ const ctxToDataCellProps = (
       errorsAt(
         path,
         ownProps.schema,
-        (p) => p === path
-      )(ctx.core.errors).map((error: ErrorObject) => error.message)
-    )
+        (p) => p === path,
+      )(ctx.core.errors).map((error: ErrorObject) => error.message),
+    ),
   );
   return {
     propName: ownProps.propName,
@@ -241,11 +241,11 @@ const ActionCell = ({
 }: ActionCellProps & WithDeleteDialogSupport) => {
   const moveUp = useMemo(
     () => moveUpCreator(path, rowIndex),
-    [moveUpCreator, path, rowIndex]
+    [moveUpCreator, path, rowIndex],
   );
   const moveDown = useMemo(
     () => moveDownCreator(path, rowIndex),
-    [moveDownCreator, path, rowIndex]
+    [moveDownCreator, path, rowIndex],
   );
 
   return (
@@ -300,7 +300,7 @@ const generateColumns = (props: GenerateColumns) => {
             render: (
               _field: any,
               row: { index: number; key: number },
-              _index: number
+              _index: number,
             ) => {
               const rowIndex = row.index;
               const childPath = Paths.compose(path, `${rowIndex}`);
@@ -320,7 +320,7 @@ const generateColumns = (props: GenerateColumns) => {
             },
           },
         ]
-      : []
+      : [],
   );
 };
 
@@ -337,7 +337,7 @@ const CollectionTable = ({
     props.uischema.options?.pagination,
     props.config,
     'array',
-    true
+    true,
   );
   const [columnWidths, setColumnWidths] = useColumnWidths();
   const detail = useRowDetail(props);
@@ -399,7 +399,7 @@ const CollectionTable = ({
                   ? {
                       width: Object.values(columnWidths).reduce(
                         (sum, value) => sum + value,
-                        0
+                        0,
                       ),
                       maxWidth: 'none',
                     }
@@ -416,7 +416,7 @@ const CollectionTable = ({
                 x: columnWidths.__selection
                   ? Object.values(columnWidths).reduce(
                       (sum, value) => sum + value,
-                      0
+                      0,
                     )
                   : 'max-content',
               }}
@@ -430,7 +430,7 @@ const CollectionTable = ({
                   };
                 const field = column.dataIndex;
                 const definition = props.uischema.options?.columnDefs?.find(
-                  (item: TableColumnDefinition) => item.field === field
+                  (item: TableColumnDefinition) => item.field === field,
                 );
                 const width = columnWidths[field] ?? column.width;
                 return {
@@ -545,7 +545,7 @@ const CollectionTable = ({
               onClick={selection.request}
             />
           </Tooltip>
-        </React.Fragment>
+        </React.Fragment>,
       )}
       <DeleteDialog
         open={selection.confirming}

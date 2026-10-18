@@ -22,7 +22,7 @@ export const formatErrorSummary = (
   rootSchema: import('@jsonforms/core').JsonSchema | undefined,
   rootUiSchema: import('@jsonforms/core').UISchemaElement | undefined,
   translate: import('@jsonforms/core').Translator,
-  translateError = defaultErrorTranslator
+  translateError = defaultErrorTranslator,
 ): ErrorSummaryEntry[] => {
   const findControl = (node: any, scope: string): any => {
     if (node?.type === 'Control' && node.scope === scope) return node;
@@ -57,12 +57,12 @@ export const formatErrorSummary = (
         const fallbackLabel =
           typeof control?.label === 'string'
             ? control.label
-            : schema?.title ?? segment;
+            : (schema?.title ?? segment);
         labels.push(
           translate(
             getI18nKey(schema, control, prefix, 'label'),
-            fallbackLabel
-          ) ?? fallbackLabel
+            fallbackLabel,
+          ) ?? fallbackLabel,
         );
       }
     }
@@ -73,7 +73,7 @@ export const formatErrorSummary = (
       translate,
       schema,
       control,
-      path
+      path,
     );
     return { path: labels.join(' / '), message };
   });
@@ -82,7 +82,7 @@ export const formatErrorSummary = (
 export const useErrorSummary = (
   fallback: string,
   path?: string,
-  active = true
+  active = true,
 ) => {
   const context = useJsonForms();
   const translate = useTranslator();
@@ -90,7 +90,7 @@ export const useErrorSummary = (
   const errors =
     path === undefined
       ? noErrors
-      : indexedPathErrors(primary, additional).get(path) ?? noErrors;
+      : (indexedPathErrors(primary, additional).get(path) ?? noErrors);
   return useMemo(() => {
     if (!active || !fallback) return [];
     const entries = formatErrorSummary(
@@ -98,7 +98,7 @@ export const useErrorSummary = (
       context.core?.schema,
       context.core?.uischema,
       translate,
-      context.i18n?.translateError
+      context.i18n?.translateError,
     );
     return entries.length
       ? entries
@@ -132,7 +132,7 @@ export const useErrorSummaryCount = (fallback: string, path?: string) => {
 export const usePathErrorIndicator = (
   path: string,
   options?: Record<string, any>,
-  includeChildren = true
+  includeChildren = true,
 ) => {
   const context = useJsonForms();
   const t = useI18n();
@@ -146,9 +146,9 @@ export const usePathErrorIndicator = (
         (error) =>
           getControlPath(error) === path &&
           error.keyword !== 'propertyNames' &&
-          (error as any).propertyName === undefined
+          (error as any).propertyName === undefined,
       ),
-    [errors, path]
+    [errors, path],
   );
   const children = errors.length - own.length;
   const showCount =
@@ -162,7 +162,7 @@ export const usePathErrorIndicator = (
         context.core?.schema,
         context.core?.uischema,
         translate,
-        context.i18n?.translateError
+        context.i18n?.translateError,
       ).map((entry) => entry.message),
     [
       own,
@@ -170,7 +170,7 @@ export const usePathErrorIndicator = (
       context.core?.uischema,
       translate,
       context.i18n?.translateError,
-    ]
+    ],
   );
   const messages = [...ownMessages];
   if (includeChildren && children)
@@ -181,8 +181,8 @@ export const usePathErrorIndicator = (
             ? 'validation.childrenErrorCount'
             : 'validation.childrenErrorsCount'
           : 'validation.childrenErrors',
-        { count: children }
-      )
+        { count: children },
+      ),
     );
   return messages.join('\n');
 };
@@ -195,7 +195,7 @@ const pathCache = new WeakMap<
 /** Share descendant lists across all cells for each validation result. */
 export const indexedPathErrors = (
   primary = noErrors,
-  additional = noErrors
+  additional = noErrors,
 ) => {
   let secondary = pathCache.get(primary);
   if (!secondary) {
@@ -234,7 +234,7 @@ export const useCollectionErrors = (path: string) => {
       (error) =>
         getControlPath(error)
           .slice(path ? path.length + 1 : 0)
-          .split('.')[0]
+          .split('.')[0],
     )
     .find((segment) => /^\d+$/.test(segment));
   return {
@@ -248,7 +248,7 @@ export const useCollectionErrors = (path: string) => {
 /** Only explicit detail controls can make Label summary errors actionable. */
 export const labelDetailErrorPaths = (
   path: string,
-  options: any
+  options: any,
 ): string[] | undefined => {
   if (options?.summary?.type !== 'Label') return undefined;
   const paths: string[] = [];
@@ -267,28 +267,30 @@ export const labelDetailErrorPaths = (
 /** Include errors on a composite value and all descendants, with core path semantics. */
 export const usePathErrorMessages = (
   path: string,
-  includedPaths?: string[]
+  includedPaths?: string[],
 ): string => {
   const context = useJsonForms();
   const translate = useTranslator();
   const index = indexedPathErrors(...displayableErrors(context.core ?? {}));
   const errors =
     includedPaths === undefined
-      ? index.get(path) ?? noErrors
+      ? (index.get(path) ?? noErrors)
       : Array.from(
           new Set(
-            includedPaths.flatMap((included) => index.get(included) ?? noErrors)
-          )
+            includedPaths.flatMap(
+              (included) => index.get(included) ?? noErrors,
+            ),
+          ),
         );
   return formatErrorSummary(
     errors,
     context.core?.schema,
     context.core?.uischema,
     translate,
-    context.i18n?.translateError
+    context.i18n?.translateError,
   )
     .map((entry) =>
-      entry.path ? `${entry.path}: ${entry.message}` : entry.message
+      entry.path ? `${entry.path}: ${entry.message}` : entry.message,
     )
     .join('\n');
 };
@@ -302,7 +304,7 @@ export const ErrorSummaryList = ({
   renderToggle: (
     label: string,
     toggle: () => void,
-    expanded: boolean
+    expanded: boolean,
   ) => React.ReactNode;
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -315,7 +317,7 @@ export const ErrorSummaryList = ({
           entries.length === 1
             ? 'validation.containerError'
             : 'validation.containerErrors',
-          { count: entries.length }
+          { count: entries.length },
         )}
       </strong>
       <ul
@@ -340,7 +342,7 @@ export const ErrorSummaryList = ({
             count: entries.length - limit,
           }),
           () => setExpanded(!expanded),
-          expanded
+          expanded,
         )}
     </div>
   );
@@ -364,18 +366,18 @@ export const useAdditionalPropertyErrors = (path: string) => {
           .split('/')
           .slice(1)
           .map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'))
-          .join('.') === path
+          .join('.') === path,
     );
     return formatErrorSummary(
       errors,
       context.core?.schema,
       context.core?.uischema,
       translate,
-      context.i18n?.translateError
+      context.i18n?.translateError,
     )
       .map(
         (entry, index) =>
-          `${errors[index].params.additionalProperty}: ${entry.message}`
+          `${errors[index].params.additionalProperty}: ${entry.message}`,
       )
       .join('\n');
   }, [
@@ -403,12 +405,12 @@ export const usePropertyNameErrors = (path: string) => {
           .split('/')
           .slice(1)
           .map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'))
-          .join('.') === path
+          .join('.') === path,
     );
     const specificNames = new Set(
       errors
         .filter((error) => error.keyword !== 'propertyNames')
-        .map((error) => (error as any).propertyName)
+        .map((error) => (error as any).propertyName),
     );
     for (const error of errors) {
       const name = (error as any).propertyName ?? error.params.propertyName;
@@ -419,7 +421,7 @@ export const usePropertyNameErrors = (path: string) => {
         context.core?.schema,
         context.core?.uischema,
         translate,
-        context.i18n?.translateError
+        context.i18n?.translateError,
       )[0].message;
       result.set(name, [result.get(name), message].filter(Boolean).join('\n'));
     }
@@ -445,7 +447,7 @@ export const useNameConstraintMessage = () => {
           undefined,
           undefined,
           translate,
-          context.i18n?.translateError
+          context.i18n?.translateError,
         )
           .map((entry) => entry.message)
           .join('\n')

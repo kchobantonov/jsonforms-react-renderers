@@ -95,7 +95,7 @@ const getValidColumnProps = (scopedSchema: JsonSchema) => {
     typeof scopedSchema.properties === 'object'
   ) {
     return Object.keys(scopedSchema.properties).filter(
-      (prop) => scopedSchema.properties[prop].type !== 'array'
+      (prop) => scopedSchema.properties[prop].type !== 'array',
     );
   }
   // primitives
@@ -113,7 +113,7 @@ interface RowDataCellProps {
 
 const ctxToDataCellProps = (
   ctx: JsonFormsStateContext,
-  ownProps: RowDataCellProps
+  ownProps: RowDataCellProps,
 ): DataCellProps => {
   const path =
     ownProps.rowPath +
@@ -123,9 +123,9 @@ const ctxToDataCellProps = (
       errorsAt(
         path,
         ownProps.schema,
-        (p) => p === path
-      )(ctx.core.errors).map((error: ErrorObject) => error.message)
-    )
+        (p) => p === path,
+      )(ctx.core.errors).map((error: ErrorObject) => error.message),
+    ),
   );
   return {
     propName: ownProps.propName,
@@ -176,11 +176,11 @@ const ActionCell = ({
 }: ActionCellProps & WithDeleteDialogSupport) => {
   const moveUp = useMemo(
     () => moveUpCreator(path, rowIndex),
-    [moveUpCreator, path, rowIndex]
+    [moveUpCreator, path, rowIndex],
   );
   const moveDown = useMemo(
     () => moveDownCreator(path, rowIndex),
-    [moveDownCreator, path, rowIndex]
+    [moveDownCreator, path, rowIndex],
   );
 
   return (
@@ -252,7 +252,7 @@ const generateColumns = (props: GenerateColumns) => {
             },
           },
         ]
-      : []
+      : [],
   );
 };
 

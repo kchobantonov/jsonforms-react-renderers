@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -60,8 +60,8 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   /**
@@ -79,10 +79,10 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
     });
     await settle();
     const option = Array.from(
-      document.querySelectorAll<HTMLElement>('.ant-select-item-option')
+      document.querySelectorAll<HTMLElement>('.ant-select-item-option'),
     ).find(
       (entry) =>
-        (entry.getAttribute('title') ?? entry.textContent ?? '') === label
+        (entry.getAttribute('title') ?? entry.textContent ?? '') === label,
     );
     expect(option, `no option labelled ${label}`).toBeTruthy();
     act(() => option!.click());
@@ -108,7 +108,9 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
       document.querySelector('[data-confirm]')?.getAttribute('data-confirm'),
     accept: async () => {
       const ok = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((button) => button.textContent?.includes('Yes'));
       act(() => ok!.click());
       await settle();
@@ -141,7 +143,7 @@ describe('a mixed type change', () => {
     const { choose, prompted, promptFor, stored, unmount } = render(
       mixedSchema,
       mixedUi,
-      { payload: { supplier: 'Cascade Supplies' } }
+      { payload: { supplier: 'Cascade Supplies' } },
     );
     await settle();
     await choose('string');
@@ -188,7 +190,7 @@ describe('a mixed type change', () => {
     const { choose, prompted, unmount } = render(
       mixedSchema,
       { ...mixedUi, options: { confirmation: { typeChange: 'always' } } },
-      { payload: 'TASK-14' }
+      { payload: 'TASK-14' },
     );
     await settle();
     await choose('object');
@@ -200,7 +202,7 @@ describe('a mixed type change', () => {
     const { choose, prompted, unmount } = render(
       mixedSchema,
       { ...mixedUi, options: { confirmation: { typeChange: 'never' } } },
-      { payload: { supplier: 'Cascade Supplies' } }
+      { payload: { supplier: 'Cascade Supplies' } },
     );
     await settle();
     await choose('string');
@@ -314,7 +316,7 @@ describe('a oneOf branch change', () => {
     const { choose, prompted, unmount } = render(
       zeroSchema,
       { type: 'Control', scope: '#/properties/amount' } as any,
-      { amount: { fixed: 0 } }
+      { amount: { fixed: 0 } },
     );
     await settle();
     await choose('Percent');
@@ -331,7 +333,7 @@ describe('a oneOf branch change', () => {
         jsonformsExtended: {
           confirmation: { renderers: { oneOf: { branchChange: 'never' } } },
         },
-      }
+      },
     );
     await settle();
     await choose('By phone');
@@ -376,7 +378,7 @@ const deleteTreeNode = async (container: HTMLElement, name: string) => {
   const tree = container.querySelector('.jsonforms-mixed-tree');
   expect(tree, 'the structure workspace did not render').toBeTruthy();
   const button = Array.from(
-    tree!.querySelectorAll<HTMLButtonElement>('button')
+    tree!.querySelectorAll<HTMLButtonElement>('button'),
   ).find((entry) => entry.getAttribute('aria-label') === `Delete ${name}`);
   expect(button, `no Delete action for ${name} in the tree`).toBeTruthy();
   act(() => button!.click());
@@ -391,7 +393,7 @@ describe('a mixed tree delete', () => {
     const { container, prompted, promptFor, stored, unmount } = render(
       treeSchema,
       treeUi,
-      treeData()
+      treeData(),
     );
     await settle();
     await deleteTreeNode(container, 'assignment');
@@ -408,13 +410,13 @@ describe('a mixed tree delete', () => {
     const { container, accept, stored, unmount } = render(
       treeSchema,
       treeUi,
-      treeData()
+      treeData(),
     );
     await settle();
     await deleteTreeNode(container, 'assignment');
     await accept();
     expect(
-      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment')
+      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment'),
     ).toBe(false);
     expect(stored().payload.phases).toEqual(['PLAN-REVIEW', 'REVIEW-DONE']);
     expect(stored().payload.supplier).toBe('Cascade Supplies');
@@ -425,7 +427,7 @@ describe('a mixed tree delete', () => {
     const { container, prompted, stored, unmount } = render(
       treeSchema,
       { ...treeUi, options: { confirmation: { delete: 'never' } } },
-      treeData()
+      treeData(),
     );
     await settle();
     await deleteTreeNode(container, 'assignment');
@@ -433,7 +435,7 @@ describe('a mixed tree delete', () => {
     // Proves the delete is wired up, so the tests above are not passing
     // merely because nothing can be deleted.
     expect(
-      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment')
+      Object.prototype.hasOwnProperty.call(stored().payload, 'assignment'),
     ).toBe(false);
     unmount();
   });
@@ -450,7 +452,7 @@ describe('a mixed tree delete', () => {
     await deleteTreeNode(container, 'assignment');
     expect(document.querySelectorAll('.ant-modal')).toHaveLength(1);
     expect(
-      document.querySelector('.ant-modal .ant-modal-title')?.textContent
+      document.querySelector('.ant-modal .ant-modal-title')?.textContent,
     ).toBe('Delete this value?');
     unmount();
   });
@@ -459,7 +461,7 @@ describe('a mixed tree delete', () => {
     const { container, prompted, unmount } = render(
       treeSchema,
       treeUi,
-      treeData()
+      treeData(),
     );
     await settle();
     // Empty containers do not prompt under the complex fallback.

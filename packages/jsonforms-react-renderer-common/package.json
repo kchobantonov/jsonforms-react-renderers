@@ -30,12 +30,12 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
+    "build": "vp build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
     "typecheck": "tsc --noEmit && tsc --noEmit -p test/tsconfig.json",
-    "test": "vitest run",
+    "test": "vp test run",
     "clean": "rimraf lib coverage",
-    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
-    "lint:fix": "pnpm lint --fix"
+    "lint": "vp lint .",
+    "lint:fix": "vp run lint --fix"
   },
   "dependencies": {
     "lodash": "^4.18.1",
@@ -57,12 +57,13 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "jsdom": "^22.0.0",
-    "typescript": "~4.9.5",
-    "vite": "^7.3.7",
-    "vitest": "4.1.12",
+    "typescript": "~5.9.3",
+    "vite": "catalog:",
+    "vitest": "catalog:",
     "rimraf": "^3.0.2",
     "tslib": "^2.5.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "vite-plus": "catalog:"
   },
   "publishConfig": {
     "access": "public"

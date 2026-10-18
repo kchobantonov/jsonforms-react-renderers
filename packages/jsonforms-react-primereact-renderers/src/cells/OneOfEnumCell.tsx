@@ -38,7 +38,7 @@ import {
 import { PrimeSelect } from '../prime-controls/PrimeSelect';
 
 export const OneOfEnumCell = (
-  props: EnumCellProps & WithClassname & TranslateProps
+  props: EnumCellProps & WithClassname & TranslateProps,
 ) => <PrimeSelect {...props} />;
 
 /**
@@ -47,10 +47,10 @@ export const OneOfEnumCell = (
  */
 export const oneOfEnumCellTester: RankedTester = rankWith(
   2,
-  isOneOfEnumControl
+  isOneOfEnumControl,
 );
 
 export default withJsonFormsOneOfEnumCellProps(
   withTranslateProps(React.memo(OneOfEnumCell)),
-  false
+  false,
 );

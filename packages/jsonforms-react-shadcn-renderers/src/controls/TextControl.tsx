@@ -31,7 +31,7 @@ export const ShadcnTextControl = (props: ControlProps) => {
       <Textarea
         id={id}
         maxLength={
-          props.uischema.options?.restrict ?? props.config?.restrict
+          (props.uischema.options?.restrict ?? props.config?.restrict)
             ? props.schema.maxLength
             : undefined
         }

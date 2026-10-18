@@ -19,7 +19,7 @@ export const PrimeNullControl = (props: ControlProps) => {
           onChange={(event) =>
             props.handleChange(
               props.path,
-              event.value === true ? null : undefined
+              event.value === true ? null : undefined,
             )
           }
         />

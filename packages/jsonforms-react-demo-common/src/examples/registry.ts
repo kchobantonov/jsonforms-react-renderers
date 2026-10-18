@@ -33,7 +33,7 @@ export const OFFICIAL_EXAMPLE_LABEL_PREFIX = 'JsonForms: ';
  * going through the spec-example registry.
  */
 export const registerProjectExamples = (
-  examples: ExampleWithTranslations[]
+  examples: ExampleWithTranslations[],
 ): void => {
   examples.forEach((example) => projectExampleNames.add(example.name));
   registerExamples(examples);
@@ -101,6 +101,6 @@ export const listExamples = (): ExampleDescription[] => {
   registerOfficialExamplesWithPrefix();
   return getExamples().filter(
     (example) =>
-      isProjectExample(example.name) || isPrefixedOfficialExample(example.name)
+      isProjectExample(example.name) || isPrefixedOfficialExample(example.name),
   );
 };

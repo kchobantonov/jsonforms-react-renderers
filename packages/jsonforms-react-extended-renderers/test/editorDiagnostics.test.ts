@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   EDITOR_DIAGNOSTIC_KEYWORD,
   countBlockingMarkers,
@@ -29,7 +29,7 @@ describe('which markers count', () => {
         { severity: 2 },
         { severity: 1 },
         { severity: 8 },
-      ])
+      ]),
     ).toBe(2);
   });
 
@@ -58,13 +58,13 @@ describe('the propagateErrors option', () => {
     expect(
       resolvePropagateErrors(undefined, {
         jsonformsExtended: { propagateErrors: true },
-      })
+      }),
     ).toBe(true);
   });
 
   it('falls back to the flat form config beneath that', () => {
     expect(resolvePropagateErrors(undefined, { propagateErrors: true })).toBe(
-      true
+      true,
     );
   });
 
@@ -73,14 +73,14 @@ describe('the propagateErrors option', () => {
     expect(
       resolvePropagateErrors(
         { propagateErrors: false },
-        { jsonformsExtended: { propagateErrors: true } }
-      )
+        { jsonformsExtended: { propagateErrors: true } },
+      ),
     ).toBe(false);
     expect(
       resolvePropagateErrors(
         { propagateErrors: true },
-        { propagateErrors: false }
-      )
+        { propagateErrors: false },
+      ),
     ).toBe(true);
   });
 });

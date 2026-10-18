@@ -74,7 +74,7 @@ export const ShadcnAnyOfRenderer = ({
   const selectorId = useId();
   const [selectedIndex, setSelectedIndex] = useState(
     indexOfFittingSchema ??
-      (combinator === 'oneOf' && isEmptyData(data) ? -1 : 0)
+      (combinator === 'oneOf' && isEmptyData(data) ? -1 : 0),
   );
   const confirmation = useConfirmation();
   const [pendingIndex, setPendingIndex] = useState<number>();
@@ -95,7 +95,7 @@ export const ShadcnAnyOfRenderer = ({
 
   const translate = useTranslator();
   const [primaryErrors, additionalErrors] = displayableErrors(
-    formContext.core ?? {}
+    formContext.core ?? {},
   );
   const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
     ...(primaryErrors ?? []),
@@ -111,7 +111,7 @@ export const ShadcnAnyOfRenderer = ({
     combinator,
     uischema,
     path,
-    uischemas
+    uischemas,
   ).map((info) => {
     const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
     return typeof prefix === 'string'
@@ -127,12 +127,12 @@ export const ShadcnAnyOfRenderer = ({
       if (resetData) {
         handleChange(
           path,
-          createDefaultValue(renderInfos[index].schema, rootSchema)
+          createDefaultValue(renderInfos[index].schema, rootSchema),
         );
       }
       setSelectedIndex(index);
     },
-    [handleChange, path, renderInfos, rootSchema]
+    [handleChange, path, renderInfos, rootSchema],
   );
 
   const handleTabChange = (value: string) => {
@@ -153,11 +153,11 @@ export const ShadcnAnyOfRenderer = ({
               index < 0
                 ? clearedBranchValue(
                     isArrayElementPath(formContext.core?.data, path),
-                    renderInfos.map((info) => info.schema)
+                    renderInfos.map((info) => info.schema),
                   )
                 : createDefaultValue(renderInfos[index].schema, rootSchema),
-              schema
-            )
+              schema,
+            ),
           );
           setSelectedIndex(index);
         },
@@ -166,7 +166,7 @@ export const ShadcnAnyOfRenderer = ({
     }
     const nextDefault = createDefaultValue(
       renderInfos[index].schema,
-      rootSchema
+      rootSchema,
     );
 
     if (isEmptyData(data) || typeof data === typeof nextDefault) {

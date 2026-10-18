@@ -7,7 +7,7 @@ import {
   withJsonFormsLayoutProps,
   withJsonFormsControlProps,
 } from '@jsonforms/react';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import {
   TemplateRenderer,
   namedTemplateTester,
@@ -65,14 +65,14 @@ it('renders the published named-template example with fallback and inherited ove
           uischemas={registry}
           renderers={renderers}
           readonly
-        />
-      )
+        />,
+      ),
     );
     expect(tester).not.toHaveBeenCalled();
     expect(host.textContent).toContain('Custom heading');
     expect(host.textContent).toContain('Default heading');
     expect(host.textContent).toContain(
-      'Local heading overrides inherited heading'
+      'Local heading overrides inherited heading',
     );
     expect(host.textContent).toContain('Inherited email: ada@example.org');
     expect(host.querySelectorAll('output[data-path="name"]')).toHaveLength(2);
@@ -85,13 +85,13 @@ it('renders the published named-template example with fallback and inherited ove
           data={{ ...data, name: 'Grace' }}
           uischemas={registry}
           renderers={renderers}
-        />
-      )
+        />,
+      ),
     );
     expect(
       [...host.querySelectorAll('output[data-path="name"]')].map(
-        (el) => el.textContent
-      )
+        (el) => el.textContent,
+      ),
     ).toEqual(['Contact name: Grace', 'Default name: Grace']);
   } finally {
     act(() => root.unmount());
@@ -137,8 +137,8 @@ it('uses exact model names and the first match; missing templates and empty slot
               },
             } as any,
           ]}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).toBe('First model');
   } finally {

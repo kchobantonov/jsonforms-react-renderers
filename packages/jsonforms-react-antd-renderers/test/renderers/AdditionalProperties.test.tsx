@@ -33,7 +33,7 @@ const additionalPropertiesRenderer = withJsonFormsControlProps(
       schema={props.schema}
       uischema={props.uischema as ControlElement}
     />
-  )
+  ),
 );
 
 describe('AdditionalProperties', () => {
@@ -89,16 +89,16 @@ describe('AdditionalProperties', () => {
             type: 'Control',
             scope: '#/properties/additionalPropertiesMap',
           }}
-        />
+        />,
       );
     });
 
     const input = container.querySelector(
-      'input[placeholder="Property name"]'
+      'input[placeholder="Property name"]',
     ) as HTMLInputElement;
     const setInputValue = Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )?.set;
 
     act(() => {
@@ -114,10 +114,10 @@ describe('AdditionalProperties', () => {
     */
     expect(
       container.querySelector('.jsonforms-additional-properties-error')
-        ?.textContent
+        ?.textContent,
     ).toContain('^[A-Za-z_][A-Za-z0-9_]*$');
     expect(
-      (container.querySelector('button') as HTMLButtonElement).disabled
+      (container.querySelector('button') as HTMLButtonElement).disabled,
     ).toBe(true);
   });
 
@@ -155,19 +155,19 @@ describe('AdditionalProperties', () => {
             {
               tester: rankWith(
                 10,
-                schemaMatches((candidate) => candidate.type === 'object')
+                schemaMatches((candidate) => candidate.type === 'object'),
               ),
               renderer: additionalPropertiesRenderer,
             },
             {
               tester: rankWith(
                 100,
-                schemaMatches((candidate) => candidate.type === 'string')
+                schemaMatches((candidate) => candidate.type === 'string'),
               ),
               renderer: AjvProbe,
             },
           ]}
-        />
+        />,
       );
     });
 
@@ -185,16 +185,16 @@ describe('AdditionalProperties', () => {
           }}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
-        />
+        />,
       );
     });
 
     expect(container.textContent?.match(/string12/g)).toHaveLength(1);
     expect(
-      container.querySelector('[aria-label="Rename string12"]')
+      container.querySelector('[aria-label="Rename string12"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('[aria-label="Delete string12"]')
+      container.querySelector('[aria-label="Delete string12"]'),
     ).not.toBeNull();
   });
 
@@ -209,23 +209,23 @@ describe('AdditionalProperties', () => {
           }}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
-        />
+        />,
       );
     });
 
     const mixedRow = container.querySelector(
-      '.jsonforms-additional-property .jsonforms-mixed-renderer-primitive'
+      '.jsonforms-additional-property .jsonforms-mixed-renderer-primitive',
     );
     expect(
-      mixedRow?.querySelector('.jsonforms-mixed-renderer-type')
+      mixedRow?.querySelector('.jsonforms-mixed-renderer-type'),
     ).not.toBeNull();
     expect(
-      mixedRow?.querySelector('.jsonforms-mixed-renderer-value .ant-input')
+      mixedRow?.querySelector('.jsonforms-mixed-renderer-value .ant-input'),
     ).not.toBeNull();
     expect(
       mixedRow?.querySelector(
-        '.jsonforms-mixed-renderer-value .ant-form-item-label'
-      )
+        '.jsonforms-mixed-renderer-value .ant-form-item-label',
+      ),
     ).toBeNull();
     expect(container.textContent?.match(/dynamicString/g)).toHaveLength(1);
   });
@@ -244,10 +244,10 @@ describe('AdditionalProperties', () => {
       expectedValue,
       defaultValue?,
       // Widen the literal types inferred from the it.each tuple cases.
-      // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+      // oxlint-disable-next-line @typescript-eslint/no-inferrable-types
       providerPath: string = 'dynamic',
-      // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-      controlPath: string = 'dynamic'
+      // oxlint-disable-next-line @typescript-eslint/no-inferrable-types
+      controlPath: string = 'dynamic',
     ) => {
       const handleChange = vi.fn();
       const schema = {
@@ -284,22 +284,22 @@ describe('AdditionalProperties', () => {
                 />
               )}
             />
-          </DynamicPropertyProvider>
+          </DynamicPropertyProvider>,
         );
       });
 
       const clear = container.querySelector<HTMLButtonElement>(
-        'button[aria-label="Clear dynamic value"]'
+        'button[aria-label="Clear dynamic value"]',
       );
       expect(clear).not.toBeNull();
 
       await act(async () => {
         clear?.dispatchEvent(
-          new MouseEvent('click', { bubbles: true, cancelable: true })
+          new MouseEvent('click', { bubbles: true, cancelable: true }),
         );
       });
 
       expect(handleChange).toHaveBeenCalledWith(controlPath, expectedValue);
-    }
+    },
   );
 });

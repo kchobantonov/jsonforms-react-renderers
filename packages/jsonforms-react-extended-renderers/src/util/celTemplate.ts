@@ -68,7 +68,7 @@ const findsConstructorKey = (value: unknown, depth = 0): boolean => {
     return true;
   }
   return Object.values(value as Record<string, unknown>).some((child) =>
-    findsConstructorKey(child, depth + 1)
+    findsConstructorKey(child, depth + 1),
   );
 };
 
@@ -143,7 +143,7 @@ export const renderTemplate = (
   scope: Record<string, unknown>,
   escape: (text: string) => string = (text) => text,
   locale?: string,
-  translate?: Translate
+  translate?: Translate,
 ): TemplateResult => {
   const failures: string[] = [];
   let text = '';
@@ -154,7 +154,7 @@ export const renderTemplate = (
     }
     try {
       const { text: rendered, failure } = display(
-        evaluateWith(segment.source, scope, locale, translate)
+        evaluateWith(segment.source, scope, locale, translate),
       );
       if (failure) {
         failures.push(`${segment.source.trim()} ${failure}`);
@@ -199,7 +199,7 @@ export const resolveTextParams = (
   raw: Record<string, unknown> | undefined,
   namespaceScope: Record<string, unknown>,
   locale?: string,
-  translate?: Translate
+  translate?: Translate,
 ): { params: Record<string, unknown>; failures: string[] } => {
   const params: Record<string, unknown> = {};
   const failures: string[] = [];
@@ -231,7 +231,7 @@ export const resolveTextParams = (
           segments[0].source,
           namespaceScope,
           locale,
-          translate
+          translate,
         );
       } catch (error) {
         if (!isAbsentData(error)) {
@@ -253,7 +253,7 @@ export const resolveTextParams = (
       namespaceScope,
       undefined,
       locale,
-      translate
+      translate,
     );
     for (const failure of rendered.failures) {
       failures.push(`${name}: ${failure}`);

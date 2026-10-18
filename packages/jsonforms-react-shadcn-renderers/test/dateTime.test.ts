@@ -33,7 +33,7 @@ describe('Shadcn picker value conversion', () => {
 
     expect(formatTimeValue(time)).toBe('07:05:09');
     expect(formatDateTimeValue(date, time)).toMatch(
-      /^2026-08-29T07:05:09[+-]\d{2}:\d{2}$/
+      /^2026-08-29T07:05:09[+-]\d{2}:\d{2}$/,
     );
   });
 });

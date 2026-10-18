@@ -18,7 +18,7 @@ export const BooleanToggleControl = (props: ControlProps) => (
 
 export const booleanToggleControlTester: RankedTester = rankWith(
   3,
-  and(isBooleanControl, optionIs('toggle', true))
+  and(isBooleanControl, optionIs('toggle', true)),
 );
 
 export default withJsonFormsControlProps(BooleanToggleControl);

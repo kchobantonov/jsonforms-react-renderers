@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 
 const harness = vi.hoisted(() => ({ emit: undefined as any }));
 vi.mock('@monaco-editor/react', () => ({
@@ -11,7 +11,7 @@ vi.mock('@monaco-editor/react', () => ({
     // and only JavaScript is unhappy with this snippet.
     React.useEffect(() => {
       props.onValidate?.(
-        props.language === 'javascript' ? [{ severity: 8 }] : []
+        props.language === 'javascript' ? [{ severity: 8 }] : [],
       );
     }, [props.language, props.value]);
     return React.createElement('textarea', {
@@ -138,12 +138,12 @@ describe('switching a language that makes the editor publish', () => {
       });
       await settle(150);
       const option = Array.from(
-        document.querySelectorAll('.ant-select-item-option-content')
+        document.querySelectorAll('.ant-select-item-option-content'),
       ).find((n) => n.textContent === label);
       expect(option, `no option ${label}`).toBeTruthy();
       await act(async () => {
         (option as HTMLElement).dispatchEvent(
-          new MouseEvent('click', { bubbles: true })
+          new MouseEvent('click', { bubbles: true }),
         );
       });
       await settle(150);

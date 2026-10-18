@@ -65,7 +65,7 @@ export const CombinatorBranch = ({
           }
         : context.core,
     }),
-    [context, localErrors]
+    [context, localErrors],
   );
   if (!enabled) return <>{children}</>;
   return (
@@ -79,7 +79,7 @@ export const CombinatorBranch = ({
  * Deduplicate equivalent feedback, retaining distinct constraints and targets. */
 export const mergeBranchErrors = (
   documentErrors: ErrorObject[],
-  branchErrors: ErrorObject[]
+  branchErrors: ErrorObject[],
 ): ErrorObject[] => {
   const buckets = new Map<string, ErrorObject[]>();
   return [...documentErrors, ...branchErrors].filter((error) => {

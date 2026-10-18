@@ -49,7 +49,7 @@ export const shadcnCells: JsonFormsCellRendererRegistryEntry[] = [
   {
     tester: booleanToggleControlTester,
     cell: asShadcnCell(
-      withJsonFormsControlProps(ShadcnBooleanToggleControl)
+      withJsonFormsControlProps(ShadcnBooleanToggleControl),
     ) as any,
   },
   {

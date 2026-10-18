@@ -59,7 +59,7 @@ export const AnyOfRenderer = ({
 
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
-    [setConfirmDialogOpen]
+    [setConfirmDialogOpen],
   );
 
   const handleTabChange = useCallback(
@@ -70,7 +70,7 @@ export const AnyOfRenderer = ({
         typeof data ===
           typeof createDefaultValue(
             anyOfRenderInfos[newIndex].schema,
-            rootSchema
+            rootSchema,
           )
       ) {
         setSelectedAnyOf(newIndex);
@@ -79,13 +79,13 @@ export const AnyOfRenderer = ({
         setConfirmDialogOpen(true);
       }
     },
-    [setConfirmDialogOpen, setSelectedAnyOf, data]
+    [setConfirmDialogOpen, setSelectedAnyOf, data],
   );
 
   const openNewTab = (newIndex: number) => {
     handleChange(
       path,
-      createDefaultValue(anyOfRenderInfos[newIndex].schema, rootSchema)
+      createDefaultValue(anyOfRenderInfos[newIndex].schema, rootSchema),
     );
     setSelectedAnyOf(newIndex);
   };
@@ -102,7 +102,7 @@ export const AnyOfRenderer = ({
     anyOf,
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   if (!visible) {

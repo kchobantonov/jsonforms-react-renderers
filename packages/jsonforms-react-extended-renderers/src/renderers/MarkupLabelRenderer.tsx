@@ -64,7 +64,7 @@ const asksForMarkup = (uischema: UISchemaElement): boolean => {
 export const markupLabelTester: RankedTester = rankWith(
   3,
   (uischema, _schema, _context) =>
-    uiTypeIs('Label')(uischema, _schema, _context) && asksForMarkup(uischema)
+    uiTypeIs('Label')(uischema, _schema, _context) && asksForMarkup(uischema),
 );
 
 /**
@@ -300,7 +300,7 @@ export const MarkupLabelRendererComponent = ({
               {t('markup.interpolationFailed', {
                 detail: [
                   ...reserved.map(
-                    (name) => `textParams.${name} is a reserved name`
+                    (name) => `textParams.${name} is a reserved name`,
                   ),
                   ...result.failures,
                 ].join('; '),
@@ -310,12 +310,12 @@ export const MarkupLabelRendererComponent = ({
         </>
       )}
     </InterpolatedText>,
-    diagnostic
+    diagnostic,
   );
 };
 
 export const MarkupLabelRenderer = withJsonFormsLabelProps(
-  MarkupLabelRendererComponent
+  MarkupLabelRendererComponent,
 );
 
 /** Binds the typography slots, for a renderer set that has them. */

@@ -27,7 +27,7 @@ let catalogs: Record<string, ExtendedLocaleCatalog> = defaultExtendedLocales;
 
 /** Replaces the supported set wholesale. */
 export const setExtendedLocales = (
-  next: Record<string, ExtendedLocaleCatalog>
+  next: Record<string, ExtendedLocaleCatalog>,
 ): void => {
   catalogs = next;
 };
@@ -41,14 +41,14 @@ const normalize = (locale: string) => locale.toLowerCase().replace(/_/g, '-');
 /** Adds or replaces one language, leaving the others alone. */
 export const registerExtendedLocale = (
   locale: string,
-  catalog: ExtendedLocaleCatalog
+  catalog: ExtendedLocaleCatalog,
 ): void => {
   catalogs = { ...catalogs, [normalize(locale)]: catalog };
 };
 
 /** The catalog for a locale, falling back to its language (`de-AT` -> `de`). */
 export const resolveExtendedLocale = (
-  locale: string | undefined
+  locale: string | undefined,
 ): ExtendedLocaleCatalog | undefined => {
   if (!locale) return undefined;
   const code = normalize(locale);
@@ -63,5 +63,5 @@ export const resolveExtendedLocale = (
  */
 export const extendedDefault = (
   locale: string | undefined,
-  key: ExtendedI18nKey
+  key: ExtendedI18nKey,
 ): string => resolveExtendedLocale(locale)?.[key] ?? extendedI18nDefaults[key];

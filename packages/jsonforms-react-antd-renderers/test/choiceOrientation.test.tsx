@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 
@@ -23,8 +23,8 @@ const render = (schema: any, options: any, data: any, config: any = {}) => {
         renderers={antdRenderers}
         cells={antdCells}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return {
     oriented: container.querySelector<HTMLElement>('[aria-orientation]'),
@@ -54,7 +54,7 @@ describe.each([
     const { oriented, unmount } = render(
       schema,
       { ...base, vertical: true },
-      { choice: data }
+      { choice: data },
     );
     expect(oriented?.getAttribute('aria-orientation')).toBe('vertical');
     unmount();
@@ -65,7 +65,7 @@ describe.each([
     const { oriented, unmount } = render(
       schema,
       { ...base, vertical: undefined },
-      { choice: data }
+      { choice: data },
     );
     expect(oriented?.getAttribute('aria-orientation')).toBe('horizontal');
     unmount();
@@ -76,7 +76,7 @@ describe.each([
       const { inputs, unmount } = render(
         schema,
         { ...base, vertical },
-        { choice: data }
+        { choice: data },
       );
       expect(inputs).toHaveLength(2);
       unmount();
@@ -96,7 +96,7 @@ describe('radio group choice identity', () => {
         ],
       },
       { format: 'radio' },
-      { choice: 'a' }
+      { choice: 'a' },
     );
     expect(inputs).toHaveLength(2);
     expect(inputs.filter((i) => i.checked)).toHaveLength(1);
@@ -110,10 +110,10 @@ it('uses scoped radio defaults and honors an explicit horizontal override', () =
       radioSchema,
       { format: 'radio', vertical },
       { choice: 'Standard' },
-      { jsonformsExtended: { radio: { vertical: true } } }
+      { jsonformsExtended: { radio: { vertical: true } } },
     );
     expect(oriented?.getAttribute('aria-orientation')).toBe(
-      vertical === false ? 'horizontal' : 'vertical'
+      vertical === false ? 'horizontal' : 'vertical',
     );
     unmount();
   }

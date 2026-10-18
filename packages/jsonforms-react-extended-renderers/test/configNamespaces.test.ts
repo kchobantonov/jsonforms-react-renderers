@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import {
   JSONFORMS_CONFIG_KEY,
   JSONFORMS_EXTENDED_CONFIG_KEY,
@@ -21,23 +21,23 @@ describe('resolveExtendedOption', () => {
         { showValidationIndicator: false },
         config,
         'showValidationIndicator',
-        true
-      )
+        true,
+      ),
     ).toBe(false);
   });
 
   test('falls back to the namespaced config default', () => {
     expect(
-      resolveExtendedOption({}, config, 'showValidationIndicator', false)
+      resolveExtendedOption({}, config, 'showValidationIndicator', false),
     ).toBe(true);
   });
 
   test('falls back to the supplied default when neither is set', () => {
     expect(
-      resolveExtendedOption({}, {}, 'showValidationIndicator', false)
+      resolveExtendedOption({}, {}, 'showValidationIndicator', false),
     ).toBe(false);
     expect(
-      resolveExtendedOption(undefined, undefined, 'anything', 'fallback')
+      resolveExtendedOption(undefined, undefined, 'anything', 'fallback'),
     ).toBe('fallback');
   });
 
@@ -47,30 +47,30 @@ describe('resolveExtendedOption', () => {
         { v: false },
         { jsonformsExtended: { v: true } },
         'v',
-        true
-      )
+        true,
+      ),
     ).toBe(false);
     expect(
-      resolveExtendedOption({ v: 0 }, { jsonformsExtended: { v: 9 } }, 'v', 9)
+      resolveExtendedOption({ v: 0 }, { jsonformsExtended: { v: 9 } }, 'v', 9),
     ).toBe(0);
     expect(
       resolveExtendedOption(
         { v: '' },
         { jsonformsExtended: { v: 'x' } },
         'v',
-        'x'
-      )
+        'x',
+      ),
     ).toBe('');
     expect(
-      resolveExtendedOption({}, { jsonformsExtended: { v: false } }, 'v', true)
+      resolveExtendedOption({}, { jsonformsExtended: { v: false } }, 'v', true),
     ).toBe(false);
     expect(
       resolveExtendedOption(
         { v: undefined },
         { jsonformsExtended: { v: true } },
         'v',
-        false
-      )
+        false,
+      ),
     ).toBe(true);
   });
 
@@ -80,8 +80,8 @@ describe('resolveExtendedOption', () => {
         {},
         { showValidationIndicator: true },
         'showValidationIndicator',
-        false
-      )
+        false,
+      ),
     ).toBe(false);
   });
 });

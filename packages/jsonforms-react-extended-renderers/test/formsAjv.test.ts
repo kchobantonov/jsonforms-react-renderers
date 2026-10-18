@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import { createFormsAjv } from '../src/core/ajv';
 

@@ -38,7 +38,7 @@ import {
 import { PrimeSelect } from '../prime-controls/PrimeSelect';
 
 export const EnumCell = (
-  props: EnumCellProps & WithClassname & TranslateProps
+  props: EnumCellProps & WithClassname & TranslateProps,
 ) => <PrimeSelect {...props} />;
 
 /**
@@ -50,5 +50,5 @@ export const enumCellTester: RankedTester = rankWith(2, isEnumControl);
 // HOC order can be reversed with https://github.com/eclipsesource/jsonforms/issues/1987
 export default withJsonFormsEnumCellProps(
   withTranslateProps(React.memo(EnumCell)),
-  false
+  false,
 );

@@ -82,7 +82,7 @@ export const TupleAdditionalItems = ({
     ) {
       const initial = tupleInitialValue(
         definition.prefix[position],
-        rootSchema
+        rootSchema,
       );
       if (initial === undefined) {
         setMessage(t('tuple.missingPosition', { position: position + 1 }));
@@ -132,7 +132,7 @@ export const TupleAdditionalItems = ({
     trailing,
     options.additionalItems?.pagination,
     config,
-    'additionalItems'
+    'additionalItems',
   );
 
   return (

@@ -49,7 +49,7 @@ it('navigates and edits individual nodes without rendering descendant fields or 
     const pane = () => host.querySelector('[data-recursive-tree-detail]')!;
     expect(pane().querySelectorAll('input[id*="name"]').length).toBe(1);
     const node = Array.from(
-      host.querySelectorAll('[data-recursive-node]')
+      host.querySelectorAll('[data-recursive-node]'),
     ).find((el) => el.textContent?.includes('readme.txt'))!;
     expect(node).toBeTruthy();
     await act(async () => (node as HTMLElement).click());
@@ -58,7 +58,7 @@ it('navigates and edits individual nodes without rendering descendant fields or 
     await act(async () => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, 'updated.txt');
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -98,25 +98,25 @@ it('marks invalid nodes and ancestors, honors hidden indicators, and permits rea
     await act(async () => root.render(render(true)));
     expect(
       host.querySelectorAll(
-        '[data-recursive-tree] [data-container-validation-indicator]'
-      ).length
+        '[data-recursive-tree] [data-container-validation-indicator]',
+      ).length,
     ).toBeGreaterThanOrEqual(2);
     expect(
-      host.querySelector('[data-recursive-node] button[aria-label^="Rename"]')
+      host.querySelector('[data-recursive-node] button[aria-label^="Rename"]'),
     ).toBeNull();
     expect(
-      host.querySelector('[data-recursive-node] button[aria-label^="Delete"]')
+      host.querySelector('[data-recursive-node] button[aria-label^="Delete"]'),
     ).toBeNull();
     const nodes = host.querySelectorAll('[data-recursive-node]');
     await act(async () => (nodes[1] as HTMLElement).click());
     expect(
-      host.querySelector('[data-recursive-tree-detail]')?.textContent
+      host.querySelector('[data-recursive-tree-detail]')?.textContent,
     ).toContain('Choose a kind');
     await act(async () => root.render(render(false)));
     expect(
       host.querySelectorAll(
-        '[data-recursive-tree] [data-container-validation-indicator]'
-      ).length
+        '[data-recursive-tree] [data-container-validation-indicator]',
+      ).length,
     ).toBe(0);
   } finally {
     act(() => root.unmount());
@@ -162,7 +162,7 @@ it('adds empty child nodes through the native collection actions and opens their
     expect(nodes.length).toBe(2);
     await act(async () => (nodes[1] as HTMLElement).click());
     expect(
-      host.querySelector('[data-recursive-tree-detail]')?.textContent
+      host.querySelector('[data-recursive-tree-detail]')?.textContent,
     ).toContain('Choose a kind');
     expect(host.textContent).not.toContain('No applicable');
   } finally {
@@ -201,21 +201,21 @@ it('renames and deletes a child directly from the tree while preserving siblings
     await act(async () => root.render(<Form />));
     const row = () =>
       Array.from(host.querySelectorAll('[data-recursive-node]')).find((el) =>
-        el.textContent?.includes('readme.txt')
+        el.textContent?.includes('readme.txt'),
       )!;
     const rename = row().querySelector<HTMLButtonElement>(
-      'button[aria-label^="Rename"]'
+      'button[aria-label^="Rename"]',
     )!;
     expect(rename).toBeTruthy();
     await act(async () => rename.click());
     const input = document.querySelector(
-      '[role="dialog"] input'
+      '[role="dialog"] input',
     ) as HTMLInputElement;
     expect(input.value).toBe('readme.txt');
     await act(async () => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, 'renamed.txt');
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -225,20 +225,20 @@ it('renames and deletes a child directly from the tree while preserving siblings
           key: 'Enter',
           code: 'Enter',
           bubbles: true,
-        })
-      )
+        }),
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 40));
     });
     expect(latest.populated.children[0].name).toBe('renamed.txt');
     const renamed = Array.from(
-      host.querySelectorAll('[data-recursive-node]')
+      host.querySelectorAll('[data-recursive-node]'),
     ).find((el) => el.textContent?.includes('renamed.txt'))!;
     await act(async () =>
       renamed
         .querySelector<HTMLButtonElement>('button[aria-label^="Delete"]')!
-        .click()
+        .click(),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 40));
@@ -275,11 +275,11 @@ it('hides schema-forbidden rename and delete actions on tree rows', async () => 
           uischema={ui}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     const row = Array.from(host.querySelectorAll('[data-recursive-node]')).find(
-      (el) => el.textContent?.includes('locked.txt')
+      (el) => el.textContent?.includes('locked.txt'),
     )!;
     expect(row).toBeTruthy();
     expect(row.querySelector('button[aria-label^="Rename"]')).toBeNull();
@@ -318,17 +318,17 @@ it.each(['GENERATE', 'REGISTERED'])(
             ]}
             renderers={antdRenderers}
             cells={antdCells}
-          />
-        )
+          />,
+        ),
       );
       const pane = host.querySelector('[data-recursive-tree-detail]')!;
       expect(pane.textContent?.includes('Registered node detail')).toBe(
-        detail === 'REGISTERED'
+        detail === 'REGISTERED',
       );
       expect(pane.textContent).not.toContain('No applicable');
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

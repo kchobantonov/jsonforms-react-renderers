@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
 
@@ -31,8 +31,8 @@ const draw = async (uischema: any, config: any = {}) => {
         ]}
         cells={[]}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 60));
@@ -68,7 +68,7 @@ describe('interpolating a label', () => {
         });
         expect(view.text()).toContain('Welcome, there!');
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
     view.unmount();
   });
@@ -83,7 +83,7 @@ describe('interpolating a label', () => {
           textParams: { name: '{data.firstName}' },
         },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.text()).toContain('Welcome, Ana!');
     view.unmount();
@@ -102,7 +102,7 @@ describe('interpolating a label', () => {
         text: 'Welcome, {data.firstName}!',
         options: { interpolate: true },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.text()).toContain('Welcome, !');
     expect(view.text()).not.toContain('Ana');
@@ -138,7 +138,7 @@ describe('interpolating a label', () => {
           textParams: { seats: '{data.seats}' },
         },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.text()).toContain('3 seats held');
     view.unmount();
@@ -155,7 +155,7 @@ describe('interpolating a label', () => {
           textParams: { name: '{data.firstName}' },
         },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.text()).toContain('{name} stays literal');
     expect(view.text()).not.toContain('Ana');
@@ -173,7 +173,7 @@ describe('interpolating a label', () => {
           textParams: { name: '{data.firstName}' },
         },
       },
-      dynamicOn
+      dynamicOn,
     );
     await vi.waitFor(
       async () => {
@@ -182,7 +182,7 @@ describe('interpolating a label', () => {
         });
         expect(view.html()).toContain('<strong>Welcome</strong>');
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
     expect(view.text()).toContain('Ana');
     view.unmount();
@@ -218,8 +218,8 @@ describe('interpolating a label', () => {
           ]}
           cells={[]}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 60));
@@ -244,7 +244,7 @@ describe('interpolating a label', () => {
           textParams: { maybe: '{data.neverFilledIn}' },
         },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.text()).toContain('Value: ');
     expect(view.diagnostic()).toBeUndefined();
@@ -259,7 +259,7 @@ describe('interpolating a label', () => {
         text: 'Value: {frobnicate(1)}',
         options: { interpolate: true },
       },
-      dynamicOn
+      dynamicOn,
     );
     expect(view.diagnostic()).toBe('interpolationFailed');
     expect(view.text()).toContain('Value: ');
@@ -305,8 +305,8 @@ describe('interpolating a label', () => {
           ]}
           cells={[]}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 60));
@@ -321,8 +321,8 @@ describe('interpolating a label', () => {
       markupLabelTester(
         { type: 'Label', text: 'plain' } as any,
         schema,
-        {} as any
-      )
+        {} as any,
+      ),
     ).toBe(-1);
   });
 });

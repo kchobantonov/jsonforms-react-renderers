@@ -69,7 +69,7 @@ const getFileSize = (
         formatExclusiveMaximum: any;
       }
     | undefined,
-  variant: 'min' | 'max'
+  variant: 'min' | 'max',
 ): [number | undefined, boolean] => {
   let exclusive = false;
   let fileSize: number | undefined = undefined;
@@ -125,7 +125,7 @@ const toBase64 = (
   file: File,
   reader: FileReader,
   onProgress: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null,
-  schemaFormat?: string
+  schemaFormat?: string,
 ) =>
   new Promise((resolve, reject) => {
     reader.onload = () => {
@@ -138,7 +138,7 @@ const toBase64 = (
         resolve(
           dataurl.substring(0, insertIndex) +
             `;filename=${encodeURIComponent(file.name)}` +
-            dataurl.substring(insertIndex)
+            dataurl.substring(insertIndex),
         );
       } else {
         resolve(dataurl.substring(dataurl.indexOf(',') + 1));
@@ -153,7 +153,7 @@ const toBase64 = (
 export const PrimeFile = React.memo(function PrimeFile(
   props: CellProps &
     WithClassname &
-    TranslateProps & { inputProps?: React.ComponentProps<typeof InputText> }
+    TranslateProps & { inputProps?: React.ComponentProps<typeof InputText> },
 ) {
   const {
     id,
@@ -189,12 +189,12 @@ export const PrimeFile = React.memo(function PrimeFile(
       const [minFileSize, minFileSizeExclusive] = getFileSize(
         schema as any,
         uischema.options as any,
-        'min'
+        'min',
       );
       const [maxFileSize, maxFileSizeExclusive] = getFileSize(
         schema as any,
         uischema.options as any,
-        'max'
+        'max',
       );
 
       if (maxFileSize) {
@@ -208,7 +208,7 @@ export const PrimeFile = React.memo(function PrimeFile(
             path,
             maxFileSizeExclusive
               ? 'error.formatExclusiveMaximum'
-              : 'error.formatMaximum'
+              : 'error.formatMaximum',
           );
 
           const formatSize = formatBytes(maxFileSize);
@@ -217,7 +217,7 @@ export const PrimeFile = React.memo(function PrimeFile(
             t(key, `size should be less than ${formatSize}`, {
               limitText: `${formatSize}`,
               limit: `${maxFileSize}`,
-            })
+            }),
           );
           clearFile();
           return;
@@ -235,7 +235,7 @@ export const PrimeFile = React.memo(function PrimeFile(
             path,
             minFileSizeExclusive
               ? 'error.formatExclusiveMinimum'
-              : 'error.formatMinimum'
+              : 'error.formatMinimum',
           );
 
           const formatSize = formatBytes(minFileSize);
@@ -243,7 +243,7 @@ export const PrimeFile = React.memo(function PrimeFile(
             t(key, `size should be greater than ${formatSize}`, {
               limitText: `${formatSize}`,
               limit: `${minFileSize}`,
-            })
+            }),
           );
           clearFile();
           return;
@@ -264,7 +264,7 @@ export const PrimeFile = React.memo(function PrimeFile(
             setProgress(percentComplete);
           }
         },
-        schema.format
+        schema.format,
       );
 
       handleChange(path, base64);

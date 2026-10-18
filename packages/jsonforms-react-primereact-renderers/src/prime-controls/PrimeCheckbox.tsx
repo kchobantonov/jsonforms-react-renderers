@@ -34,7 +34,7 @@ type Props = {
 export const PrimeCheckbox = React.memo(function PrimeCheckbox(
   props: CellProps &
     WithClassname &
-    Props & { inputProps?: React.ComponentProps<typeof TriStateCheckbox> }
+    Props & { inputProps?: React.ComponentProps<typeof TriStateCheckbox> },
 ) {
   const {
     data,
@@ -53,7 +53,7 @@ export const PrimeCheckbox = React.memo(function PrimeCheckbox(
 
   // Track if tri-state should be used initially
   const [useTriState, setUseTriState] = useState(
-    data === undefined || data === null
+    data === undefined || data === null,
   );
 
   // Update tri-state if data comes in as undefined/null from outside

@@ -1,5 +1,5 @@
 import { createAjv } from '@jsonforms/core';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import {
   conditionalLayout,
   projectConditionalFields,
@@ -45,8 +45,8 @@ it('uses else for absent discriminators and filters explicit branch-only binding
   };
   expect(
     (conditionalLayout(ui, result.schema, result.known) as any).elements.map(
-      (e: any) => e.scope
-    )
+      (e: any) => e.scope,
+    ),
   ).toEqual(['#/properties/name', '#/properties/nickname']);
 });
 it('retains intersecting constraints and resolves condition references', () => {
@@ -70,7 +70,7 @@ it('retains intersecting constraints and resolves condition references', () => {
     root,
     root,
     { kind: 'business' },
-    createAjv()
+    createAjv(),
   );
   expect((result.schema.properties!.name as any).allOf).toEqual([
     { type: 'string', minLength: 2 },
@@ -89,7 +89,7 @@ it('does not mutate data when host AJV uses defaults or coercion', () => {
     root,
     root,
     data,
-    createAjv({ useDefaults: true, coerceTypes: true, strict: false })
+    createAjv({ useDefaults: true, coerceTypes: true, strict: false }),
   );
   expect(data).toEqual({});
 });

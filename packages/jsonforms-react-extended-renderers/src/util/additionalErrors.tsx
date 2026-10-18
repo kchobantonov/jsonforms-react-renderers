@@ -106,7 +106,7 @@ export interface AdditionalErrorStore {
   publish: (
     owner: string,
     errors: ErrorObject[],
-    options?: PublishOptions
+    options?: PublishOptions,
   ) => void;
   /** Retracts one owner's errors. */
   clear: (owner: string) => void;
@@ -204,8 +204,8 @@ export const createAdditionalErrorStore = (): AdditionalErrorStore => {
       const kept = entry.errors.filter((error) =>
         isEqual(
           valueAt(before, error.instancePath ?? ''),
-          valueAt(after, error.instancePath ?? '')
-        )
+          valueAt(after, error.instancePath ?? ''),
+        ),
       );
       if (kept.length === entry.errors.length) {
         return;
@@ -243,7 +243,7 @@ export const createAdditionalErrorStore = (): AdditionalErrorStore => {
       - errors with it.
     */
     const hostErrors = (next.additionalErrors ?? []).filter(
-      (error) => !isOwned(error)
+      (error) => !isOwned(error),
     );
     const combined =
       published.length === 0 ? hostErrors : [...hostErrors, ...published];
@@ -314,7 +314,7 @@ export const useAdditionalErrorStore = (): AdditionalErrorStore =>
 export const useOwnedAdditionalErrors = (
   owner: string,
   errors: ErrorObject[],
-  options?: PublishOptions
+  options?: PublishOptions,
 ): void => {
   const store = useAdditionalErrorStore();
 
@@ -328,15 +328,15 @@ export const useOwnedAdditionalErrors = (
     if (!store.inert || !wanted) {
       return;
     }
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.warn(
       `${NO_STORE_DIAGNOSTIC}: ${JSON.stringify(
-        owner
+        owner,
       )} has errors to publish, ` +
         `but this form installed no additional-error store, so they will not ` +
         `appear. Render the form with <ExtendedJsonForms>, or pass ` +
         `useAdditionalErrorProps(store) to <JsonForms> and wrap it in ` +
-        `<AdditionalErrorStoreProvider>.`
+        `<AdditionalErrorStoreProvider>.`,
     );
   }, [store, owner, wanted]);
   const latest = useRef({ errors, options });
@@ -355,7 +355,7 @@ export const useOwnedAdditionalErrors = (
     () => () => {
       store.clear(owner);
     },
-    [store, owner]
+    [store, owner],
   );
 };
 

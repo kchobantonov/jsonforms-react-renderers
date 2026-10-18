@@ -31,7 +31,7 @@ const render = (cell: boolean) => {
     />
   );
   act(() =>
-    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form)
+    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -43,7 +43,7 @@ describe('validation feedback icon', () => {
   ])('renders a hoverable error icon %s', (_label, cell) => {
     const { container, unmount } = render(cell as boolean);
     const icon = container.querySelector<HTMLElement>(
-      '.anticon-exclamation-circle'
+      '.anticon-exclamation-circle',
     );
     expect(icon).toBeTruthy();
     // antd's feedback slot is pointer-events: none; without opting back in the
@@ -69,8 +69,8 @@ describe('validation feedback icon', () => {
           renderers={antdRenderers}
           cells={antdCells}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     expect(container.querySelector('.anticon-exclamation-circle')).toBeNull();
     act(() => root.unmount());

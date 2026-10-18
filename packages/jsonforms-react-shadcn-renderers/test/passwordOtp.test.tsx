@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vite-plus/test';
 import { shadcnRenderers, shadcnCells } from '../src';
 let dispose = () => {};
 beforeEach(() => vi.useFakeTimers());
@@ -42,8 +42,8 @@ const mount = (bounded = true, uiPassword = false, readonly = false) => {
         onChange={(event) => {
           data = event.data;
         }}
-      />
-    )
+      />,
+    ),
   );
   act(() => vi.runAllTimers());
   dispose = () => {
@@ -61,13 +61,13 @@ it.each([false, true])(
     act(() =>
       (
         container.querySelector(
-          '[aria-label="Show password"]'
+          '[aria-label="Show password"]',
         ) as HTMLButtonElement
-      ).click()
+      ).click(),
     );
     expect(container.querySelectorAll('input[type=text]')).toHaveLength(4);
     expect(data()).toEqual(before);
-  }
+  },
 );
 it('commits partial edits, distributes paste, and clears to undefined', () => {
   const { container, data } = mount();
@@ -75,7 +75,7 @@ it('commits partial edits, distributes paste, and clears to undefined', () => {
   act(() => {
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(inputs[2], 'b');
     inputs[2].dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -93,28 +93,28 @@ it('commits partial edits, distributes paste, and clears to undefined', () => {
   act(() =>
     (
       container.querySelector('[aria-label="Clear value"]') as HTMLButtonElement
-    ).click()
+    ).click(),
   );
   act(() => vi.runAllTimers());
   expect(data().code).toBeUndefined();
 });
 it('falls back to one masked password input without bounds', () => {
   expect(
-    mount(false).container.querySelectorAll('input[type=password]')
+    mount(false).container.querySelectorAll('input[type=password]'),
   ).toHaveLength(1);
 });
 it('disables inputs and reveal for readonly forms', () => {
   const { container } = mount(true, false, true);
   expect(
     Array.from(container.querySelectorAll('input')).every(
-      (input) => input.disabled
-    )
+      (input) => input.disabled,
+    ),
   ).toBe(true);
   expect(
     (
       container.querySelector(
-        '[aria-label="Show password"]'
+        '[aria-label="Show password"]',
       ) as HTMLButtonElement
-    ).disabled
+    ).disabled,
   ).toBe(true);
 });

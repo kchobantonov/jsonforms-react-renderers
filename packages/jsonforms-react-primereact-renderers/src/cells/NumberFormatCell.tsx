@@ -35,7 +35,7 @@ import { withJsonFormsCellProps } from '@jsonforms/react';
 import { PrimeInputNumberFormat } from '../prime-controls/PrimeInputNumberFormat';
 
 export const NumberFormatCell = (
-  props: CellProps & WithClassname & Formatted<number>
+  props: CellProps & WithClassname & Formatted<number>,
 ) => <PrimeInputNumberFormat {...props} />;
 /**
  * Default tester for text-based/string controls.
@@ -43,7 +43,7 @@ export const NumberFormatCell = (
  */
 export const numberFormatCellTester: RankedTester = rankWith(
   4,
-  isNumberFormatControl
+  isNumberFormatControl,
 );
 
 export default withJsonFormsCellProps(NumberFormatCell);

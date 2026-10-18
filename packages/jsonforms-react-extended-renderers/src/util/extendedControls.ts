@@ -11,15 +11,18 @@ import {
 
 export const extendedColorTester = rankWith(
   3,
-  and(isStringControl, or(formatIs('color'), optionIs('format', 'color')))
+  and(isStringControl, or(formatIs('color'), optionIs('format', 'color'))),
 );
 export const extendedDurationTester = rankWith(
   3,
-  and(isStringControl, or(formatIs('duration'), optionIs('format', 'duration')))
+  and(
+    isStringControl,
+    or(formatIs('duration'), optionIs('format', 'duration')),
+  ),
 );
 export const extendedNullTester = rankWith(
   3,
-  and(uiTypeIs('Control'), schemaTypeIs('null'))
+  and(uiTypeIs('Control'), schemaTypeIs('null')),
 );
 export const colorPickerValue = (value: unknown) => {
   if (typeof value !== 'string') return '#000000';

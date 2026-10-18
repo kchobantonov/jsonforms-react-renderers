@@ -16,7 +16,7 @@ const valueMatchesType = (value: unknown, type: string): boolean => {
 export const narrowMixedComposition = (
   schema: JsonSchema,
   type: string,
-  budget = { remaining: 256 }
+  budget = { remaining: 256 },
 ): JsonSchema => {
   if (typeof schema === 'boolean') {
     return schema ? { type: type as JsonSchema7['type'] } : schema;
@@ -28,15 +28,15 @@ export const narrowMixedComposition = (
   const declared = Array.isArray(source.type)
     ? source.type
     : source.type
-    ? [source.type]
-    : [];
+      ? [source.type]
+      : [];
   const compatible =
     declared.length === 0 ||
     declared.some(
       (candidate) =>
         candidate === type ||
         (candidate === 'number' && type === 'integer') ||
-        (candidate === 'integer' && type === 'number')
+        (candidate === 'integer' && type === 'number'),
     );
   if (!compatible) return false as unknown as JsonSchema;
   if ('const' in source && !valueMatchesType(source.const, type))
@@ -56,7 +56,7 @@ export const narrowMixedComposition = (
     const branches = source[keyword];
     if (!branches) continue;
     const narrowed = branches.map((branch) =>
-      narrowMixedComposition(branch, type, budget)
+      narrowMixedComposition(branch, type, budget),
     );
     // False alternatives contribute no matches, including to oneOf's count.
     // A false allOf branch must remain: the conjunction is impossible.
@@ -68,7 +68,7 @@ export const narrowMixedComposition = (
       ? retained.map((branch) =>
           typeof branch === 'boolean'
             ? { type: type as JsonSchema7['type'], not: {} }
-            : (branch as JsonSchema7)
+            : (branch as JsonSchema7),
         )
       : [{ type: type as JsonSchema7['type'], not: {} }];
   }

@@ -27,7 +27,7 @@ describe('mixed tree mutations', () => {
     expect(renameMixedTreeNode(data, ['object', 'oldName'], 'newName')).toEqual(
       {
         object: { before: 1, newName: { value: 2 }, after: 3 },
-      }
+      },
     );
   });
 
@@ -46,7 +46,7 @@ describe('mixed tree mutations', () => {
     const tree = buildMixedTree(
       { properties: { name: { type: 'string' } } },
       rootSchema,
-      rootSchema
+      rootSchema,
     );
     const nameNode = tree.children[0].children[0];
 

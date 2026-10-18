@@ -30,7 +30,7 @@ vi.stubGlobal(
     disconnect() {
       /* no-op */
     }
-  }
+  },
 );
 
 const schema = {
@@ -72,11 +72,11 @@ const render = (uischema: any, data: any, config?: any) => {
         cells={antdCells}
         config={config}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   const marker = container.querySelector<HTMLElement>(
-    '[data-container-validation-indicator]'
+    '[data-container-validation-indicator]',
   );
   return { container, marker, unmount: () => act(() => root.unmount()) };
 };
@@ -99,7 +99,7 @@ describe('container error indicator', () => {
         collapsible: true,
         collapsed: true,
       }),
-      invalid
+      invalid,
     );
     expect(marker).toBeTruthy();
     expect(marker!.getAttribute('data-error-count')).toBe('1');
@@ -112,7 +112,7 @@ describe('container error indicator', () => {
         showValidationIndicator: true,
         showValidationIndicatorCount: true,
       }),
-      valid
+      valid,
     );
     expect(marker).toBeNull();
     unmount();
@@ -153,7 +153,7 @@ describe('container error indicator', () => {
           showValidationIndicator: true,
           showValidationIndicatorCount: true,
         },
-      }
+      },
     );
     expect(marker).toBeNull();
     unmount();
@@ -165,11 +165,11 @@ describe('container error indicator', () => {
         showValidationIndicator: true,
         showValidationIndicatorCount: true,
       }),
-      invalid
+      invalid,
     );
     expect(marker!.getAttribute('aria-label')).toBe('1 error in this section');
     expect(
-      marker!.closest('[data-tooltip]')?.getAttribute('data-tooltip')
+      marker!.closest('[data-tooltip]')?.getAttribute('data-tooltip'),
     ).toBe('1 error in this section');
     expect(marker!.tabIndex).toBe(0);
     unmount();
@@ -196,7 +196,7 @@ describe('container error indicator', () => {
     };
     const { container, unmount } = render(uischema, invalid);
     expect(
-      container.querySelector('[data-container-validation-indicator]')
+      container.querySelector('[data-container-validation-indicator]'),
     ).toBeTruthy();
     unmount();
   });
@@ -226,7 +226,7 @@ describe('container error indicator', () => {
         showValidationIndicator: true,
         showValidationIndicatorCount: true,
       }),
-      { contact: { name: '', phone: '112' } }
+      { contact: { name: '', phone: '112' } },
     );
     expect(marker!.getAttribute('data-error-count')).toBe('2');
     expect(marker!.getAttribute('aria-label')).toBe('2 errors in this section');
@@ -239,7 +239,7 @@ describe('container error indicator', () => {
         showValidationIndicator: true,
         showValidationIndicatorCount: true,
       }),
-      { contact: {} }
+      { contact: {} },
     );
     expect(marker!.getAttribute('data-error-count')).toBe('2');
     unmount();
@@ -271,12 +271,12 @@ describe('container error indicator', () => {
         showValidationIndicator: true,
         showValidationIndicatorCount: false,
       }),
-      { contact: { name: '', phone: '112' } }
+      { contact: { name: '', phone: '112' } },
     );
     expect(marker).toBeTruthy();
     expect(marker!.getAttribute('data-error-count')).toBeNull();
     expect(marker!.getAttribute('aria-label')).toBe(
-      'This section contains errors'
+      'This section contains errors',
     );
     unmount();
   });
@@ -288,10 +288,10 @@ describe('container error indicator', () => {
         showValidationIndicatorCount: true,
         showDataIndicator: true,
       }),
-      invalid
+      invalid,
     );
     const error = container.querySelector<HTMLElement>(
-      '[data-container-validation-indicator]'
+      '[data-container-validation-indicator]',
     )!;
     const dot = container.querySelector<HTMLElement>('[data-group-indicator]')!;
     for (const marker of [error, dot]) {
@@ -313,13 +313,13 @@ describe('container error indicator', () => {
         showValidationIndicatorCount: true,
         showDataIndicator: true,
       }),
-      invalid
+      invalid,
     );
     const row = container.querySelector<HTMLElement>(
-      '[data-group-indicators]'
+      '[data-group-indicators]',
     )!;
     const error = container.querySelector<HTMLElement>(
-      '[data-container-validation-indicator]'
+      '[data-container-validation-indicator]',
     )!;
     // jsdom has no layout to measure, so assert the guards that keep the
     // inline boxes from adding height: no leading on the row or the markers,
@@ -337,10 +337,10 @@ describe('container error indicator', () => {
         showValidationIndicatorCount: true,
         showDataIndicator: true,
       }),
-      invalid
+      invalid,
     );
     const error = container.querySelector<HTMLElement>(
-      '[data-container-validation-indicator]'
+      '[data-container-validation-indicator]',
     )!;
     const dot = container.querySelector<HTMLElement>('[data-group-indicator]')!;
     // jsdom has no layout, so assert the arrangement rather than positions:

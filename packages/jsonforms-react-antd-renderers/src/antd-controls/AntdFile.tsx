@@ -80,7 +80,7 @@ const getFileSize = (
         formatExclusiveMaximum: any;
       }
     | undefined,
-  variant: 'min' | 'max'
+  variant: 'min' | 'max',
 ): [number | undefined, boolean] => {
   let exclusive = false;
   let fileSize: number | undefined = undefined;
@@ -136,7 +136,7 @@ const toBase64 = (
   file: File,
   reader: FileReader,
   onProgress: (event: UploadProgressEvent) => void,
-  schemaFormat?: string
+  schemaFormat?: string,
 ) =>
   new Promise((resolve, reject) => {
     reader.onload = () => {
@@ -149,7 +149,7 @@ const toBase64 = (
         resolve(
           dataurl.substring(0, insertIndex) +
             `;filename=${encodeURIComponent(file.name)}` +
-            dataurl.substring(insertIndex)
+            dataurl.substring(insertIndex),
         );
       } else {
         resolve(dataurl.substring(dataurl.indexOf(',') + 1));
@@ -166,7 +166,7 @@ export const AntdFile = React.memo(function AntdFile(
     WithClassname &
     TranslateProps & {
       inputProps?: React.ComponentProps<typeof Upload>;
-    }
+    },
 ) {
   const { schema, uischema, path, handleChange, enabled, t, inputProps } =
     props;
@@ -191,12 +191,12 @@ export const AntdFile = React.memo(function AntdFile(
     const [minFileSize, minFileSizeExclusive] = getFileSize(
       schema as any,
       uischema.options as any,
-      'min'
+      'min',
     );
     const [maxFileSize, maxFileSizeExclusive] = getFileSize(
       schema as any,
       uischema.options as any,
-      'max'
+      'max',
     );
 
     if (maxFileSize) {
@@ -210,7 +210,7 @@ export const AntdFile = React.memo(function AntdFile(
           path,
           maxFileSizeExclusive
             ? 'error.formatExclusiveMaximum'
-            : 'error.formatMaximum'
+            : 'error.formatMaximum',
         );
         const formatSize = formatBytes(maxFileSize);
         return t(key, `size should be less than ${formatSize}`, {
@@ -231,7 +231,7 @@ export const AntdFile = React.memo(function AntdFile(
           path,
           minFileSizeExclusive
             ? 'error.formatExclusiveMinimum'
-            : 'error.formatMinimum'
+            : 'error.formatMinimum',
         );
         const formatSize = formatBytes(minFileSize);
         return t(key, `size should be greater than ${formatSize}`, {
@@ -291,7 +291,7 @@ export const AntdFile = React.memo(function AntdFile(
         file,
         new FileReader(),
         onProgress,
-        schema.format
+        schema.format,
       );
       setRejection(undefined);
       setAttachment({ value: base64, name: file.name });
@@ -320,10 +320,10 @@ export const AntdFile = React.memo(function AntdFile(
     );
   }
   const name = props.data
-    ? attachmentName(props.data) ??
+    ? (attachmentName(props.data) ??
       (attachment?.value === props.data
         ? attachment.name
-        : t('file.attached', d('file.attached')))
+        : t('file.attached', d('file.attached'))))
     : '';
   return (
     <div style={{ minWidth: 0, width: '100%' }}>

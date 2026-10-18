@@ -16,7 +16,7 @@ import {
 export const useDocumentChrome = (
   dark: boolean,
   mode: DemoMode,
-  rtl: boolean
+  rtl: boolean,
 ): void => {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
@@ -49,7 +49,7 @@ export const useDemoPreferencePersistence = (
   storage: DemoSettingsStorage,
   storageKey: string,
   hydrated: boolean,
-  { mode, locale, layout, rendererSettings }: PersistedPreferences
+  { mode, locale, layout, rendererSettings }: PersistedPreferences,
 ): void => {
   useEffect(() => {
     if (!hydrated) {

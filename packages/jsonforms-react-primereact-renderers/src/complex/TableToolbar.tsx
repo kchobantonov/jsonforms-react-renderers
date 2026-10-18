@@ -52,7 +52,7 @@ export interface TableToolbarProps {
 const renderTitle = (
   label: string,
   errors: string,
-  button: React.JSX.Element
+  button: React.JSX.Element,
 ) => (
   <div className='flex align-items-center justify-content-center gap-2'>
     <div className='flex-grow-1 p-text-ellipsis'>{label}</div>
@@ -88,7 +88,7 @@ const TableToolbar = React.memo(function TableToolbar({
           aria-label={translations.addAriaLabel}
           onClick={addItem(path, createDefaultValue(schema, rootSchema))}
           icon={PrimeIcons.PLUS_CIRCLE}
-        />
+        />,
       )}
       subTitle={description}
     >

@@ -18,7 +18,7 @@ import { useI18n } from '../util/translate';
  */
 export const resolveSliderValue = (
   value: unknown,
-  fallback: number
+  fallback: number,
 ): number => {
   if (typeof value === 'number' && Number.isFinite(value)) {
     return value;
@@ -41,7 +41,7 @@ export const hasSliderValue = (value: unknown): boolean =>
 
 export const AntdSlider = React.memo(function AntdSlider(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> },
 ) {
   const {
     data,
@@ -66,7 +66,7 @@ export const AntdSlider = React.memo(function AntdSlider(
   const committed = hasSliderValue(data);
   const effectiveValue = resolveSliderValue(
     data,
-    resolveSliderValue(schema.default, schema.minimum ?? 0)
+    resolveSliderValue(schema.default, schema.minimum ?? 0),
   );
 
   const marks = {

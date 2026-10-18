@@ -17,18 +17,18 @@ it('selects the suggestion input instead of anyOf tabs', () => {
         schema={{ type: 'object', properties: { foo: schema } }}
         data={{ foo: 'custom' }}
         renderers={shadcnRenderers}
-      />
-    )
+      />,
+    ),
   );
   expect(host.querySelector('[role="tablist"]')).toBeNull();
   expect(host.querySelector('input')?.value).toBe('custom');
   expect(
     Array.from(host.querySelectorAll('datalist option')).map((o) =>
-      o.getAttribute('value')
-    )
+      o.getAttribute('value'),
+    ),
   ).toEqual(['foo', 'bar']);
   expect(host.querySelector('input')?.getAttribute('list')).toBe(
-    host.querySelector('datalist')?.id
+    host.querySelector('datalist')?.id,
   );
   act(() => root.unmount());
 });
@@ -49,8 +49,8 @@ it('accepts arbitrary text, suggestions, and clearing', () => {
           label: 'Foo',
           handleChange,
         } as any)}
-      />
-    )
+      />,
+    ),
   );
   const input = host.querySelector('input')!;
   for (const value of ['custom text', 'bar', '']) {
@@ -67,7 +67,7 @@ it('leaves mixed-type alternatives to the generic anyOf renderer', () => {
     anyOfStringOrEnumControlTester(
       { type: 'Control', scope: '#' },
       { anyOf: [{ type: 'number' }, { enum: ['foo'] }] },
-      { rootSchema: {}, config: {} }
-    )
+      { rootSchema: {}, config: {} },
+    ),
   ).toBe(-1);
 });

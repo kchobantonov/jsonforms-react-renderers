@@ -70,8 +70,7 @@ import {
  * their own, wrapping this.
  */
 export interface ExtendedJsonFormsProps
-  extends JsonFormsInitStateProps,
-    JsonFormsReactProps {
+  extends JsonFormsInitStateProps, JsonFormsReactProps {
   /**
    * A store the application also publishes into.
    *
@@ -138,7 +137,7 @@ const AdditionalErrorsBridge = ({ store }: { store: AdditionalErrorStore }) => {
         Actions.updateCore(core.data, core.schema, core.uischema, {
           ajv: core.ajv,
           validationMode: core.validationMode,
-        } as never)
+        } as never),
       );
     });
   }, [store, dispatch]);
@@ -183,14 +182,14 @@ export const ExtendedJsonForms = ({
   */
   const schemaToUse = useMemo(
     () => (schema !== undefined ? schema : Generate.jsonSchema(data)),
-    [schema, data]
+    [schema, data],
   );
   const uischemaToUse = useMemo(
     () =>
       typeof uischema === 'object'
         ? uischema
         : Generate.uiSchema(schemaToUse, undefined, undefined, schemaToUse),
-    [uischema, schemaToUse]
+    [uischema, schemaToUse],
   );
 
   const combinedMiddleware = useMemo(
@@ -201,10 +200,10 @@ export const ExtendedJsonForms = ({
               middleware(
                 innerState,
                 innerAction,
-                defaultReducer as never
+                defaultReducer as never,
               )) as never)
         : effective.middleware,
-    [effective, middleware]
+    [effective, middleware],
   ) as typeof effective.middleware;
 
   const form = (

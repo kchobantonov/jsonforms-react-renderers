@@ -35,24 +35,22 @@ export const isSingleLevelCategorization: Tester = and(
       categorization.elements &&
       categorization.elements.reduce(
         (acc, e) => acc && e.type === 'Category',
-        true
+        true,
       )
     );
-  }
+  },
 );
 
 export const categorizationTester: RankedTester = rankWith(
   1,
-  isSingleLevelCategorization
+  isSingleLevelCategorization,
 );
 export interface CategorizationState {
   activeCategory: number;
 }
 
 export interface CategorizationLayoutRendererProps
-  extends StatePropsOfLayout,
-    AjvProps,
-    TranslateProps {
+  extends StatePropsOfLayout, AjvProps, TranslateProps {
   selected?: number;
   ownState?: boolean;
   data?: any;
@@ -60,7 +58,7 @@ export interface CategorizationLayoutRendererProps
 }
 
 export const CategorizationLayoutRenderer = (
-  props: CategorizationLayoutRendererProps
+  props: CategorizationLayoutRendererProps,
 ) => {
   const {
     data,
@@ -86,7 +84,7 @@ export const CategorizationLayoutRenderer = (
     data,
     ajv,
     config,
-    selected
+    selected,
   );
 
   /*
@@ -144,12 +142,12 @@ export const CategorizationLayoutRenderer = (
             ),
             key: String(idx),
             children: <AntdLayoutRenderer {...childProps(category)} />,
-          } as any)
+          }) as any,
       )}
     ></Tabs>
   );
 };
 
 export default withAjvProps(
-  withTranslateProps(withJsonFormsLayoutProps(CategorizationLayoutRenderer))
+  withTranslateProps(withJsonFormsLayoutProps(CategorizationLayoutRenderer)),
 );

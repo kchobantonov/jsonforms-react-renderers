@@ -52,11 +52,11 @@ export const isBase64String = and(
       (Object.prototype.hasOwnProperty.call(schema, 'contentEncoding') &&
         (schema as any).contentEncoding == 'base64') ||
       schema.format === 'binary' ||
-      schema.format === 'byte'
-  )
+      schema.format === 'byte',
+  ),
 );
 
 export const fileControlTester: RankedTester = rankWith(2, isBase64String);
 export default withJsonFormsControlProps(
-  withTranslateProps(React.memo(FileControl))
+  withTranslateProps(React.memo(FileControl)),
 );

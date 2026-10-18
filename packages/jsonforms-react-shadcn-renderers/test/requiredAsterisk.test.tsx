@@ -1,6 +1,6 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { InputShell } from '../src/controls/InputControl';
 
 it('updates required markers with config and respects explicit control overrides', () => {
@@ -24,8 +24,8 @@ it('updates required markers with config and respects explicit control overrides
           }
         >
           <input id='name' required />
-        </InputShell>
-      )
+        </InputShell>,
+      ),
     );
   try {
     render(false);

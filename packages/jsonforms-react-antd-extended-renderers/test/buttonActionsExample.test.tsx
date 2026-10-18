@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
@@ -109,14 +109,14 @@ const draw = (options?: {
                 locale,
                 translate: createTranslator(
                   (key: string, fallback?: string) =>
-                    catalog(locale)[key] ?? fallback
+                    catalog(locale)[key] ?? fallback,
                 ),
               }}
               onChange={() => undefined}
             />
           </HandleActionContext.Provider>
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -132,7 +132,7 @@ const draw = (options?: {
 
   const find = (text: string) =>
     Array.from(scope().querySelectorAll<HTMLButtonElement>('button')).find(
-      (candidate) => candidate.textContent?.trim() === text
+      (candidate) => candidate.textContent?.trim() === text,
     ) ?? null;
 
   return {
@@ -144,11 +144,11 @@ const draw = (options?: {
     button: find,
     tabs: () =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-tabs-tab')).map(
-        (tab) => tab.textContent ?? ''
+        (tab) => tab.textContent ?? '',
       ),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -394,7 +394,7 @@ describe('the script path', () => {
     expect(view.button('Both')).toBeTruthy();
     expect(view.diagnostic()).toBeUndefined();
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'action.conflict'
+      'action.conflict',
     );
     warn.mockRestore();
     view.unmount();
@@ -633,7 +633,7 @@ describe('the example covers every supported case', () => {
     const colours = new Set(
       buttons()
         .map((b) => b.color)
-        .filter(Boolean)
+        .filter(Boolean),
     );
     expect(colours).toContain('primary');
     expect(colours).toContain('secondary');
@@ -681,8 +681,8 @@ describe('the example covers every supported case', () => {
     walk2(roundTripped);
     expect(
       survived.some(
-        (b) => b.script !== undefined && typeof b.script !== 'string'
-      )
+        (b) => b.script !== undefined && typeof b.script !== 'string',
+      ),
     ).toBe(false);
   });
 

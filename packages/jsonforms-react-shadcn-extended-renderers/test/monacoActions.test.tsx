@@ -46,8 +46,8 @@ it.each([
               locale: locale as string,
               translate: (key, fallback) => catalog?.[key] ?? fallback,
             }}
-          />
-        )
+          />,
+        ),
       );
       await vi.waitFor(async () => {
         await act(async () => {
@@ -72,5 +72,5 @@ it.each([
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );

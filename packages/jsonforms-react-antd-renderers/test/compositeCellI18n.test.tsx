@@ -47,8 +47,8 @@ const render = (translations?: Record<string, string>) => {
               }
             : undefined
         }
-      />
-    )
+      />,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };

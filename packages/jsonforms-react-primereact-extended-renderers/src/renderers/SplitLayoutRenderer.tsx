@@ -18,7 +18,9 @@ export const PrimeSplitLayout = (props: LayoutProps) => {
     <Splitter
       layout={vertical ? 'vertical' : 'horizontal'}
       style={{
-        height: vertical ? splitCssSize(options.height) ?? '20rem' : undefined,
+        height: vertical
+          ? (splitCssSize(options.height) ?? '20rem')
+          : undefined,
         minHeight: vertical ? splitCssSize(options.minHeight) : undefined,
       }}
     >

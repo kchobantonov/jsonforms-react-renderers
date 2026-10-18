@@ -9,27 +9,21 @@ import {
 import { shadcnExtendedCells, shadcnExtendedRenderers } from '../src';
 const schema = JSON.parse(
   readFileSync(
-    require.resolve(
-      '@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json'
-    ),
-    'utf8'
-  )
+    require.resolve('@chobantonov/jsonforms-extended-spec/examples/array-controls/schema.json'),
+    'utf8',
+  ),
 );
 const data = JSON.parse(
   readFileSync(
-    require.resolve(
-      '@chobantonov/jsonforms-extended-spec/examples/array-controls/data.json'
-    ),
-    'utf8'
-  )
+    require.resolve('@chobantonov/jsonforms-extended-spec/examples/array-controls/data.json'),
+    'utf8',
+  ),
 );
 const ui = JSON.parse(
   readFileSync(
-    require.resolve(
-      '@chobantonov/jsonforms-extended-spec/examples/array-controls/uischema.json'
-    ),
-    'utf8'
-  )
+    require.resolve('@chobantonov/jsonforms-extended-spec/examples/array-controls/uischema.json'),
+    'utf8',
+  ),
 );
 
 vi.mock('ag-grid-react', () => ({
@@ -59,10 +53,10 @@ it('dispatches every spec grid column through the shadcn cells registry', async 
   document.body.append(container);
   const root = createRoot(container);
   const category = ui.elements[1].elements!.find(
-    (item) => item.name === 'cells'
+    (item) => item.name === 'cells',
   )!;
   const grid = category.elements!.find(
-    (item) => item.options?.variant === 'ag-grid'
+    (item) => item.options?.variant === 'ag-grid',
   )!;
   try {
     await act(async () =>
@@ -73,8 +67,8 @@ it('dispatches every spec grid column through the shadcn cells registry', async 
           uischema={grid as any}
           renderers={[...shadcnExtendedRenderers, ...shadcnRenderers]}
           cells={[...shadcnExtendedCells, ...shadcnCells]}
-        />
-      )
+        />,
+      ),
     );
     await vi.waitFor(async () => {
       await act(async () => {
@@ -91,13 +85,13 @@ it('dispatches every spec grid column through the shadcn cells registry', async 
     expect(container.textContent).toContain(data.staff[0].phoneNumbers[0]);
     expect(container.querySelectorAll('input[type="color"]')).toHaveLength(2);
     expect(
-      container.querySelectorAll('[aria-label="Choose a duration"]')
+      container.querySelectorAll('[aria-label="Choose a duration"]'),
     ).toHaveLength(2);
     expect(container.querySelectorAll('.shadcn-jsonforms-cell')).toHaveLength(
-      10
+      10,
     );
     expect(
-      container.querySelectorAll('[aria-label^="Edit "]')
+      container.querySelectorAll('[aria-label^="Edit "]'),
     ).not.toHaveLength(0);
   } finally {
     act(() => root.unmount());

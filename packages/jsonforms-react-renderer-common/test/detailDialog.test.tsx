@@ -78,8 +78,8 @@ it('inherits form dialog settings and lets local false override them', () => {
         }}
       >
         <Probe />
-      </JsonFormsStateProvider>
-    )
+      </JsonFormsStateProvider>,
+    ),
   );
   try {
     expect(geometry.options.draggable).toBe(false);

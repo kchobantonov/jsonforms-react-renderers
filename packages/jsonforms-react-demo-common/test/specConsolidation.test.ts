@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { createFormsAjv } from '@chobantonov/jsonforms-react-extended-renderers';
 import examples, { isSpecExample, translatorFor } from '../src/examples';
 
@@ -17,14 +17,14 @@ describe('consolidated spec fixtures', () => {
       expect(isSpecExample(example.name)).toBe(true);
       const validate = ajv.compile(example.schema!);
       expect(validate(example.data), JSON.stringify(validate.errors)).toBe(
-        true
+        true,
       );
       const catalogs = (example as any).translations;
       expect(Object.keys(catalogs.en).sort()).toEqual(
-        Object.keys(catalogs.bg).sort()
+        Object.keys(catalogs.bg).sort(),
       );
       expect(translatorFor(catalogs, 'bg')('intro.text')).toBeTruthy();
-    }
+    },
   );
 
   it('validates staff independently of the deliberate array errors', () => {
@@ -32,17 +32,17 @@ describe('consolidated spec fixtures', () => {
     const validate = ajv.compile((example.schema as any).properties.staff);
     expect(
       validate((example.data as any).staff),
-      JSON.stringify(validate.errors)
+      JSON.stringify(validate.errors),
     ).toBe(true);
     const invalidStaff = JSON.parse(
-      JSON.stringify((example.data as any).staff)
+      JSON.stringify((example.data as any).staff),
     );
     invalidStaff[0].age = -1;
     expect(validate(invalidStaff)).toBe(false);
     expect(validate.errors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ instancePath: '/0/age', keyword: 'minimum' }),
-      ])
+      ]),
     );
   });
 
@@ -53,7 +53,7 @@ describe('consolidated spec fixtures', () => {
       validate({
         ...(example.data as object),
         document: { service: 'catalog', replicas: 0 },
-      })
+      }),
     ).toBe(false);
     expect(validate.errors).toEqual(
       expect.arrayContaining([
@@ -61,24 +61,24 @@ describe('consolidated spec fixtures', () => {
           instancePath: '/document/replicas',
           keyword: 'minimum',
         }),
-      ])
+      ]),
     );
     expect(
       validate({
         ...(example.data as object),
         script: 'not valid JavaScript {',
-      })
+      }),
     ).toBe(true);
   });
 
   it('accepts the week-based duration without adding a format error', () => {
     const example = find('temporal-controls');
     const validate = ajv.compile(
-      (example.schema as any).properties.schemaBased
+      (example.schema as any).properties.schemaBased,
     );
     expect(
       validate((example.data as any).schemaBased),
-      JSON.stringify(validate.errors)
+      JSON.stringify(validate.errors),
     ).toBe(true);
   });
 });
@@ -93,7 +93,7 @@ it('retains the group and layout edge cases transferred from local demos', () =>
   expect((groups.data as any).active).toBe(false);
   expect((groups.data as any).count).toBe(0);
   const indicator = elementsOf(groups.uischema).find(
-    (e) => e.i18n === 'presence.group'
+    (e) => e.i18n === 'presence.group',
   );
   expect(indicator.options).toEqual({
     collapsible: true,
@@ -101,10 +101,13 @@ it('retains the group and layout edge cases transferred from local demos', () =>
     showDataIndicator: true,
   });
   const nested = elementsOf(find('layout-sizing').uischema).find(
-    (e) => e.i18n === 'nestedSizing.tab'
+    (e) => e.i18n === 'nestedSizing.tab',
   );
   expect(
-    nested.elements[0].elements.map((e: any) => [e.type, e.options.layout.span])
+    nested.elements[0].elements.map((e: any) => [
+      e.type,
+      e.options.layout.span,
+    ]),
   ).toEqual([
     ['Label', 4],
     ['Group', 8],
@@ -114,7 +117,7 @@ it('retains the group and layout edge cases transferred from local demos', () =>
 it('retains scalar and composite cell coverage in tables and grids', () => {
   const example = find('array-controls');
   const controls = elementsOf(example.uischema).filter(
-    (e) => e.scope === '#/properties/staff'
+    (e) => e.scope === '#/properties/staff',
   );
   expect(controls.some((e) => e.options.table === true)).toBe(true);
   expect(controls.some((e) => e.options.variant === 'ag-grid')).toBe(true);
@@ -124,8 +127,8 @@ it('retains scalar and composite cell coverage in tables and grids', () => {
     expect(control.options.cells.phoneNumbers.detail.scope).toBe('#');
     expect(
       elementsOf(control.options.cells.address.detail).some(
-        (e) => e.type === 'HorizontalLayout'
-      )
+        (e) => e.type === 'HorizontalLayout',
+      ),
     ).toBe(true);
   }
 });
@@ -140,7 +143,7 @@ it('offers row dialogs and both panel placements alongside complex cell dialogs'
   ]) {
     const category = elements.find((element) => element.name === name);
     const control = category.elements.find(
-      (element: any) => element.type === 'Control'
+      (element: any) => element.type === 'Control',
     );
     expect(control.scope).toBe('#/properties/sessions');
     expect(control.options.table).toBe(true);
@@ -160,8 +163,8 @@ it('offers row dialogs and both panel placements alongside complex cell dialogs'
     }
     expect(
       control.options.rowDetail.detail.elements.map(
-        (element: any) => element.scope
-      )
+        (element: any) => element.scope,
+      ),
     ).toContain('#/properties/room');
     const catalogs = (example as any).translations;
     expect(catalogs.en[`${category.i18n}.label`]).toBeTruthy();

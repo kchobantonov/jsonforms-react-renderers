@@ -9,18 +9,18 @@ owns the contract. This review is not exhaustive browser or accessibility certif
 
 ## Implemented since the historical review
 
-| Area | Current evidence and limits |
-| --- | --- |
+| Area                            | Current evidence and limits                                                                                                                                                                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Object and mixed detail layouts | Shared detail resolver supports GENERATE, registry modes and inline layouts, including legacy elements-only layouts. Mixed per-type overrides exist in Antd and shadcn. editorDetailModes.test.tsx and arrayDetailModes.test.tsx cover these paths. |
-| Mixed structured editing | Tree, nested and code presentations exist. Code requires the extended editor registry. Generic JSON and inferred-schema examples are separate; inference retains an upstream workaround. |
-| Conditional fields | Opt-in conditionalFields supports the documented object-boundary slice, with generated or authored placement. Broader composition coverage remains open. |
-| Recursive trees | Shared node navigation, rename/delete guards and native tree adapters exist. recursiveTreePresentation.test.tsx covers specific interactions, not arbitrary reference cycles. |
-| Collections and cells | Pagination, row details, composite cells and schema-sensitive array selection have implementations and focused tests. Remaining parity and interaction checks are not absence of these features. |
-| Required asterisk | Ordinary controls consume hideRequiredAsterisk; requiredAsterisk.test.tsx covers visibility and validation. Accessible required state still needs verification when the marker is hidden. |
-| Container feedback | Shared aggregation and object/group/array indicators exist. Default inline object-error coverage has a narrower unresolved case below. |
-| Named templates | Template and Slot resolve names and fallback content; examples and native-registry tests exist. Named-reference cycle guards and diagnostics remain open. |
-| Image diagnostics | Compact warnings omit refused URLs and expose explanations through a focusable tooltip. imageView.test.tsx covers the behavior. |
-| Earlier foundations | Layout sizing, Label CEL interpolation, shared confirmation, extended AJV integration, template script gates and URL checks are implemented. The historical “missing” entries are not current work orders. |
+| Mixed structured editing        | Tree, nested and code presentations exist. Code requires the extended editor registry. Generic JSON and inferred-schema examples are separate; inference retains an upstream workaround.                                                            |
+| Conditional fields              | Opt-in conditionalFields supports the documented object-boundary slice, with generated or authored placement. Broader composition coverage remains open.                                                                                            |
+| Recursive trees                 | Shared node navigation, rename/delete guards and native tree adapters exist. recursiveTreePresentation.test.tsx covers specific interactions, not arbitrary reference cycles.                                                                       |
+| Collections and cells           | Pagination, row details, composite cells and schema-sensitive array selection have implementations and focused tests. Remaining parity and interaction checks are not absence of these features.                                                    |
+| Required asterisk               | Ordinary controls consume hideRequiredAsterisk; requiredAsterisk.test.tsx covers visibility and validation. Accessible required state still needs verification when the marker is hidden.                                                           |
+| Container feedback              | Shared aggregation and object/group/array indicators exist. Default inline object-error coverage has a narrower unresolved case below.                                                                                                              |
+| Named templates                 | Template and Slot resolve names and fallback content; examples and native-registry tests exist. Named-reference cycle guards and diagnostics remain open.                                                                                           |
+| Image diagnostics               | Compact warnings omit refused URLs and expose explanations through a focusable tooltip. imageView.test.tsx covers the behavior.                                                                                                                     |
+| Earlier foundations             | Layout sizing, Label CEL interpolation, shared confirmation, extended AJV integration, template script gates and URL checks are implemented. The historical “missing” entries are not current work orders.                                          |
 
 ## Confirmed gaps and limits
 

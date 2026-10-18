@@ -79,6 +79,6 @@ export const WebComponentHost = ({
     <div slot='form-header' className='webcomponent-form-header'>
       Web component mode
     </div>,
-    <div slot='form-footer' className='webcomponent-form-footer' />
+    <div slot='form-footer' className='webcomponent-form-footer' />,
   );
 };

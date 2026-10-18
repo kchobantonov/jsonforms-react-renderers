@@ -37,11 +37,11 @@ it('marks a collapsed mixed header and respects indicator overrides and validati
           validationMode={hidden ? 'ValidateAndHide' : 'ValidateAndShow'}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     return host.querySelector(
-      '.jsonforms-mixed-renderer [data-container-validation-indicator]'
+      '.jsonforms-mixed-renderer [data-container-validation-indicator]',
     );
   };
   try {

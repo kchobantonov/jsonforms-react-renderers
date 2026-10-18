@@ -33,10 +33,10 @@ const gaps = { row: DEFAULT_ROW_GAP, column: DEFAULT_COLUMN_GAP };
 export const resolveGap = (
   options: LayoutContainerOptions | undefined,
   config: unknown,
-  direction: LayoutDirection
+  direction: LayoutDirection,
 ) => sharedResolveGap(options, config, direction, gaps);
 export const containerStyle = (
   options: LayoutContainerOptions | undefined,
   config: unknown,
-  direction: LayoutDirection
+  direction: LayoutDirection,
 ) => sharedContainerStyle(options, config, direction, gaps);

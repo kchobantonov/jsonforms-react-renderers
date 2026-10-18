@@ -72,7 +72,7 @@ export const useUiSchemaCycleGuard = (
   uischema: UISchemaElement | undefined,
   path: string,
   /** Named in the diagnostic, so the message says which renderer noticed. */
-  renderer: string
+  renderer: string,
 ): UiSchemaCycleGuard => {
   const seen = useContext(UiSchemaCycleContext);
   const signature = uischema ? signatureOf(uischema, path) : undefined;
@@ -95,13 +95,13 @@ export const useUiSchemaCycleGuard = (
     if (!cycle) {
       return;
     }
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.warn(
       `${UI_SCHEMA_CYCLE_DIAGNOSTIC}: the UI schema registry returned an ` +
         `element that ${renderer} would dispatch back to itself at ` +
         `${JSON.stringify(path || '<root>')} (${signature}). The generated ` +
         `UI schema was used instead. A registry entry for an object schema ` +
-        `should be a layout, or a Control carrying options.detail.`
+        `should be a layout, or a Control carrying options.detail.`,
     );
   }, [cycle, renderer, path, signature]);
 

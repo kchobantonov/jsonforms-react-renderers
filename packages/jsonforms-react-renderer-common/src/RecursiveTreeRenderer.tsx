@@ -115,14 +115,14 @@ export const createRecursiveTreeRenderer = (
       perform: () => void;
     }) => void;
     dialog: React.ReactNode;
-  }
+  },
 ) => {
   const NodeIndicator = ({ path, options, config }: any) => {
     const validation = useContainerValidation(
       { type: 'Control', scope: '#', options } as ControlElement,
       path,
       config,
-      false
+      false,
     );
     return validation.show ? <Indicator count={validation.count} /> : null;
   };
@@ -142,7 +142,7 @@ export const createRecursiveTreeRenderer = (
           rootSchema,
           options.childrenProperty,
           options.labelProperty,
-          label || 'Value'
+          label || 'Value',
         ),
       [
         data,
@@ -151,7 +151,7 @@ export const createRecursiveTreeRenderer = (
         options.childrenProperty,
         options.labelProperty,
         label,
-      ]
+      ],
     );
     const [selection, setSelection] = useState<{
       node: MixedTreeNode;
@@ -170,13 +170,13 @@ export const createRecursiveTreeRenderer = (
     const nodePath = (node: MixedTreeNode) =>
       node.path.reduce<string>(
         (p, segment) => composePaths(p, String(segment)),
-        path
+        path,
       );
     const branch = (node: MixedTreeNode) =>
       recursiveNodeSchema(node.schema, rootSchema, node.data);
     const resolve = (candidate: any) =>
       candidate?.$ref
-        ? resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate
+        ? (resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate)
         : candidate;
     const writable = (node: MixedTreeNode) => {
       if (!props.enabled || props.readonly) return false;
@@ -197,7 +197,7 @@ export const createRecursiveTreeRenderer = (
       if (!node.path.length || !writable(node)) return false;
       const parent = recursiveTreeParent(tree, node.path);
       const collection = resolve(
-        branch(parent).properties?.[options.childrenProperty]
+        branch(parent).properties?.[options.childrenProperty],
       );
       return (
         writable(parent) &&
@@ -254,7 +254,7 @@ export const createRecursiveTreeRenderer = (
             return;
           now.props.handleChange(
             now.props.path,
-            deleteMixedTreeNode(now.props.data, target.path)
+            deleteMixedTreeNode(now.props.data, target.path),
           );
         },
       });
@@ -271,7 +271,7 @@ export const createRecursiveTreeRenderer = (
         return;
       now.props.handleChange(
         composePaths(nodePath(target), options.labelProperty),
-        name
+        name,
       );
     };
     const registry = useMemo<JsonFormsRendererRegistryEntry[]>(
@@ -287,7 +287,7 @@ export const createRecursiveTreeRenderer = (
               '/properties/' +
                 options.childrenProperty
                   .replace(/~/g, '~0')
-                  .replace(/\//g, '~1')
+                  .replace(/\//g, '~1'),
             ) &&
             schemaTypeIs('array')(ui, candidate, context)
               ? 100
@@ -296,7 +296,7 @@ export const createRecursiveTreeRenderer = (
         },
         ...(props.renderers ?? []),
       ],
-      [props.renderers, options.childrenProperty]
+      [props.renderers, options.childrenProperty],
     );
     const detail = resolveEditorDetail(
       options.detail,
@@ -305,7 +305,7 @@ export const createRecursiveTreeRenderer = (
       '#',
       nodePath(selected),
       rootSchema,
-      { type: 'Control', scope: '#', label } as ControlElement
+      { type: 'Control', scope: '#', label } as ControlElement,
     );
     if (!visible) return null;
     return (

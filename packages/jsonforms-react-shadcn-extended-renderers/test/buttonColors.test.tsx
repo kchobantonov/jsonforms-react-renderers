@@ -1,8 +1,9 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { shadcnExtendedRenderers } from '../src';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -27,8 +28,8 @@ it.each(['', 'dark'])('uses host button theme variants in %s mode', (mode) => {
             data={{}}
             uischema={{ type: 'Button', label: 'Action', color } as any}
             renderers={shadcnExtendedRenderers}
-          />
-        )
+          />,
+        ),
       );
       const button = host.querySelector('button')!;
       expect(button.dataset.slot).toBe('button');
@@ -46,8 +47,8 @@ it.each(['', 'dark'])('uses host button theme variants in %s mode', (mode) => {
 });
 it('does not override the host Button colors through renderer CSS', () => {
   const css = readFileSync(
-    '../jsonforms-react-shadcn-renderers/src/styles.css',
-    'utf8'
+    resolve(__dirname, '../../jsonforms-react-shadcn-renderers/src/styles.css'),
+    'utf8',
   );
   expect(css).not.toContain('.shadcn-jsonforms-button');
 });

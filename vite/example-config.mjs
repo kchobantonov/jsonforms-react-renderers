@@ -9,7 +9,7 @@ import {
   resolve,
 } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const logoPath = join(
@@ -17,7 +17,7 @@ const logoPath = join(
   'packages',
   'jsonforms-react-demo-common',
   'src',
-  'logo.svg'
+  'logo.svg',
 );
 
 const contentTypes = {
@@ -90,7 +90,7 @@ export const defineJsonFormsExampleConfig = ({
             'node_modules',
             'primereact',
             'resources',
-            'themes'
+            'themes',
           ),
           buildTarget: 'themes',
         },

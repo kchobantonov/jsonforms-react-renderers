@@ -106,7 +106,7 @@ const Config: React.FC<ConfigProps> = (props) => {
       className={classNames(
         'layout-config w-full sm:w-26rem',
         { 'layout-dark': darkMode },
-        { 'layout-light': !darkMode }
+        { 'layout-light': !darkMode },
       )}
       position='right'
     >
@@ -202,9 +202,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'cyan'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'cyan'
+                    'cyan',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'cyan')}
@@ -225,9 +225,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'green'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'green'
+                    'green',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'green')}
@@ -248,9 +248,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'blue'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'blue'
+                    'blue',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'blue')}
@@ -271,9 +271,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'indigo'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'indigo'
+                    'indigo',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'indigo')}
@@ -296,9 +296,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'purple'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'purple'
+                    'purple',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'purple')}
@@ -319,9 +319,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'amber'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'amber'
+                    'amber',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'amber')}
@@ -342,9 +342,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'teal'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'teal'
+                    'teal',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'teal')}
@@ -365,9 +365,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('lara', 'pink'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'lara',
-                    'pink'
+                    'pink',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('lara', 'pink')}
@@ -413,9 +413,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('md', 'indigo'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'md',
-                    'indigo'
+                    'indigo',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('md', 'indigo')}
@@ -436,9 +436,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('md', 'deeppurple'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'md',
-                    'deeppurple'
+                    'deeppurple',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: '30px' }}
               onClick={() => switchTheme('md', 'deeppurple')}
@@ -475,9 +475,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('bootstrap4', 'blue'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'bootstrap4',
-                    'blue'
+                    'blue',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: 30 }}
               onClick={() => switchTheme('bootstrap4', 'blue')}
@@ -498,9 +498,9 @@ const Config: React.FC<ConfigProps> = (props) => {
                   'border-primary': isThemeActive('bootstrap4', 'purple'),
                   'hover:border-500 surface-border': !isThemeActive(
                     'bootstrap4',
-                    'purple'
+                    'purple',
                   ),
-                }
+                },
               )}
               style={{ borderRadius: 30 }}
               onClick={() => switchTheme('bootstrap4', 'purple')}
@@ -537,7 +537,7 @@ const Config: React.FC<ConfigProps> = (props) => {
                   {
                     'border-primary': isThemeActive('soho'),
                     'hover:border-500 surface-border': !isThemeActive('soho'),
-                  }
+                  },
                 )}
                 style={{ borderRadius: 30 }}
                 onClick={() => switchTheme('soho')}
@@ -568,7 +568,7 @@ const Config: React.FC<ConfigProps> = (props) => {
                   {
                     'border-primary': isThemeActive('viva'),
                     'hover:border-500 surface-border': !isThemeActive('viva'),
-                  }
+                  },
                 )}
                 style={{ borderRadius: 30 }}
                 onClick={() => switchTheme('viva')}
@@ -607,7 +607,7 @@ const Config: React.FC<ConfigProps> = (props) => {
                     'border-primary': isThemeActive('fluent-light'),
                     'hover:border-500 surface-border':
                       !isThemeActive('fluent-light'),
-                  }
+                  },
                 )}
                 style={{ borderRadius: 30 }}
                 onClick={() => switchTheme('fluent-light')}
@@ -638,7 +638,7 @@ const Config: React.FC<ConfigProps> = (props) => {
                   {
                     'border-primary': isThemeActive('mira'),
                     'hover:border-500 surface-border': !isThemeActive('mira'),
-                  }
+                  },
                 )}
                 style={{ borderRadius: 30 }}
                 onClick={() => switchTheme('mira')}
@@ -669,7 +669,7 @@ const Config: React.FC<ConfigProps> = (props) => {
                   {
                     'border-primary': isThemeActive('nano'),
                     'hover:border-500 surface-border': !isThemeActive('nano'),
-                  }
+                  },
                 )}
                 style={{ borderRadius: 30 }}
                 onClick={() => switchTheme('nano')}

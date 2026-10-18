@@ -49,7 +49,7 @@ export type BaseConfirmationCatalogId =
  * string; the `string & {}` keeps editor completion for the base ids listed
  * above while leaving the vocabulary open.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// oxlint-disable-next-line @typescript-eslint/ban-types
 export type ConfirmationCatalogId = BaseConfirmationCatalogId | (string & {});
 
 const POLICIES: ConfirmationPolicy[] = ['always', 'never', 'complex'];
@@ -71,7 +71,7 @@ const asPolicy = (value: unknown): ConfirmationPolicy | undefined =>
  */
 export const fallbackConfirmationPolicy = (
   catalogId: ConfirmationCatalogId,
-  operation: ConfirmationOperation
+  operation: ConfirmationOperation,
 ): ConfirmationPolicy =>
   (catalogId === 'mixed' && operation === 'typeChange') ||
   operation === 'delete'
@@ -180,7 +180,7 @@ export const isComplexValue = (value: unknown): boolean => {
  */
 export const confirmationRequired = (
   policy: ConfirmationPolicy,
-  discarded: unknown[]
+  discarded: unknown[],
 ): boolean => {
   if (policy === 'never') {
     return false;
@@ -196,6 +196,6 @@ export const confirmationRequired = (
  */
 export const shouldConfirm = (
   resolve: ResolveConfirmationOptions,
-  discarded: unknown[]
+  discarded: unknown[],
 ): boolean =>
   confirmationRequired(resolveConfirmationPolicy(resolve), discarded);

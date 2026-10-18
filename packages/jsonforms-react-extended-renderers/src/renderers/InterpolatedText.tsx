@@ -36,9 +36,8 @@ export interface InterpolatedTextProps {
 }
 
 const LazyEvaluate = lazy(async () => {
-  const { renderTemplate, resolveTextParams } = await import(
-    '../util/celTemplate'
-  );
+  const { renderTemplate, resolveTextParams } =
+    await import('../util/celTemplate');
   const Evaluated = ({
     segments,
     textParams,
@@ -57,14 +56,14 @@ const LazyEvaluate = lazy(async () => {
       textParams,
       namespaceScope,
       locale,
-      translate
+      translate,
     );
     const rendered = renderTemplate(
       segments,
       buildTextScope(resolved.params, locale),
       escape,
       locale,
-      translate
+      translate,
     );
     return (
       <>

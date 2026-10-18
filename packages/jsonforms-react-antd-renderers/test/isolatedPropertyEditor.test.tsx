@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -45,14 +45,14 @@ const render = (schema: any, data: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return {
     container,
     values: () =>
       Array.from(container.querySelectorAll<HTMLInputElement>('input')).map(
-        (input) => input.value
+        (input) => input.value,
       ),
     unmount: () => act(() => root.unmount()),
   };

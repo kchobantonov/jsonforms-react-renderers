@@ -69,7 +69,7 @@ const DataCell = ({
           schema={Resolve.schema(
             schema,
             `#/properties/${encode(propName)}`,
-            rootSchema
+            rootSchema,
           )}
           uischema={controlWithoutLabel(`#/properties/${encode(propName)}`)}
           path={path}

@@ -55,7 +55,7 @@ const render = (
   cellsOption = uischema.options.cells,
   formSchema = schema,
   formData = data,
-  formUi = uischema
+  formUi = uischema,
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -72,8 +72,8 @@ const render = (
         renderers={antdRenderers}
         cells={antdCells}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -121,13 +121,13 @@ it('asks before removing a populated composite and cancels without clearing', ()
   const { container, unmount } = render();
   try {
     const button = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Remove Address"]'
+      'button[aria-label="Remove Address"]',
     )!;
     act(() => button.click());
     const dialog = document.querySelector('[data-confirm="delete"]');
     expect(dialog).toBeTruthy();
     const cancel = Array.from(dialog!.querySelectorAll('button')).find(
-      (b) => b.textContent === 'No'
+      (b) => b.textContent === 'No',
     )!;
     act(() => cancel.click());
     expect(container.textContent).toContain('12 St James');
@@ -147,12 +147,12 @@ it('shows nested object and array validation in composite cells', () => {
   expect(
     container
       .querySelector('[id="people.0.address-cell-errors"]')
-      ?.getAttribute('aria-label')
+      ?.getAttribute('aria-label'),
   ).toContain('postalCode');
   expect(
     container
       .querySelector('[id="people.0.phoneNumbers-cell-errors"]')
-      ?.getAttribute('aria-label')
+      ?.getAttribute('aria-label'),
   ).toContain('20');
   unmount();
 });
@@ -164,10 +164,10 @@ it('renders combinator cells with errors only on the invalid example row', () =>
         require.resolve(
           '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/' +
             name +
-            '.json'
+            '.json',
         ),
-        'utf8'
-      )
+        'utf8',
+      ),
     );
   const exampleSchema = load('schema');
   const exampleData = load('data');
@@ -176,7 +176,7 @@ it('renders combinator cells with errors only on the invalid example row', () =>
     exampleUi.options.cells,
     exampleSchema,
     exampleData,
-    exampleUi
+    exampleUi,
   );
   try {
     for (const field of [
@@ -187,15 +187,15 @@ it('renders combinator cells with errors only on the invalid example row', () =>
       'allOfContact',
     ]) {
       expect(
-        container.querySelector(`[id="applicants.0.${field}-cell-errors"]`)
+        container.querySelector(`[id="applicants.0.${field}-cell-errors"]`),
       ).toBeTruthy();
       expect(
-        container.querySelector(`[id="applicants.1.${field}-cell-errors"]`)
+        container.querySelector(`[id="applicants.1.${field}-cell-errors"]`),
       ).toBeNull();
     }
     for (const label of ['OneOf contact', 'AnyOf contact', 'AllOf contact']) {
       const edit = container.querySelector(
-        `[aria-label="Edit ${label}"]`
+        `[aria-label="Edit ${label}"]`,
       ) as HTMLButtonElement;
       expect(edit).toBeTruthy();
       act(() => edit.click());
@@ -204,7 +204,7 @@ it('renders combinator cells with errors only on the invalid example row', () =>
       expect(dialog.textContent).not.toContain('No applicable renderer');
       expect(dialog.textContent).not.toContain('Full name');
       const cancel = Array.from(dialog.querySelectorAll('button')).find(
-        (el) => el.textContent === 'Cancel'
+        (el) => el.textContent === 'Cancel',
       )!;
       act(() => cancel.click());
     }
@@ -236,17 +236,17 @@ it.each([false, true])(
       presentation.options.cells,
       schema,
       data,
-      presentation
+      presentation,
     );
     try {
       expect(container.textContent).toContain('Row presentation');
       expect(container.textContent).toContain('Preview');
       const edit = container.querySelector<HTMLButtonElement>(
-        '[aria-label^="Edit "]'
+        '[aria-label^="Edit "]',
       );
       expect(Boolean(edit)).toBe(withDetail);
       const label = Array.from(container.querySelectorAll('span')).find(
-        (el) => el.textContent === 'Row presentation'
+        (el) => el.textContent === 'Row presentation',
       );
       act(() => label?.click());
       expect(document.querySelector('[role="dialog"]')).toBeNull();
@@ -258,5 +258,5 @@ it.each([false, true])(
     } finally {
       unmount();
     }
-  }
+  },
 );

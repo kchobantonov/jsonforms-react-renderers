@@ -1,6 +1,6 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 
 import { JsonForms } from '@jsonforms/react';
 import { shadcnCells, shadcnRenderers } from '../src';
@@ -18,7 +18,7 @@ const settle = async (ms = 400) => {
 const setNativeValue = (field: HTMLInputElement, value: string) =>
   Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!.call(field, value);
 
 interface RenderOptions {
@@ -71,8 +71,8 @@ const render = ({
             latest = next;
           }}
         />
-      </>
-    )
+      </>,
+    ),
   );
 
   const fields = () =>
@@ -171,7 +171,7 @@ describe('rendering the declared positions', () => {
     const row = render({ properties: { pair: pairSchema } });
     expect(
       row.container.querySelector<HTMLElement>('[data-tuple-fields]')!.style
-        .flexDirection
+        .flexDirection,
     ).toBe('row');
     row.unmount();
 
@@ -181,7 +181,7 @@ describe('rendering the declared positions', () => {
     });
     expect(
       column.container.querySelector<HTMLElement>('[data-tuple-fields]')!.style
-        .flexDirection
+        .flexDirection,
     ).toBe('column');
     column.unmount();
   });
@@ -191,7 +191,7 @@ describe('rendering the declared positions', () => {
     expect(
       bordered.container
         .querySelector<HTMLElement>('[data-tuple-control]')!
-        .classList.contains('border')
+        .classList.contains('border'),
     ).toBe(true);
     bordered.unmount();
 
@@ -202,7 +202,7 @@ describe('rendering the declared positions', () => {
     expect(
       bare.container
         .querySelector<HTMLElement>('[data-tuple-control]')!
-        .classList.contains('border')
+        .classList.contains('border'),
     ).toBe(false);
     bare.unmount();
   });
@@ -364,7 +364,7 @@ describe('the additional items section', () => {
       options: { restrict: true },
     });
     expect(
-      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled
+      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled,
     ).toBe(true);
     unmount();
   });
@@ -376,7 +376,7 @@ describe('the additional items section', () => {
       options: { restrict: false },
     });
     expect(
-      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled
+      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled,
     ).toBe(false);
     unmount();
   });
@@ -388,11 +388,11 @@ describe('the additional items section', () => {
       options: { disableAdd: true, disableRemove: true },
     });
     expect(
-      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled
+      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled,
     ).toBe(true);
     expect(
       container.querySelector<HTMLButtonElement>('[data-tuple-delete="2"]')!
-        .disabled
+        .disabled,
     ).toBe(true);
     unmount();
   });
@@ -412,7 +412,7 @@ describe('the additional items section', () => {
     expect(remove).toBeTruthy();
     // Add stays shut: the schema still forbids a tail.
     expect(
-      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled
+      container.querySelector<HTMLButtonElement>('[data-tuple-add]')!.disabled,
     ).toBe(true);
     await click(remove);
     expect(stored()).toEqual(['A-01', 3]);
@@ -435,7 +435,7 @@ describe('where errors appear', () => {
     expect(explain?.textContent).toContain('2 items');
     // The positions themselves are not marked invalid by an array-length error.
     const fieldErrors = container.querySelectorAll(
-      '[data-tuple-field] .shadcn-jsonforms-error'
+      '[data-tuple-field] .shadcn-jsonforms-error',
     );
     expect(fieldErrors).toHaveLength(0);
     unmount();
@@ -448,14 +448,14 @@ describe('where errors appear', () => {
     });
     await settle(60);
     const invalid = container.querySelectorAll(
-      '[data-tuple-field] .shadcn-jsonforms-error'
+      '[data-tuple-field] .shadcn-jsonforms-error',
     );
     expect(invalid.length).toBeGreaterThan(0);
     // and it is the second position, not the first
     expect(
       container
         .querySelector('[data-tuple-field="0"]')!
-        .querySelector('.shadcn-jsonforms-error')
+        .querySelector('.shadcn-jsonforms-error'),
     ).toBeNull();
     unmount();
   });
@@ -585,8 +585,8 @@ describe('a supplied position layout', () => {
   const labelled = (view: ReturnType<typeof render>) =>
     Array.from(
       view.container.querySelectorAll(
-        '[data-tuple-fields] .shadcn-jsonforms-field'
-      )
+        '[data-tuple-fields] .shadcn-jsonforms-field',
+      ),
     )
       .map((item) => item.querySelector('label')?.textContent ?? '')
       .filter(Boolean);
@@ -651,7 +651,7 @@ describe('a supplied position layout', () => {
     await settle(60);
     expect(view.text()).toContain('Ground position');
     expect(
-      view.container.querySelectorAll('.shadcn-jsonforms-group').length
+      view.container.querySelectorAll('.shadcn-jsonforms-group').length,
     ).toBeGreaterThan(0);
     expect(labelled(view)).toEqual(['Latitude', 'Longitude', 'Elevation']);
     view.unmount();
@@ -696,7 +696,7 @@ describe('a supplied position layout', () => {
       });
     const messages = (view: ReturnType<typeof render>) =>
       Array.from(
-        view.container.querySelectorAll('.shadcn-jsonforms-error')
+        view.container.querySelectorAll('.shadcn-jsonforms-error'),
       ).map((item) => item.textContent ?? '');
 
     it('still reports its error, naming the position', async () => {
@@ -708,7 +708,7 @@ describe('a supplied position layout', () => {
             { type: 'Control', scope: '#/items/2' },
           ],
         },
-        [45.5, -122.6, 15.2]
+        [45.5, -122.6, 15.2],
       );
       await settle(60);
       expect(labelled(view)).toEqual(['Latitude', 'Elevation']);
@@ -727,7 +727,7 @@ describe('a supplied position layout', () => {
             { type: 'Control', scope: '#/items/0' },
           ],
         },
-        [45.5, -122.6, 15.2]
+        [45.5, -122.6, 15.2],
       );
       await settle(60);
       const shown = messages(view);
@@ -742,7 +742,7 @@ describe('a supplied position layout', () => {
           type: 'VerticalLayout',
           elements: [{ type: 'Control', scope: '#/items/1' }],
         },
-        [45.5, 122.6, 15.2]
+        [45.5, 122.6, 15.2],
       );
       await settle(60);
       expect(messages(view)).toHaveLength(0);
@@ -811,7 +811,7 @@ describe('a supplied position layout', () => {
       expect(labelled(view)).toEqual(['Rank', 'City']);
       // The whole-position element still gets the complex-position treatment.
       expect(
-        view.container.querySelector('[aria-label="Edit Address"]')
+        view.container.querySelector('[aria-label="Edit Address"]'),
       ).toBeTruthy();
       view.unmount();
     });
@@ -901,13 +901,13 @@ describe('a supplied position layout', () => {
 
     // The registry's detail still supplies the dialog: City, not Street.
     await view.click(
-      view.container.querySelector('[aria-label="Edit Address"]')
+      view.container.querySelector('[aria-label="Edit Address"]'),
     );
     await settle(60);
     const dialog = document.querySelector('[role="dialog"]');
     expect(dialog).toBeTruthy();
     const dialogLabels = Array.from(dialog!.querySelectorAll('label')).map(
-      (label) => label.textContent
+      (label) => label.textContent,
     );
     expect(dialogLabels).toContain('City');
     view.unmount();
@@ -1006,17 +1006,17 @@ describe('additional items pagination', () => {
     const form = render({ properties, data });
     await settle(60);
     expect(form.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(
-      5
+      5,
     );
     expect(form.inputs()[0].value).toBe('REF');
     await form.click(
-      form.container.querySelector('button[aria-label="Next page"]')
+      form.container.querySelector('button[aria-label="Next page"]'),
     );
     expect(form.container.querySelectorAll('[data-tuple-delete]')).toHaveLength(
-      2
+      2,
     );
     const tail = form.container.querySelector<HTMLInputElement>(
-      '[data-tuple-additional] input'
+      '[data-tuple-additional] input',
     )!;
     expect(tail.value).toBe('Package 6');
     await form.type(tail, 'Edited package');
@@ -1024,7 +1024,7 @@ describe('additional items pagination', () => {
     expect(form.stored()[0]).toBe('REF');
     await form.click(form.container.querySelector('[data-tuple-add]'));
     expect(
-      form.container.querySelector('[data-tuple-delete="8"]')
+      form.container.querySelector('[data-tuple-delete="8"]'),
     ).not.toBeNull();
     form.unmount();
   });
@@ -1035,7 +1035,7 @@ describe('additional items pagination', () => {
     const unpaged = render({ properties, data, config });
     await settle(60);
     expect(
-      unpaged.container.querySelectorAll('[data-tuple-delete]')
+      unpaged.container.querySelectorAll('[data-tuple-delete]'),
     ).toHaveLength(7);
     unpaged.unmount();
     const paged = render({
@@ -1046,7 +1046,7 @@ describe('additional items pagination', () => {
     });
     await settle(60);
     expect(
-      paged.container.querySelectorAll('[data-tuple-delete]')
+      paged.container.querySelectorAll('[data-tuple-delete]'),
     ).toHaveLength(5);
     paged.unmount();
   });
@@ -1068,7 +1068,7 @@ it('confirms trailing item deletion and preserves data on cancel', async () => {
   expect(form.stored()).toEqual(['Fixed', 'Tail']);
   const button = (text: string) =>
     Array.from(document.body.querySelectorAll('button')).find(
-      (b) => b.textContent?.trim() === text
+      (b) => b.textContent?.trim() === text,
     )!;
   await form.click(button('No'));
   expect(form.stored()).toEqual(['Fixed', 'Tail']);

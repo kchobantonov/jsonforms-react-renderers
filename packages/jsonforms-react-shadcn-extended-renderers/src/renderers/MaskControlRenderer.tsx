@@ -33,14 +33,14 @@ const warnInvalidToken = (token: string, pattern: string) => {
     return;
   }
   reportedMasks.add(key);
-  // eslint-disable-next-line no-console
+  // oxlint-disable-next-line no-console
   console.warn(
-    `Mask token '${token}' has an invalid pattern and was ignored: ${pattern}`
+    `Mask token '${token}' has an invalid pattern and was ignored: ${pattern}`,
   );
 };
 
 export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
-  props: ControlProps
+  props: ControlProps,
 ) {
   const { data, config, enabled, uischema, path, handleChange, schema } = props;
 
@@ -50,11 +50,11 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
   } as Record<string, any>;
   const settings = useMemo(
     () => resolveMaskSettings(uischema.options, config, warnInvalidToken),
-    [uischema.options, config]
+    [uischema.options, config],
   );
   const mask = useMemo(
     () => (settings ? createMask(settings) : undefined),
-    [settings]
+    [settings],
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -93,10 +93,10 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
       }
       handleChange(
         path,
-        storedValue(mask, next, returnMaskedValue) || undefined
+        storedValue(mask, next, returnMaskedValue) || undefined,
       );
     },
-    [handleChange, mask, path, returnMaskedValue]
+    [handleChange, mask, path, returnMaskedValue],
   );
 
   const onClear = useCallback(() => {
@@ -143,7 +143,7 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
         appliedUiSchemaOptions.restrict &&
         !withinMaxLength(
           storedValue(mask, masked, returnMaskedValue),
-          schema.maxLength
+          schema.maxLength,
         )
       ) {
         // Refused, so no state changes and React will not re-render - which
@@ -168,7 +168,7 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
       mask,
       returnMaskedValue,
       schema.maxLength,
-    ]
+    ],
   );
 
   if (props.visible === false) return null;

@@ -7,7 +7,7 @@ import {
   ItemProvider,
 } from '../../jsonforms-react-renderer-common/src/CellSummary';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
-import { it, expect, vi } from 'vitest';
+import { it, expect, vi } from 'vite-plus/test';
 
 it('interpolates summaries with separate root and row namespaces and updates with the row', async () => {
   const host = document.createElement('div');
@@ -46,7 +46,7 @@ it('interpolates summaries with separate root and row namespaces and updates wit
             },
             { tester: markupLabelTester, renderer: MarkupLabelRenderer },
           ]}
-        />
+        />,
       );
     });
     await act(async () => {
@@ -64,7 +64,7 @@ it('interpolates summaries with separate root and row namespaces and updates wit
         expect(host.textContent).toContain('Boston');
         expect(host.textContent).toContain('Wrong root');
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
     await render('Seattle');
     expect(host.textContent).toContain('Seattle');

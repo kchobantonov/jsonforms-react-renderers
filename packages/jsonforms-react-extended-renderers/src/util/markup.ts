@@ -82,7 +82,7 @@ export const markdownProfile = (config: unknown): 'basic' | 'extended' =>
  */
 export const typographyEnabled = (
   options: Record<string, unknown> | undefined,
-  config: unknown
+  config: unknown,
 ): boolean => {
   if (typeof options?.['typography'] === 'boolean') {
     return options['typography'] as boolean;
@@ -99,7 +99,7 @@ export const typographyEnabled = (
  */
 export const resolveMarkup = (
   options: Record<string, unknown> | undefined,
-  config: unknown
+  config: unknown,
 ): MarkupRequest => {
   const requested = options?.['markup'];
   const interpolate = options?.['interpolate'] === true;
@@ -138,7 +138,7 @@ export const resolveMarkup = (
  * diagnostic exists to prevent.
  */
 export const wantsMarkup = (
-  options: Record<string, unknown> | undefined
+  options: Record<string, unknown> | undefined,
 ): boolean =>
   options?.['interpolate'] === true ||
   (options?.['markup'] !== undefined && options['markup'] !== 'plain');

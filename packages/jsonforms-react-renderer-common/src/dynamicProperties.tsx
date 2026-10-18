@@ -19,5 +19,5 @@ export const useDynamicProperty = (path: string): boolean =>
 
 export const clearedDynamicPropertyValue = (
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): unknown => createDefaultValue(schema, rootSchema);

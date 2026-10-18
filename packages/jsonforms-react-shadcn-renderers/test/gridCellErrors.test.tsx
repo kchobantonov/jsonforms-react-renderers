@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { ShadcnGridCellFrame } from '../src/cells/asCell';
 
 it('shows scalar grid cell errors and removes them when the value becomes valid', () => {
@@ -34,13 +34,13 @@ it('shows scalar grid cell errors and removes them when the value becomes valid'
           data={{ name }}
           uischema={{ type: 'Control', scope: '#/properties/name' }}
           renderers={renderers}
-        />
-      )
+        />,
+      ),
     );
   try {
     render('');
     expect(
-      container.querySelector('.shadcn-jsonforms-cell-error')
+      container.querySelector('.shadcn-jsonforms-cell-error'),
     ).not.toBeNull();
     render('valid');
     expect(container.querySelector('.shadcn-jsonforms-cell-error')).toBeNull();

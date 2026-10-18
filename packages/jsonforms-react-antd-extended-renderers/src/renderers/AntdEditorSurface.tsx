@@ -20,12 +20,12 @@ export const AntdEditorSurface = ({
       ? token.colorErrorBorderHover
       : token.colorError
     : disabled
-    ? token.colorBorder
-    : focused
-    ? token.colorPrimary
-    : hovered
-    ? token.colorPrimaryHover
-    : token.colorBorder;
+      ? token.colorBorder
+      : focused
+        ? token.colorPrimary
+        : hovered
+          ? token.colorPrimaryHover
+          : token.colorBorder;
   return (
     <div
       style={{

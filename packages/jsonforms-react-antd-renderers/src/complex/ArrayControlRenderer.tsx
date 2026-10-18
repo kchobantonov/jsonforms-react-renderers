@@ -21,7 +21,7 @@ import { DeleteDialog } from './DeleteDialog';
 import { TableControl } from './TableControl';
 
 export const ArrayControlRenderer = (
-  props: ArrayLayoutProps & { translations: ArrayTranslations }
+  props: ArrayLayoutProps & { translations: ArrayTranslations },
 ) => {
   const [open, setOpen] = useState(false);
   const [path, setPath] = useState(undefined);
@@ -55,7 +55,7 @@ export const ArrayControlRenderer = (
             catalogId: 'arrayTable',
             operation: 'delete',
           },
-          discarded
+          discarded,
         )
       ) {
         setOpen(true);
@@ -65,7 +65,7 @@ export const ArrayControlRenderer = (
       }
       removeItems(parent, [rowIndex])();
     },
-    [ctx.core?.data, props.config, props.uischema, removeItems]
+    [ctx.core?.data, props.config, props.uischema, removeItems],
   );
   const openDeleteDialog = confirmDelete;
   const deleteCancel = useCallback(() => setOpen(false), [setOpen]);
@@ -109,17 +109,17 @@ const defaultTableTester = rankWith(3, supportedArray);
  */
 const forcedTableTester = rankWith(
   5,
-  or(optionIs('table', true), optionIs('format', 'table'))
+  or(optionIs('table', true), optionIs('format', 'table')),
 );
 
 export const arrayControlTester: RankedTester = (uischema, schema, context) =>
   supportedArray(uischema, schema, context)
     ? Math.max(
         defaultTableTester(uischema, schema, context),
-        forcedTableTester(uischema, schema, context)
+        forcedTableTester(uischema, schema, context),
       )
     : -1;
 
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ArrayControlRenderer))
+  withTranslateProps(withArrayTranslationProps(ArrayControlRenderer)),
 );

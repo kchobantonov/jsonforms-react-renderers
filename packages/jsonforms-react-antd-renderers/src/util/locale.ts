@@ -50,7 +50,7 @@ const entry =
   (
     antd: () => Promise<{ default: Locale }>,
     day: () => Promise<unknown>,
-    dayjsName: string
+    dayjsName: string,
   ): AntdLocaleLoader =>
   async () => {
     const [locale] = await Promise.all([antd(), day()]);
@@ -71,67 +71,67 @@ export const defaultAntdLocaleLoaders: Record<string, AntdLocaleLoader> = {
   en: entry(
     () => import('antd/locale/en_US'),
     () => import('dayjs/locale/en'),
-    'en'
+    'en',
   ),
   bg: entry(
     () => import('antd/locale/bg_BG'),
     () => import('dayjs/locale/bg'),
-    'bg'
+    'bg',
   ),
   es: entry(
     () => import('antd/locale/es_ES'),
     () => import('dayjs/locale/es'),
-    'es'
+    'es',
   ),
   fr: entry(
     () => import('antd/locale/fr_FR'),
     () => import('dayjs/locale/fr'),
-    'fr'
+    'fr',
   ),
   it: entry(
     () => import('antd/locale/it_IT'),
     () => import('dayjs/locale/it'),
-    'it'
+    'it',
   ),
   ja: entry(
     () => import('antd/locale/ja_JP'),
     () => import('dayjs/locale/ja'),
-    'ja'
+    'ja',
   ),
   nl: entry(
     () => import('antd/locale/nl_NL'),
     () => import('dayjs/locale/nl'),
-    'nl'
+    'nl',
   ),
   pl: entry(
     () => import('antd/locale/pl_PL'),
     () => import('dayjs/locale/pl'),
-    'pl'
+    'pl',
   ),
   pt: entry(
     () => import('antd/locale/pt_PT'),
     () => import('dayjs/locale/pt'),
-    'pt'
+    'pt',
   ),
   ru: entry(
     () => import('antd/locale/ru_RU'),
     () => import('dayjs/locale/ru'),
-    'ru'
+    'ru',
   ),
   tr: entry(
     () => import('antd/locale/tr_TR'),
     () => import('dayjs/locale/tr'),
-    'tr'
+    'tr',
   ),
   uk: entry(
     () => import('antd/locale/uk_UA'),
     () => import('dayjs/locale/uk'),
-    'uk'
+    'uk',
   ),
   zh: entry(
     () => import('antd/locale/zh_CN'),
     () => import('dayjs/locale/zh-cn'),
-    'zh-cn'
+    'zh-cn',
   ),
 };
 
@@ -142,7 +142,7 @@ let loaders: Record<string, AntdLocaleLoader> = defaultAntdLocaleLoaders;
  * languages than the list above.
  */
 export const setAntdLocaleLoaders = (
-  next: Record<string, AntdLocaleLoader>
+  next: Record<string, AntdLocaleLoader>,
 ): void => {
   loaders = next;
 };
@@ -175,7 +175,7 @@ const apply = (loaded: LoadedLocale): Locale => {
  * better answer than a form that will not render.
  */
 export const useAntdLocale = (
-  locale: string | undefined
+  locale: string | undefined,
 ): Locale | undefined => {
   const key = localeKey(locale);
   const [resolved, setResolved] = useState<Locale | undefined>(undefined);

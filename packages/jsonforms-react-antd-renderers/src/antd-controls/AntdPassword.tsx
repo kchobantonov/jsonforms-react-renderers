@@ -13,7 +13,7 @@ export const AntdPassword = React.memo(function AntdPassword(
   props: CellProps &
     WithClassname & {
       inputProps?: React.ComponentProps<typeof Input>;
-    }
+    },
 ) {
   const {
     data,
@@ -33,7 +33,7 @@ export const AntdPassword = React.memo(function AntdPassword(
     '',
     data,
     path,
-    eventToValue
+    eventToValue,
   );
   /*
     Reveal state is local runtime state. The specification is explicit that

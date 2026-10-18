@@ -2,7 +2,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 const schema: any = {
   type: 'object',
   properties: { kind: { type: 'string' }, name: { type: 'string' } },
@@ -50,29 +50,29 @@ it.each([false, true])(
           }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
+        />,
       );
     try {
       await act(async () =>
-        render({ kind: 'business', vat: 'VAT123', nickname: 'Ada' })
+        render({ kind: 'business', vat: 'VAT123', nickname: 'Ada' }),
       );
       expect(host.querySelector('input[value="VAT123"]')).toBeTruthy();
       expect(host.querySelector('input[value="Ada"]')).toBeNull();
       expect(host.textContent).toContain('Name');
       await act(async () =>
-        render({ kind: 'personal', vat: 'VAT123', nickname: 'Ada' })
+        render({ kind: 'personal', vat: 'VAT123', nickname: 'Ada' }),
       );
       expect(host.querySelector('input[value="VAT123"]')).toBeNull();
       expect(host.querySelector('input[value="Ada"]')).toBeTruthy();
       await act(async () =>
-        render({ kind: 'business', vat: 'VAT123', nickname: 'Ada' })
+        render({ kind: 'business', vat: 'VAT123', nickname: 'Ada' }),
       );
       expect(host.querySelector('input[value="VAT123"]')).toBeTruthy();
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 it('enables from config and allows local opt-out', async () => {
   const host = document.createElement('div');
@@ -90,7 +90,7 @@ it('enables from config and allows local opt-out', async () => {
         }}
         renderers={antdRenderers}
         cells={antdCells}
-      />
+      />,
     );
   try {
     await act(async () => render());
@@ -104,24 +104,16 @@ it('enables from config and allows local opt-out', async () => {
 
 it('renders the published conditional example and schema dependencies', async () => {
   const schema = (
-    await import(
-      '@chobantonov/jsonforms-extended-spec/examples/conditional-fields/schema.json'
-    )
+    await import('@chobantonov/jsonforms-extended-spec/examples/conditional-fields/schema.json')
   ).default;
   const data = (
-    await import(
-      '@chobantonov/jsonforms-extended-spec/examples/conditional-fields/data.json'
-    )
+    await import('@chobantonov/jsonforms-extended-spec/examples/conditional-fields/data.json')
   ).default;
   const uischema = (
-    await import(
-      '@chobantonov/jsonforms-extended-spec/examples/conditional-fields/uischema.json'
-    )
+    await import('@chobantonov/jsonforms-extended-spec/examples/conditional-fields/uischema.json')
   ).default;
   const config = (
-    await import(
-      '@chobantonov/jsonforms-extended-spec/examples/conditional-fields/config.json'
-    )
+    await import('@chobantonov/jsonforms-extended-spec/examples/conditional-fields/config.json')
   ).default;
   const host = document.createElement('div');
   document.body.append(host);
@@ -136,8 +128,8 @@ it('renders the published conditional example and schema dependencies', async ()
           config={config}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelector('input[value="VAT123"]')).toBeTruthy();
     expect(host.querySelector('input[value="London"]')).toBeTruthy();
@@ -175,11 +167,11 @@ it('resolves allOf conditions with validation disabled and respects readonly', a
           }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     const field = host.querySelector(
-      'input[value="VAT123"]'
+      'input[value="VAT123"]',
     ) as HTMLInputElement;
     expect(field).toBeTruthy();
     expect(field.disabled || field.readOnly).toBe(true);

@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 
 const packageJson = JSON.parse(
-  readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
 );
 const packageDir = dirname(fileURLToPath(import.meta.url));
 const externalPackages = new Set([
@@ -18,11 +18,11 @@ const bundledRenderers = new Set([
 const isExternal = (id) =>
   !bundledRenderers.has(id) &&
   [...externalPackages].some(
-    (packageName) => id === packageName || id.startsWith(`${packageName}/`)
+    (packageName) => id === packageName || id.startsWith(`${packageName}/`),
   );
 
 export default defineConfig({
-  esbuild: { jsx: 'automatic' },
+  oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {
       '@': resolve(packageDir, 'src'),
@@ -43,6 +43,6 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     target: 'es2015',
-    rollupOptions: { external: isExternal },
+    rolldownOptions: { external: isExternal },
   },
 });

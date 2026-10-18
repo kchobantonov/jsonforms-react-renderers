@@ -126,22 +126,22 @@ const withNativeTab = (root: UISchemaElement): UISchemaElement => {
   const layout = root as unknown as Layoutish;
   const elements = layout.elements ?? [];
   const index = elements.findIndex(
-    (element) => (element as { type?: string }).type === 'Categorization'
+    (element) => (element as { type?: string }).type === 'Categorization',
   );
   if (index === -1) {
     throw new Error(
-      'template-layout: uischema.json no longer has a Categorization to add the native tab to.'
+      'template-layout: uischema.json no longer has a Categorization to add the native tab to.',
     );
   }
   const categorization = elements[index] as unknown as Layoutish;
   const categories = categorization.elements.slice();
   const resolution = categories.findIndex(
-    (category) => (category as { name?: string }).name === 'resolution'
+    (category) => (category as { name?: string }).name === 'resolution',
   );
   categories.splice(
     resolution === -1 ? categories.length : resolution,
     0,
-    nativeCategory
+    nativeCategory,
   );
   const replaced = elements.slice();
   replaced[index] = {

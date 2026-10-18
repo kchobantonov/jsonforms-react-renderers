@@ -76,7 +76,7 @@ const NUMBER_KEYWORDS = [
 ] as const;
 const removeKeywords = (schema: JsonSchema7, keywords: readonly string[]) =>
   keywords.forEach(
-    (keyword) => delete (schema as Record<string, unknown>)[keyword]
+    (keyword) => delete (schema as Record<string, unknown>)[keyword],
   );
 
 const getJsonDataType = (value: any): JsonDataType | null => {
@@ -121,7 +121,7 @@ const getSchemaTypes = (schema: JsonSchema): JsonDataType[] => {
 export const schemaForType = (
   schema: JsonSchema,
   type: JsonDataType,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema => {
   const nextSchema: JsonSchema7 = {
     ...(typeof schema === 'object' ? (schema as JsonSchema7) : {}),
@@ -139,17 +139,17 @@ export const schemaForType = (
   if (type === 'object') {
     nextSchema.additionalProperties =
       nextSchema.additionalProperties !== false
-        ? nextSchema.additionalProperties ?? true
+        ? (nextSchema.additionalProperties ?? true)
         : false;
   } else if (type === 'array') {
     const items =
       typeof nextSchema.items === 'object' &&
       typeof (nextSchema.items as JsonSchema).$ref === 'string'
-        ? resolveSchema(
+        ? (resolveSchema(
             rootSchema,
             (nextSchema.items as JsonSchema).$ref,
-            rootSchema
-          ) ?? nextSchema.items
+            rootSchema,
+          ) ?? nextSchema.items)
         : nextSchema.items;
     nextSchema.items =
       items && typeof items === 'object'
@@ -165,7 +165,7 @@ const findDetailUiSchema = (
   uischema: ControlElement,
   path: string,
   rootSchema: JsonSchema,
-  uischemas: JsonFormsUISchemaRegistryEntry[]
+  uischemas: JsonFormsUISchemaRegistryEntry[],
 ) =>
   findUISchema(
     uischemas,
@@ -174,7 +174,7 @@ const findDetailUiSchema = (
     path,
     () => createControlElement('#'),
     uischema,
-    rootSchema
+    rootSchema,
   );
 
 export const MixedRendererComponent = ({
@@ -199,14 +199,14 @@ export const MixedRendererComponent = ({
     dataType && types.includes(dataType)
       ? dataType
       : dataType === 'integer' && types.includes('number')
-      ? 'number'
-      : null;
+        ? 'number'
+        : null;
   const selectedSchema = useMemo(
     () =>
       selectedType
         ? schemaForType(schema, selectedType, rootSchema)
         : undefined,
-    [rootSchema, schema, selectedType]
+    [rootSchema, schema, selectedType],
   );
   const detailUiSchema = useMemo(
     () =>
@@ -216,10 +216,10 @@ export const MixedRendererComponent = ({
             uischema,
             path,
             rootSchema,
-            uischemas ?? []
+            uischemas ?? [],
           )
         : undefined,
-    [path, rootSchema, selectedSchema, uischema, uischemas]
+    [path, rootSchema, selectedSchema, uischema, uischemas],
   );
 
   if (!visible) {
@@ -283,7 +283,7 @@ export const MixedRendererComponent = ({
 export const isMixedSchema = (
   uischema: UISchemaElement & Scopable,
   schema: JsonSchema,
-  context: TesterContext
+  context: TesterContext,
 ) => {
   if (schema && typeof schema === 'boolean') {
     return true;
@@ -307,10 +307,10 @@ export const isMixedSchema = (
       const currentDataSchema = resolveSchema(
         schema,
         schemaPath,
-        context?.rootSchema
+        context?.rootSchema,
       );
       return Array.isArray(
-        (currentDataSchema as JsonSchema7 | undefined)?.type
+        (currentDataSchema as JsonSchema7 | undefined)?.type,
       );
     }
   }
@@ -332,7 +332,7 @@ const isDefaultGeneratedUiSchema = (uischema: UISchemaElement): boolean => {
 export const isMixedControl = (
   uischema: UISchemaElement,
   schema: JsonSchema,
-  context: TesterContext
+  context: TesterContext,
 ) =>
   isMixedSchema(uischema as UISchemaElement & Scopable, schema, context) &&
   (isControl(uischema) || isDefaultGeneratedUiSchema(uischema));

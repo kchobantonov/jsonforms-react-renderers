@@ -44,7 +44,7 @@ export const ShadcnObjectRenderer = ({
     rootSchema,
     data,
     uischema,
-    config
+    config,
   );
   const schema = conditional.schema;
   const detailUiSchema = useMemo(
@@ -59,21 +59,21 @@ export const ShadcnObjectRenderer = ({
             schema,
             path ? 'Group' : 'VerticalLayout',
             undefined,
-            rootSchema
+            rootSchema,
           ),
           ...(path
             ? { label: uischema.label === false ? undefined : label }
             : {}),
         }),
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [path, rootSchema, schema, uischema, uischemas, label]
+    [path, rootSchema, schema, uischema, uischemas, label],
   ) as any;
   const dispatchUiSchema = conditionalLayout(
     detailUiSchema,
     schema,
-    conditional.known
+    conditional.known,
   ) as any;
   const isGroup = dispatchUiSchema.type === 'Group';
   const emptyLayout =
@@ -99,7 +99,7 @@ export const ShadcnObjectRenderer = ({
           ...schema,
           properties: {
             ...Object.fromEntries(
-              [...conditional.known].map((key) => [key, {}])
+              [...conditional.known].map((key) => [key, {}]),
             ),
             ...schema.properties,
           },

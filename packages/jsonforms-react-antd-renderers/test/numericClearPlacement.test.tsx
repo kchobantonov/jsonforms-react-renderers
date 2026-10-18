@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 import {
@@ -22,12 +22,12 @@ const render = (schema: any, data: any) => {
         renderers={antdRenderers}
         cells={antdCells}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return {
     clear: container.querySelector<HTMLElement>(
-      'button[aria-label="Clear value"]'
+      'button[aria-label="Clear value"]',
     ),
     feedback: container.querySelector('.ant-form-item-feedback-icon'),
     unmount: () => act(() => root.unmount()),
@@ -70,7 +70,7 @@ describe('clear affordance on numeric inputs', () => {
   it('is still shown for a text input with an error', () => {
     const { clear, feedback, unmount } = render(
       { type: 'string', minLength: 5 },
-      { value: 'ab' }
+      { value: 'ab' },
     );
     expect(feedback).toBeTruthy();
     expect(clear).toBeTruthy();

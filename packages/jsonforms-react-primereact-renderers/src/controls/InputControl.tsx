@@ -54,7 +54,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     visible,
     description,
     focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
+    appliedUiSchemaOptions.showUnfocusedDescription,
   );
 
   // const firstFormHelperText = showDescription

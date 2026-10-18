@@ -39,7 +39,7 @@ export const formatDuration = (parts: DurationParts) => {
     Object.entries(parts).map(([key, value]) => [
       key,
       Math.max(0, Math.floor(value || 0)),
-    ])
+    ]),
   ) as unknown as DurationParts;
   const date = `${safe.years ? `${safe.years}Y` : ''}${
     safe.months ? `${safe.months}M` : ''

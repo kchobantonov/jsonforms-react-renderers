@@ -5,7 +5,7 @@ import { getJsonDataType, JsonDataType } from './mixed';
 export const useMixedType = (
   data: unknown,
   types: JsonDataType[],
-  path: string
+  path: string,
 ) => {
   const [numeric, setNumeric] = useState<{
     type: JsonDataType;
@@ -21,8 +21,8 @@ export const useMixedType = (
     detected && types.includes(detected)
       ? detected
       : detected === 'integer' && types.includes('number')
-      ? 'number'
-      : null;
+        ? 'number'
+        : null;
   const selectedType =
     typeof data === 'number' &&
     numeric?.path === path &&

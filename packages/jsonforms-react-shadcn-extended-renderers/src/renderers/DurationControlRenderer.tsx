@@ -42,7 +42,10 @@ import {
 
 export const durationControlTester = rankWith(
   3,
-  and(isStringControl, or(formatIs('duration'), optionIs('format', 'duration')))
+  and(
+    isStringControl,
+    or(formatIs('duration'), optionIs('format', 'duration')),
+  ),
 );
 
 export const ShadcnDurationControl = (props: ControlProps) => {
@@ -106,7 +109,7 @@ export const ShadcnDurationControl = (props: ControlProps) => {
                   {label(
                     mode === 'weeks'
                       ? 'duration.modeWeeks'
-                      : 'duration.modeComponents'
+                      : 'duration.modeComponents',
                   )}
                 </Button>
               ))}
@@ -203,5 +206,5 @@ export const ShadcnDurationControl = (props: ControlProps) => {
   );
 };
 export const DurationControlRenderer = withJsonFormsControlProps(
-  ShadcnDurationControl
+  ShadcnDurationControl,
 );

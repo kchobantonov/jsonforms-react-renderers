@@ -94,16 +94,16 @@ const build = (locale: string): Environment =>
       has to know which is which, which is not knowable from the schema.
     */
     .registerFunction('number(double): string', (v: unknown) =>
-      new Intl.NumberFormat(locale).format(toNumeric(v))
+      new Intl.NumberFormat(locale).format(toNumeric(v)),
     )
     .registerFunction('number(int): string', (v: unknown) =>
-      new Intl.NumberFormat(locale).format(toNumeric(v))
+      new Intl.NumberFormat(locale).format(toNumeric(v)),
     )
     .registerFunction('number(double, int): string', (v: unknown, d: unknown) =>
       new Intl.NumberFormat(locale, {
         minimumFractionDigits: Number(d),
         maximumFractionDigits: Number(d),
-      }).format(toNumeric(v))
+      }).format(toNumeric(v)),
     )
     .registerFunction(
       'currency(double, string): string',
@@ -111,7 +111,7 @@ const build = (locale: string): Environment =>
         new Intl.NumberFormat(locale, {
           style: 'currency',
           currency: String(code),
-        }).format(toNumeric(v))
+        }).format(toNumeric(v)),
     )
     .registerFunction(
       'currency(int, string): string',
@@ -119,10 +119,10 @@ const build = (locale: string): Environment =>
         new Intl.NumberFormat(locale, {
           style: 'currency',
           currency: String(code),
-        }).format(toNumeric(v))
+        }).format(toNumeric(v)),
     )
     .registerFunction('percent(double): string', (v: unknown) =>
-      new Intl.NumberFormat(locale, { style: 'percent' }).format(toNumeric(v))
+      new Intl.NumberFormat(locale, { style: 'percent' }).format(toNumeric(v)),
     )
     .registerFunction('date(string): string', (v: unknown) => {
       const { date, timeZone } = toInstant(v);
@@ -203,7 +203,7 @@ const toMaps = (value: unknown): unknown => {
       Object.entries(value as Record<string, unknown>).map(([key, child]) => [
         key,
         toMaps(child),
-      ])
+      ]),
     );
   }
   return value;
@@ -235,7 +235,7 @@ const isUnsupportedObject = (error: unknown): boolean =>
 /** The form's translator, as JSON Forms supplies it. */
 export type Translate = (
   key: string,
-  defaultMessage?: string
+  defaultMessage?: string,
 ) => string | undefined;
 
 /**
@@ -261,19 +261,19 @@ export type Translate = (
 const withTranslator = (env: Environment, translate: Translate): Environment =>
   env
     .registerFunction('translate(string): string', (key: unknown) =>
-      String(translate(String(key), String(key)) ?? String(key))
+      String(translate(String(key), String(key)) ?? String(key)),
     )
     .registerFunction(
       'translate(string, string): string',
       (key: unknown, fallback: unknown) =>
-        String(translate(String(key), String(fallback)) ?? String(fallback))
+        String(translate(String(key), String(fallback)) ?? String(fallback)),
     );
 
 export const evaluateWith = (
   expression: string,
   scope: Record<string, unknown>,
   locale: string | undefined,
-  translate?: Translate
+  translate?: Translate,
 ): unknown => {
   const declared = (values: Record<string, unknown>) => {
     let env = environmentFor(locale).clone();
@@ -292,7 +292,7 @@ export const evaluateWith = (
       throw error;
     }
     const repaired = Object.fromEntries(
-      Object.entries(scope).map(([name, value]) => [name, toMaps(value)])
+      Object.entries(scope).map(([name, value]) => [name, toMaps(value)]),
     );
     return declared(repaired).evaluate(expression, repaired);
   }

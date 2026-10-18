@@ -31,7 +31,7 @@ export const renderExample = (
     initialLayout?: 'default' | 'demo-and-data';
     settingsStorage?: DemoSettingsStorage | null;
     settingsStorageKey?: string;
-  } = {}
+  } = {},
 ) => {
   const root = createRoot(document.getElementById('root') as HTMLElement);
   root.render(
@@ -51,7 +51,7 @@ export const renderExample = (
       initialLayout={options.initialLayout}
       settingsStorage={options.settingsStorage}
       settingsStorageKey={options.settingsStorageKey}
-    />
+    />,
   );
   return root;
 };

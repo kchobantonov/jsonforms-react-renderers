@@ -83,8 +83,8 @@ const renderGrid = async (options = {}) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   // the grid renderer is lazy, and ag-grid renders its cells asynchronously
   await flushUntil(() => container.querySelectorAll('.ag-cell').length > 0);
@@ -98,7 +98,7 @@ describe('AG Grid cells', () => {
   it('renders the field control inside a data cell', async () => {
     const { container, unmount } = await renderGrid();
     const nameCell = Array.from(container.querySelectorAll('.ag-cell')).find(
-      (el) => el.getAttribute('col-id') === 'name'
+      (el) => el.getAttribute('col-id') === 'name',
     );
     expect(nameCell).toBeTruthy();
     // Cells dispatch through the cells registry, so there is deliberately no
@@ -114,7 +114,7 @@ describe('AG Grid cells', () => {
   it('honours uischema column defs (order and width)', async () => {
     const { container, unmount } = await renderGrid();
     const headers = Array.from(
-      container.querySelectorAll('.ag-header-cell[col-id]')
+      container.querySelectorAll('.ag-header-cell[col-id]'),
     )
       .map((el) => el.getAttribute('col-id'))
       .filter((id) => id === 'name' || id === 'quantity');
@@ -128,7 +128,7 @@ describe('AG Grid cells', () => {
   it('summarises a composite column instead of inlining its detail', async () => {
     const { container, unmount } = await renderGrid();
     const cell = Array.from(container.querySelectorAll('.ag-cell')).find(
-      (el) => el.getAttribute('col-id') === 'address'
+      (el) => el.getAttribute('col-id') === 'address',
     );
     expect(cell).toBeTruthy();
     expect(cell!.textContent).toContain('12 St James');
@@ -155,20 +155,20 @@ it('highlights the active detail row independently of AG Grid checkbox selection
     const row = () =>
       container.querySelector<HTMLElement>('.ag-row[row-id="0"]')!;
     act(() =>
-      row().querySelector<HTMLElement>('[aria-label="Edit details"]')!.click()
+      row().querySelector<HTMLElement>('[aria-label="Edit details"]')!.click(),
     );
     await flushUntil(() => row()?.getAttribute('aria-current') === 'true');
     expect(row()?.getAttribute('aria-selected')).not.toBe('true');
     act(() =>
       container
         .querySelector<HTMLElement>('[aria-label="Hide details"]')!
-        .click()
+        .click(),
     );
     await flushUntil(() => !row()?.hasAttribute('aria-current'));
     act(() =>
       container
         .querySelector<HTMLElement>('[aria-label="Show details"]')!
-        .click()
+        .click(),
     );
     await flushUntil(() => row()?.getAttribute('aria-current') === 'true');
   } finally {

@@ -33,7 +33,7 @@ import ListWithDetailMasterItem from './ListWithDetailMasterItem';
 import merge from 'lodash/merge';
 
 export const ListWithDetailRenderer = (
-  props: ArrayLayoutProps & { translations: ArrayTranslations }
+  props: ArrayLayoutProps & { translations: ArrayTranslations },
 ) => {
   const {
     uischemas,
@@ -93,15 +93,15 @@ export const ListWithDetailRenderer = (
       props.uischema,
       removeItems,
       selectedIndex,
-    ]
+    ],
   );
   const handleListItemClick = useCallback(
     (index: number) => () => setSelectedIndex(index),
-    [setSelectedIndex]
+    [setSelectedIndex],
   );
   const handleCreateDefaultValue = useCallback(
     () => createDefaultValue(schema, rootSchema),
-    [createDefaultValue]
+    [createDefaultValue],
   );
   const foundUISchema = useMemo(
     () =>
@@ -112,9 +112,9 @@ export const ListWithDetailRenderer = (
         path,
         undefined,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   /*
@@ -125,8 +125,8 @@ export const ListWithDetailRenderer = (
     errorsAt(
       path,
       schema,
-      (errorPath: string) => errorPath === path
-    )(ctx.core?.errors ?? []).map((error) => error.message)
+      (errorPath: string) => errorPath === path,
+    )(ctx.core?.errors ?? []).map((error) => error.message),
   );
   const summaryErrors = appliedUiSchemaOptions.hideArraySummaryValidation
     ? ownErrors
@@ -161,7 +161,7 @@ export const ListWithDetailRenderer = (
         label={computeLabel(
           label,
           required,
-          appliedUiSchemaOptions.hideRequiredAsterisk
+          appliedUiSchemaOptions.hideRequiredAsterisk,
         )}
         description={description}
         errors={summaryErrors}
@@ -232,9 +232,9 @@ export const ListWithDetailRenderer = (
 
 export const listWithDetailTester: RankedTester = rankWith(
   4,
-  and(uiTypeIs('ListWithDetail'), schemaTypeIs('array'))
+  and(uiTypeIs('ListWithDetail'), schemaTypeIs('array')),
 );
 
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ListWithDetailRenderer))
+  withTranslateProps(withArrayTranslationProps(ListWithDetailRenderer)),
 );

@@ -123,8 +123,8 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
                   draftTime
                     ? formatTimeValue(draftTime, true)
                     : typeof data === 'string'
-                    ? data
-                    : undefined
+                      ? data
+                      : undefined
                 }
                 useSeconds={useSeconds}
                 ampm={ampm}
@@ -165,5 +165,5 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
 
 export const dateTimeControlTester: RankedTester = rankWith(
   4,
-  isDateTimeControl
+  isDateTimeControl,
 );

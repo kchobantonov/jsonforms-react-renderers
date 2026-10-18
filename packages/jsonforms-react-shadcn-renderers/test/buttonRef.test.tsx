@@ -42,14 +42,14 @@ describe.each([
                 <TooltipContent>Invalid value</TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </>
-        )
+          </>,
+        ),
       );
       expect(ref.current).toBeInstanceOf(HTMLButtonElement);
       act(() => ref.current!.click());
       expect(ref.current!.getAttribute('aria-expanded')).toBe('true');
       expect(errors.mock.calls.flat().join(' ')).not.toMatch(
-        /cannot be given refs|check the render method/i
+        /cannot be given refs|check the render method/i,
       );
     } finally {
       act(() => root.unmount());

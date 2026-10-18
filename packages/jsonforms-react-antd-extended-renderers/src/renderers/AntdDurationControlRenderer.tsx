@@ -36,7 +36,7 @@ import React from 'react';
 
 export const antdDurationControlTester: RankedTester = rankWith(
   3,
-  and(isStringControl, formatIs('duration'))
+  and(isStringControl, formatIs('duration')),
 );
 
 /** Each picker component's translation key, so none is a bare English word. */
@@ -70,7 +70,7 @@ export const AntdDurationControl = (props: ControlProps) => {
   const { open, draft: parts } = state;
   // hooks run before the visibility guard
   const { allowClear, affordanceProps } = useClearAffordance(
-    Boolean(state.value)
+    Boolean(state.value),
   );
   if (!props.visible) return null;
   const value = state.value;
@@ -93,7 +93,7 @@ export const AntdDurationControl = (props: ControlProps) => {
       ...(state.mode === 'weeks'
         ? ['weeks' as const]
         : durationComponentFields
-      ).map((field) => label(fieldLabelKeys[field]).length)
+      ).map((field) => label(fieldLabelKeys[field]).length),
     ) + 2;
   const picker = (
     <Flex vertical gap='small' style={{ width: 300 }}>
@@ -208,7 +208,7 @@ export const AntdDurationControl = (props: ControlProps) => {
               as a key first and used literally if it does not resolve.
             */}
             {state.options.cancelLabel
-              ? t(state.options.cancelLabel) ?? state.options.cancelLabel
+              ? (t(state.options.cancelLabel) ?? state.options.cancelLabel)
               : label('duration.cancel')}
           </Button>
           <Button
@@ -218,7 +218,7 @@ export const AntdDurationControl = (props: ControlProps) => {
             type='primary'
           >
             {state.options.okLabel
-              ? t(state.options.okLabel) ?? state.options.okLabel
+              ? (t(state.options.okLabel) ?? state.options.okLabel)
               : label('duration.ok')}
           </Button>
         </Flex>

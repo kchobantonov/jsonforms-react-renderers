@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { TEMPLATE_LANGS, resolveTemplateLang } from '../src/util/templateLang';
 import type { TemplateLayoutElement } from '../src/util/templateLang';
 import {
@@ -125,7 +125,7 @@ describe('naming an element', () => {
 
   it('recognises a usable name', () => {
     expect(isNamedUISchemaElement({ type: 'Control', name: 'a' } as any)).toBe(
-      true
+      true,
     );
     expect(isNamedUISchemaElement({ type: 'Control' })).toBe(false);
     expect(isNamedUISchemaElement(undefined)).toBe(false);
@@ -134,7 +134,7 @@ describe('naming an element', () => {
   /* An empty name cannot address anything, so it does not count as one. */
   it('does not count an empty name', () => {
     expect(isNamedUISchemaElement({ type: 'Control', name: '' } as any)).toBe(
-      false
+      false,
     );
   });
 });

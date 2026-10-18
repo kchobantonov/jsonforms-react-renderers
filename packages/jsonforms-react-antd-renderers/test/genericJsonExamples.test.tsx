@@ -34,14 +34,14 @@ it.each(['json-editor', 'json-inference'])(
       if (id === 'json-editor')
         expect(host.querySelector('[role="combobox"]')).not.toBeNull();
       await act(async () =>
-        root.render(render({ name: 'Pasted', active: true }))
+        root.render(render({ name: 'Pasted', active: true })),
       );
       expect(host.textContent).not.toContain('No applicable');
       if (id === 'json-inference')
         expect(
           Array.from(host.querySelectorAll('input')).some(
-            (input) => input.value === 'Pasted'
-          )
+            (input) => input.value === 'Pasted',
+          ),
         ).toBe(true);
       for (const data of [[1, 'two', false, null], 'text', 2, true, null]) {
         await act(async () => root.render(render(data)));
@@ -51,5 +51,5 @@ it.each(['json-editor', 'json-inference'])(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

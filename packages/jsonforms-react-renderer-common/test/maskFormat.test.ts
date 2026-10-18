@@ -37,7 +37,7 @@ describe('the default token grammar', () => {
         Object.entries(tokens).map(([key, token]) => [
           key,
           token.pattern.source,
-        ])
+        ]),
       );
     expect(sources(DEFAULT_MASK_TOKENS)).toEqual(sources(MASKA_DEFAULT_TOKENS));
   });
@@ -84,7 +84,7 @@ describe('resolving options', () => {
     // The inversion the Svelte gap review records would make these false.
     const on = resolveMaskSettings(
       { mask: '###', eager: true, reversed: true, returnMaskedValue: true },
-      undefined
+      undefined,
     )!;
     expect(on.eager).toBe(true);
     expect(on.reversed).toBe(true);
@@ -92,7 +92,7 @@ describe('resolving options', () => {
 
     const off = resolveMaskSettings(
       { mask: '###', eager: false, reversed: false, tokensReplace: false },
-      undefined
+      undefined,
     )!;
     expect(off.eager).toBe(false);
     expect(off.reversed).toBe(false);
@@ -102,13 +102,13 @@ describe('resolving options', () => {
   it('takes family conventions from top-level config, and the element wins', () => {
     const fromConfig = resolveMaskSettings(
       { mask: '###-###' },
-      { returnMaskedValue: true }
+      { returnMaskedValue: true },
     )!;
     expect(fromConfig.returnMaskedValue).toBe(true);
 
     const overridden = resolveMaskSettings(
       { mask: '###-###', returnMaskedValue: false },
-      { returnMaskedValue: true }
+      { returnMaskedValue: true },
     )!;
     expect(overridden.returnMaskedValue).toBe(false);
   });
@@ -124,7 +124,7 @@ describe('resolving options', () => {
         tokens: { '#': '[0-1]' },
         maskReplacers: { '#': '[7-9]' },
       },
-      undefined
+      undefined,
     )!;
     expect('1').toMatch(settings.tokens['#'].pattern);
     expect('8').not.toMatch(settings.tokens['#'].pattern);
@@ -133,7 +133,7 @@ describe('resolving options', () => {
   it('accepts maskReplacers on its own, for documents written before tokens', () => {
     const settings = resolveMaskSettings(
       { mask: '##', maskReplacers: { '#': '[7-9]' } },
-      undefined
+      undefined,
     )!;
     expect('8').toMatch(settings.tokens['#'].pattern);
   });
@@ -168,14 +168,14 @@ describe('building the token table', () => {
     expect(tokens.D.multiple).toBe(true);
     expect(tokens.T.pattern.source).toBe('[0-9]');
     expect(
-      (tokens.T as unknown as Record<string, unknown>).transform
+      (tokens.T as unknown as Record<string, unknown>).transform,
     ).toBeUndefined();
   });
 
   it('drops a token whose pattern does not compile, and says which', () => {
     const invalid: string[] = [];
     const tokens = toMaskTokens({ B: '[unclosed' }, (token) =>
-      invalid.push(token)
+      invalid.push(token),
     )!;
     expect(invalid).toEqual(['B']);
     expect(tokens.B).toBeUndefined();
@@ -242,30 +242,30 @@ describe('what is displayed and what is stored', () => {
 
   it('fills literals ahead of the caret only when eager', () => {
     expect(displayValue(maskFor({ mask: '###-###' }), '123', false)).toBe(
-      '123'
+      '123',
     );
     expect(
-      displayValue(maskFor({ mask: '###-###', eager: true }), '123', false)
+      displayValue(maskFor({ mask: '###-###', eager: true }), '123', false),
     ).toBe('123-');
   });
 
   it('honours reversed, custom tokens and alternative masks', () => {
     expect(
-      displayValue(maskFor({ mask: '#,##', reversed: true }), '123', false)
+      displayValue(maskFor({ mask: '#,##', reversed: true }), '123', false),
     ).toBe('1,23');
     expect(
       displayValue(
         maskFor({ mask: 'HH:MM', tokens: { H: '[0-2]', M: '[0-5]' } }),
         '1234',
-        false
-      )
+        false,
+      ),
     ).toBe('12:34');
     expect(
       displayValue(
         maskFor({ mask: ['#### ####', '#### #### ####'] }),
         '123456789012',
-        false
-      )
+        false,
+      ),
     ).toBe('1234 5678 9012');
   });
 });

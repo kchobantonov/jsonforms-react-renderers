@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import {
   asTranslationCatalogs,
   exampleTranslations,
@@ -10,12 +10,11 @@ import examples from '../src/examples';
 import { stringifyEditorValue } from '../src/editorModels';
 
 const spec = examples.find(
-  (e) => e.name === 'spec-container-validation-indicator'
+  (e) => e.name === 'spec-container-validation-indicator',
 )!;
 
-const translationsFile = require.resolve(
-  '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json'
-);
+const translationsFile =
+  require.resolve('@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json');
 
 describe('the Internationalization tab shows translations.json verbatim', () => {
   test('the editor value is exactly the file contents', () => {
@@ -69,7 +68,7 @@ describe('reading an edited document', () => {
       en: { 'error.required': 'Please fill this in.' },
     })!;
     expect(translatorFor(catalogs, 'en')('error.required', 'fb')).toBe(
-      'Please fill this in.'
+      'Please fill this in.',
     );
   });
 });
@@ -79,10 +78,10 @@ describe('the locale switcher picks the catalog', () => {
 
   test('each locale resolves its own messages', () => {
     expect(translatorFor(catalogs, 'en')('error.required', 'fb')).toBe(
-      'This field is required.'
+      'This field is required.',
     );
     expect(translatorFor(catalogs, 'bg')('error.required', 'fb')).toBe(
-      'Полето е задължително.'
+      'Полето е задължително.',
     );
   });
 
@@ -95,7 +94,7 @@ describe('the locale switcher picks the catalog', () => {
 
   test('both catalogs carry the same keys', () => {
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
   });
 });

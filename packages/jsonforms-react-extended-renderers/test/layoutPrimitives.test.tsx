@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import {
   SharedSplitLayoutRenderer,
@@ -38,27 +38,27 @@ describe('Spacer', () => {
   */
   it('reads the top-level size', () => {
     expect(spacer({ type: 'Spacer', size: 16 })!.props.style.height).toBe(
-      '16px'
+      '16px',
     );
   });
 
   it('accepts a string dimension', () => {
     expect(spacer({ type: 'Spacer', size: '2rem' })!.props.style.height).toBe(
-      '2rem'
+      '2rem',
     );
   });
 
   /* The superseded spelling still works, so existing forms do not shift. */
   it('still honours the older options.height', () => {
     expect(
-      spacer({ type: 'Spacer', options: { height: 8 } })!.props.style.height
+      spacer({ type: 'Spacer', options: { height: 8 } })!.props.style.height,
     ).toBe('8px');
   });
 
   it('prefers size over the older spelling', () => {
     expect(
       spacer({ type: 'Spacer', size: 4, options: { height: 99 } })!.props.style
-        .height
+        .height,
     ).toBe('4px');
   });
 
@@ -91,7 +91,7 @@ describe('Spacer', () => {
       SpacerRendererComponent({
         uischema: { type: 'Spacer' },
         visible: false,
-      } as any)
+      } as any),
     ).toBeNull();
     expect(spacer({ type: 'Spacer' })!.props['aria-hidden']).toBe('true');
   });
@@ -145,7 +145,7 @@ describe('Separator orientation', () => {
       SeparatorRendererComponent({
         uischema: { type: 'Separator' },
         visible: false,
-      } as any)
+      } as any),
     ).toBeNull();
   });
 });
@@ -160,14 +160,14 @@ describe('splitter initial sizes', () => {
       initialSplitSizes([
         { type: 'Control', options: { layout: { weight: 3 } } },
         { type: 'Control', options: { layout: { weight: 1 } } },
-      ] as any)
+      ] as any),
     ).toEqual([75, 25]);
   });
 
   /* Auto is weight 1, so equal shares are a result rather than a rule. */
   it('gives equal shares when nothing asks for more', () => {
     expect(
-      initialSplitSizes([{ type: 'Control' }, { type: 'Control' }] as any)
+      initialSplitSizes([{ type: 'Control' }, { type: 'Control' }] as any),
     ).toEqual([50, 50]);
   });
 
@@ -176,7 +176,7 @@ describe('splitter initial sizes', () => {
       initialSplitSizes([
         { type: 'Control', options: { layout: { weight: 2 } } },
         { type: 'Control' },
-      ] as any)
+      ] as any),
     ).toEqual([(2 / 3) * 100, (1 / 3) * 100]);
   });
 
@@ -186,7 +186,7 @@ describe('splitter initial sizes', () => {
       initialSplitSizes([
         { type: 'Control', options: { layout: { span: 12 } } },
         { type: 'Control', options: { layout: { span: 4 } } },
-      ] as any)
+      ] as any),
     ).toEqual([50, 50]);
   });
 
@@ -195,7 +195,7 @@ describe('splitter initial sizes', () => {
       initialSplitSizes([
         { type: 'Control', options: { layout: { weight: -2 } } },
         { type: 'Control', options: { layout: { weight: 1 } } },
-      ] as any)
+      ] as any),
     ).toEqual([50, 50]);
   });
 });
@@ -246,8 +246,8 @@ describe('splitter resizable', () => {
             },
           ]}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     return {
       separator: () =>
@@ -283,7 +283,7 @@ describe('splitter resizable', () => {
   it('diagnoses wrap alongside the splitter variant', () => {
     const view = draw({ wrap: true });
     expect(
-      view.container.querySelector('[data-layout-diagnostic]')
+      view.container.querySelector('[data-layout-diagnostic]'),
     ).toBeTruthy();
     view.unmount();
   });
@@ -317,11 +317,11 @@ describe('shared splitter pane sizing', () => {
             },
           ]}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     const panes = Array.from(
-      container.querySelectorAll<HTMLElement>('div')
+      container.querySelectorAll<HTMLElement>('div'),
     ).filter((element) => element.style.overflow === 'auto');
     expect(panes.length).toBeGreaterThan(0);
     for (const pane of panes) {

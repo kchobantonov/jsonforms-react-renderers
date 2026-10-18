@@ -14,7 +14,7 @@ export const CollectionErrorNavigation = ({
   renderAction?: (
     label: string,
     onClick: () => void,
-    icon: React.ReactNode
+    icon: React.ReactNode,
   ) => React.ReactNode;
 }) => {
   const errors = useCollectionErrors(path);
@@ -38,7 +38,7 @@ export const CollectionErrorNavigation = ({
           renderAction(
             t('collection.firstError'),
             () => reveal(errors.firstIndex!),
-            <FirstErrorIcon />
+            <FirstErrorIcon />,
           )
         ) : (
           <button
@@ -80,7 +80,7 @@ export const RowErrorCount = ({
   if (!count) return null;
   const message = t(
     count === 1 ? 'validation.containerError' : 'validation.containerErrors',
-    { count }
+    { count },
   );
   return renderIndicator ? (
     <>{renderIndicator(message)}</>

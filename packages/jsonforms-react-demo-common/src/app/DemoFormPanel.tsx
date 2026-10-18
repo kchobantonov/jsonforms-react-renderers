@@ -52,7 +52,7 @@ export interface DemoFormPanelProps {
    */
   onFormContext: (
     i18n: JsonFormsI18nState | undefined,
-    allowScriptEvaluation: boolean
+    allowScriptEvaluation: boolean,
   ) => void;
 }
 
@@ -101,7 +101,7 @@ export const DemoFormPanel = ({
     (
       (jsonFormsProps.config as Record<string, any> | undefined)
         ?.jsonformsExtended?.security as Record<string, unknown> | undefined
-    )?.allowScriptEvaluation === true
+    )?.allowScriptEvaluation === true,
   );
 
   const content = (

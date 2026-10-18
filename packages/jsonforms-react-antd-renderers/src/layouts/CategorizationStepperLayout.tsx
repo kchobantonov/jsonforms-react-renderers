@@ -33,8 +33,8 @@ export const categorizationStepperTester: RankedTester = rankWith(
   and(
     uiTypeIs('Categorization'),
     categorizationHasCategory,
-    optionIs('variant', 'stepper')
-  )
+    optionIs('variant', 'stepper'),
+  ),
 );
 
 export interface CategorizationStepperState {
@@ -42,14 +42,12 @@ export interface CategorizationStepperState {
 }
 
 export interface CategorizationStepperLayoutRendererProps
-  extends StatePropsOfLayout,
-    AjvProps,
-    TranslateProps {
+  extends StatePropsOfLayout, AjvProps, TranslateProps {
   data: any;
 }
 
 export const CategorizationStepperLayoutRenderer = (
-  props: CategorizationStepperLayoutRendererProps
+  props: CategorizationStepperLayoutRendererProps,
 ) => {
   // The `t` from props is core's Translator, which returns undefined for a
   // key with no fallback; useI18n always supplies the default.
@@ -160,6 +158,6 @@ export const CategorizationStepperLayoutRenderer = (
 
 export default withAjvProps(
   withTranslateProps(
-    withJsonFormsLayoutProps(CategorizationStepperLayoutRenderer)
-  )
+    withJsonFormsLayoutProps(CategorizationStepperLayoutRenderer),
+  ),
 );

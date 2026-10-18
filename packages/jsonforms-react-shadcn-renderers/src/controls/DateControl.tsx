@@ -54,7 +54,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
     value.replace(/\[([^\]]*)\]|YYYY|YY|DD|D/g, (token, literal) =>
       literal !== undefined
         ? "'" + literal + "'"
-        : { YYYY: 'yyyy', YY: 'yy', DD: 'dd', D: 'd' }[token]!
+        : { YYYY: 'yyyy', YY: 'yy', DD: 'dd', D: 'd' }[token]!,
     );
   const saveFormat =
     typeof options.dateSaveFormat === 'string'
@@ -176,7 +176,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                         },
                         (_, index) =>
                           (min?.getFullYear() ??
-                            new Date().getFullYear() - 100) + index
+                            new Date().getFullYear() - 100) + index,
                       ).map((year) => (
                         <SelectItem key={year} value={String(year)}>
                           {year}
@@ -213,7 +213,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                 onSelect={(date) => {
                   handleChange(
                     path,
-                    date ? format(date, saveFormat) : undefined
+                    date ? format(date, saveFormat) : undefined,
                   );
                   setOpen(false);
                 }}

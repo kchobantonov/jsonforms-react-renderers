@@ -2,7 +2,7 @@
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { build } from 'vite';
+import { build } from 'vite-plus';
 
 const root = resolve(__dirname, '../../..');
 const primitives = [
@@ -28,8 +28,8 @@ const sourceFiles = (directory: string): string[] =>
     entry.isDirectory()
       ? sourceFiles(resolve(directory, entry.name))
       : /\.tsx?$/.test(entry.name)
-      ? [resolve(directory, entry.name)]
-      : []
+        ? [resolve(directory, entry.name)]
+        : [],
   );
 
 describe('application ownership of shadcn/ui', () => {
@@ -41,8 +41,8 @@ describe('application ownership of shadcn/ui', () => {
       expect(
         readFileSync(
           resolve(root, host, `src/components/ui/${name}.tsx`),
-          'utf8'
-        )
+          'utf8',
+        ),
       ).toContain('export');
     });
   }
@@ -50,25 +50,25 @@ describe('application ownership of shadcn/ui', () => {
     const project = `packages/jsonforms-react-shadcn-${name}`;
     it(`${name} has no UI runtime dependencies`, () => {
       const pkg = JSON.parse(
-        readFileSync(resolve(root, project, 'package.json'), 'utf8')
+        readFileSync(resolve(root, project, 'package.json'), 'utf8'),
       );
       expect(
         Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }).filter(
           (key) =>
             /^(antd|@base-ui\/|@radix-ui\/|shadcn|react-day-picker|class-variance-authority|tailwind-merge)/.test(
-              key
-            )
-        )
+              key,
+            ),
+        ),
       ).toEqual([]);
     });
     it(`${name} does not ship primitive implementations`, () => {
       const files = sourceFiles(resolve(root, project, 'src'));
       expect(files.some((file) => file.includes('/components/ui/'))).toBe(
-        false
+        false,
       );
       for (const file of files) {
         expect(readFileSync(file, 'utf8')).not.toMatch(
-          /from ['"](?:antd|@base-ui\/|@radix-ui\/|react-day-picker)/
+          /from ['"](?:antd|@base-ui\/|@radix-ui\/|react-day-picker)/,
         );
       }
     });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
@@ -19,12 +19,12 @@ vi.stubGlobal(
     disconnect() {
       /* no-op */
     }
-  }
+  },
 );
 
 /** Marks every catalog entry, so an untranslated string is visible as English. */
 const marking = createTranslator((key, fallback) =>
-  key in i18nDefaults ? `«${key}»` : fallback
+  key in i18nDefaults ? `«${key}»` : fallback,
 );
 
 const render = (schema: any, uischema: any, data: any) => {
@@ -41,18 +41,18 @@ const render = (schema: any, uischema: any, data: any) => {
         cells={antdCells}
         i18n={{ locale: 'bg', translate: marking }}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
 
 const textOf = (container: HTMLElement) => {
   const labels = Array.from(container.querySelectorAll('[aria-label]')).map(
-    (el) => el.getAttribute('aria-label')
+    (el) => el.getAttribute('aria-label'),
   );
   const placeholders = Array.from(
-    container.querySelectorAll('[placeholder]')
+    container.querySelectorAll('[placeholder]'),
   ).map((el) => el.getAttribute('placeholder'));
   return [...labels, ...placeholders, container.textContent ?? ''].join(' | ');
 };
@@ -62,7 +62,7 @@ describe('renderer strings reach the translator', () => {
     const { container, unmount } = render(
       { type: 'object', additionalProperties: { type: 'string' } },
       { type: 'Control', scope: '#' },
-      { existing: 'value' }
+      { existing: 'value' },
     );
     const text = textOf(container);
     expect(text).toContain('«additionalProperties.title»');
@@ -81,7 +81,7 @@ describe('renderer strings reach the translator', () => {
     const { container, unmount } = render(
       { type: ['string', 'object'] },
       { type: 'Control', scope: '#' },
-      { nested: 'x' }
+      { nested: 'x' },
     );
     const text = textOf(container);
     expect(text).toContain('«mixed.searchLabel»');
@@ -103,7 +103,7 @@ describe('renderer strings reach the translator', () => {
         },
       },
       { type: 'Control', scope: '#' },
-      [{ nested: {} }]
+      [{ nested: {} }],
     );
     expect(textOf(container)).toContain('«array.indexLabel»');
     unmount();
@@ -120,7 +120,7 @@ describe('renderer strings reach the translator', () => {
           { type: 'Category', label: 'Two', elements: [] },
         ],
       },
-      {}
+      {},
     );
     const text = textOf(container);
     expect(text).toContain('«categorization.next»');
@@ -153,7 +153,7 @@ describe('renderer strings reach the translator', () => {
         scope: '#/properties/weight',
         options: { slider: true },
       },
-      {}
+      {},
     );
     const announced = container
       .querySelector('[aria-valuetext]')
@@ -166,12 +166,12 @@ describe('renderer strings reach the translator', () => {
     const { container, unmount } = render(
       { type: 'object', additionalProperties: { type: 'string' } },
       { type: 'Control', scope: '#', options: { renameProperties: true } },
-      { existing: 'value' }
+      { existing: 'value' },
     );
     const rename = Array.from(container.querySelectorAll('button')).find(
       (button) =>
         button.getAttribute('aria-label') ===
-        '«additionalProperties.renameNamed»'
+        '«additionalProperties.renameNamed»',
     );
     expect(rename, 'no rename action').toBeTruthy();
     await act(async () => {
@@ -192,7 +192,7 @@ describe('renderer strings reach the translator', () => {
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       setter.call(input, 'existing');
       input.dispatchEvent(new Event('input', { bubbles: true }));

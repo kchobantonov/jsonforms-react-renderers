@@ -1,32 +1,102 @@
-# Vite+ preparation
+# Vite+ toolchain
 
-- [x] Retire the MUI extended renderers, Web Component and demo, including workspace dependencies, navigation, release scripts and pending release entries. Ant Design, PrimeReact and shadcn remain supported.
-- [x] Upgrade Vite to 7.3.7, Vitest and V8 coverage to 4.1.12, and the React plugin to 5.2.0. Require Node 22.12+ within Node 22.
-- [x] Preserve library ESM/CommonJS output names, declarations, externals and existing browser targets. Verify all three development demos and packed Web Components in Chromium.
-- [ ] Adopt Vite+ after recording a benchmark baseline for cold builds, unchanged builds, one-renderer edits and focused tests.
-- [ ] Configure and verify task caching, including invalidation when the linked specification or shared packages change.
-- [ ] Evaluate formatter/linter migration separately; retain existing checks until their replacements preserve coverage.
+- [x] Retire MUI packages and demos. Ant Design, PrimeReact and shadcn remain supported.
+- [x] Run the official `vp migrate` tools, including the ESLint-to-Oxlint and Prettier-to-Oxfmt migrations.
+- [x] Replace ESLint and Prettier commands, dependencies, configuration and editor recommendations with Vite+.
+- [x] Pin Vite+ 1.3.0 and Node 22.23.3; use the Vite+ core alias and Vitest 5.0.5 catalog entries.
+- [x] Update TypeScript to 5.9 and bundler module resolution so package exports resolve correctly.
+- [x] Keep library output names, ESM/CommonJS entry points, declaration builds, externals and browser targets.
+- [x] Configure root test projects, bounded worker counts and cached workspace builds.
+- [x] Use the official setup-vp action in CI and release workflows.
 
-The migration requires explicit Node types and ES2022 libraries in test configs;
-these do not change production compilation targets. Console spies in URL-policy
-tests are restored between cases to preserve test isolation with Vitest 4.
+## Commands
 
-Two existing mixed private/public changesets are split into separate files,
-preserving their version entries and descriptions so release planning succeeds.
+- `vp install --frozen-lockfile`: install the pinned workspace.
+- `vp check`: check formatting and lint together.
+- `vp fmt .`: format the repository.
+- `vp test run`: run the package test projects with two workers.
+- `vp test run --project @chobantonov/jsonforms-react-shadcn-renderers test/passwordControl.test.tsx`: focus a test run.
+- `vp run build`: build packages and demos in dependency order, with cached tasks and two concurrent tasks.
+- `vp run build:libs`: build publishable libraries and Web Components.
+- `vp run test:release`: check release tooling.
+- `vp run example:antd:dev`: start the Ant Design demo (also `primereact` and `shadcn`).
 
-References: [Vite+ migration](https://viteplus.dev/guide/migrate),
-[Vite 7 migration](https://v7.vite.dev/guide/migration),
-[Vitest migration](https://vitest.dev/guide/migration/).
+Projects run in separate sequence groups with two workers per package. This
+prevents independent Vitest pools from multiplying concurrency when running the
+entire workspace. Tests and release operations are not cached by default. Build tasks use Vite Task's
+file tracking, including workspace dependencies. Cache records include the linked
+specification examples and TypeScript authoring files. Changes to shared source
+files were observed to invalidate dependent compiler tasks. An unchanged
+workspace build reused 32 of 35 tasks, saving 61.55 seconds in the measured run. The examples-copy task writes
+into its own input directory, so Vite Task correctly declines to cache it.
+
+## Migration decisions
+
+The legacy ESLint configuration was converted to flat config with the official
+ESLint migration tool before running `vp migrate`. The resulting Oxlint rules
+preserve the configured React, import and TypeScript checks where supported.
+Inactive Babel/Flow/Standard rules from eslint-config-prettier were dropped.
+Formatting now owns redundant-semicolon checks; strict-mode parsing handles
+invalid argument declarations and octal syntax. JSX usage is handled by the
+unused-variable rules. The old React deprecation rule has no direct migrated
+counterpart; native type-aware deprecation checking needs a separate review.
+
+TypeScript declaration and test checks still run through `tsc` in build scripts.
+The native checker is disabled in `vp check`: it uses a newer TypeScript engine
+and does not reproduce the workspace's separate source/test configurations.
+This does not remove the existing compiler checks. Oxlint enables additional
+React diagnostics, so warning counts differ from the old ESLint baseline.
+
+Generated upstream shadcn UI files remain excluded from formatting and lint;
+`vp run shadcn:check` validates their synchronization. The broad formatting diff
+is the one-time Oxfmt migration, including previously unformatted documentation.
+
+The packed-consumer test reads pnpm overrides from `pnpm-workspace.yaml` and
+resolves catalog references before installing the release tarballs in isolation. Its temporary package also
+pins the workspace package manager, so a globally installed pnpm cannot change
+override behavior.
+
+References: [migration](https://viteplus.dev/guide/migrate),
+[Vitest 5 migration](https://viteplus.dev/guide/vitest-v5),
+[task caching](https://viteplus.dev/guide/run),
+[CI](https://viteplus.dev/guide/ci),
+[editor integration](https://viteplus.dev/guide/ide-integration).
+
+## Test migration
+
+AG Grid mocks use the public package name and an explicit development dependency.
+Mocking a sibling node_modules directory resolved a different entry under Vite 8
+and failed to intercept the renderer import. The original test timeout and all
+behavior assertions remain intact.
+
+The temporary `clearMocks: false` settings generated by the migration tool have
+been removed. Tests now use Vitest 5 mock clearing. A CSS ownership fixture uses
+a filesystem path based on its test directory, so root and package runs agree.
+
+Coverage include patterns remain `src/**/*.{ts,tsx}` in the four existing
+coverage configurations: 158 Ant Design, 89 PrimeReact, 70 shadcn and 19 shadcn
+extended source files, excluding declaration files. No coverage thresholds were
+removed.
 
 ## Verification
 
-All 3,115 Vitest tests pass across 371 files in the retained packages. All 43
-release-tooling tests pass. Workspace builds, declaration checks, release tarball
-validation, three packed Web Component browser checks, and three development
-demo browser checks pass. The shared package also passes with V8 coverage enabled.
-Frozen-lockfile installation succeeds.
+- Workspace builds and declaration/test type checks pass.
+- The full root run executes all 3,115 tests in 371 files. It passed 3,114 tests;
+  the remaining CSS fixture path was corrected and its three-test file passes
+  from the root. The affected package's focused run also passes all 22 tests
+  with V8 coverage enabled. No assertions were removed or timeouts increased.
+- All 43 release-tooling tests pass.
+- Release tarballs validate; all three packed Web Components pass rendering,
+  editing, change-event and read-only checks in Chromium.
+- All three development demos load in Chromium without page errors.
+- All 23 generated shadcn components match their upstream sources in both hosts.
+- Frozen-lockfile installation succeeds.
+- `vp check` passes: formatting is clean, with zero lint errors and 301 warnings.
+  These include existing warnings and additional Oxlint React diagnostics.
+- An unchanged build reuses 32/35 tasks; changes to shared inputs trigger cache
+  misses. Test and release scripts remain uncached by default.
 
-Lint reports no errors and 88 existing warnings. Formatting passes for every
-changed file; the full repository check still reports 24 unchanged changeset and
-documentation files. Existing jsdom CSS parsing and deliberate error-boundary
-test diagnostics remain visible in test output.
+The full root run took 480.91 seconds with package groups and two workers. Use
+project/file filters for ordinary edits; reserve a full run for changes across
+packages or to the toolchain. Existing jsdom CSS parsing and intentional
+error-boundary diagnostics remain visible in test output.

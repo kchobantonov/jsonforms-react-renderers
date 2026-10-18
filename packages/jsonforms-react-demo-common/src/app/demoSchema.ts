@@ -12,7 +12,7 @@ import { Generate, JsonSchema } from '@jsonforms/core';
  */
 export const demoSchema = (
   schema: JsonSchema | undefined,
-  data: unknown
+  data: unknown,
 ): JsonSchema => {
   if (schema !== undefined) return schema;
   if (data === undefined) return {};

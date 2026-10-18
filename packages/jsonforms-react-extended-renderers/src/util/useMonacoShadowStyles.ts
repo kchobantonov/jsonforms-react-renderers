@@ -8,7 +8,7 @@ export const useMonacoShadowStyles = (ref: RefObject<HTMLElement>) => {
     const copies = new Map<Element, Element>();
     const sync = () => {
       for (const source of Array.from(
-        document.head.querySelectorAll('style, link[rel="stylesheet"]')
+        document.head.querySelectorAll('style, link[rel="stylesheet"]'),
       )) {
         const content = source.getAttribute('href') ?? source.textContent ?? '';
         if (!/monaco|\/vs\//i.test(content)) continue;

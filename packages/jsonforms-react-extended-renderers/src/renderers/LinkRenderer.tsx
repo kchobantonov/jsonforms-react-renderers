@@ -35,7 +35,7 @@ export const linkRendererTester: RankedTester = rankWith(1, uiTypeIs('Link'));
  */
 export const linkRel = (
   target: string | undefined,
-  rel: string | undefined
+  rel: string | undefined,
 ): string | undefined => {
   const tokens = (rel ?? '').split(/\s+/).filter(Boolean);
   if (target === '_blank') {
@@ -88,5 +88,5 @@ export const LinkRendererComponent = ({
 };
 
 export const LinkRenderer = withTranslateProps(
-  withJsonFormsLayoutProps(LinkRendererComponent)
+  withJsonFormsLayoutProps(LinkRendererComponent),
 );

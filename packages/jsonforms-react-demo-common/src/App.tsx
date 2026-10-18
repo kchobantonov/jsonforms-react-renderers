@@ -83,7 +83,7 @@ type Action = {
 const getProps = (
   example: ExampleDescription,
   cells?: JsonFormsCellRendererRegistryEntry[],
-  renderers?: JsonFormsRendererRegistryEntry[]
+  renderers?: JsonFormsRendererRegistryEntry[],
 ) => ({
   schema: example.schema,
   uischema: example.uischema,
@@ -175,7 +175,7 @@ const demoAjv = createFormsAjv({
  */
 const demoErrorTranslator = createAjvErrorTranslator(
   ajvLocalizers,
-  () => demoI18n?.locale
+  () => demoI18n?.locale,
 );
 
 const App = ({
@@ -197,7 +197,7 @@ const App = ({
 }: AppProps) => {
   const initialProviderSettingsRef = useRef(initialProviderSettings).current;
   const defaultDrawer = useRef(
-    window.matchMedia('(min-width: 1280px)').matches
+    window.matchMedia('(min-width: 1280px)').matches,
   ).current;
   const queryDefaults = useRef({
     readonly: false,
@@ -207,20 +207,20 @@ const App = ({
     drawer: defaultDrawer,
   }).current;
   const initialQuery = useRef(
-    readDemoQueryState(window.location, queryDefaults)
+    readDemoQueryState(window.location, queryDefaults),
   ).current;
   const preferenceStorage = useMemo(
     () =>
       settingsStorage === undefined
         ? getWebDemoSettingsStorage()
-        : settingsStorage ?? undefined,
-    [settingsStorage]
+        : (settingsStorage ?? undefined),
+    [settingsStorage],
   );
   const preferenceStorageKey =
     settingsStorageKey ?? demoSettingsStorageKey(rendererName);
   const initialPersistedRead = useMemo(
     () => readPersistedDemoSettings(preferenceStorage, preferenceStorageKey),
-    [preferenceStorage, preferenceStorageKey]
+    [preferenceStorage, preferenceStorageKey],
   );
   const initialPersisted =
     initialPersistedRead &&
@@ -231,7 +231,7 @@ const App = ({
   const [currentIndex, setIndex] = useState(initialRoute.index);
   const [isHome, setIsHome] = useState(initialRoute.isHome);
   const [exampleProps, setExampleProps] = useState(
-    getProps(examples[initialRoute.index], cells, renderers)
+    getProps(examples[initialRoute.index], cells, renderers),
   );
   const [models, setModels] = useState<EditorModels>({
     data: stringifyEditorValue(examples[initialRoute.index].data),
@@ -246,26 +246,26 @@ const App = ({
   const [activeTab, setActiveTab] = useState<DemoTab>(initialQuery.activeTab);
   const [search, setSearch] = useState('');
   const [exampleSource, setExampleSource] = useState(() =>
-    examples.some((e) => isSpecExample(e.name)) ? 'spec' : 'all'
+    examples.some((e) => isSpecExample(e.name)) ? 'spec' : 'all',
   );
   const ExampleSourceSelect = Ui.Select;
   const [sidebarOpen, setSidebarOpen] = useState(initialQuery.drawer);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [formOnly, setFormOnly] = useState(initialQuery.formOnly);
   const [useWebComponent, setUseWebComponent] = useState(
-    initialQuery.useWebComponent
+    initialQuery.useWebComponent,
   );
   const [mode, setMode] = useState<DemoMode>(
     initialPersisted?.mode === 'light' || initialPersisted?.mode === 'dark'
       ? initialPersisted.mode
-      : 'system'
+      : 'system',
   );
   const [rtl, setRtl] = useState(false);
   const [readonly, setReadonly] = useState(initialQuery.readonly);
   const [locale, setLocale] = useState(
     typeof initialPersisted?.locale === 'string'
       ? initialPersisted.locale
-      : 'en'
+      : 'en',
   );
   // Catalogs live outside `exampleProps.i18n` because `translate` is a function:
   // it cannot be serialized for the editor, and it cannot follow the locale
@@ -279,7 +279,7 @@ const App = ({
     initialPersisted?.layout === 'default' ||
       initialPersisted?.layout === 'demo-and-data'
       ? initialPersisted.layout
-      : initialLayout
+      : initialLayout,
   );
   const [configOptions, setConfigOptions] = useState<Record<string, any>>({
     restrict: true,
@@ -289,10 +289,10 @@ const App = ({
     {
       ...initialProviderSettingsRef,
       ...(initialPersisted?.rendererSettings ?? {}),
-    }
+    },
   );
   const [preferencesHydrated, setPreferencesHydrated] = useState(
-    initialPersistedRead === undefined || initialPersisted !== undefined
+    initialPersistedRead === undefined || initialPersisted !== undefined,
   );
   const systemDark = useSystemDark();
 
@@ -340,24 +340,24 @@ const App = ({
     preferenceStorage,
     preferenceStorageKey,
     preferencesHydrated,
-    { mode, locale, layout, rendererSettings }
+    { mode, locale, layout, rendererSettings },
   );
 
   const setQueryOption = useCallback(
     <T extends boolean | DemoTab>(
       key: DemoQueryKey,
       value: T,
-      defaultValue: T
+      defaultValue: T,
     ) => {
       writeDemoQueryValue(
         window.location,
         window.history,
         key,
         value,
-        defaultValue
+        defaultValue,
       );
     },
-    []
+    [],
   );
 
   useDocumentChrome(dark, mode, rtl);
@@ -383,7 +383,7 @@ const App = ({
       if (resetActiveTab) setActiveTab('demo');
       setIsHome(false);
     },
-    [cells, examples, renderers, updateModels]
+    [cells, examples, renderers, updateModels],
   );
 
   useEffect(() => {
@@ -431,7 +431,7 @@ const App = ({
     window.history.pushState(
       null,
       '',
-      `${window.location.pathname}${window.location.search}`
+      `${window.location.pathname}${window.location.search}`,
     );
     setIsHome(true);
     setFormOnly(false);
@@ -463,7 +463,7 @@ const App = ({
             (exampleSource === 'spec'
               ? isSpecExample(example.name)
               : isPrefixedOfficialExample(example.name))) &&
-          example.label.toLowerCase().includes(needle)
+          example.label.toLowerCase().includes(needle),
       )
       .map(({ name, label }) => ({ name, label }));
   }, [examples, search, exampleSource]);
@@ -493,7 +493,7 @@ const App = ({
       readonly,
       translations,
       validationMode,
-    ]
+    ],
   );
 
   /*
@@ -526,7 +526,7 @@ const App = ({
   const effectiveConfigOption = (key: string): boolean =>
     Boolean(
       configOptions[key] ??
-        (exampleProps.config as Record<string, unknown> | undefined)?.[key]
+      (exampleProps.config as Record<string, unknown> | undefined)?.[key],
     );
 
   const setData = useCallback((data: unknown) => {
@@ -572,7 +572,7 @@ const App = ({
           ?.errors;
         errorStore.publish(
           'server',
-          Array.isArray(reported) ? (reported as never[]) : []
+          Array.isArray(reported) ? (reported as never[]) : [],
         );
         return;
       }
@@ -585,7 +585,7 @@ const App = ({
         { message: `Action handled: ${event.label}` },
       ]);
     },
-    [errorStore]
+    [errorStore],
   );
 
   const renderForm = () => (

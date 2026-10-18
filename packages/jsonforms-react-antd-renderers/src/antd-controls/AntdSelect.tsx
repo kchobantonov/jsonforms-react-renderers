@@ -10,7 +10,7 @@ import { TranslateProps } from '@jsonforms/react';
 export const AntdSelect = (
   props: EnumCellProps &
     WithClassname &
-    TranslateProps & { inputProps?: React.ComponentProps<typeof Select> }
+    TranslateProps & { inputProps?: React.ComponentProps<typeof Select> },
 ) => {
   const {
     data,
@@ -34,11 +34,11 @@ export const AntdSelect = (
   const d = useI18nDefault();
   const noneOptionLabel = useMemo(
     () => t('enum.none', d('enum.none'), { schema, uischema, path }),
-    [t, d, schema, uischema, path]
+    [t, d, schema, uischema, path],
   );
 
   const selectedIndex = options.findIndex((option) =>
-    isEqual(option.value, data)
+    isEqual(option.value, data),
   );
 
   const selectStyle = { width: '100%' };
@@ -66,7 +66,7 @@ export const AntdSelect = (
         if (enabled) {
           handleChange(
             path,
-            typeof index === 'number' ? options[index]?.value : undefined
+            typeof index === 'number' ? options[index]?.value : undefined,
           );
         }
       }}

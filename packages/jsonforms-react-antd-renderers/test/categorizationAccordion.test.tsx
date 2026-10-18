@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { NOT_APPLICABLE } from '@jsonforms/core';
@@ -44,7 +44,7 @@ const category = (
   name: string,
   label: string,
   scope: string,
-  rule?: unknown
+  rule?: unknown,
 ) => ({
   type: 'Category',
   name,
@@ -84,8 +84,8 @@ const render = (uischema: any, data: any = {}, config?: any) => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   draw(data);
   const headers = () =>
@@ -115,7 +115,7 @@ describe('accordion selection', () => {
       schema as any,
       {
         rootSchema: schema,
-      } as any
+      } as any,
     );
 
   it('is selected by variant accordion, above tabs and stepper', () => {
@@ -135,7 +135,7 @@ describe('accordion selection', () => {
         type: 'Categorization',
         options: { variant: 'accordion' },
         elements: [{ type: 'Label', text: 'not a category' }],
-      })
+      }),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -167,7 +167,7 @@ describe('at most one category is open', () => {
       const { openLabels, unmount } = render(accordion({ initial: 'nowhere' }));
       expect(openLabels()).toEqual(['Contact']);
       expect(warn).toHaveBeenCalledWith(
-        expect.stringContaining('options.initial "nowhere"')
+        expect.stringContaining('options.initial "nowhere"'),
       );
       unmount();
     } finally {
@@ -232,7 +232,7 @@ describe('at most one category is open', () => {
     };
     const { click, openLabels, rerender, unmount } = render(
       accordion({}, { reach: hideReach }),
-      { isBusiness: true }
+      { isBusiness: true },
     );
     click('Contact');
     expect(openLabels()).toEqual([]);
@@ -255,7 +255,7 @@ describe('visibility', () => {
   it('leaves a hidden category out entirely', () => {
     const { headers, unmount } = render(
       accordion({}, { reach: hideWhenNotBusiness }),
-      { isBusiness: false }
+      { isBusiness: false },
     );
     expect(headers().map((h) => h.textContent?.trim())).toEqual([
       'Contact',
@@ -269,7 +269,7 @@ describe('visibility', () => {
     // category" - rather than leaving the index pointing at a different one.
     const { openLabels, unmount } = render(
       accordion({ initial: 'reach' }, { reach: hideWhenNotBusiness }),
-      { isBusiness: false }
+      { isBusiness: false },
     );
     expect(openLabels()).toEqual(['Contact']);
     unmount();
@@ -278,7 +278,7 @@ describe('visibility', () => {
   it('opens nothing when no category is visible', () => {
     const hidden = { effect: 'HIDE', condition: { scope: '#', schema: true } };
     const { headers, openLabels, unmount } = render(
-      accordion({}, { contact: hidden, reach: hidden, notes: hidden })
+      accordion({}, { contact: hidden, reach: hidden, notes: hidden }),
     );
     expect(headers()).toHaveLength(0);
     expect(openLabels()).toEqual([]);
@@ -295,7 +295,7 @@ describe('accordion content', () => {
       phone: '555',
     });
     const values = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     expect(values).toContain('555');
     unmount();
@@ -307,10 +307,10 @@ describe('accordion content', () => {
       { contactName: 'Jo' },
       // Namespaced, per Adjustment 1: this is a project extension, not a core
       // or Material convention.
-      { jsonformsExtended: { showValidationIndicator: true } }
+      { jsonformsExtended: { showValidationIndicator: true } },
     );
     expect(
-      header('Contact').querySelector('[data-category-indicators]')
+      header('Contact').querySelector('[data-category-indicators]'),
     ).toBeTruthy();
     unmount();
   });
@@ -319,13 +319,13 @@ describe('accordion content', () => {
     const { header, unmount } = render(
       accordion(),
       { notes: 'Call back Tuesday' },
-      { jsonformsExtended: { showDataIndicator: true } }
+      { jsonformsExtended: { showDataIndicator: true } },
     );
     expect(
-      header('Notes').querySelector('[data-category-data-indicator]')
+      header('Notes').querySelector('[data-category-data-indicator]'),
     ).toBeTruthy();
     expect(
-      header('Reach').querySelector('[data-category-data-indicator]')
+      header('Reach').querySelector('[data-category-data-indicator]'),
     ).toBeNull();
     unmount();
   });
@@ -363,7 +363,7 @@ describe('accordion content', () => {
     expect(header('Notes').tabIndex).toBe(0);
     act(() => {
       header('Notes').dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
       );
     });
     expect(openLabels()).toEqual(['Notes']);
@@ -403,7 +403,7 @@ describe('where the indicators sit', () => {
     const tabs = { ...accordion(), options: {} };
     const { container, unmount } = render(tabs, withIndicators, config);
     const tab = Array.from(
-      container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+      container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
     ).find((element) => element.textContent?.includes('Contact'))!;
     expect(tab.querySelector('[data-category-indicators]')).toBeTruthy();
     unmount();

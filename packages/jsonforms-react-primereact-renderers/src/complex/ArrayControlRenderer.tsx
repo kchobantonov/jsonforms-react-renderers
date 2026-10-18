@@ -41,7 +41,7 @@ import { DeleteDialog } from './DeleteDialog';
 import { TableControl } from './TableControl';
 
 export const ArrayControlRenderer = (
-  props: ArrayLayoutProps & { translations: ArrayTranslations }
+  props: ArrayLayoutProps & { translations: ArrayTranslations },
 ) => {
   const [open, setOpen] = useState(false);
   const [path, setPath] = useState(undefined);
@@ -54,7 +54,7 @@ export const ArrayControlRenderer = (
       setPath(p);
       setRowData(rowIndex);
     },
-    [setOpen, setPath, setRowData]
+    [setOpen, setPath, setRowData],
   );
   const deleteCancel = useCallback(() => setOpen(false), [setOpen]);
   const deleteConfirm = useCallback(() => {
@@ -91,9 +91,9 @@ export const ArrayControlRenderer = (
 
 export const arrayControlTester: RankedTester = rankWith(
   3,
-  or(isObjectArrayControl, isPrimitiveArrayControl)
+  or(isObjectArrayControl, isPrimitiveArrayControl),
 );
 
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ArrayControlRenderer))
+  withTranslateProps(withArrayTranslationProps(ArrayControlRenderer)),
 );

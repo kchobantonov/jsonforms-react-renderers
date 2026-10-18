@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import {
   demoSettingsStorageKey,
   encodeDemoHashRoute,
@@ -26,8 +26,8 @@ describe('demo preferences', () => {
           search: '?read-only=true&active-tab=schema&drawer=false',
           hash: '#mixed?active-tab=uiSchemas&use-webcomponent=true',
         },
-        defaults
-      )
+        defaults,
+      ),
     ).toEqual({
       readonly: true,
       formOnly: false,
@@ -48,13 +48,13 @@ describe('demo preferences', () => {
       { replaceState },
       'active-tab',
       'i18n',
-      'demo'
+      'demo',
     );
 
     expect(replaceState).toHaveBeenCalledWith(
       {},
       '',
-      '/demo?form-only=true&unrelated=kept#mixed?read-only=true&active-tab=internationalization'
+      '/demo?form-only=true&unrelated=kept#mixed?read-only=true&active-tab=internationalization',
     );
   });
 
@@ -69,13 +69,13 @@ describe('demo preferences', () => {
       { replaceState },
       'form-only',
       false,
-      false
+      false,
     );
 
     expect(replaceState).toHaveBeenCalledWith(
       {},
       '',
-      '/demo?unrelated=kept#mixed'
+      '/demo?unrelated=kept#mixed',
     );
   });
 
@@ -111,13 +111,13 @@ describe('demo preferences', () => {
             locale: 'bg',
             layout: 'default',
             rendererSettings: {},
-          })
+          }),
         ),
       setItem: vi.fn().mockResolvedValue(undefined),
     };
 
     expect(
-      await readPersistedDemoSettings(storage, 'settings')
+      await readPersistedDemoSettings(storage, 'settings'),
     ).toBeUndefined();
     expect(await readPersistedDemoSettings(storage, 'settings')).toMatchObject({
       mode: 'light',
@@ -127,7 +127,7 @@ describe('demo preferences', () => {
 
   it('keeps renderer keys stable and separates hash routes from their query', () => {
     expect(demoSettingsStorageKey('Ant Design')).toBe(
-      'jsonforms-react-demo:ant-design:settings'
+      'jsonforms-react-demo:ant-design:settings',
     );
     expect(splitDemoHash('#additional-properties?form-only=true')).toEqual({
       route: 'additional-properties',
@@ -154,13 +154,13 @@ describe('demo preferences', () => {
       { replaceState },
       'read-only',
       true,
-      false
+      false,
     );
 
     expect(replaceState).toHaveBeenCalledWith(
       {},
       '',
-      '/demo#Readonly%20Fields?read-only=true'
+      '/demo#Readonly%20Fields?read-only=true',
     );
   });
 });

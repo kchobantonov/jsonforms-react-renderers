@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { coreReducer, init, update } from '@jsonforms/core';
@@ -116,8 +116,8 @@ const draw = (schema: any, data: any, config?: any) => {
             writes.push(next);
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const paint = () =>
@@ -136,8 +136,8 @@ const draw = (schema: any, data: any, config?: any) => {
               writes.push(next);
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
 
   return {
@@ -162,10 +162,10 @@ const draw = (schema: any, data: any, config?: any) => {
       });
       await settle();
       const option = Array.from(
-        document.querySelectorAll<HTMLElement>('.ant-select-item-option')
+        document.querySelectorAll<HTMLElement>('.ant-select-item-option'),
       ).find(
         (entry) =>
-          (entry.getAttribute('title') ?? entry.textContent ?? '') === label
+          (entry.getAttribute('title') ?? entry.textContent ?? '') === label,
       );
       expect(option, `no branch option ${label}`).toBeTruthy();
       act(() => option!.click());
@@ -173,7 +173,7 @@ const draw = (schema: any, data: any, config?: any) => {
     },
     clickTab: (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -181,11 +181,13 @@ const draw = (schema: any, data: any, config?: any) => {
     /** The shared branchChange dialog: "Clear form?", Yes / No. */
     answer: async (text: 'Yes' | 'No') => {
       const button = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((candidate) => candidate.textContent?.includes(text));
       expect(
         button,
-        `the confirmation dialog was not open (${text})`
+        `the confirmation dialog was not open (${text})`,
       ).toBeTruthy();
       act(() => button!.click());
       await settle();
@@ -196,7 +198,7 @@ const draw = (schema: any, data: any, config?: any) => {
       act(() => {
         const setter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
-          'value'
+          'value',
         )!.set!;
         setter.call(input, value);
         input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -220,7 +222,7 @@ describe('the preservation rule, on its own', () => {
     const result = branchChangeData(
       { name: 'Alex', email: 'alex@example.com' },
       { name: 'generated', kind: 'phone', phone: '' },
-      contactSchema
+      contactSchema,
     );
     expect(result).toEqual({ name: 'Alex', kind: 'phone', phone: '' });
   });
@@ -231,7 +233,7 @@ describe('the preservation rule, on its own', () => {
     const result: any = branchChangeData(
       { name: 'Alex', kind: 'email', email: 'alex@example.com' },
       { kind: 'phone', phone: '' },
-      contactSchema
+      contactSchema,
     );
     expect(result.kind).toBe('phone');
     expect(result.email).toBeUndefined();
@@ -241,10 +243,10 @@ describe('the preservation rule, on its own', () => {
     const result = branchChangeData(
       { email: 'alex@example.com' },
       { kind: 'phone', phone: '' },
-      contactSchema
+      contactSchema,
     );
     expect(Object.prototype.hasOwnProperty.call(result as object, 'name')).toBe(
-      false
+      false,
     );
   });
 
@@ -254,8 +256,8 @@ describe('the preservation rule, on its own', () => {
       branchChangeData(
         { name: 'Alex', email: 'a@b.c' },
         undefined,
-        contactSchema
-      )
+        contactSchema,
+      ),
     ).toEqual({ name: 'Alex' });
   });
 
@@ -265,10 +267,10 @@ describe('the preservation rule, on its own', () => {
   */
   it('excludes preserved properties from what counts as discarded', () => {
     expect(discardedByBranchChange({ name: 'Alex' }, contactSchema)).toEqual(
-      {}
+      {},
     );
     expect(
-      discardedByBranchChange({ name: 'Alex', email: 'a@b.c' }, contactSchema)
+      discardedByBranchChange({ name: 'Alex', email: 'a@b.c' }, contactSchema),
     ).toEqual({ email: 'a@b.c' });
   });
 });
@@ -319,7 +321,7 @@ describe('a oneOf branch change, through the form', () => {
         jsonformsExtended: {
           confirmation: { renderers: { oneOf: { branchChange: 'never' } } },
         },
-      }
+      },
     );
     await view.selectBranch('Phone contact');
     expect(view.data()).toEqual({ name: 'Alex', kind: 'phone', phone: '' });
@@ -407,11 +409,11 @@ describe('an anyOf branch whose type the value is not', () => {
     for (const start of ['a plain note', undefined, 42, null, {}]) {
       const state = coreReducer(
         undefined as any,
-        init(start, mixedAnyOfSchema)
+        init(start, mixedAnyOfSchema),
       );
       const next = coreReducer(
         state,
-        update('note', () => 'hello')
+        update('note', () => 'hello'),
       );
       expect(next.data, `parent ${JSON.stringify(start)}`).toEqual({
         note: 'hello',
@@ -445,7 +447,7 @@ describe('an anyOf branch whose type the value is not', () => {
     const view = draw(mixedAnyOfSchema, 'a plain note');
     view.clickTab('Details');
     const input = view.container.querySelector<HTMLInputElement>(
-      '.ant-tabs-content-active input'
+      '.ant-tabs-content-active input',
     );
     expect(input, 'the branch renders an input').toBeTruthy();
     await view.type(input!, 'hello');
@@ -457,7 +459,7 @@ describe('an anyOf branch whose type the value is not', () => {
     const view = draw(mixedAnyOfSchema, undefined);
     view.clickTab('Details');
     const input = view.container.querySelector<HTMLInputElement>(
-      '.ant-tabs-content-active input'
+      '.ant-tabs-content-active input',
     );
     expect(input).toBeTruthy();
     await view.type(input!, 'first');

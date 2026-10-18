@@ -4,7 +4,6 @@
     "jsx": "react",
     "outDir": "lib",
     "sourceMap": true,
-    "baseUrl": ".",
     "paths": {
       "@jsonforms-react-shadcn-ui/*": [
         "../jsonforms-react-shadcn-renderers/test/ui-types/*"

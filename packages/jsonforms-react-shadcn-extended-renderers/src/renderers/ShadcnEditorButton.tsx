@@ -15,8 +15,8 @@ export const ShadcnEditorButton = ({
       variant === 'danger'
         ? 'destructive'
         : variant === 'primary'
-        ? 'default'
-        : 'outline'
+          ? 'default'
+          : 'outline'
     }
     {...props}
   >

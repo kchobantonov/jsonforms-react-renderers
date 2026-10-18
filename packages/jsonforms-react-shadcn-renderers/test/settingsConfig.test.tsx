@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { shadcnRenderers, shadcnCells } from '../src';
 
 it('applies live text restrictions and description visibility from config', () => {
@@ -17,8 +17,8 @@ it('applies live text restrictions and description visibility from config', () =
           config={{ restrict: enabled, showUnfocusedDescription: enabled }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
   try {
     render(true);
@@ -53,25 +53,25 @@ it.each([true, false])(
           config={{ collapseNewItems }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     try {
       act(() =>
         (
           host.querySelector('button[aria-label="Add"]') as HTMLButtonElement
-        ).click()
+        ).click(),
       );
       const trigger = host.querySelector(
-        '.shadcn-jsonforms-array-item button[aria-expanded]'
+        '.shadcn-jsonforms-array-item button[aria-expanded]',
       );
       expect(trigger?.getAttribute('aria-expanded')).toBe(
-        String(!collapseNewItems)
+        String(!collapseNewItems),
       );
     } finally {
       act(() => root.unmount());
     }
-  }
+  },
 );
 
 it('hides descendant header summaries without hiding direct array errors', () => {
@@ -100,8 +100,8 @@ it('hides descendant header summaries without hiding direct array errors', () =>
           config={{ hideArraySummaryValidation: hide }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
   try {
     render(false);

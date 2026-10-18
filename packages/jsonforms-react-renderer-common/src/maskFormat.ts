@@ -100,7 +100,7 @@ export const compileTokenPattern = (source: string): RegExp | undefined => {
  */
 export const toMaskTokens = (
   specs: unknown,
-  onInvalid?: (token: string, pattern: string) => void
+  onInvalid?: (token: string, pattern: string) => void,
 ): MaskTokens | undefined => {
   if (!specs || typeof specs !== 'object' || Array.isArray(specs)) {
     return undefined;
@@ -176,7 +176,7 @@ export const DEFAULT_MASK_SETTINGS = {
 export const resolveMaskSettings = (
   options: unknown,
   config: unknown,
-  onInvalid?: (token: string, pattern: string) => void
+  onInvalid?: (token: string, pattern: string) => void,
 ): MaskSettings | undefined => {
   const mask = (options as { mask?: unknown } | undefined)?.mask;
   if (!isMaskPattern(mask)) {
@@ -236,7 +236,7 @@ export const createMask = (settings: MaskSettings): Mask =>
 export const storedValue = (
   mask: Mask,
   displayed: string,
-  returnMaskedValue: boolean
+  returnMaskedValue: boolean,
 ): string =>
   returnMaskedValue ? mask.masked(displayed) : mask.unmasked(displayed);
 
@@ -252,7 +252,7 @@ export const storedValue = (
 export const fitsMask = (
   mask: Mask,
   stored: string,
-  returnMaskedValue: boolean
+  returnMaskedValue: boolean,
 ): boolean =>
   returnMaskedValue
     ? mask.masked(stored) === stored
@@ -277,7 +277,7 @@ export const fitsMask = (
 export const displayValue = (
   mask: Mask,
   stored: string,
-  returnMaskedValue: boolean
+  returnMaskedValue: boolean,
 ): string =>
   fitsMask(mask, stored, returnMaskedValue) ? mask.masked(stored) : stored;
 
@@ -305,7 +305,7 @@ export const codePointLength = (value: string): number => [...value].length;
  */
 export const withinMaxLength = (
   stored: string,
-  maxLength: number | undefined
+  maxLength: number | undefined,
 ): boolean => maxLength === undefined || codePointLength(stored) <= maxLength;
 
 /**
@@ -331,7 +331,7 @@ export const nextCaret = (
   raw: string,
   caret: number | null,
   masked: string,
-  deleting: boolean
+  deleting: boolean,
 ): number | undefined => {
   // Typing at the end: the browser has already left the caret at the end, and
   // the masked text only ever grows to the right of it.
@@ -369,7 +369,7 @@ export const nextCaret = (
 export const maskEdit = (
   mask: Mask,
   raw: string,
-  deleting: boolean
+  deleting: boolean,
 ): string => {
   if (deleting && mask.isEager() && mask.unmasked(raw) === '') {
     return '';

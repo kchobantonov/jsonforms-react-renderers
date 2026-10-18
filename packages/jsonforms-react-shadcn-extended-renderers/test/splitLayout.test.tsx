@@ -28,18 +28,18 @@ describe('shared split layout', () => {
               data={{}}
               uischema={uischema}
               renderers={createExtendedRenderers()}
-            />
-          )
+            />,
+          ),
         );
         const handles =
           container.querySelectorAll<HTMLElement>('[role="separator"]');
         expect(handles).toHaveLength(2);
         expect(handles[0].getAttribute('aria-orientation')).toBe(
-          type === 'HorizontalLayout' ? 'vertical' : 'horizontal'
+          type === 'HorizontalLayout' ? 'vertical' : 'horizontal',
         );
         if (type === 'VerticalLayout')
           expect(
-            (container.firstElementChild as HTMLElement).style.height
+            (container.firstElementChild as HTMLElement).style.height,
           ).toBe('26rem');
         const before = Number(handles[0].getAttribute('aria-valuenow'));
         await act(async () =>
@@ -47,11 +47,11 @@ describe('shared split layout', () => {
             new KeyboardEvent('keydown', {
               bubbles: true,
               key: type === 'HorizontalLayout' ? 'ArrowRight' : 'ArrowDown',
-            })
-          )
+            }),
+          ),
         );
         expect(
-          Number(handles[0].getAttribute('aria-valuenow'))
+          Number(handles[0].getAttribute('aria-valuenow')),
         ).toBeGreaterThan(before);
         expect(JSON.stringify(uischema)).toBe(original);
       } finally {
@@ -59,11 +59,11 @@ describe('shared split layout', () => {
         container.remove();
         vi.unstubAllGlobals();
       }
-    }
+    },
   );
   it('does not claim ordinary layouts', () => {
     expect(
-      sharedSplitLayoutTester({ type: 'HorizontalLayout' }, {}, undefined)
+      sharedSplitLayoutTester({ type: 'HorizontalLayout' }, {}, undefined),
     ).toBe(-1);
   });
 });

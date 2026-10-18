@@ -1,7 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
 
@@ -56,8 +63,8 @@ describe('a Markdown label whose parser never loads', () => {
           ]}
           cells={[]}
           onChange={() => undefined}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));

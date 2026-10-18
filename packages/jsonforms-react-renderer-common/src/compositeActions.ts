@@ -7,7 +7,7 @@ import { JsonSchema } from '@jsonforms/core';
  */
 export const preventsEmpty = (
   schema: JsonSchema | undefined,
-  array: boolean
+  array: boolean,
 ): boolean => {
   if (!schema) return false;
   if (schema.allOf?.some((part) => preventsEmpty(part, array))) return true;

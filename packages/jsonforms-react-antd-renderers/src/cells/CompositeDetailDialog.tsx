@@ -79,7 +79,7 @@ export const CompositeDetailDialog = ({
     (error) =>
       error.params?.source === 'monaco' &&
       (error.instancePath === pointer ||
-        error.instancePath.startsWith(pointer + '/'))
+        error.instancePath.startsWith(pointer + '/')),
   );
 
   /*
@@ -111,7 +111,7 @@ export const CompositeDetailDialog = ({
       draftRef.current = next;
       setDraft(next);
     },
-    [enabled, path]
+    [enabled, path],
   );
 
   // Opening is driven by the parent, so the draft is taken the first time the
@@ -147,7 +147,7 @@ export const CompositeDetailDialog = ({
 
   const context = useMemo(
     () => ({ ...parent, core: draft ?? parent.core, dispatch: localDispatch }),
-    [parent, draft, localDispatch]
+    [parent, draft, localDispatch],
   );
 
   const isArray = Array.isArray(value) || schema?.type === 'array';
@@ -165,7 +165,7 @@ export const CompositeDetailDialog = ({
 
   const text = (
     override: string | undefined,
-    key: 'composite.empty' | 'composite.cancel' | 'composite.apply'
+    key: 'composite.empty' | 'composite.cancel' | 'composite.apply',
     // An option may name an i18n key of its own, or be the literal label.
   ) => (override ? t(override, override) : t(key, d(key)));
 

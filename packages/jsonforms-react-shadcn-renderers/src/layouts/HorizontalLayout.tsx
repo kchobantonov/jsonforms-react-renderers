@@ -8,5 +8,5 @@ export const ShadcnHorizontalLayout = (props: LayoutProps) => (
 
 export const horizontalLayoutTester: RankedTester = rankWith(
   1,
-  uiTypeIs('HorizontalLayout')
+  uiTypeIs('HorizontalLayout'),
 );

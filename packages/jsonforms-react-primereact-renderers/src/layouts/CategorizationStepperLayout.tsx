@@ -57,8 +57,8 @@ export const categorizationStepperTester: RankedTester = rankWith(
   and(
     uiTypeIs('Categorization'),
     categorizationHasCategory,
-    optionIs('variant', 'stepper')
-  )
+    optionIs('variant', 'stepper'),
+  ),
 );
 
 export interface CategorizationStepperState {
@@ -66,14 +66,12 @@ export interface CategorizationStepperState {
 }
 
 export interface CategorizationStepperLayoutRendererProps
-  extends StatePropsOfLayout,
-    AjvProps,
-    TranslateProps {
+  extends StatePropsOfLayout, AjvProps, TranslateProps {
   data: any;
 }
 
 export const CategorizationStepperLayoutRenderer = (
-  props: CategorizationStepperLayoutRendererProps
+  props: CategorizationStepperLayoutRendererProps,
 ) => {
   const [activeCategory, setActiveCategory] = useState<number>(0);
 
@@ -109,9 +107,9 @@ export const CategorizationStepperLayoutRenderer = (
   const categories = useMemo(
     () =>
       categorization.elements.filter((category: Category) =>
-        isVisible(category, data, undefined, ajv, config)
+        isVisible(category, data, undefined, ajv, config),
       ),
-    [categorization, data, ajv, config]
+    [categorization, data, ajv, config],
   );
   const childProps: PrimeLayoutRendererProps = {
     elements: categories[activeCategory].elements,
@@ -165,6 +163,6 @@ export const CategorizationStepperLayoutRenderer = (
 
 export default withAjvProps(
   withTranslateProps(
-    withJsonFormsLayoutProps(CategorizationStepperLayoutRenderer)
-  )
+    withJsonFormsLayoutProps(CategorizationStepperLayoutRenderer),
+  ),
 );

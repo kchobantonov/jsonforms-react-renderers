@@ -56,7 +56,7 @@ describe('Ant Design radio group control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <RadioGroupControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const radioButtons = wrapper.find('input[type="radio"]');
@@ -76,7 +76,7 @@ describe('Ant Design radio group control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <RadioGroupControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const currentlyChecked = wrapper.find('input[type="radio"][checked=true]');
     expect(currentlyChecked.length).toBe(1);
@@ -92,7 +92,7 @@ describe('Ant Design radio group control', () => {
           uischema={uischema}
           visible={false}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const radioButtons = wrapper.find('input[type="radio"]');
@@ -108,7 +108,7 @@ describe('Ant Design radio group control', () => {
           uischema={uischema}
           enabled={false}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const radioButtons = wrapper.find('input[type="radio"]');
@@ -121,7 +121,7 @@ describe('Ant Design radio group control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <RadioGroupControl schema={schema} uischema={uischema} enabled={true} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     wrapper
@@ -145,7 +145,7 @@ describe('Ant Design radio group control', () => {
         options={[{ label: 'A', value: 'A' }]}
         inputProps={{ disabled: false }}
         {...({} as any)}
-      />
+      />,
     );
     group.find('input[type="radio"]').simulate('change', {
       target: { value: 'A' },

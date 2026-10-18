@@ -24,7 +24,7 @@ export const ArrayLayoutRenderer = ({
 }: ArrayLayoutProps) => {
   const addItemCb = useCallback(
     (p: string, value: any) => addItem(p, value),
-    [addItem]
+    [addItem],
   );
 
   if (!visible) {
@@ -43,11 +43,11 @@ export const arrayLayoutTester: RankedTester = rankWith(
       schemaMatches(
         (schema) =>
           schema.type === 'array' &&
-          (schema as unknown as { items?: unknown }).items === true
-      )
-    )
-  )
+          (schema as unknown as { items?: unknown }).items === true,
+      ),
+    ),
+  ),
 );
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer))
+  withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer)),
 );

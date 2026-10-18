@@ -61,16 +61,16 @@ const uischema: ControlElement = {
 describe('PrimeReact slider tester', () => {
   it('should fail', () => {
     expect(sliderControlTester(undefined, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(sliderControlTester(null, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(sliderControlTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(sliderControlTester({ type: 'Control' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
   });
 
@@ -84,8 +84,8 @@ describe('PrimeReact slider tester', () => {
             foo: { type: 'string' },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -100,8 +100,8 @@ describe('PrimeReact slider tester', () => {
             bar: { type: 'number' },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -115,8 +115,8 @@ describe('PrimeReact slider tester', () => {
             foo: { type: 'number' },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -133,8 +133,8 @@ describe('PrimeReact slider tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -151,8 +151,8 @@ describe('PrimeReact slider tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -170,8 +170,8 @@ describe('PrimeReact slider tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -190,8 +190,8 @@ describe('PrimeReact slider tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(4);
   });
 
@@ -210,8 +210,8 @@ describe('PrimeReact slider tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(4);
   });
 });
@@ -239,7 +239,7 @@ describe('PrimeReact slider control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <SliderControl schema={jsonSchema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Slider).first();
     expect(input.props().value).toBe(5);
@@ -255,7 +255,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     let slider = wrapper.find(Slider).first();
@@ -289,7 +289,7 @@ describe('PrimeReact slider control', () => {
         schema={schemaWithMultipleOf}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const input = wrapper.find(Slider).first();
@@ -303,7 +303,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const newData = { ...data, foo: undefined };
@@ -320,7 +320,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const newData = { ...data, foo: null };
@@ -337,7 +337,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const newData = { ...data, bar: 11 };
@@ -354,7 +354,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const newData = { ...data, null: 3 };
@@ -371,7 +371,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const newData = { ...data, undefined: 13 };
@@ -388,7 +388,7 @@ describe('PrimeReact slider control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <SliderControl schema={schema} uischema={uischema} enabled={false} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Slider).first();
     expect(input.props().disabled).toBeTruthy();
@@ -401,7 +401,7 @@ describe('PrimeReact slider control', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(SliderControl).length).toBeTruthy();
     const input = wrapper.find(Slider).first();
@@ -419,14 +419,14 @@ describe('PrimeReact slider control', () => {
           uischema={uischema}
           id='#/properties/foo'
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const divs = wrapper.find('div');
     // id
     expect(divs.find((d: any) => d.id === '#/properties/foo')).toBeDefined();
     // input id
     expect(
-      divs.find((d: any) => d.id === '#/properties/foo-input')
+      divs.find((d: any) => d.id === '#/properties/foo-input'),
     ).toBeDefined();
   });
 
@@ -452,7 +452,7 @@ describe('PrimeReact slider control', () => {
           uischema={uischema}
           visible={false}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const inputs = wrapper.find(Slider);

@@ -25,7 +25,7 @@ import { isAllowedImageUrl, resolveUrlPolicy } from '../util/urlPolicy';
 
 export const imageViewRendererTester: RankedTester = rankWith(
   1,
-  uiTypeIs('ImageView')
+  uiTypeIs('ImageView'),
 );
 
 export type ImageViewElement = UISchemaElement & {
@@ -89,7 +89,7 @@ export const resolveImageView = (
     data?: unknown;
     path?: string;
     config?: unknown;
-  }
+  },
 ): ResolvedImageView => {
   const diagnostics: ImageViewDiagnostic[] = [];
   const options = (element as { options?: Record<string, unknown> }).options;
@@ -104,14 +104,14 @@ export const resolveImageView = (
     element.src !== undefined
       ? element.src
       : typeof options?.src === 'string'
-      ? (options.src as string)
-      : undefined;
+        ? (options.src as string)
+        : undefined;
   const altField =
     element.alt !== undefined
       ? element.alt
       : typeof options?.alt === 'string'
-      ? (options.alt as string)
-      : undefined;
+        ? (options.alt as string)
+        : undefined;
 
   /*
     `alt` is required, and `alt: ""` is the documented way to mark an image
@@ -167,7 +167,7 @@ export const resolveImageView = (
   const scopedSchema = Resolve.schema(
     args.schema ?? (args.rootSchema as JsonSchema),
     element.scope,
-    args.rootSchema as JsonSchema
+    args.rootSchema as JsonSchema,
   );
   if (!permitsString(scopedSchema)) {
     diagnostics.push({
@@ -337,5 +337,5 @@ export const ImageViewRendererComponent = ({
 };
 
 export const ImageViewRenderer = withJsonFormsLayoutProps(
-  ImageViewRendererComponent
+  ImageViewRendererComponent,
 );

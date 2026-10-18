@@ -71,8 +71,8 @@ const draw = async () => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   // This fixture mounts every renderer at once, so the lazy grid resolves
   // well after the rest; the default budget is not enough on a cold module
@@ -90,7 +90,7 @@ const draw = async () => {
 
 const labelled = (scope: ParentNode, prefix: string) =>
   Array.from(scope.querySelectorAll<HTMLButtonElement>('button')).filter(
-    (button) => (button.getAttribute('aria-label') ?? '').startsWith(prefix)
+    (button) => (button.getAttribute('aria-label') ?? '').startsWith(prefix),
   );
 
 describe('the destructive-confirmation spec example', () => {
@@ -106,7 +106,7 @@ describe('the destructive-confirmation spec example', () => {
     expect(container.querySelectorAll('.ant-table')).toHaveLength(3);
     // Project milestones: the expandable array layout, one panel per item.
     const panels = Array.from(
-      container.querySelectorAll('.ant-collapse-header')
+      container.querySelectorAll('.ant-collapse-header'),
     ).map((header) => header.textContent ?? '');
     expect(panels.some((text) => text.includes('Portland'))).toBe(true);
     expect(panels.some((text) => text.includes('Salem'))).toBe(true);
@@ -118,11 +118,11 @@ describe('the destructive-confirmation spec example', () => {
     // Payload: the mixed workspace. Reference is mixed too, hence two selectors.
     expect(container.querySelectorAll('.jsonforms-mixed-tree')).toHaveLength(1);
     expect(
-      container.querySelectorAll('.jsonforms-mixed-type-selector').length
+      container.querySelectorAll('.jsonforms-mixed-type-selector').length,
     ).toBeGreaterThanOrEqual(2);
     // Project notes, and the payload's own dynamic properties.
     expect(labelled(container, 'Add property').length).toBeGreaterThanOrEqual(
-      2
+      2,
     );
     expect(labelled(container, 'Delete').length).toBeGreaterThan(0);
     unmount();
@@ -170,20 +170,20 @@ describe('the destructive-confirmation spec example', () => {
     // The code is the *value* of a cell input, so `textContent` does not see
     // it; the row is found through the input instead.
     const row = Array.from(
-      container.querySelectorAll<HTMLInputElement>('tr input')
+      container.querySelectorAll<HTMLInputElement>('tr input'),
     )
       .find((input) => input.value === 'A-01')
       ?.closest('tr');
     expect(row, 'the order-lines row is not in the fixture').toBeTruthy();
     const checkbox = row!.querySelector<HTMLInputElement>(
-      'input[type="checkbox"]'
+      'input[type="checkbox"]',
     )!;
     act(() => checkbox.click());
     const tableFrame = row!.closest('.ant-card')!;
     const button = labelled(tableFrame, 'Delete selected rows')[0];
     expect(
       button,
-      'the order-lines table has no selection delete'
+      'the order-lines table has no selection delete',
     ).toBeTruthy();
     act(() => button!.click());
     await settle();

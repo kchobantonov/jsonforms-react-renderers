@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 
 /**
  * The Monaco editor's published summary error, end to end.
@@ -136,7 +136,7 @@ const draw = (options: Record<string, unknown> = {}, config?: any) => {
   const message = () =>
     Array.from(container.querySelectorAll<HTMLElement>('.ant-form-item'))
       .find((item) =>
-        item.querySelector('label')?.textContent?.includes('Settings')
+        item.querySelector('label')?.textContent?.includes('Settings'),
       )
       ?.querySelector('.ant-form-item-explain')?.textContent ?? '';
 
@@ -243,7 +243,7 @@ describe('resolving the option', () => {
   it('lets one element opt out of a form-wide setting', async () => {
     const view = draw(
       { propagateErrors: false },
-      { jsonformsExtended: { propagateErrors: true } }
+      { jsonformsExtended: { propagateErrors: true } },
     );
     await settle();
     await view.markers([{ severity: ERROR }]);
@@ -279,9 +279,7 @@ describe('resolving the option', () => {
 describe('the additional-errors example fixture', () => {
   it('opts one editor in and leaves the other at the default', async () => {
     const exampleUischema = (
-      await import(
-        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/uischema.json'
-      )
+      await import('@chobantonov/jsonforms-extended-spec/examples/additional-errors/uischema.json')
     ).default as any;
 
     const editors: any[] = [];
@@ -294,7 +292,7 @@ describe('the additional-errors example fixture', () => {
     expect(editors.length).toBeGreaterThanOrEqual(3);
     const reported = editors.filter((e) => e.options.propagateErrors === true);
     const quiet = editors.filter(
-      (e) => e.options.propagateErrors === undefined
+      (e) => e.options.propagateErrors === undefined,
     );
     expect(reported.length).toBeGreaterThanOrEqual(2);
     expect(quiet).toHaveLength(1);
@@ -306,9 +304,7 @@ describe('the additional-errors example fixture', () => {
   */
   it('ships JSON that really is invalid in both editors', async () => {
     const exampleData = (
-      await import(
-        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/data.json'
-      )
+      await import('@chobantonov/jsonforms-extended-spec/examples/additional-errors/data.json')
     ).default as any;
 
     expect(() => JSON.parse(exampleData.policy)).toThrow();
@@ -321,9 +317,7 @@ describe('the additional-errors example fixture', () => {
   /* The example's config must not turn propagation on form-wide. */
   it('leaves the form-wide default alone', async () => {
     const exampleConfig = (
-      await import(
-        '@chobantonov/jsonforms-extended-spec/examples/additional-errors/config.json'
-      )
+      await import('@chobantonov/jsonforms-extended-spec/examples/additional-errors/config.json')
     ).default as any;
     expect(exampleConfig.propagateErrors).toBeUndefined();
     expect(exampleConfig.jsonformsExtended?.propagateErrors).toBeUndefined();
@@ -378,7 +372,7 @@ describe('a server error and an editor error on one field', () => {
     act(() => root.render(<Host />));
     const messages = () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-form-item-explain')
+        container.querySelectorAll<HTMLElement>('.ant-form-item-explain'),
       )
         .map((node) => node.textContent ?? '')
         .join(' | ');
@@ -494,8 +488,8 @@ it('keeps malformed JSON drafts and publishes only syntax errors in schema-aware
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     await settle(100);
     await act(async () => harness.change?.('{'));
@@ -503,14 +497,14 @@ it('keeps malformed JSON drafts and publishes only syntax errors in schema-aware
     expect(latest.value).toEqual({ name: 'Ada' });
     expect(store.all()).toHaveLength(1);
     expect(
-      (container.querySelector('[data-monaco]') as HTMLTextAreaElement).value
+      (container.querySelector('[data-monaco]') as HTMLTextAreaElement).value,
     ).toBe('{');
     await act(async () => harness.change?.('{"name":42}'));
     await settle();
     expect(latest.value).toEqual({ name: 42 });
     expect(store.all()).toHaveLength(0);
     await act(async () =>
-      harness.emit?.([{ severity: 8, message: 'Schema mismatch' }])
+      harness.emit?.([{ severity: 8, message: 'Schema mismatch' }]),
     );
     await settle();
     expect(store.all()).toHaveLength(0);

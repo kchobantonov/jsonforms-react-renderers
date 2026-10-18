@@ -44,7 +44,7 @@ export const useCollectionDelete = <K extends string | number>(settings: {
           options: now.options,
           config: now.config,
         },
-        [now.value(key)]
+        [now.value(key)],
       )
     ) {
       now.remove(key);

@@ -102,16 +102,16 @@ describe('color serialization', () => {
   it('carries transparency in every format that can hold it', () => {
     expect(serializeColor(half, 'hex')).toBe('#00ff0080');
     expect(serializeColor(parse('rgba(0, 255, 0, 0.5)'), 'rgb')).toBe(
-      'rgba(0, 255, 0, 0.5)'
+      'rgba(0, 255, 0, 0.5)',
     );
     expect(serializeColor(parse('rgba(0, 255, 0, 0.25)'), 'hsb')).toBe(
-      'hsba(120, 100%, 100%, 0.25)'
+      'hsba(120, 100%, 100%, 0.25)',
     );
   });
 
   it('omits alpha when the color is fully opaque', () => {
     expect(serializeColor(parse('rgba(0, 255, 0, 1)'), 'rgb')).toBe(
-      'rgb(0, 255, 0)'
+      'rgb(0, 255, 0)',
     );
     expect(serializeColor(parse('#00ff00ff'), 'hex')).toBe('#00ff00');
   });
@@ -155,11 +155,11 @@ describe('hue normalization', () => {
 
   it('serializes equivalent hues identically', () => {
     expect(serializeColor(parse('hsb(-240, 100%, 100%)'), 'hsb')).toBe(
-      serializeColor(parse('hsb(120, 100%, 100%)'), 'hsb')
+      serializeColor(parse('hsb(120, 100%, 100%)'), 'hsb'),
     );
     // The same applies to hues arriving as HSL, which is accepted input.
     expect(serializeColor(parse('hsl(-240, 100%, 50%)'), 'hsb')).toBe(
-      'hsb(120, 100%, 100%)'
+      'hsb(120, 100%, 100%)',
     );
   });
 

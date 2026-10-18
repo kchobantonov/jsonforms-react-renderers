@@ -47,7 +47,7 @@ export type TimeView = 'hours' | 'minutes' | 'seconds';
  * and minutes does not stop seconds being stored.
  */
 export const timePickerColumns = (
-  views: unknown
+  views: unknown,
 ):
   | { showHour: boolean; showMinute: boolean; showSecond: boolean }
   | undefined => {
@@ -56,7 +56,7 @@ export const timePickerColumns = (
   }
   const wanted = views.filter(
     (view): view is TimeView =>
-      view === 'hours' || view === 'minutes' || view === 'seconds'
+      view === 'hours' || view === 'minutes' || view === 'seconds',
   );
   if (wanted.length === 0) {
     return undefined;
@@ -70,12 +70,12 @@ export const timePickerColumns = (
 
 export const datePickerMode = (
   views: unknown,
-  saveFormat: string
+  saveFormat: string,
 ): 'date' | 'month' | 'year' => {
   if (Array.isArray(views)) {
     const wanted = views.filter(
       (view): view is DateView =>
-        view === 'year' || view === 'month' || view === 'day'
+        view === 'year' || view === 'month' || view === 'day',
     );
     // The finest view the author asked for is the one the picker lands on.
     if (wanted.includes('day')) {

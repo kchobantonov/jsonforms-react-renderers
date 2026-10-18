@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator, rankWith, scopeEndsWith } from '@jsonforms/core';
 import { useExtendedTranslator } from '../src/util/useExtendedTranslator';
@@ -37,7 +37,7 @@ const renderers = [
 
 const draw = async (
   locale: string | undefined,
-  catalog?: Record<string, string>
+  catalog?: Record<string, string>,
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -54,12 +54,12 @@ const draw = async (
             : {
                 locale,
                 translate: createTranslator(
-                  (id, defaultMessage) => catalog?.[id] ?? defaultMessage
+                  (id, defaultMessage) => catalog?.[id] ?? defaultMessage,
                 ),
               }
         }
         onChange={() => undefined}
-      />
+      />,
     );
   });
   return container.querySelector('[data-testid="probe"]')?.textContent;

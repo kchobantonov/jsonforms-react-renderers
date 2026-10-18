@@ -23,5 +23,5 @@ export const AntdMarkupLabelRenderer = createMarkupLabelRenderer(
     <Typography.Paragraph style={{ marginBottom: 0 }}>
       {children}
     </Typography.Paragraph>
-  )
+  ),
 );

@@ -14,7 +14,7 @@ const render = (uischema: UISchemaElement, config = {}) => {
       uischema={uischema}
       config={config}
       renderers={createExtendedRenderers()}
-    />
+    />,
   );
   return container;
 };
@@ -28,18 +28,18 @@ describe('shared presentation renderers', () => {
         createShadcnExtendedRenderers(),
       ]) {
         const matching = entries.filter(
-          (entry) => entry.tester({ type }, {}, undefined) === 1
+          (entry) => entry.tester({ type }, {}, undefined) === 1,
         );
         expect(matching).toHaveLength(1);
         expect(
           matching[0].tester(
             { type: 'Control', scope: '#' } as UISchemaElement,
             {},
-            undefined
-          )
+            undefined,
+          ),
         ).toBe(-1);
       }
-    }
+    },
   );
 
   test.each([
@@ -63,16 +63,16 @@ describe('shared presentation renderers', () => {
     const config = { height: 48, src: '/default.png', alt: 'Default' };
     expect(
       (render({ type: 'Spacer' }, config).firstElementChild as HTMLElement)
-        .style.height
+        .style.height,
     ).toBe('48px');
     expect(
       (
         render({ type: 'Spacer', options: { height: 16 } }, config)
           .firstElementChild as HTMLElement
-      ).style.height
+      ).style.height,
     ).toBe('16px');
     expect(
-      render({ type: 'ImageView' }, config).querySelector('img')
+      render({ type: 'ImageView' }, config).querySelector('img'),
     ).toBeNull();
     const img = render(
       {
@@ -80,14 +80,14 @@ describe('shared presentation renderers', () => {
         src: '/explicit.png',
         alt: 'Override',
       } as UISchemaElement,
-      config
+      config,
     ).querySelector('img')!;
     expect(img.getAttribute('src')).toBe('/explicit.png');
     expect(img.alt).toBe('Override');
     expect(
       render({ type: 'ImageView', options: { src: '' } }, config).querySelector(
-        'img'
-      )
+        'img',
+      ),
     ).toBeNull();
     expect(config).toEqual({ height: 48, src: '/default.png', alt: 'Default' });
   });
@@ -105,7 +105,7 @@ describe('shared presentation renderers', () => {
       render({
         type: 'ImageView',
         options: { src: '/example.png', alt: 12 },
-      }).querySelector('img')!.alt
+      }).querySelector('img')!.alt,
     ).toBe('');
   });
 
@@ -113,9 +113,9 @@ describe('shared presentation renderers', () => {
     'omits images with invalid source %s',
     (src) => {
       expect(
-        render({ type: 'ImageView', options: { src } }).querySelector('img')
+        render({ type: 'ImageView', options: { src } }).querySelector('img'),
       ).toBeNull();
-    }
+    },
   );
 
   test('renders a semantic separator', () => {
@@ -133,8 +133,8 @@ describe('shared presentation renderers', () => {
             effect: RuleEffect.HIDE,
             condition: { scope: '#', schema: {} },
           },
-        }).innerHTML
+        }).innerHTML,
       ).toBe('');
-    }
+    },
   );
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { compositeSummaryPresentation } from '../src/compositeSummary';
 import { i18nDefaults } from '../src/i18nDefaults';
 
@@ -9,7 +9,7 @@ const present = (data: unknown, descriptor: any = summary) =>
     descriptor,
     'Contact',
     (_key, fallback) => fallback!,
-    (key) => i18nDefaults[key]
+    (key) => i18nDefaults[key],
   );
 
 describe('composite summary presentation', () => {

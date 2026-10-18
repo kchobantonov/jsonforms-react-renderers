@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext, useJsonForms } from '@jsonforms/react';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { CombinatorBranch, mergeBranchErrors } from '../src/CombinatorBranch';
 
 it('honors control overrides, skips disabled work and reuses compilation', () => {
@@ -15,7 +15,7 @@ it('honors control overrides, skips disabled work and reuses compilation', () =>
   const render = (
     global: boolean | undefined,
     local: boolean | undefined,
-    data = 'a'
+    data = 'a',
   ) =>
     act(() =>
       root.render(
@@ -34,8 +34,8 @@ it('honors control overrides, skips disabled work and reuses compilation', () =>
           >
             <Probe />
           </CombinatorBranch>
-        </JsonFormsContext.Provider>
-      )
+        </JsonFormsContext.Provider>,
+      ),
     );
   try {
     render(false, undefined);
@@ -90,7 +90,7 @@ it('deduplicates equivalent branch feedback but retains distinct targets and con
         params: { limit: 5 },
         message: 'too short',
       },
-    ]
+    ],
   );
   expect(errors).toHaveLength(5);
   expect(errors[0].schemaPath).toBe('#/definitions/file/required');

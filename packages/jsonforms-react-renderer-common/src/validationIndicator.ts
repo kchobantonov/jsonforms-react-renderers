@@ -67,7 +67,7 @@ const indexCache = new WeakMap<
 
 export const sharedErrorIndex = (
   errors: ErrorObject[] | undefined,
-  additionalErrors: ErrorObject[] | undefined
+  additionalErrors: ErrorObject[] | undefined,
 ): Set<string> => {
   const primary = errors ?? EMPTY;
   const secondary = additionalErrors ?? EMPTY;
@@ -112,7 +112,7 @@ export const resolveIndicatorOption = (
   uischema: UISchemaElement | undefined,
   config: Record<string, unknown> | undefined,
   fallback: boolean,
-  name = 'showValidationIndicator'
+  name = 'showValidationIndicator',
 ): boolean => {
   const local = uischema?.options?.[name];
   if (local !== undefined) {
@@ -144,7 +144,7 @@ export interface ContainerValidation {
 
 const belowAny = (path: string, boundPaths: string[]): boolean =>
   boundPaths.some(
-    (bound) => path === bound || path.startsWith(`${bound}.`) || bound === ''
+    (bound) => path === bound || path.startsWith(`${bound}.`) || bound === '',
   );
 
 /**
@@ -159,7 +159,7 @@ export const useContainerValidation = (
   uischema: UISchemaElement,
   path: string,
   config: Record<string, unknown> | undefined,
-  fallback: boolean
+  fallback: boolean,
 ): ContainerValidation => {
   const { core } = useJsonForms();
   const enabled = resolveIndicatorOption(uischema, config, fallback);
@@ -169,7 +169,7 @@ export const useContainerValidation = (
     uischema,
     config,
     false,
-    'showValidationIndicatorCount'
+    'showValidationIndicatorCount',
   );
   const [errors, additionalErrors] = core
     ? displayableErrors(core)
@@ -192,7 +192,7 @@ export const useContainerValidation = (
     }
     const eligible = [...(errors ?? EMPTY), ...(additionalErrors ?? EMPTY)];
     const count = eligible.filter((error) =>
-      belowAny(errorDataPath(error), bound)
+      belowAny(errorDataPath(error), bound),
     ).length;
     return { show: count > 0, count };
   }, [enabled, wantCount, errors, additionalErrors, uischema, path]);

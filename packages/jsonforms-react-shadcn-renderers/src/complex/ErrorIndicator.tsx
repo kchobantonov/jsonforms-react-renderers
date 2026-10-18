@@ -32,7 +32,7 @@ export const ErrorIndicator = ({
   const [open, setOpen] = React.useState(false);
   const count = useErrorSummaryCount(
     local ? '' : errors,
-    local ? undefined : path
+    local ? undefined : path,
   );
   const entries = useErrorSummary(errors, path, open && !local);
   const timer = React.useRef<ReturnType<typeof setTimeout>>();
@@ -59,7 +59,7 @@ export const ErrorIndicator = ({
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
   if (count <= 1)
     return (

@@ -47,7 +47,7 @@ const DATE_PICKER_STYLE = {
 
 export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof Calendar> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof Calendar> },
 ) {
   const {
     data,
@@ -69,7 +69,7 @@ export const PrimeDateTimePicker = React.memo(function PrimeDateTimePicker(
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
-    [path, handleChange, saveFormat]
+    [path, handleChange, saveFormat],
   );
 
   const value = getData(data, [

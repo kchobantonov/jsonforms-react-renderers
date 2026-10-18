@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -73,7 +73,7 @@ const milestones = () => [
 const draw = (
   config?: any,
   data: any = { milestones: milestones() },
-  ui = uischema
+  ui = uischema,
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -93,8 +93,8 @@ const draw = (
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const panels = () =>
     Array.from(container.querySelectorAll<HTMLElement>('.ant-collapse-item'));
@@ -103,7 +103,7 @@ const draw = (
       (button) =>
         (button.getAttribute('aria-label') ?? '')
           .toLowerCase()
-          .includes(label.toLowerCase())
+          .includes(label.toLowerCase()),
     );
   return {
     container,
@@ -111,11 +111,11 @@ const draw = (
     /** The index of the open panel, or -1. */
     openIndex: () =>
       panels().findIndex((panel) =>
-        panel.classList.contains('ant-collapse-item-active')
+        panel.classList.contains('ant-collapse-item-active'),
       ),
     toggle: async (index: number) => {
       const header = panels()[index].querySelector<HTMLElement>(
-        '.ant-collapse-header'
+        '.ant-collapse-header',
       );
       act(() => header!.click());
       await settle();
@@ -126,11 +126,11 @@ const draw = (
     },
     actionIn: async (index: number, label: string) => {
       const button = Array.from(
-        panels()[index].querySelectorAll<HTMLButtonElement>('button')
+        panels()[index].querySelectorAll<HTMLButtonElement>('button'),
       ).find((entry) =>
         (entry.getAttribute('aria-label') ?? '')
           .toLowerCase()
-          .includes(label.toLowerCase())
+          .includes(label.toLowerCase()),
       );
       expect(button, `panel ${index} has no ${label}`).toBeTruthy();
       act(() => button!.click());
@@ -138,7 +138,9 @@ const draw = (
     },
     accept: async () => {
       const ok = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((button) => button.textContent?.includes('Yes'));
       act(() => ok!.click());
       await settle();
@@ -193,7 +195,7 @@ describe('collapsed', () => {
       {
         ...uischema,
         options: { collapsed: false },
-      }
+      },
     );
     await settle();
     expect(view.openIndex()).toBe(0);
@@ -235,7 +237,7 @@ describe('expansion follows the item, not the slot', () => {
     const view = draw(
       { showSortButtons: true },
       { milestones: milestones() },
-      uischema
+      uischema,
     );
     await settle();
     expect(view.openIndex()).toBe(0);
@@ -296,7 +298,7 @@ describe('hideAvatar', () => {
     const view = draw({ hideAvatar: true });
     await settle();
     const headers = Array.from(
-      view.container.querySelectorAll('.ant-collapse-header')
+      view.container.querySelectorAll('.ant-collapse-header'),
     ).map((header) => header.textContent ?? '');
     expect(headers[0]).toContain('1');
     expect(headers[1]).toContain('2');
@@ -342,7 +344,7 @@ describe('hideArraySummaryValidation', () => {
   it('retains an array-level error while hiding child errors', async () => {
     const view = draw(
       { hideArraySummaryValidation: true },
-      { milestones: 'invalid' }
+      { milestones: 'invalid' },
     );
     await settle();
     expect(summary(view)?.getAttribute('aria-label')).toContain('array');
@@ -355,7 +357,7 @@ describe('hideArraySummaryValidation', () => {
     await settle();
     await view.toggle(1);
     expect(
-      view.container.querySelectorAll('.ant-form-item-has-error').length
+      view.container.querySelectorAll('.ant-form-item-has-error').length,
     ).toBeGreaterThan(0);
     view.unmount();
   });
@@ -389,8 +391,8 @@ describe('hideAvatar in list with detail', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     return {
       container,

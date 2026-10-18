@@ -85,7 +85,7 @@ export const TupleField = ({
   const label =
     translator(
       getI18nKey(renderSchema, uischema, path, 'label'),
-      String((uischema as { label?: unknown }).label ?? '')
+      String((uischema as { label?: unknown }).label ?? ''),
     ) ?? String((uischema as { label?: unknown }).label ?? '');
 
   const parentDispatch = context.dispatch;
@@ -107,8 +107,8 @@ export const TupleField = ({
         action.path === path ? '' : action.path.slice(path.length + 1);
       let next = action.updater(
         cloneDeep(
-          relative ? get(source[index], relative.split('.')) : source[index]
-        )
+          relative ? get(source[index], relative.split('.')) : source[index],
+        ),
       );
 
       if (!relative && next === undefined) {
@@ -163,12 +163,12 @@ export const TupleField = ({
       rootSchema,
       schema,
       t,
-    ]
+    ],
   );
 
   const scoped = useMemo(
     () => ({ ...context, dispatch: intercept }),
-    [context, intercept]
+    [context, intercept],
   );
 
   const dialogOptions = {
@@ -185,7 +185,7 @@ export const TupleField = ({
     rootSchema,
     // Strip the selection option from fallback controls to avoid forwarding
     // REGISTERED back into the same position registration.
-    { ...uischema, options: { ...uischema.options, detail: undefined } }
+    { ...uischema, options: { ...uischema.options, detail: undefined } },
   );
 
   const body = () => {
@@ -211,7 +211,7 @@ export const TupleField = ({
               uischema.options?.summary as ControlElement | undefined,
               renderSchema.title,
               translator,
-              i18nDefault
+              i18nDefault,
             )}
           </span>
           <Button

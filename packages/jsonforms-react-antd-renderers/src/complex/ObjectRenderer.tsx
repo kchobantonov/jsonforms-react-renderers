@@ -54,7 +54,7 @@ export const ObjectRenderer = ({
     rootSchema,
     data,
     uischema,
-    config
+    config,
   );
   const schema = conditional.schema;
 
@@ -71,7 +71,7 @@ export const ObjectRenderer = ({
             ...Generate.uiSchema(schema, 'Group', undefined, rootSchema),
             label,
           },
-    [schema, path, label, rootSchema]
+    [schema, path, label, rootSchema],
   );
 
   const detailUiSchema = useMemo(
@@ -83,9 +83,9 @@ export const ObjectRenderer = ({
         path,
         () => generated,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, generated, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, generated, uischema, rootSchema],
   );
   /*
     A registry entry that is a Control matching this object's schema resolves
@@ -96,12 +96,12 @@ export const ObjectRenderer = ({
   const { cycle, stack } = useUiSchemaCycleGuard(
     detailUiSchema,
     path,
-    'the object renderer'
+    'the object renderer',
   );
   const dispatchUiSchema = conditionalLayout(
     cycle ? generated : detailUiSchema,
     schema,
-    conditional.known
+    conditional.known,
   );
   const objectErrors = usePathErrorIndicator(path, undefined, false);
   if (!visible) {
@@ -126,7 +126,7 @@ export const ObjectRenderer = ({
           ...schema,
           properties: {
             ...Object.fromEntries(
-              [...conditional.known].map((key) => [key, {}])
+              [...conditional.known].map((key) => [key, {}]),
             ),
             ...schema.properties,
           },

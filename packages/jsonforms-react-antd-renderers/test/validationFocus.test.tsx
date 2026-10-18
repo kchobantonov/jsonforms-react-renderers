@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -38,7 +38,7 @@ const settle = async (ms = 400) => {
 const setNativeValue = (field: HTMLInputElement, value: string) =>
   Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!.call(field, value);
 
 const schema = {
@@ -70,8 +70,8 @@ const render = () => {
             latest = data;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const input = () => container.querySelector<HTMLInputElement>('input')!;
@@ -162,7 +162,7 @@ describe('a field that turns invalid while being typed into', () => {
     act(() => input().focus());
     await keyboard('1');
     expect(
-      container.querySelector('.ant-form-item-feedback-icon-error')
+      container.querySelector('.ant-form-item-feedback-icon-error'),
     ).toBeTruthy();
     unmount();
   });

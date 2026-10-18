@@ -181,7 +181,10 @@ const contracts: Record<string, Contract> = {
   },
   ListWithDetailRenderer: {
     schema: { type: 'object', properties: { value: objectArray } },
-    uischema: { type: 'ListWithDetail', scope: '#/properties/value' },
+    uischema: {
+      type: 'ListWithDetail',
+      scope: '#/properties/value',
+    } as UISchemaElement & { scope: string },
     rank: 4,
   },
   NativeControl: {
@@ -286,20 +289,20 @@ const contracts: Record<string, Contract> = {
 
 export const runRendererContract = (
   name: keyof typeof contracts,
-  tester: RankedTester
+  tester: RankedTester,
 ) => {
   const contract = contracts[name];
 
   describe(`${name} tester contract`, () => {
     it('selects its matching JSON Forms schema and UI schema', () => {
       expect(tester(contract.uischema, contract.schema, undefined)).toBe(
-        contract.rank
+        contract.rank,
       );
     });
 
     it('does not select an unrelated UI schema', () => {
       expect(tester({ type: 'Unknown' }, { type: 'null' }, undefined)).toBe(
-        NOT_APPLICABLE
+        NOT_APPLICABLE,
       );
     });
   });

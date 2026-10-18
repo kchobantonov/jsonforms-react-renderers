@@ -61,7 +61,7 @@ const findDetailUiSchema = (
   uischema: ControlElement,
   path: string,
   rootSchema: JsonSchema,
-  uischemas: JsonFormsUISchemaRegistryEntry[]
+  uischemas: JsonFormsUISchemaRegistryEntry[],
 ) =>
   findUISchema(
     uischemas,
@@ -70,7 +70,7 @@ const findDetailUiSchema = (
     path,
     () => createControlElement('#'),
     uischema,
-    rootSchema
+    rootSchema,
   );
 
 export const MixedRendererComponent = ({
@@ -100,7 +100,7 @@ export const MixedRendererComponent = ({
     { ...uischema, scope: '#' },
     path,
     config,
-    false
+    false,
   );
   const t = useI18n();
   const confirmation = useConfirmation();
@@ -110,7 +110,7 @@ export const MixedRendererComponent = ({
     uischema,
     config,
     true,
-    'mixed'
+    'mixed',
   );
   const expanded = !collapsed;
   const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
@@ -127,7 +127,7 @@ export const MixedRendererComponent = ({
       selectedType
         ? schemaForType(schema, selectedType, rootSchema)
         : undefined,
-    [rootSchema, schema, selectedType]
+    [rootSchema, schema, selectedType],
   );
   const detailUiSchema = useMemo(
     () =>
@@ -145,20 +145,20 @@ export const MixedRendererComponent = ({
             },
             path,
             rootSchema,
-            uischemas ?? []
+            uischemas ?? [],
           )
         : undefined,
-    [path, rootSchema, selectedSchema, selectedType, uischema, uischemas]
+    [path, rootSchema, selectedSchema, selectedType, uischema, uischemas],
   );
   const tree = useMemo(
     () =>
       selectedSchema && (selectedType === 'object' || selectedType === 'array')
         ? buildMixedTree(data, selectedSchema, rootSchema, label || 'Value')
         : undefined,
-    [data, label, rootSchema, selectedSchema, selectedType]
+    [data, label, rootSchema, selectedSchema, selectedType],
   );
   const selectedNode = tree
-    ? findMixedTreeNode(tree, selectedPath) ?? tree
+    ? (findMixedTreeNode(tree, selectedPath) ?? tree)
     : undefined;
   const preserveDynamicPropertyKey = useDynamicProperty(path);
   const withoutControlLabel = (element: UISchemaElement): UISchemaElement =>
@@ -188,8 +188,8 @@ export const MixedRendererComponent = ({
       node.type && nodeTypes.includes(node.type as JsonDataType)
         ? node.type
         : node.type === 'integer' && nodeTypes.includes('number')
-        ? 'number'
-        : null;
+          ? 'number'
+          : null;
     const nodeSelector =
       node.path.length > 0 ? (
         <div className='jsonforms-mixed-renderer-detail-type'>
@@ -201,11 +201,11 @@ export const MixedRendererComponent = ({
               const nextSchema = schemaForType(
                 node.schema,
                 value as JsonDataType,
-                rootSchema
+                rootSchema,
               );
               handleChange(
                 nodePath,
-                createDefaultValue(nextSchema, rootSchema)
+                createDefaultValue(nextSchema, rootSchema),
               );
             }}
             types={nodeTypes}
@@ -357,7 +357,7 @@ export const MixedRendererComponent = ({
       selectPath: (targetPath: string) => {
         if (!tree) return;
         const findByDataPath = (
-          node: MixedTreeNode
+          node: MixedTreeNode,
         ): MixedTreeNode | undefined => {
           const nodePath = [path, ...node.path]
             .filter((segment) => segment !== '')
@@ -376,7 +376,7 @@ export const MixedRendererComponent = ({
         }
       },
     }),
-    [path, tree, setExpanded]
+    [path, tree, setExpanded],
   );
   if (!visible) return null;
 
@@ -393,7 +393,7 @@ export const MixedRendererComponent = ({
       ? (schemaForType(
           parent.schema,
           parent.type as JsonDataType,
-          rootSchema
+          rootSchema,
         ) as JsonSchema7)
       : (parent.schema as JsonSchema7);
     if (Array.isArray(parent.data)) {
@@ -419,9 +419,9 @@ export const MixedRendererComponent = ({
   const canRenameNode = (node: MixedTreeNode) =>
     Boolean(
       enabled &&
-        !readonly &&
-        node.dynamic &&
-        typeof node.path[node.path.length - 1] === 'string'
+      !readonly &&
+      node.dynamic &&
+      typeof node.path[node.path.length - 1] === 'string',
     );
   const validateNodeRename = (node: MixedTreeNode, nextName: string) => {
     const oldName = node.path[node.path.length - 1];
@@ -448,7 +448,7 @@ export const MixedRendererComponent = ({
     const parentSchema = schemaForType(
       parent.schema,
       'object',
-      rootSchema
+      rootSchema,
     ) as JsonSchema7;
     let propertyNames = parentSchema.propertyNames as JsonSchema7 | undefined;
     if (propertyNames?.$ref) {
@@ -648,7 +648,7 @@ export const MixedRendererComponent = ({
                                       onClick: (
                                         event: React.MouseEvent<
                                           HTMLAnchorElement | HTMLSpanElement
-                                        >
+                                        >,
                                       ) => {
                                         event.preventDefault();
                                         setSelectedPath([]);
@@ -659,7 +659,7 @@ export const MixedRendererComponent = ({
                               ...selectedNode.path.map((segment, index) => {
                                 const breadcrumbPath = selectedNode.path.slice(
                                   0,
-                                  index + 1
+                                  index + 1,
                                 );
                                 const breadcrumbLabel =
                                   typeof segment === 'number'
@@ -676,7 +676,7 @@ export const MixedRendererComponent = ({
                                         onClick: (
                                           event: React.MouseEvent<
                                             HTMLAnchorElement | HTMLSpanElement
-                                          >
+                                          >,
                                         ) => {
                                           event.preventDefault();
                                           setSelectedPath(breadcrumbPath);

@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const source = resolve(root, 'scripts/shadcn-upstream');
 const manifest = JSON.parse(
-  readFileSync(resolve(source, 'manifest.json'), 'utf8')
+  readFileSync(resolve(source, 'manifest.json'), 'utf8'),
 );
 const check = process.argv.includes('--check');
 let drift = false;
@@ -21,18 +21,18 @@ for (const file of Object.keys(manifest.files)) {
         `const Button = React.forwardRef<HTMLButtonElement,
   React.ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & { asChild?: boolean }
->(function Button({`
+>(function Button({`,
       )
       .replace(
         `}: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {`,
-        '}, ref) {'
+        '}, ref) {',
       )
       .replace(
         '      data-slot="button"',
-        '      ref={ref}\n      data-slot="button"'
+        '      ref={ref}\n      data-slot="button"',
       )
       .replace('\n}\n\nexport { Button', '\n})\n\nexport { Button');
   }
@@ -42,7 +42,7 @@ for (const file of Object.keys(manifest.files)) {
       .replace(
         'function Input({ className, type, ...props }: React.ComponentProps<"input">) {',
         `const Input = React.forwardRef<HTMLInputElement, React.ComponentPropsWithoutRef<"input">>(
-  function Input({ className, type, ...props }, ref) {`
+  function Input({ className, type, ...props }, ref) {`,
       )
       .replace('      type={type}', '      ref={ref}\n      type={type}')
       .replace('\n}\n\nexport { Input }', '\n})\n\nexport { Input }');
@@ -55,19 +55,19 @@ for (const file of Object.keys(manifest.files)) {
         `const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(function DialogOverlay({`
+>(function DialogOverlay({`,
       )
       .replace(
         '}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {',
-        '}, ref) {'
+        '}, ref) {',
       )
       .replace(
         '      data-slot="dialog-overlay"',
-        '      ref={ref}\n      data-slot="dialog-overlay"'
+        '      ref={ref}\n      data-slot="dialog-overlay"',
       )
       .replace(
         '\n}\n\nfunction DialogContent',
-        '\n})\n\nfunction DialogContent'
+        '\n})\n\nfunction DialogContent',
       );
   }
   for (const host of [
@@ -79,7 +79,7 @@ for (const file of Object.keys(manifest.files)) {
       hostExpected = hostExpected
         .replace(
           'function Dialog({',
-          '// Keep portals inside the styled shadow tree instead of document.body.\nconst DialogPortalContainer = React.createContext<HTMLElement | null>(null)\n\nfunction Dialog({'
+          '// Keep portals inside the styled shadow tree instead of document.body.\nconst DialogPortalContainer = React.createContext<HTMLElement | null>(null)\n\nfunction Dialog({',
         )
         .replace(
           '  return <DialogPrimitive.Root data-slot="dialog" {...props} />',
@@ -88,13 +88,13 @@ for (const file of Object.keys(manifest.files)) {
     <DialogPortalContainer.Provider value={container}>
       <DialogPrimitive.Root data-slot="dialog" {...props} />
     </DialogPortalContainer.Provider>
-  </div>`
+  </div>`,
         )
         .replace(
           '  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />',
           `  const container = React.useContext(DialogPortalContainer)
   if (!container) return null
-  return <DialogPrimitive.Portal data-slot="dialog-portal" container={container} {...props} />`
+  return <DialogPrimitive.Portal data-slot="dialog-portal" container={container} {...props} />`,
         );
     }
     const target = resolve(root, host, 'src/components/ui', file);
@@ -111,5 +111,5 @@ else
   console.log(
     `shadcn ${manifest.revision}: ${
       Object.keys(manifest.files).length
-    } components ${check ? 'verified' : 'synced'} in both hosts.`
+    } components ${check ? 'verified' : 'synced'} in both hosts.`,
   );

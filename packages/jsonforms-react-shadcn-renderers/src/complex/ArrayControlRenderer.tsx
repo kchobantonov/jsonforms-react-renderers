@@ -153,7 +153,7 @@ const TableCellErrors = withJsonFormsCellProps(
         path={path}
         className='shadcn-jsonforms-cell-error'
       />
-    ) : null
+    ) : null,
 );
 
 export const ShadcnArrayRenderer = ({
@@ -181,7 +181,7 @@ export const ShadcnArrayRenderer = ({
   const arrayErrors = usePathErrorIndicator(
     path,
     uischema.options,
-    !options.hideArraySummaryValidation
+    !options.hideArraySummaryValidation,
   );
   const [addedItem, setAddedItem] = React.useState<{
     index: number;
@@ -234,7 +234,7 @@ export const ShadcnArrayRenderer = ({
     if (!canRemove) return;
     const value = Resolve.data(
       ctx.core.data,
-      composePaths(path, String(index))
+      composePaths(path, String(index)),
     );
     if (
       shouldConfirm(
@@ -244,7 +244,7 @@ export const ShadcnArrayRenderer = ({
           catalogId: 'arrayLayout',
           operation: 'delete',
         },
-        [value]
+        [value],
       )
     )
       setPendingIndex(index);
@@ -259,9 +259,9 @@ export const ShadcnArrayRenderer = ({
         path,
         undefined,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [ctx.uischemas, schema, uischema, path, rootSchema]
+    [ctx.uischemas, schema, uischema, path, rootSchema],
   );
   const childLabelProp =
     uischema.options?.elementLabelProp ??
@@ -279,7 +279,7 @@ export const ShadcnArrayRenderer = ({
   const nestedItems = isObjectArrayWithNesting(
     { type: 'Control', scope: '#' } as any,
     arraySchema ?? ({ type: 'array', items: schema } as JsonSchema),
-    { rootSchema, config }
+    { rootSchema, config },
   );
   const table =
     !listWithDetail &&
@@ -292,14 +292,14 @@ export const ShadcnArrayRenderer = ({
         !nestedItems &&
         (Boolean(schema.properties) ||
           ['string', 'number', 'integer', 'boolean', 'null'].includes(
-            schema.type as string
+            schema.type as string,
           ))));
   const page = useCollectionPagination(
     Array.from({ length: data }, (_, i) => i),
     uischema.options?.pagination,
     config,
     'array',
-    table
+    table,
   );
   const rowDetail = useRowDetail({
     schema,
@@ -320,7 +320,7 @@ export const ShadcnArrayRenderer = ({
   const columns = tableColumnFields(
     properties,
     schema.properties ? definitions : undefined,
-    Object.keys(properties)
+    Object.keys(properties),
   )
     .map(
       (field) =>
@@ -329,14 +329,14 @@ export const ShadcnArrayRenderer = ({
           definitions?.some((c) => c.field === field && c.scope === '#')
             ? schema
             : properties[field],
-        ] as const
+        ] as const,
     )
     .map(
       ([field, column]) =>
         [
           field,
           column.$ref ? Resolve.schema(column, '#', rootSchema) : column,
-        ] as const
+        ] as const,
     );
   const objectRows = Boolean(schema.properties);
   const hasRowActions = Boolean(rowDetail.options || options.showSortButtons);
@@ -346,7 +346,7 @@ export const ShadcnArrayRenderer = ({
     }
     const labelValue = Resolve.data(
       ctx.core.data,
-      composePaths(childPath, childLabelProp)
+      composePaths(childPath, childLabelProp),
     );
     if (
       labelValue === undefined ||
@@ -458,7 +458,7 @@ export const ShadcnArrayRenderer = ({
                           Math.min(selectedItem, data - 1) === index;
                         const itemLabel = childLabelForIndex(
                           composePaths(path, String(index)),
-                          index
+                          index,
                         );
                         return (
                           <Item
@@ -524,7 +524,7 @@ export const ShadcnArrayRenderer = ({
                       uischema={detail}
                       path={composePaths(
                         path,
-                        String(Math.min(selectedItem, data - 1))
+                        String(Math.min(selectedItem, data - 1)),
                       )}
                       enabled={enabled && !readonly}
                       renderers={renderers}
@@ -547,13 +547,13 @@ export const ShadcnArrayRenderer = ({
                     minWidth: columnWidths.__selection
                       ? Object.values(columnWidths).reduce(
                           (sum, value) => sum + value,
-                          0
+                          0,
                         )
                       : undefined,
                     width: columnWidths.__selection
                       ? Object.values(columnWidths).reduce(
                           (sum, value) => sum + value,
-                          0
+                          0,
                         )
                       : '100%',
                     tableLayout: columnWidths.__selection ? 'fixed' : 'auto',
@@ -581,14 +581,14 @@ export const ShadcnArrayRenderer = ({
                             checked={
                               page.indices.length > 0 &&
                               page.indices.every((i) =>
-                                selection.selected.includes(i)
+                                selection.selected.includes(i),
                               )
                                 ? true
                                 : page.indices.some((i) =>
-                                    selection.selected.includes(i)
-                                  )
-                                ? 'indeterminate'
-                                : false
+                                      selection.selected.includes(i),
+                                    )
+                                  ? 'indeterminate'
+                                  : false
                             }
                             onCheckedChange={(checked) =>
                               selection.setSelected(
@@ -600,8 +600,8 @@ export const ShadcnArrayRenderer = ({
                                       ]),
                                     ]
                                   : selection.selected.filter(
-                                      (i) => !page.indices.includes(i)
-                                    )
+                                      (i) => !page.indices.includes(i),
+                                    ),
                               )
                             }
                           />
@@ -613,8 +613,8 @@ export const ShadcnArrayRenderer = ({
                             style={{
                               ...tableColumnStyle(
                                 definitions?.find(
-                                  (column) => column.field === field
-                                )
+                                  (column) => column.field === field,
+                                ),
                               ),
                               ...(columnWidths[field] !== undefined
                                 ? {
@@ -648,7 +648,7 @@ export const ShadcnArrayRenderer = ({
                                 createCleanLabel(field)
                               }
                               definition={definitions?.find(
-                                (item) => item.field === field
+                                (item) => item.field === field,
                               )}
                               width={columnWidths[field]}
                               onResizeStart={(widths) =>
@@ -720,8 +720,8 @@ export const ShadcnArrayRenderer = ({
                                   checked === true
                                     ? [...selection.selected, index]
                                     : selection.selected.filter(
-                                        (i) => i !== index
-                                      )
+                                        (i) => i !== index,
+                                      ),
                                 )
                               }
                             />
@@ -732,8 +732,8 @@ export const ShadcnArrayRenderer = ({
                               style={{
                                 ...tableColumnStyle(
                                   definitions?.find(
-                                    (column) => column.field === field
-                                  )
+                                    (column) => column.field === field,
+                                  ),
                                 ),
                                 ...(columnWidths[field] !== undefined
                                   ? {
@@ -749,8 +749,8 @@ export const ShadcnArrayRenderer = ({
                                 style={{
                                   maxWidth: tableColumnStyle(
                                     definitions?.find(
-                                      (column) => column.field === field
-                                    )
+                                      (column) => column.field === field,
+                                    ),
                                   ).maxWidth,
                                   overflow: 'hidden',
                                 }}
@@ -764,7 +764,8 @@ export const ShadcnArrayRenderer = ({
                                         objectRows &&
                                         !definitions?.some(
                                           (c) =>
-                                            c.field === field && c.scope === '#'
+                                            c.field === field &&
+                                            c.scope === '#',
                                         )
                                           ? '#/properties/' + field
                                           : '#',
@@ -772,7 +773,8 @@ export const ShadcnArrayRenderer = ({
                                         ...options.cells?.[field],
                                         ...(definitions?.some(
                                           (c) =>
-                                            c.field === field && c.scope === '#'
+                                            c.field === field &&
+                                            c.scope === '#',
                                         )
                                           ? { summaryOnly: true }
                                           : {}),
@@ -782,7 +784,7 @@ export const ShadcnArrayRenderer = ({
                                       objectRows &&
                                       !definitions?.some(
                                         (c) =>
-                                          c.field === field && c.scope === '#'
+                                          c.field === field && c.scope === '#',
                                       )
                                         ? composePaths(rowPath, field)
                                         : rowPath
@@ -807,7 +809,7 @@ export const ShadcnArrayRenderer = ({
                                     objectRows &&
                                     !definitions?.some(
                                       (c) =>
-                                        c.field === field && c.scope === '#'
+                                        c.field === field && c.scope === '#',
                                     )
                                       ? composePaths(rowPath, field)
                                       : rowPath
@@ -825,7 +827,7 @@ export const ShadcnArrayRenderer = ({
                                 {rowDetail.options && (
                                   <RowDetailEditButton
                                     label={rowDetail.t(
-                                      'collection.editDetails'
+                                      'collection.editDetails',
                                     )}
                                     onClick={(event) => {
                                       event.stopPropagation();
@@ -1009,8 +1011,8 @@ export const arrayControlTester: RankedTester = rankWith(
   3,
   and(
     or(uiTypeIs('Control'), uiTypeIs('ListWithDetail')),
-    schemaTypeIs('array')
-  )
+    schemaTypeIs('array'),
+  ),
 );
 
 const ItemValidationIndicator = ({
@@ -1026,7 +1028,7 @@ const ItemValidationIndicator = ({
     { type: 'Control', scope: '#', options } as any,
     path,
     config,
-    false
+    false,
   );
   return indicator.show ? (
     <ContainerValidationIndicator count={indicator.count} />

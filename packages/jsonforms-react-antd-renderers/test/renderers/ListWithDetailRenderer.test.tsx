@@ -1,3 +1,4 @@
+import type { UISchemaElement } from '@jsonforms/core';
 import { JsonForms } from '@jsonforms/react';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -23,8 +24,8 @@ describe('ListWithDetailRenderer primitive arrays', () => {
             values: { type: 'array', items: { type: 'number' } },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(4);
   });
 
@@ -40,7 +41,7 @@ describe('ListWithDetailRenderer primitive arrays', () => {
         }}
         uischema={uischema}
         renderers={antdRenderers}
-      />
+      />,
     );
 
     expect(html).toContain('Values');
@@ -77,13 +78,15 @@ describe('ListWithDetailRenderer object schemas', () => {
               values: { type: 'array', items: { $ref: '#/definitions/item' } },
             },
           }}
-          uischema={{
-            type: 'ListWithDetail',
-            scope: '#/properties/values',
-            options: { elementLabelProp: 'name' },
-          }}
+          uischema={
+            {
+              type: 'ListWithDetail',
+              scope: '#/properties/values',
+              options: { elementLabelProp: 'name' },
+            } as UISchemaElement & { scope: string }
+          }
           renderers={antdRenderers}
-        />
+        />,
       );
       expect(html).toContain('jsonforms-list-detail-item');
       expect(html).toContain('ant-listy');
@@ -92,7 +95,7 @@ describe('ListWithDetailRenderer object schemas', () => {
       expect(html).toContain('Grace');
       expect(html).not.toContain('ant-collapse');
       expect(html).not.toContain('No applicable renderer found');
-    }
+    },
   );
 });
 
@@ -107,7 +110,7 @@ it('opens the selected composed item in the detail pane', async () => {
       observe() {}
       unobserve() {}
       disconnect() {}
-    }
+    },
   );
   try {
     await act(async () =>
@@ -135,35 +138,37 @@ it('opens the selected composed item in the detail pane', async () => {
               },
             },
           }}
-          uischema={{
-            type: 'ListWithDetail',
-            scope: '#/properties/values',
-            options: { elementLabelProp: 'name' },
-          }}
+          uischema={
+            {
+              type: 'ListWithDetail',
+              scope: '#/properties/values',
+              options: { elementLabelProp: 'name' },
+            } as UISchemaElement & { scope: string }
+          }
           renderers={antdRenderers}
-        />
-      )
+        />,
+      ),
     );
     const items = container.querySelectorAll<HTMLElement>(
-      '.jsonforms-list-detail-item'
+      '.jsonforms-list-detail-item',
     );
     expect(items).toHaveLength(2);
     const selectButtons = container.querySelectorAll<HTMLButtonElement>(
-      '.jsonforms-list-detail-item button[aria-pressed]'
+      '.jsonforms-list-detail-item button[aria-pressed]',
     );
     expect(selectButtons).toHaveLength(2);
     await act(async () => selectButtons[0].click());
     expect(selectButtons[0].getAttribute('aria-pressed')).toBe('true');
     expect(
       Array.from(container.querySelectorAll('input')).map(
-        (input) => input.value
-      )
+        (input) => input.value,
+      ),
     ).toContain('Ada');
     await act(async () => selectButtons[1].click());
     expect(selectButtons[0].getAttribute('aria-pressed')).toBe('false');
     expect(selectButtons[1].getAttribute('aria-pressed')).toBe('true');
     const values = Array.from(container.querySelectorAll('input')).map(
-      (input) => input.value
+      (input) => input.value,
     );
     expect(values).toContain('Grace');
     expect(values).not.toContain('Ada');

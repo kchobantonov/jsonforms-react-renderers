@@ -23,7 +23,7 @@ import { InputControl } from '../controls';
 import { PrimeCheckbox } from '../prime-controls/PrimeCheckbox';
 
 export const EnumArrayRenderer = (
-  props: ControlProps & OwnPropsOfEnum & DispatchPropsOfMultiEnumControl
+  props: ControlProps & OwnPropsOfEnum & DispatchPropsOfMultiEnumControl,
 ) => {
   const {
     id,
@@ -109,16 +109,16 @@ export const enumArrayRendererTester: RankedTester = rankWith(
         (schema) =>
           hasType(schema, 'array') &&
           !Array.isArray(schema.items) &&
-          schema.uniqueItems === true
+          schema.uniqueItems === true,
       ),
       schemaSubPathMatches('items', (schema, rootSchema) => {
         const resolvedSchema = schema.$ref
           ? resolveSchema(rootSchema, schema.$ref, rootSchema)
           : schema;
         return hasOneOfItems(resolvedSchema) || hasEnumItems(resolvedSchema);
-      })
-    )
-  )
+      }),
+    ),
+  ),
 );
 
 export default withJsonFormsMultiEnumProps(EnumArrayRenderer);

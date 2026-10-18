@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { antdExtendedRenderers } from '../src';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -19,11 +19,11 @@ it('updates native full-width presentation without changing the element allocati
             data={{}}
             uischema={{ type: 'Button', label: 'Save', options } as any}
             renderers={antdExtendedRenderers}
-          />
-        )
+          />,
+        ),
       );
       expect(
-        host.querySelector('button')!.classList.contains('ant-btn-block')
+        host.querySelector('button')!.classList.contains('ant-btn-block'),
       ).toBe(fullWidth === true);
       expect(options.layout.span).toBe(6);
     }

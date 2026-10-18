@@ -68,7 +68,7 @@ describe('PrimeReact allOf renderer', () => {
         schema={schema}
         uischema={uischema}
         renderers={primereactRenderers}
-      />
+      />,
     );
     expect(wrapper.find(AllOfRenderer).length).toBeTruthy();
     const inputs = wrapper.find('input');
@@ -104,7 +104,7 @@ describe('PrimeReact allOf renderer', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <AllOfRenderer schema={schema} uischema={uischema} visible={false} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input');
     expect(inputs.length).toBe(0);

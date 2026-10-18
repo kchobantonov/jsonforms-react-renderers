@@ -27,12 +27,12 @@ it.each([
           uischema: { options: { colorSaveFormat: 'hex3' } },
           handleChange,
         } as any)}
-      />
-    )
+      />,
+    ),
   );
   expect(handleChange).not.toHaveBeenCalled();
   const input = host.querySelector<HTMLInputElement>(
-    kind === 'picker' ? 'input[type="color"]' : 'input:not([type="color"])'
+    kind === 'picker' ? 'input[type="color"]' : 'input:not([type="color"])',
   )!;
   act(() => {
     input.value = value!;
@@ -61,11 +61,11 @@ it('rejects transparency without changing stored data and honors global hex3 con
           uischema: { options: {} },
           handleChange,
         } as any)}
-      />
-    )
+      />,
+    ),
   );
   const input = host.querySelector<HTMLInputElement>(
-    'input:not([type="color"])'
+    'input:not([type="color"])',
   )!;
   act(() => {
     input.value = '#11223380';
@@ -74,10 +74,10 @@ it('rejects transparency without changing stored data and honors global hex3 con
   expect(handleChange).not.toHaveBeenCalled();
   expect(input.value).toBe('#11223380');
   expect(host.textContent).toContain(
-    'Three-digit hex cannot store transparency'
+    'Three-digit hex cannot store transparency',
   );
   expect(
-    host.querySelector<HTMLInputElement>('input[type="color"]')!.disabled
+    host.querySelector<HTMLInputElement>('input[type="color"]')!.disabled,
   ).toBe(true);
   act(() => root.unmount());
 });
@@ -102,11 +102,11 @@ it('shows a checkerboard only for an empty color without writing fallback black'
               uischema: { options: {} },
               handleChange,
             } as any)}
-          />
-        )
+          />,
+        ),
       );
       expect(Boolean(host.querySelector('[data-color-empty-swatch]'))).toBe(
-        !data
+        !data,
       );
       expect(host.querySelector('input[type="color"]')).not.toBeNull();
     }

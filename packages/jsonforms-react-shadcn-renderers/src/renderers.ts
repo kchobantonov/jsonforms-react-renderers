@@ -110,7 +110,7 @@ export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
     (tester) => ({
       tester,
       renderer: withJsonFormsControlProps(ShadcnArrayChoicesControl),
-    })
+    }),
   ),
   { tester: scalarCompositionTester, renderer: ScalarCompositionRenderer },
   {
@@ -171,7 +171,7 @@ export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
     tester: enumControlTester,
     renderer: withJsonFormsEnumProps(
       withTranslateProps(ShadcnEnumControl),
-      false
+      false,
     ),
   },
   {

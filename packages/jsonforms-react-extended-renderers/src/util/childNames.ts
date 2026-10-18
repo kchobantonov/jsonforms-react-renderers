@@ -34,11 +34,11 @@ export interface ResolvedChildNames {
 }
 
 export const resolveChildNames = (
-  elements: readonly ExtendedUISchemaElement[] | undefined
+  elements: readonly ExtendedUISchemaElement[] | undefined,
 ): ResolvedChildNames => {
   const children = elements ?? [];
   const names: (string | undefined)[] = new Array(children.length).fill(
-    undefined
+    undefined,
   );
   const byName: Record<string, number> = {};
   const diagnostics: string[] = [];
@@ -57,8 +57,8 @@ export const resolveChildNames = (
         `template.duplicateChildName: children ${
           byName[explicit]
         } and ${index} are both named ${JSON.stringify(
-          explicit
-        )}; the first one keeps the name.`
+          explicit,
+        )}; the first one keeps the name.`,
       );
       return;
     }
@@ -74,10 +74,10 @@ export const resolveChildNames = (
     if (byName[fallback] !== undefined) {
       diagnostics.push(
         `template.childNameCollision: child ${index} has no name and its index ${JSON.stringify(
-          fallback
+          fallback,
         )} is already the name of child ${
           byName[fallback]
-        }, so it cannot be placed. Give it a name.`
+        }, so it cannot be placed. Give it a name.`,
       );
       return;
     }

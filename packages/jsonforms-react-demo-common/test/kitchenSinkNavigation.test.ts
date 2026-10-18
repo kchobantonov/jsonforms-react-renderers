@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/kitchen-sink/uischema.json';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/kitchen-sink/translations.json';
 
@@ -14,7 +14,7 @@ it('keeps all kitchen-sink sections in four localized steps with short tab lists
     expect(step.options.showValidationIndicator).toBe(true);
     for (const locale of ['en', 'bg'] as const) {
       expect(
-        (translations[locale] as Record<string, string>)[`${step.i18n}.label`]
+        (translations[locale] as Record<string, string>)[`${step.i18n}.label`],
       ).toBeTruthy();
     }
     const tabs = step.elements[0];
@@ -36,6 +36,6 @@ it('keeps all kitchen-sink sections in four localized steps with short tab lists
       'workSample',
       'integration',
       'agreements',
-    ].sort()
+    ].sort(),
   );
 });

@@ -126,7 +126,7 @@ const namedPositions = (element: unknown, found = new Set<number>()) => {
  * tuple sitting in a HorizontalLayout may legitimately carry it.
  */
 const positionLayoutOf = (
-  options: Record<string, any>
+  options: Record<string, any>,
 ): UISchemaElement | undefined => {
   const layout = options.detail;
   return layout &&
@@ -227,7 +227,7 @@ export const TupleControl = (props: Props) => {
       positionSchema,
       '#',
       `${path}.${index}`,
-      () => ({ type: 'Control', scope: '#', label: name } as ControlElement),
+      () => ({ type: 'Control', scope: '#', label: name }) as ControlElement,
       /*
         Deliberately carries **no** `detail`. On a tuple, `options.detail` is
         the layout of the positions, scoped against the tuple - forwarding it
@@ -241,7 +241,7 @@ export const TupleControl = (props: Props) => {
         its schema, and crashed outright on an array-typed one.
       */
       { type: 'Control', scope: '#' } as ControlElement,
-      rootSchema
+      rootSchema,
     );
     return {
       ...found,
@@ -488,7 +488,7 @@ const withTupleProps = (Component: React.ComponentType<Props>) =>
   };
 
 export const TupleControlRenderer = withJsonFormsContext(
-  withTupleProps(React.memo(TupleControl)) as any
+  withTupleProps(React.memo(TupleControl)) as any,
 );
 
 export default TupleControlRenderer;

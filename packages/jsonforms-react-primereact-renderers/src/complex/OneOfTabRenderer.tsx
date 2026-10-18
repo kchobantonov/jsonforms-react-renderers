@@ -66,7 +66,7 @@ export const OneOfTabRenderer = ({
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
-    [setConfirmDialogOpen]
+    [setConfirmDialogOpen],
   );
   const cancel = useCallback(() => {
     setConfirmDialogOpen(false);
@@ -77,13 +77,13 @@ export const OneOfTabRenderer = ({
     'oneOf',
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   const openNewTab = (newIndex: number) => {
     handleChange(
       path,
-      createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
+      createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema),
     );
     setSelectedIndex(newIndex);
   };
@@ -104,7 +104,7 @@ export const OneOfTabRenderer = ({
         setConfirmDialogOpen(true);
       }
     },
-    [setConfirmDialogOpen, setSelectedIndex, data]
+    [setConfirmDialogOpen, setSelectedIndex, data],
   );
 
   if (!visible) {
@@ -145,7 +145,7 @@ export const OneOfTabRenderer = ({
 
 export const oneOfTabControlTester: RankedTester = rankWith(
   4,
-  and(isOneOfControl, optionIs('variant', 'tab'))
+  and(isOneOfControl, optionIs('variant', 'tab')),
 );
 
 export default withJsonFormsOneOfProps(OneOfTabRenderer);

@@ -10,19 +10,28 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { chromium } from 'playwright';
-import { build, preview } from 'vite';
+import { parse, stringify } from 'yaml';
+import { build, preview } from 'vite-plus';
 
 // React custom elements have npm peers, unlike the standalone Svelte bundles.
 // Install the tarballs into a fresh host so workspace links cannot hide missing
 // files, unresolved dependencies, or invalid package entry points.
 const artifacts = path.resolve(
-  process.argv[2] ?? path.join(tmpdir(), 'jsonforms-react-release-packs')
+  process.argv[2] ?? path.join(tmpdir(), 'jsonforms-react-release-packs'),
 );
 const overrides = JSON.parse(
-  readFileSync(path.join(artifacts, 'overrides.json'), 'utf8')
+  readFileSync(path.join(artifacts, 'overrides.json'), 'utf8'),
 );
-const workspace = JSON.parse(
-  readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+const workspace = parse(
+  readFileSync(new URL('../pnpm-workspace.yaml', import.meta.url), 'utf8'),
+);
+const workspaceOverrides = Object.fromEntries(
+  Object.entries(workspace.overrides).map(([name, version]) => [
+    name,
+    version === 'catalog:'
+      ? workspace.catalog[name.replace(/@\*$/, '')]
+      : version,
+  ]),
 );
 const styles = ['antd', 'primereact', 'shadcn'];
 const dependencies = {
@@ -36,12 +45,12 @@ for (const style of styles) {
   const name = `@chobantonov/jsonforms-react-${style}-webcomponent`;
   assert.ok(
     overrides[name]?.startsWith('file:'),
-    `Missing packed artifact for ${name}`
+    `Missing packed artifact for ${name}`,
   );
   dependencies[name] = overrides[name];
 }
 const staging = realpathSync(
-  mkdtempSync(path.join(tmpdir(), 'jsonforms-react-packed-browser-'))
+  mkdtempSync(path.join(tmpdir(), 'jsonforms-react-packed-browser-')),
 );
 let browser;
 let server;
@@ -53,33 +62,37 @@ try {
         name: 'jsonforms-react-packed-consumer',
         private: true,
         type: 'module',
+        packageManager: JSON.parse(
+          readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+        ).packageManager,
         dependencies,
-        pnpm: { overrides: { ...workspace.pnpm.overrides, ...overrides } },
       },
       null,
-      2
-    ) + '\n'
+      2,
+    ) + '\n',
+  );
+  writeFileSync(
+    path.join(staging, 'pnpm-workspace.yaml'),
+    stringify({
+      packages: ['.'],
+      overrides: { ...workspaceOverrides, ...overrides },
+    }),
   );
   execFileSync(
     'pnpm',
-    [
-      'install',
-      '--ignore-workspace',
-      '--ignore-scripts',
-      '--no-frozen-lockfile',
-    ],
-    { cwd: staging, stdio: 'inherit' }
+    ['install', '--ignore-scripts', '--no-frozen-lockfile'],
+    { cwd: staging, stdio: 'inherit' },
   );
   writeFileSync(
     path.join(staging, 'index.html'),
-    '<!doctype html><html><body><script type="module" src="/main.js"></script></body></html>'
+    '<!doctype html><html><body><script type="module" src="/main.js"></script></body></html>',
   );
   const loaders = styles
     .map(
       (style) =>
         `${JSON.stringify(
-          style
-        )}: () => import('@chobantonov/jsonforms-react-${style}-webcomponent/dist/register.js')`
+          style,
+        )}: () => import('@chobantonov/jsonforms-react-${style}-webcomponent/dist/register.js')`,
     )
     .join(',\n');
   writeFileSync(
@@ -96,7 +109,7 @@ try {
       if (event instanceof CustomEvent) window.formChange = event.detail;
     });
     document.body.append(form);
-  `
+  `,
   );
   await build({
     configFile: false,
@@ -128,7 +141,7 @@ try {
       assert.equal(await input.inputValue(), 'Ada', `${style}: initial data`);
       await input.fill('Grace');
       await page.waitForFunction(
-        () => window.formChange?.data?.name === 'Grace'
+        () => window.formChange?.data?.name === 'Grace',
       );
       await page.evaluate((style) => {
         document.querySelector('jsonforms-react-' + style).readonly = true;
@@ -138,11 +151,11 @@ try {
           document
             .querySelector('jsonforms-react-' + style)
             .shadowRoot.querySelector('input')?.disabled === true,
-        style
+        style,
       );
       assert.deepEqual(errors, [], `${style}: browser runtime errors`);
       console.log(
-        `Packed ${style}: render, edit, change event, readonly passed`
+        `Packed ${style}: render, edit, change event, readonly passed`,
       );
     } finally {
       await page.close();

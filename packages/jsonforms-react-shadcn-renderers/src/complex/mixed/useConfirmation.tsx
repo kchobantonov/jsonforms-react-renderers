@@ -76,7 +76,7 @@ export const useConfirmation = () => {
         catalogId: next.catalogId,
         operation: next.operation,
       }),
-      next.discarded
+      next.discarded,
     );
     if (!prompts) {
       next.perform();

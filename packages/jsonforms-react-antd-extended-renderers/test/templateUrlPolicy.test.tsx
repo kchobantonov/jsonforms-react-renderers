@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -76,8 +76,8 @@ const draw = async (uischema: any, data: any, config: any = allowEval) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await settle();
   return { container, unmount: () => act(() => root.unmount()) };
@@ -135,7 +135,7 @@ describe('the native (TSX) profile', () => {
         jsonformsExtended: {
           security: { urlPolicy: { allowedSchemes: ['https'] } },
         },
-      }
+      },
     );
     expect(view.container.querySelector('[data-tsx]')).toBeTruthy();
     expect(seen).toMatchObject({ allowedSchemes: ['https'] });
@@ -146,7 +146,7 @@ describe('the native (TSX) profile', () => {
   it('exports the check the template is expected to use', async () => {
     const mod = await import('@chobantonov/jsonforms-react-extended-renderers');
     expect(typeof (mod as any).isAllowedUrl).toBe('function');
-    // eslint-disable-next-line no-script-url
+    // oxlint-disable-next-line no-script-url
     expect((mod as any).isAllowedUrl('javascript:alert(1)')).toBe(false);
   });
 });
@@ -155,7 +155,7 @@ describe.each(engines)('the $name profile', ({ uischema }) => {
   it('refuses a javascript: href that arrived in the data', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const view = await draw(uischema, {
-      // eslint-disable-next-line no-script-url
+      // oxlint-disable-next-line no-script-url
       url: 'javascript:alert(1)',
       img: 'https://example.com/a.png',
     });
@@ -166,7 +166,7 @@ describe.each(engines)('the $name profile', ({ uischema }) => {
     // The element survives - a refused URL is not a reason to hide the text.
     expect(link!.textContent).toContain('go');
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'template.urlRefused'
+      'template.urlRefused',
     );
     view.unmount();
   });
@@ -177,7 +177,7 @@ describe.each(engines)('the $name profile', ({ uischema }) => {
       img: 'https://example.com/a.png',
     });
     expect(anchor(view.container)!.getAttribute('href')).toBe(
-      'https://example.com/help'
+      'https://example.com/help',
     );
     view.unmount();
   });
@@ -213,7 +213,7 @@ describe.each(engines)('the $name profile', ({ uischema }) => {
             urlPolicy: { allowImageDataUrls: true },
           },
         },
-      }
+      },
     );
     expect(image(opened.container)!.getAttribute('src')).toBe(inline);
     opened.unmount();
@@ -232,7 +232,7 @@ describe.each(engines)('the $name profile', ({ uischema }) => {
             urlPolicy: { allowedSchemes: ['https'], allowRelative: false },
           },
         },
-      }
+      },
     );
     expect(anchor(view.container)!.getAttribute('href')).toBeNull();
     view.unmount();

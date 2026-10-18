@@ -27,7 +27,7 @@ export type {
  * commit; it is a narrower hex, not a different model.
  */
 export const pickerFormatFor = (
-  format: ColorSaveFormat
+  format: ColorSaveFormat,
 ): 'hex' | 'rgb' | 'hsb' => {
   switch (format) {
     case 'rgb':

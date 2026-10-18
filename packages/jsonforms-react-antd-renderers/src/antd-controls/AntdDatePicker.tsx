@@ -23,7 +23,7 @@ const DATE_PICKER_STYLE = {
 
 export const AntdDatePicker = React.memo(function AntdDatePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> },
 ) {
   const {
     data,
@@ -47,7 +47,7 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
   const rootData = useJsonForms().core?.data;
   const boundsSchema = useMemo(
     () => resolveDataBounds(schema, path, rootData),
-    [schema, path, rootData]
+    [schema, path, rootData],
   );
 
   const format = appliedUiSchemaOptions.dateFormat ?? 'YYYY-MM-DD';
@@ -65,13 +65,13 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
-    [path, handleChange, saveFormat]
+    [path, handleChange, saveFormat],
   );
 
   // Keep the controlled value stable while the popup holds an unconfirmed selection.
   const value = useMemo(
     () => getData(data, [saveFormat, format, ...JSON_SCHEMA_DATE_FORMATS]),
-    [data, saveFormat, format]
+    [data, saveFormat, format],
   );
 
   /*
@@ -89,8 +89,8 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
       temporalBounds(
         boundsSchema,
         [saveFormat, format, ...JSON_SCHEMA_DATE_FORMATS],
-        'day'
-      )
+        'day',
+      ),
     );
   }, [restrict, schema, saveFormat, format]);
 

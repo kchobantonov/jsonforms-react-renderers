@@ -175,7 +175,7 @@ export class JsonFormsPrimeReactElement extends HTMLElement {
         detail,
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -237,13 +237,13 @@ export class JsonFormsPrimeReactElement extends HTMLElement {
           </HandleActionContext.Provider>
           <slot name='form-footer' />
         </div>
-      </PrimeReactProvider>
+      </PrimeReactProvider>,
     );
   }
 }
 
 export const registerJsonFormsPrimeReact = (
-  tagName = JSON_FORMS_PRIMEREACT_TAG
+  tagName = JSON_FORMS_PRIMEREACT_TAG,
 ): CustomElementConstructor => {
   const existing = customElements.get(tagName);
   if (existing) return existing;

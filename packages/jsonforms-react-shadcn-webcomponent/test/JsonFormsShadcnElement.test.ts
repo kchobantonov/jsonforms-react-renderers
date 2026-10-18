@@ -20,11 +20,11 @@ describe('JsonFormsShadcnElement', () => {
       element.schema = { type: 'string' };
       element.data = JSON.stringify('hello');
       await vi.waitFor(() =>
-        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
       );
       flushSync(() => root.render(null));
       await vi.waitFor(() =>
-        expect(element.shadowRoot?.childNodes.length).toBe(0)
+        expect(element.shadowRoot?.childNodes.length).toBe(0),
       );
       expect(error).not.toHaveBeenCalled();
     } finally {
@@ -37,7 +37,7 @@ describe('JsonFormsShadcnElement', () => {
   it('reuses the root on immediate reconnection and remounts after cleanup', async () => {
     registerJsonFormsShadcn();
     const element = document.createElement(
-      JSON_FORMS_SHADCN_TAG
+      JSON_FORMS_SHADCN_TAG,
     ) as JsonFormsShadcnElement;
     element.schema = { type: 'string' };
     element.data = JSON.stringify('hello');
@@ -45,7 +45,7 @@ describe('JsonFormsShadcnElement', () => {
     try {
       document.body.append(element);
       await vi.waitFor(() =>
-        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
       );
       const input = element.shadowRoot?.querySelector('input');
       element.remove();
@@ -54,11 +54,11 @@ describe('JsonFormsShadcnElement', () => {
       expect(element.shadowRoot?.querySelector('input')).toBe(input);
       element.remove();
       await vi.waitFor(() =>
-        expect(element.shadowRoot?.childNodes.length).toBe(0)
+        expect(element.shadowRoot?.childNodes.length).toBe(0),
       );
       document.body.append(element);
       await vi.waitFor(() =>
-        expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+        expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
       );
       expect(error).not.toHaveBeenCalled();
     } finally {
@@ -71,7 +71,7 @@ describe('JsonFormsShadcnElement', () => {
   it('waits for form properties and validates extended formats', async () => {
     registerJsonFormsShadcn();
     const element = document.createElement(
-      JSON_FORMS_SHADCN_TAG
+      JSON_FORMS_SHADCN_TAG,
     ) as JsonFormsShadcnElement;
     const warn = vi.spyOn(console, 'warn');
     const error = vi.spyOn(console, 'error');
@@ -100,7 +100,7 @@ describe('JsonFormsShadcnElement', () => {
   it('uses and updates the demo translator for example labels', async () => {
     registerJsonFormsShadcn();
     const element = document.createElement(
-      JSON_FORMS_SHADCN_TAG
+      JSON_FORMS_SHADCN_TAG,
     ) as JsonFormsShadcnElement;
     element.schema = { type: 'object' };
     element.data = {};
@@ -111,7 +111,7 @@ describe('JsonFormsShadcnElement', () => {
     try {
       await vi.waitFor(() => {
         expect(element.shadowRoot?.textContent).toContain(
-          'One schema, five presentations.'
+          'One schema, five presentations.',
         );
         expect(element.shadowRoot?.textContent).not.toContain('intro.text');
       });
@@ -120,10 +120,10 @@ describe('JsonFormsShadcnElement', () => {
         id === 'intro.text' ? 'Една схема, пет представяния.' : fallback;
       await vi.waitFor(() => {
         expect(element.shadowRoot?.textContent).toContain(
-          'Една схема, пет представяния.'
+          'Една схема, пет представяния.',
         );
         expect(element.shadowRoot?.textContent).not.toContain(
-          'One schema, five presentations.'
+          'One schema, five presentations.',
         );
       });
     } finally {
@@ -134,7 +134,7 @@ describe('JsonFormsShadcnElement', () => {
   it('ships the original Shadcn utility styles inside its shadow root', async () => {
     registerJsonFormsShadcn();
     const element = document.createElement(
-      JSON_FORMS_SHADCN_TAG
+      JSON_FORMS_SHADCN_TAG,
     ) as JsonFormsShadcnElement;
     element.dark = true;
     element.data = { name: '' };
@@ -163,7 +163,7 @@ describe('JsonFormsShadcnElement', () => {
     expect(input?.classList).toContain('h-9');
     expect(input?.classList).toContain('bg-transparent');
     expect(element.shadowRoot?.textContent).not.toContain(
-      'name.error.required'
+      'name.error.required',
     );
 
     element.remove();
@@ -175,7 +175,7 @@ describe('Web Component host contract', () => {
   beforeEach(() => {
     registerJsonFormsShadcn();
     element = document.createElement(
-      JSON_FORMS_SHADCN_TAG
+      JSON_FORMS_SHADCN_TAG,
     ) as JsonFormsShadcnElement;
     element.schema = {
       type: 'object',
@@ -189,32 +189,32 @@ describe('Web Component host contract', () => {
     element.readonly = readonly;
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')?.disabled).toBe(true)
+      expect(element.shadowRoot?.querySelector('input')?.disabled).toBe(true),
     );
     expect(
-      element.shadowRoot?.querySelector('[aria-label="Clear value"]')
+      element.shadowRoot?.querySelector('[aria-label="Clear value"]'),
     ).toBeNull();
   });
   it.each([true, false])('honors RTL %j', async (rtl) => {
     element.rtl = rtl;
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
     );
     expect(
       element.shadowRoot
         ?.querySelector('.shadcn-jsonforms-host')
-        ?.getAttribute('dir')
+        ?.getAttribute('dir'),
     ).toBe(rtl ? 'rtl' : null);
   });
   it('updates an existing host when data changes', async () => {
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Ada')
+      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Ada'),
     );
     element.data = { name: 'Grace' };
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Grace')
+      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Grace'),
     );
   });
   it('accepts JSON attributes', async () => {
@@ -222,8 +222,8 @@ describe('Web Component host contract', () => {
     document.body.append(element);
     await vi.waitFor(() =>
       expect(element.shadowRoot?.querySelector('input')?.value).toBe(
-        'From attribute'
-      )
+        'From attribute',
+      ),
     );
   });
   it('emits composed change events for edits', async () => {
@@ -231,21 +231,21 @@ describe('Web Component host contract', () => {
     element.addEventListener('change', change);
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
     );
     const input = element.shadowRoot!.querySelector('input')!;
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(input, 'Grace');
     input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     await vi.waitFor(() =>
       expect(
-        change.mock.calls.some(([event]) => event.detail.data.name === 'Grace')
-      ).toBe(true)
+        change.mock.calls.some(([event]) => event.detail.data.name === 'Grace'),
+      ).toBe(true),
     );
     const event = change.mock.calls.find(
-      ([event]) => event.detail.data.name === 'Grace'
+      ([event]) => event.detail.data.name === 'Grace',
     )![0];
     expect(event.bubbles).toBe(true);
     expect(event.composed).toBe(true);
@@ -253,12 +253,12 @@ describe('Web Component host contract', () => {
   it('can reconnect after unmounting', async () => {
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')).not.toBeNull()
+      expect(element.shadowRoot?.querySelector('input')).not.toBeNull(),
     );
     element.remove();
     document.body.append(element);
     await vi.waitFor(() =>
-      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Ada')
+      expect(element.shadowRoot?.querySelector('input')?.value).toBe('Ada'),
     );
   });
 });

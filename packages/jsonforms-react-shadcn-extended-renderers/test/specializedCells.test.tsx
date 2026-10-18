@@ -52,8 +52,8 @@ const draw = (format: string, value: string, onChange = vi.fn()) =>
         renderers={[...shadcnExtendedRenderers, ...shadcnRenderers]}
         cells={cells}
         onChange={onChange}
-      />
-    )
+      />,
+    ),
   );
 it.each([
   ['date', '2026-07-18'],
@@ -68,9 +68,9 @@ it.each([
   expect(
     Math.max(
       ...cells.map((entry) =>
-        entry.tester(ui, schema, { rootSchema: schema, config: {} })
-      )
-    )
+        entry.tester(ui, schema, { rootSchema: schema, config: {} }),
+      ),
+    ),
   ).toBeGreaterThan(1);
   draw(format, value);
   expect(container.querySelector('.shadcn-jsonforms-cell')).toBeTruthy();
@@ -80,11 +80,11 @@ it.each([
     expect(container.querySelector('input[type="color"]')).toBeTruthy();
   if (format === 'duration')
     expect(
-      container.querySelector('[aria-label="Choose a duration"]')
+      container.querySelector('[aria-label="Choose a duration"]'),
     ).toBeTruthy();
   if (format === 'cron')
     expect(
-      container.querySelector('[aria-label="Choose a schedule"]')
+      container.querySelector('[aria-label="Choose a schedule"]'),
     ).toBeTruthy();
 });
 it.each([
@@ -97,19 +97,19 @@ it.each([
     const onChange = vi.fn();
     draw(format, value, onChange);
     const input = container.querySelector<HTMLInputElement>(
-      'td input:not([type="color"])'
+      'td input:not([type="color"])',
     )!;
     expect(input.value).toBe(value);
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, next);
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
     act(() => vi.advanceTimersByTime(50));
     expect(onChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ data: { rows: [{ value: next }] } })
+      expect.objectContaining({ data: { rows: [{ value: next }] } }),
     );
   } finally {
     vi.useRealTimers();
@@ -124,8 +124,8 @@ it('centers short controls within the full grid row height', () => {
         path=''
       >
         <button role='checkbox' />
-      </ShadcnGridCellFrame>
-    )
+      </ShadcnGridCellFrame>,
+    ),
   );
   const frame = container.firstElementChild as HTMLElement;
   expect(frame.style.display).toBe('flex');

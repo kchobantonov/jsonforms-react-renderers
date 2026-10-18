@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -74,15 +74,15 @@ const draw = async (tab: string, locale = 'en') => {
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   render();
   await settle();
 
   const openTab = async (label: string) => {
     const found = Array.from(
-      container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+      container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
     ).find((candidate) => candidate.textContent?.trim() === label);
     if (!found) {
       throw new Error(`no tab labelled ${label}`);
@@ -105,18 +105,18 @@ const draw = async (tab: string, locale = 'en') => {
     text: () => pane().textContent ?? '',
     labelWith: (needle: string) =>
       Array.from(
-        pane().querySelectorAll<HTMLElement>('[data-markup-label]')
+        pane().querySelectorAll<HTMLElement>('[data-markup-label]'),
       ).find((el) => el.textContent?.includes(needle)),
     diagnostics: () =>
       Array.from(
-        pane().querySelectorAll<HTMLElement>('[data-markup-diagnostic]')
+        pane().querySelectorAll<HTMLElement>('[data-markup-diagnostic]'),
       ),
     /** Types into the editor for a field, so the labels can be watched moving. */
     edit: async (title: string, value: string) => {
       const item = Array.from(
-        pane().querySelectorAll<HTMLElement>('.ant-form-item')
+        pane().querySelectorAll<HTMLElement>('.ant-form-item'),
       ).find((candidate) =>
-        candidate.querySelector('label')?.textContent?.includes(title)
+        candidate.querySelector('label')?.textContent?.includes(title),
       );
       const input = item?.querySelector('input');
       if (!input) {
@@ -124,7 +124,7 @@ const draw = async (tab: string, locale = 'en') => {
       }
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       act(() => {
         setter.call(input, value);
@@ -193,7 +193,7 @@ describe('Interpolation', () => {
   it('leaves a doubled brace as literal text', async () => {
     const view = await draw('Interpolation');
     expect(view.text()).toContain(
-      'Write {seats} to show a placeholder without resolving it.'
+      'Write {seats} to show a placeholder without resolving it.',
     );
     view.unmount();
   });
@@ -204,10 +204,10 @@ describe('Markdown', () => {
     const view = await draw('Markdown');
     const renewal = view.labelWith('first working day')!;
     expect(renewal.querySelector('strong')?.textContent).toBe(
-      'first working day'
+      'first working day',
     );
     expect(renewal.querySelector('a')?.getAttribute('href')).toBe(
-      'https://example.com/billing'
+      'https://example.com/billing',
     );
     view.unmount();
   });
@@ -218,7 +218,7 @@ describe('Both together', () => {
     const view = await draw('Both together');
     const summary = view.labelWith('is on the Team plan')!;
     expect(summary.querySelector('strong')?.textContent).toBe(
-      'Northwind Books'
+      'Northwind Books',
     );
     expect(summary.textContent).toContain('€148.50');
     view.unmount();
@@ -299,7 +299,7 @@ describe('Interpolation off', () => {
   it('renders every placeholder as characters', async () => {
     const view = await draw('Interpolation off');
     expect(view.text()).toContain(
-      'Without interpolate, {product} and {data.customerName} are just characters.'
+      'Without interpolate, {product} and {data.customerName} are just characters.',
     );
     view.unmount();
   });
@@ -307,7 +307,7 @@ describe('Interpolation off', () => {
   it('leaves declared parameters inert', async () => {
     const view = await draw('Interpolation off');
     expect(view.text()).toContain(
-      'Declared parameters are inert too: {product}.'
+      'Declared parameters are inert too: {product}.',
     );
     expect(view.text()).not.toContain('inert too: Atlas');
     view.unmount();
@@ -330,7 +330,7 @@ describe('JavaScript names', () => {
   it('reads a property called constructor like any other', async () => {
     const view = await draw('JavaScript names');
     expect(view.text()).toContain(
-      'A property called constructor: "a perfectly ordinary value".'
+      'A property called constructor: "a perfectly ordinary value".',
     );
     view.unmount();
   });
@@ -338,7 +338,7 @@ describe('JavaScript names', () => {
   it('does not let it stop its siblings being read', async () => {
     const view = await draw('JavaScript names');
     expect(view.text()).toContain(
-      'Its siblings are still readable: "Northwind Books".'
+      'Its siblings are still readable: "Northwind Books".',
     );
     view.unmount();
   });
@@ -346,7 +346,7 @@ describe('JavaScript names', () => {
   it('needs no repair for a property called toString', async () => {
     const view = await draw('JavaScript names');
     expect(view.text()).toContain(
-      'And a property called toString: "also ordinary".'
+      'And a property called toString: "also ordinary".',
     );
     view.unmount();
   });
@@ -410,7 +410,7 @@ describe('localization', () => {
     const view = await draw('Both together', 'bg');
     const summary = view.labelWith('е на план Екип')!;
     expect(summary.querySelector('strong')?.textContent).toBe(
-      'Northwind Books'
+      'Northwind Books',
     );
     view.unmount();
   });

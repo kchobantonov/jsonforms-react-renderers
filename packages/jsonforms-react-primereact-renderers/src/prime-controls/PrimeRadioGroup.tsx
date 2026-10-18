@@ -31,7 +31,7 @@ export const PrimeRadioGroup = React.memo(function PrimeRadioGroup(
     WithClassname &
     OwnPropsOfEnum & {
       inputProps?: React.ComponentProps<typeof RadioButton>;
-    }
+    },
 ) {
   const { data, options, handleChange, path, errors, inputProps } = props;
 

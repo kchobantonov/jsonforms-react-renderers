@@ -26,8 +26,8 @@ it('focuses the dialog and restores configured dimensions after maximizing', () 
             <button>Apply</button>
           </div>
         </DetailDialogContent>
-      </Dialog>
-    )
+      </Dialog>,
+    ),
   );
   const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
   expect(document.activeElement).toBe(dialog);
@@ -39,21 +39,21 @@ it('focuses the dialog and restores configured dimensions after maximizing', () 
   expect(
     dialog
       .querySelector<HTMLElement>('[data-detail-dialog-body]')!
-      .getAttribute('data-slot')
+      .getAttribute('data-slot'),
   ).toBe('scroll-area');
   expect(dialog.querySelector('[data-detail-dialog-footer]')!.textContent).toBe(
-    'Apply'
+    'Apply',
   );
   act(() =>
     document
       .querySelector<HTMLButtonElement>('[aria-label="Maximize dialog"]')!
-      .click()
+      .click(),
   );
   expect(dialog.style.width).toBe('calc(100vw - 32px)');
   act(() =>
     document
       .querySelector<HTMLButtonElement>('[aria-label="Restore dialog"]')!
-      .click()
+      .click(),
   );
   expect(dialog.style.width).toBe('720px');
   expect(dialog.style.height).toBe('500px');

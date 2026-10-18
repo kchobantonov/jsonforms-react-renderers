@@ -54,7 +54,7 @@ const range = (from: number, to: number): number[] => {
 export const disabledTimeFor = (
   bounds: TemporalBounds,
   timeOnly: boolean,
-  precision: BoundPrecision
+  precision: BoundPrecision,
 ) => {
   if (!bounds.min && !bounds.max) {
     return undefined;
@@ -102,7 +102,7 @@ export const disabledTimeFor = (
 const outside = (
   value: dayjs.Dayjs,
   { min, max }: TemporalBounds,
-  precision: BoundPrecision
+  precision: BoundPrecision,
 ): boolean =>
   (!!min && value.isBefore(min.startOf(precision))) ||
   (!!max && value.isAfter(max.startOf(precision)));

@@ -34,7 +34,7 @@ class LoadBoundary extends React.Component<
     return { failed: true };
   }
   componentDidCatch(error: Error) {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.error('template.failed:', error);
   }
   render() {
@@ -60,7 +60,7 @@ export interface LazyTemplateLabels {
 
 export const createLazyTemplate = <P extends object>(
   load: () => Promise<React.ComponentType<P>>,
-  labels: LazyTemplateLabels
+  labels: LazyTemplateLabels,
 ): React.ComponentType<P> => {
   /*
     Module scope, so it survives a remount: once the chunk is in, a later
@@ -85,8 +85,8 @@ export const createLazyTemplate = <P extends object>(
           >
             {t(
               loaded
-                ? labels.renderError ?? 'template.renderError'
-                : labels.error
+                ? (labels.renderError ?? 'template.renderError')
+                : labels.error,
             )}
           </div>
         )}

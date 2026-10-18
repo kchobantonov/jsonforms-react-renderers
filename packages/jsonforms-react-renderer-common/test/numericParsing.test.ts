@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { toCommittableNumber } from '../src/numeric';
 
 describe('numeric parsing', () => {
@@ -26,7 +26,7 @@ describe('numeric parsing', () => {
   describe('values that must never be committed', () => {
     it.each(['abc', '-', '+', '.', 'NaN', 'Infinity', '-Infinity', '1e400'])(
       'refuses %s',
-      (value) => expect(toCommittableNumber(value)).toBeUndefined()
+      (value) => expect(toCommittableNumber(value)).toBeUndefined(),
     );
 
     it('refuses NaN and infinities arriving as numbers', () => {
@@ -61,7 +61,7 @@ describe('numeric parsing', () => {
       ['0.1', 0.1],
       ['-0.5', -0.5],
     ])('parses %s as %s', (input, expected) =>
-      expect(toCommittableNumber(input)).toBe(expected)
+      expect(toCommittableNumber(input)).toBe(expected),
     );
   });
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { labelFilterValue } from '../src/util/labelFilterValue';
 
 describe('Label filter values', () => {
@@ -18,7 +18,7 @@ describe('Label filter values', () => {
     expect(
       labelFilterValue(label, {}, item, {
         jsonformsExtended: { dynamicValues: { enabled: true } },
-      })
+      }),
     ).toBe('Boston · 555-0100');
   });
   it('does not expose row data when dynamic values are disabled', () => {
@@ -59,9 +59,9 @@ it('sorts and filters visible Markdown text while escaping interpolated data', (
     },
   };
   expect(labelFilterValue(label, {}, { city: 'Boston' }, config)).toBe(
-    'Boston · Phone'
+    'Boston · Phone',
   );
   expect(labelFilterValue(label, {}, { city: '**Boston**' }, config)).toBe(
-    '**Boston** · Phone'
+    '**Boston** · Phone',
   );
 });

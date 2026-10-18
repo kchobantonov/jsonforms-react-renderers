@@ -19,7 +19,7 @@ describe('JsonFormsAntdElement', () => {
   it('renders Ant Design controls and their generated styles in the shadow root', async () => {
     registerJsonFormsAntd();
     const element = document.createElement(
-      JSON_FORMS_ANTD_TAG
+      JSON_FORMS_ANTD_TAG,
     ) as JsonFormsAntdElement;
     element.data = { name: 'Ada' };
     element.schema = {
@@ -36,21 +36,21 @@ describe('JsonFormsAntdElement', () => {
     await vi.waitFor(() => {
       expect(element.shadowRoot?.querySelector('input')).not.toBeNull();
       expect(
-        element.shadowRoot?.querySelector('style[data-css-hash]')
+        element.shadowRoot?.querySelector('style[data-css-hash]'),
       ).not.toBeNull();
     });
 
     expect(
-      element.shadowRoot?.querySelector('input')?.getAttribute('value')
+      element.shadowRoot?.querySelector('input')?.getAttribute('value'),
     ).toBe('Ada');
     expect(element.shadowRoot?.textContent).toContain(
-      ':host { display: block; color-scheme: light; }'
+      ':host { display: block; color-scheme: light; }',
     );
 
     element.dark = true;
     await vi.waitFor(() => {
       expect(element.shadowRoot?.textContent).toContain(
-        ':host { display: block; color-scheme: dark; }'
+        ':host { display: block; color-scheme: dark; }',
       );
     });
 
@@ -60,7 +60,7 @@ describe('JsonFormsAntdElement', () => {
   it('waits for properties when connected before configuration', async () => {
     registerJsonFormsAntd();
     const element = document.createElement(
-      JSON_FORMS_ANTD_TAG
+      JSON_FORMS_ANTD_TAG,
     ) as JsonFormsAntdElement;
 
     expect(() => document.body.append(element)).not.toThrow();

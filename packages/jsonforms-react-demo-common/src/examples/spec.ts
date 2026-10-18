@@ -69,7 +69,7 @@ export const registerSpecExamples = (examples: SpecExampleInput[]): void => {
             }
           : {}),
       } as ExampleWithTranslations;
-    }
+    },
   );
   registerProjectExamples(described);
 };
@@ -87,6 +87,6 @@ registerSpecExamples(
       id,
       label: title,
       uischema: nativeUiSchemas[id] ?? fixture.uischema,
-    })
-  )
+    }),
+  ),
 );

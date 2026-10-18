@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 
 const fromPackage = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url));
@@ -10,7 +10,7 @@ export default defineConfig({
       {
         find: '@chobantonov/jsonforms-react-renderer-common',
         replacement: fileURLToPath(
-          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url),
         ),
       },
       {
@@ -20,7 +20,7 @@ export default defineConfig({
       {
         find: '@chobantonov/jsonforms-react-primereact-extended-renderers',
         replacement: fromPackage(
-          '../jsonforms-react-primereact-extended-renderers/src'
+          '../jsonforms-react-primereact-extended-renderers/src',
         ),
       },
       {
@@ -30,6 +30,8 @@ export default defineConfig({
     ],
   },
   test: {
+    maxWorkers: 2,
+    sequence: { groupOrder: 5 },
     globals: true,
     environment: 'jsdom',
     include: ['test/**/*.test.{ts,tsx}'],

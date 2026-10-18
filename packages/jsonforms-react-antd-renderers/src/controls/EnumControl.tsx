@@ -15,7 +15,7 @@ import { AntdSelect } from '../antd-controls/AntdSelect';
 import { InputControl } from './InputControl';
 
 export const EnumControl = (
-  props: ControlProps & OwnPropsOfEnum & TranslateProps
+  props: ControlProps & OwnPropsOfEnum & TranslateProps,
 ) => {
   return <InputControl {...props} input={AntdSelect} />;
 };
@@ -25,5 +25,5 @@ export const enumControlTester: RankedTester = rankWith(2, isEnumControl);
 // HOC order can be reversed with https://github.com/eclipsesource/jsonforms/issues/1987
 export default withJsonFormsEnumProps(
   withTranslateProps(React.memo(EnumControl)),
-  false
+  false,
 );

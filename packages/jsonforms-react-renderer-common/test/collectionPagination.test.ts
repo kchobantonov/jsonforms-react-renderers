@@ -1,13 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { resolvePagination } from '../src/collectionPagination';
 describe('collection pagination defaults', () => {
   it('defaults to five items while preserving explicit page sizes', () => {
     expect(resolvePagination(undefined, {}, 'array', true).size).toBe(5);
     expect(
-      resolvePagination(true, {}, 'additionalProperties', false).size
+      resolvePagination(true, {}, 'additionalProperties', false).size,
     ).toBe(5);
     expect(resolvePagination({ pageSize: 10 }, {}, 'array', true).size).toBe(
-      10
+      10,
     );
   });
   it('separates array and property defaults and honors false', () => {
@@ -23,7 +23,7 @@ describe('collection pagination defaults', () => {
     });
     expect(
       resolvePagination(undefined, config, 'additionalProperties', false)
-        .enabled
+        .enabled,
     ).toBe(false);
     expect(resolvePagination(false, config, 'array', true).enabled).toBe(false);
     expect(
@@ -31,8 +31,8 @@ describe('collection pagination defaults', () => {
         undefined,
         { pagination: true },
         'additionalProperties',
-        false
-      ).enabled
+        false,
+      ).enabled,
     ).toBe(false);
   });
   it('enables additional sections by default and supports scoped boolean overrides', () => {

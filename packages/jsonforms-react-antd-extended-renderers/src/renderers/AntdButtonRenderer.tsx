@@ -44,6 +44,6 @@ export const AntdButtonRenderer = createButtonRenderer({
     // "Pending/loading covers the complete fireActionEvent promise."
     loading: pending,
     block: uischema.options?.fullWidth === true,
-    ...(color ? COLORS[color] ?? {} : {}),
+    ...(color ? (COLORS[color] ?? {}) : {}),
   }),
 });

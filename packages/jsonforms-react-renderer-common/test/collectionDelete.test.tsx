@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { createRoot } from 'react-dom/client';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { useCollectionDelete } from '../src/useCollectionDelete';
 
 it.each(['additionalItems', 'additionalProperties'])(
@@ -87,5 +87,5 @@ it.each(['additionalItems', 'additionalProperties'])(
     expect(state!.confirming).toBe(true);
     expect(removed).toBe(3);
     act(() => root.unmount());
-  }
+  },
 );

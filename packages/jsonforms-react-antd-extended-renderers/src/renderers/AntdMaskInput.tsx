@@ -32,9 +32,9 @@ const warnInvalidToken = (token: string, pattern: string) => {
     return;
   }
   reportedMasks.add(key);
-  // eslint-disable-next-line no-console
+  // oxlint-disable-next-line no-console
   console.warn(
-    `Mask token '${token}' has an invalid pattern and was ignored: ${pattern}`
+    `Mask token '${token}' has an invalid pattern and was ignored: ${pattern}`,
   );
 };
 
@@ -76,7 +76,7 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
   props: CellProps &
     WithClassname & {
       inputProps?: React.ComponentProps<typeof Input>;
-    }
+    },
 ) {
   const {
     data,
@@ -104,11 +104,11 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
   } as Record<string, any>;
   const settings = useMemo(
     () => resolveMaskSettings(uischema.options, config, warnInvalidToken),
-    [uischema.options, config]
+    [uischema.options, config],
   );
   const mask = useMemo(
     () => (settings ? createMask(settings) : undefined),
-    [settings]
+    [settings],
   );
 
   /*
@@ -160,10 +160,10 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
       }
       handleChange(
         path,
-        storedValue(mask, next, returnMaskedValue) || undefined
+        storedValue(mask, next, returnMaskedValue) || undefined,
       );
     },
-    [handleChange, mask, path, returnMaskedValue]
+    [handleChange, mask, path, returnMaskedValue],
   );
 
   const onClear = useCallback(() => {
@@ -215,7 +215,7 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
         appliedUiSchemaOptions.restrict &&
         !withinMaxLength(
           storedValue(mask, masked, returnMaskedValue),
-          schema.maxLength
+          schema.maxLength,
         )
       ) {
         // Refused, so no state changes and React will not re-render - which
@@ -240,7 +240,7 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
       mask,
       returnMaskedValue,
       schema.maxLength,
-    ]
+    ],
   );
 
   return (

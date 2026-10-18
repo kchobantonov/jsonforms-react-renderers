@@ -31,13 +31,13 @@ export const PasswordControl = (props: ControlProps) => (
  */
 export const isPasswordControl: Tester = and(
   isStringControl,
-  or(formatIs('password'), optionIs('format', 'password'))
+  or(formatIs('password'), optionIs('format', 'password')),
 );
 
 /** Ranked above the string control so it wins for a string that asks for it. */
 export const passwordControlTester: RankedTester = rankWith(
   4,
-  isPasswordControl
+  isPasswordControl,
 );
 
 export default withJsonFormsControlProps(PasswordControl);

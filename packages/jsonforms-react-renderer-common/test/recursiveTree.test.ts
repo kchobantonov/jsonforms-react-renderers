@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   buildRecursiveTree,
   recursiveTreeSelection,
@@ -34,11 +34,11 @@ describe('recursive node projection', () => {
     const before = build({ children: [a, b, c] });
     const after = build({ children: [c, b] });
     expect(
-      recursiveTreeSelection(after, before.children[1], before).path
+      recursiveTreeSelection(after, before.children[1], before).path,
     ).toEqual(['children', 1]);
     const reordered = build({ children: [b, c] });
     expect(
-      recursiveTreeSelection(reordered, before.children[1], before).path
+      recursiveTreeSelection(reordered, before.children[1], before).path,
     ).toEqual(['children', 0]);
   });
   it('selects the parent when a selected node is removed, rather than the next sibling', () => {
@@ -47,14 +47,14 @@ describe('recursive node projection', () => {
     const before = build({ children: [a, b] });
     const after = build({ children: [b] });
     expect(recursiveTreeSelection(after, before.children[0], before)).toBe(
-      after
+      after,
     );
   });
   it('keeps the node selected across immutable field edits and handles empty nodes', () => {
     const before = build({ children: [{}] });
     const after = build({ children: [{ name: 'Edited' }] });
     expect(recursiveTreeSelection(after, before.children[0], before)).toBe(
-      after.children[0]
+      after.children[0],
     );
     expect(before.children[0].label).toBe('1');
   });

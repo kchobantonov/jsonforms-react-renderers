@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   tupleControlTester,
   tupleDefinition,
@@ -18,7 +18,7 @@ const pairSchema = {
 describe('recognizing a tuple schema', () => {
   const context = (root: any) => ({ rootSchema: root, config: {} });
   const control = (options?: Record<string, unknown>) =>
-    ({ type: 'Control', scope: '#/properties/pair', options } as any);
+    ({ type: 'Control', scope: '#/properties/pair', options }) as any;
 
   it('takes a draft-07 positional array with no variant asked for', () => {
     const root = { type: 'object', properties: { pair: pairSchema } };
@@ -40,13 +40,13 @@ describe('recognizing a tuple schema', () => {
   it('defaults an absent tail to open in both dialects', () => {
     expect(
       tupleDefinition({ type: 'array', items: [{ type: 'string' }] } as any)!
-        .tail
+        .tail,
     ).toBe(true);
     expect(
       tupleDefinition({
         type: 'array',
         prefixItems: [{ type: 'string' }],
-      } as any)!.tail
+      } as any)!.tail,
     ).toBe(true);
   });
 
@@ -78,7 +78,7 @@ describe('recognizing a tuple schema', () => {
         minItems: 3,
         maxItems: 3,
       } as any,
-      true
+      true,
     )!;
     expect(definition.prefix).toHaveLength(3);
     expect(definition.prefix[0]).toEqual({ type: 'number' });
@@ -98,8 +98,8 @@ describe('recognizing a tuple schema', () => {
       expect(
         tupleDefinition(
           { type: 'array', items: { type: 'number' }, ...bounds } as any,
-          true
-        )
+          true,
+        ),
       ).toBeUndefined();
     }
   });
@@ -119,8 +119,8 @@ describe('recognizing a tuple schema', () => {
       tupleControlTester(
         control({ variant: 'tuple' }),
         root as any,
-        context(root)
-      )
+        context(root),
+      ),
     ).toBe(25);
   });
 
@@ -130,8 +130,8 @@ describe('recognizing a tuple schema', () => {
       tupleControlTester(
         { type: 'VerticalLayout' } as any,
         root as any,
-        context(root)
-      )
+        context(root),
+      ),
     ).toBe(-1);
   });
 });
@@ -163,7 +163,7 @@ describe('what a position starts and ends life as', () => {
     expect(tupleInitialValue(true, root)).toBeUndefined();
     expect(tupleInitialValue({}, root)).toBeUndefined();
     expect(
-      tupleInitialValue({ type: ['string', 'number'] } as any, root)
+      tupleInitialValue({ type: ['string', 'number'] } as any, root),
     ).toBeUndefined();
   });
 
@@ -179,7 +179,7 @@ describe('what a position starts and ends life as', () => {
     expect(tupleEmptyValue({ type: 'integer' }, root)).toBeUndefined();
     expect(tupleEmptyValue({ type: 'boolean' }, root)).toBeUndefined();
     expect(
-      tupleEmptyValue({ type: ['string', 'null'] } as any, root)
+      tupleEmptyValue({ type: ['string', 'null'] } as any, root),
     ).toBeNull();
   });
 

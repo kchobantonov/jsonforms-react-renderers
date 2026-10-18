@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { deriveLabelForUISchemaElement } from '@jsonforms/core';
 import { translatorFor } from '../src/i18nCatalogs';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json';

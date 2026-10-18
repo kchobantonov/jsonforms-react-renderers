@@ -58,7 +58,7 @@ describe('PrimeReact picker commits', () => {
       await act(async () =>
         (
           container.querySelector('.p-datepicker-trigger') as HTMLElement
-        ).click()
+        ).click(),
       );
       const target = document.querySelector(selector)!;
       expect(target).not.toBeNull();
@@ -68,6 +68,6 @@ describe('PrimeReact picker commits', () => {
         target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
       expect(container.querySelector('output')!.textContent).toBe(expected);
-    }
+    },
   );
 });

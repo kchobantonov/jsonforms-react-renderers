@@ -33,14 +33,14 @@ it.each(['table', 'expandable', 'list'])(
             data={[{ name: 'Keep' }]}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       const toggle = container.querySelector<HTMLButtonElement>(
-        'button[aria-controls][aria-label="Rows"]'
+        'button[aria-controls][aria-label="Rows"]',
       )!;
       const body = document.getElementById(
-        toggle.getAttribute('aria-controls')!
+        toggle.getAttribute('aria-controls')!,
       )!;
       expect(body.hidden).toBe(true);
       const child = body.firstElementChild;
@@ -53,7 +53,7 @@ it.each(['table', 'expandable', 'list'])(
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );
 
 it('keeps the AG Grid frame contents mounted while collapsing', () => {
@@ -65,15 +65,15 @@ it('keeps the AG Grid frame contents mounted while collapsing', () => {
       root.render(
         <ShadcnArrayFrame label='Grid' options={{ collapsible: true }}>
           <div data-grid>Grid contents</div>
-        </ShadcnArrayFrame>
-      )
+        </ShadcnArrayFrame>,
+      ),
     );
     const grid = container.querySelector('[data-grid]')!;
     const toggle = container.querySelector<HTMLButtonElement>(
-      'button[aria-controls]'
+      'button[aria-controls]',
     )!;
     const body = document.getElementById(
-      toggle.getAttribute('aria-controls')!
+      toggle.getAttribute('aria-controls')!,
     )!;
     act(() => toggle.click());
     expect(body.hidden).toBe(true);

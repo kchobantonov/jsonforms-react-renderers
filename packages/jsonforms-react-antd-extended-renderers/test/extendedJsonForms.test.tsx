@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 
 const harness = vi.hoisted(() => ({
   emit: undefined as undefined | ((markers: unknown[]) => void),
@@ -120,7 +120,7 @@ describe('ExtendedJsonForms', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     await act(async () => {
@@ -147,7 +147,7 @@ describe('ExtendedJsonForms', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
 
@@ -190,7 +190,7 @@ describe('ExtendedJsonForms', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     await act(async () => {
@@ -223,7 +223,7 @@ describe('a bare JsonForms with a publishing renderer', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     await act(async () => {
@@ -252,11 +252,11 @@ describe('a bare JsonForms with a publishing renderer', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
+      warn.mock.calls.map((call) => String(call[0])).join('\n'),
     ).not.toContain(NO_STORE_DIAGNOSTIC);
   });
 });
@@ -274,7 +274,7 @@ describe('the action handler', () => {
 
   const press = (container: HTMLElement) => {
     const button = Array.from(
-      container.querySelectorAll<HTMLButtonElement>('button')
+      container.querySelectorAll<HTMLButtonElement>('button'),
     ).find((candidate) => candidate.textContent?.includes('Go'));
     expect(button, 'no Go button').toBeTruthy();
     act(() => button!.click());
@@ -295,7 +295,7 @@ describe('the action handler', () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     press((view as any).container ?? document.body);
@@ -326,7 +326,7 @@ describe('the action handler', () => {
             onChange={() => undefined}
           />
         </HandleActionContext.Provider>
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     press(document.body);
@@ -357,7 +357,7 @@ describe('the action handler', () => {
             onChange={() => undefined}
           />
         </HandleActionContext.Provider>
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     await settle();
     press(document.body);

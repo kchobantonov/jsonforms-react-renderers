@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   buildErrorIndex,
   errorDataPath,
@@ -8,7 +8,7 @@ import {
 } from '../src/validationIndicator';
 import { boundDataPaths } from '../src/groupState';
 
-const err = (instancePath: string) => ({ instancePath } as any);
+const err = (instancePath: string) => ({ instancePath }) as any;
 
 describe('error index', () => {
   it('adds every ancestor of every error', () => {
@@ -41,11 +41,11 @@ describe('error index', () => {
     const errors = [err('/a')];
     const additional = [err('/b')];
     expect(sharedErrorIndex(errors, additional)).toBe(
-      sharedErrorIndex(errors, additional)
+      sharedErrorIndex(errors, additional),
     );
     // A new validation replaces the array, so the identity key changes.
     expect(sharedErrorIndex([err('/a')], additional)).not.toBe(
-      sharedErrorIndex(errors, additional)
+      sharedErrorIndex(errors, additional),
     );
   });
 });
@@ -57,12 +57,20 @@ describe('validation modes', () => {
   it('shows schema errors only when the mode displays them', () => {
     for (const mode of ['ValidateAndShow', undefined]) {
       expect(
-        displayableErrors({ errors, additionalErrors, validationMode: mode })[0]
+        displayableErrors({
+          errors,
+          additionalErrors,
+          validationMode: mode,
+        })[0],
       ).toBe(errors);
     }
     for (const mode of ['ValidateAndHide', 'NoValidation']) {
       expect(
-        displayableErrors({ errors, additionalErrors, validationMode: mode })[0]
+        displayableErrors({
+          errors,
+          additionalErrors,
+          validationMode: mode,
+        })[0],
       ).toBeUndefined();
     }
   });
@@ -70,7 +78,11 @@ describe('validation modes', () => {
   it('keeps additional errors in every mode', () => {
     for (const mode of ['ValidateAndShow', 'ValidateAndHide', 'NoValidation']) {
       expect(
-        displayableErrors({ errors, additionalErrors, validationMode: mode })[1]
+        displayableErrors({
+          errors,
+          additionalErrors,
+          validationMode: mode,
+        })[1],
       ).toBe(additionalErrors);
     }
   });
@@ -88,7 +100,7 @@ describe('option resolution follows Adjustment 1', () => {
 
   it('reads the global default from the jsonformsExtended namespace', () => {
     expect(resolveIndicatorOption(undefined, namespaced(true), false)).toBe(
-      true
+      true,
     );
   });
 
@@ -97,15 +109,15 @@ describe('option resolution follows Adjustment 1', () => {
       resolveIndicatorOption(
         undefined,
         { showValidationIndicator: true } as any,
-        false
-      )
+        false,
+      ),
     ).toBe(false);
   });
 
   it('lets an explicit element false beat an inherited true', () => {
     const ui = { type: 'Group', options: { showValidationIndicator: false } };
     expect(resolveIndicatorOption(ui as any, namespaced(true), true)).toBe(
-      false
+      false,
     );
   });
 
@@ -128,7 +140,7 @@ describe('suppression is local only', () => {
     const index = buildErrorIndex([err('/certifications/1')]);
     expect(boundDataPaths(parent as any).some((p) => index.has(p))).toBe(true);
     expect(
-      resolveIndicatorOption(parent.elements[0] as any, undefined, true)
+      resolveIndicatorOption(parent.elements[0] as any, undefined, true),
     ).toBe(false);
   });
 });
@@ -151,17 +163,17 @@ it('counts require an explicit local or global request', () => {
   const resolve = (ui?: any, config?: any) =>
     resolveIndicatorOption(ui, config, false, 'showValidationIndicatorCount');
   expect(
-    resolve({ type: 'Category', options: { showValidationIndicator: true } })
+    resolve({ type: 'Category', options: { showValidationIndicator: true } }),
   ).toBe(false);
   expect(
     resolve(undefined, {
       jsonformsExtended: { showValidationIndicatorCount: true },
-    })
+    }),
   ).toBe(true);
   expect(
     resolve(
       { type: 'Category', options: { showValidationIndicatorCount: false } },
-      { jsonformsExtended: { showValidationIndicatorCount: true } }
-    )
+      { jsonformsExtended: { showValidationIndicatorCount: true } },
+    ),
   ).toBe(false);
 });

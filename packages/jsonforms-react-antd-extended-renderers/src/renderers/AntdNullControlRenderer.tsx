@@ -19,8 +19,8 @@ export const antdNullControlTester: RankedTester = rankWith(
   3,
   and(
     uiTypeIs('Control'),
-    schemaMatches((schema: JsonSchema) => schema.type === 'null')
-  )
+    schemaMatches((schema: JsonSchema) => schema.type === 'null'),
+  ),
 );
 
 export const AntdNullControl = (props: ControlProps) => {
@@ -55,7 +55,7 @@ export const AntdNullControl = (props: ControlProps) => {
         onChange={(event) =>
           props.handleChange(
             props.path,
-            event.target.checked ? null : undefined
+            event.target.checked ? null : undefined,
           )
         }
       >

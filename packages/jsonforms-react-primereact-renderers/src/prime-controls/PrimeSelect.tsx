@@ -32,7 +32,7 @@ import { Dropdown } from 'primereact/dropdown';
 export const PrimeSelect = (
   props: EnumCellProps &
     WithClassname &
-    TranslateProps & { inputProps?: React.ComponentProps<typeof Dropdown> }
+    TranslateProps & { inputProps?: React.ComponentProps<typeof Dropdown> },
 ) => {
   const {
     data,

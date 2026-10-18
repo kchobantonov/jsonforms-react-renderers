@@ -14,7 +14,7 @@ export const stringifyEditorValue = (value: unknown) =>
 export const reloadOriginalEditorModel = (
   models: EditorModels,
   key: EditorKey,
-  originalValue: unknown
+  originalValue: unknown,
 ): EditorModels => ({
   ...models,
   [key]: stringifyEditorValue(originalValue),

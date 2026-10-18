@@ -49,7 +49,7 @@ export const useRowDetail = (props: any) => {
         array.every(
           (value, index) =>
             index === selection.index ||
-            value === previousArray.current?.[index]
+            value === previousArray.current?.[index],
         )
       ) {
         setSelection({
@@ -94,7 +94,7 @@ export const useRowDetail = (props: any) => {
       return;
     draftRef.current = coreReducer(draftRef.current, action);
     setSelection(
-      (current) => current && { ...current, draft: draftRef.current }
+      (current) => current && { ...current, draft: draftRef.current },
     );
   };
   const detail = findUISchema(
@@ -107,13 +107,13 @@ export const useRowDetail = (props: any) => {
         props.schema,
         'VerticalLayout',
         undefined,
-        props.rootSchema
+        props.rootSchema,
       ),
     {
       ...props.uischema,
       options: { ...props.uischema.options, detail: options?.detail },
     },
-    props.rootSchema
+    props.rootSchema,
   );
   const form =
     selection && array && selection.index < array.length ? (

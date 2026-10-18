@@ -3,5 +3,5 @@ import { runRendererContract } from './rendererContract';
 
 runRendererContract(
   'CategorizationAccordionLayout',
-  categorizationAccordionTester
+  categorizationAccordionTester,
 );

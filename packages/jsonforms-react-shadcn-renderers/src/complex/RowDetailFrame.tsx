@@ -105,7 +105,7 @@ export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
   const { panelOpen, setPanelOpen, t, options } = state;
   if (options?.presentation !== 'panel') return null;
   const toggleLabel = t(
-    panelOpen ? 'collection.hideDetails' : 'collection.showDetails'
+    panelOpen ? 'collection.hideDetails' : 'collection.showDetails',
   );
   return (
     <div className='flex items-center'>

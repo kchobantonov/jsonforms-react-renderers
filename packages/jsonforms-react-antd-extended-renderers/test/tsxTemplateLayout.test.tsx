@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider, Input } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -59,7 +59,7 @@ const schema: any = {
 const draw = (
   uischema: any,
   data: any = { customer: 'Ada', schedule: '0 9 * * 1', note: 'ok' },
-  extra: any = {}
+  extra: any = {},
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -79,8 +79,8 @@ const draw = (
           }}
           {...extra}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return {
     container,
@@ -120,7 +120,7 @@ describe('selecting the TypeScript form', () => {
     // No config at all was supplied, and it still rendered.
     expect(view.text('out')).toBe('Ada');
     expect(
-      view.container.querySelector('[data-template-diagnostic]')
+      view.container.querySelector('[data-template-diagnostic]'),
     ).toBeNull();
     view.unmount();
   });
@@ -145,7 +145,7 @@ describe('selecting the TypeScript form', () => {
         config: {
           jsonformsExtended: { security: { allowScriptEvaluation: true } },
         },
-      }
+      },
     );
     // The Ractive engine is behind React.lazy, so its chunk has to arrive.
     await settle(400);
@@ -170,11 +170,11 @@ describe('placing children', () => {
         <div data-out>
           <Slot name='note' />
         </div>
-      ))
+      )),
     );
     await settle();
     expect(
-      view.container.querySelector<HTMLInputElement>('[data-out] input')?.value
+      view.container.querySelector<HTMLInputElement>('[data-out] input')?.value,
     ).toBe('ok');
     view.unmount();
   });
@@ -186,11 +186,11 @@ describe('placing children', () => {
         <div data-out>
           <Slot name='1' />
         </div>
-      ))
+      )),
     );
     await settle();
     expect(
-      view.container.querySelector<HTMLInputElement>('[data-out] input')?.value
+      view.container.querySelector<HTMLInputElement>('[data-out] input')?.value,
     ).toBe('Ada');
     view.unmount();
   });
@@ -205,12 +205,12 @@ describe('placing children', () => {
             <em data-fallback>nothing here</em>
           </Slot>
         </div>
-      ))
+      )),
     );
     await settle();
     expect(view.text('fallback')).toBe('nothing here');
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'template.unknownSlot'
+      'template.unknownSlot',
     );
     warn.mockRestore();
     view.unmount();
@@ -226,7 +226,7 @@ describe('placing children', () => {
         <div data-out>
           {elements.note.type}:{(elements.note as any).scope}
         </div>
-      ))
+      )),
     );
     await settle();
     expect(view.text('out')).toBe('Control:#/properties/note');
@@ -263,7 +263,7 @@ describe('what the template is handed', () => {
           <div data-out>{errors.length}</div>
         ),
       },
-      { customer: 'Ada', schedule: '', note: 'x' } // note is too short
+      { customer: 'Ada', schedule: '', note: 'x' }, // note is too short
     );
     await settle();
     expect(Number(view.text('out'))).toBeGreaterThan(0);
@@ -294,14 +294,14 @@ describe('a bound widget the registry does not know', () => {
             onChange={(e) =>
               handleChange(
                 path ? `${path}.schedule` : 'schedule',
-                e.target.value
+                e.target.value,
               )
             }
           />
         ),
       },
       undefined,
-      extra
+      extra,
     );
 
   it('writes through the normal dispatch', async () => {
@@ -312,7 +312,7 @@ describe('a bound widget the registry does not know', () => {
     act(() => {
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       setter.call(input, '*/5 * * * *');
       input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -333,7 +333,7 @@ describe('a bound widget the registry does not know', () => {
     act(() => {
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       setter.call(input, 'should not stick');
       input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -390,7 +390,7 @@ describe('the form context', () => {
         ),
       },
       undefined,
-      extra
+      extra,
     );
 
   it('carries the fields section 3 declares', async () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import {
@@ -50,15 +50,15 @@ const open = async (locale: string) => {
         i18n={{
           locale,
           translate: createTranslator(
-            (id, def) => catalog[locale]?.[id] ?? def
+            (id, def) => catalog[locale]?.[id] ?? def,
           ),
         }}
         onChange={() => undefined}
-      />
+      />,
     );
   });
   const trigger = c.querySelector<HTMLElement>(
-    '[aria-label="Choose a duration"], .anticon-clock-circle'
+    '[aria-label="Choose a duration"], .anticon-clock-circle',
   );
   await act(async () => {
     trigger!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -68,7 +68,7 @@ const open = async (locale: string) => {
   });
   const panel = document.querySelector('.ant-popover') as HTMLElement;
   return Array.from(panel.querySelectorAll('.ant-space-addon')).map((e) =>
-    e.textContent?.trim()
+    e.textContent?.trim(),
   );
 };
 

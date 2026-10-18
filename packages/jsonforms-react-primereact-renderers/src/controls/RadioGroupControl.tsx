@@ -40,6 +40,6 @@ export const RadioGroupControl = (props: ControlProps & OwnPropsOfEnum) => {
 
 export const radioGroupControlTester: RankedTester = rankWith(
   20,
-  and(isEnumControl, optionIs('format', 'radio'))
+  and(isEnumControl, optionIs('format', 'radio')),
 );
 export default withJsonFormsEnumProps(RadioGroupControl);

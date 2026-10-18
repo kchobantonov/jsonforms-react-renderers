@@ -21,24 +21,24 @@ it.each(['string', 'number', 'integer', 'boolean'])(
             uischema={{ type: 'Control', scope: '#' }}
             cells={shadcnCells}
             renderers={shadcnRenderers}
-          />
-        )
+          />,
+        ),
       );
       expect(host.querySelector('table')).not.toBeNull();
       expect(host.querySelector('thead')).toBeNull();
       expect(
-        host.querySelector('tbody tr [aria-label="Select row 1"]')
+        host.querySelector('tbody tr [aria-label="Select row 1"]'),
       ).not.toBeNull();
       if (type === 'string') {
         expect(
-          host.querySelector('td input')?.getAttribute('aria-invalid')
+          host.querySelector('td input')?.getAttribute('aria-invalid'),
         ).toBe('true');
         expect(
-          host.querySelector('td .shadcn-jsonforms-cell-error')
+          host.querySelector('td .shadcn-jsonforms-cell-error'),
         ).not.toBeNull();
       }
     } finally {
       act(() => root.unmount());
     }
-  }
+  },
 );

@@ -56,7 +56,7 @@ describe('Ant Design renderer registries', () => {
       antdNullControlTester,
     ]);
     expect(
-      antdExtendedCells.some((entry) => entry.tester === monacoControlTester)
+      antdExtendedCells.some((entry) => entry.tester === monacoControlTester),
     ).toBe(false);
   });
 

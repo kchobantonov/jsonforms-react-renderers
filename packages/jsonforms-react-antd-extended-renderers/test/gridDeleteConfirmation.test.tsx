@@ -93,8 +93,8 @@ const draw = async (options: any = {}, config?: any) => {
             latest = data;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   // The grid renderer is lazy and ag-grid fills its cells asynchronously.
   await flushUntil(() => container.querySelectorAll('.ag-row').length > 0);
@@ -104,7 +104,7 @@ const draw = async (options: any = {}, config?: any) => {
       (button) =>
         (button.getAttribute('aria-label') ?? '')
           .toLowerCase()
-          .includes('remove')
+          .includes('remove'),
     );
 
   return {
@@ -117,8 +117,8 @@ const draw = async (options: any = {}, config?: any) => {
       */
       const boxes = Array.from(
         container.querySelectorAll<HTMLInputElement>(
-          '.ag-row .ag-selection-checkbox input'
-        )
+          '.ag-row .ag-selection-checkbox input',
+        ),
       );
       expect(boxes.length).toBeGreaterThanOrEqual(count);
       for (const box of boxes.slice(0, count)) {
@@ -130,7 +130,7 @@ const draw = async (options: any = {}, config?: any) => {
       const button = removeButton();
       expect(button, 'no remove action was rendered').toBeTruthy();
       expect(button!.disabled, 'remove was disabled: nothing is selected').toBe(
-        false
+        false,
       );
       act(() => button!.click());
       await settle();
@@ -140,7 +140,9 @@ const draw = async (options: any = {}, config?: any) => {
     prompted: () => Boolean(document.querySelector('[data-confirm]')),
     accept: async () => {
       const ok = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((button) => button.textContent?.includes('Yes'));
       act(() => ok!.click());
       await settle();
@@ -203,7 +205,7 @@ describe('removing selected grid rows', () => {
         jsonformsExtended: {
           confirmation: { renderers: { agGrid: { delete: 'never' } } },
         },
-      }
+      },
     );
     await grid.selectRows(1);
     await grid.clickRemove();

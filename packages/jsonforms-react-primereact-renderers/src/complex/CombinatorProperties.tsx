@@ -42,7 +42,7 @@ interface CombinatorPropertiesProps {
 export class CombinatorProperties extends React.Component<
   CombinatorPropertiesProps,
   // TODO fix @typescript-eslint/ban-types
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // oxlint-disable-next-line @typescript-eslint/ban-types
   {}
 > {
   render() {
@@ -52,13 +52,13 @@ export class CombinatorProperties extends React.Component<
 
     const otherProps: JsonSchema = omit(
       schema,
-      combinatorKeyword
+      combinatorKeyword,
     ) as JsonSchema;
     const foundUISchema: UISchemaElement = Generate.uiSchema(
       otherProps,
       'VerticalLayout',
       undefined,
-      rootSchema
+      rootSchema,
     );
     let isLayoutWithElements = false;
     if (foundUISchema !== null && isLayout(foundUISchema)) {

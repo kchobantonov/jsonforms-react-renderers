@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -75,8 +75,8 @@ const draw = (schedule?: string) => {
               latest = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -92,7 +92,7 @@ const draw = (schedule?: string) => {
     rows()
       .map(
         (row) =>
-          row.querySelector('.ant-space-addon')?.textContent?.trim() ?? ''
+          row.querySelector('.ant-space-addon')?.textContent?.trim() ?? '',
       )
       .filter(Boolean);
 
@@ -100,7 +100,7 @@ const draw = (schedule?: string) => {
     rows().find(
       (candidate) =>
         candidate.querySelector('.ant-space-addon')?.textContent?.trim() ===
-        label
+        label,
     );
 
   /**
@@ -125,12 +125,12 @@ const draw = (schedule?: string) => {
     });
     await settle(200);
     const lists = document.querySelectorAll<HTMLElement>(
-      '.ant-select-dropdown'
+      '.ant-select-dropdown',
     );
     const list = lists[lists.length - 1];
     return Array.from(
       list?.querySelectorAll<HTMLElement>('.ant-select-item-option-selected') ??
-        []
+        [],
     ).map((option) => option.textContent?.trim() ?? '');
   };
 
@@ -150,7 +150,7 @@ const draw = (schedule?: string) => {
       container.querySelector<HTMLInputElement>('input.ant-input')?.value ?? '',
     openPicker: async () => {
       const trigger = container.querySelector<HTMLElement>(
-        '[aria-label="Choose a schedule"], .anticon-schedule'
+        '[aria-label="Choose a schedule"], .anticon-schedule',
       );
       expect(trigger, 'no picker trigger').toBeTruthy();
       await act(async () => {
@@ -160,7 +160,7 @@ const draw = (schedule?: string) => {
     },
     press: async (text: string) => {
       const button = Array.from(
-        panel().querySelectorAll<HTMLElement>('button')
+        panel().querySelectorAll<HTMLElement>('button'),
       ).find((each) => each.textContent?.trim() === text);
       expect(button, `no ${text} button`).toBeTruthy();
       await act(async () => {
@@ -170,13 +170,13 @@ const draw = (schedule?: string) => {
     },
     type: async (value: string) => {
       const input = panel().querySelector<HTMLInputElement>(
-        'input[aria-label="Expression"]'
+        'input[aria-label="Expression"]',
       );
       expect(input, 'no expression input').toBeTruthy();
       await act(async () => {
         const setter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
-          'value'
+          'value',
         )!.set!;
         setter.call(input, value);
         input!.dispatchEvent(new Event('input', { bubbles: true }));
@@ -357,7 +357,7 @@ describe('what the picker writes', () => {
     await form.type('0 9 * * *');
 
     const apply = Array.from(
-      form.panel().querySelectorAll<HTMLButtonElement>('button')
+      form.panel().querySelectorAll<HTMLButtonElement>('button'),
     ).find((each) => each.textContent?.trim() === 'Apply');
     expect(apply?.disabled).toBe(true);
     form.unmount();
@@ -372,7 +372,7 @@ describe('the control itself', () => {
 
     expect(form.field()).toBe('0 0/15 * * * *');
     expect(
-      form.container.querySelector('[aria-label="Choose a schedule"]')
+      form.container.querySelector('[aria-label="Choose a schedule"]'),
     ).toBeTruthy();
     form.unmount();
   });

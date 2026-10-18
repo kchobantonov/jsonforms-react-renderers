@@ -65,7 +65,7 @@ export const temporalBounds = (
   schema: TemporalBoundsSchema | undefined,
   formats: string[],
   precision: BoundPrecision,
-  timeOnly = false
+  timeOnly = false,
 ): TemporalBounds => {
   let min: dayjs.Dayjs | undefined;
   let max: dayjs.Dayjs | undefined;
@@ -143,7 +143,7 @@ export const temporalBounds = (
  */
 export const effectiveRestrict = (
   options: Record<string, unknown> | undefined,
-  config: unknown
+  config: unknown,
 ): boolean => {
   if (typeof options?.restrict === 'boolean') {
     return options.restrict;
@@ -178,7 +178,7 @@ export const effectiveRestrict = (
 export const resolveDataPointer = (
   pointer: string,
   path: string | undefined,
-  rootData: unknown
+  rootData: unknown,
 ): unknown => {
   const match = /^(\d+)(?:\/(.*))?$/.exec(pointer);
   if (!match) {
@@ -212,7 +212,7 @@ export const resolveDataPointer = (
 export const resolveDataBounds = (
   schema: TemporalBoundsSchema | undefined,
   path: string | undefined,
-  rootData: unknown
+  rootData: unknown,
 ): TemporalBoundsSchema | undefined => {
   if (!schema) {
     return schema;

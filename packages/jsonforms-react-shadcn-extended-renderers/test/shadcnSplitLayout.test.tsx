@@ -13,7 +13,7 @@ it.each(['HorizontalLayout', 'VerticalLayout'])(
         observe() {}
         unobserve() {}
         disconnect() {}
-      }
+      },
     );
     const container = document.createElement('div');
     document.body.append(container);
@@ -32,26 +32,26 @@ it.each(['HorizontalLayout', 'VerticalLayout'])(
                 elements: [{ type: 'Spacer' }, { type: 'Spacer' }],
               } as any
             }
-          />
-        )
+          />,
+        ),
       );
       expect(
-        container.querySelector('[data-slot="resizable-panel-group"]')
+        container.querySelector('[data-slot="resizable-panel-group"]'),
       ).not.toBeNull();
       expect(
-        container.querySelectorAll('[data-slot="resizable-panel"]')
+        container.querySelectorAll('[data-slot="resizable-panel"]'),
       ).toHaveLength(2);
       expect(
-        container.querySelectorAll('[data-slot="resizable-handle"]')
+        container.querySelectorAll('[data-slot="resizable-handle"]'),
       ).toHaveLength(1);
       if (type === 'VerticalLayout')
         expect((container.firstElementChild as HTMLElement).style.height).toBe(
-          '26rem'
+          '26rem',
         );
     } finally {
       act(() => root.unmount());
       container.remove();
       vi.unstubAllGlobals();
     }
-  }
+  },
 );

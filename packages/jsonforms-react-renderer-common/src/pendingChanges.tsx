@@ -8,7 +8,7 @@ export type PendingChange = {
 };
 
 const PendingChangesContext = createContext<Set<PendingChange> | undefined>(
-  undefined
+  undefined,
 );
 
 /**
@@ -38,8 +38,8 @@ export const useRegisterPendingChange = (change: PendingChange) => {
       cancel: () => entry.current.cancel(),
       current: change,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    [],
   ) as PendingChange & { current: PendingChange };
   entry.current = change;
   useEffect(() => {

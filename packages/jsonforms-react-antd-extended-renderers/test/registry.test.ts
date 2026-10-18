@@ -25,11 +25,10 @@ describe('config namespace constants', () => {
     // pull ag-grid, Monaco and sucrase in for a single string. The literal is
     // a wire format, so drift would be a silent bug: fail here instead.
     const base = await import('@chobantonov/jsonforms-react-antd-renderers');
-    const extended = await import(
-      '@chobantonov/jsonforms-react-extended-renderers'
-    );
+    const extended =
+      await import('@chobantonov/jsonforms-react-extended-renderers');
     expect(base.JSONFORMS_EXTENDED_CONFIG_KEY).toBe(
-      extended.JSONFORMS_EXTENDED_CONFIG_KEY
+      extended.JSONFORMS_EXTENDED_CONFIG_KEY,
     );
     expect(base.JSONFORMS_CONFIG_KEY).toBe(extended.JSONFORMS_CONFIG_KEY);
   });

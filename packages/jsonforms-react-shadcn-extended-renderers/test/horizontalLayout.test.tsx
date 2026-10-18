@@ -65,15 +65,15 @@ describe('horizontal column allocation', () => {
       expect(result[0].diagnostic).toBeUndefined();
       expect(result[1].diagnostic).toContain('integer from 2 through 16');
       expect(values[1]).toBe(invalid);
-    }
+    },
   );
 
   test('includes gaps without normalizing fixed-only rows', () => {
     expect(horizontalLayoutWidths([4])[0].style.flex).toBe(
-      '0 0 calc(25% - 1rem * 0)'
+      '0 0 calc(25% - 1rem * 0)',
     );
     expect(
-      horizontalLayoutWidths([4, 4]).map((item) => item.style.flex)
+      horizontalLayoutWidths([4, 4]).map((item) => item.style.flex),
     ).toEqual(['0 0 calc(25% - 1rem * 0.25)', '0 0 calc(25% - 1rem * 0.25)']);
     expect(horizontalLayoutWidths([])).toEqual([]);
   });
@@ -93,7 +93,7 @@ const render = (layout: Layout, data = {}) => {
         },
         ...createExtendedRenderers(),
       ]}
-    />
+    />,
   );
   return container;
 };
@@ -113,8 +113,8 @@ describe('explicitly registered legacy columns layout', () => {
     });
     expect(
       Array.from(container.querySelectorAll('[data-columns]')).map((el) =>
-        el.getAttribute('data-columns')
-      )
+        el.getAttribute('data-columns'),
+      ),
     ).toEqual(['4', '12', '16']);
     expect(container.querySelector('hr')).not.toBeNull();
   });
@@ -148,8 +148,8 @@ describe('explicitly registered legacy columns layout', () => {
     expect(hidden.querySelectorAll('[data-columns-row]')).toHaveLength(1);
     expect(
       Array.from(hidden.querySelectorAll('[data-columns]')).map((el) =>
-        el.getAttribute('data-columns')
-      )
+        el.getAttribute('data-columns'),
+      ),
     ).toEqual(['8', '8']);
     expect(hidden.querySelector('hr')).not.toBeNull();
     expect(render(layout, { show: true }).innerHTML).toBe(shown.innerHTML);
@@ -163,7 +163,7 @@ describe('explicitly registered legacy columns layout', () => {
     expect(
       render(layout)
         .querySelector('[data-columns-diagnostic]')
-        ?.getAttribute('data-columns')
+        ?.getAttribute('data-columns'),
     ).toBe('16');
     expect(
       render({
@@ -172,28 +172,28 @@ describe('explicitly registered legacy columns layout', () => {
           effect: RuleEffect.HIDE,
           condition: { scope: '#', schema: {} },
         },
-      }).innerHTML
+      }).innerHTML,
     ).toBe('');
   });
 
   test('does not override family layouts in the default registry', () => {
     expect(
       createExtendedRenderers().some(
-        (entry) => entry.tester === horizontalColumnsLayoutTester
-      )
+        (entry) => entry.tester === horizontalColumnsLayoutTester,
+      ),
     ).toBe(false);
   });
 
   test('selects horizontal layouts below split layouts without affecting vertical layouts', () => {
     expect(
-      horizontalColumnsLayoutTester({ type: 'VerticalLayout' }, {}, undefined)
+      horizontalColumnsLayoutTester({ type: 'VerticalLayout' }, {}, undefined),
     ).toBe(-1);
     const split = {
       type: 'HorizontalLayout',
       options: { variant: 'splitter' },
     };
     expect(horizontalColumnsLayoutTester(split, {}, undefined)).toBeLessThan(
-      splitLayoutTester(split, {}, undefined)
+      splitLayoutTester(split, {}, undefined),
     );
   });
 });

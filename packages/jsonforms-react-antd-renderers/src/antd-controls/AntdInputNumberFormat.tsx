@@ -9,7 +9,7 @@ export const AntdInputNumberFormat = (
     WithClassname &
     Formatted<number> & {
       inputProps?: React.ComponentProps<typeof Input | typeof Input.TextArea>;
-    }
+    },
 ) => {
   const {
     className,

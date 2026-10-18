@@ -12,7 +12,7 @@ export const ShadcnCellMode = createContext(false);
 
 /** DispatchCell paths already include the field scope; connected controls must not append it again. */
 export const asShadcnCell = <P extends { uischema?: UISchemaElement }>(
-  Control: React.ComponentType<P>
+  Control: React.ComponentType<P>,
 ): React.ComponentType<P> => {
   const Cell = (props: P) => (
     <ShadcnCellMode.Provider value={true}>
@@ -62,7 +62,7 @@ const ConnectedGridCellFrame = withJsonFormsCellProps(
           />
         )}
     </div>
-  )
+  ),
 );
 
 export const ShadcnGridCellFrame = (
@@ -70,7 +70,7 @@ export const ShadcnGridCellFrame = (
     schema?: JsonSchema;
     uischema?: UISchemaElement;
     path: string;
-  }>
+  }>,
 ) => (
   <ConnectedGridCellFrame
     {...props}

@@ -2,7 +2,7 @@ import '../../jsonforms-react-antd-renderers/test/renderers/MatchMediaMock';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import {
   antdRenderers,
   antdCells,
@@ -32,7 +32,7 @@ it.each([true, false])(
             uischema={
               (
                 ui.elements[0].elements.find(
-                  (category) => category.i18n === 'cards.navigation'
+                  (category) => category.i18n === 'cards.navigation',
                 ) as any
               ).elements[0]
             }
@@ -48,8 +48,8 @@ it.each([true, false])(
               translate: (key, fallback) =>
                 (translations.bg as Record<string, string>)[key] ?? fallback,
             }}
-          />
-        )
+          />,
+        ),
       );
       expect(host.querySelector('[aria-label="Одобряване"]')).not.toBeNull();
       expect(host.querySelectorAll('img').length).toBe(allowed ? 2 : 0);
@@ -57,13 +57,13 @@ it.each([true, false])(
       expect(host.querySelectorAll('input[type=radio]')).toHaveLength(8);
       expect(
         (host.querySelector('[aria-label="Одобряване"]') as HTMLInputElement)
-          .checked
+          .checked,
       ).toBe(true);
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it.each([false, true])(
@@ -74,7 +74,7 @@ it.each([false, true])(
     const root = createRoot(host);
     try {
       const category = ui.elements[0].elements.find(
-        (category) => category.i18n === 'cards.branches'
+        (category) => category.i18n === 'cards.branches',
       ) as any;
       await act(async () =>
         root.render(
@@ -89,26 +89,26 @@ it.each([false, true])(
             uischema={category.elements[0]}
             renderers={[...antdExtendedRenderers, ...antdRenderers]}
             cells={antdCells}
-          />
-        )
+          />,
+        ),
       );
       await act(async () =>
         (
           host.querySelector('[aria-label="Postal mail"]') as HTMLElement
-        ).click()
+        ).click(),
       );
       expect(
         (host.querySelector('[aria-label="Postal mail"]') as HTMLInputElement)
-          .checked
+          .checked,
       ).toBe(!hasDetails);
       expect(document.querySelector('[role="dialog"]') !== null).toBe(
-        hasDetails
+        hasDetails,
       );
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('shows required and invalid choices from the validation example', async () => {
@@ -117,7 +117,7 @@ it('shows required and invalid choices from the validation example', async () =>
   const root = createRoot(host);
   try {
     const category = ui.elements[0].elements.find(
-      (category) => category.i18n === 'cards.validation'
+      (category) => category.i18n === 'cards.validation',
     ) as any;
     await act(async () =>
       root.render(
@@ -127,11 +127,11 @@ it('shows required and invalid choices from the validation example', async () =>
           uischema={category.elements[0]}
           renderers={[...antdExtendedRenderers, ...antdRenderers]}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     expect(
-      host.querySelector('[role="radiogroup"][aria-required="true"]')
+      host.querySelector('[role="radiogroup"][aria-required="true"]'),
     ).not.toBeNull();
     const groups = host.querySelectorAll('fieldset');
     expect(groups[0].querySelectorAll('input:checked')).toHaveLength(0);
@@ -151,7 +151,7 @@ it.each(['en', 'bg'] as const)(
     document.body.append(host);
     const root = createRoot(host);
     const category = ui.elements[0].elements.find(
-      (c) => c.i18n === 'cards.detailModes'
+      (c) => c.i18n === 'cards.detailModes',
     )!;
     const render = async (contact: any) => {
       await act(async () =>
@@ -171,8 +171,8 @@ it.each(['en', 'bg'] as const)(
                 (translations[locale] as Record<string, string>)[key] ??
                 fallback,
             }}
-          />
-        )
+          />,
+        ),
       );
     };
     try {
@@ -181,17 +181,17 @@ it.each(['en', 'bg'] as const)(
         translations[locale]['cards.registeredAddress.label'];
       expect(host.textContent!.split(registeredLabel)).toHaveLength(2);
       expect(
-        host.querySelectorAll('input[value="hello@example.com"]')
+        host.querySelectorAll('input[value="hello@example.com"]'),
       ).toHaveLength(2);
       await render({ kind: 'postal', street: 'Main Street', city: 'Sofia' });
       expect(host.textContent).not.toContain(registeredLabel);
       expect(host.querySelectorAll('input[value="Main Street"]')).toHaveLength(
-        2
+        2,
       );
       expect(host.querySelectorAll('input[value="Sofia"]')).toHaveLength(2);
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

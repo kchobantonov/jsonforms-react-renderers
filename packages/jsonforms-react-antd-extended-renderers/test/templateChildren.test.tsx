@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -90,8 +90,8 @@ const draw = async (uischema: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await settle();
   return { container, unmount: () => act(() => root.unmount()) };
@@ -99,7 +99,7 @@ const draw = async (uischema: any) => {
 
 const inputs = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLInputElement>('input')).map(
-    (input) => input.value
+    (input) => input.value,
   );
 
 describe('a jsx template rendering the whole elements array', () => {
@@ -158,7 +158,7 @@ describe('a jsx template rendering the whole elements array', () => {
       ],
     });
     const values = inputs(
-      view.container.querySelector<HTMLElement>('[data-all]')!
+      view.container.querySelector<HTMLElement>('[data-all]')!,
     );
     expect(new Set(values).size).toBe(2);
     view.unmount();
@@ -192,10 +192,10 @@ describe('a jsx template rendering the whole elements array', () => {
       ],
     });
     expect(
-      inputs(view.container.querySelector<HTMLElement>('[data-named]')!)
+      inputs(view.container.querySelector<HTMLElement>('[data-named]')!),
     ).toEqual(['two']);
     expect(
-      inputs(view.container.querySelector<HTMLElement>('[data-all]')!)
+      inputs(view.container.querySelector<HTMLElement>('[data-all]')!),
     ).toEqual(['one', 'two']);
     view.unmount();
   });
@@ -217,7 +217,7 @@ describe('a jsx template rendering the whole elements array', () => {
       ],
     });
     const inner = view.container.querySelector<HTMLElement>(
-      '[data-outer] [data-inner]'
+      '[data-outer] [data-inner]',
     );
     expect(inner, 'the nested template did not render').toBeTruthy();
     expect(inputs(inner!)).toEqual(['one']);
@@ -242,7 +242,7 @@ describe('a template that throws', () => {
     });
 
     expect(view.container.textContent).not.toContain(
-      'The template engine could not be loaded'
+      'The template engine could not be loaded',
     );
     expect(view.container.textContent).toContain('Template Runtime Error');
     view.unmount();
@@ -261,7 +261,7 @@ describe('a template that throws', () => {
     });
 
     expect(view.container.textContent).not.toContain(
-      'The template engine could not be loaded'
+      'The template engine could not be loaded',
     );
     expect(view.container.textContent).toContain('Template Runtime Error');
     view.unmount();
@@ -284,18 +284,10 @@ describe('the spec nested template-layout example', () => {
       { default: exampleData },
       { default: exampleConfig },
     ] = await Promise.all([
-      import(
-        '@chobantonov/jsonforms-extended-spec/examples/template-layout/schema.json'
-      ),
-      import(
-        '@chobantonov/jsonforms-extended-spec/examples/template-layout/uischema.json'
-      ),
-      import(
-        '@chobantonov/jsonforms-extended-spec/examples/template-layout/data.json'
-      ),
-      import(
-        '@chobantonov/jsonforms-extended-spec/examples/template-layout/config.json'
-      ),
+      import('@chobantonov/jsonforms-extended-spec/examples/template-layout/schema.json'),
+      import('@chobantonov/jsonforms-extended-spec/examples/template-layout/uischema.json'),
+      import('@chobantonov/jsonforms-extended-spec/examples/template-layout/data.json'),
+      import('@chobantonov/jsonforms-extended-spec/examples/template-layout/config.json'),
     ]);
 
     const container = document.createElement('div');
@@ -320,21 +312,21 @@ describe('the spec nested template-layout example', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
 
     expect(container.textContent).not.toContain('Template Runtime Error');
     expect(container.textContent).not.toContain(
-      'The template engine could not be loaded'
+      'The template engine could not be loaded',
     );
     // The innermost template, reached through two levels of `{elements}`.
     expect(container.textContent).toContain('Hello');
     // And the controls the middle template places positionally.
     expect(
       container.querySelectorAll('input').length,
-      'the example rendered no controls'
+      'the example rendered no controls',
     ).toBeGreaterThan(1);
 
     act(() => root.unmount());

@@ -10,15 +10,15 @@ import { EditorRendererComponents } from './EditorControlFrame';
  * once a code editor control is actually rendered.
  */
 export const createMonacoControlRenderer = (
-  components: EditorRendererComponents
+  components: EditorRendererComponents,
 ) =>
   withJsonFormsControlProps(
     createLazyControl(
       async () =>
         (await import('./MonacoControlRenderer.impl')).createMonacoControl(
-          components
+          components,
         ) as React.ComponentType<ControlProps>,
       components,
-      { loading: 'editor.loading', error: 'editor.loadError' }
-    )
+      { loading: 'editor.loading', error: 'editor.loadError' },
+    ),
   );

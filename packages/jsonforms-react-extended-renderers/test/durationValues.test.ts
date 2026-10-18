@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import {
   formatExtendedDuration,
@@ -116,6 +116,6 @@ describe('components are unbounded quantities', () => {
       const parts = parseExtendedDuration(text);
       expect(parts).not.toBeNull();
       expect(isDuration(formatExtendedDuration(parts!))).toBe(true);
-    }
+    },
   );
 });

@@ -33,10 +33,10 @@ describe('ShadcnInputControl', () => {
 
   it('does not render clear for empty, disabled, or opted-out controls', () => {
     expect(
-      renderMarkup(<ShadcnInputControl {...props} data={undefined} />)
+      renderMarkup(<ShadcnInputControl {...props} data={undefined} />),
     ).not.toContain('aria-label="Clear value"');
     expect(
-      renderMarkup(<ShadcnInputControl {...props} enabled={false} />)
+      renderMarkup(<ShadcnInputControl {...props} enabled={false} />),
     ).not.toContain('aria-label="Clear value"');
     expect(
       renderMarkup(
@@ -46,14 +46,14 @@ describe('ShadcnInputControl', () => {
             ...props.uischema,
             options: { clearable: false },
           }}
-        />
-      )
+        />,
+      ),
     ).not.toContain('aria-label="Clear value"');
   });
 
   it('treats zero as populated numeric data', () => {
     const markup = renderMarkup(
-      <ShadcnNumberControl {...props} data={0} schema={{ type: 'number' }} />
+      <ShadcnNumberControl {...props} data={0} schema={{ type: 'number' }} />,
     );
 
     expect(markup).toContain('aria-label="Clear value"');

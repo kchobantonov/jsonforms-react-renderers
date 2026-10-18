@@ -16,5 +16,5 @@ export const RecursiveTreeRenderer = createRecursiveTreeRenderer(
       {children}
     </Button>
   ),
-  useConfirmation
+  useConfirmation,
 );

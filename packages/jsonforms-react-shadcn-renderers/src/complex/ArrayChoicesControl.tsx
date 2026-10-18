@@ -33,15 +33,15 @@ import { InputShell, makeId } from '../controls/InputControl';
 
 export const chipsControlTester = rankWith(
   6,
-  and(uiTypeIs('Control'), isChipsControl)
+  and(uiTypeIs('Control'), isChipsControl),
 );
 export const multiSelectControlTester = rankWith(
   6,
-  and(uiTypeIs('Control'), isMultiSelectControl)
+  and(uiTypeIs('Control'), isMultiSelectControl),
 );
 const enumChoices = (
   schema: ControlProps['schema'],
-  root: ControlProps['rootSchema']
+  root: ControlProps['rootSchema'],
 ) => {
   const items = resolveItemSchema(schema, root);
   const strings = arrayChoicesOf(items);
@@ -64,9 +64,9 @@ export const enumArrayControlTester = rankWith(
       (schema, root) =>
         schema.type === 'array' &&
         schema.uniqueItems === true &&
-        enumChoices(schema, root) !== undefined
-    )
-  )
+        enumChoices(schema, root) !== undefined,
+    ),
+  ),
 );
 
 export const ShadcnArrayChoicesControl = (props: ControlProps) => {
@@ -105,7 +105,7 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
     ...(choices ?? []),
     ...values
       .filter(
-        (value) => !choices?.some((choice) => sameChoice(choice.value, value))
+        (value) => !choices?.some((choice) => sameChoice(choice.value, value)),
       )
       .map((value) => ({ value, label: String(value) })),
   ];
@@ -119,7 +119,7 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
     >
       {choiceList
         .filter((choice) =>
-          choice.label.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+          choice.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
         )
         .map((choice, index) => {
           const checked = isSelected(values, choice.value);
@@ -137,8 +137,8 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
                   checked
                     ? remove(
                         values.findIndex((value) =>
-                          sameChoice(value, choice.value)
-                        )
+                          sameChoice(value, choice.value),
+                        ),
                       )
                     : add(choice.value)
                 }

@@ -19,21 +19,21 @@ export const monacoControlTester = rankWith(
     optionIs('format', 'code'),
     or(
       and(isStringControl, hasLanguage),
-      and(optionIs('language', 'json'), optionIs('convertJson', true))
-    )
-  )
+      and(optionIs('language', 'json'), optionIs('convertJson', true)),
+    ),
+  ),
 );
 export const extendedAgGridTester = rankWith(
   25,
   and(
     uiTypeIs('Control'),
     schemaTypeIs('array'),
-    optionIs('variant', 'ag-grid')
-  )
+    optionIs('variant', 'ag-grid'),
+  ),
 );
 export const resolveEditorLanguage = (
   options: Record<string, any>,
-  data: unknown
+  data: unknown,
 ): string => {
   const language =
     typeof options[':language'] === 'string'
@@ -47,7 +47,7 @@ export const encodeEditorValue = (data: unknown, convert: boolean) =>
   data == null ? '' : convert ? JSON.stringify(data, null, 2) : String(data);
 export const decodeEditorValue = (
   value: string,
-  convert: boolean
+  convert: boolean,
 ): { valid: boolean; value: unknown } => {
   if (!convert) return { valid: true, value: value || undefined };
   try {

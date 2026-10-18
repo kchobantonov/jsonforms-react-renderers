@@ -1,5 +1,5 @@
 import React from 'react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { ShadcnEnumControl } from '../src/controls/EnumControl';
 import { ShadcnRadioGroupControl } from '../src/controls/RadioGroupControl';
 import { ShadcnEnumCell } from '../src/cells/EnumCell';
@@ -22,23 +22,23 @@ it.each([{ mode: 'email', nested: { count: 1 } }, ['email', { count: 1 }]])(
       handleChange: () => {},
     } as any;
     expect(renderMarkup(<ShadcnEnumControl {...props} />)).toContain(
-      'Saved choice'
+      'Saved choice',
     );
     expect(renderMarkup(<ShadcnRadioGroupControl {...props} />)).toContain(
-      'aria-checked="true"'
+      'aria-checked="true"',
     );
     expect(
       renderMarkup(
         <ShadcnEnumCell
           {...props}
           schema={{ oneOf: [{ const: value, title: 'Saved choice' }] }}
-        />
-      )
+        />,
+      ),
     ).toContain('Saved choice');
     expect(
       renderMarkup(
-        <ShadcnRadioGroupControl {...props} data={{ different: true }} />
-      )
+        <ShadcnRadioGroupControl {...props} data={{ different: true }} />,
+      ),
     ).not.toContain('aria-checked="true"');
-  }
+  },
 );

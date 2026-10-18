@@ -16,7 +16,7 @@ describe.each([
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
       act(() =>
-        root.render(<HostInput ref={ref} type='file' onClick={onClick} />)
+        root.render(<HostInput ref={ref} type='file' onClick={onClick} />),
       );
       expect(ref.current).toBeInstanceOf(HTMLInputElement);
       expect(ref.current!.type).toBe('file');
@@ -25,7 +25,7 @@ describe.each([
       ref.current!.value = '';
       expect(ref.current!.value).toBe('');
       expect(errors.mock.calls.flat().join(' ')).not.toMatch(
-        /cannot be given refs|check the render method/i
+        /cannot be given refs|check the render method/i,
       );
     } finally {
       act(() => root.unmount());

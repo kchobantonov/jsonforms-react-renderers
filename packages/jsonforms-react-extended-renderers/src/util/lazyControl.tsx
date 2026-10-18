@@ -44,7 +44,7 @@ export class LoadBoundary extends React.Component<
 export const createLazyControl = (
   load: () => Promise<React.ComponentType<ControlProps>>,
   components: EditorRendererComponents,
-  labels: { loading: ExtendedI18nKey; error: ExtendedI18nKey }
+  labels: { loading: ExtendedI18nKey; error: ExtendedI18nKey },
 ): React.ComponentType<ControlProps> => {
   const Loading = components.Loading ?? DefaultLoading;
   const LoadError = components.LoadError ?? DefaultLoadError;

@@ -89,7 +89,7 @@ export const toCss = (value: Dimension): string =>
  */
 export const resolveGridColumns = (
   options: LayoutContainerOptions | undefined,
-  config: unknown
+  config: unknown,
 ): number => {
   if (isPositiveInteger(options?.gridColumns)) {
     return options!.gridColumns as number;
@@ -101,7 +101,7 @@ export const resolveGridColumns = (
 /** `wrap`: explicit -> `jsonformsExtended.layoutDefaults.wrap` -> false. */
 export const resolveWrap = (
   options: LayoutContainerOptions | undefined,
-  config: unknown
+  config: unknown,
 ): boolean => {
   if (typeof options?.wrap === 'boolean') {
     return options.wrap;
@@ -122,7 +122,7 @@ export const resolveGap = (
   options: LayoutContainerOptions | undefined,
   config: unknown,
   direction: LayoutDirection,
-  defaults: LayoutGapDefaults = DEFAULT_GAPS
+  defaults: LayoutGapDefaults = DEFAULT_GAPS,
 ): Dimension => {
   if (isDimension(options?.gap)) {
     return options!.gap as Dimension;
@@ -140,7 +140,7 @@ export const resolveGap = (
  * at the top level.
  */
 const layoutDefaultsOf = (
-  config: unknown
+  config: unknown,
 ): (LayoutContainerOptions & { gridColumns?: number }) | undefined => {
   const extended = (config as Record<string, unknown> | undefined)?.[
     'jsonformsExtended'
@@ -172,7 +172,7 @@ export const containerStyle = (
   options: LayoutContainerOptions | undefined,
   config: unknown,
   direction: LayoutDirection,
-  defaults: LayoutGapDefaults = DEFAULT_GAPS
+  defaults: LayoutGapDefaults = DEFAULT_GAPS,
 ): React.CSSProperties => {
   const wrap = resolveWrap(options, config);
   return {
@@ -205,7 +205,7 @@ export const containerStyle = (
 export const spanBasis = (
   span: number,
   grid: number,
-  gap: Dimension
+  gap: Dimension,
 ): string => {
   const percent = (span / grid) * 100;
   const gapShare = (grid - span) / grid;
@@ -216,7 +216,7 @@ export const spanBasis = (
 };
 
 export const itemOptionsOf = (
-  element: UISchemaElement | undefined
+  element: UISchemaElement | undefined,
 ): LayoutItemOptions | undefined => {
   const layout = (element as { options?: Record<string, unknown> })?.options?.[
     'layout'
@@ -247,7 +247,7 @@ export const itemSizing = (
   direction: LayoutDirection,
   grid: number,
   gap: Dimension,
-  minItemWidth?: Dimension
+  minItemWidth?: Dimension,
 ): ItemSizing => {
   const item = itemOptionsOf(element);
   const diagnostics: string[] = [];
@@ -287,7 +287,7 @@ export const itemSizing = (
   } else if (span !== undefined && span > grid) {
     // "Clamp span above gridColumns and diagnose."
     diagnostics.push(
-      `\`span\` ${span} exceeds gridColumns ${grid}; clamped to ${grid}.`
+      `\`span\` ${span} exceeds gridColumns ${grid}; clamped to ${grid}.`,
     );
     span = grid;
   }
@@ -295,7 +295,7 @@ export const itemSizing = (
   let weight = item?.weight;
   if (weight !== undefined && !isUsableWeight(weight)) {
     diagnostics.push(
-      '`weight` must be a finite number greater than 0; ignored.'
+      '`weight` must be a finite number greater than 0; ignored.',
     );
     weight = undefined;
   }
@@ -304,7 +304,7 @@ export const itemSizing = (
     diagnostics.push(
       `\`${
         horizontal ? 'width' : 'height'
-      }\` must be a non-negative dimension; ignored.`
+      }\` must be a non-negative dimension; ignored.`,
     );
   }
 
@@ -337,7 +337,7 @@ export const itemSizing = (
 
   const constraint = (
     value: Dimension | undefined,
-    key: 'minWidth' | 'maxWidth' | 'minHeight' | 'maxHeight'
+    key: 'minWidth' | 'maxWidth' | 'minHeight' | 'maxHeight',
   ) => {
     if (value === undefined) return;
     if (!isDimension(value)) {
@@ -378,18 +378,18 @@ export const itemSizing = (
  * be quietly wrong.
  */
 export const legacySizingDiagnostics = (
-  element: UISchemaElement | undefined
+  element: UISchemaElement | undefined,
 ): string[] => {
   const options = (element as { options?: Record<string, unknown> })?.options;
   const diagnostics: string[] = [];
   if (options?.['columns'] !== undefined) {
     diagnostics.push(
-      '`columns` is not part of the portable contract; use `options.layout.span` with `gridColumns`.'
+      '`columns` is not part of the portable contract; use `options.layout.span` with `gridColumns`.',
     );
   }
   if (options?.['trim'] !== undefined) {
     diagnostics.push(
-      '`trim` is excluded by the portable contract; use `options.layout.width` or `maxWidth`.'
+      '`trim` is excluded by the portable contract; use `options.layout.width` or `maxWidth`.',
     );
   }
   return diagnostics;

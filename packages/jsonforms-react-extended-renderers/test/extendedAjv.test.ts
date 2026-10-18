@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createFormsAjv } from '../src/core/ajv';
 import { ajvLocalizers } from '../src/core/ajvI18n/localizers';
 import { unwrapErrorMessageErrors } from '../src/core/ajvI18n';
@@ -141,7 +141,7 @@ describe('the extra dynamic defaults', () => {
     }) as string;
     expect(today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(new Date(tomorrow).getTime() - new Date(today).getTime()).toBe(
-      24 * 60 * 60 * 1000
+      24 * 60 * 60 * 1000,
     );
   });
 
@@ -157,22 +157,25 @@ describe('the extra dynamic defaults', () => {
       args: { duration: 'P1D', op },
     }) as string;
     expect(new Date(today).getTime() - new Date(yesterday).getTime()).toBe(
-      24 * 60 * 60 * 1000
+      24 * 60 * 60 * 1000,
     );
   });
 
   it('offsets from a supplied date rather than now', () => {
     expect(
-      defaulted({ func: 'date', args: { date: '2024-03-01', duration: 'P1D' } })
+      defaulted({
+        func: 'date',
+        args: { date: '2024-03-01', duration: 'P1D' },
+      }),
     ).toBe('2024-03-02');
   });
 
   it('produces a time and a date-time', () => {
     expect(defaulted({ func: 'time', args: {} })).toMatch(
-      /^\d{2}:\d{2}:\d{2}\.\d{3}$/
+      /^\d{2}:\d{2}:\d{2}\.\d{3}$/,
     );
     expect(defaulted({ func: 'datetime', args: {} })).toMatch(
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$/
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$/,
     );
   });
 
@@ -233,7 +236,7 @@ describe('the dynamic default that compiles a function', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     expect(withDynamic(false)).toBeUndefined();
     expect(warn.mock.calls.map((c) => String(c[0])).join('\n')).toContain(
-      'dynamicDefaults.evaluationDisabled'
+      'dynamicDefaults.evaluationDisabled',
     );
   });
 
@@ -277,7 +280,7 @@ describe('schema-authored error messages', () => {
     const validate = ajv.compile(schema as never);
     validate({ name: 'ab', age: 1 });
     const byPath = Object.fromEntries(
-      (validate.errors ?? []).map((e) => [e.instancePath, e.message])
+      (validate.errors ?? []).map((e) => [e.instancePath, e.message]),
     );
     expect(byPath['/name']).toBe('nameTooShort');
     expect(byPath['/age']).toBe('tooYoung');
@@ -288,7 +291,7 @@ describe('schema-authored error messages', () => {
     const validate = ajv.compile(schema as never);
     validate({ name: 'ab' });
     expect((validate.errors ?? []).map((e) => e.message)).not.toContain(
-      'nameTooShort'
+      'nameTooShort',
     );
   });
 
@@ -297,7 +300,7 @@ describe('schema-authored error messages', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     expect(() => createFormsAjv({ allErrors: false })).not.toThrow();
     expect(warn.mock.calls.map((c) => String(c[0])).join('\n')).toContain(
-      'ajv.errorMessagesNeedAllErrors'
+      'ajv.errorMessagesNeedAllErrors',
     );
   });
 
@@ -315,7 +318,7 @@ describe('schema-authored error messages', () => {
     const validate = ajv.compile(schema as never);
     validate({ name: 'ab' });
     expect((validate.errors ?? []).map((e) => e.message)).toContain(
-      'Please give a longer name.'
+      'Please give a longer name.',
     );
   });
 
@@ -329,7 +332,7 @@ describe('schema-authored error messages', () => {
     const validate = ajv.compile(schema as never);
     validate({ name: 'ab' });
     expect((validate.errors ?? []).map((e) => e.message)).toContain(
-      'nameTooShort'
+      'nameTooShort',
     );
   });
 });

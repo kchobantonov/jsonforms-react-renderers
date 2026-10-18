@@ -35,7 +35,7 @@ export const useMonacoSchema = (schemaText: string): void => {
       enableSchemaRequest: false,
       schemas: [
         ...(defaults.diagnosticsOptions.schemas ?? []).filter(
-          (entry) => entry.uri !== 'inmemory://demo/schema.json'
+          (entry) => entry.uri !== 'inmemory://demo/schema.json',
         ),
         ...(schema === undefined
           ? []

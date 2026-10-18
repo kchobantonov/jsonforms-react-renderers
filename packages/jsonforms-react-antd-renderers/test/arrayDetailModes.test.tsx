@@ -54,8 +54,8 @@ it.each([
             }
             renderers={antdRenderers}
             cells={antdCells}
-          />
-        )
+          />,
+        ),
       );
       expect(host.textContent).not.toContain('No applicable');
       if (expected === 'table') {
@@ -63,37 +63,33 @@ it.each([
       } else {
         expect(host.querySelector('table')).toBeNull();
         const values = Array.from(host.querySelectorAll('input')).map(
-          (input) => input.value
+          (input) => input.value,
         );
         expect(values).toContain('Ada');
         expect(values.includes('Keep')).toBe(expected === 'generated');
         expect(host.textContent?.includes('Registered name')).toBe(
-          expected === 'registered'
+          expected === 'registered',
         );
         expect(host.textContent?.includes('Inline name')).toBe(
-          expected === 'inline'
+          expected === 'inline',
         );
       }
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('renders the published detail-mode example with its trusted registry', async () => {
-  const exampleSchema = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/schema.json'
-  );
-  const exampleUi = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischema.json'
-  );
-  const exampleData = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/data.json'
-  );
-  const registry = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischemas.mjs'
-  );
+  const exampleSchema =
+    await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/schema.json');
+  const exampleUi =
+    await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischema.json');
+  const exampleData =
+    await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/data.json');
+  const registry =
+    await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischemas.mjs');
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
@@ -107,19 +103,19 @@ it('renders the published detail-mode example with its trusted registry', async 
           uischemas={registry.uischemas}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).not.toContain('No applicable');
     expect(host.querySelectorAll('table').length).toBe(1);
     expect(host.textContent?.match(/Registered name/g)?.length).toBe(2);
     expect(host.textContent).toContain('Inline name');
     const values = Array.from(host.querySelectorAll('input')).map(
-      (input) => input.value
+      (input) => input.value,
     );
     // DEFAULT, GENERATE, registry fallback, and inline all expose the note.
     expect(
-      values.filter((value) => value === 'Visible in generated layouts')
+      values.filter((value) => value === 'Visible in generated layouts'),
     ).toHaveLength(4);
   } finally {
     act(() => root.unmount());

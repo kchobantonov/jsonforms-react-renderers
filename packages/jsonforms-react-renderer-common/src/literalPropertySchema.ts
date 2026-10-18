@@ -64,8 +64,8 @@ const rewrite = (input: unknown): unknown => {
           key,
           Object.fromEntries(
             Object.entries((value ?? {}) as Record<string, unknown>).map(
-              ([name, child]) => [name, rewrite(child)]
-            )
+              ([name, child]) => [name, rewrite(child)],
+            ),
           ),
         ];
       }
@@ -79,13 +79,13 @@ const rewrite = (input: unknown): unknown => {
         ];
       }
       return [key, value];
-    })
+    }),
   );
 };
 
 export const literalPropertySchema = (
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema => {
   const root = rewrite(rootSchema) as JsonSchema7;
   // The bundled root is part of this document now, not a separate reference

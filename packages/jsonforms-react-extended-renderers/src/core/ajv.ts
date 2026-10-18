@@ -155,11 +155,11 @@ export const createFormsAjv = (options: FormsAjvOptions = {}): Ajv => {
     if ((ajv as { opts?: { allErrors?: boolean } }).opts?.allErrors) {
       ajvErrors(ajv as never);
     } else {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(
         'ajv.errorMessagesNeedAllErrors: `errorMessage` support was requested ' +
           'but `allErrors` is off, which ajv-errors requires. Schema-authored ' +
-          'messages will not be applied.'
+          'messages will not be applied.',
       );
     }
   }

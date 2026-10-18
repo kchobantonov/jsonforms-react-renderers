@@ -10,10 +10,11 @@ declare const buttonVariants: (
       | 'secondary'
       | 'ghost';
     size?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm';
-  } & import('class-variance-authority/dist/types').ClassProp
+  } & import('class-variance-authority/dist/types').ClassProp,
 ) => string;
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }

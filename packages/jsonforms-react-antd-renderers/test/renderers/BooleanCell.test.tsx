@@ -28,14 +28,14 @@ describe('Ant Design boolean cell tester', () => {
 
   it('should fail', () => {
     expect(booleanCellTester(undefined, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(booleanCellTester(null, undefined, undefined)).toBe(NOT_APPLICABLE);
     expect(booleanCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(booleanCellTester({ type: 'Control' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(
       booleanCellTester(
@@ -44,8 +44,8 @@ describe('Ant Design boolean cell tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanCellTester(
@@ -61,8 +61,8 @@ describe('Ant Design boolean cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -78,8 +78,8 @@ describe('Ant Design boolean cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(2);
   });
 });
@@ -101,7 +101,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input').first();
     expect(input.props().autoFocus).toBeTruthy();
@@ -119,7 +119,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input').first();
     expect(input.props().autoFocus).toBe(false);
@@ -134,7 +134,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input').first();
     expect(input.props().autoFocus).toBeFalsy();
@@ -145,7 +145,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const input = wrapper.find('input').first();
@@ -166,7 +166,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const input = wrapper.find('input');
@@ -187,7 +187,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -210,7 +210,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: undefined };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -232,7 +232,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: null };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -254,7 +254,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, bar: 11 };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -275,7 +275,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, null: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -296,7 +296,7 @@ describe('Ant Design boolean cell', () => {
           }}
         />
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, undefined: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -315,7 +315,7 @@ describe('Ant Design boolean cell', () => {
           enabled={false}
           path='foo'
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input').first();
     expect(input.props().disabled).toBeTruthy();
@@ -326,7 +326,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input').first();
     expect(input.props().disabled).toBeFalsy();
@@ -337,7 +337,7 @@ describe('Ant Design boolean cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanCell schema={schema} uischema={uischema} path='foo' id='myid' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find('input');
     expect(input.props().id).toBe('myid');

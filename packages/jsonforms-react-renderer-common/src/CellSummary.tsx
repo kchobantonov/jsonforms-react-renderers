@@ -19,7 +19,7 @@ export const ItemProvider = ({
     let item: unknown;
     const value = Object.defineProperties(
       {},
-      Object.getOwnPropertyDescriptors(parent)
+      Object.getOwnPropertyDescriptors(parent),
     );
     Object.defineProperty(value, 'item', {
       enumerable: true,

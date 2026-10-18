@@ -54,7 +54,7 @@ export type CreateExtendedRenderersOptions = {
 export const createExtendedRenderers = (
   componentsOrOptions?:
     | Record<string, React.ComponentType<any>>
-    | CreateExtendedRenderersOptions
+    | CreateExtendedRenderersOptions,
 ): JsonFormsRendererRegistryEntry[] => {
   const options: CreateExtendedRenderersOptions =
     componentsOrOptions && 'components' in componentsOrOptions
@@ -71,7 +71,7 @@ export const createExtendedRenderers = (
   const WrappedTemplateLayoutRenderer = withJsonFormsLayoutProps(
     (props: TemplateLayoutProps) => (
       <TemplateLayoutRenderer {...props} components={components} />
-    )
+    ),
   );
 
   return [

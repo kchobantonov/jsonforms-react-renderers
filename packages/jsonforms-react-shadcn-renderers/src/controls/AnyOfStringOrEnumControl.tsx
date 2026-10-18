@@ -21,13 +21,13 @@ export const anyOfStringOrEnumControlTester = rankWith(
           (branch) =>
             (!branch.type || branch.type === 'string') &&
             (!branch.enum ||
-              branch.enum.every((value) => typeof value === 'string'))
+              branch.enum.every((value) => typeof value === 'string')),
         ) &&
         branches.some((branch) => branch.type === 'string' && !branch.enum) &&
         branches.some((branch) => Array.isArray(branch.enum))
       );
-    })
-  )
+    }),
+  ),
 );
 
 export const ShadcnAnyOfStringOrEnumControl = (props: ControlProps) => (
@@ -37,8 +37,8 @@ export const ShadcnAnyOfStringOrEnumControl = (props: ControlProps) => (
       new Set(
         (props.schema.anyOf ?? [])
           .flatMap((branch) => branch.enum ?? [])
-          .filter((value): value is string => typeof value === 'string')
-      )
+          .filter((value): value is string => typeof value === 'string'),
+      ),
     )}
   />
 );

@@ -48,8 +48,8 @@ describe('enum values keep their JSON types', () => {
             })),
             handleChange,
           } as any)}
-        />
-      )
+        />,
+      ),
     );
     const select = container.querySelector('select')!;
     act(() => {
@@ -74,18 +74,18 @@ describe('enum values keep their JSON types', () => {
             })),
             handleChange: vi.fn(),
           } as any)}
-        />
-      )
+        />,
+      ),
     );
     expect(container.querySelector('select')!.value).toBe(
-      `option-${values.indexOf(value)}`
+      `option-${values.indexOf(value)}`,
     );
     expect(
       new Set(
         Array.from(container.querySelectorAll('option')).map(
-          (option) => option.value
-        )
-      ).size
+          (option) => option.value,
+        ),
+      ).size,
     ).toBe(values.length);
   });
 });

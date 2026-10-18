@@ -39,8 +39,8 @@ it.each(['group', 'accordion', 'stepper', 'tabs'])(
               translate: (key, fallback) =>
                 key === 'group.dataIndicator' && custom ? custom : fallback,
             }}
-          />
-        )
+          />,
+        ),
       );
     };
     try {
@@ -52,7 +52,7 @@ it.each(['group', 'accordion', 'stepper', 'tabs'])(
       ]) {
         render(locale!, custom);
         const indicator = container.querySelector(
-          '[data-group-indicator], [data-category-data-indicator]'
+          '[data-group-indicator], [data-category-data-indicator]',
         );
         expect(indicator).not.toBeNull();
         expect(indicator!.getAttribute('title')).toBe(expected);
@@ -62,5 +62,5 @@ it.each(['group', 'accordion', 'stepper', 'tabs'])(
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );

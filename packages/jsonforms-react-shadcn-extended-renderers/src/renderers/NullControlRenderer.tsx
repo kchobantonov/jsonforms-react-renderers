@@ -20,8 +20,8 @@ export const nullControlTester: RankedTester = rankWith(
   2,
   and(
     uiTypeIs('Control'),
-    schemaMatches((schema: JsonSchema) => schema.type === 'null')
-  )
+    schemaMatches((schema: JsonSchema) => schema.type === 'null'),
+  ),
 );
 
 export const ShadcnNullControl = (props: ControlProps) => {

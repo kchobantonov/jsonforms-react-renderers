@@ -126,16 +126,16 @@ const isList = (name: string) =>
 const report = (
   onRefused: ((message: string) => void) | undefined,
   name: string,
-  value: unknown
+  value: unknown,
 ) => {
   const message = `${URL_REFUSED_DIAGNOSTIC}: ${name}=${JSON.stringify(
-    String(value)
+    String(value),
   )} is not permitted by the URL policy; the attribute was dropped.`;
   if (onRefused) {
     onRefused(message);
     return;
   }
-  // eslint-disable-next-line no-console
+  // oxlint-disable-next-line no-console
   console.warn(message);
 };
 
@@ -161,13 +161,13 @@ const permits = (
   name: string,
   kind: UrlKind,
   value: unknown,
-  policy: UrlPolicy
+  policy: UrlPolicy,
 ): boolean => {
   const effective = kindFor(type, name, kind);
   if (isList(name) && typeof value === 'string') {
     const candidates = splitUrlList(name, value);
     return candidates.every((candidate) =>
-      allowed(candidate, effective, policy)
+      allowed(candidate, effective, policy),
     );
   }
   return allowed(value, effective, policy);
@@ -183,7 +183,7 @@ export const sanitizeUrlProps = (
   type: unknown,
   props: Record<string, unknown> | null | undefined,
   policy: UrlPolicy = defaultUrlPolicy,
-  onRefused?: (message: string) => void
+  onRefused?: (message: string) => void,
 ): Record<string, unknown> | null | undefined => {
   if (!props) {
     return props;
@@ -239,7 +239,7 @@ export const sanitizeUrlProps = (
 export const sanitizeUrlAttributes = (
   root: Element | null | undefined,
   policy: UrlPolicy = defaultUrlPolicy,
-  onRefused?: (message: string) => void
+  onRefused?: (message: string) => void,
 ): number => {
   if (!root) {
     return 0;

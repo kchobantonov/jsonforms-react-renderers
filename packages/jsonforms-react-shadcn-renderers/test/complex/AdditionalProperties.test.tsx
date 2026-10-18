@@ -25,7 +25,7 @@ const additionalPropertiesRenderer = withJsonFormsControlProps(
       schema={props.schema}
       uischema={props.uischema as ControlElement}
     />
-  )
+  ),
 );
 
 const TextRenderer = ({ data, label }: ControlProps) => (
@@ -47,14 +47,14 @@ const renderers = [
   {
     tester: rankWith(
       10,
-      schemaMatches((candidate) => candidate.type === 'object')
+      schemaMatches((candidate) => candidate.type === 'object'),
     ),
     renderer: additionalPropertiesRenderer,
   },
   {
     tester: rankWith(
       10,
-      schemaMatches((candidate) => candidate.type === 'string')
+      schemaMatches((candidate) => candidate.type === 'string'),
     ),
     renderer: TextRenderer,
   },
@@ -83,7 +83,7 @@ describe('Shadcn AdditionalProperties', () => {
           schema={schema}
           uischema={{ type: 'Control', scope: '#/' }}
           renderers={renderers}
-        />
+        />,
       );
     });
 
@@ -92,13 +92,13 @@ describe('Shadcn AdditionalProperties', () => {
     expect(card?.textContent).toContain('Additional Properties');
     expect(card?.textContent).toContain('Property Name');
     expect(
-      container.querySelector('button[aria-label="Add property"]')
+      container.querySelector('button[aria-label="Add property"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('button[aria-label="Rename string"]')
+      container.querySelector('button[aria-label="Rename string"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('button[aria-label="Delete string"]')
+      container.querySelector('button[aria-label="Delete string"]'),
     ).not.toBeNull();
     expect(card?.textContent).not.toContain('Delete');
   });
@@ -111,7 +111,7 @@ describe('Shadcn AdditionalProperties', () => {
           schema={schema}
           uischema={{ type: 'Control', scope: '#/' }}
           renderers={renderers}
-        />
+        />,
       );
     });
 
@@ -125,7 +125,7 @@ describe('Shadcn AdditionalProperties', () => {
     expect(document.body.textContent).toContain('Rename property');
     expect(
       document.body.querySelector<HTMLInputElement>('#shadcn-rename-property')
-        ?.value
+        ?.value,
     ).toBe('string');
   });
 
@@ -143,7 +143,7 @@ describe('Shadcn AdditionalProperties', () => {
           rootSchema={schema}
           schema={schema}
           uischema={{ type: 'Control', scope: '#/' }}
-        />
+        />,
       );
     });
     act(() => {
@@ -153,11 +153,11 @@ describe('Shadcn AdditionalProperties', () => {
     });
 
     const renameInput = document.body.querySelector<HTMLInputElement>(
-      '#shadcn-rename-property'
+      '#shadcn-rename-property',
     );
     const valueSetter = Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )?.set;
     act(() => {
       valueSetter?.call(renameInput, 'renamed');
@@ -186,23 +186,23 @@ describe('Shadcn AdditionalProperties', () => {
           rootSchema={schema}
           schema={schema}
           uischema={{ type: 'Control', scope: '#/' }}
-        />
+        />,
       );
     });
 
     const nameInput = container.querySelector<HTMLInputElement>(
-      '#shadcn-additional-property-name'
+      '#shadcn-additional-property-name',
     );
     const valueSetter = Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )?.set;
     act(() => {
       valueSetter?.call(nameInput, 'newProperty');
       nameInput?.dispatchEvent(new Event('input', { bubbles: true }));
     });
     const addButton = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Add property"]'
+      'button[aria-label="Add property"]',
     );
     expect(nameInput?.value).toBe('newProperty');
     expect(addButton?.disabled).toBe(false);
@@ -231,7 +231,7 @@ describe('Shadcn AdditionalProperties', () => {
           rootSchema={schema}
           schema={schema}
           uischema={{ type: 'Control', scope: '#/' }}
-        />
+        />,
       );
     });
 
@@ -251,7 +251,7 @@ describe('Shadcn AdditionalProperties', () => {
     act(() =>
       container
         .querySelector<HTMLButtonElement>('button[aria-label="Delete string"]')
-        ?.click()
+        ?.click(),
     );
     act(() => {
       Array.from(document.body.querySelectorAll('button'))

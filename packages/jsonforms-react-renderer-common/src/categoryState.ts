@@ -34,7 +34,7 @@ const warned = new WeakSet<Categorization>();
  */
 export const resolveInitialIndex = (
   categories: Category[],
-  categorization: Categorization
+  categorization: Categorization,
 ): number => {
   const initial = (
     categorization.options as Record<string, unknown> | undefined
@@ -43,16 +43,16 @@ export const resolveInitialIndex = (
     return 0;
   }
   const found = categories.findIndex(
-    (category) => (category as Category & { name?: unknown }).name === initial
+    (category) => (category as Category & { name?: unknown }).name === initial,
   );
   if (found >= 0) {
     return found;
   }
   if (!warned.has(categorization)) {
     warned.add(categorization);
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.warn(
-      `Categorization: options.initial "${initial}" matches no visible category; opening the first one instead.`
+      `Categorization: options.initial "${initial}" matches no visible category; opening the first one instead.`,
     );
   }
   return 0;
@@ -108,14 +108,14 @@ export const useCategorySelection = (
   ajv: unknown,
   config: unknown,
   initiallySelected?: number,
-  closable = false
+  closable = false,
 ): CategorySelection => {
   const categories = useMemo(
     () =>
       (categorization.elements ?? []).filter((category) =>
-        isVisible(category, data, undefined, ajv as never, config as never)
+        isVisible(category, data, undefined, ajv as never, config as never),
       ) as Category[],
-    [categorization, data, ajv, config]
+    [categorization, data, ajv, config],
   );
   /*
     `undefined` means untouched, so `options.initial` decides. `null` means
@@ -126,7 +126,7 @@ export const useCategorySelection = (
   const initiallyCollapsed = resolveCollapsed(
     categorization.options,
     config,
-    'accordion'
+    'accordion',
   );
   const [selectedKey, setSelectedKey] = useState<string | null | undefined>(
     () =>
@@ -136,8 +136,8 @@ export const useCategorySelection = (
           : undefined
         : categoryKey(
             (categorization.elements ?? [])[initiallySelected] as Category,
-            initiallySelected
-          )
+            initiallySelected,
+          ),
   );
 
   const previousCollapsed = useRef(initiallyCollapsed);
@@ -152,14 +152,14 @@ export const useCategorySelection = (
     typeof selectedKey !== 'string'
       ? NO_CATEGORY
       : categories.findIndex(
-          (category, index) => categoryKey(category, index) === selectedKey
+          (category, index) => categoryKey(category, index) === selectedKey,
         );
   const active =
     categories.length === 0 || selectedKey === null
       ? NO_CATEGORY
       : fromKey >= 0
-      ? fromKey
-      : resolveInitialIndex(categories, categorization);
+        ? fromKey
+        : resolveInitialIndex(categories, categorization);
 
   return {
     categories,

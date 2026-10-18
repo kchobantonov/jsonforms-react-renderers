@@ -62,7 +62,7 @@ export const needsIsolatedEditor = (name: string): boolean =>
 export const assignOwnProperty = <T extends Record<string, unknown>>(
   target: T,
   name: string,
-  value: unknown
+  value: unknown,
 ): T => {
   Object.defineProperty(target, name, {
     value,
@@ -84,7 +84,7 @@ export const assignOwnProperty = <T extends Record<string, unknown>>(
  */
 export const createAdditionalPropertyNameSchema = (
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema7 => {
   const constraints: JsonSchema7[] = [];
   const propertyNames = (
@@ -98,9 +98,9 @@ export const createAdditionalPropertyNameSchema = (
   } else if (typeof propertyNames === 'object' && propertyNames !== null) {
     const resolved =
       typeof propertyNames.$ref === 'string'
-        ? (Resolve.schema(rootSchema, propertyNames.$ref, rootSchema) as
+        ? ((Resolve.schema(rootSchema, propertyNames.$ref, rootSchema) as
             | JsonSchema7
-            | undefined) ?? propertyNames
+            | undefined) ?? propertyNames)
         : propertyNames;
     constraints.push(resolved);
   }
@@ -112,7 +112,7 @@ export const createAdditionalPropertyNameSchema = (
     constraints.push(
       patterns.length > 0
         ? { anyOf: patterns.map((pattern) => ({ pattern })) }
-        : { not: {} }
+        : { not: {} },
     );
   }
 

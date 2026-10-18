@@ -59,7 +59,7 @@ type RenderableElementProps = Pick<
  */
 export const templateRendererTester: RankedTester = rankWith(
   1,
-  uiTypeIs('TemplateLayout')
+  uiTypeIs('TemplateLayout'),
 );
 
 /**
@@ -90,17 +90,17 @@ export const TemplateLayoutRenderer = ({
   const template = uischema.template;
 
   const renderablesRef = useRef<Record<string, React.MemoExoticComponent<any>>>(
-    {}
+    {},
   );
 
   const { names: childNames, diagnostics: nameDiagnostics } = useMemo(
     () => resolveChildNames(uischema.elements),
-    [uischema.elements]
+    [uischema.elements],
   );
 
   useEffect(() => {
     for (const diagnostic of nameDiagnostics) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
   }, [nameDiagnostics.join('\u0000')]);
@@ -159,7 +159,7 @@ export const TemplateLayoutRenderer = ({
                 cells={cells}
               />
             );
-          }
+          },
         );
         renderablesRef.current[key].displayName = `TemplateElement(${key})`;
       }
@@ -360,7 +360,7 @@ export const TemplateLayoutRenderer = ({
       additionalErrorsProxy,
       ctx.i18n,
       components,
-    ]
+    ],
   );
 
   if (!visible) return null;

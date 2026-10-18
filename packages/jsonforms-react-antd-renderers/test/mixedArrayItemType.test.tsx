@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -69,8 +69,8 @@ const render = (schema: any, data: any, property: string) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return {
     container,
@@ -104,7 +104,7 @@ describe('a mixed value at an array index', () => {
     const { selectors, clears, unmount } = render(
       openTailTuple,
       { pair: ['Cascade Supplies', 42] },
-      'pair'
+      'pair',
     );
     await settle();
     // The selector is there - this is not passing because nothing rendered.
@@ -117,11 +117,11 @@ describe('a mixed value at an array index', () => {
     const { container, unmount } = render(
       openTailTuple,
       { pair: ['Cascade Supplies', 42] },
-      'pair'
+      'pair',
     );
     await settle();
     const select = container.querySelector(
-      '.jsonforms-mixed-type-selector .ant-select'
+      '.jsonforms-mixed-type-selector .ant-select',
     );
     expect(select).toBeTruthy();
     expect(select!.classList.contains('ant-select-disabled')).toBe(false);
@@ -133,7 +133,7 @@ describe('a mixed value at an array index', () => {
     const { stored, unmount } = render(
       openTailTuple,
       { pair: ['Cascade Supplies', 42] },
-      'pair'
+      'pair',
     );
     await settle();
     expect(stored()).toEqual(['Cascade Supplies', 42]);

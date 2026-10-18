@@ -29,7 +29,7 @@ export const CombinatorProperties = ({
     otherSchema,
     'VerticalLayout',
     undefined,
-    rootSchema
+    rootSchema,
   );
 
   if (

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { renderTemplate, resolveTextParams } from '../src/util/celTemplate';
 import {
   buildNamespaceScope,
@@ -21,7 +21,7 @@ import {
 const render = (
   template: string,
   params: Record<string, unknown>,
-  data: unknown
+  data: unknown,
 ) => {
   const ns = buildNamespaceScope({ data, locale: 'en', dynamicAllowed: true });
   const resolved = resolveTextParams(params, ns, 'en');
@@ -29,7 +29,7 @@ const render = (
     splitTemplate(template),
     buildTextScope(resolved.params, 'en'),
     undefined,
-    'en'
+    'en',
   );
   return { text: out.text, failures: [...resolved.failures, ...out.failures] };
 };
@@ -55,7 +55,7 @@ describe('data that is not there yet', () => {
     const out = render(
       '{greeting}, {name}!',
       { greeting: 'Hello', name: '{data.firstName}' },
-      {}
+      {},
     );
     expect(out.text).toBe('Hello, !');
     expect(out.failures).toEqual([]);
@@ -110,7 +110,7 @@ describe('a property named "constructor"', () => {
     const out = render(
       'Value: {v}',
       { v: '{data.constructor}' },
-      withConstructor
+      withConstructor,
     );
     expect(out.text).toBe('Value: c');
     expect(out.failures).toEqual([]);
@@ -118,18 +118,18 @@ describe('a property named "constructor"', () => {
 
   it('works nested, and leaves the rest of the data intact', () => {
     const data = JSON.parse(
-      '{"billing":{"constructor":"nc","city":"Sofia"},"items":[1,2],"n":null}'
+      '{"billing":{"constructor":"nc","city":"Sofia"},"items":[1,2],"n":null}',
     );
     expect(render('{v}', { v: '{data.billing.city}' }, data).text).toBe(
-      'Sofia'
+      'Sofia',
     );
     expect(render('{v}', { v: '{data.billing.constructor}' }, data).text).toBe(
-      'nc'
+      'nc',
     );
     expect(render('{v}', { v: '{data.items[1]}' }, data).text).toBe('2');
     // Absent-key semantics survive the repair.
     expect(render('{v}', { v: '{data.billing.nope}' }, data).failures).toEqual(
-      []
+      [],
     );
   });
 

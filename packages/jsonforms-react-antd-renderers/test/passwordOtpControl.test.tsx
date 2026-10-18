@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { NOT_APPLICABLE } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
@@ -55,8 +55,8 @@ const render = (schema: any, uischema: any, data: any = {}) => {
         renderers={antdRenderers}
         cells={antdCells}
         onChange={(e) => changes.push(e.data)}
-      />
-    )
+      />,
+    ),
   );
   const boxes = () =>
     Array.from(container.querySelectorAll<HTMLInputElement>('.ant-otp input'));
@@ -70,7 +70,7 @@ const render = (schema: any, uischema: any, data: any = {}) => {
   const type = async (text: string) => {
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!;
     [...text].forEach((character, index) => {
       const box = boxes()[index];
@@ -91,7 +91,7 @@ const render = (schema: any, uischema: any, data: any = {}) => {
       container.querySelector<HTMLButtonElement>('[data-password-toggle]'),
     clear: () =>
       container.querySelector<HTMLButtonElement>(
-        'button[aria-label="Clear value"]'
+        'button[aria-label="Clear value"]',
       ),
     unmount: () => act(() => root.unmount()),
   };
@@ -142,8 +142,8 @@ describe('otp variant selection', () => {
         code() as any,
         {
           rootSchema: code(),
-        } as any
-      )
+        } as any,
+      ),
     ).toBe(true);
   });
 
@@ -165,7 +165,7 @@ describe('otp rendering', () => {
   it('follows maxLength rather than a fixed six', () => {
     const { boxes, unmount } = render(
       code({ minLength: 4, maxLength: 4 }),
-      otpUi
+      otpUi,
     );
     expect(boxes()).toHaveLength(4);
     unmount();
@@ -180,7 +180,7 @@ describe('otp rendering', () => {
           verificationCode: { type: 'string', format: 'password' },
         },
       },
-      otpUi
+      otpUi,
     );
     expect(boxes()).toHaveLength(0);
     const field = container.querySelector<HTMLInputElement>('input')!;
@@ -204,7 +204,7 @@ describe('otp rendering', () => {
     expect(
       boxes()
         .map((box) => box.value)
-        .join('')
+        .join(''),
     ).toBe('482913');
     unmount();
   });
@@ -264,7 +264,7 @@ describe('otp storage contract', () => {
     expect(
       boxes()
         .map((box) => box.value)
-        .join('')
+        .join(''),
     ).toBe('482913');
     expect(latest()).toBe(before);
     unmount();

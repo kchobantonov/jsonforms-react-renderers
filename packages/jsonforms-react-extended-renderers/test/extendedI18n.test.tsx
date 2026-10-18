@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import {
   JsonForms,
   JsonFormsStateProvider,
@@ -25,7 +25,7 @@ vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 
 /** Marks every catalog entry, so an untranslated string is visible as English. */
 const marking = createTranslator((key, fallback) =>
-  key in extendedI18nDefaults ? `«${key}»` : fallback
+  key in extendedI18nDefaults ? `«${key}»` : fallback,
 );
 
 const i18n = { locale: 'bg', translate: marking };
@@ -43,10 +43,10 @@ const mount = async (node: React.ReactNode) => {
 const textOf = (container: HTMLElement) =>
   [
     ...Array.from(container.querySelectorAll('[aria-label]')).map((el) =>
-      el.getAttribute('aria-label')
+      el.getAttribute('aria-label'),
     ),
     ...Array.from(container.querySelectorAll('[placeholder]')).map((el) =>
-      el.getAttribute('placeholder')
+      el.getAttribute('placeholder'),
     ),
     container.textContent ?? '',
   ].join(' | ');
@@ -74,7 +74,7 @@ describe('extended renderer strings reach the translator', () => {
           schema={schema}
           uischema={{ type: 'Control', scope: '#' }}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const text = textOf(container);
     expect(text).toContain('«additionalProperties.addTo»');
@@ -109,13 +109,13 @@ describe('extended renderer strings reach the translator', () => {
           schema={schema}
           uischema={{ type: 'Control', scope: '#' }}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = container.querySelector('input') as HTMLInputElement;
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       setter.call(input, 'existing');
       input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -157,7 +157,7 @@ describe('extended renderer strings reach the translator', () => {
         ]}
         i18n={i18n}
         onChange={() => undefined}
-      />
+      />,
     );
     expect(message).toBe('«duration.invalid»');
     unmount();
@@ -177,7 +177,7 @@ describe('extended renderer strings reach the translator', () => {
         }}
       >
         <Loading />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     expect(container.textContent).toBe('«template.loading»');
     unmount();

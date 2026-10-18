@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -47,7 +47,7 @@ const columnsFor = async (schemaFormat: string, options: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
   });
   const input = container.querySelector<HTMLInputElement>('input')!;
@@ -58,7 +58,7 @@ const columnsFor = async (schemaFormat: string, options: any) => {
   });
   await settle(150);
   const count = document.querySelectorAll(
-    '.ant-picker-time-panel-column'
+    '.ant-picker-time-panel-column',
   ).length;
   await act(() => root.unmount());
   return count;

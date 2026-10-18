@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import examples, {
   OFFICIAL_EXAMPLE_LABEL_PREFIX,
   OFFICIAL_EXAMPLE_NAME_PREFIX,
@@ -14,18 +14,18 @@ describe('default demo catalog', () => {
     expect(examples.length).toBeGreaterThan(40);
     expect(
       examples.every(
-        ({ name }) => isSpecExample(name) || isPrefixedOfficialExample(name)
-      )
+        ({ name }) => isSpecExample(name) || isPrefixedOfficialExample(name),
+      ),
     ).toBe(true);
   });
   test('keeps native enhancements within their spec examples', () => {
     const templates = examples.find(
-      ({ name }) => name === 'spec-template-layout'
+      ({ name }) => name === 'spec-template-layout',
     )!;
     const walk = (value: any): boolean =>
       typeof value === 'function' ||
       Boolean(
-        value && typeof value === 'object' && Object.values(value).some(walk)
+        value && typeof value === 'object' && Object.values(value).some(walk),
       );
     expect(walk(templates.uischema)).toBe(true);
   });
@@ -33,14 +33,14 @@ describe('default demo catalog', () => {
 
 describe('official example prefixing', () => {
   const official = examples.filter(({ name }) =>
-    isPrefixedOfficialExample(name)
+    isPrefixedOfficialExample(name),
   );
 
   test('prefixes every official example, and only official ones', () => {
     expect(official.length).toBeGreaterThan(20);
     official.forEach((example) => {
       expect(example.label.startsWith(OFFICIAL_EXAMPLE_LABEL_PREFIX)).toBe(
-        true
+        true,
       );
       expect(isProjectExample(example.name)).toBe(false);
     });
@@ -52,7 +52,7 @@ describe('official example prefixing', () => {
     ours.forEach((example) => {
       expect(example.name.startsWith(OFFICIAL_EXAMPLE_NAME_PREFIX)).toBe(false);
       expect(example.label.startsWith(OFFICIAL_EXAMPLE_LABEL_PREFIX)).toBe(
-        false
+        false,
       );
     });
   });
@@ -61,7 +61,7 @@ describe('official example prefixing', () => {
     examples.forEach((example) => {
       expect(
         isProjectExample(example.name) ||
-          isPrefixedOfficialExample(example.name)
+          isPrefixedOfficialExample(example.name),
       ).toBe(true);
     });
   });
@@ -71,7 +71,7 @@ describe('official example prefixing', () => {
     // called `jsonforms-*`, it must still be treated as official and prefixed,
     // so this predicate must not degrade into a startsWith check.
     expect('jsonforms-never-registered').toMatch(
-      new RegExp(`^${OFFICIAL_EXAMPLE_NAME_PREFIX}`)
+      new RegExp(`^${OFFICIAL_EXAMPLE_NAME_PREFIX}`),
     );
     expect(isPrefixedOfficialExample('jsonforms-never-registered')).toBe(false);
     official.forEach((example) => {
@@ -134,7 +134,7 @@ describe('Link example', () => {
   test('ships both catalogs with matching keys', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
   });
 
@@ -153,7 +153,7 @@ describe('Link example', () => {
         '',
         'javascript:alert(1)',
         '/untranslated',
-      ])
+      ]),
     );
     expect(links.find((l: any) => l.target === '_blank')).toBeTruthy();
   });
@@ -170,7 +170,7 @@ test('allows host examples to be registered after the default catalog loads', ()
     },
   ]);
   expect(listExamples().find(({ name }) => name === 'host-extra')?.data).toBe(
-    'hello'
+    'hello',
   );
   expect(isPrefixedOfficialExample('host-extra')).toBe(false);
 });

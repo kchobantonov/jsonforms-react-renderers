@@ -6,12 +6,12 @@ it('recognizes a recursive folder even when a descendant is invalid', () => {
     discriminatorBranch(schema.definitions.node, schema, 'oneOf', {
       kind: 'folder',
       children: [{ kind: 'file', name: '' }],
-    })
+    }),
   ).toBe(1);
   expect(
     discriminatorBranch(schema.definitions.node, schema, 'oneOf', {
       kind: 'file',
-    })
+    }),
   ).toBe(0);
 });
 it('does not infer ambiguous or optional discriminator values', () => {
@@ -20,11 +20,13 @@ it('does not infer ambiguous or optional discriminator values', () => {
     properties: { kind: { const: 'x' } },
   };
   expect(
-    discriminatorBranch({ oneOf: [branch, branch] }, {}, 'oneOf', { kind: 'x' })
+    discriminatorBranch({ oneOf: [branch, branch] }, {}, 'oneOf', {
+      kind: 'x',
+    }),
   ).toBeUndefined();
   expect(
     discriminatorBranch(schema.definitions.node, schema, 'oneOf', {
       kind: 'unknown',
-    })
+    }),
   ).toBeUndefined();
 });

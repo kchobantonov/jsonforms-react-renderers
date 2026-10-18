@@ -16,7 +16,7 @@ export const SlotRendererComponent = (props: LayoutProps) => {
   const element = props.uischema as NamedElement;
   const fallback = element.elements?.[0];
   const contents: UISchemaElement | undefined = element.name
-    ? slots[element.name] ?? fallback
+    ? (slots[element.name] ?? fallback)
     : fallback;
   if (!props.visible || !contents) return null;
   return (

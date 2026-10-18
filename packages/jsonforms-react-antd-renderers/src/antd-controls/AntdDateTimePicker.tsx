@@ -30,7 +30,7 @@ const DATE_PICKER_STYLE = {
 
 export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> },
 ) {
   const {
     data,
@@ -54,7 +54,7 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
   const rootData = useJsonForms().core?.data;
   const boundsSchema = useMemo(
     () => resolveDataBounds(schema, path, rootData),
-    [schema, path, rootData]
+    [schema, path, rootData],
   );
 
   const format = appliedUiSchemaOptions.dateTimeFormat ?? 'YYYY-MM-DD HH:mm';
@@ -73,13 +73,13 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
       temporalBounds(
         boundsSchema,
         [saveFormat, format, ...JSON_SCHEMA_DATE_TIME_FORMATS],
-        format.includes('s') ? 'second' : 'minute'
+        format.includes('s') ? 'second' : 'minute',
       ),
-    [schema, saveFormat, format]
+    [schema, saveFormat, format],
   );
   const disabledDate = useMemo(
     () => (restrict ? disabledDateFor(bounds) : undefined),
-    [restrict, bounds]
+    [restrict, bounds],
   );
   const disabledTime = useMemo(
     () =>
@@ -87,10 +87,10 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
         ? disabledTimeFor(
             bounds,
             false,
-            format.includes('s') ? 'second' : 'minute'
+            format.includes('s') ? 'second' : 'minute',
           )
         : undefined,
-    [restrict, bounds, format]
+    [restrict, bounds, format],
   );
 
   /*
@@ -104,13 +104,13 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
-    [path, handleChange, saveFormat]
+    [path, handleChange, saveFormat],
   );
 
   // Keep the controlled value stable while the popup holds an unconfirmed selection.
   const value = useMemo(
     () => getData(data, [saveFormat, format, ...JSON_SCHEMA_DATE_TIME_FORMATS]),
-    [data, saveFormat, format]
+    [data, saveFormat, format],
   );
 
   return (

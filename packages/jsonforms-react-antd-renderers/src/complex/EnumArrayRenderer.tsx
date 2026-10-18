@@ -49,7 +49,7 @@ export const EnumArrayRenderer = ({
     visible,
     description,
     focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
+    appliedUiSchemaOptions.showUnfocusedDescription,
   );
 
   if (!visible) {
@@ -130,16 +130,16 @@ export const enumArrayRendererTester: RankedTester = rankWith(
         (schema) =>
           hasType(schema, 'array') &&
           !Array.isArray(schema.items) &&
-          schema.uniqueItems === true
+          schema.uniqueItems === true,
       ),
       schemaSubPathMatches('items', (schema, rootSchema) => {
         const resolvedSchema = schema.$ref
           ? resolveSchema(rootSchema, schema.$ref, rootSchema)
           : schema;
         return hasOneOfItems(resolvedSchema) || hasEnumItems(resolvedSchema);
-      })
-    )
-  )
+      }),
+    ),
+  ),
 );
 
 export default withJsonFormsMultiEnumProps(EnumArrayRenderer);

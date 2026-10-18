@@ -5,26 +5,28 @@ for the shared renderer behavior, UI Schema options, and reference examples.
 
 ### First time setup
 
-- Install [Node.js](https://nodejs.org/) 22.12 or newer within Node 22.
-- Install pnpm: <https://pnpm.io/installation> (the workspace pins pnpm 10.28.2).
+- Install [Node.js](https://nodejs.org/) 22.18 or newer within Node 22.
+- Install [Vite+](https://viteplus.dev/guide/). It manages Node and the pinned pnpm version.
 - Clone this repository
-- Install dependencies: `pnpm i --frozen-lockfile`
+- Install dependencies: `vp install --frozen-lockfile`
 
 ### Build & Testing
 
-The workspace uses Vite 7 and Vitest 4. Library output formats and browser
-targets are preserved. Vite+ adoption is tracked separately in
-[the toolchain plan](docs/toolchain-upgrade.md).
+The workspace uses Vite+ for builds, tests, linting and formatting. Library
+output formats and browser targets are preserved. See the
+[toolchain guide](docs/toolchain-upgrade.md) for migration details.
 
-- Build (all packages): `pnpm run build`
-- Build renderer packages: `pnpm run build:libs`
-- Test (all packages): `pnpm run test`
-- Clean generated package output: `pnpm run clean`
-- Run React Ant Design examples: `pnpm run example:antd:dev`
-- Run React PrimeReact examples: `pnpm run example:primereact:dev`
-- Run React Shadcn UI examples: `pnpm run example:shadcn:dev`
-- Build examples app: `pnpm run examples-app:build`
-- Run the examples selector: `pnpm run examples-app:dev`
+- Build (all packages): `vp run build`
+- Build renderer packages: `vp run build:libs`
+- Check formatting and lint: `vp check`
+- Format: `vp fmt .`
+- Test (all packages): `vp run test`
+- Clean generated package output: `vp run clean`
+- Run React Ant Design examples: `vp run example:antd:dev`
+- Run React PrimeReact examples: `vp run example:primereact:dev`
+- Run React Shadcn UI examples: `vp run example:shadcn:dev`
+- Build examples app: `vp run examples-app:build`
+- Run the examples selector: `vp run examples-app:dev`
 
 ### Workspace
 
@@ -182,7 +184,7 @@ Creating a release manually in GitHub does not trigger npm publishing. Demos and
 
 ### Repository setup
 
-Use Node 22 and pnpm 10.28.2, as configured in `.nvmrc`, `packageManager`, and CI.
+Use the Node version in `.node-version` and Vite+ 1.3.0; the workspace pins pnpm 10.28.2.
 The repository needs an `NPM_TOKEN` Actions secret with permission to publish
 under `@chobantonov`. Enable GitHub Actions to create pull requests and grant the
 workflow's `GITHUB_TOKEN` contents and pull-request write permissions. Release
@@ -204,7 +206,7 @@ versions are unchanged. See [.changeset/README.md](.changeset/README.md).
 
 ## Local specification dependency
 
-Clone `jsonforms-extended-spec` beside this repository before running `pnpm install`. The demo and fixture tests temporarily use `link:../../../jsonforms-extended-spec` until that package is released. Specification text, schemas, examples, and TypeScript authoring helpers are maintained there. The demo automatically registers the spec package catalog with `spec-` IDs and `Spec: ` labels. Native React template and action demonstrations remain optional enhancements here.
+Clone `jsonforms-extended-spec` beside this repository before running `vp install`. The demo and fixture tests temporarily use `link:../../../jsonforms-extended-spec` until that package is released. Specification text, schemas, examples, and TypeScript authoring helpers are maintained there. The demo automatically registers the spec package catalog with `spec-` IDs and `Spec: ` labels. Native React template and action demonstrations remain optional enhancements here.
 
 TypeScript consumers should import `forSchema`, `DataOf`, and `CssLength` from `@chobantonov/jsonforms-extended-spec/typescript`; the React extended renderer package no longer exports these portable helpers. Build that package with `pnpm --dir ../jsonforms-extended-spec build` when using its authoring API locally.
 
@@ -213,8 +215,8 @@ For a fresh checkout, prepare the sibling package before the React build:
 ```sh
 pnpm --dir ../jsonforms-extended-spec install
 pnpm --dir ../jsonforms-extended-spec build
-pnpm install
-pnpm run build
+vp install
+vp run build
 ```
 
 New spec examples only need a catalog entry in the spec project. Run its build (or `pnpm generate:examples` there) to refresh the linked example module; no React registration file needs editing. The maintained [renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared design.

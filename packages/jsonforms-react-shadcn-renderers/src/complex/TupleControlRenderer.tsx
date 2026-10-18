@@ -98,7 +98,7 @@ const namedPositions = (element: unknown, found = new Set<number>()) => {
 };
 
 const positionLayoutOf = (
-  options: Record<string, any>
+  options: Record<string, any>,
 ): UISchemaElement | undefined => {
   const layout = options.detail;
   return layout &&
@@ -172,10 +172,10 @@ export const TupleControl = (props: Props) => {
       positionSchema,
       '#',
       `${path}.${index}`,
-      () => ({ type: 'Control', scope: '#', label: name } as ControlElement),
+      () => ({ type: 'Control', scope: '#', label: name }) as ControlElement,
 
       { type: 'Control', scope: '#' } as ControlElement,
-      rootSchema
+      rootSchema,
     );
     return {
       ...found,
@@ -330,7 +330,7 @@ const withTupleProps = (Component: React.ComponentType<Props>) =>
   };
 
 export const TupleControlRenderer = withJsonFormsContext(
-  withTupleProps(React.memo(TupleControl)) as any
+  withTupleProps(React.memo(TupleControl)) as any,
 );
 
 export default TupleControlRenderer;

@@ -137,7 +137,7 @@ export const DemoWorkspace = ({
                       key={action.label}
                       onClick={() =>
                         setExampleProps((oldProps: JsonFormsInitStateProps) =>
-                          action.apply(oldProps)
+                          action.apply(oldProps),
                         )
                       }
                     >
@@ -168,8 +168,8 @@ export const DemoWorkspace = ({
                                 reloadOriginalEditorModel(
                                   current,
                                   'data',
-                                  currentExample.data
-                                )
+                                  currentExample.data,
+                                ),
                               )
                             }
                           >

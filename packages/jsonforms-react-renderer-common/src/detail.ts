@@ -9,7 +9,7 @@ export const findDetailUISchema: typeof findUISchema = (
   path,
   fallback = 'VerticalLayout',
   control,
-  rootSchema
+  rootSchema,
 ) => {
   const detail = control?.options?.detail;
   const normalized =
@@ -41,7 +41,7 @@ export const findDetailUISchema: typeof findUISchema = (
     control
       ? { ...control, options: { ...control.options, detail: normalized } }
       : undefined,
-    rootSchema
+    rootSchema,
   );
 };
 
@@ -54,7 +54,7 @@ export const resolveEditorDetail = (
   schemaPath: string,
   path: string,
   rootSchema: Parameters<typeof findUISchema>[6],
-  fallback: UISchemaElement
+  fallback: UISchemaElement,
 ): UISchemaElement =>
   detail === undefined
     ? fallback
@@ -69,5 +69,5 @@ export const resolveEditorDetail = (
           scope: schemaPath,
           options: { detail },
         } as ControlElement,
-        rootSchema
+        rootSchema,
       );

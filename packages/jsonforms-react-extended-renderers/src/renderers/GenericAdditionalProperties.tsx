@@ -61,7 +61,7 @@ const hasAdditionalProperties = (schema: JsonSchema): boolean => {
   return (
     Boolean(
       objectSchema.patternProperties &&
-        Object.keys(objectSchema.patternProperties).length > 0
+      Object.keys(objectSchema.patternProperties).length > 0,
     ) ||
     typeof objectSchema.additionalProperties === 'object' ||
     objectSchema.additionalProperties === true
@@ -72,14 +72,14 @@ const getMatchingAdditionalPropertySchema = (
   propName: string,
   parentSchema: JsonSchema,
   rootSchema: JsonSchema,
-  allowIfMissing: boolean
+  allowIfMissing: boolean,
 ): JsonSchema => {
   const objectSchema = toObjectSchema(parentSchema);
   let propSchema: JsonSchema | undefined;
 
   if (objectSchema.patternProperties) {
     const matchedPattern = Object.keys(objectSchema.patternProperties).find(
-      (pattern) => new RegExp(pattern).test(propName)
+      (pattern) => new RegExp(pattern).test(propName),
     );
     if (matchedPattern) {
       propSchema = objectSchema.patternProperties[matchedPattern];
@@ -122,13 +122,13 @@ const toAdditionalPropertyItem = (
   parentPath: string,
   parentSchema: JsonSchema,
   rootSchema: JsonSchema,
-  allowIfMissing: boolean
+  allowIfMissing: boolean,
 ): AdditionalPropertyItem => {
   let propSchema = getMatchingAdditionalPropertySchema(
     propName,
     parentSchema,
     rootSchema,
-    allowIfMissing
+    allowIfMissing,
   );
   let propUiSchema: UISchemaElement = createControlElement('#');
 
@@ -137,7 +137,7 @@ const toAdditionalPropertyItem = (
       propSchema,
       'Group',
       undefined,
-      rootSchema
+      rootSchema,
     );
     (propUiSchema as GroupLayout).label = propSchema.title ?? propName;
   }
@@ -151,7 +151,7 @@ const toAdditionalPropertyItem = (
     if (propSchema.type === 'object') {
       propSchema.additionalProperties =
         propSchema.additionalProperties !== false
-          ? propSchema.additionalProperties ?? true
+          ? (propSchema.additionalProperties ?? true)
           : false;
     } else if (propSchema.type === 'array') {
       propSchema.items = propSchema.items ?? {};
@@ -168,7 +168,7 @@ const toAdditionalPropertyItem = (
 
 const getPropertyNamePattern = (
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): string | undefined => {
   const objectSchema = toObjectSchema(schema);
   let propertyNames = objectSchema.propertyNames as JsonSchema7 | undefined;
@@ -208,7 +208,7 @@ const validatePropertyName = (
   data: any,
   schema: JsonSchema,
   rootSchema: JsonSchema,
-  currentPropertyName?: string
+  currentPropertyName?: string,
 ): string | undefined => {
   if (!propertyName) {
     return undefined;
@@ -270,7 +270,7 @@ export const GenericAdditionalProperties = ({
     objectSchema.additionalProperties === undefined;
   const reservedPropertyNames = Object.keys(objectSchema.properties ?? {});
   const additionalKeys = Object.keys(objectData ?? {}).filter(
-    (key) => !reservedPropertyNames.includes(key)
+    (key) => !reservedPropertyNames.includes(key),
   );
   const additionalPropertyItems = useMemo(
     () =>
@@ -280,10 +280,10 @@ export const GenericAdditionalProperties = ({
           path,
           schema,
           rootSchema,
-          allowIfMissing
-        )
+          allowIfMissing,
+        ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema]
+    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||
@@ -300,7 +300,7 @@ export const GenericAdditionalProperties = ({
     propertyName,
     data,
     schema,
-    rootSchema
+    rootSchema,
   );
   const maxPropertiesReached =
     objectSchema.maxProperties !== undefined &&
@@ -329,13 +329,13 @@ export const GenericAdditionalProperties = ({
       path,
       schema,
       rootSchema,
-      allowIfMissing
+      allowIfMissing,
     );
     const updatedData = objectData ? { ...objectData } : {};
 
     updatedData[propertyName] = createDefaultValue(
       additionalProperty.schema,
-      rootSchema
+      rootSchema,
     );
     handleChange(path, updatedData);
     setNewPropertyName('');
@@ -359,7 +359,7 @@ export const GenericAdditionalProperties = ({
       data,
       schema,
       rootSchema,
-      propertyToRename
+      propertyToRename,
     );
     if (
       renameError ||
@@ -374,7 +374,7 @@ export const GenericAdditionalProperties = ({
       Object.entries(objectData).map(([key, value]) => [
         key === propertyToRename ? trimmed : key,
         value,
-      ])
+      ]),
     );
     handleChange(path, updatedData);
     setRenamingPropertyName(null);
@@ -423,7 +423,7 @@ export const GenericAdditionalProperties = ({
             data,
             schema,
             rootSchema,
-            item.propertyName
+            item.propertyName,
           );
           const renameDisabled =
             !enabled ||

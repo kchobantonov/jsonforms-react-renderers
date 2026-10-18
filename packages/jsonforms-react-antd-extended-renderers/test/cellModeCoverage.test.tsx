@@ -48,8 +48,8 @@ const renderInCell = (label: string, fieldSchema: any) => {
             onChange={() => undefined}
           />
         </CellModeProvider>
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const html = container.innerHTML;
   act(() => root.unmount());
@@ -61,6 +61,6 @@ describe('cell mode coverage', () => {
     '%s renders without its label inside a cell',
     (label, schema) => {
       expect(renderInCell(label, schema)).not.toContain(label);
-    }
+    },
   );
 });

@@ -9,7 +9,7 @@ export const AntdToggle = React.memo(function AntdToggle(
   props: CellProps &
     WithClassname & {
       inputProps?: React.ComponentProps<typeof Switch> & React.AriaAttributes;
-    }
+    },
 ) {
   const {
     data,
@@ -61,7 +61,7 @@ export const AntdToggle = React.memo(function AntdToggle(
           {t(
             typeof data === 'undefined' || data === null
               ? 'boolean.notSet'
-              : 'boolean.invalid'
+              : 'boolean.invalid',
           )}
         </span>
       )}

@@ -35,18 +35,20 @@ it.each(ui.elements)(
             }
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       expect(host.textContent).not.toContain('No applicable renderer');
       expect(host.querySelectorAll('input[id*="kind"]').length).toBe(0);
       expect(host.textContent).toContain('Вид');
       expect(
         Array.from(
-          host.querySelectorAll('[role="combobox"], .ant-select-selection-item')
+          host.querySelectorAll(
+            '[role="combobox"], .ant-select-selection-item',
+          ),
         ).some((element) =>
-          ['file', 'folder'].includes(element.textContent?.trim() ?? '')
-        )
+          ['file', 'folder'].includes(element.textContent?.trim() ?? ''),
+        ),
       ).toBe(false);
       expect(host.textContent).toContain('Деца');
       expect(host.textContent).toContain('Папка');
@@ -56,7 +58,7 @@ it.each(ui.elements)(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('adds one child to an empty recursive folder without generating descendants', async () => {
@@ -78,11 +80,11 @@ it('adds one child to an empty recursive folder without generating descendants',
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     const add = host.querySelector<HTMLButtonElement>(
-      'button[aria-label="Add"]'
+      'button[aria-label="Add"]',
     );
     expect(add).not.toBeNull();
     await act(async () => add!.click());
@@ -93,7 +95,7 @@ it('adds one child to an empty recursive folder without generating descendants',
     expect(latest.empty.children[0]).toEqual({});
     expect(host.textContent).toContain('Choose a kind.');
     expect(
-      host.querySelector('[role="combobox"][aria-invalid="true"]')
+      host.querySelector('[role="combobox"][aria-invalid="true"]'),
     ).not.toBeNull();
     expect(JSON.stringify(latest.empty).length).toBeLessThan(300);
     expect(latest.populated).toEqual(data.populated);
@@ -125,19 +127,19 @@ it('initializes the selected folder when switching from a file', async () => {
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     await act(async () =>
-      (host.querySelector('[role="combobox"]') as HTMLButtonElement).click()
+      (host.querySelector('[role="combobox"]') as HTMLButtonElement).click(),
     );
     const folder = Array.from(
-      document.querySelectorAll<HTMLElement>('[role="option"]')
+      document.querySelectorAll<HTMLElement>('[role="option"]'),
     ).find((option) => option.textContent === 'Folder');
     expect(folder).toBeDefined();
     await act(async () => {
       folder!.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
       );
     });
     await act(async () => {
@@ -175,19 +177,19 @@ it('creates a file only after choosing a branch for an empty node', async () => 
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     await act(async () =>
-      (host.querySelector('[role="combobox"]') as HTMLButtonElement).click()
+      (host.querySelector('[role="combobox"]') as HTMLButtonElement).click(),
     );
     const folder = Array.from(
-      document.querySelectorAll<HTMLElement>('[role="option"]')
+      document.querySelectorAll<HTMLElement>('[role="option"]'),
     ).find((option) => option.textContent === 'File');
     expect(folder).toBeDefined();
     await act(async () => {
       folder!.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
       );
     });
     await act(async () => {
@@ -220,8 +222,8 @@ it('clears the selected branch when the document is externally cleared', async (
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
   };
   try {
@@ -265,17 +267,17 @@ it('clears a child kind to an empty object without removing its slot', async () 
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     const clears = Array.from(host.querySelectorAll('button')).filter(
-      (button) => button.getAttribute('aria-label') === 'Clear selection'
+      (button) => button.getAttribute('aria-label') === 'Clear selection',
     );
     expect(clears.length).toBeGreaterThan(1);
     expect(clears[0].textContent).toBe('');
     expect(clears[0].querySelector('svg')).toBeTruthy();
     expect(
-      host.querySelector('[role=combobox]')?.classList.contains('w-full')
+      host.querySelector('[role=combobox]')?.classList.contains('w-full'),
     ).toBe(true);
     await act(async () => clears[clears.length - 1].click());
     await act(async () => {
@@ -314,8 +316,8 @@ it('marks invalid child headers while collapsed and honors the indicator setting
           uischema={{ type: 'Control', scope: '#/properties/empty' }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
   };
   try {
@@ -324,14 +326,14 @@ it('marks invalid child headers while collapsed and honors the indicator setting
       Array.from(host.querySelectorAll('.shadcn-jsonforms-array-item > div'));
     expect(
       headers().some((header) =>
-        header.querySelector('[data-container-validation-indicator]')
-      )
+        header.querySelector('[data-container-validation-indicator]'),
+      ),
     ).toBe(true);
     await render(false);
     expect(
       headers().some((header) =>
-        header.querySelector('[data-container-validation-indicator]')
-      )
+        header.querySelector('[data-container-validation-indicator]'),
+      ),
     ).toBe(false);
   } finally {
     act(() => root.unmount());

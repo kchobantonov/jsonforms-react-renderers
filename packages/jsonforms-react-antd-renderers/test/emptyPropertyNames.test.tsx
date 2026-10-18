@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -35,7 +35,7 @@ const settle = async (ms = 400) => {
 const setNativeValue = (field: HTMLInputElement, value: string) =>
   Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!.call(field, value);
 
 const schema = {
@@ -78,17 +78,17 @@ const render = ({
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const nameField = () =>
     container.querySelector<HTMLInputElement>(
-      'input[placeholder="Property name"]'
+      'input[placeholder="Property name"]',
     )!;
   const addButton = () =>
     Array.from(container.querySelectorAll('button')).find((button) =>
-      button.getAttribute('aria-label')?.startsWith('Add property')
+      button.getAttribute('aria-label')?.startsWith('Add property'),
     ) as HTMLButtonElement | undefined;
 
   const typeName = async (name: string) => {
@@ -192,7 +192,7 @@ describe('an empty property name', () => {
     });
     await settle(30);
     const fields = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).filter((input) => input.value === 'existing');
     expect(fields).toHaveLength(1);
 
@@ -232,7 +232,7 @@ describe('a name is stored exactly as typed', () => {
       data: {},
     };
     expect(validateAdditionalPropertyName({ ...base, name: '   ' }).error).toBe(
-      'required'
+      'required',
     );
     const permitted = validateAdditionalPropertyName({
       ...base,
@@ -260,7 +260,7 @@ describe('writing a property whose name the prototype also has', () => {
     const target: Record<string, unknown> = {};
     assignOwnProperty(target, '__proto__', { injected: true });
     expect(Object.prototype.hasOwnProperty.call(target, '__proto__')).toBe(
-      true
+      true,
     );
     expect(Object.keys(target)).toEqual(['__proto__']);
     // The prototype chain is untouched.
@@ -276,7 +276,7 @@ describe('a dotted property name', () => {
     });
     await settle(30);
     const fields = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).filter((input) => input.value === 'dotted');
     expect(fields).toHaveLength(1);
 
@@ -299,7 +299,7 @@ describe('a dotted property name', () => {
     });
     await settle(30);
     expect(
-      container.querySelector('[data-property-name="sdf.sdf"]')
+      container.querySelector('[data-property-name="sdf.sdf"]'),
     ).toBeTruthy();
     unmount();
   });
@@ -315,10 +315,10 @@ describe('rebundling a schema for an isolated form', () => {
   it('rewrites a local $ref to point into the carried root', () => {
     const bundled = literalPropertySchema(
       { $ref: '#/definitions/code' } as any,
-      rootSchema
+      rootSchema,
     ) as any;
     expect(bundled.$ref).toBe(
-      '#/definitions/__jsonforms_root/definitions/code'
+      '#/definitions/__jsonforms_root/definitions/code',
     );
     // and the whole original document travels with it
     expect(bundled.definitions.__jsonforms_root.definitions.code).toEqual({
@@ -335,14 +335,14 @@ describe('rebundling a schema for an isolated form', () => {
         items: [{ $ref: '#/definitions/code' }],
         allOf: [{ $ref: '#/definitions/code' }],
       } as any,
-      rootSchema
+      rootSchema,
     ) as any;
     expect(bundled.properties.self.$ref).toBe('#/definitions/__jsonforms_root');
     expect(bundled.items[0].$ref).toBe(
-      '#/definitions/__jsonforms_root/definitions/code'
+      '#/definitions/__jsonforms_root/definitions/code',
     );
     expect(bundled.allOf[0].$ref).toBe(
-      '#/definitions/__jsonforms_root/definitions/code'
+      '#/definitions/__jsonforms_root/definitions/code',
     );
   });
 
@@ -354,7 +354,7 @@ describe('rebundling a schema for an isolated form', () => {
         default: { $ref: '#/not/a/reference' },
         enum: [{ $ref: '#' }],
       } as any,
-      rootSchema
+      rootSchema,
     ) as any;
     expect(bundled.default).toEqual({ $ref: '#/not/a/reference' });
     expect(bundled.enum[0]).toEqual({ $ref: '#' });
@@ -371,7 +371,7 @@ describe('rebundling a schema for an isolated form', () => {
   it('leaves an external reference alone', () => {
     const bundled = literalPropertySchema(
       { $ref: 'https://example.test/other.json#/definitions/x' } as any,
-      rootSchema
+      rootSchema,
     ) as any;
     expect(bundled.$ref).toBe('https://example.test/other.json#/definitions/x');
   });

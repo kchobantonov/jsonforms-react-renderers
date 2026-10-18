@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -44,7 +44,7 @@ const settle = async (ms = 60) => {
   });
 };
 
-const control = (scope: string) => ({ type: 'Control', scope } as any);
+const control = (scope: string) => ({ type: 'Control', scope }) as any;
 const matches = (root: any, scope = '#/properties/value') =>
   isMixedControl(control(scope), root, {
     rootSchema: root,
@@ -77,7 +77,7 @@ describe('selecting the mixed control', () => {
 
   it('leaves objects and combinators alone', () => {
     expect(matches(objectWith({ type: 'object', properties: { a: {} } }))).toBe(
-      false
+      false,
     );
     expect(matches(objectWith({ oneOf: [{ type: 'string' }] }))).toBe(false);
     expect(matches(objectWith({ anyOf: [{ type: 'string' }] }))).toBe(false);
@@ -91,7 +91,7 @@ describe('selecting the mixed control', () => {
   it('survives a scope that resolves to nothing', () => {
     // Not this tester's job to report, and it must not throw during dispatch.
     expect(() =>
-      matches(objectWith({ type: 'string' }), '#/properties/gone')
+      matches(objectWith({ type: 'string' }), '#/properties/gone'),
     ).not.toThrow();
   });
 });
@@ -119,8 +119,8 @@ describe('a union-typed property in a real form', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     return {
       container,

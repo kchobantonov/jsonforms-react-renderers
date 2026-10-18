@@ -47,7 +47,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
         | typeof Password
         | typeof AutoComplete
       >;
-    }
+    },
 ) {
   const {
     data,
@@ -71,7 +71,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     '',
     data,
     path,
-    eventToValue
+    eventToValue,
   );
 
   let InputComponent: React.ComponentType<any> = InputText;
@@ -86,7 +86,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
 
     const search = (event: { query: string }) => {
       const filtered = options.filter((option) =>
-        option.toLowerCase().includes(event.query.toLowerCase())
+        option.toLowerCase().includes(event.query.toLowerCase()),
       );
       setFilteredOptions(filtered);
     };

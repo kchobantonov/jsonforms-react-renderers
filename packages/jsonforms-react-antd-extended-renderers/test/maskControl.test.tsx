@@ -29,7 +29,7 @@ const setNativeValue = (field: HTMLInputElement, value: string) => {
   // synthetic `change` through - assigning `field.value` directly would not.
   Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!.call(field, value);
 };
 
@@ -214,7 +214,7 @@ describe('selecting the masked string control', () => {
     for (const format of ['date', 'date-time', 'time', 'color', 'password']) {
       const [uischema, schema, ctx] = control(
         { mask: '##/##/####' },
-        { reference: { type: 'string', format } }
+        { reference: { type: 'string', format } },
       );
       expect(antdMaskControlTester(uischema, schema, ctx as any)).toBe(-1);
     }
@@ -233,7 +233,7 @@ describe('selecting the masked string control', () => {
       { mask: '###' },
       {
         reference: { type: 'number' },
-      }
+      },
     );
     expect(antdMaskControlTester(uischema, schema, ctx as any)).toBe(-1);
   });
@@ -481,7 +481,7 @@ describe('composition and external replacement', () => {
     const field = input();
     act(() => {
       field.dispatchEvent(
-        new CompositionEvent('compositionstart', { bubbles: true })
+        new CompositionEvent('compositionstart', { bubbles: true }),
       );
     });
     setNativeValue(field, 'ka');
@@ -495,7 +495,7 @@ describe('composition and external replacement', () => {
     setNativeValue(field, 'か1');
     act(() => {
       field.dispatchEvent(
-        new CompositionEvent('compositionend', { bubbles: true, data: 'か' })
+        new CompositionEvent('compositionend', { bubbles: true, data: 'か' }),
       );
     });
     await settle();

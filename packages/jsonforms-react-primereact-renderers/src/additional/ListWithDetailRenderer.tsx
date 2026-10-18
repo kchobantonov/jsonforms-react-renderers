@@ -81,15 +81,15 @@ export const ListWithDetailRenderer = ({
         setSelectedIndex(selectedIndex - 1);
       }
     },
-    [removeItems, setSelectedIndex]
+    [removeItems, setSelectedIndex],
   );
   const handleListItemClick = useCallback(
     (index: number) => () => setSelectedIndex(index),
-    [setSelectedIndex]
+    [setSelectedIndex],
   );
   const handleCreateDefaultValue = useCallback(
     () => createDefaultValue(schema, rootSchema),
-    [createDefaultValue]
+    [createDefaultValue],
   );
   const foundUISchema = useMemo(
     () =>
@@ -100,9 +100,9 @@ export const ListWithDetailRenderer = ({
         path,
         undefined,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
@@ -122,7 +122,7 @@ export const ListWithDetailRenderer = ({
       label={computeLabel(
         label,
         required,
-        appliedUiSchemaOptions.hideRequiredAsterisk
+        appliedUiSchemaOptions.hideRequiredAsterisk,
       )}
       description={description}
       errors={errors}
@@ -181,9 +181,9 @@ export const ListWithDetailRenderer = ({
 
 export const listWithDetailTester: RankedTester = rankWith(
   4,
-  and(uiTypeIs('ListWithDetail'), isObjectArray)
+  and(uiTypeIs('ListWithDetail'), isObjectArray),
 );
 
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ListWithDetailRenderer))
+  withTranslateProps(withArrayTranslationProps(ListWithDetailRenderer)),
 );

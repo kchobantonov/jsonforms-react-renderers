@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createAjv } from '@jsonforms/core';
@@ -74,8 +74,8 @@ const draw = (format: string, initial?: string) => {
             errors = next ?? [];
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   return {
@@ -98,7 +98,7 @@ const commit = async (view: ReturnType<typeof draw>, typed: string) => {
   const input = view.input();
   const setter = Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!;
   act(() => {
     input.focus();
@@ -108,7 +108,11 @@ const commit = async (view: ReturnType<typeof draw>, typed: string) => {
   await settle();
   act(() => {
     input.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true })
+      new KeyboardEvent('keydown', {
+        key: 'Enter',
+        keyCode: 13,
+        bubbles: true,
+      }),
     );
   });
   await settle();
@@ -130,7 +134,7 @@ describe('what a picker commits satisfies the format that selected it', () => {
     expect(view.value(), 'the picker committed nothing').toBeTruthy();
     expect(
       accepts('time', view.value()),
-      `${JSON.stringify(view.value())} is not a valid time`
+      `${JSON.stringify(view.value())} is not a valid time`,
     ).toBe(true);
     expect(view.errors()).toHaveLength(0);
     view.unmount();
@@ -142,7 +146,7 @@ describe('what a picker commits satisfies the format that selected it', () => {
     expect(view.value(), 'the picker committed nothing').toBeTruthy();
     expect(
       accepts('date-time', view.value()),
-      `${JSON.stringify(view.value())} is not a valid date-time`
+      `${JSON.stringify(view.value())} is not a valid date-time`,
     ).toBe(true);
     expect(view.errors()).toHaveLength(0);
     view.unmount();
@@ -230,8 +234,8 @@ describe('an explicit save format still wins', () => {
               current = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     const view = {
       container,
@@ -275,8 +279,8 @@ describe('the picker refuses what the bounds exclude', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     const input = container.querySelector<HTMLInputElement>('input')!;
     act(() => {
@@ -288,7 +292,7 @@ describe('the picker refuses what the bounds exclude', () => {
     /** Title of each day cell that the calendar has disabled. */
     const disabledDays = () =>
       Array.from(document.querySelectorAll('.ant-picker-cell-disabled')).map(
-        (cell) => cell.getAttribute('title')
+        (cell) => cell.getAttribute('title'),
       );
     return {
       container,
@@ -411,8 +415,8 @@ describe('a save format the schema format rejects', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     expect(warn).toHaveBeenCalled();
@@ -476,8 +480,8 @@ describe('seconds', () => {
               current = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     const view = {
       input: () => container.querySelector<HTMLInputElement>('input')!,

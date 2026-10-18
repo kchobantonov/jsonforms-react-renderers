@@ -115,7 +115,7 @@ const parsers = new Map<MarkdownProfile, MarkdownIt>();
  * `hardbreak` carries.
  */
 export const markdownParser = (
-  profile: MarkdownProfile = 'basic'
+  profile: MarkdownProfile = 'basic',
 ): MarkdownIt => {
   const existing = parsers.get(profile);
   if (existing) {
@@ -130,7 +130,7 @@ export const markdownParser = (
   md.disable(
     profile === 'extended' ? ALWAYS_OFF : [...ALWAYS_OFF, ...EXTENDED_ONLY],
     /* ignoreInvalid: a rule renamed upstream must not throw at render time. */
-    true
+    true,
   );
   /*
     markdown-it carries its own scheme check, which refuses `javascript:`,
@@ -190,9 +190,9 @@ interface Frame {
  * its own, it needs only to be in {@link ALLOWED_TAGS}.
  */
 const walk = (
-  tokens: MarkdownIt.Token[],
+  tokens: ReturnType<MarkdownIt['parse']>,
   context: MarkdownContext,
-  counter: { next: number }
+  counter: { next: number },
 ): React.ReactNode[] => {
   const root: React.ReactNode[] = [];
   const stack: Frame[] = [];
@@ -213,8 +213,8 @@ const walk = (
       React.createElement(
         frame.tag,
         { key: `md-${counter.next++}`, ...frame.props },
-        frame.children.length ? frame.children : undefined
-      )
+        frame.children.length ? frame.children : undefined,
+      ),
     );
   };
 
@@ -257,8 +257,8 @@ const walk = (
         tag: token.hidden
           ? null
           : ALLOWED_TAGS.has(token.tag)
-          ? token.tag
-          : 'span',
+            ? token.tag
+            : 'span',
         props: {},
         children: [],
       });
@@ -292,7 +292,7 @@ const walk = (
         push(
           <pre key={`md-${counter.next++}`}>
             <code>{token.content}</code>
-          </pre>
+          </pre>,
         );
         break;
       default:
@@ -314,7 +314,7 @@ const walk = (
 /** Parses and renders, in the requested profile. */
 export const renderMarkdown = (
   markdown: string,
-  context: MarkdownContext = {}
+  context: MarkdownContext = {},
 ): React.ReactNode[] =>
   walk(markdownParser(context.profile).parse(markdown, {}), context, {
     next: 0,
@@ -323,7 +323,7 @@ export const renderMarkdown = (
 /** Visible text using the same Markdown profile as the renderer. */
 export const markdownPlainText = (
   source: string,
-  profile: MarkdownProfile
+  profile: MarkdownProfile,
 ): string => {
   const collect = (tokens: any[]): string =>
     tokens

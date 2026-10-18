@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { TemplateLayoutRenderer } from '../src/renderers/TemplateLayoutRenderer';
 
 it('keeps template hooks stable across visibility changes', () => {
@@ -25,9 +25,9 @@ it('keeps template hooks stable across visibility changes', () => {
               value={{ core: { data: {}, errors: [] } } as any}
             >
               <TemplateLayoutRenderer {...props} visible={visible} />
-            </JsonFormsContext.Provider>
-          )
-        )
+            </JsonFormsContext.Provider>,
+          ),
+        ),
       ).not.toThrow();
     }
   } finally {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -109,8 +109,8 @@ const render = (schema: any, uischema: any, options?: any) => {
             latest = data;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const deleteButton = () =>
@@ -121,14 +121,14 @@ const render = (schema: any, uischema: any, options?: any) => {
           .includes('delete') ||
         (button.getAttribute('aria-label') ?? '')
           .toLowerCase()
-          .includes('remove')
+          .includes('remove'),
     );
 
   return {
     container,
     clickDelete: async () => {
       const checkbox = container.querySelector<HTMLInputElement>(
-        'tbody tr[data-row-key] input[type="checkbox"]'
+        'tbody tr[data-row-key] input[type="checkbox"]',
       );
       if (checkbox && !checkbox.checked) {
         act(() => checkbox.click());
@@ -182,7 +182,7 @@ describe.each(cases)('$name', ({ schema, uischema }) => {
     const { clickDelete, prompted, stored, unmount } = render(
       schema,
       uischema,
-      { confirmation: { delete: 'never' } }
+      { confirmation: { delete: 'never' } },
     );
     await settle();
     await clickDelete();
@@ -228,12 +228,12 @@ describe('deleting from list with detail', () => {
               latest = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     const items = () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('.jsonforms-list-detail-item')
+        container.querySelectorAll<HTMLElement>('.jsonforms-list-detail-item'),
       );
     return {
       container,
@@ -244,11 +244,11 @@ describe('deleting from list with detail', () => {
       },
       deleteAt: async (index: number) => {
         const button = Array.from(
-          items()[index].querySelectorAll<HTMLButtonElement>('button')
+          items()[index].querySelectorAll<HTMLButtonElement>('button'),
         ).find((entry) =>
           (entry.getAttribute('aria-label') ?? '')
             .toLowerCase()
-            .includes('delete')
+            .includes('delete'),
         );
         expect(button, `row ${index} has no delete`).toBeTruthy();
         act(() => button!.click());
@@ -262,8 +262,8 @@ describe('deleting from list with detail', () => {
       cancel: async () => {
         const no = Array.from(
           document.querySelectorAll<HTMLButtonElement>(
-            '.ant-modal-footer button'
-          )
+            '.ant-modal-footer button',
+          ),
         ).find((button) => button.textContent?.includes('No'));
         expect(no, 'no decline button').toBeTruthy();
         act(() => no!.click());
@@ -331,8 +331,8 @@ describe('deleting from the expandable array layout', () => {
               latest = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     const panels = () =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-collapse-item'));
@@ -344,15 +344,15 @@ describe('deleting from the expandable array layout', () => {
       /** Which panel is open, or -1. The layout is an accordion: at most one. */
       openIndex: () =>
         panels().findIndex((panel) =>
-          panel.classList.contains('ant-collapse-item-active')
+          panel.classList.contains('ant-collapse-item-active'),
         ),
       deleteAt: async (index: number) => {
         const button = Array.from(
-          panels()[index].querySelectorAll<HTMLButtonElement>('button')
+          panels()[index].querySelectorAll<HTMLButtonElement>('button'),
         ).find((entry) =>
           (entry.getAttribute('aria-label') ?? '')
             .toLowerCase()
-            .includes('delete')
+            .includes('delete'),
         );
         expect(button, `panel ${index} has no delete`).toBeTruthy();
         act(() => button!.click());
@@ -360,7 +360,7 @@ describe('deleting from the expandable array layout', () => {
       },
       toggleAt: async (index: number) => {
         const header = panels()[index].querySelector<HTMLElement>(
-          '.ant-collapse-header'
+          '.ant-collapse-header',
         );
         act(() => header!.click());
         await settle();

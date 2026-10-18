@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   escapeMarkdown,
   markdownParser,
@@ -16,7 +16,7 @@ import type { MarkdownContext } from '../src/util/markdown';
  */
 const html = (markdown: string, context?: MarkdownContext) =>
   renderToStaticMarkup(
-    <>{renderMarkdown(markdown, context) as React.ReactNode[]}</>
+    <>{renderMarkdown(markdown, context) as React.ReactNode[]}</>,
   );
 
 describe('the basic Markdown profile', () => {
@@ -86,10 +86,10 @@ describe('the extended Markdown profile', () => {
     const extended: MarkdownContext = { profile: 'extended' };
     expect(html('## Title', extended)).toBe('<h2>Title</h2>');
     expect(html('> quoted', extended)).toBe(
-      '<blockquote><p>quoted</p></blockquote>'
+      '<blockquote><p>quoted</p></blockquote>',
     );
     expect(html('```\ncode\n```', extended)).toBe(
-      '<pre><code>code\n</code></pre>'
+      '<pre><code>code\n</code></pre>',
     );
     expect(html('a | b\n--- | ---\n1 | 2', extended)).toContain('<table>');
   });
@@ -97,7 +97,7 @@ describe('the extended Markdown profile', () => {
   it('still withholds images, raw HTML and thematic breaks', () => {
     const extended: MarkdownContext = { profile: 'extended' };
     expect(html('![alt](https://example.com/a.png)', extended)).not.toContain(
-      '<img'
+      '<img',
     );
     expect(html('<b>hi</b>', extended)).not.toContain('<b>');
     expect(html('---\n\ntext', extended)).not.toContain('<hr');
@@ -115,7 +115,7 @@ describe('link targets pass the URL policy', () => {
   /* §10: "Markdown link targets MUST pass the URL policy." */
   it('renders an allowed link as an anchor', () => {
     expect(html('[go](https://example.com)')).toBe(
-      '<p><a href="https://example.com" target="_blank" rel="noopener noreferrer">go</a></p>'
+      '<p><a href="https://example.com" target="_blank" rel="noopener noreferrer">go</a></p>',
     );
   });
 
@@ -146,7 +146,7 @@ describe('link targets pass the URL policy', () => {
   /* A reference link and an autolink are links, and are policed like one. */
   it('polices a reference link and an autolink too', () => {
     expect(html('[go][ref]\n\n[ref]: https://example.com')).toContain(
-      'href="https://example.com"'
+      'href="https://example.com"',
     );
     const refused: string[] = [];
     const out = html('[go][ref]\n\n[ref]: javascript:alert(1)', {
@@ -155,7 +155,7 @@ describe('link targets pass the URL policy', () => {
     expect(out).not.toContain('<a');
     expect(refused).toHaveLength(1);
     expect(html('<https://example.com>')).toContain(
-      'href="https://example.com"'
+      'href="https://example.com"',
     );
   });
 });
@@ -176,7 +176,7 @@ describe('escaping an interpolated value', () => {
   it('neutralizes emphasis, headings and code fences in a value', () => {
     expect(html(escapeMarkdown('**not bold**'))).toContain('**not bold**');
     expect(html(escapeMarkdown('# not a heading'))).toContain(
-      '# not a heading'
+      '# not a heading',
     );
     expect(html(escapeMarkdown('`not code`'))).not.toContain('<code>');
   });
@@ -203,7 +203,7 @@ describe('the parser itself', () => {
     expect(React.isValidElement(nodes[0])).toBe(true);
     expect((nodes[0] as React.ReactElement).type).toBe('p');
     expect(JSON.stringify(nodes[0]).includes('dangerouslySetInnerHTML')).toBe(
-      false
+      false,
     );
   });
 });

@@ -2,7 +2,7 @@ import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -57,20 +57,20 @@ const draw = (locale = 'en') => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   /** A group's outermost element, found by its heading text. */
   const groupFor = (label: string) =>
     Array.from(container.querySelectorAll<HTMLElement>('.ant-card')).find(
       (card) =>
         card.querySelector('.ant-card-head-title')?.textContent?.trim() ===
-        label
+        label,
     ) ??
     Array.from(
-      container.querySelectorAll<HTMLElement>('.ant-collapse-item')
+      container.querySelectorAll<HTMLElement>('.ant-collapse-item'),
     ).find((item) =>
-      item.querySelector('.ant-collapse-header')?.textContent?.includes(label)
+      item.querySelector('.ant-collapse-header')?.textContent?.includes(label),
     );
   return {
     container,
@@ -78,12 +78,12 @@ const draw = (locale = 'en') => {
     labels: () => container.textContent ?? '',
     toggleFor: (label: string) =>
       groupFor(label)?.querySelector<HTMLElement>(
-        '.ant-collapse-header, [aria-expanded]'
+        '.ant-collapse-header, [aria-expanded]',
       ),
     inputFor: (title: string) =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-form-item'))
         .find((item) =>
-          item.querySelector('label')?.textContent?.includes(title)
+          item.querySelector('label')?.textContent?.includes(title),
         )
         ?.querySelector('input'),
     indicators: () =>
@@ -160,12 +160,12 @@ describe('the group-layout spec example', () => {
     */
     expect(view.indicators()).toBe(3);
     expect(
-      view.groupFor('Insurance')?.querySelector('[data-group-indicator]')
+      view.groupFor('Insurance')?.querySelector('[data-group-indicator]'),
     ).toBeNull();
     expect(
       view
         .groupFor('False and zero count as data')
-        ?.querySelector('[data-group-indicator]')
+        ?.querySelector('[data-group-indicator]'),
     ).toBeTruthy();
     view.unmount();
   });

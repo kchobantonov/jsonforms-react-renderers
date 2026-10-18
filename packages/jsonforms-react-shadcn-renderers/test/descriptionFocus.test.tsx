@@ -31,8 +31,8 @@ it('shows descriptions on focus, respects persistent hints, and prioritizes erro
         <ShadcnInputControl
           {...props}
           config={{ showUnfocusedDescription: true }}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).toContain('Help');
     await act(async () =>
@@ -44,8 +44,8 @@ it('shows descriptions on focus, respects persistent hints, and prioritizes erro
             ...props.uischema,
             options: { showUnfocusedDescription: false },
           }}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).not.toContain('Help');
     await act(async () =>
@@ -54,8 +54,8 @@ it('shows descriptions on focus, respects persistent hints, and prioritizes erro
           {...props}
           errors='Invalid'
           config={{ showUnfocusedDescription: true }}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).not.toContain('Help');
     expect(host.querySelector('[role="alert"]')!.textContent).toBe('Invalid');

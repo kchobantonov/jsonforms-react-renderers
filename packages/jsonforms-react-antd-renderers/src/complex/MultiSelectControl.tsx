@@ -34,7 +34,7 @@ import {
  */
 export const multiSelectControlTester: RankedTester = rankWith(
   6,
-  and(uiTypeIs('Control'), isMultiSelectControl)
+  and(uiTypeIs('Control'), isMultiSelectControl),
 );
 
 export const MultiSelectControl = (props: ControlProps) => {
@@ -85,7 +85,7 @@ export const MultiSelectControl = (props: ControlProps) => {
     silently deduplicate, coerce, or discard invalid incoming values."
   */
   const unknownValues = values.filter(
-    (value) => !choices.some((choice) => sameChoice(choice.value, value))
+    (value) => !choices.some((choice) => sameChoice(choice.value, value)),
   );
 
   return (

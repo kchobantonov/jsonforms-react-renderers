@@ -7,7 +7,7 @@ export const discriminatorBranch = (
   schema: JsonSchema,
   rootSchema: JsonSchema,
   keyword: 'oneOf' | 'anyOf',
-  data: unknown
+  data: unknown,
 ): number | undefined => {
   if (!data || typeof data !== 'object' || Array.isArray(data))
     return undefined;
@@ -15,7 +15,7 @@ export const discriminatorBranch = (
   if (!branches?.length) return undefined;
   try {
     const resolved = branches.map((branch) =>
-      branch.$ref ? resolveSchema(rootSchema, branch.$ref, rootSchema) : branch
+      branch.$ref ? resolveSchema(rootSchema, branch.$ref, rootSchema) : branch,
     );
     const first = resolved[0];
     for (const key of Object.keys(first?.properties ?? {})) {
@@ -24,19 +24,19 @@ export const discriminatorBranch = (
         !resolved.every((branch) => branch?.required?.includes(key)) ||
         !values.every(
           (value) =>
-            value && Object.prototype.hasOwnProperty.call(value, 'const')
+            value && Object.prototype.hasOwnProperty.call(value, 'const'),
         )
       )
         continue;
       const constants = values.map((value) => value.const);
       if (
         constants.some((value, i) =>
-          constants.slice(0, i).some((other) => isEqual(value, other))
+          constants.slice(0, i).some((other) => isEqual(value, other)),
         )
       )
         continue;
       const index = constants.findIndex((value) =>
-        isEqual(value, (data as Record<string, unknown>)[key])
+        isEqual(value, (data as Record<string, unknown>)[key]),
       );
       if (index !== -1) return index;
     }
@@ -51,11 +51,11 @@ export const missingDiscriminatorError = (
   schema: JsonSchema,
   rootSchema: JsonSchema,
   path: string,
-  errors: import('ajv').ErrorObject[]
+  errors: import('ajv').ErrorObject[],
 ): boolean => {
   try {
     const branches = schema.oneOf?.map((branch) =>
-      branch.$ref ? resolveSchema(rootSchema, branch.$ref, rootSchema) : branch
+      branch.$ref ? resolveSchema(rootSchema, branch.$ref, rootSchema) : branch,
     );
     if (!branches?.length) return false;
     const keys = Object.keys(branches[0].properties ?? {}).filter((key) =>
@@ -64,9 +64,9 @@ export const missingDiscriminatorError = (
           branch.required?.includes(key) &&
           Object.prototype.hasOwnProperty.call(
             branch.properties?.[key] ?? {},
-            'const'
-          )
-      )
+            'const',
+          ),
+      ),
     );
     const pointer = path
       ? '/' +
@@ -79,7 +79,7 @@ export const missingDiscriminatorError = (
       (error) =>
         error.keyword === 'required' &&
         error.instancePath === pointer &&
-        keys.includes(error.params.missingProperty)
+        keys.includes(error.params.missingProperty),
     );
   } catch {
     return false;

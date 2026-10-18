@@ -23,7 +23,7 @@ export const JSONFORMS_CONFIG_KEY = 'jsonforms-react-renderers';
 
 const namespace = (
   config: unknown,
-  key: string
+  key: string,
 ): Record<string, unknown> | undefined => {
   if (!config || typeof config !== 'object') {
     return undefined;
@@ -36,7 +36,7 @@ const namespace = (
 
 /** The `jsonformsExtended` block of a config object, if it has one. */
 export const extendedConfig = (
-  config: unknown
+  config: unknown,
 ): Record<string, unknown> | undefined =>
   namespace(config, JSONFORMS_EXTENDED_CONFIG_KEY);
 
@@ -53,7 +53,7 @@ export const resolveExtendedOption = <T>(
   config: unknown,
   name: string,
   fallback: T,
-  configKey: string = JSONFORMS_EXTENDED_CONFIG_KEY
+  configKey: string = JSONFORMS_EXTENDED_CONFIG_KEY,
 ): T => {
   const local =
     options && typeof options === 'object'

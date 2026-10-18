@@ -34,26 +34,26 @@ it('renders const choices and both cell and table errors, respecting validation 
             renderers={shadcnRenderers}
             cells={shadcnCells}
             validationMode={validationMode}
-          />
-        )
+          />,
+        ),
       );
       expect(host.querySelector('[role="combobox"]')?.textContent).toBe('foo');
       if (validationMode === 'ValidateAndShow') {
         expect(
           host
             .querySelector('td .shadcn-jsonforms-cell-error')
-            ?.getAttribute('aria-label')
+            ?.getAttribute('aria-label'),
         ).toContain('5');
         expect(
           host
             .querySelector('.shadcn-jsonforms-array-errors')
-            ?.getAttribute('aria-label')
+            ?.getAttribute('aria-label'),
         ).toBe('Some items contain errors.');
       } else
         expect(
           host.querySelector(
-            '.shadcn-jsonforms-cell-error, .shadcn-jsonforms-array-errors'
-          )
+            '.shadcn-jsonforms-cell-error, .shadcn-jsonforms-array-errors',
+          ),
         ).toBeNull();
     }
   } finally {

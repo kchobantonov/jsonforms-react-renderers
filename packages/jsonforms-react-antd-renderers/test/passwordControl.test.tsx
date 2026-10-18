@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator, NOT_APPLICABLE } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
@@ -22,15 +22,15 @@ const render = (schema: any, uischema: any, data: any, i18n?: any) => {
         cells={antdCells}
         i18n={i18n}
         onChange={(e) => changes.push(e.data)}
-      />
-    )
+      />,
+    ),
   );
   return {
     container,
     changes,
     input: container.querySelector<HTMLInputElement>('input'),
     toggle: container.querySelector<HTMLButtonElement>(
-      '[data-password-toggle]'
+      '[data-password-toggle]',
     ),
     unmount: () => act(() => root.unmount()),
   };
@@ -53,8 +53,8 @@ describe('password selection', () => {
       passwordControlTester(
         plain as any,
         formatSchema.properties.secret as any,
-        undefined
-      )
+        undefined,
+      ),
     ).not.toBe(NOT_APPLICABLE);
   });
 
@@ -65,8 +65,8 @@ describe('password selection', () => {
       passwordControlTester(
         uiFormat as any,
         stringSchema.properties.secret as any,
-        undefined
-      )
+        undefined,
+      ),
     ).not.toBe(NOT_APPLICABLE);
   });
 
@@ -75,15 +75,15 @@ describe('password selection', () => {
       passwordControlTester(
         plain as any,
         stringSchema.properties.secret as any,
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
     expect(
       passwordControlTester(
         uiFormat as any,
         { type: 'number' } as any,
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -120,7 +120,7 @@ describe('reveal and hide', () => {
     expect(
       document
         .querySelector<HTMLElement>('[data-password-toggle]')!
-        .getAttribute('aria-label')
+        .getAttribute('aria-label'),
     ).toBe('Hide password');
     unmount();
   });
@@ -140,9 +140,9 @@ describe('reveal and hide', () => {
       {
         locale: 'bg',
         translate: createTranslator((key, fallback) =>
-          key === 'password.show' ? 'Покажи паролата' : fallback
+          key === 'password.show' ? 'Покажи паролата' : fallback,
         ),
-      }
+      },
     );
     expect(toggle!.getAttribute('aria-label')).toBe('Покажи паролата');
     unmount();
@@ -181,10 +181,10 @@ describe('password in a table cell', () => {
         scope: '#/properties/accounts',
         options: { table: true },
       },
-      { accounts: [{ user: 'jdoe', secret: 'hunter2' }] }
+      { accounts: [{ user: 'jdoe', secret: 'hunter2' }] },
     );
     const types = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).map((i) => i.getAttribute('type'));
     expect(types).toContain('password');
     unmount();
@@ -197,13 +197,13 @@ describe('reveal and clear stay separate', () => {
       secret: 'hunter2',
     });
     const clear = container.querySelector<HTMLElement>(
-      'button[aria-label="Clear value"]'
+      'button[aria-label="Clear value"]',
     );
     expect(clear).toBeTruthy();
     expect(toggle).toBeTruthy();
     expect(clear).not.toBe(toggle);
     expect(clear!.getAttribute('aria-label')).not.toBe(
-      toggle!.getAttribute('aria-label')
+      toggle!.getAttribute('aria-label'),
     );
     unmount();
   });
@@ -225,7 +225,7 @@ describe('trailing affordances do not collide', () => {
       secret: 'hunter2',
     });
     const clear = container.querySelector<HTMLElement>(
-      'button[aria-label="Clear value"]'
+      'button[aria-label="Clear value"]',
     )!;
     expect(clear.closest('.ant-input-suffix')).toBeTruthy();
     expect(clear.style.position).not.toBe('absolute');
@@ -237,13 +237,13 @@ describe('trailing affordances do not collide', () => {
     const suffix = container.querySelector('.ant-input-suffix')!;
     expect(suffix.querySelector('[data-password-toggle]')).toBeTruthy();
     expect(
-      suffix.querySelector('button[aria-label="Clear value"]')
+      suffix.querySelector('button[aria-label="Clear value"]'),
     ).toBeTruthy();
     expect(suffix.querySelector('.ant-form-item-feedback-icon')).toBeTruthy();
     // All three in one flex row: none of them is taken out of the flow, which
     // is what made them stack in the same corner.
     const positioned = Array.from(
-      suffix.querySelectorAll<HTMLElement>('*')
+      suffix.querySelectorAll<HTMLElement>('*'),
     ).filter((element) => element.style.position === 'absolute');
     expect(positioned).toEqual([]);
     unmount();
@@ -253,7 +253,7 @@ describe('trailing affordances do not collide', () => {
     const { container, toggle, unmount } = render(formatSchema, plain, {});
     expect(toggle).toBeTruthy();
     expect(
-      container.querySelector('button[aria-label="Clear value"]')
+      container.querySelector('button[aria-label="Clear value"]'),
     ).toBeNull();
     unmount();
   });

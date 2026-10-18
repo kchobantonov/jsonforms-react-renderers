@@ -2,7 +2,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
 import { readFileSync } from 'node:fs';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { antdRenderers, antdCells } from '../src';
 const fixture = (name: string) =>
   JSON.parse(
@@ -10,10 +10,10 @@ const fixture = (name: string) =>
       require.resolve(
         '@chobantonov/jsonforms-extended-spec/examples/draft-07-metaschema/' +
           name +
-          '.json'
+          '.json',
       ),
-      'utf8'
-    )
+      'utf8',
+    ),
   );
 it('mounts the official Draft-07 metaschema with schema-document data', () => {
   const container = document.createElement('div');
@@ -28,8 +28,8 @@ it('mounts the official Draft-07 metaschema with schema-document data', () => {
           uischema={fixture('uischema')}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     expect(container.textContent).not.toContain('No applicable renderer found');
     expect(container.querySelector('input')).not.toBeNull();

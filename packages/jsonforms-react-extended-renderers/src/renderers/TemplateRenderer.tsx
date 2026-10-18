@@ -30,7 +30,7 @@ export const hasTemplateName = (uischema: UISchemaElement): boolean =>
 
 export const namedTemplateTester: RankedTester = rankWith(
   2,
-  and(uiTypeIs('Template'), hasTemplateName)
+  and(uiTypeIs('Template'), hasTemplateName),
 );
 
 export const TemplateRendererComponent = (props: LayoutProps) => {
@@ -46,10 +46,10 @@ export const TemplateRendererComponent = (props: LayoutProps) => {
         return result;
       }, {}),
     }),
-    [element.elements, inherited]
+    [element.elements, inherited],
   );
   const template = context.uischemas?.find(
-    (entry) => (entry.uischema as NamedElement).name === element.name
+    (entry) => (entry.uischema as NamedElement).name === element.name,
   )?.uischema;
   if (!props.visible || !template) return null;
   return (
@@ -67,5 +67,5 @@ export const TemplateRendererComponent = (props: LayoutProps) => {
 };
 
 export const TemplateRenderer = withJsonFormsLayoutProps(
-  TemplateRendererComponent
+  TemplateRendererComponent,
 );

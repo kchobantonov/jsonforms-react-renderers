@@ -44,7 +44,7 @@ describe('Ant Design allOf renderer', () => {
         schema={schema}
         uischema={uischema}
         renderers={antdRenderers}
-      />
+      />,
     );
     expect(wrapper.find(AllOfRenderer).length).toBeTruthy();
     const inputs = wrapper.find('input');
@@ -78,7 +78,7 @@ describe('Ant Design allOf renderer', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <AllOfRenderer schema={schema} uischema={uischema} visible={false} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input');
     expect(inputs.length).toBe(0);

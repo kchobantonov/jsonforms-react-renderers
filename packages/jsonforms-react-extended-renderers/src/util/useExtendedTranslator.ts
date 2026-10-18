@@ -19,7 +19,7 @@ export const useExtendedTranslator = () => {
     const message = translate ? translate(key, fallback, values) : fallback;
     return Object.entries(values ?? {}).reduce(
       (text, [name, value]) => text.replace(`{${name}}`, String(value)),
-      message ?? fallback
+      message ?? fallback,
     );
   };
 };

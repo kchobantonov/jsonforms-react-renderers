@@ -10,7 +10,7 @@ describe('portable layout defaults', () => {
     const defaults = { row: 16, column: '1rem' };
     expect(resolveGap(undefined, undefined, 'row', defaults)).toBe(16);
     expect(containerStyle(undefined, undefined, 'column', defaults).gap).toBe(
-      '1rem'
+      '1rem',
     );
   });
 

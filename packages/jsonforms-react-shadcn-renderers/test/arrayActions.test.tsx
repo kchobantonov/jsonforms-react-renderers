@@ -35,15 +35,15 @@ describe('array action contract', () => {
           renderers={shadcnRenderers}
           onChange={onChange}
           {...extra}
-        />
-      )
+        />,
+      ),
     );
     return onChange;
   };
   const button = (name: string) =>
     Array.from(document.querySelectorAll('button')).find(
       (button) =>
-        (button.getAttribute('aria-label') ?? button.textContent) === name
+        (button.getAttribute('aria-label') ?? button.textContent) === name,
     )!;
   it('uses named icon buttons with tooltips for array actions', () => {
     render();
@@ -56,7 +56,7 @@ describe('array action contract', () => {
   it.each(['disableAdd', 'disableRemove'])('honors %s', (option) => {
     render({ [option]: true });
     expect(button(option === 'disableAdd' ? 'Add' : 'Remove').disabled).toBe(
-      true
+      true,
     );
   });
   it('enforces min/max when restrict is enabled', () => {
@@ -88,8 +88,8 @@ describe('array action contract', () => {
     act(() => button('Yes').click());
     await vi.waitFor(() =>
       expect(onChange).toHaveBeenLastCalledWith(
-        expect.objectContaining({ data: [] })
-      )
+        expect.objectContaining({ data: [] }),
+      ),
     );
   });
   it('supports the never confirmation policy', async () => {
@@ -98,8 +98,8 @@ describe('array action contract', () => {
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     await vi.waitFor(() =>
       expect(onChange).toHaveBeenLastCalledWith(
-        expect.objectContaining({ data: [] })
-      )
+        expect.objectContaining({ data: [] }),
+      ),
     );
   });
 });

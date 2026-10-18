@@ -21,7 +21,7 @@ it('renders controls inside categories', () => {
           ],
         } as any
       }
-    />
+    />,
   );
   expect(markup).toContain('value="Ada"');
   expect(markup).not.toContain('No applicable renderer');

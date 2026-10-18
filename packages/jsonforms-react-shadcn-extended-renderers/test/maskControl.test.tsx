@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vite-plus/test';
 import {
   shadcnRenderers,
   shadcnCells,
@@ -39,8 +39,8 @@ it('formats loaded data, commits edits and clears', () => {
         onChange={(event) => {
           data = event.data;
         }}
-      />
-    )
+      />,
+    ),
   );
   cleanup = () => {
     act(() => root.unmount());
@@ -54,7 +54,7 @@ it('formats loaded data, commits edits and clears', () => {
   act(() => {
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(input, '+987654');
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -64,7 +64,7 @@ it('formats loaded data, commits edits and clears', () => {
   act(() =>
     (
       container.querySelector('[aria-label="Clear value"]') as HTMLButtonElement
-    ).click()
+    ).click(),
   );
   act(() => vi.runAllTimers());
   expect(data.phone).toBeUndefined();

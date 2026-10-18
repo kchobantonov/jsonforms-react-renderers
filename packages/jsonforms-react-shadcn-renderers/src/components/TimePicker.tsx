@@ -74,7 +74,7 @@ export const TimePicker = ({
     part: TimePart,
     label: string,
     displayedValue: number | undefined,
-    onValueChange = (next: number) => updatePart(part, next)
+    onValueChange = (next: number) => updatePart(part, next),
   ) => (
     <div className='flex flex-col items-center gap-1'>
       <Button

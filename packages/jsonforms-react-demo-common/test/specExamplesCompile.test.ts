@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import { createFormsAjv } from '@chobantonov/jsonforms-react-extended-renderers';
 import examples from '../src/examples';
@@ -22,7 +22,7 @@ const demoAjv = createFormsAjv({ allErrors: true });
   runtime - so there is nothing here to compile for them.
 */
 const withSchema = examples.filter(
-  (example) => example.schema && typeof example.schema === 'object'
+  (example) => example.schema && typeof example.schema === 'object',
 );
 
 describe('every example schema compiles', () => {
@@ -34,7 +34,7 @@ describe('every example schema compiles', () => {
     '%s',
     (_name, example) => {
       expect(() => demoAjv.compile(example.schema as any)).not.toThrow();
-    }
+    },
   );
 });
 
@@ -54,7 +54,7 @@ describe('the validator the demo needs', () => {
       }
     });
     expect(offenders.map((example) => example.name)).toContain(
-      'spec-temporal-controls'
+      'spec-temporal-controls',
     );
   });
 });

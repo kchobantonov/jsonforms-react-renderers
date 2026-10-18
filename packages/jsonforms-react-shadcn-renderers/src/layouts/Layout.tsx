@@ -17,7 +17,7 @@ export const ShadcnLayout = ({
   const elements = useEffectiveElements(
     layout.elements ?? [],
     props.path,
-    props.config
+    props.config,
   );
   if (!props.visible) return null;
   const gap = resolveGap(layout.options, props.config, direction, {
@@ -43,7 +43,7 @@ export const ShadcnLayout = ({
               direction,
               grid,
               gap,
-              layout.options?.minItemWidth
+              layout.options?.minItemWidth,
             ).style
           }
         >

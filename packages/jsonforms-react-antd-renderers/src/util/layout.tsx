@@ -41,7 +41,7 @@ export const renderLayoutElements = (
   layoutOptions: LayoutContainerOptions | undefined,
   config: unknown,
   renderers?: JsonFormsRendererRegistryEntry[],
-  cells?: JsonFormsCellRendererRegistryEntry[]
+  cells?: JsonFormsCellRendererRegistryEntry[],
 ) => {
   const grid = resolveGridColumns(layoutOptions, config);
   const gap = resolveGap(layoutOptions, config, direction);
@@ -60,7 +60,7 @@ export const renderLayoutElements = (
             direction,
             grid,
             gap,
-            layoutOptions?.minItemWidth
+            layoutOptions?.minItemWidth,
           );
           const all = [...diagnostics, ...legacySizingDiagnostics(child)];
           return (
@@ -112,12 +112,11 @@ const AntdLayoutRendererComponent = ({
     layoutOptions,
     config,
     renderers,
-    cells
+    cells,
   );
 };
 export const AntdLayoutRenderer = React.memo(AntdLayoutRendererComponent);
 
-export interface AntdLabelableLayoutRendererProps
-  extends AntdLayoutRendererProps {
+export interface AntdLabelableLayoutRendererProps extends AntdLayoutRendererProps {
   label?: string;
 }

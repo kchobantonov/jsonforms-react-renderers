@@ -13,12 +13,12 @@ export const createAgGridControl = (components: EditorRendererComponents) =>
   createLazyControl(
     async () =>
       (await import('./AgGridControlRenderer.impl')).createAgGridControl(
-        components
+        components,
       ) as React.ComponentType<ControlProps>,
     components,
-    { loading: 'grid.loading', error: 'grid.loadError' }
+    { loading: 'grid.loading', error: 'grid.loadError' },
   );
 
 export const createAgGridControlRenderer = (
-  components: EditorRendererComponents
+  components: EditorRendererComponents,
 ) => withJsonFormsControlProps(createAgGridControl(components));

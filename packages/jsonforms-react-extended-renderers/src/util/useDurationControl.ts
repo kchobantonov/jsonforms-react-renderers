@@ -33,7 +33,7 @@ export const durationFields = Object.keys(emptyDurationParts) as Array<
 
 /** The components, in magnitude order. Weeks is a mode and is not among them. */
 export const durationComponentFields = durationFields.filter(
-  (field) => field !== 'weeks'
+  (field) => field !== 'weeks',
 ) as Array<Exclude<keyof ExtendedDurationParts, 'weeks'>>;
 
 export type DurationMode = 'weeks' | 'components';
@@ -77,7 +77,7 @@ const defaultComponentField: keyof ExtendedDurationParts = 'hours';
  */
 export const durationFieldMax = Number.MAX_SAFE_INTEGER;
 export const parseExtendedDuration = (
-  value: unknown
+  value: unknown,
 ): ExtendedDurationParts | null => {
   if (typeof value !== 'string') return null;
   const text = value.trim();
@@ -85,7 +85,7 @@ export const parseExtendedDuration = (
   if (weeks) return { ...emptyDurationParts, weeks: Number(weeks[1]) };
   const match =
     /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/i.exec(
-      text
+      text,
     );
   if (!match || !match.slice(1).some(Boolean) || /T$/i.test(text)) return null;
   const [, years, months, days, hours, minutes, seconds] = match;
@@ -105,7 +105,7 @@ export const formatExtendedDuration = (parts: ExtendedDurationParts) => {
     Object.entries(parts).map(([key, value]) => [
       key,
       Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0,
-    ])
+    ]),
   ) as ExtendedDurationParts;
   if (safe.weeks) return `P${safe.weeks}W`;
   const date = `${safe.years ? `${safe.years}Y` : ''}${
@@ -184,7 +184,7 @@ export const useDurationControl = (props: ControlProps) => {
 
   const openFields = (parts: ExtendedDurationParts) => {
     const withValues = durationComponentFields.filter(
-      (field) => parts[field] > 0
+      (field) => parts[field] > 0,
     );
     return withValues.length ? withValues : [defaultComponentField];
   };
@@ -250,7 +250,7 @@ export const useDurationControl = (props: ControlProps) => {
     addField: (key: keyof ExtendedDurationParts) => {
       if (disabled || key === 'weeks') return;
       setShown((current) =>
-        current.includes(key) ? current : [...current, key]
+        current.includes(key) ? current : [...current, key],
       );
     },
     /** Hides a unit *and clears it*, so the value matches what is on screen. */

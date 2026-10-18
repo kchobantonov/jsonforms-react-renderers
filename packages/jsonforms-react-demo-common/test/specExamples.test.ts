@@ -1,5 +1,5 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import catalog from '@chobantonov/jsonforms-extended-spec/examples/catalog.json';
 import examples, {
   SPEC_EXAMPLE_LABEL_PREFIX,
@@ -11,7 +11,7 @@ import examples, {
 import translations from '@chobantonov/jsonforms-extended-spec/examples/container-validation-indicator/translations.json';
 
 const example = examples.find(
-  (e) => e.name === 'spec-container-validation-indicator'
+  (e) => e.name === 'spec-container-validation-indicator',
 );
 
 describe('spec examples', () => {
@@ -20,13 +20,13 @@ describe('spec examples', () => {
       examples
         .filter((e) => isSpecExample(e.name))
         .map((e) => e.name)
-        .sort()
+        .sort(),
     ).toEqual(catalog.map((e) => `${SPEC_EXAMPLE_NAME_PREFIX}${e.id}`).sort());
   });
   test('are registered into the demo list', () => {
     expect(example).toBeDefined();
     expect(example?.label).toBe(
-      `${SPEC_EXAMPLE_LABEL_PREFIX}Container validation indicator`
+      `${SPEC_EXAMPLE_LABEL_PREFIX}Container validation indicator`,
     );
     expect(example?.name.startsWith(SPEC_EXAMPLE_NAME_PREFIX)).toBe(true);
   });
@@ -51,7 +51,7 @@ describe('spec examples', () => {
   test('bind a translator to English, with the catalog reachable', () => {
     expect(example?.i18n?.locale).toBe('en');
     expect(
-      example?.i18n?.translate?.('validation.containerErrors', 'fallback')
+      example?.i18n?.translate?.('validation.containerErrors', 'fallback'),
     ).toContain('error');
   });
 
@@ -66,13 +66,13 @@ describe('spec examples', () => {
     expect(Object.keys(translations).sort()).toEqual(['bg', 'en']);
     // Same keys in both, so neither locale silently falls back to English.
     expect(Object.keys(translations.bg).sort()).toEqual(
-      Object.keys(translations.en).sort()
+      Object.keys(translations.en).sort(),
     );
     const bg = translatorFor(translations, 'bg');
     expect(bg('error.required', 'fb')).toBe('Полето е задължително.');
     // An unknown locale yields an empty catalog, so every lookup falls back.
     expect(translatorFor(translations, 'de')('error.required', 'fb')).toBe(
-      'fb'
+      'fb',
     );
   });
 });
@@ -97,7 +97,7 @@ describe('numeric controls example', () => {
 
   test('covers integer entry, number entry and a slider', () => {
     const controls = exampleElements(example!.uischema as any).filter(
-      (e: any) => e.type === 'Control'
+      (e: any) => e.type === 'Control',
     );
     expect(controls.map((c: any) => c.scope)).toEqual([
       '#/properties/quantity',
@@ -108,10 +108,10 @@ describe('numeric controls example', () => {
       '#/properties/discountPercent',
     ]);
     expect(controls.find((c: any) => c.options?.slider === true).scope).toBe(
-      '#/properties/discountPercent'
+      '#/properties/discountPercent',
     );
     expect(
-      controls.filter((c: any) => c.options?.step !== undefined)
+      controls.filter((c: any) => c.options?.step !== undefined),
     ).toHaveLength(2);
   });
 
@@ -127,7 +127,7 @@ describe('numeric controls example', () => {
   test('ships matching English and Bulgarian keyword messages', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
     expect(catalogs.en['error.multipleOf']).toContain('{multipleOf}');
   });
@@ -149,7 +149,7 @@ describe('boolean controls example', () => {
     // checkbox, switch, checkbox group, and a table carrying both cells
     expect(scopes).toContain('#/properties/notifications');
     expect(controls.find((c: any) => c.options?.toggle === true).scope).toBe(
-      '#/properties/remoteWorker'
+      '#/properties/remoteWorker',
     );
     expect(scopes).toContain('#/properties/channels');
     const table = controls.find((c: any) => c.options?.table === true);
@@ -174,7 +174,7 @@ describe('boolean controls example', () => {
   test('ships matching catalogs including the boolean state strings', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
     expect(catalogs.bg['boolean.notSet']).toBe('Не е зададено');
   });
@@ -185,18 +185,18 @@ describe('choice and password examples', () => {
   const password = examples.find((e) => e.name === 'spec-password-control');
   const controls = (example: any) =>
     exampleElements(example.uischema as any).filter(
-      (e: any) => e.type === 'Control'
+      (e: any) => e.type === 'Control',
     );
 
   test('choice example shows radio groups in both orientations', () => {
     const radios = controls(choice).filter(
-      (c: any) => c.options?.format === 'radio'
+      (c: any) => c.options?.format === 'radio',
     );
     expect(radios.filter((c: any) => c.options.vertical === true)).toHaveLength(
-      2
+      2,
     );
     expect(
-      radios.filter((c: any) => c.options.vertical === undefined)
+      radios.filter((c: any) => c.options.vertical === undefined),
     ).not.toHaveLength(0);
   });
 
@@ -215,7 +215,7 @@ describe('choice and password examples', () => {
     const bySchemaFormat = (password!.schema as any).properties.password.format;
     expect(bySchemaFormat).toBe('password');
     const byUiOption = controls(password).find(
-      (c: any) => c.scope === '#/properties/recoveryPhrase'
+      (c: any) => c.scope === '#/properties/recoveryPhrase',
     );
     expect(byUiOption.options.format).toBe('password');
     // ...and the plain string beside them has neither.
@@ -224,7 +224,7 @@ describe('choice and password examples', () => {
 
   test('password example demonstrates the otp variant and its precondition', () => {
     const otp = controls(password).filter(
-      (c: any) => c.options?.variant === 'otp'
+      (c: any) => c.options?.variant === 'otp',
     );
     expect(otp.map((c: any) => c.scope)).toEqual([
       '#/properties/verificationCode',
@@ -249,7 +249,7 @@ describe('choice and password examples', () => {
 
   test('password example masks a column in a table too', () => {
     const table = controls(password).find(
-      (c: any) => c.options?.table === true
+      (c: any) => c.options?.table === true,
     );
     expect(table.scope).toBe('#/properties/serviceAccounts');
     const items = (password!.schema as any).properties.serviceAccounts.items;
@@ -258,7 +258,7 @@ describe('choice and password examples', () => {
 
   test('sample people have English names', () => {
     const names = JSON.stringify(
-      examples.filter((e) => e.name.startsWith('spec-')).map((e) => e.data)
+      examples.filter((e) => e.name.startsWith('spec-')).map((e) => e.data),
     );
     for (const cyrillic of ['Петров', 'Мира', 'Иван']) {
       expect(names).not.toContain(cyrillic);
@@ -271,7 +271,7 @@ describe('color controls example', () => {
   const example = examples.find((e) => e.name === 'spec-color-control');
   const controls = () =>
     exampleElements(example!.uischema as any).filter(
-      (e: any) => e.type === 'Control'
+      (e: any) => e.type === 'Control',
     );
   const data = () => example!.data as Record<string, string>;
   const saveFormatOf = (scope: string) =>
@@ -313,13 +313,13 @@ describe('color controls example', () => {
     expect(schema.properties.statusDot.format).toBeUndefined();
     expect(
       controls().find((c: any) => c.scope === '#/properties/statusDot').options
-        .format
+        .format,
     ).toBe('color');
   });
 
   test('has a picker-only field, and only that one', () => {
     const pickerOnly = controls().filter(
-      (c: any) => c.options?.colorTextEntry === false
+      (c: any) => c.options?.colorTextEntry === false,
     );
     expect(pickerOnly.map((c: any) => c.scope)).toEqual([
       '#/properties/printSpot',
@@ -339,7 +339,7 @@ describe('color controls example', () => {
     expect(schema.properties.legacyBadge.pattern).toBe('^#[0-9a-fA-F]{3}$');
     expect(data().legacyBadge).toBe('#ed5050');
     expect(data().legacyBadge).not.toMatch(
-      new RegExp(schema.properties.legacyBadge.pattern)
+      new RegExp(schema.properties.legacyBadge.pattern),
     );
   });
 
@@ -357,7 +357,7 @@ describe('color controls example', () => {
   test('translates the entry hints and the hex3 guidance in both locales', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
     expect(catalogs.en['color.placeholder.hsb']).toBe('hsb(h, s%, b%)');
     // No hint for a format that is never written.
@@ -373,13 +373,13 @@ describe('categorization example', () => {
     exampleElements(example!.uischema as any).filter(
       (e: any) =>
         e.type === 'Categorization' &&
-        e.elements.some((c: any) => c.name === 'contact')
+        e.elements.some((c: any) => c.name === 'contact'),
     );
   const variantOf = (c: any) => c.options?.variant;
 
   test('is registered with the Spec prefix', () => {
     expect(example?.label).toBe(
-      'Spec: Categorization: tabs, stepper, accordion'
+      'Spec: Categorization: tabs, stepper, accordion',
     );
     expect(isSpecExample(example!.name)).toBe(true);
   });
@@ -390,7 +390,7 @@ describe('categorization example', () => {
     // The same four categories in each, so switching presentation is visibly
     // the only difference.
     const names = all.map((c: any) =>
-      c.elements.map((category: any) => category.name)
+      c.elements.map((category: any) => category.name),
     );
     expect(names[0]).toEqual(['contact', 'planning', 'business', 'notes']);
     expect(names[1]).toEqual(names[0]);
@@ -399,19 +399,19 @@ describe('categorization example', () => {
 
   test('opens the accordion on a category named by options.initial', () => {
     const accordion = categorizations().find(
-      (c: any) => variantOf(c) === 'accordion'
+      (c: any) => variantOf(c) === 'accordion',
     );
     expect(accordion.options.initial).toBe('planning');
     // `initial` names a Category `name`, not a label or an index.
     expect(
-      accordion.elements.some((c: any) => c.name === accordion.options.initial)
+      accordion.elements.some((c: any) => c.name === accordion.options.initial),
     ).toBe(true);
   });
 
   test('hides a category by its own rule, in every presentation', () => {
     for (const categorization of categorizations()) {
       const business = categorization.elements.find(
-        (c: any) => c.name === 'business'
+        (c: any) => c.name === 'business',
       );
       expect(business.rule.effect).toBe('SHOW');
       expect(business.rule.condition.scope).toBe('#/properties/isBusiness');
@@ -448,7 +448,7 @@ describe('categorization example', () => {
   test('ships matching English and Bulgarian catalogs', () => {
     const catalogs = (example as any).translations;
     expect(Object.keys(catalogs.bg).sort()).toEqual(
-      Object.keys(catalogs.en).sort()
+      Object.keys(catalogs.en).sort(),
     );
     expect(catalogs.en['category.planning.label']).toBe('Planning');
     expect(catalogs.bg['group.dataIndicator']).toBe('Секцията съдържа данни');

@@ -137,7 +137,7 @@ export const createAgGridControl = ({
   const AgGridControl = (props: ControlProps) => {
     const collectionErrors = usePathErrorIndicator(
       props.path,
-      props.uischema.options
+      props.uischema.options,
     );
     const anchor = useRef<HTMLDivElement>(null);
     const gridApi = useRef<any>();
@@ -149,7 +149,7 @@ export const createAgGridControl = ({
     const { isDark } = useEditorAppearance(
       anchor,
       props.uischema.options?.theme,
-      hostTheme?.isDark
+      hostTheme?.isDark,
     );
     // Only variables the host actually provides are emitted; the rest fall back
     // to the light-dark() defaults baked into the theme above.
@@ -169,7 +169,7 @@ export const createAgGridControl = ({
         ['--jsonforms-ag-grid-font-family', hostTheme?.fontFamily],
       ];
       return Object.fromEntries(
-        entries.filter(([, value]) => Boolean(value))
+        entries.filter(([, value]) => Boolean(value)),
       ) as React.CSSProperties;
     }, [hostTheme]);
     const [selected, setSelected] = useState<number[]>([]);
@@ -188,7 +188,7 @@ export const createAgGridControl = ({
     const object = items?.type === 'object' || Boolean(items?.properties);
     const options = useMemo(
       () => ({ ...props.config, ...props.uischema.options }),
-      [props.config, props.uischema.options]
+      [props.config, props.uischema.options],
     );
     const editable =
       props.enabled && !props.readonly && !(props.schema as any).readOnly;
@@ -279,7 +279,7 @@ export const createAgGridControl = ({
           </span>
         ),
       }),
-      []
+      [],
     );
     const showSortButtons = Boolean(options.showSortButtons);
     // `cells: { <field>: { summary, detail } }` from the uischema: how a
@@ -290,7 +290,7 @@ export const createAgGridControl = ({
     >;
     const summaryCache = useMemo(
       () => new Map<unknown, Map<unknown, string>>(),
-      [formContext.core?.data, formContext.i18n, props.config, cellOptions]
+      [formContext.core?.data, formContext.i18n, props.config, cellOptions],
     );
     const summaryValue = (label: any, item: unknown) => {
       let values = summaryCache.get(label);
@@ -305,7 +305,7 @@ export const createAgGridControl = ({
         item,
         props.config,
         formContext.i18n?.locale,
-        formContext.i18n?.translate
+        formContext.i18n?.translate,
       );
       if (values.size >= 1000) values.delete(values.keys().next().value);
       values.set(item, text);
@@ -321,7 +321,7 @@ export const createAgGridControl = ({
         schema.title,
         formContext.i18n?.translate ?? ((_key, fallback) => fallback ?? ''),
         summaryDefault,
-        schema
+        schema,
       );
     const summaryValueRef = useRef(summaryValue);
     summaryValueRef.current = summaryValue;
@@ -334,10 +334,10 @@ export const createAgGridControl = ({
                 ...Object.fromEntries(
                   (props.uischema.options?.columnDefs ?? [])
                     .filter((c: TableColumnDefinition) => c.scope === '#')
-                    .map((c: TableColumnDefinition) => [c.field, items])
+                    .map((c: TableColumnDefinition) => [c.field, items]),
                 ),
               }
-            : { value: items ?? {} }
+            : { value: items ?? {} },
         ).map(([field, schema]) => ({
           colId: field,
           headerName: schema.title ?? field,
@@ -359,29 +359,31 @@ export const createAgGridControl = ({
             (cellOptions?.[field]?.summary as any)?.type === 'Label'
               ? summaryValueRef.current(
                   cellOptions[field].summary,
-                  event.data?.value
+                  event.data?.value,
                 )
               : (cellOptions?.[field]?.summary as any)?.type === 'Control'
-              ? controlSummaryRef.current(
-                  cellOptions[field].summary,
-                  object ? event.data?.value?.[field] : event.data?.value,
-                  schema
-                )
-              : fileFilterValue(
-                  object ? event.data?.value?.[field] : event.data?.value,
-                  schema,
-                  props.rootSchema
-                ) ?? (object ? event.data?.value?.[field] : event.data?.value),
+                ? controlSummaryRef.current(
+                    cellOptions[field].summary,
+                    object ? event.data?.value?.[field] : event.data?.value,
+                    schema,
+                  )
+                : (fileFilterValue(
+                    object ? event.data?.value?.[field] : event.data?.value,
+                    schema,
+                    props.rootSchema,
+                  ) ??
+                  (object ? event.data?.value?.[field] : event.data?.value)),
           cellRenderer: (event: { data: { index: number } }) => {
             const rowBound = props.uischema.options?.columnDefs?.some(
-              (c: TableColumnDefinition) => c.field === field && c.scope === '#'
+              (c: TableColumnDefinition) =>
+                c.field === field && c.scope === '#',
             );
             const cellSchema =
               object && !rowBound
                 ? (Resolve.schema(
                     items as JsonSchema,
                     `#/properties/${field}`,
-                    props.rootSchema
+                    props.rootSchema,
                   ) as JsonSchema)
                 : (items as JsonSchema);
             const cellUiSchema = {
@@ -399,7 +401,7 @@ export const createAgGridControl = ({
               object && !rowBound
                 ? composePaths(
                     composePaths(props.path, String(event.data.index)),
-                    field
+                    field,
                   )
                 : composePaths(props.path, String(event.data.index));
             return (
@@ -440,7 +442,7 @@ export const createAgGridControl = ({
         editable,
         cellOptions,
         props.uischema.options?.columnDefs,
-      ]
+      ],
     );
     // Let the uischema refine the generated columns: entries are matched by
     // field, and their order wins, so widths/filters can be tuned without the
@@ -449,7 +451,7 @@ export const createAgGridControl = ({
     const pagination = resolvePagination(
       props.uischema.options?.pagination,
       props.config,
-      'array'
+      'array',
     );
     const portable = props.uischema.options?.columnDefs as
       | TableColumnDefinition[]
@@ -457,11 +459,11 @@ export const createAgGridControl = ({
     const portableFields = tableColumnFields(
       Object.fromEntries(columns.map((column) => [column.colId!, true])),
       portable,
-      columns.map((column) => column.colId!)
+      columns.map((column) => column.colId!),
     );
     const mergeColumn = (definition: ColDef): ColDef => {
       const generated = columns.find(
-        (column) => column.colId === (definition.field ?? definition.colId)
+        (column) => column.colId === (definition.field ?? definition.colId),
       );
       return {
         ...generated,
@@ -477,7 +479,7 @@ export const createAgGridControl = ({
       definitions.map((definition) =>
         definition.children
           ? { ...definition, children: nativeColumns(definition.children) }
-          : mergeColumn(definition)
+          : mergeColumn(definition),
       );
     const resolvedColumns: ColDef[] =
       agGridOptions.columnDefs !== undefined
@@ -492,9 +494,9 @@ export const createAgGridControl = ({
                   }
                 : {}),
               ...tableColumnStyle(
-                portable?.find((column) => column.field === field)
+                portable?.find((column) => column.field === field),
               ),
-            } as ColDef)
+            } as ColDef),
           );
     const markRequiredHeaders = (definitions: ColDef[]) => {
       definitions.forEach((definition: any) => {
@@ -572,7 +574,7 @@ export const createAgGridControl = ({
           const remove = () => {
             props.handleChange(
               props.path,
-              rows.filter((_row, index) => !selected.includes(index))
+              rows.filter((_row, index) => !selected.includes(index)),
             );
             setSelected([]);
           };
@@ -619,7 +621,9 @@ export const createAgGridControl = ({
             <ShowDetailsIcon />
           ) : undefined,
         label: detail.t(
-          detail.panelOpen ? 'collection.hideDetails' : 'collection.showDetails'
+          detail.panelOpen
+            ? 'collection.hideDetails'
+            : 'collection.showDetails',
         ),
         onClick: () => detail.setPanelOpen((open) => !open),
       });
@@ -661,7 +665,7 @@ export const createAgGridControl = ({
                 detail.options?.presentation === 'panel' &&
                 detail.panelOpen
                   ? '100%'
-                  : options.height ?? 400,
+                  : (options.height ?? 400),
               minWidth: 0,
             }}
           >
@@ -691,8 +695,8 @@ export const createAgGridControl = ({
                     if (node.rowIndex != null) {
                       event.api.paginationGoToPage(
                         Math.floor(
-                          node.rowIndex / event.api.paginationGetPageSize()
-                        )
+                          node.rowIndex / event.api.paginationGetPageSize(),
+                        ),
                       );
                       event.api.ensureIndexVisible(node.rowIndex);
                     }
@@ -721,7 +725,7 @@ export const createAgGridControl = ({
                 setSorted(
                   event.api
                     .getColumnState()
-                    .some((column) => Boolean(column.sort))
+                    .some((column) => Boolean(column.sort)),
                 );
                 userSortChanged?.(event);
               }}
@@ -737,7 +741,7 @@ export const createAgGridControl = ({
                   !(
                     event.event?.target instanceof Element &&
                     event.event.target.closest(
-                      '.ag-selection-checkbox, .ag-row-drag'
+                      '.ag-selection-checkbox, .ag-row-drag',
                     )
                   )
                 ) {
@@ -798,7 +802,7 @@ export const createAgGridControl = ({
               const node = api?.getRowNode(String(index));
               if (node?.rowIndex != null) {
                 api.paginationGoToPage(
-                  Math.floor(node.rowIndex / api.paginationGetPageSize())
+                  Math.floor(node.rowIndex / api.paginationGetPageSize()),
                 );
                 api.ensureIndexVisible(node.rowIndex);
               }

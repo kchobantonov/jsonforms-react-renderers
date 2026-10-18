@@ -36,7 +36,7 @@ export type AntdExtendedRendererOptions = {
 };
 
 export const createAntdExtendedRenderers = (
-  options: AntdExtendedRendererOptions = {}
+  options: AntdExtendedRendererOptions = {},
 ): JsonFormsRendererRegistryEntry[] => {
   return [
     { tester: extendedAgGridTester, renderer: AntdAgGridControlRenderer },

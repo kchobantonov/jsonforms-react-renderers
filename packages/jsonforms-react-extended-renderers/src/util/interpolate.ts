@@ -156,7 +156,7 @@ export interface NamespaceScopeInput {
  * than quietly resolving.
  */
 export const buildNamespaceScope = (
-  input: NamespaceScopeInput
+  input: NamespaceScopeInput,
 ): Record<string, unknown> => {
   const scope: Record<string, unknown> = { locale: input.locale ?? 'en' };
   if (input.dynamicAllowed) {
@@ -197,7 +197,7 @@ export const RESERVED_TEXT_NAMES = ['locale'];
  */
 export const buildTextScope = (
   params: Record<string, unknown>,
-  locale: string | undefined
+  locale: string | undefined,
 ): Record<string, unknown> => ({
   ...params,
   // Assigned last: a reserved name is not shadowed by a parameter.
@@ -206,13 +206,13 @@ export const buildTextScope = (
 
 /** `textParams` entries that collide with a reserved name, so they can be reported. */
 export const reservedParamNames = (
-  textParams: Record<string, unknown> | undefined
+  textParams: Record<string, unknown> | undefined,
 ): string[] =>
   Object.keys(textParams ?? {}).filter((name) =>
-    RESERVED_TEXT_NAMES.includes(name)
+    RESERVED_TEXT_NAMES.includes(name),
   );
 
 /** Whether an element asks for interpolation at all. */
 export const wantsInterpolation = (
-  options: Record<string, unknown> | undefined
+  options: Record<string, unknown> | undefined,
 ): boolean => options?.['interpolate'] === true;

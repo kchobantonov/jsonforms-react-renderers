@@ -92,13 +92,13 @@ export const RactiveTemplate = ({
     if (!container) return;
     sanitize();
     const found = Array.from(
-      container.querySelectorAll<HTMLElement>(`[${SLOT_ATTR}]`)
+      container.querySelectorAll<HTMLElement>(`[${SLOT_ATTR}]`),
     ).map((el) => ({ name: el.getAttribute(SLOT_ATTR) ?? '', el }));
     setPlaceholders((current) =>
       current.length === found.length &&
       current.every((slot, index) => slot.el === found[index].el)
         ? current
-        : found
+        : found,
     );
   };
 
@@ -150,7 +150,7 @@ export const RactiveTemplate = ({
       {placeholders.map(({ name, el }) =>
         slots[name] === undefined
           ? null
-          : createPortal(slots[name], el, `slot-${name}`)
+          : createPortal(slots[name], el, `slot-${name}`),
       )}
     </>
   );

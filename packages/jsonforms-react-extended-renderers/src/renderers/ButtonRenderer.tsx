@@ -116,7 +116,7 @@ export type ButtonRendererOptions = {
       pending: boolean;
       color?: ButtonSemanticColor;
       icon?: string;
-    }
+    },
   ) => Record<string, any>;
 };
 
@@ -129,7 +129,7 @@ export type ButtonRendererOptions = {
  */
 const runScript = async (
   script: ButtonScript,
-  source: ActionEvent
+  source: ActionEvent,
 ): Promise<void> => {
   if (typeof script === 'function') {
     /*
@@ -149,7 +149,7 @@ const runScript = async (
 
 export const buttonRendererTester: RankedTester = rankWith(
   2,
-  uiTypeIs('Button')
+  uiTypeIs('Button'),
 );
 
 const DIAGNOSTIC_STYLE: React.CSSProperties = {
@@ -254,11 +254,11 @@ export const createButtonRenderer = ({
     */
     useEffect(() => {
       if (element.action !== undefined && element.script !== undefined) {
-        // eslint-disable-next-line no-console
+        // oxlint-disable-next-line no-console
         console.warn(
           `action.conflict: ${JSON.stringify(
-            label
-          )} declares both an action and a script, which are mutually exclusive. The action is used.`
+            label,
+          )} declares both an action and a script, which are mutually exclusive. The action is used.`,
         );
       }
     }, [element.action, element.script, label]);
@@ -315,7 +315,7 @@ export const createButtonRenderer = ({
   };
 
   return withJsonFormsLayoutProps(
-    withTranslateProps(ButtonRenderer as any) as any
+    withTranslateProps(ButtonRenderer as any) as any,
   );
 };
 

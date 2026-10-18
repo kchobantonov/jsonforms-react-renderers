@@ -12,7 +12,7 @@ it('renders mixed table cells from the spec example', async () => {
   const root = createRoot(host);
   try {
     const category = ui.elements[0].elements.find(
-      (c) => c.i18n === 'mixedCells.navigation'
+      (c) => c.i18n === 'mixedCells.navigation',
     ) as any;
     await act(async () =>
       root.render(
@@ -22,8 +22,8 @@ it('renders mixed table cells from the spec example', async () => {
           uischema={category.elements[0]}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(host.textContent).not.toContain('No applicable cell');
     expect(host.querySelector('table')).not.toBeNull();

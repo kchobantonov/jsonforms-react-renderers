@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -70,8 +70,8 @@ const render = (value: any, data: any, variant: string, options?: any) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return {
     container,
@@ -90,11 +90,11 @@ describe('the chips control', () => {
     const { chips, unmount } = render(
       freeItems(),
       { value: ['a', 'b'] },
-      'chips'
+      'chips',
     );
     await settle();
     expect(
-      chips().map((chip) => chip.textContent?.replace(/\s*$/, ''))
+      chips().map((chip) => chip.textContent?.replace(/\s*$/, '')),
     ).toEqual(['a', 'b']);
     unmount();
   });
@@ -104,7 +104,7 @@ describe('the chips control', () => {
     const { chips, unmount } = render(
       freeItems(),
       { value: ['a', 'a'] },
-      'chips'
+      'chips',
     );
     await settle();
     expect(chips()).toHaveLength(2);
@@ -115,7 +115,7 @@ describe('the chips control', () => {
     const { chips, stored, unmount } = render(
       freeItems(),
       { value: ['keep', 'drop', 'keep'] },
-      'chips'
+      'chips',
     );
     await settle();
     const close = chips()[2].querySelector<HTMLElement>('.ant-tag-close-icon');
@@ -130,13 +130,13 @@ describe('the chips control', () => {
     const { container, stored, unmount } = render(
       freeItems(),
       { value: [] },
-      'chips'
+      'chips',
     );
     await settle();
     const field = container.querySelector<HTMLInputElement>('input')!;
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!;
     act(() => {
       setter.call(field, 'partial');
@@ -148,7 +148,7 @@ describe('the chips control', () => {
 
     act(() => {
       field.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
       );
     });
     await settle();
@@ -169,7 +169,7 @@ describe('the chips control', () => {
     const { chips, stored, unmount } = render(
       enumItems(),
       { value: ['Email', 'Fax'] },
-      'chips'
+      'chips',
     );
     await settle();
     expect(chips()).toHaveLength(2);
@@ -182,7 +182,7 @@ describe('the chips control', () => {
       freeItems({ minItems: 2 }),
       { value: ['a', 'b'] },
       'chips',
-      { restrict: true }
+      { restrict: true },
     );
     await settle();
     expect(chips()[0].querySelector('.ant-tag-close-icon')).toBeNull();
@@ -195,7 +195,7 @@ describe('the multi-select control', () => {
     const { container, unmount } = render(
       enumItems(),
       { value: ['Email', 'SMS'] },
-      'multi-select'
+      'multi-select',
     );
     await settle();
     expect(container.querySelector('[data-multi-select]')).toBeTruthy();
@@ -217,7 +217,7 @@ describe('the multi-select control', () => {
         },
       },
       { value: ['eng'] },
-      'multi-select'
+      'multi-select',
     );
     await settle();
     expect(container.textContent).toContain('Engineering');
@@ -229,7 +229,7 @@ describe('the multi-select control', () => {
     const { container, stored, unmount } = render(
       enumItems(),
       { value: ['Email', 'Fax'] },
-      'multi-select'
+      'multi-select',
     );
     await settle();
     expect(container.textContent).toContain('Fax');

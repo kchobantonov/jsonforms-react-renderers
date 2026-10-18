@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { createExtendedRenderers } from '../src';
@@ -23,8 +23,8 @@ const render = (uischema: any, config?: any, i18n?: any) => {
         config={config}
         i18n={i18n}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return {
     container,
@@ -79,7 +79,7 @@ describe('Link renderer', () => {
 
     it('keeps an author-supplied rel and adds to it', () => {
       const { anchor, unmount } = render(
-        link({ target: '_blank', rel: 'nofollow' })
+        link({ target: '_blank', rel: 'nofollow' }),
       );
       const rel = anchor!.getAttribute('rel')!.split(' ');
       expect(rel).toContain('nofollow');
@@ -96,7 +96,7 @@ describe('Link renderer', () => {
     it('never duplicates a token', () => {
       expect(linkRel('_blank', 'noopener')).toBe('noopener noreferrer');
       expect(linkRel('_blank', 'noopener noreferrer')).toBe(
-        'noopener noreferrer'
+        'noopener noreferrer',
       );
       expect(linkRel(undefined, undefined)).toBeUndefined();
     });
@@ -133,7 +133,7 @@ describe('Link renderer', () => {
       };
       expect(render(link({ href: '/help' }), httpsOnly).anchor).toBeNull();
       expect(
-        render(link({ href: 'https://example.com' }), httpsOnly).anchor
+        render(link({ href: 'https://example.com' }), httpsOnly).anchor,
       ).toBeTruthy();
     });
   });
@@ -143,7 +143,7 @@ describe('Link renderer', () => {
     const { anchor, unmount } = render(link({ i18n: 'help' }), undefined, {
       locale: 'bg',
       translate: createTranslator((key, fallback) =>
-        key === 'help.label' ? 'Помощ' : fallback
+        key === 'help.label' ? 'Помощ' : fallback,
       ),
     });
     expect(anchor!.textContent).toBe('Помощ');

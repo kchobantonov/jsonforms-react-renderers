@@ -77,7 +77,7 @@ export const ShadcnCategorizationLayout = (props: LayoutProps) => {
     ctx.core?.ajv,
     props.config,
     undefined,
-    variant === 'accordion'
+    variant === 'accordion',
   );
   if (!props.visible || categories.length === 0) return null;
   const key = (category: Category, index: number) =>
@@ -103,7 +103,7 @@ export const ShadcnCategorizationLayout = (props: LayoutProps) => {
       <div className='shadcn-jsonforms-categorization space-y-1'>
         {categories.map((category, index) => {
           const categoryId = `${baseId}-${encodeURIComponent(
-            key(category, index)
+            key(category, index),
           )}`;
           const expanded = index === active;
           return (
@@ -234,14 +234,14 @@ export const categorizationAccordionTester = rankWith(
   and(
     uiTypeIs('Categorization'),
     categorizationHasCategory,
-    optionIs('variant', 'accordion')
-  )
+    optionIs('variant', 'accordion'),
+  ),
 );
 export const categorizationStepperTester = rankWith(
   2,
   and(
     uiTypeIs('Categorization'),
     categorizationHasCategory,
-    optionIs('variant', 'stepper')
-  )
+    optionIs('variant', 'stepper'),
+  ),
 );

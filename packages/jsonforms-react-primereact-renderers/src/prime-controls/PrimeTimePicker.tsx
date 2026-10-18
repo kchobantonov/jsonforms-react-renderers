@@ -44,7 +44,7 @@ const TIME_PICKER_STYLE = {
 
 export const PrimeTimePicker = React.memo(function PrimeTimePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof Calendar> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof Calendar> },
 ) {
   const {
     data,
@@ -67,7 +67,7 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
-    [path, handleChange, saveFormat]
+    [path, handleChange, saveFormat],
   );
 
   const value = getData(data, [

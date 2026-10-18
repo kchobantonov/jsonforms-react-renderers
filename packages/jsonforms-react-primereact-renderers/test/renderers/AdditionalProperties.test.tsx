@@ -30,7 +30,7 @@ const additionalPropertiesRenderer = withJsonFormsControlProps(
       schema={props.schema}
       uischema={props.uischema as ControlElement}
     />
-  )
+  ),
 );
 
 describe('AdditionalProperties', () => {
@@ -86,16 +86,16 @@ describe('AdditionalProperties', () => {
             type: 'Control',
             scope: '#/properties/additionalPropertiesMap',
           }}
-        />
+        />,
       );
     });
 
     const input = container.querySelector(
-      'input[placeholder="Property name"]'
+      'input[placeholder="Property name"]',
     ) as HTMLInputElement;
     const setInputValue = Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )?.set;
 
     act(() => {
@@ -105,10 +105,10 @@ describe('AdditionalProperties', () => {
 
     expect(
       container.querySelector('.jsonforms-additional-properties-error')
-        ?.textContent
+        ?.textContent,
     ).toBe('Property name must match pattern: ^[A-Za-z_][A-Za-z0-9_]*$');
     expect(
-      (container.querySelector('button') as HTMLButtonElement).disabled
+      (container.querySelector('button') as HTMLButtonElement).disabled,
     ).toBe(true);
   });
 
@@ -146,19 +146,19 @@ describe('AdditionalProperties', () => {
             {
               tester: rankWith(
                 10,
-                schemaMatches((candidate) => candidate.type === 'object')
+                schemaMatches((candidate) => candidate.type === 'object'),
               ),
               renderer: additionalPropertiesRenderer,
             },
             {
               tester: rankWith(
                 100,
-                schemaMatches((candidate) => candidate.type === 'string')
+                schemaMatches((candidate) => candidate.type === 'string'),
               ),
               renderer: AjvProbe,
             },
           ]}
-        />
+        />,
       );
     });
 

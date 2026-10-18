@@ -1,7 +1,7 @@
 import { createDefaultValue } from '@jsonforms/core';
 import { clearedBranchValue } from '../src/combinators';
 import { createAjv } from '@jsonforms/core';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/tree-max-depth/schema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/tree-max-depth/data.json';
 import recursive from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/schema.json';
@@ -16,7 +16,7 @@ it('permits five levels and rejects a sixth without mutating file nodes', () => 
   leaf.children.push({ kind: 'file', name: 'Too deep' });
   expect(validate(value)).toBe(false);
   expect(validate.errors?.some((error) => error.keyword === 'maxItems')).toBe(
-    true
+    true,
   );
   const file = { populated: { kind: 'file', name: 'New file' } };
   expect(ajv.compile(recursive)(file)).toBe(true);
@@ -25,13 +25,13 @@ it('permits five levels and rejects a sixth without mutating file nodes', () => 
 
 it('starts nodes empty and keeps object-only array slots on clear', () => {
   expect(
-    createDefaultValue(recursive.definitions.node as any, recursive as any)
+    createDefaultValue(recursive.definitions.node as any, recursive as any),
   ).toEqual({});
   expect(
-    clearedBranchValue(true, [{ type: 'object' }, { type: 'object' }])
+    clearedBranchValue(true, [{ type: 'object' }, { type: 'object' }]),
   ).toEqual({});
   expect(clearedBranchValue(false, [{ type: 'object' }])).toBeUndefined();
   expect(
-    clearedBranchValue(true, [{ type: 'object' }, { type: 'null' }])
+    clearedBranchValue(true, [{ type: 'object' }, { type: 'null' }]),
   ).toBeUndefined();
 });

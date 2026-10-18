@@ -57,7 +57,7 @@ describe('PrimeReact renderer registries', () => {
         tsxTemplateLayoutTester,
         namedTemplateTester,
         slotRendererTester,
-      ])
+      ]),
     );
   });
 

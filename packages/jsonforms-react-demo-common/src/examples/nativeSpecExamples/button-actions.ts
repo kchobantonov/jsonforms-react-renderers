@@ -36,7 +36,7 @@ import uischema from '@chobantonov/jsonforms-extended-spec/examples/button-actio
 
 /** Records what a script did, so the example can show it happened. */
 const log = (message: string) => {
-  // eslint-disable-next-line no-console
+  // oxlint-disable-next-line no-console
   console.log(`[button-actions] ${message}`);
 };
 
@@ -131,11 +131,11 @@ const withTypescriptTab = (root: UISchemaElement): UISchemaElement => {
   const layout = root as unknown as Layoutish;
   const elements = layout.elements ?? [];
   const index = elements.findIndex(
-    (element) => (element as { type?: string }).type === 'Categorization'
+    (element) => (element as { type?: string }).type === 'Categorization',
   );
   if (index === -1) {
     throw new Error(
-      'button-actions: uischema.json no longer has a Categorization to add the TypeScript tab to.'
+      'button-actions: uischema.json no longer has a Categorization to add the TypeScript tab to.',
     );
   }
   const categorization = elements[index] as unknown as Layoutish;

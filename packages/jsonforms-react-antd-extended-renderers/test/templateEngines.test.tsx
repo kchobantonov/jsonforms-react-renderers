@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -58,7 +58,7 @@ const allowed = {
 const draw = (
   uischema: any,
   config?: any,
-  data: any = { firstName: 'Ada', note: 'keep me' }
+  data: any = { firstName: 'Ada', note: 'keep me' },
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -79,8 +79,8 @@ const draw = (
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
   return {
@@ -138,7 +138,7 @@ describe('choosing the engine', () => {
         lang: 'ractive',
         template: '<div>{data.firstName}</div>',
       },
-      allowed
+      allowed,
     );
     await settle();
     // Ractive needs `{{ }}`; a single brace is literal text, not an error.
@@ -153,7 +153,7 @@ describe('choosing the engine', () => {
         type: 'TemplateLayout',
         template: '<div data-out>Hi {data.firstName}</div>',
       },
-      { ...allowed, defaultTemplateLang: 'jsx' }
+      { ...allowed, defaultTemplateLang: 'jsx' },
     );
     await settle();
     expect(view.text()).toContain('Hi Ada');
@@ -167,7 +167,7 @@ describe('choosing the engine', () => {
         type: 'TemplateLayout',
         template: '<div data-out>Hi {{data.firstName}}</div>',
       },
-      allowed
+      allowed,
     );
     await settle();
     expect(view.text()).toContain('Hi Ada');
@@ -195,7 +195,7 @@ describe('languages that cannot be honoured', () => {
   it('diagnoses an unknown lang instead of guessing', async () => {
     const view = draw(
       { type: 'TemplateLayout', lang: 'handlebars', template: '<div>x</div>' },
-      allowed
+      allowed,
     );
     await settle();
     expect(view.diagnostic()).toBe('unsupported');
@@ -206,7 +206,7 @@ describe('languages that cannot be honoured', () => {
   it('diagnoses an unknown defaultTemplateLang too', async () => {
     const view = draw(
       { type: 'TemplateLayout', template: '<div>x</div>' },
-      { ...allowed, defaultTemplateLang: 'mustache' }
+      { ...allowed, defaultTemplateLang: 'mustache' },
     );
     await settle();
     expect(view.diagnostic()).toBe('unsupported');
@@ -265,7 +265,7 @@ describe('the ractive profile', () => {
     await settle();
     expect(view.container.querySelector('input')).toBeTruthy();
     expect(view.container.querySelector<HTMLInputElement>('input')?.value).toBe(
-      'keep me'
+      'keep me',
     );
     view.unmount();
   });
@@ -303,7 +303,7 @@ describe('the ractive profile', () => {
         template: '<div>{{>0}}</div>',
         elements: [{ type: 'Control', scope: '#/properties/note' }],
       },
-      allowed
+      allowed,
     );
     await settle();
     expect(view.container.querySelector('input')).toBeTruthy();
@@ -319,7 +319,7 @@ describe('the ractive profile', () => {
         template:
           '<div data-out>{{#if data.firstName}}{{#each errors}}{{.keyword}} {{/each}}ok{{else}}none{{/if}}</div>',
       },
-      allowed
+      allowed,
     );
     await settle();
     expect(view.text()).toContain('ok');
@@ -367,7 +367,8 @@ describe("naming a template's children", () => {
 
     // The explicitly named child is placed at "0", as asked.
     expect(
-      view.container.querySelector<HTMLInputElement>('[data-zero] input')?.value
+      view.container.querySelector<HTMLInputElement>('[data-zero] input')
+        ?.value,
     ).toBe('keep me');
 
     // And the collision is said out loud rather than swallowed.
@@ -384,7 +385,7 @@ describe("naming a template's children", () => {
     const view = draw(twoChildren(['body', 'body']), allowed);
     await settle();
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'template.duplicateChildName'
+      'template.duplicateChildName',
     );
     warn.mockRestore();
     view.unmount();
@@ -487,7 +488,7 @@ describe('ractive attribute names', () => {
     const view = draw(marker('data-greeting'), allowed);
     await settle();
     expect(view.container.querySelector('[data-greeting]')?.textContent).toBe(
-      'Hi Ada'
+      'Hi Ada',
     );
     view.unmount();
   });

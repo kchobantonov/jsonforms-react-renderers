@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   defaultUrlPolicy,
   isAllowedUrl,
@@ -16,12 +16,12 @@ describe('the default URL policy', () => {
 
   it.each(['https://example.com/help', 'http://example.com', 'mailto:a@b.c'])(
     'allows %s',
-    (url) => expect(isAllowedUrl(url)).toBe(true)
+    (url) => expect(isAllowedUrl(url)).toBe(true),
   );
 
   it.each(['/help', 'help', './help', '../help', '?q=1', '#anchor'])(
     'allows the relative URL %s',
-    (url) => expect(isAllowedUrl(url)).toBe(true)
+    (url) => expect(isAllowedUrl(url)).toBe(true),
   );
 
   it.each([

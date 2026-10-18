@@ -1,5 +1,5 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
 import data from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/data.json';
@@ -11,7 +11,7 @@ import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-c
 const example = examples.find((e) => e.name === 'spec-tuple-control');
 
 const controls = exampleElements(uischema as any).filter(
-  (element: any) => element.type === 'Control'
+  (element: any) => element.type === 'Control',
 );
 const optionsFor = (property: string) =>
   controls.find((c: any) => c.scope === `#/properties/${property}`)?.options ??
@@ -37,7 +37,7 @@ describe('the tuple-control spec example', () => {
       (validate.errors ?? []).map((error) => [
         error.instancePath,
         error.keyword,
-      ])
+      ]),
     ).toEqual([
       ['/dimensions/2', 'minimum'],
       ['/legacyAssignment', 'additionalItems'],
@@ -52,7 +52,7 @@ describe('the tuple-control spec example', () => {
   test('keeps a trailing value its schema forbids, rather than trimming it', () => {
     expect(data.legacyAssignment).toHaveLength(3);
     expect((schema as any).properties.legacyAssignment.additionalItems).toBe(
-      false
+      false,
     );
   });
 
@@ -96,7 +96,7 @@ describe('the tuple-control spec example', () => {
     const positions = (schema as any).properties.projectContact.items;
     const forPosition = (position: any) =>
       uischemas.filter(
-        (entry) => entry.tester(position, position, {} as any) === 10
+        (entry) => entry.tester(position, position, {} as any) === 10,
       );
 
     for (const position of positions) {
@@ -122,7 +122,7 @@ describe('the tuple-control spec example', () => {
     const entryFor = (title: string) =>
       uischemas.find(
         (entry) =>
-          entry.tester({ title } as any, { title } as any, {} as any) === 10
+          entry.tester({ title } as any, { title } as any, {} as any) === 10,
       );
 
     const both = entryFor('Both')!.uischema as any;
@@ -157,7 +157,7 @@ describe('the tuple-control spec example', () => {
       const options = uischema.options ?? {};
       expect(
         options.summary !== undefined && options.detail === undefined,
-        'a summary-only Control entry hangs the dialog; see Adjustment 20.7'
+        'a summary-only Control entry hangs the dialog; see Adjustment 20.7',
       ).toBe(false);
     }
   });
@@ -165,7 +165,7 @@ describe('the tuple-control spec example', () => {
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(translations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(translations.bg).sort()).toEqual(
-      Object.keys(translations.en).sort()
+      Object.keys(translations.en).sort(),
     );
   });
 });

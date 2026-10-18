@@ -66,7 +66,7 @@ const NUMBER_KEYWORDS = [
 
 const removeKeywords = (schema: JsonSchema7, keywords: readonly string[]) =>
   keywords.forEach(
-    (keyword) => delete (schema as Record<string, unknown>)[keyword]
+    (keyword) => delete (schema as Record<string, unknown>)[keyword],
   );
 
 export const getJsonDataType = (value: any): JsonDataType | null => {
@@ -111,13 +111,13 @@ export const getSchemaTypes = (schema: JsonSchema): JsonDataType[] => {
 export const schemaForType = (
   schema: JsonSchema,
   type: JsonDataType,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema => {
   const narrowed = narrowMixedComposition(schema, type);
   const nextSchema: JsonSchema7 = {
     ...(typeof narrowed === 'object' ? (narrowed as JsonSchema7) : {}),
     ...(narrowed === (false as unknown) ? { not: {} } : {}),
-    type: typeof narrowed === 'object' ? narrowed.type ?? type : type,
+    type: typeof narrowed === 'object' ? (narrowed.type ?? type) : type,
   };
   if (type !== 'array') removeKeywords(nextSchema, ARRAY_KEYWORDS);
   if (type !== 'object') removeKeywords(nextSchema, OBJECT_KEYWORDS);
@@ -135,17 +135,17 @@ export const schemaForType = (
   if (type === 'object') {
     nextSchema.additionalProperties =
       nextSchema.additionalProperties !== false
-        ? nextSchema.additionalProperties ?? true
+        ? (nextSchema.additionalProperties ?? true)
         : false;
   } else if (type === 'array') {
     const items =
       typeof nextSchema.items === 'object' &&
       typeof (nextSchema.items as JsonSchema).$ref === 'string'
-        ? resolveSchema(
+        ? (resolveSchema(
             rootSchema,
             (nextSchema.items as JsonSchema).$ref,
-            rootSchema
-          ) ?? nextSchema.items
+            rootSchema,
+          ) ?? nextSchema.items)
         : nextSchema.items;
     nextSchema.items =
       items !== undefined
@@ -191,7 +191,7 @@ export const isArrayElementPath = (data: unknown, path: string): boolean => {
 const resolveScopedSchema = (
   uischema: UISchemaElement & Scopable,
   schema: JsonSchema,
-  context: TesterContext
+  context: TesterContext,
 ): JsonSchema => {
   const scope = uischema?.scope;
   if (!scope) {
@@ -212,7 +212,7 @@ const resolveScopedSchema = (
 export const isMixedSchema = (
   uischema: UISchemaElement & Scopable,
   rawSchema: JsonSchema,
-  context: TesterContext
+  context: TesterContext,
 ) => {
   if (rawSchema && typeof rawSchema === 'boolean') {
     return true;
@@ -266,7 +266,7 @@ const isDefaultGeneratedUiSchema = (uischema: UISchemaElement): boolean => {
 export const isMixedControl = (
   uischema: UISchemaElement,
   schema: JsonSchema,
-  context: TesterContext
+  context: TesterContext,
 ) =>
   isMixedSchema(uischema as UISchemaElement & Scopable, schema, context) &&
   (isControl(uischema) || isDefaultGeneratedUiSchema(uischema));

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   hasSliderValue,
   resolveSliderValue,
@@ -9,6 +9,7 @@ describe('slider position', () => {
     // The reported bug: the data said 0 while the knob sat at 10, because
     // `0 || schema.default` is the default.
     expect(resolveSliderValue(0, 10)).toBe(0);
+    // oxlint-disable-next-line no-constant-binary-expression -- Demonstrates the previous fallback bug.
     expect(0 || 10).toBe(10); // what the old expression did
   });
 

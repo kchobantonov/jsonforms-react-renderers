@@ -25,7 +25,7 @@ export type ShadcnButtonElement = UISchemaElement & {
 
 export const shadcnButtonRendererTester: RankedTester = rankWith(
   1,
-  uiTypeIs('Button')
+  uiTypeIs('Button'),
 );
 
 export const ShadcnButtonRenderer = ({

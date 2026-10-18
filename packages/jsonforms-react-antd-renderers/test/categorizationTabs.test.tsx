@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -75,14 +75,14 @@ const draw = () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   /** Every input in the tab body, visited panels included. */
   const values = () =>
     Array.from(container.querySelectorAll<HTMLInputElement>('input')).map(
-      (input) => input.value
+      (input) => input.value,
     );
 
   return {
@@ -90,7 +90,7 @@ const draw = () => {
     values,
     click: (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -137,13 +137,13 @@ describe('categorization as tabs', () => {
     const view = draw();
     view.click('Reach');
     const phone = view.container.querySelector<HTMLInputElement>(
-      '.ant-tabs-content-active input'
+      '.ant-tabs-content-active input',
     );
     view.click('Contact');
     expect(view.activeText()).toContain('Contact name');
     view.click('Reach');
     expect(view.container.querySelector('.ant-tabs-content-active input')).toBe(
-      phone
+      phone,
     );
     view.unmount();
   });

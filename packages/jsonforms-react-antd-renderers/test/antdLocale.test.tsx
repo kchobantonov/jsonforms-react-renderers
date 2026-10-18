@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -65,7 +65,7 @@ const drawCalendar = async (locale: string | undefined) => {
         await act(async () => {});
         expect(resolvedLocale).toBeDefined();
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
   }
   await settle(150);
@@ -74,7 +74,7 @@ const drawCalendar = async (locale: string | undefined) => {
       document.querySelector('.ant-picker-header-view')?.textContent ?? '',
     weekdays: () =>
       Array.from(document.querySelectorAll('.ant-picker-content th')).map(
-        (cell) => cell.textContent
+        (cell) => cell.textContent,
       ),
     unmount: () => act(() => root.unmount()),
   };

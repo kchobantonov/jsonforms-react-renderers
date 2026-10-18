@@ -1,17 +1,17 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 
 const fromPackage = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
-  esbuild: { jsx: 'automatic' },
+  oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: [
       {
         find: '@monaco-editor/react',
         replacement: fromPackage(
-          '../jsonforms-react-extended-renderers/node_modules/@monaco-editor/react/dist/index.mjs'
+          '../jsonforms-react-extended-renderers/node_modules/@monaco-editor/react/dist/index.mjs',
         ),
       },
       {
@@ -19,14 +19,14 @@ export default defineConfig({
         replacement: fileURLToPath(
           new URL(
             '../../apps/jsonforms-react-shadcn-demo/src/components/ui',
-            import.meta.url
-          )
+            import.meta.url,
+          ),
         ),
       },
       {
         find: '@chobantonov/jsonforms-react-renderer-common',
         replacement: fileURLToPath(
-          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url),
         ),
       },
       {
@@ -40,6 +40,8 @@ export default defineConfig({
     ],
   },
   test: {
+    maxWorkers: 2,
+    sequence: { groupOrder: 7 },
     globals: true,
     environment: 'jsdom',
     include: ['test/**/*.test.{ts,tsx}'],

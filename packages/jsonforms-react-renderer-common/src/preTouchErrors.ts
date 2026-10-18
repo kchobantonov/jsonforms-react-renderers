@@ -50,7 +50,7 @@ export interface FilterErrorsBeforeTouchInput {
   translateError?: (
     error: ErrorObject,
     translate: any,
-    uischema?: any
+    uischema?: any,
   ) => string;
 }
 
@@ -87,11 +87,11 @@ export const filterErrorsBeforeTouch = ({
       a host published.
     */
     const errorsAtControl = (coreErrors ?? []).filter(
-      (error) => path === getControlPath(error)
+      (error) => path === getControlPath(error),
     );
 
     const errorsToShow = errorsAtControl.filter(
-      (error) => !error.keyword || !filterKeywords.includes(error.keyword)
+      (error) => !error.keyword || !filterKeywords.includes(error.keyword),
     );
 
     /*
@@ -114,7 +114,7 @@ export const filterErrorsBeforeTouch = ({
       translate,
       schema,
       uischema,
-      path
+      path,
     );
   }
 
@@ -153,7 +153,7 @@ export interface PreTouchErrors {
  * clearing it, or its becoming valid again does not untouch the control.
  */
 export const usePreTouchErrors = (
-  props: PreTouchErrorsProps
+  props: PreTouchErrorsProps,
 ): PreTouchErrors => {
   const [focused, setFocused] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -167,7 +167,7 @@ export const usePreTouchErrors = (
 
   const appliedOptions = useMemo(
     () => merge({}, props.config ?? {}, props.uischema?.options ?? {}),
-    [props.config, props.uischema]
+    [props.config, props.uischema],
   );
 
   const errors = filterErrorsBeforeTouch({

@@ -31,7 +31,7 @@ const render = (cell: boolean) => {
     />
   );
   act(() =>
-    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form)
+    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form),
   );
   const html = container.innerHTML;
   act(() => root.unmount());

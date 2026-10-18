@@ -1,5 +1,5 @@
 import Ajv from 'ajv';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonSchema, JsonSchema7 } from '@jsonforms/core';
 import { narrowMixedComposition } from '../src/mixedComposition';
 import { schemaForType } from '../src/mixed';
@@ -65,7 +65,7 @@ describe('mixed composition narrowing', () => {
     schema.allOf = [schema];
     const budget = { remaining: 8 };
     expect(() =>
-      narrowMixedComposition(schema, 'object', budget)
+      narrowMixedComposition(schema, 'object', budget),
     ).not.toThrow();
     expect(budget.remaining).toBe(-1);
   });
@@ -76,8 +76,8 @@ it('preserves boolean items and numeric intersections in the delegated schema', 
     schemaForType(
       { type: 'array', items: false } as unknown as JsonSchema,
       'array',
-      {}
-    )
+      {},
+    ),
   ).toMatchObject({ items: false });
   expect(schemaForType({ type: 'integer' }, 'number', {})).toMatchObject({
     type: 'integer',

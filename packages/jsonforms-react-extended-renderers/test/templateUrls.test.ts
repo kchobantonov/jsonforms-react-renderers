@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import {
   URL_REFUSED_DIAGNOSTIC,
   sanitizeUrlAttributes,
@@ -61,7 +61,7 @@ describe('sanitizeUrlProps', () => {
     const warn = quiet();
     const seen: string[] = [];
     sanitizeUrlProps('a', { href: hostile }, defaultUrlPolicy, (m) =>
-      seen.push(m)
+      seen.push(m),
     );
     expect(seen).toHaveLength(1);
     expect(warn).not.toHaveBeenCalled();
@@ -106,10 +106,10 @@ describe('sanitizeUrlProps', () => {
     const opened = { ...defaultUrlPolicy, allowImageDataUrls: true };
 
     expect((sanitizeUrlProps('img', { src: inline }, opened) as any).src).toBe(
-      inline
+      inline,
     );
     expect(
-      (sanitizeUrlProps('iframe', { src: inline }, opened) as any).src
+      (sanitizeUrlProps('iframe', { src: inline }, opened) as any).src,
     ).toBeUndefined();
   });
 
@@ -120,7 +120,7 @@ describe('sanitizeUrlProps', () => {
   it('treats data as a URL only on object', () => {
     quiet();
     expect(
-      (sanitizeUrlProps('object', { data: hostile }) as any).data
+      (sanitizeUrlProps('object', { data: hostile }) as any).data,
     ).toBeUndefined();
     const payload = { data: { rows: 1 } };
     expect(sanitizeUrlProps(() => null, payload)).toBe(payload);
@@ -195,7 +195,7 @@ describe('sanitizeUrlAttributes', () => {
       sanitizeUrlAttributes(host, {
         ...defaultUrlPolicy,
         allowRelative: false,
-      })
+      }),
     ).toBe(1);
   });
 

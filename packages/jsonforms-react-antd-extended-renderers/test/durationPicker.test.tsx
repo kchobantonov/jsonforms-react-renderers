@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -75,8 +75,8 @@ const draw = (duration?: string) => {
               latest = data;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -96,7 +96,7 @@ const draw = (duration?: string) => {
     rows()
       .map(
         (row) =>
-          row.querySelector('.ant-space-addon')?.textContent?.trim() ?? ''
+          row.querySelector('.ant-space-addon')?.textContent?.trim() ?? '',
       )
       .filter(Boolean);
 
@@ -104,7 +104,7 @@ const draw = (duration?: string) => {
     const row = rows().find(
       (candidate) =>
         candidate.querySelector('.ant-space-addon')?.textContent?.trim() ===
-        unit
+        unit,
     );
     return row?.querySelector<HTMLInputElement>('input')?.value ?? '';
   };
@@ -118,7 +118,7 @@ const draw = (duration?: string) => {
     data: () => latest,
     openPicker: async () => {
       const trigger = container.querySelector<HTMLElement>(
-        '[aria-label="Choose a duration"], .anticon-clock-circle'
+        '[aria-label="Choose a duration"], .anticon-clock-circle',
       );
       expect(trigger, 'no picker trigger').toBeTruthy();
       await act(async () => {
@@ -180,12 +180,12 @@ describe('adding and removing units', () => {
     });
     await settle(150);
     const option = Array.from(
-      document.querySelectorAll('.ant-select-item-option-content')
+      document.querySelectorAll('.ant-select-item-option-content'),
     ).find((node) => node.textContent === unit);
     expect(option, `no option ${unit}`).toBeTruthy();
     await act(async () => {
       (option as HTMLElement).dispatchEvent(
-        new MouseEvent('click', { bubbles: true })
+        new MouseEvent('click', { bubbles: true }),
       );
     });
     await settle(150);
@@ -209,9 +209,9 @@ describe('adding and removing units', () => {
     await view.openPicker();
 
     const remove = Array.from(
-      view.panel().querySelectorAll<HTMLButtonElement>('button')
+      view.panel().querySelectorAll<HTMLButtonElement>('button'),
     ).find((button) =>
-      (button.getAttribute('aria-label') ?? '').includes('Days')
+      (button.getAttribute('aria-label') ?? '').includes('Days'),
     );
     expect(remove, 'no remove action for Days').toBeTruthy();
     await act(async () => remove!.click());
@@ -226,9 +226,9 @@ describe('adding and removing units', () => {
     const view = draw('PT3H');
     await view.openPicker();
     const removes = Array.from(
-      view.panel().querySelectorAll<HTMLButtonElement>('button')
+      view.panel().querySelectorAll<HTMLButtonElement>('button'),
     ).filter((button) =>
-      (button.getAttribute('aria-label') ?? '').startsWith('Remove')
+      (button.getAttribute('aria-label') ?? '').startsWith('Remove'),
     );
     expect(removes).toHaveLength(0);
     view.unmount();
@@ -284,7 +284,7 @@ describe('weeks is a mode, not a component', () => {
     await act(async () => {
       Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, '0');
       input!.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -301,7 +301,7 @@ describe('weeks is a mode, not a component', () => {
     await view.openPicker();
 
     const weeks = Array.from(
-      view.panel().querySelectorAll<HTMLElement>('.ant-segmented-item-label')
+      view.panel().querySelectorAll<HTMLElement>('.ant-segmented-item-label'),
     ).find((node) => node.textContent === 'Weeks');
     expect(weeks, 'no weeks mode').toBeTruthy();
     await act(async () => {
@@ -326,7 +326,7 @@ describe('weeks is a mode, not a component', () => {
 describe('applying without editing', () => {
   const applyIn = async (view: ReturnType<typeof draw>) => {
     const apply = Array.from(
-      view.panel().querySelectorAll<HTMLButtonElement>('button')
+      view.panel().querySelectorAll<HTMLButtonElement>('button'),
     ).find((button) => button.textContent?.trim() === 'Apply');
     expect(apply, 'no Apply button').toBeTruthy();
     await act(async () => apply!.click());
@@ -366,7 +366,7 @@ describe('applying without editing', () => {
     await act(async () => {
       Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, '3');
       input!.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -388,7 +388,7 @@ describe('the panel lines up', () => {
   */
   const rowsOf = (view: ReturnType<typeof draw>) =>
     Array.from(
-      view.panel()?.querySelectorAll<HTMLElement>('div[style*="grid"]') ?? []
+      view.panel()?.querySelectorAll<HTMLElement>('div[style*="grid"]') ?? [],
     );
 
   it('gives every row the same two columns', async () => {
@@ -430,8 +430,8 @@ describe('the panel lines up', () => {
 
     const widths = new Set(
       Array.from(
-        view.panel()?.querySelectorAll<HTMLElement>('.ant-space-addon') ?? []
-      ).map((addon) => addon.style.width)
+        view.panel()?.querySelectorAll<HTMLElement>('.ant-space-addon') ?? [],
+      ).map((addon) => addon.style.width),
     );
     expect(widths.size).toBe(1);
     expect([...widths][0]).toMatch(/^\d+ch$/);
@@ -452,21 +452,21 @@ describe('components are not clock fields', () => {
   const typeInto = async (
     view: ReturnType<typeof draw>,
     unit: string,
-    text: string
+    text: string,
   ) => {
     const row = Array.from(
-      view.panel().querySelectorAll<HTMLElement>('.ant-space-compact')
+      view.panel().querySelectorAll<HTMLElement>('.ant-space-compact'),
     ).find(
       (candidate) =>
         candidate.querySelector('.ant-space-addon')?.textContent?.trim() ===
-        unit
+        unit,
     );
     expect(row, `no ${unit} row`).toBeTruthy();
     const input = row!.querySelector<HTMLInputElement>('input');
     await act(async () => {
       Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, text);
       input!.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -475,7 +475,7 @@ describe('components are not clock fields', () => {
 
   const applyIn = async (view: ReturnType<typeof draw>) => {
     const apply = Array.from(
-      view.panel().querySelectorAll<HTMLButtonElement>('button')
+      view.panel().querySelectorAll<HTMLButtonElement>('button'),
     ).find((button) => button.textContent?.trim() === 'Apply');
     await act(async () => apply!.click());
     await settle();
@@ -493,11 +493,11 @@ describe('components are not clock fields', () => {
     });
     await settle(150);
     const option = Array.from(
-      document.querySelectorAll('.ant-select-item-option-content')
+      document.querySelectorAll('.ant-select-item-option-content'),
     ).find((node) => node.textContent === 'Minutes');
     await act(async () => {
       (option as HTMLElement).dispatchEvent(
-        new MouseEvent('click', { bubbles: true })
+        new MouseEvent('click', { bubbles: true }),
       );
     });
     await settle(150);
@@ -535,7 +535,7 @@ describe('components are not clock fields', () => {
       .panel()
       .querySelector<HTMLInputElement>('.ant-input-number-input');
     expect(input?.getAttribute('aria-valuemax')).toBe(
-      String(Number.MAX_SAFE_INTEGER)
+      String(Number.MAX_SAFE_INTEGER),
     );
     view.unmount();
   });

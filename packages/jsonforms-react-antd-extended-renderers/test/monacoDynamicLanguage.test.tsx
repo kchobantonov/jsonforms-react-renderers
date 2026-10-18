@@ -66,8 +66,8 @@ const renderWith = async (data: Record<string, unknown>) => {
           ]}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await flushUntil(() => spy.language !== undefined);
   act(() => root.unmount());
@@ -82,7 +82,7 @@ describe('Monaco dynamic language', () => {
     async (value, expected) => {
       await renderWith({ language: value, code: 'x' });
       expect(spy.language).toBe(expected);
-    }
+    },
   );
 
   it('falls back to plaintext when the bound property is unset', async () => {

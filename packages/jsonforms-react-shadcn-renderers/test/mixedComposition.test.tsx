@@ -22,16 +22,16 @@ it('delegates a mixed string to its compatible composition branch', () => {
           data='abcd'
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(container.textContent).not.toContain('No applicable renderer');
     expect(container.textContent).not.toContain('Integer branch');
     expect(container.querySelector('[role=tablist]')).toBeNull();
     expect(
       Array.from(container.querySelectorAll('input')).some(
-        (input) => input.value === 'abcd'
-      )
+        (input) => input.value === 'abcd',
+      ),
     ).toBe(true);
   } finally {
     act(() => root.unmount());
@@ -58,19 +58,19 @@ it('exposes object fields declared inside allOf', () => {
           data={{ name: 'Ada', code: 'A1' }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(container.textContent).not.toContain('No applicable renderer');
     expect(
       Array.from(container.querySelectorAll('input')).some(
-        (input) => input.value === 'A1'
-      )
+        (input) => input.value === 'A1',
+      ),
     ).toBe(true);
     expect(
       Array.from(container.querySelectorAll('input')).some(
-        (input) => input.value === 'Ada'
-      )
+        (input) => input.value === 'Ada',
+      ),
     ).toBe(true);
   } finally {
     act(() => root.unmount());
@@ -95,16 +95,16 @@ for (const keyword of ['anyOf', 'oneOf']) {
             data='hello'
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       expect(
-        container.querySelector('[role=tablist],[role=combobox]')
+        container.querySelector('[role=tablist],[role=combobox]'),
       ).toBeNull();
       expect(
         Array.from(container.querySelectorAll('input')).filter(
-          (input) => input.value === 'hello'
-        )
+          (input) => input.value === 'hello',
+        ),
       ).toHaveLength(1);
     } finally {
       act(() => root.unmount());

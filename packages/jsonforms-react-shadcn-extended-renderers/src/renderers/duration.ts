@@ -50,7 +50,7 @@ export const sanitizeDurationParts = (parts: DurationParts): DurationParts => {
     Object.entries(parts).map(([key, value]) => [
       key,
       Math.max(0, Math.floor(value || 0)),
-    ])
+    ]),
   ) as unknown as DurationParts;
   return next.weeks ? { ...EMPTY_DURATION_PARTS, weeks: next.weeks } : next;
 };

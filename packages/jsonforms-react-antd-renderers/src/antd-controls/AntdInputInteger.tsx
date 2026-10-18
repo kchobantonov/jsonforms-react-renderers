@@ -11,7 +11,7 @@ const eventToValue = (value: any) => toCommittableNumber(value);
 
 export const AntdInputInteger = React.memo(function AntdInputInteger(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> },
 ) {
   const {
     data,
@@ -29,9 +29,9 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
     (target: string, value: any) =>
       originalHandleChange(
         target,
-        keepSelectedType && value === undefined ? 0 : value
+        keepSelectedType && value === undefined ? 0 : value,
       ),
-    [originalHandleChange, keepSelectedType]
+    [originalHandleChange, keepSelectedType],
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputStyle = { width: '100%' };
@@ -41,7 +41,7 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
     keepSelectedType ? 0 : '',
     data,
     path,
-    eventToValue
+    eventToValue,
   );
   return (
     // The clear button sits over the control rather than in antd's suffix,
@@ -64,8 +64,8 @@ export const AntdInputInteger = React.memo(function AntdInputInteger(
           value === null || value === undefined
             ? onClear()
             : Number.isInteger(Number(value))
-            ? onChange(value as never)
-            : undefined
+              ? onChange(value as never)
+              : undefined
         }
         className={className}
         id={id}

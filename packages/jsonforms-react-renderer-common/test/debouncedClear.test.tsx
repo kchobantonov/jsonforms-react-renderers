@@ -1,7 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 import { useDebouncedChange } from '../src/debounce';
 
 /** Minimal consumer of the hook, so the race can be driven directly. */
@@ -18,7 +25,7 @@ const Probe = ({
     handleChange,
     '',
     data,
-    'field'
+    'field',
   );
   api.type = (value: string) => onChange({ target: { value } } as any);
   api.clear = onClear;
@@ -34,7 +41,7 @@ const mountProbe = (data: any = 'committed') => {
   document.body.appendChild(container);
   const root = createRoot(container);
   act(() =>
-    root.render(<Probe handleChange={handleChange} data={data} api={api} />)
+    root.render(<Probe handleChange={handleChange} data={data} api={api} />),
   );
   return { api, handleChange, unmount: () => act(() => root.unmount()) };
 };
@@ -61,7 +68,7 @@ describe('clearing a debounced control', () => {
     expect(handleChange).toHaveBeenCalledTimes(1);
     expect(handleChange).not.toHaveBeenCalledWith(
       'field',
-      'typed while editing'
+      'typed while editing',
     );
     unmount();
   });
@@ -95,7 +102,7 @@ describe('clearing a debounced control', () => {
     });
     expect(handleChange).toHaveBeenCalledTimes(2);
     expect(
-      handleChange.mock.calls.every(([, value]) => value === undefined)
+      handleChange.mock.calls.every(([, value]) => value === undefined),
     ).toBe(true);
     unmount();
   });

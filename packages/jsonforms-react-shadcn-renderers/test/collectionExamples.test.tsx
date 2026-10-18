@@ -30,61 +30,61 @@ it('limits table rows and opens an isolated whole-row dialog', () => {
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(container.querySelectorAll('tbody tr')).toHaveLength(5);
     const edit = Array.from(container.querySelectorAll('button')).find(
-      (b) => b.getAttribute('aria-label') === 'Edit details'
+      (b) => b.getAttribute('aria-label') === 'Edit details',
     )!;
     expect(edit).toBeTruthy();
     act(() => edit.click());
     const dialog = document.querySelector('[role="dialog"]')!;
     expect(dialog).toBeTruthy();
     expect(dialog.querySelector<HTMLInputElement>('input')?.value).toBe(
-      'Person 1'
+      'Person 1',
     );
     const input = dialog.querySelector<HTMLInputElement>('input')!;
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, 'Draft');
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input')?.value,
     ).toBe('Person 1');
     const cancel = Array.from(dialog.querySelectorAll('button')).find(
-      (b) => b.textContent === 'Cancel'
+      (b) => b.textContent === 'Cancel',
     )!;
     act(() => cancel.click());
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input')?.value,
     ).toBe('Person 1');
     const next = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Next page"]'
+      'button[aria-label="Next page"]',
     )!;
     expect(next).toBeTruthy();
     const first = container.querySelector<HTMLInputElement>('tbody input')!;
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(first, 'Before paging');
       first.dispatchEvent(new Event('input', { bubbles: true }));
     });
     act(() => next.click());
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input')?.value,
     ).toBe('Person 6');
     act(() =>
       container
         .querySelector<HTMLButtonElement>('button[aria-label="Previous page"]')!
-        .click()
+        .click(),
     );
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input')?.value,
     ).toBe('Before paging');
   } finally {
     act(() => root.unmount());
@@ -114,22 +114,22 @@ it('paginates dynamic properties while retaining declared fields', () => {
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(container.querySelector('input[value="Fixed"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 5"]')).toBeTruthy();
     expect(container.querySelector('input[value="Person 6"]')).toBeNull();
     const collection = container.querySelector(
-      '.jsonforms-additional-properties'
+      '.jsonforms-additional-properties',
     )!;
     const list = collection.querySelector(
-      '.jsonforms-additional-properties-list'
+      '.jsonforms-additional-properties-list',
     )!;
     const footer = collection.querySelector('[data-collection-footer]')!;
     expect(footer).toBeTruthy();
     expect(
-      list.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING
+      list.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
   } finally {
     act(() => root.unmount());
@@ -163,92 +163,92 @@ it.each([
             }}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       if (collapsed) {
         expect(container.textContent).not.toContain('Select an item');
         act(() =>
           container
             .querySelector<HTMLButtonElement>(
-              'button[aria-label="Show details"]'
+              'button[aria-label="Show details"]',
             )!
-            .click()
+            .click(),
         );
       }
       expect(container.textContent).toContain('Select an item');
       const edit = Array.from(container.querySelectorAll('button')).find(
-        (b) => b.getAttribute('aria-label') === 'Edit details'
+        (b) => b.getAttribute('aria-label') === 'Edit details',
       )!;
       act(() => edit.click());
       expect(container.textContent).not.toContain('Select an item');
       expect(
-        container.querySelectorAll('input[value="Person 1"]').length
+        container.querySelectorAll('input[value="Person 1"]').length,
       ).toBeGreaterThan(1);
       expect(document.querySelector('[role="dialog"]')).toBeNull();
       expect(
         container.querySelector(
-          'tbody tr[aria-current="true"] input[value="Person 1"]'
-        )
+          'tbody tr[aria-current="true"] input[value="Person 1"]',
+        ),
       ).not.toBeNull();
       const toggle = (label: string) =>
         container.querySelector<HTMLButtonElement>(
-          `button[aria-label="${label}"]`
+          `button[aria-label="${label}"]`,
         )!;
       act(() => toggle('Hide details').click());
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
-        1
+        1,
       );
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
-        'false'
+        'false',
       );
       expect(
-        container.querySelector('tbody tr[aria-current="true"]')
+        container.querySelector('tbody tr[aria-current="true"]'),
       ).toBeNull();
       act(() =>
-        container.querySelector<HTMLTableRowElement>('tbody tr')!.click()
+        container.querySelector<HTMLTableRowElement>('tbody tr')!.click(),
       );
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
-        'false'
+        'false',
       );
       expect(
-        container.querySelector('tbody tr[aria-current="true"]')
+        container.querySelector('tbody tr[aria-current="true"]'),
       ).toBeNull();
       act(() =>
-        container.querySelector<HTMLInputElement>('tbody input')!.click()
+        container.querySelector<HTMLInputElement>('tbody input')!.click(),
       );
       expect(toggle('Show details').getAttribute('aria-expanded')).toBe(
-        'false'
+        'false',
       );
       expect(
-        container.querySelector('tbody tr[aria-current="true"]')
+        container.querySelector('tbody tr[aria-current="true"]'),
       ).toBeNull();
       act(() => edit.click());
       expect(toggle('Hide details').getAttribute('aria-expanded')).toBe('true');
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
-        2
+        2,
       );
 
       const rows = container.querySelectorAll<HTMLTableRowElement>('tbody tr');
       act(() => rows[1].click());
       expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(
-        2
+        2,
       );
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
-        1
+        1,
       );
       act(() => rows[0].querySelector<HTMLInputElement>('input')!.click());
       expect(container.querySelectorAll('input[value="Person 1"]').length).toBe(
-        2
+        2,
       );
       expect(container.querySelectorAll('input[value="Person 2"]').length).toBe(
-        1
+        1,
       );
     } finally {
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );
 
 it('applies a row draft without overwriting other rows', () => {
@@ -268,30 +268,30 @@ it('applies a row draft without overwriting other rows', () => {
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     act(() =>
       Array.from(container.querySelectorAll('button'))
         .find((b) => b.getAttribute('aria-label') === 'Edit details')!
-        .click()
+        .click(),
     );
     const dialog = document.querySelector('[role="dialog"]')!;
     const input = dialog.querySelector<HTMLInputElement>('input')!;
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, 'Committed');
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
     act(() =>
       Array.from(dialog.querySelectorAll('button'))
         .find((b) => b.textContent === 'Apply')!
-        .click()
+        .click(),
     );
     expect(
-      container.querySelector<HTMLInputElement>('tbody input')?.value
+      container.querySelector<HTMLInputElement>('tbody input')?.value,
     ).toBe('Committed');
     expect(container.querySelector('input[value="Person 2"]')).toBeTruthy();
   } finally {
@@ -324,18 +324,18 @@ it.each(['never', 'always'])(
             }}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       const deleteButton = () =>
         container.querySelector<HTMLButtonElement>(
-          'button[aria-label="Delete selected rows"]'
+          'button[aria-label="Delete selected rows"]',
         )!;
       const checks = () =>
         Array.from(
           container.querySelectorAll<HTMLElement>(
-            'tbody input[type="checkbox"], tbody button[role="checkbox"]'
-          )
+            'tbody input[type="checkbox"], tbody button[role="checkbox"]',
+          ),
         );
       expect(deleteButton().disabled).toBe(true);
       act(() => checks()[0].click());
@@ -347,14 +347,14 @@ it.each(['never', 'always'])(
       if (policy === 'always') {
         expect(container.querySelector('input[value="One"]')).not.toBeNull();
         const dialog = document.querySelector(
-          '[role="dialog"], [role="alertdialog"]'
+          '[role="dialog"], [role="alertdialog"]',
         )!;
         expect(dialog).not.toBeNull();
         const confirm = Array.from(dialog.querySelectorAll('button')).find(
           (button) =>
             button.textContent === 'Delete selected rows' ||
             button.textContent === 'Delete' ||
-            button.textContent === 'Yes'
+            button.textContent === 'Yes',
         )!;
         act(() => confirm.click());
       }
@@ -365,7 +365,7 @@ it.each(['never', 'always'])(
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );
 
 it.each(['readonly', 'disableRemove'])(
@@ -390,23 +390,23 @@ it.each(['readonly', 'disableRemove'])(
             }}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       expect(
         container.querySelector<HTMLButtonElement>(
-          'button[aria-label="Delete selected rows"]'
-        )!.disabled
+          'button[aria-label="Delete selected rows"]',
+        )!.disabled,
       ).toBe(true);
       const checks = container.querySelectorAll<HTMLInputElement>(
-        'tbody input[type="checkbox"], tbody button[role="checkbox"]'
+        'tbody input[type="checkbox"], tbody button[role="checkbox"]',
       );
       expect(checks.length).toBeGreaterThan(0);
       checks.forEach((checkbox) => expect(checkbox.disabled).toBe(true));
     } finally {
       act(() => root.unmount());
     }
-  }
+  },
 );
 
 it('selects and orders summary columns while retaining all detail fields', () => {
@@ -445,33 +445,33 @@ it('selects and orders summary columns while retaining all detail fields', () =>
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     const headers = Array.from(container.querySelectorAll('th')).map(
-      (cell) => cell.textContent
+      (cell) => cell.textContent,
     );
     expect(
-      headers.filter((text) => text === 'Email' || text === 'Name')
+      headers.filter((text) => text === 'Email' || text === 'Name'),
     ).toEqual(['Email', 'Name']);
     const resize = container.querySelector<HTMLElement>(
-      '[role="separator"][aria-label="Resize Name column"]'
+      '[role="separator"][aria-label="Resize Name column"]',
     )!;
     expect(resize).not.toBeNull();
     act(() =>
       resize.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'End', bubbles: true })
-      )
+        new KeyboardEvent('keydown', { key: 'End', bubbles: true }),
+      ),
     );
     expect(resize.closest('th')!.style.width).toBe('300px');
     act(() =>
       resize.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Home', bubbles: true })
-      )
+        new KeyboardEvent('keydown', { key: 'Home', bubbles: true }),
+      ),
     );
     expect(resize.closest('th')!.style.width).toBe('170px');
     const emailHeader = container.querySelector<HTMLElement>(
-      'th[data-column-key="email"]'
+      'th[data-column-key="email"]',
     )!;
     const selectionHeader = container.querySelector<HTMLElement>('thead th')!;
     vi.spyOn(emailHeader, 'getBoundingClientRect').mockReturnValue({
@@ -492,28 +492,28 @@ it('selects and orders summary columns while retaining all detail fields', () =>
           clientX: 100,
           button: 0,
           bubbles: true,
-        })
-      )
+        }),
+      ),
     );
     act(() =>
       resize.dispatchEvent(
-        new MouseEvent('pointermove', { clientX: 140, bubbles: true })
-      )
+        new MouseEvent('pointermove', { clientX: 140, bubbles: true }),
+      ),
     );
     expect(resize.closest('th')!.style.width).toBe('210px');
     expect(emailHeader.style.width).toBe('220px');
     act(() =>
-      resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+      resize.dispatchEvent(new MouseEvent('pointerup', { bubbles: true })),
     );
 
     expect(container.querySelector('input[value="Detail only"]')).toBeNull();
     act(() =>
       container
         .querySelector<HTMLButtonElement>('button[aria-label="Edit details"]')!
-        .click()
+        .click(),
     );
     expect(
-      document.querySelector('[role="dialog"] input[value="Detail only"]')
+      document.querySelector('[role="dialog"] input[value="Detail only"]'),
     ).not.toBeNull();
   } finally {
     act(() => root.unmount());

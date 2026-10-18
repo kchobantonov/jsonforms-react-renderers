@@ -60,12 +60,12 @@ interface ExtraProps {
 const ArrayLayoutComponent = (
   props: { ctx: JsonFormsStateContext } & ArrayLayoutProps & {
       translations: ArrayTranslations;
-    }
+    },
 ) => {
   const [activeIndex, setActiveIndex] = useState<number | number[]>();
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
-    [props.schema]
+    [props.schema],
   );
 
   const {
@@ -154,9 +154,9 @@ const ArrayLayoutComponent = (
         path,
         undefined,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
   );
 
   const doDisableAdd =
@@ -185,7 +185,7 @@ const ArrayLayoutComponent = (
     }
     const labelValue = Resolve.data(
       props.ctx.core.data,
-      composePaths(childPath, childLabelProp)
+      composePaths(childPath, childLabelProp),
     );
     if (
       labelValue === undefined ||
@@ -203,7 +203,7 @@ const ArrayLayoutComponent = (
       label={computeLabel(
         label,
         required,
-        appliedUiSchemaOptions.hideRequiredAsterisk
+        appliedUiSchemaOptions.hideRequiredAsterisk,
       )}
       description={description}
       errors={errors}
@@ -269,7 +269,7 @@ const ArrayLayoutComponent = (
 };
 
 export const withContextToJsonFormsRendererProps = (
-  Component: ComponentType<ArrayLayoutProps>
+  Component: ComponentType<ArrayLayoutProps>,
 ): ComponentType<OwnPropsOfJsonFormsRenderer> =>
   function WithContextToJsonFormsRendererProps({
     ctx,
@@ -280,6 +280,8 @@ export const withContextToJsonFormsRendererProps = (
 
 export const ArrayLayout = React.memo(
   withJsonFormsContext(
-    withContextToJsonFormsRendererProps(ArrayLayoutComponent)
-  )
+    withContextToJsonFormsRendererProps(ArrayLayoutComponent),
+  ),
 );
+
+ArrayLayout.displayName = 'ArrayLayout';

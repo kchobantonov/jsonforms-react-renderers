@@ -15,7 +15,7 @@ import { AntdLayoutRenderer, AntdLayoutRendererProps } from '../util/layout';
  */
 export const horizontalLayoutTester: RankedTester = rankWith(
   2,
-  uiTypeIs('HorizontalLayout')
+  uiTypeIs('HorizontalLayout'),
 );
 
 export const HorizontalLayoutRenderer = ({

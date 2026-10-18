@@ -30,7 +30,7 @@ import merge from 'lodash/merge';
 
 export const PrimeSlider = React.memo(function PrimeSlider(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof Slider> },
 ) {
   const {
     data,

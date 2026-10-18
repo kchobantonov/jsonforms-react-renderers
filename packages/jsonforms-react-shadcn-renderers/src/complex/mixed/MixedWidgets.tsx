@@ -161,7 +161,7 @@ export const MixedTree = (props: TreeProps) => {
     icon: React.ReactNode,
     onClick: () => void,
     hover = false,
-    destructive = false
+    destructive = false,
   ) => (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -266,14 +266,16 @@ export const MixedTree = (props: TreeProps) => {
             node.path.length === 0 &&
             action(
               t(
-                showPrimitives ? 'mixed.hidePrimitives' : 'mixed.showPrimitives'
+                showPrimitives
+                  ? 'mixed.hidePrimitives'
+                  : 'mixed.showPrimitives',
               ),
               showPrimitives ? (
                 <Eye aria-hidden='true' />
               ) : (
                 <EyeOff aria-hidden='true' />
               ),
-              () => setShowPrimitives(!showPrimitives)
+              () => setShowPrimitives(!showPrimitives),
             )}
           {props.canRename(node) &&
             !renaming &&
@@ -287,10 +289,10 @@ export const MixedTree = (props: TreeProps) => {
                 setName(
                   props.domainTree
                     ? node.label
-                    : String(node.path[node.path.length - 1])
+                    : String(node.path[node.path.length - 1]),
                 );
               },
-              true
+              true,
             )}
           {props.canDelete(node) &&
             !renaming &&
@@ -299,7 +301,7 @@ export const MixedTree = (props: TreeProps) => {
               <Trash2 aria-hidden='true' />,
               () => props.onDelete(node),
               true,
-              true
+              true,
             )}
         </div>
         <CollapsibleContent keepMounted className='pl-3'>

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
 import nullData from '@chobantonov/jsonforms-extended-spec/examples/null-control/data.json';
@@ -42,7 +42,7 @@ describe('the null-control spec example', () => {
     const data = nullData as Record<string, unknown>;
     expect(data.noSurcharge).toBeNull();
     expect(
-      Object.prototype.hasOwnProperty.call(data, 'exceptionsChecked')
+      Object.prototype.hasOwnProperty.call(data, 'exceptionsChecked'),
     ).toBe(false);
     expect(data.legacyApproval).toBe('n/a');
   });
@@ -51,7 +51,7 @@ describe('the null-control spec example', () => {
     const data = nullData as Record<string, unknown>;
     expect(data.reviewNote).toBe('');
     expect(Object.prototype.hasOwnProperty.call(data, 'referenceNumber')).toBe(
-      false
+      false,
     );
   });
 
@@ -66,7 +66,7 @@ describe('the null-control spec example', () => {
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(nullTranslations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(nullTranslations.bg).sort()).toEqual(
-      Object.keys(nullTranslations.en).sort()
+      Object.keys(nullTranslations.en).sort(),
     );
   });
 });
@@ -82,7 +82,9 @@ describe('the mixed-control spec example', () => {
 
   test('keeps the deliberately invalid scalar separate from the new composition and cell cases', () => {
     expect(
-      errorsFor(mixedSchema, mixedData).filter(([path]) => path === '/priority')
+      errorsFor(mixedSchema, mixedData).filter(
+        ([path]) => path === '/priority',
+      ),
     ).toEqual([['/priority', 'type']]);
   });
 
@@ -118,14 +120,14 @@ describe('the mixed-control spec example', () => {
     expect(Array.isArray(assignment.items)).toBe(true);
     expect(assignment.additionalItems).toBe(true);
     expect(mixedData.assignment.length).toBeGreaterThan(
-      assignment.items.length
+      assignment.items.length,
     );
   });
 
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(mixedTranslations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(mixedTranslations.bg).sort()).toEqual(
-      Object.keys(mixedTranslations.en).sort()
+      Object.keys(mixedTranslations.en).sort(),
     );
   });
 });

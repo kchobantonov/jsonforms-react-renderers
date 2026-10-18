@@ -9,7 +9,7 @@ import {
 export const fileFilterValue = (
   value: unknown,
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): string | undefined => {
   const resolved = schema.$ref
     ? Resolve.schema(rootSchema, schema.$ref, rootSchema)

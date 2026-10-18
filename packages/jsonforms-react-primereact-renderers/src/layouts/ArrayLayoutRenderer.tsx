@@ -44,7 +44,7 @@ export const ArrayLayoutRenderer = ({
 }: ArrayLayoutProps) => {
   const addItemCb = useCallback(
     (p: string, value: any) => addItem(p, value),
-    [addItem]
+    [addItem],
   );
 
   if (!visible) {
@@ -56,8 +56,8 @@ export const ArrayLayoutRenderer = ({
 
 export const arrayLayoutTester: RankedTester = rankWith(
   4,
-  isObjectArrayWithNesting
+  isObjectArrayWithNesting,
 );
 export default withJsonFormsArrayLayoutProps(
-  withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer))
+  withTranslateProps(withArrayTranslationProps(ArrayLayoutRenderer)),
 );

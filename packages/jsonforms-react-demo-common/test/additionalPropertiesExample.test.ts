@@ -1,5 +1,5 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
 import data from '@chobantonov/jsonforms-extended-spec/examples/additional-properties/data.json';
@@ -10,7 +10,7 @@ import uischema from '@chobantonov/jsonforms-extended-spec/examples/additional-p
 const example = examples.find((e) => e.name === 'spec-additional-properties');
 
 const controls = exampleElements(uischema as any).filter(
-  (element: any) => element.type === 'Control'
+  (element: any) => element.type === 'Control',
 );
 const optionsFor = (property: string) =>
   controls.find((c: any) => c.scope === `#/properties/${property}`)?.options ??
@@ -33,7 +33,7 @@ describe('the additional-properties spec example', () => {
       (validate.errors ?? []).map((error) => [
         error.instancePath,
         error.keyword,
-      ])
+      ]),
     ).toEqual([
       ['/telemetry', 'minLength'],
       ['/telemetry', 'propertyNames'],
@@ -74,7 +74,7 @@ describe('the additional-properties spec example', () => {
     for the demo to demonstrate it.
   */
   test('sets the empty-name option at both levels, including a false over a true', () => {
-    expect((example?.config as any).allowEmptyPropertyNames).toBe(true);
+    expect((example?.config as any)?.allowEmptyPropertyNames).toBe(true);
     expect(optionsFor('labels').allowEmptyPropertyNames).toBe(true);
     expect(optionsFor('quota').allowEmptyPropertyNames).toBe(false);
   });
@@ -95,7 +95,7 @@ describe('the additional-properties spec example', () => {
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(translations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(translations.bg).sort()).toEqual(
-      Object.keys(translations.en).sort()
+      Object.keys(translations.en).sort(),
     );
   });
 

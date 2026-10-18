@@ -46,7 +46,7 @@ describe('Ant Design oneof radio group tester', () => {
     const rank = oneOfRadioGroupControlTester(
       uiSchemaNoRadio,
       oneOfSchema,
-      undefined
+      undefined,
     );
     expect(rank).toBe(NOT_APPLICABLE);
   });
@@ -63,7 +63,7 @@ describe('Ant Design oneof radio group control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <OneOfRadioGroupControl schema={oneOfSchema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input[type="radio"]');
     expect(inputs.length).toBe(3);

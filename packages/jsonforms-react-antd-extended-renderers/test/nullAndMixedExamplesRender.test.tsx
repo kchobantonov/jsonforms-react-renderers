@@ -66,15 +66,15 @@ const render = (schema: any, uischema: any, data: any, config: any) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return {
     container,
     stored: () => latest,
     boxes: () =>
       Array.from(
-        container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+        container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
       ),
     unmount: () => act(() => root.unmount()),
   };
@@ -92,7 +92,7 @@ describe('the null-control spec example', () => {
     expect(boxes().some((box) => box.checked)).toBe(true);
     expect(boxes().some((box) => box.indeterminate)).toBe(true);
     expect(boxes().some((box) => !box.checked && !box.indeterminate)).toBe(
-      true
+      true,
     );
     unmount();
   });
@@ -102,8 +102,8 @@ describe('the null-control spec example', () => {
     await settle();
     const values = Array.from(
       container.querySelectorAll<HTMLInputElement>(
-        'input[type="text"], input:not([type])'
-      )
+        'input[type="text"], input:not([type])',
+      ),
     ).map((input) => input.value);
     expect(values).toContain('');
     unmount();
@@ -118,7 +118,7 @@ describe('the mixed-control spec example', () => {
     const { container, unmount } = draw();
     await settle();
     expect(
-      container.querySelectorAll('.jsonforms-mixed-type-selector').length
+      container.querySelectorAll('.jsonforms-mixed-type-selector').length,
     ).toBeGreaterThanOrEqual(7);
     unmount();
   });
@@ -134,7 +134,7 @@ describe('the mixed-control spec example', () => {
       survives alongside it.
     */
     expect(
-      container.querySelectorAll('.ant-select-clear').length
+      container.querySelectorAll('.ant-select-clear').length,
     ).toBeGreaterThan(0);
     unmount();
   });
@@ -148,7 +148,7 @@ describe('the mixed-control spec example', () => {
     expect(stored().priority).toBe(true);
     expect(stored().surcharge).toBeNull();
     expect(Object.prototype.hasOwnProperty.call(stored(), 'reference')).toBe(
-      false
+      false,
     );
     unmount();
   });

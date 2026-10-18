@@ -23,7 +23,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
     props.uischema,
     props.path,
     props.config,
-    false
+    false,
   );
   const detail = React.useContext(ObjectDetailContext);
   const additional =

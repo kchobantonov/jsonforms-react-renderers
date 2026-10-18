@@ -38,7 +38,7 @@ class ResizeObserverStub {
       if (observer.targets.has(target)) {
         observer.callback(
           [{ target } as ResizeObserverEntry],
-          observer as unknown as ResizeObserver
+          observer as unknown as ResizeObserver,
         );
       }
     }
@@ -95,8 +95,8 @@ const draw = (override?: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const separators = () =>
     Array.from(container.querySelectorAll<HTMLElement>('[role="separator"]'));
@@ -117,15 +117,15 @@ describe('the split-layout spec example', () => {
     const view = draw();
     await settle();
     const expected = Array.from(
-      view.container.querySelectorAll('.ant-splitter')
+      view.container.querySelectorAll('.ant-splitter'),
     ).reduce(
       (total, splitter) =>
         total +
         Math.max(
           0,
-          splitter.querySelectorAll('.ant-splitter-panel').length - 1
+          splitter.querySelectorAll('.ant-splitter-panel').length - 1,
         ),
-      0
+      0,
     );
     expect(view.separators()).toHaveLength(expected);
     view.unmount();
@@ -154,7 +154,7 @@ describe('the split-layout spec example', () => {
     await settle();
     const splitter = await measureSplitter(view.container);
     const panes = Array.from(
-      splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel')
+      splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel'),
     );
     expect(parseFloat(panes[0].style.flexBasis)).toBeCloseTo(600);
     expect(parseFloat(panes[1].style.flexBasis)).toBeCloseTo(300);
@@ -179,7 +179,7 @@ describe('the split-layout spec example', () => {
     await settle();
     // The non-resizable splitter still contributes its boundary.
     const nonResizable = Array.from(
-      view.container.querySelectorAll('.ant-splitter')
+      view.container.querySelectorAll('.ant-splitter'),
     )[2];
     expect(nonResizable.querySelectorAll('[role="separator"]')).toHaveLength(1);
     view.unmount();
@@ -229,7 +229,7 @@ describe('pane sizing', () => {
   const paddedPanes = (container: HTMLElement) =>
     Array.from(container.querySelectorAll<HTMLElement>('div')).filter(
       (element) =>
-        element.style.overflow === 'auto' && element.style.padding !== ''
+        element.style.overflow === 'auto' && element.style.padding !== '',
     );
 
   it('keeps padding inside each pane, so nothing scrolls that fits', async () => {
@@ -277,8 +277,8 @@ describe('a pane that appears at runtime', () => {
                 current = next;
               }}
             />
-          </ConfigProvider>
-        )
+          </ConfigProvider>,
+        ),
       );
     /*
       The audit splitter is the fourth in the fixture. Scoped to it rather than
@@ -287,10 +287,10 @@ describe('a pane that appears at runtime', () => {
     */
     const bases = () => {
       const splitter = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-splitter')
+        container.querySelectorAll<HTMLElement>('.ant-splitter'),
       )[3];
       return Array.from(
-        splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel')
+        splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel'),
       ).map((panel) => panel.style.flexBasis);
     };
 
@@ -301,7 +301,7 @@ describe('a pane that appears at runtime', () => {
 
     // Reveal it the way a user does.
     const box = container.querySelector<HTMLInputElement>(
-      'input[type=checkbox]'
+      'input[type=checkbox]',
     )!;
     act(() => box.click());
     await settle(200);
@@ -311,8 +311,8 @@ describe('a pane that appears at runtime', () => {
     // The value lives on the input, not in textContent.
     expect(
       Array.from(container.querySelectorAll<HTMLInputElement>('input')).some(
-        (input) => input.value === 'Reassigned by A. Ferreira.'
-      )
+        (input) => input.value === 'Reassigned by A. Ferreira.',
+      ),
     ).toBe(true);
     // Two panes sharing the space, not 100% and whatever is left.
     expect(bases()).toEqual(['50%', '50%']);
@@ -332,10 +332,10 @@ describe('a pane that appears at runtime', () => {
 describe('three panes with a hidden middle', () => {
   const lastSplitterBases = (container: HTMLElement) => {
     const splitter = Array.from(
-      container.querySelectorAll<HTMLElement>('.ant-splitter')
+      container.querySelectorAll<HTMLElement>('.ant-splitter'),
     ).at(-1)!;
     return Array.from(
-      splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel')
+      splitter.querySelectorAll<HTMLElement>('.ant-splitter-panel'),
     ).map((panel) => panel.style.flexBasis);
   };
 

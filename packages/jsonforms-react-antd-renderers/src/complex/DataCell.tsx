@@ -25,7 +25,7 @@ export interface DataCellProps {
 
 const controlWithoutLabel = (
   scope: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ): ControlElement => ({
   type: 'Control',
   scope: scope,
@@ -54,11 +54,11 @@ const DataCell = ({
           schema={Resolve.schema(
             schema,
             `#/properties/${encode(propName)}`,
-            rootSchema
+            rootSchema,
           )}
           uischema={controlWithoutLabel(
             `#/properties/${encode(propName)}`,
-            cellOptions
+            cellOptions,
           )}
           path={path}
           enabled={enabled}

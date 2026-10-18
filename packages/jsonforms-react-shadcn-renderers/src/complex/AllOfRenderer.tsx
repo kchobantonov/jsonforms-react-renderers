@@ -24,7 +24,7 @@ export const ShadcnAllOfRenderer = ({
   const delegateUISchema = findMatchingUISchema(uischemas)(
     schema,
     uischema.scope,
-    path
+    path,
   );
 
   if (!visible) {
@@ -49,7 +49,7 @@ export const ShadcnAllOfRenderer = ({
     'allOf',
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   return (

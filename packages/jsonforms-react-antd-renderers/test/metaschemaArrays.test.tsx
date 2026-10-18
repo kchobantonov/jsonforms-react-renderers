@@ -19,8 +19,8 @@ it.each(['allOf', 'anyOf', 'oneOf'])(
             uischema={{ type: 'Control', scope: `#/properties/${property}` }}
             renderers={antdRenderers}
             cells={antdCells}
-          />
-        )
+          />,
+        ),
       );
       expect(host.querySelector('table')).toBeNull();
       expect(host.textContent).not.toContain('No applicable');
@@ -28,7 +28,7 @@ it.each(['allOf', 'anyOf', 'oneOf'])(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('supports a composed value in an explicitly requested table', async () => {
@@ -57,8 +57,8 @@ it('supports a composed value in an explicitly requested table', async () => {
           uischema={{ type: 'Control', scope: '#', options: { table: true } }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelector('table')).not.toBeNull();
     expect(host.textContent).not.toContain('No applicable');

@@ -24,7 +24,7 @@ import { ClearValueButton } from '../components/ClearValueButton';
 
 const isPassword = and(
   isStringControl,
-  or(formatIs('password'), optionIs('format', 'password'))
+  or(formatIs('password'), optionIs('format', 'password')),
 );
 export const passwordControlTester = rankWith(4, isPassword);
 export const passwordOtpControlTester = rankWith(
@@ -36,14 +36,14 @@ export const passwordOtpControlTester = rankWith(
       (schema) =>
         typeof schema.minLength === 'number' &&
         typeof schema.maxLength === 'number' &&
-        schema.maxLength > 0
-    )
-  )
+        schema.maxLength > 0,
+    ),
+  ),
 );
 
 /** Shared masking and actions; segmented edits commit partial values immediately. */
 export const ShadcnPasswordControl = (
-  props: ControlProps & { segmented?: boolean }
+  props: ControlProps & { segmented?: boolean },
 ) => {
   const [revealed, setRevealed] = useState(false);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
@@ -116,7 +116,7 @@ export const ShadcnPasswordControl = (
               autoComplete={
                 props.segmented ? 'one-time-code' : 'current-password'
               }
-              value={props.segmented ? value[index] ?? '' : value}
+              value={props.segmented ? (value[index] ?? '') : value}
               onFocus={(event) => {
                 if (props.segmented) event.currentTarget.select();
               }}

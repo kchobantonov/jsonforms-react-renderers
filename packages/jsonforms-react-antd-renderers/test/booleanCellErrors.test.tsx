@@ -2,7 +2,7 @@ import './renderers/MatchMediaMock';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { antdRenderers, antdCells } from '../src';
 
 it.each([false, true])(
@@ -35,28 +35,28 @@ it.each([false, true])(
             data={{ team: [{ active: true }, { active: 'false' }] }}
             renderers={antdRenderers}
             cells={antdCells}
-          />
+          />,
         );
       });
       const rows = container.querySelectorAll('tbody tr.ant-table-row');
       expect(rows).toHaveLength(2);
       expect(
-        rows[0].querySelector('[aria-label="must be boolean"]')
+        rows[0].querySelector('[aria-label="must be boolean"]'),
       ).toBeNull();
       expect(
-        rows[1].querySelectorAll('[aria-label="must be boolean"]')
+        rows[1].querySelectorAll('[aria-label="must be boolean"]'),
       ).toHaveLength(1);
       expect(rows[1].querySelector('[aria-invalid="true"]')).not.toBeNull();
       const control = rows[1].querySelector(
-        '[aria-invalid="true"]'
+        '[aria-invalid="true"]',
       ) as HTMLElement;
       await act(async () => control.click());
       expect(
-        rows[1].querySelector('[aria-label="must be boolean"]')
+        rows[1].querySelector('[aria-label="must be boolean"]'),
       ).toBeNull();
     } finally {
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );

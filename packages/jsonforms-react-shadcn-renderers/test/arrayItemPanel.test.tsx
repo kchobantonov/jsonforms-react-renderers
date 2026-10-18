@@ -28,11 +28,11 @@ it('uses custom labels for expandable item headers and preserves mounted inputs'
           uischema={uischema}
           data={[{ message: 'First message' }, { message: 'Second message' }]}
           renderers={shadcnRenderers}
-        />
-      )
+        />,
+      ),
     );
     const triggers = host.querySelectorAll<HTMLButtonElement>(
-      '[data-slot="collapsible-trigger"]'
+      '[data-slot="collapsible-trigger"]',
     );
     expect(triggers).toHaveLength(2);
     expect(triggers[0].getAttribute('aria-label')).toBe('First message');
@@ -43,13 +43,13 @@ it('uses custom labels for expandable item headers and preserves mounted inputs'
     expect(host.querySelector('input')).toBe(input);
     expect(
       host.querySelector<HTMLElement>('[data-slot="collapsible-content"]')
-        ?.hidden
+        ?.hidden,
     ).toBe(true);
     expect(triggers[0].querySelector('[aria-label="Remove"]')).toBeNull();
     expect(
       triggers[0].parentElement?.querySelector(
-        '.absolute.right-10 [aria-label="Remove"]'
-      )
+        '.absolute.right-10 [aria-label="Remove"]',
+      ),
     ).not.toBeNull();
   } finally {
     act(() => root.unmount());

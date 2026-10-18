@@ -1,6 +1,6 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { useMixedType } from '../src/useMixedType';
 
 it('keeps explicit numeric intent across values, resetting after a non-number', () => {
@@ -10,7 +10,7 @@ it('keeps explicit numeric intent across values, resetting after a non-number', 
     const { selectedType, selectNumericType } = useMixedType(
       value,
       ['integer', 'number', 'string'],
-      'value'
+      'value',
     );
     return (
       <>

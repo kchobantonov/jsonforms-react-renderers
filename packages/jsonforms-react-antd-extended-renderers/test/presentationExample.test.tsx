@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -64,8 +64,8 @@ const draw = (override?: any) => {
             current = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const active = () =>
@@ -80,11 +80,11 @@ const draw = (override?: any) => {
       Array.from(active()?.querySelectorAll<HTMLAnchorElement>('a') ?? []),
     diagnostics: () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('[data-image-diagnostic]')
+        container.querySelectorAll<HTMLElement>('[data-image-diagnostic]'),
       ).map((el) => el.getAttribute('data-image-diagnostic')),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -138,7 +138,7 @@ describe('ImageView', () => {
     const view = draw({ badgeImage: '' });
     await view.selectTab('ImageView');
     expect(
-      view.images().find((img) => img.alt === 'Course completion badge')
+      view.images().find((img) => img.alt === 'Course completion badge'),
     ).toBeUndefined();
     expect(view.diagnostics()).toEqual([]);
     view.unmount();
@@ -149,7 +149,7 @@ describe('ImageView', () => {
     const view = draw();
     await view.selectTab('ImageView');
     expect(view.images().some((img) => img.getAttribute('alt') === '')).toBe(
-      true
+      true,
     );
     view.unmount();
   });
@@ -159,7 +159,7 @@ describe('ImageView', () => {
     const view = draw({ showBanner: false });
     await view.selectTab('ImageView');
     expect(
-      view.images().find((img) => img.alt.includes('Course handbook'))
+      view.images().find((img) => img.alt.includes('Course handbook')),
     ).toBeUndefined();
     view.unmount();
   });
@@ -196,7 +196,7 @@ describe('Link', () => {
     const view = draw();
     await view.selectTab('Link');
     expect(
-      view.links().some((a) => a.textContent === 'Not yet published')
+      view.links().some((a) => a.textContent === 'Not yet published'),
     ).toBe(false);
     expect(view.active()?.textContent).toContain('Not yet published');
     view.unmount();
@@ -207,7 +207,7 @@ describe('Link', () => {
     const view = draw();
     await view.selectTab('Link');
     expect(
-      view.links().some((a) => a.textContent === 'Refused by policy')
+      view.links().some((a) => a.textContent === 'Refused by policy'),
     ).toBe(false);
     expect(view.active()?.textContent).toContain('Refused by policy');
     expect(view.container.innerHTML).not.toContain('javascript:alert');
@@ -220,7 +220,7 @@ describe('Spacer and Separator', () => {
     const view = draw();
     await view.selectTab('Spacer and Separator');
     const heights = Array.from(
-      view.active()!.querySelectorAll<HTMLElement>('div[style*="height"]')
+      view.active()!.querySelectorAll<HTMLElement>('div[style*="height"]'),
     ).map((el) => el.style.height);
     expect(heights).toContain('32px');
     expect(heights).toContain('64px');
@@ -232,7 +232,7 @@ describe('Spacer and Separator', () => {
     const view = draw();
     await view.selectTab('Spacer and Separator');
     const orientations = Array.from(
-      view.active()!.querySelectorAll<HTMLElement>('[data-separator]')
+      view.active()!.querySelectorAll<HTMLElement>('[data-separator]'),
     ).map((el) => el.getAttribute('data-separator'));
     expect(orientations).toContain('horizontal');
     expect(orientations).toContain('vertical');
@@ -272,8 +272,8 @@ describe('none of them touch the data', () => {
             cells={antdCells}
             onChange={({ data: next }) => writes.push(next)}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     // One initial notification, and it carries the data unchanged.

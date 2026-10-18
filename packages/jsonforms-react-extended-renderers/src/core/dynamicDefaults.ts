@@ -48,40 +48,40 @@ const arg = (args: unknown, name: string): string | undefined => {
  * asked for one.
  */
 export const makeDynamic = (
-  allowScriptEvaluation: () => boolean
+  allowScriptEvaluation: () => boolean,
 ): Generator => {
   return (args: unknown) => {
     const source = arg(args, 'func');
     if (!source) {
       throw new Error(
-        `missing argument 'func' for dynamicDefaults func 'dynamic'`
+        `missing argument 'func' for dynamicDefaults func 'dynamic'`,
       );
     }
     if (!allowScriptEvaluation()) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(
         `dynamicDefaults.evaluationDisabled: the 'dynamic' default compiles a ` +
           `function from the schema, which requires ` +
-          `jsonformsExtended.security.allowScriptEvaluation. No default was applied.`
+          `jsonformsExtended.security.allowScriptEvaluation. No default was applied.`,
       );
       return () => undefined;
     }
     try {
       const compiled = new Function(
         'args',
-        `const func = ${source}; return func(args);`
+        `const func = ${source}; return func(args);`,
       );
       return () => {
         try {
           return compiled(args);
         } catch (error) {
-          // eslint-disable-next-line no-console
+          // oxlint-disable-next-line no-console
           console.error(`Error at dynamicDefaults 'dynamic': ${error}`);
           return undefined;
         }
       };
     } catch (error) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.error(`Error at dynamicDefaults 'dynamic': ${error}`);
       return () => undefined;
     }

@@ -14,9 +14,9 @@ export const ContainerValidationIndicator = ({ count }: { count?: number }) => {
     count === undefined
       ? 'validation.containerHasErrors'
       : count === 1
-      ? 'validation.containerError'
-      : 'validation.containerErrors',
-    { count }
+        ? 'validation.containerError'
+        : 'validation.containerErrors',
+    { count },
   );
   return (
     <TooltipProvider>

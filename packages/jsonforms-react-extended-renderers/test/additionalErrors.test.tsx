@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import type { ErrorObject } from 'ajv';
 import { coreReducer, Actions } from '@jsonforms/core';
 import {
@@ -37,7 +37,7 @@ const err = (path: string, message: string): ErrorObject =>
     keyword: 'server',
     message,
     params: {},
-  } as ErrorObject);
+  }) as ErrorObject;
 
 const schema = {
   type: 'object',
@@ -52,12 +52,12 @@ const schema = {
 const reduce = (
   store: ReturnType<typeof createAdditionalErrorStore>,
   state: any,
-  action: any
+  action: any,
 ) => store.middleware(state, action, coreReducer as any);
 
 const init = (
   store: ReturnType<typeof createAdditionalErrorStore>,
-  data: any
+  data: any,
 ) =>
   reduce(store, undefined as any, Actions.init(data, schema, undefined as any));
 
@@ -84,7 +84,7 @@ describe('publishing through the middleware', () => {
     state = reduce(
       store,
       state,
-      Actions.update('/a', () => 'typed')
+      Actions.update('/a', () => 'typed'),
     );
     expect(messages(state)).toEqual(['b is wrong']);
   });
@@ -99,7 +99,7 @@ describe('publishing through the middleware', () => {
     state = reduce(
       store,
       state,
-      Actions.update('/b', () => 'z')
+      Actions.update('/b', () => 'z'),
     );
     expect(messages(state)).toEqual([]);
   });
@@ -140,7 +140,7 @@ describe('several owners and the host', () => {
     state = reduce(
       store,
       state,
-      Actions.update('/b', () => 'anything')
+      Actions.update('/b', () => 'anything'),
     );
     expect(messages(state)).toEqual(['from the server']);
   });
@@ -157,8 +157,8 @@ describe('several owners and the host', () => {
         undefined as any,
         {
           additionalErrors: [hostError],
-        } as any
-      )
+        } as any,
+      ),
     );
     expect(messages(state)).toEqual(['from the host']);
 
@@ -168,7 +168,7 @@ describe('several owners and the host', () => {
     state = reduce(
       store,
       state,
-      Actions.update('/b', () => 'z')
+      Actions.update('/b', () => 'z'),
     );
     expect(messages(state).sort()).toEqual([
       'from the editor',
@@ -179,7 +179,7 @@ describe('several owners and the host', () => {
     state = reduce(
       store,
       state,
-      Actions.update('/b', () => 'zz')
+      Actions.update('/b', () => 'zz'),
     );
     expect(messages(state)).toEqual(['from the host']);
   });
@@ -195,7 +195,7 @@ describe('clearing when the field changes', () => {
     state = reduce(
       store,
       state,
-      Actions.update('a', () => 'typed')
+      Actions.update('a', () => 'typed'),
     );
     expect(messages(state)).toEqual(['about b']);
   });
@@ -207,7 +207,7 @@ describe('clearing when the field changes', () => {
     state = reduce(
       store,
       state,
-      Actions.update('nested.c', () => 'typed')
+      Actions.update('nested.c', () => 'typed'),
     );
     expect(messages(state)).toEqual([]);
   });
@@ -224,7 +224,7 @@ describe('clearing when the field changes', () => {
     state = reduce(
       store,
       state,
-      Actions.update('a', () => 'same')
+      Actions.update('a', () => 'same'),
     );
     expect(messages(state)).toEqual(['about a']);
   });
@@ -237,7 +237,7 @@ describe('clearing when the field changes', () => {
     state = reduce(
       store,
       state,
-      Actions.update('a', () => 'typed')
+      Actions.update('a', () => 'typed'),
     );
     expect(messages(state)).toEqual(['syntax']);
   });
@@ -286,7 +286,7 @@ describe('the React surface', () => {
       <>
         <Publisher owner='a' errors={[err('/a', 'boom')]} />
         <Reader />
-      </>
+      </>,
     );
     await settle();
     expect(view.read()).toBe('boom');
@@ -323,7 +323,7 @@ describe('the React surface', () => {
     document.body.appendChild(container);
     const root = createRoot(container);
     expect(() =>
-      act(() => root.render(<Publisher owner='a' errors={[err('/a', 'x')]} />))
+      act(() => root.render(<Publisher owner='a' errors={[err('/a', 'x')]} />)),
     ).not.toThrow();
     act(() => root.unmount());
   });

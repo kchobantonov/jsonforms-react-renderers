@@ -41,19 +41,19 @@ it.each([true, false])(
             onChange={({ errors }) => {
               documentErrors = errors ?? [];
             }}
-          />
-        )
+          />,
+        ),
       );
       expect(
-        container.textContent?.includes('must NOT have more than 5 characters')
+        container.textContent?.includes('must NOT have more than 5 characters'),
       ).toBe(validateActiveBranch);
       expect(documentErrors).toHaveLength(0);
       expect(Boolean(container.querySelector('.ant-form-item-has-error'))).toBe(
-        validateActiveBranch
+        validateActiveBranch,
       );
     } finally {
       act(() => root.unmount());
       container.remove();
     }
-  }
+  },
 );

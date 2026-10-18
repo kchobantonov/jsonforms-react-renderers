@@ -19,7 +19,7 @@ export const isFileString = (schema: JsonSchema) =>
 
 export const fileItemSchema = (
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema | undefined => {
   if (
     schema.type !== 'array' ||
@@ -38,8 +38,8 @@ export const fileArrayTester: RankedTester = rankWith(
   7,
   and(
     uiTypeIs('Control'),
-    schemaMatches((schema, root) => Boolean(fileItemSchema(schema, root)))
-  )
+    schemaMatches((schema, root) => Boolean(fileItemSchema(schema, root))),
+  ),
 );
 
 export const encodeFile = (file: File, schema: JsonSchema): Promise<string> =>
@@ -59,7 +59,7 @@ export const encodeFile = (file: File, schema: JsonSchema): Promise<string> =>
             : url.slice(0, marker) +
                 ';filename=' +
                 encodeURIComponent(file.name) +
-                url.slice(marker)
+                url.slice(marker),
         );
       } else resolve(url.slice(url.indexOf(',') + 1));
     };
@@ -89,7 +89,7 @@ export const FileArrayInput = (
     }>;
     PillComponent?: React.ElementType;
     ButtonComponent?: React.ElementType;
-  }
+  },
 ) => {
   const t = useI18n();
   const [hovered, setHovered] = useState(false);
@@ -167,7 +167,7 @@ export const FileArrayInput = (
                   formatMaximum: 'file.atMost',
                   formatExclusiveMaximum: 'file.lessThan',
                 } as const
-              )[key]
+              )[key],
             ),
             limit,
           });
@@ -180,7 +180,7 @@ export const FileArrayInput = (
     setBusy(true);
     try {
       const encoded = await Promise.all(
-        files.map((file) => encodeFile(file, item))
+        files.map((file) => encodeFile(file, item)),
       );
       if (
         !mounted.current ||
@@ -348,7 +348,7 @@ export const FileArrayInput = (
                       setError('');
                       props.handleChange(
                         props.path,
-                        values.filter((_, i) => i !== index)
+                        values.filter((_, i) => i !== index),
                       );
                     }}
                   >

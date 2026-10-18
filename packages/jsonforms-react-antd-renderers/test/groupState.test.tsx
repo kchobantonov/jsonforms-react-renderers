@@ -55,10 +55,10 @@ describe('Group collapse and data indicator', () => {
     };
     expect(groupHasData(nested, { unrelated: 'yes' })).toBe(false);
     expect(groupHasData(nested, { rows: [{ 'a/b': false }] }, 'rows.0')).toBe(
-      true
+      true,
     );
     expect(groupHasData(nested, { rows: [{ 'a/b': '' }] }, 'rows.0')).toBe(
-      false
+      false,
     );
   });
   it('preserves mounted children and user collapse state, reacts to options and data', async () => {
@@ -72,7 +72,7 @@ describe('Group collapse and data indicator', () => {
         observe() {}
         unobserve() {}
         disconnect() {}
-      }
+      },
     );
     const render = async (ui = group, value: unknown = 0, config = {}) => {
       await act(async () =>
@@ -83,13 +83,13 @@ describe('Group collapse and data indicator', () => {
             uischema={ui}
             config={config}
             renderers={renderers}
-          />
-        )
+          />,
+        ),
       );
     };
     const toggle = () =>
       container.querySelector<HTMLElement>(
-        '.ant-collapse-header[role="button"]'
+        '.ant-collapse-header[role="button"]',
       )!;
     try {
       await render();
@@ -108,8 +108,8 @@ describe('Group collapse and data indicator', () => {
             key: 'Enter',
             keyCode: 13,
             bubbles: true,
-          })
-        )
+          }),
+        ),
       );
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
       await act(async () => toggle().click());
@@ -205,10 +205,10 @@ describe('bound-path collection', () => {
     // items.10.a - never items.1 - so a sibling item cannot match.
     const index = new Set(['', 'items', 'items.10', 'items.10.a']);
     expect(boundDataPaths(nested, 'items.10').some((p) => index.has(p))).toBe(
-      true
+      true,
     );
     expect(boundDataPaths(nested, 'items.1').some((p) => index.has(p))).toBe(
-      false
+      false,
     );
   });
 

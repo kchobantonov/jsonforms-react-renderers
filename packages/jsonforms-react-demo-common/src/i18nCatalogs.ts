@@ -51,7 +51,7 @@ const interpolate = (message: string, values: unknown): string => {
  */
 export const translatorFor = (
   catalogs: TranslationCatalogs,
-  locale: string
+  locale: string,
 ): Translator =>
   createTranslator((id, defaultMessage, values) => {
     const messages = catalogs[locale] ?? {};
@@ -63,7 +63,7 @@ export const translatorFor = (
 
 /** The catalogs an example carries, if any. */
 export const exampleTranslations = (
-  example: ExampleDescription | undefined
+  example: ExampleDescription | undefined,
 ): TranslationCatalogs | undefined => {
   const catalogs = (example as ExampleWithTranslations | undefined)
     ?.translations;
@@ -82,7 +82,7 @@ export const exampleTranslations = (
  * function.
  */
 export const i18nEditorValue = (
-  example: ExampleDescription | undefined
+  example: ExampleDescription | undefined,
 ): unknown => exampleTranslations(example) ?? example?.i18n;
 
 /**
@@ -93,7 +93,7 @@ export const i18nEditorValue = (
  * treating a locale string as a catalog.
  */
 export const asTranslationCatalogs = (
-  value: unknown
+  value: unknown,
 ): TranslationCatalogs | undefined => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return undefined;

@@ -35,8 +35,8 @@ export const ContainerValidationIndicator = ({
     count === undefined
       ? 'validation.containerHasErrors'
       : count === 1
-      ? 'validation.containerError'
-      : 'validation.containerErrors';
+        ? 'validation.containerError'
+        : 'validation.containerErrors';
   // `useI18n` fills `{count}` itself, so the hand-rolled replace is gone.
   const label = t(key, { count });
   return (

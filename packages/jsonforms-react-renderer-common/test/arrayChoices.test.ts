@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   addChoice,
   arrayChoicesOf,
@@ -31,7 +31,7 @@ const control = (variant?: string) =>
     type: 'Control',
     scope: '#/properties/value',
     ...(variant ? { options: { variant } } : {}),
-  } as any);
+  }) as any;
 
 const test = (tester: any, variant: string | undefined, value: any) => {
   const schema = root(value);
@@ -57,7 +57,7 @@ describe('selecting the array-choice variants', () => {
             { const: 'fin', title: 'Finance' },
           ],
         },
-      })
+      }),
     ).toBe(true);
   });
 
@@ -70,7 +70,7 @@ describe('selecting the array-choice variants', () => {
       test(isMultiSelectControl, 'multi-select', {
         type: 'array',
         items: { type: 'string', enum: ['Email'] },
-      })
+      }),
     ).toBe(false);
   });
 
@@ -86,14 +86,14 @@ describe('selecting the array-choice variants', () => {
         type: 'array',
         uniqueItems: true,
         items: { oneOf: [{ const: { code: 'eng' } }] },
-      })
+      }),
     ).toBe(false);
     expect(
       test(isMultiSelectControl, 'multi-select', {
         type: 'array',
         uniqueItems: true,
         items: { type: 'number', enum: [1, 2] },
-      })
+      }),
     ).toBe(false);
   });
 
@@ -110,7 +110,7 @@ describe('selecting the array-choice variants', () => {
       test(isChipsControl, 'chips', {
         type: 'array',
         items: { type: 'string' },
-      })
+      }),
     ).toBe(true);
   });
 
@@ -119,7 +119,7 @@ describe('selecting the array-choice variants', () => {
       test(isChipsControl, 'chips', {
         type: 'array',
         items: [{ type: 'string' }],
-      })
+      }),
     ).toBe(false);
   });
 });
@@ -137,7 +137,7 @@ describe('reading the permitted choices', () => {
     expect(
       arrayChoicesOf({
         oneOf: [{ const: 'eng', title: 'Engineering' }],
-      } as any)
+      } as any),
     ).toEqual([{ value: 'eng', label: 'Engineering' }]);
   });
 
@@ -150,7 +150,7 @@ describe('reading the permitted choices', () => {
   it('reports no choices for free or unsupported items', () => {
     expect(arrayChoicesOf({ type: 'string' } as any)).toBeUndefined();
     expect(
-      arrayChoicesOf({ type: 'number', enum: [1] } as any)
+      arrayChoicesOf({ type: 'number', enum: [1] } as any),
     ).toBeUndefined();
     expect(arrayChoicesOf(undefined)).toBeUndefined();
   });

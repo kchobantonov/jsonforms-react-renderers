@@ -109,13 +109,13 @@ export const AdditionalProperties = ({
     objectSchema.additionalProperties === undefined;
   const reservedPropertyNames = Object.keys(objectSchema.properties ?? {});
   const additionalKeys = Object.keys(objectData ?? {}).filter(
-    (key) => !reservedPropertyNames.includes(key)
+    (key) => !reservedPropertyNames.includes(key),
   );
   const page = useCollectionPagination(
     additionalKeys,
     uischema.options?.additionalProperties?.pagination,
     config,
-    'additionalProperties'
+    'additionalProperties',
   );
   const additionalPropertyItems = useMemo(
     () =>
@@ -125,10 +125,10 @@ export const AdditionalProperties = ({
           path,
           schema,
           rootSchema,
-          allowIfMissing
-        )
+          allowIfMissing,
+        ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema]
+    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||
@@ -147,7 +147,7 @@ export const AdditionalProperties = ({
   */
   const nameMessage = (
     error: AdditionalPropertyNameError,
-    name: string
+    name: string,
   ): string => {
     switch (error) {
       case 'required':
@@ -173,12 +173,12 @@ export const AdditionalProperties = ({
         validate: ajv
           ? (nameSchema, value) => ajv.validate(nameSchema, value)
           : undefined,
-      }
+      },
     );
     return result.error === undefined
       ? undefined
-      : constraintMessage(result.errors) ??
-          nameMessage(result.error, result.name);
+      : (constraintMessage(result.errors) ??
+          nameMessage(result.error, result.name));
   };
   const propertyNameError = validateName(propertyName);
   /*
@@ -216,14 +216,14 @@ export const AdditionalProperties = ({
       path,
       schema,
       rootSchema,
-      allowIfMissing
+      allowIfMissing,
     );
     const updatedData = objectData ? { ...objectData } : {};
 
     assignOwnProperty(
       updatedData,
       propertyName,
-      createDefaultValue(additionalProperty.schema, rootSchema)
+      createDefaultValue(additionalProperty.schema, rootSchema),
     );
     handleChange(path, updatedData);
     setNewPropertyName('');
@@ -267,9 +267,9 @@ export const AdditionalProperties = ({
         assignOwnProperty(
           result,
           key === propertyToRename ? nextName : key,
-          value
+          value,
         ),
-      {} as Record<string, unknown>
+      {} as Record<string, unknown>,
     );
     handleChange(path, updatedData);
     setRenamingPropertyName(null);
@@ -379,7 +379,7 @@ export const AdditionalProperties = ({
                       removePropertyDisabled ||
                       Boolean(
                         restrict &&
-                          objectSchema.required?.includes(item.propertyName)
+                        objectSchema.required?.includes(item.propertyName),
                       )
                     }
                     name={item.propertyName}
@@ -450,8 +450,8 @@ export const AdditionalProperties = ({
                               assignOwnProperty(
                                 { ...(objectData ?? {}) },
                                 item.propertyName,
-                                next
-                              )
+                                next,
+                              ),
                             )
                           }
                           readonly={readonly}
@@ -463,7 +463,7 @@ export const AdditionalProperties = ({
                       */
                           schema={literalPropertySchema(
                             item.schema as JsonSchema,
-                            rootSchema
+                            rootSchema,
                           )}
                           uischema={{
                             type: 'Control',
@@ -474,7 +474,7 @@ export const AdditionalProperties = ({
                             objectData &&
                             Object.prototype.hasOwnProperty.call(
                               objectData,
-                              item.propertyName
+                              item.propertyName,
                             )
                               ? objectData[item.propertyName]
                               : undefined

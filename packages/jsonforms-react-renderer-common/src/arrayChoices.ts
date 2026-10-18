@@ -17,7 +17,7 @@ export interface ArrayChoice {
 /** The item schema, with a `$ref` followed. */
 export const resolveItemSchema = (
   schema: JsonSchema | undefined,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema | undefined => {
   const items = schema?.items;
   if (!items || Array.isArray(items) || typeof items === 'boolean') {
@@ -25,7 +25,7 @@ export const resolveItemSchema = (
   }
   const resolved = items as JsonSchema;
   return resolved.$ref
-    ? Resolve.schema(rootSchema, resolved.$ref, rootSchema) ?? resolved
+    ? (Resolve.schema(rootSchema, resolved.$ref, rootSchema) ?? resolved)
     : resolved;
 };
 
@@ -41,7 +41,7 @@ export const resolveItemSchema = (
  * to a renderer that can edit them.
  */
 export const arrayChoicesOf = (
-  itemSchema: JsonSchema | undefined
+  itemSchema: JsonSchema | undefined,
 ): ArrayChoice[] | undefined => {
   if (!itemSchema) {
     return undefined;
@@ -83,7 +83,7 @@ const optionIsVariant = (uischema: UISchemaElement, variant: string) =>
 const arraySchemaAt = (
   uischema: UISchemaElement,
   schema: JsonSchema,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema | undefined => {
   const scope = (uischema as { scope?: string }).scope;
   if (!scope) {
@@ -110,7 +110,7 @@ export const isMultiSelectControl: Tester = (uischema, schema, context) => {
   const resolved = arraySchemaAt(
     uischema,
     schema,
-    context?.rootSchema ?? schema
+    context?.rootSchema ?? schema,
   );
   if (resolved?.type !== 'array' || resolved.uniqueItems !== true) {
     return false;
@@ -132,7 +132,7 @@ export const isChipsControl: Tester = (uischema, schema, context) => {
   const resolved = arraySchemaAt(
     uischema,
     schema,
-    context?.rootSchema ?? schema
+    context?.rootSchema ?? schema,
   );
   if (resolved?.type !== 'array' || Array.isArray(resolved.items)) {
     return false;
@@ -168,7 +168,7 @@ export const isSelected = (values: unknown[], value: unknown): boolean =>
 export const addChoice = (
   values: unknown[],
   value: unknown,
-  unique: boolean
+  unique: boolean,
 ): unknown[] =>
   unique && isSelected(values, value) ? values : [...values, value];
 
@@ -189,7 +189,7 @@ export const removeChoiceAt = (values: unknown[], index: number): unknown[] =>
 export const removeChoice = (values: unknown[], value: unknown): unknown[] =>
   removeChoiceAt(
     values,
-    values.findIndex((entry) => sameChoice(entry, value))
+    values.findIndex((entry) => sameChoice(entry, value)),
   );
 
 export interface ArrayChoiceLimits {
@@ -201,10 +201,10 @@ export interface ArrayChoiceLimits {
 
 export const canAddChoice = (
   values: unknown[],
-  { maxItems, restrict }: ArrayChoiceLimits
+  { maxItems, restrict }: ArrayChoiceLimits,
 ): boolean => !restrict || maxItems === undefined || values.length < maxItems;
 
 export const canRemoveChoice = (
   values: unknown[],
-  { minItems, restrict }: ArrayChoiceLimits
+  { minItems, restrict }: ArrayChoiceLimits,
 ): boolean => !restrict || minItems === undefined || values.length > minItems;

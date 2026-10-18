@@ -28,11 +28,11 @@ it('opens the icon-only descendant summary on focus', async () => {
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     const icons = host.querySelectorAll<HTMLButtonElement>(
-      '.shadcn-jsonforms-array-errors, .shadcn-jsonforms-cell-error'
+      '.shadcn-jsonforms-array-errors, .shadcn-jsonforms-cell-error',
     );
     expect(icons).toHaveLength(5);
     icons.forEach((icon) => {
@@ -42,8 +42,8 @@ it('opens the icon-only descendant summary on focus', async () => {
     await act(async () => icons[0].focus());
     await vi.waitFor(() =>
       expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        'Some items contain errors.'
-      )
+        'Some items contain errors.',
+      ),
     );
     expect(document.querySelector('[role="dialog"]')).toBeNull();
   } finally {
@@ -65,18 +65,18 @@ it('uses the usual control message in a simple tooltip for one cell error', asyn
           uischema={{ type: 'Control', scope: '#', options: { table: true } }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     const icon = host.querySelector<HTMLButtonElement>(
-      '.shadcn-jsonforms-cell-error'
+      '.shadcn-jsonforms-cell-error',
     )!;
     await act(async () => {
       icon.focus();
       await new Promise((resolve) => setTimeout(resolve, 50));
     });
     expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-      icon.getAttribute('aria-label')
+      icon.getAttribute('aria-label'),
     );
     expect(document.querySelector('[role="dialog"]')).toBeNull();
   } finally {
@@ -102,15 +102,15 @@ it('expands a detailed summary with more than three errors', async () => {
               renderer: () => <ErrorIndicator errors='Invalid items' path='' />,
             },
           ]}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => host.querySelector('button')!.focus());
     const summary = document.querySelector('[role="dialog"]')!;
     expect(summary.textContent).toContain('4 errors');
     expect(summary.querySelectorAll('li')).toHaveLength(3);
     const more = Array.from(summary.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Show 1 more'
+      (button) => button.textContent === 'Show 1 more',
     )!;
     act(() => more.click());
     expect(summary.querySelectorAll('li')).toHaveLength(4);

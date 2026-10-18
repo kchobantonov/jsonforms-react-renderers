@@ -1,5 +1,5 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
 import data from '@chobantonov/jsonforms-extended-spec/examples/array-choices/data.json';
@@ -29,7 +29,7 @@ describe('the array-choices spec example', () => {
       (validate.errors ?? []).map((error) => [
         error.instancePath,
         error.keyword,
-      ])
+      ]),
     ).toEqual([
       // One on the array, one on the item - which is the point of having both.
       ['/bonded', 'minItems'],
@@ -78,7 +78,7 @@ describe('the array-choices spec example', () => {
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(translations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(translations.bg).sort()).toEqual(
-      Object.keys(translations.en).sort()
+      Object.keys(translations.en).sort(),
     );
   });
 });
@@ -86,12 +86,12 @@ describe('the array-choices spec example', () => {
 describe('the choice-controls example, extended for autocomplete', () => {
   test('asks for searchable choices, and shows the default beside them', () => {
     const controls = exampleElements(choiceUischema as any).filter(
-      (e: any) => e.scope === '#/properties/origin'
+      (e: any) => e.scope === '#/properties/origin',
     );
     // The same property twice: once searchable, once at the family default.
     expect(controls).toHaveLength(2);
     expect(controls.some((c: any) => c.options?.autocomplete === true)).toBe(
-      true
+      true,
     );
     expect(controls.some((c: any) => c.options === undefined)).toBe(true);
   });

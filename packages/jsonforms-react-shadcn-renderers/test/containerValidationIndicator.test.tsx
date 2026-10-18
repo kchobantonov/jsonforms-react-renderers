@@ -45,11 +45,11 @@ it.each(['group', 'tabs', 'stepper', 'accordion'])(
                   ? 'Section: {count} problem'
                   : fallback,
             }}
-          />
-        )
+          />,
+        ),
       );
       const icon = host.querySelector<HTMLElement>(
-        '[data-container-validation-indicator]'
+        '[data-container-validation-indicator]',
       )!;
       expect(icon).toBeTruthy();
       expect(icon.querySelector('svg')).toBeTruthy();
@@ -60,13 +60,13 @@ it.each(['group', 'tabs', 'stepper', 'accordion'])(
         await new Promise((resolve) => setTimeout(resolve, 50));
       });
       expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        'Section: 1 problem'
+        'Section: 1 problem',
       );
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('keeps an icon with a generic translated tooltip when counts are disabled', () => {
@@ -97,8 +97,8 @@ it('keeps an icon with a generic translated tooltip when counts are disabled', (
                 ? 'Please review this section'
                 : fallback,
           }}
-        />
-      )
+        />,
+      ),
     );
     const icon = host.querySelector('[data-container-validation-indicator]')!;
     expect(icon.getAttribute('aria-label')).toBe('Please review this section');

@@ -32,7 +32,7 @@ const draw = (
   variant: string,
   options: any = {},
   elements: any = categories,
-  data: any = {}
+  data: any = {},
 ) =>
   act(() =>
     root.render(
@@ -47,19 +47,19 @@ const draw = (
           } as any
         }
         renderers={shadcnRenderers}
-      />
-    )
+      />,
+    ),
   );
 const buttons = () => Array.from(container.querySelectorAll('button'));
 const click = (name: string) =>
   act(() =>
     buttons()
       .find((b) => b.textContent!.includes(name))!
-      .click()
+      .click(),
   );
 const open = () =>
   Array.from(container.querySelectorAll<HTMLElement>('[role="region"]')).filter(
-    (el) => !el.hidden
+    (el) => !el.hidden,
   );
 it('renders accordion disclosures instead of tabs and honors initial by name', () => {
   draw('accordion', { initial: 'second' });
@@ -97,7 +97,7 @@ it.each(['accordion', 'stepper'])(
     click('Second');
     draw(variant, {}, [categories[2], categories[0], categories[1]]);
     expect(open()[0].querySelector('input')!.id).toContain('value1');
-  }
+  },
 );
 it.each(['accordion', 'stepper'])(
   'honors category visibility and recovers selection: %s',
@@ -116,20 +116,20 @@ it.each(['accordion', 'stepper'])(
     click('Second');
     draw(variant, {}, elements, { hide: true });
     expect(buttons().some((b) => b.textContent!.includes('Second'))).toBe(
-      false
+      false,
     );
     expect(open()).toHaveLength(1);
     expect(open()[0].querySelector('input')!.id).toContain('value0');
-  }
+  },
 );
 it('stepper navigates with Previous/Next and stops at boundaries', () => {
   draw('stepper', { showNavButtons: true });
   expect(buttons().find((b) => b.textContent === 'Previous')!.disabled).toBe(
-    true
+    true,
   );
   click('Next');
   expect(
-    container.querySelector('[aria-current="step"]')!.textContent
+    container.querySelector('[aria-current="step"]')!.textContent,
   ).toContain('Second');
   click('Next');
   expect(buttons().find((b) => b.textContent === 'Next')!.disabled).toBe(true);
@@ -153,11 +153,11 @@ it.each(['accordion', 'stepper'])(
       categories.map((c) => ({
         ...c,
         rule: { effect: 'HIDE', condition: { scope: '#', schema: {} } },
-      }))
+      })),
     );
     expect(container.querySelector('input')).toBeNull();
     expect(container.querySelector('[aria-current]')).toBeNull();
-  }
+  },
 );
 it('unknown variants retain the tabs fallback', () => {
   draw('unknown');
@@ -190,10 +190,10 @@ it.each(['accordion', 'stepper'])(
             } as any
           }
           renderers={shadcnRenderers}
-        />
-      )
+        />,
+      ),
     );
     click('Second');
     expect(open()[0].querySelector('input')!.disabled).toBe(true);
-  }
+  },
 );

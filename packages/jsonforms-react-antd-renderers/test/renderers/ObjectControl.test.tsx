@@ -42,16 +42,16 @@ const uischema2: ControlElement = {
 describe('Ant Design object renderer tester', () => {
   test('should fail', () => {
     expect(objectControlTester(undefined, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(objectControlTester(null, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(objectControlTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(objectControlTester({ type: 'Control' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(
       objectControlTester(
@@ -62,8 +62,8 @@ describe('Ant Design object renderer tester', () => {
             foo: { type: 'string' },
           },
         },
-        { rootSchema: schema, config: {} }
-      )
+        { rootSchema: schema, config: {} },
+      ),
     ).toBe(NOT_APPLICABLE);
     expect(
       objectControlTester(
@@ -75,8 +75,8 @@ describe('Ant Design object renderer tester', () => {
             bar: schema.properties.bar,
           },
         },
-        { rootSchema: schema, config: {} }
-      )
+        { rootSchema: schema, config: {} },
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -90,8 +90,8 @@ describe('Ant Design object renderer tester', () => {
             foo: schema.properties.foo,
           },
         },
-        { rootSchema: schema, config: {} }
-      )
+        { rootSchema: schema, config: {} },
+      ),
     ).toBe(2);
   });
 });
@@ -106,7 +106,7 @@ describe('Ant Design object control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <ObjectRenderer schema={schema} uischema={uischema1} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const inputs = wrapper.find('input');
@@ -122,7 +122,7 @@ describe('Ant Design object control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <ObjectRenderer schema={schema} uischema={uischema2} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const inputs = wrapper.find('input');
@@ -136,7 +136,7 @@ describe('Ant Design object control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <ObjectRenderer schema={schema} uischema={uischema2} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input');
     expect(inputs.first().props().disabled).toBeFalsy();
@@ -147,7 +147,7 @@ describe('Ant Design object control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <ObjectRenderer schema={schema} uischema={uischema2} visible={false} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input');
     expect(inputs.length).toBe(0);
@@ -158,7 +158,7 @@ describe('Ant Design object control', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <ObjectRenderer schema={schema} uischema={uischema2} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const inputs = wrapper.find('input');
     expect(inputs.first().props().hidden).toBeFalsy();

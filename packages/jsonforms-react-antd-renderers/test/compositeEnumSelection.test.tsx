@@ -3,7 +3,7 @@ import React from 'react';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { Radio, Select } from 'antd';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { AntdSelect } from '../src/antd-controls/AntdSelect';
 import { AntdRadioGroup } from '../src/antd-controls/AntdRadioGroup';
 import { EnumCell } from '../src/cells/EnumCell';
@@ -45,7 +45,7 @@ it.each([
     radio.setProps({ data: JSON.parse(JSON.stringify(values[0])) });
     expect(radio.find('input[checked=true]').prop('value')).toBe(0);
     expect(
-      error.mock.calls.some((args) => String(args[0]).includes('same key'))
+      error.mock.calls.some((args) => String(args[0]).includes('same key')),
     ).toBe(false);
   } finally {
     radio.unmount();

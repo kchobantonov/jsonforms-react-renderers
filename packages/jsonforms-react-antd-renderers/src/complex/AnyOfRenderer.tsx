@@ -51,7 +51,7 @@ export const AnyOfRenderer = ({
   uischemas,
 }: CombinatorRendererProps) => {
   const [selectedAnyOf, setSelectedAnyOf] = useState(
-    indexOfFittingSchema ?? -1
+    indexOfFittingSchema ?? -1,
   );
 
   /*
@@ -80,7 +80,7 @@ export const AnyOfRenderer = ({
     anyOf,
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   if (!visible) {
@@ -146,7 +146,7 @@ export const AnyOfRenderer = ({
                   />
                 </CombinatorBranch>
               ),
-            } as any)
+            }) as any,
         )}
       ></Tabs>
     </>

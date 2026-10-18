@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -18,7 +18,7 @@ import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalog
 const filteringUiSchema = {
   type: 'VerticalLayout',
   elements: uischema.elements[0].elements.flatMap(
-    (category) => category.elements
+    (category) => category.elements,
   ),
 };
 
@@ -71,14 +71,14 @@ const draw = (extraConfig?: Record<string, unknown>, locale = 'en') => {
             structured = errors ?? [];
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   /** The item whose label is `title`, or undefined. */
   const itemFor = (title: string) =>
     Array.from(container.querySelectorAll<HTMLElement>('.ant-form-item')).find(
-      (item) => item.querySelector('label')?.textContent?.includes(title)
+      (item) => item.querySelector('label')?.textContent?.includes(title),
     );
 
   return {
@@ -165,7 +165,7 @@ describe('the fixture itself', () => {
     await settle();
     // Today nothing is filtered, so this is simply the whole set.
     expect(
-      view.container.querySelectorAll('.ant-form-item-has-error').length
+      view.container.querySelectorAll('.ant-form-item-has-error').length,
     ).toBeGreaterThanOrEqual(5);
     view.unmount();
   });
@@ -267,7 +267,7 @@ describe('filtering before touch', () => {
     */
     expect(view.structured()).toHaveLength(before);
     expect(
-      view.structured().filter((error: any) => error.keyword === 'required')
+      view.structured().filter((error: any) => error.keyword === 'required'),
     ).toHaveLength(4);
     view.unmount();
   });
@@ -304,7 +304,7 @@ describe('the filter itself', () => {
           enableFilterErrorsBeforeTouch: true,
           filterErrorKeywordsBeforeTouch: ['required'],
         },
-      })
+      }),
     ).toBe('required failed');
   });
 
@@ -314,7 +314,7 @@ describe('the filter itself', () => {
         ...base,
         touched: false,
         appliedOptions: { filterErrorKeywordsBeforeTouch: ['required'] },
-      })
+      }),
     ).toBe('required failed');
   });
 
@@ -327,7 +327,7 @@ describe('the filter itself', () => {
       },
     ]) {
       expect(
-        filterErrorsBeforeTouch({ ...base, touched: false, appliedOptions })
+        filterErrorsBeforeTouch({ ...base, touched: false, appliedOptions }),
       ).toBe('');
     }
   });

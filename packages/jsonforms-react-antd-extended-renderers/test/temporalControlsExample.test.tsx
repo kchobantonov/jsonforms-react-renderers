@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createAjv } from '@jsonforms/core';
@@ -81,8 +81,8 @@ const draw = (override?: any) => {
             errors = nextErrors ?? [];
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const active = () =>
@@ -96,13 +96,13 @@ const draw = (override?: any) => {
     paths: () => errors.map((error: any) => error.instancePath),
     labelled: (label: string) => {
       const item = Array.from(
-        active()?.querySelectorAll<HTMLElement>('.ant-form-item') ?? []
+        active()?.querySelectorAll<HTMLElement>('.ant-form-item') ?? [],
       ).find((entry) => entry.querySelector('label')?.textContent === label);
       return item?.querySelector<HTMLInputElement>('input') ?? null;
     },
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -118,8 +118,8 @@ describe('the two ways a temporal control is chosen', () => {
     await settle();
     expect(
       Array.from(
-        view.container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
-      ).map((tab) => tab.textContent)
+        view.container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
+      ).map((tab) => tab.textContent),
     ).toEqual([
       'Selected by the schema',
       'Selected by the UI schema',
@@ -154,7 +154,7 @@ describe('selected by the schema', () => {
     */
     expect(view.labelled('Start time')?.value).toMatch(/^\d{2}:\d{2}$/);
     expect(view.labelled('Send reminder at')?.value).toMatch(
-      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/
+      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
     );
     expect(view.labelled('Session length')?.value).toBe('PT1H30M');
     view.unmount();
@@ -170,7 +170,7 @@ describe('selected by the schema', () => {
     await view.selectTab('Selected by the schema');
     expect(view.labelled('Start time')?.value).toMatch(/^\d{2}:\d{2}$/);
     expect(view.labelled('Start time, to the second')?.value).toMatch(
-      /^\d{2}:\d{2}:\d{2}$/
+      /^\d{2}:\d{2}:\d{2}$/,
     );
     // Both store a value with seconds regardless.
     expect((data as any).schemaBased.timeWithSeconds).toMatch(/:\d{2}Z$/);
@@ -194,7 +194,7 @@ describe('selected by the schema', () => {
     const view = draw();
     await settle();
     expect(
-      view.paths().filter((path: string) => path.startsWith('/schemaBased'))
+      view.paths().filter((path: string) => path.startsWith('/schemaBased')),
     ).toEqual([]);
     view.unmount();
   });
@@ -203,10 +203,10 @@ describe('selected by the schema', () => {
     const view = draw();
     await view.selectTab('Selected by the schema');
     const item = Array.from(
-      view.active()!.querySelectorAll<HTMLElement>('.ant-form-item')
+      view.active()!.querySelectorAll<HTMLElement>('.ant-form-item'),
     ).find(
       (entry) =>
-        entry.querySelector('label')?.textContent === 'Appointment date'
+        entry.querySelector('label')?.textContent === 'Appointment date',
     );
     expect(item?.querySelector('.ant-form-item-required')).toBeTruthy();
     view.unmount();
@@ -278,7 +278,7 @@ describe('selected by the UI schema', () => {
     await view.selectTab('Selected by the UI schema');
     expect(view.labelled('Published at, chosen to the minute')).toBeTruthy();
     expect(view.data().uiSchemaBased.datetimeSeconds).toBe(
-      '2026/11/02 3:05:30 pm'
+      '2026/11/02 3:05:30 pm',
     );
     view.unmount();
   });
@@ -295,7 +295,7 @@ describe('selected by the UI schema', () => {
     expect(accepts('time', view.data().uiSchemaBased.time)).toBe(false);
     // And the form is not in error over it.
     expect(
-      view.paths().filter((path: string) => path.startsWith('/uiSchemaBased'))
+      view.paths().filter((path: string) => path.startsWith('/uiSchemaBased')),
     ).toEqual([]);
     view.unmount();
   });
@@ -308,14 +308,14 @@ describe('selected by the UI schema', () => {
     const view = draw();
     await view.selectTab('Selected by the UI schema');
     expect(view.labelled('Opening time')?.value).toMatch(
-      /^\d{2}:\d{2}\s*(am|pm)$/i
+      /^\d{2}:\d{2}\s*(am|pm)$/i,
     );
     expect(view.labelled('Opening time, to the second')?.value).toBe(
-      '08:00:30'
+      '08:00:30',
     );
     expect(view.labelled('Published at')?.value).toBe('02-11-26 03:05 pm');
     expect(view.labelled('Published at, to the second')?.value).toBe(
-      '02-11-26 03:05:30 pm'
+      '02-11-26 03:05:30 pm',
     );
     view.unmount();
   });
@@ -325,7 +325,7 @@ describe('selected by the UI schema', () => {
     await view.selectTab('Selected by the UI schema');
     expect(view.data().uiSchemaBased.timeSeconds).toBe('08:00:30');
     expect(view.data().uiSchemaBased.datetimeSeconds).toBe(
-      '2026/11/02 3:05:30 pm'
+      '2026/11/02 3:05:30 pm',
     );
     view.unmount();
   });
@@ -334,7 +334,7 @@ describe('selected by the UI schema', () => {
     const view = draw();
     await view.selectTab('Selected by the UI schema');
     expect(view.labelled('Opening time')?.value).toMatch(
-      /^\d{2}:\d{2}\s*(am|pm)$/i
+      /^\d{2}:\d{2}\s*(am|pm)$/i,
     );
     view.unmount();
   });
@@ -355,7 +355,7 @@ describe('selected by the UI schema', () => {
     });
     await settle();
     expect(view.errors().map((error: any) => error.keyword)).toContain(
-      'pattern'
+      'pattern',
     );
     view.unmount();
   });
@@ -406,7 +406,7 @@ describe('restricting the range', () => {
     });
     await settle();
     expect(view.errors().map((error: any) => error.keyword)).toContain(
-      'formatExclusiveMinimum'
+      'formatExclusiveMinimum',
     );
     view.unmount();
   });
@@ -420,7 +420,7 @@ describe('restricting the range', () => {
     const view = await open();
     expect(view.data().bounded.unrestricted).toBe('2026-12-24');
     expect(view.labelled('Same bounds, restrict off')?.value).toBe(
-      '2026-12-24'
+      '2026-12-24',
     );
     expect(view.paths()).toContain('/bounded/unrestricted');
     view.unmount();
@@ -446,13 +446,13 @@ describe('in other structures', () => {
   it('resolves a $ref, independently per property', async () => {
     const view = await open();
     const labels = Array.from(
-      view.active()!.querySelectorAll<HTMLElement>('.ant-form-item label')
+      view.active()!.querySelectorAll<HTMLElement>('.ant-form-item label'),
     ).map((label) => label.textContent);
     expect(
-      labels.filter((label) => label === 'From').length
+      labels.filter((label) => label === 'From').length,
     ).toBeGreaterThanOrEqual(2);
     const values = Array.from(
-      view.active()!.querySelectorAll<HTMLInputElement>('input')
+      view.active()!.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     expect(values).toContain('2026-10-01');
     expect(values).toContain('2026-11-30');
@@ -473,7 +473,7 @@ describe('in other structures', () => {
     });
     await settle();
     expect(view.errors().map((error: any) => error.keyword)).toContain(
-      'formatMinimum'
+      'formatMinimum',
     );
     view.unmount();
   });
@@ -491,11 +491,11 @@ describe('in other structures', () => {
     expect(text).toContain('Cover (tuple)');
     expect(text).toContain('Cover (draft-07 tuple)');
     const values = Array.from(
-      view.active()!.querySelectorAll<HTMLInputElement>('input')
+      view.active()!.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     // Four date inputs across the two tuples, two of each value.
     expect(
-      values.filter((value) => value === '2026-10-01').length
+      values.filter((value) => value === '2026-10-01').length,
     ).toBeGreaterThanOrEqual(3);
     view.unmount();
   });
@@ -507,8 +507,8 @@ describe('in other structures', () => {
     expect(text).toContain('Optional date');
     expect(
       Array.from(
-        view.active()!.querySelectorAll<HTMLInputElement>('input')
-      ).map((input) => input.value)
+        view.active()!.querySelectorAll<HTMLInputElement>('input'),
+      ).map((input) => input.value),
     ).toContain('2026-10-14');
     view.unmount();
   });

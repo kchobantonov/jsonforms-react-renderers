@@ -29,7 +29,7 @@ import merge from 'lodash/merge';
 
 export const PrimeToggle = React.memo(function PrimeToggle(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof InputSwitch> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputSwitch> },
 ) {
   const {
     data,

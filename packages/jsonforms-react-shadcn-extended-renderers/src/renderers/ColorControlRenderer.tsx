@@ -27,7 +27,7 @@ import {
 
 export const colorControlTester: RankedTester = rankWith(
   2,
-  and(isStringControl, formatIs('color'))
+  and(isStringControl, formatIs('color')),
 );
 
 export const normalizeColor = (value: unknown): string => {
@@ -52,7 +52,7 @@ export const ShadcnColorControl = (props: ControlProps) => {
       props.uischema.options,
       props.config,
       'colorSaveFormat',
-      'hex'
+      'hex',
     ) === 'hex3';
   const displayed = rejectedText ?? props.data;
   const parsed = parseColor(displayed);
@@ -70,7 +70,7 @@ export const ShadcnColorControl = (props: ControlProps) => {
     setRejectedText(undefined);
     props.handleChange(
       props.path,
-      (hex3 && color ? serializeColor(color, 'hex3') : next) || undefined
+      (hex3 && color ? serializeColor(color, 'hex3') : next) || undefined,
     );
   };
   if (!props.visible) return null;

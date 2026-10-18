@@ -21,7 +21,7 @@ export const compositeSummaryPresentation = (
   title: string | undefined,
   t: Translator,
   d: (key: I18nKey) => string,
-  schema?: JsonSchema
+  schema?: JsonSchema,
 ): CompositeSummary => {
   const generated = (text: string): CompositeSummary => ({
     text,
@@ -35,7 +35,7 @@ export const compositeSummaryPresentation = (
     value != null && typeof value !== 'object' && String(value).trim() !== '';
   if (data == null)
     return generated(
-      t('composite.summary.unset', d('composite.summary.unset'))
+      t('composite.summary.unset', d('composite.summary.unset')),
     );
   if (Array.isArray(data)) {
     if (summary?.scope && data.length) {
@@ -64,14 +64,14 @@ export const compositeSummaryPresentation = (
     return generated(
       t(key, d(key), { count: data.length }).replace(
         '{count}',
-        String(data.length)
-      )
+        String(data.length),
+      ),
     );
   }
   if (typeof data === 'object') {
     if (Object.keys(data).length === 0)
       return generated(
-        t('composite.summary.emptyObject', d('composite.summary.emptyObject'))
+        t('composite.summary.emptyObject', d('composite.summary.emptyObject')),
       );
     if (summary?.scope) {
       const path = Paths.fromScoped(summary);
@@ -83,24 +83,24 @@ export const compositeSummaryPresentation = (
       const fallback =
         typeof summary.label === 'string'
           ? summary.label
-          : fieldSchema?.title ??
-            (path ? createCleanLabel(path.split('.').pop()!) : title);
+          : (fieldSchema?.title ??
+            (path ? createCleanLabel(path.split('.').pop()!) : title));
       if (fallback) {
         const label = t(
           getI18nKey(fieldSchema, summary, path, 'label'),
-          fallback
+          fallback,
         );
         return generated(
           t(
             'composite.summary.unspecified',
             d('composite.summary.unspecified'),
-            { label }
-          ).replace('{label}', label)
+            { label },
+          ).replace('{label}', label),
         );
       }
     }
     return generated(
-      title ?? t('composite.summary.details', d('composite.summary.details'))
+      title ?? t('composite.summary.details', d('composite.summary.details')),
     );
   }
   return literal(String(data));

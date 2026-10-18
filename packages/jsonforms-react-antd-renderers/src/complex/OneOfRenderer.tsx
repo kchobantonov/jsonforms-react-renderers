@@ -63,8 +63,8 @@ export const OneOfRenderer = ({
     indexOfFittingSchema !== null && indexOfFittingSchema !== undefined
       ? indexOfFittingSchema
       : !isEmpty(data)
-      ? 0 // uses the first schema and report errors if not empty
-      : null
+        ? 0 // uses the first schema and report errors if not empty
+        : null,
   );
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
 
@@ -114,14 +114,14 @@ export const OneOfRenderer = ({
   }, [indexOfFittingSchema, data]);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
-    [setConfirmDialogOpen]
+    [setConfirmDialogOpen],
   );
   const cancel = useCallback(() => {
     setConfirmDialogOpen(false);
   }, [setConfirmDialogOpen]);
   const translate = useTranslator();
   const [primaryErrors, additionalErrors] = displayableErrors(
-    formContext.core ?? {}
+    formContext.core ?? {},
   );
   const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
     ...(primaryErrors ?? []),
@@ -137,7 +137,7 @@ export const OneOfRenderer = ({
     'oneOf',
     uischema,
     path,
-    uischemas
+    uischemas,
   ).map((info) => {
     const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
     return typeof prefix === 'string'
@@ -161,7 +161,7 @@ export const OneOfRenderer = ({
         ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
         : clearedBranchValue(
             isArrayElementPath(formContext.core?.data, path),
-            oneOfRenderInfos.map((info) => info.schema)
+            oneOfRenderInfos.map((info) => info.schema),
           );
     handleChange(path, branchChangeData(data, defaults, schema));
     setSelectedIndex(newIndex);
@@ -201,7 +201,7 @@ export const OneOfRenderer = ({
           },
           // Only what the switch actually discards: the enclosing properties
           // survive it, so they are not values being thrown away.
-          [discardedByBranchChange(data, schema)]
+          [discardedByBranchChange(data, schema)],
         )
       ) {
         setConfirmDialogOpen(true);
@@ -209,7 +209,7 @@ export const OneOfRenderer = ({
       }
       openNewTab(newOneOfIndex);
     },
-    [config, data, schema, selectedIndex, uischema]
+    [config, data, schema, selectedIndex, uischema],
   );
 
   const [focused, onFocus, onBlur] = useFocus();
@@ -220,14 +220,14 @@ export const OneOfRenderer = ({
     visible,
     description,
     focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
+    appliedUiSchemaOptions.showUnfocusedDescription,
   );
 
   const help = !isValid
     ? selectionError || errors
     : showDescription
-    ? description
-    : null;
+      ? description
+      : null;
   const style = { width: '100%' };
 
   if (!visible) {

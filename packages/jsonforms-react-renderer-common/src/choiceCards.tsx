@@ -41,7 +41,7 @@ export interface CardChoice {
 
 export const choiceCardsTester = rankWith(
   21,
-  and(optionIs('format', 'cards'), or(isEnumControl, isOneOfControl))
+  and(optionIs('format', 'cards'), or(isEnumControl, isOneOfControl)),
 );
 
 // Keep interactive controls and arbitrary templates out of a radio's label.
@@ -74,7 +74,7 @@ export interface ChoiceCardColors {
 
 export const createChoiceCards = (
   useConfirmation: Confirmation,
-  useColors: () => ChoiceCardColors
+  useColors: () => ChoiceCardColors,
 ) => {
   const Cards = (props: ControlProps & Partial<CombinatorRendererProps>) => {
     const {
@@ -101,14 +101,14 @@ export const createChoiceCards = (
     const showRadio = uischema.options?.showRadio === true;
     const branches = schema.oneOf as JsonSchema[] | undefined;
     const constants = branches?.every((branch) =>
-      Object.prototype.hasOwnProperty.call(branch, 'const')
+      Object.prototype.hasOwnProperty.call(branch, 'const'),
     );
     const branchMode = !schema.enum && !!branches && !constants;
     const values =
       schema.enum ?? (constants ? branches!.map((branch) => branch.const) : []);
     const [chosen, setChosen] = React.useState<number | undefined>();
     const selected = branchMode
-      ? chosen ?? props.indexOfFittingSchema ?? -1
+      ? (chosen ?? props.indexOfFittingSchema ?? -1)
       : values.findIndex((value) => isEqual(value, data));
     const custom: CardChoice[] = uischema.options?.choices ?? [];
     const infos = branchMode
@@ -118,7 +118,7 @@ export const createChoiceCards = (
             Resolve.schema(props.rootSchema!, branch.$ref, props.rootSchema!);
           const branchSchema = resolved || branch;
           const detail = custom.find(
-            (choice) => choice.branch === index
+            (choice) => choice.branch === index,
           )?.detail;
           return {
             schema: branchSchema,
@@ -135,7 +135,7 @@ export const createChoiceCards = (
                     ...uischema,
                     options: { ...uischema.options, detail },
                   },
-              props.rootSchema
+              props.rootSchema,
             ),
           };
         })
@@ -146,7 +146,7 @@ export const createChoiceCards = (
           branchMode
             ? item.branch === index
             : Object.prototype.hasOwnProperty.call(item, 'value') &&
-              isEqual(item.value, values[index])
+              isEqual(item.value, values[index]),
         ) ?? {};
       const fallback =
         choice.label ??
@@ -155,11 +155,11 @@ export const createChoiceCards = (
       return {
         ...choice,
         label: choice.i18n
-          ? translate(`${choice.i18n}.label`, fallback) ?? fallback
-          : translate(
+          ? (translate(`${choice.i18n}.label`, fallback) ?? fallback)
+          : (translate(
               getI18nKey(schema, uischema, path, `choices.${index}.label`),
-              fallback
-            ) ?? fallback,
+              fallback,
+            ) ?? fallback),
       };
     });
     const select = (index: number) => {
@@ -180,7 +180,7 @@ export const createChoiceCards = (
               config: props.config,
               catalogId: 'oneOf',
               operation: 'branchChange',
-            }) === 'complex'
+            }) === 'complex',
           ),
         ],
         options: uischema.options,
@@ -192,8 +192,8 @@ export const createChoiceCards = (
             branchChangeData(
               data,
               createDefaultValue(infos[index].schema, props.rootSchema!),
-              schema
-            )
+              schema,
+            ),
           );
         },
       });
@@ -210,7 +210,7 @@ export const createChoiceCards = (
               enclosingSchema,
               'VerticalLayout',
               undefined,
-              props.rootSchema
+              props.rootSchema,
             )}
             path={path}
             renderers={renderers}
@@ -236,8 +236,8 @@ export const createChoiceCards = (
             {choices.map((choice, index) => {
               const active = selected === index;
               const content = active
-                ? choice.selectedContent ?? choice.content
-                : choice.content ?? choice.selectedContent;
+                ? (choice.selectedContent ?? choice.content)
+                : (choice.content ?? choice.selectedContent);
               return (
                 <div
                   key={index}
@@ -277,8 +277,8 @@ export const createChoiceCards = (
                       errors
                         ? colors.error
                         : active
-                        ? colors.selected
-                        : colors.border
+                          ? colors.selected
+                          : colors.border
                     }`,
                     borderRadius: 8,
                     cursor: enabled && !choice.disabled ? 'pointer' : 'default',
@@ -372,7 +372,7 @@ export const createChoiceCards = (
     return !resolved.enum &&
       resolved.oneOf &&
       !(resolved.oneOf as JsonSchema[]).every((branch) =>
-        Object.prototype.hasOwnProperty.call(branch, 'const')
+        Object.prototype.hasOwnProperty.call(branch, 'const'),
       ) ? (
       <BranchCards {...props} />
     ) : (

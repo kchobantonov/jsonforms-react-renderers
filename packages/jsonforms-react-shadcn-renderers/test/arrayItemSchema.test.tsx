@@ -23,9 +23,9 @@ it.each([false, true])('renders arrays without items (table=%s)', (table) => {
           uischema={{ type: 'Control', scope: '#', options: { table } } as any}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
-    )
+        />,
+      ),
+    ),
   ).not.toThrow();
   expect(container.querySelector('[aria-label="Add"]')).toBeTruthy();
 });
@@ -41,11 +41,13 @@ it('preserves existing untyped array data on mount', async () => {
         renderers={shadcnRenderers}
         cells={shadcnCells}
         onChange={onChange}
-      />
-    )
+      />,
+    ),
   );
   await vi.waitFor(() =>
-    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ data }))
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ data }),
+    ),
   );
 });
 it('uses the resolved nested array schema for restrictions', () => {
@@ -92,14 +94,14 @@ it('uses the resolved nested array schema for restrictions', () => {
         uischema={ui as any}
         renderers={shadcnRenderers}
         cells={shadcnCells}
-      />
-    )
+      />,
+    ),
   );
   const adds = Array.from(
-    container.querySelectorAll<HTMLButtonElement>('[aria-label="Add"]')
+    container.querySelectorAll<HTMLButtonElement>('[aria-label="Add"]'),
   );
   const removes = Array.from(
-    container.querySelectorAll<HTMLButtonElement>('[aria-label="Remove"]')
+    container.querySelectorAll<HTMLButtonElement>('[aria-label="Remove"]'),
   );
   expect(adds).toHaveLength(2);
   expect(adds[1].disabled).toBe(true);

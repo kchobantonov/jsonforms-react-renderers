@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext } from '@jsonforms/react';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import {
   useAdditionalPropertyErrors,
   usePathErrorIndicator,
@@ -40,8 +40,8 @@ it('counts immediately but translates details only when opened and reuses stable
       root.render(
         <JsonFormsContext.Provider value={context}>
           <Probe open={open} />
-        </JsonFormsContext.Provider>
-      )
+        </JsonFormsContext.Provider>,
+      ),
     );
   try {
     render(false);
@@ -82,7 +82,7 @@ it('separates direct array errors and child notices, with opt-in counts and obje
       {usePathErrorIndicator(
         'items',
         { showValidationIndicatorCount: count },
-        includeChildren
+        includeChildren,
       )}
     </span>
   );
@@ -93,8 +93,8 @@ it('separates direct array errors and child notices, with opt-in counts and obje
           value={{ core: { errors }, i18n: { translateError } } as any}
         >
           <Probe count={count} includeChildren={includeChildren} />
-        </JsonFormsContext.Provider>
-      )
+        </JsonFormsContext.Provider>,
+      ),
     );
   try {
     render(false, true);
@@ -132,8 +132,8 @@ it('reports disallowed literal property names only for their owning object', () 
           }
         >
           <Probe />
-        </JsonFormsContext.Provider>
-      )
+        </JsonFormsContext.Provider>,
+      ),
     );
   try {
     render([error('/routing', 'legacy.zone'), error('/other', 'ignored')]);

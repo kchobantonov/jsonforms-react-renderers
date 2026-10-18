@@ -8,7 +8,7 @@
  *
  * What the picker *shows* is `cronPicker.test.tsx`; this is the value.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   CRON_FIELDS,
   DEFAULT_CRON,
@@ -82,9 +82,9 @@ describe('reading one field as the values it selects', () => {
         cronProblem(
           `0 0 9 ${field === 'dayOfMonth' ? text : '*'} * ${
             field === 'dayOfWeek' ? text : '*'
-          }`
+          }`,
         ),
-        text
+        text,
       ).toBeUndefined();
     }
   });
@@ -119,8 +119,8 @@ describe('writing one field back', () => {
     expect(
       formatField(
         Array.from({ length: 24 }, (_, index) => index),
-        'hour'
-      )
+        'hour',
+      ),
     ).toBe('*');
   });
 
@@ -146,7 +146,7 @@ describe('writing one field back', () => {
       for (let value = low; value <= high; value += 1) {
         expect(
           parseField(formatField([value], field), field),
-          `${field} ${value}`
+          `${field} ${value}`,
         ).toEqual([value]);
       }
     }
@@ -301,20 +301,20 @@ describe('choosing how often it repeats', () => {
 
   it('keeps what a field already says', () => {
     expect(joinCron(standDown(splitCron('0 0/15 * * * *')!, 'day'))).toBe(
-      '0 0/15 * * * *'
+      '0 0/15 * * * *',
     );
   });
 
   it('stands a coarser field down, so a hidden condition cannot survive the switch', () => {
     // The row that said "on the 1st" is gone from the form; the condition must go with it.
     expect(joinCron(standDown(splitCron('0 0 9 1 * *')!, 'day'))).toBe(
-      '0 0 9 * * *'
+      '0 0 9 * * *',
     );
     expect(joinCron(standDown(splitCron('0 0 9 ? * MON')!, 'hour'))).toBe(
-      '0 0 * * * *'
+      '0 0 * * * *',
     );
     expect(joinCron(standDown(splitCron('0 0 0 1 JAN *')!, 'week'))).toBe(
-      '0 0 0 * * *'
+      '0 0 0 * * *',
     );
   });
 });
@@ -323,16 +323,16 @@ describe('the time of day a choice implies', () => {
   it("pins the time below what was chosen, so nine o'clock is not 3600 executions", () => {
     // `* * 9 * * *` is every second of the 9am hour. Picking an hour has to mean the hour.
     expect(
-      joinCron(withTimeDefaults(['*', '*', '9', '*', '*', '*'], 'hour'))
+      joinCron(withTimeDefaults(['*', '*', '9', '*', '*', '*'], 'hour')),
     ).toBe('0 0 9 * * *');
     expect(
-      joinCron(withTimeDefaults(['*', '30', '*', '*', '*', '*'], 'minute'))
+      joinCron(withTimeDefaults(['*', '30', '*', '*', '*', '*'], 'minute')),
     ).toBe('0 30 * * * *');
     expect(
-      joinCron(withTimeDefaults(['*', '*', '*', '*', '*', 'MON'], 'dayOfWeek'))
+      joinCron(withTimeDefaults(['*', '*', '*', '*', '*', 'MON'], 'dayOfWeek')),
     ).toBe('0 0 0 * * MON');
     expect(
-      joinCron(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month'))
+      joinCron(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month')),
     ).toBe('0 0 0 * MAR *');
   });
 
@@ -340,25 +340,25 @@ describe('the time of day a choice implies', () => {
     // Choosing March must not also choose the 1st, and choosing the 1st must not also choose
     // Sunday — Spring ANDs the two day fields, so that last one runs one year in seven.
     expect(withTimeDefaults(['*', '*', '*', '*', 'MAR', '*'], 'month')[3]).toBe(
-      '*'
+      '*',
     );
     expect(
-      withTimeDefaults(['*', '*', '*', '1', 'MAR', '*'], 'dayOfMonth')[5]
+      withTimeDefaults(['*', '*', '*', '1', 'MAR', '*'], 'dayOfMonth')[5],
     ).toBe('*');
   });
 
   it('leaves alone anything already said', () => {
     expect(
-      joinCron(withTimeDefaults(splitCron('0 0/15 * * * *')!, 'hour'))
+      joinCron(withTimeDefaults(splitCron('0 0/15 * * * *')!, 'hour')),
     ).toBe('0 0/15 * * * *');
     expect(
-      joinCron(withTimeDefaults(splitCron('30 45 9 * * *')!, 'hour'))
+      joinCron(withTimeDefaults(splitCron('30 45 9 * * *')!, 'hour')),
     ).toBe('30 45 9 * * *');
   });
 
   it('pins nothing above what was chosen', () => {
     expect(
-      joinCron(withTimeDefaults(['10', '*', '*', '*', '*', '*'], 'second'))
+      joinCron(withTimeDefaults(['10', '*', '*', '*', '*', '*'], 'second')),
     ).toBe('10 * * * * *');
   });
 

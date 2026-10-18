@@ -48,7 +48,7 @@ export const AllOfRenderer = ({
   const delegateUISchema = findMatchingUISchema(uischemas)(
     schema,
     uischema.scope,
-    path
+    path,
   );
 
   if (!visible) {
@@ -72,7 +72,7 @@ export const AllOfRenderer = ({
     'allOf',
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   return (

@@ -2,7 +2,7 @@ import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -44,8 +44,8 @@ const render = () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -55,7 +55,7 @@ describe('the additional-properties spec example', () => {
     const { container, unmount } = render();
     await settle();
     expect(
-      container.querySelectorAll('.jsonforms-additional-properties').length
+      container.querySelectorAll('.jsonforms-additional-properties').length,
     ).toBeGreaterThanOrEqual(5);
     unmount();
   });
@@ -64,7 +64,7 @@ describe('the additional-properties spec example', () => {
     const { container, unmount } = render();
     await settle();
     const values = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     for (const value of [
       'Portland',
@@ -92,7 +92,7 @@ describe('the additional-properties spec example', () => {
     await settle();
     expect(container.textContent).toContain('legacy.key');
     const values = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     expect(values).toContain('written by the old project system');
     unmount();

@@ -13,7 +13,7 @@ export const ShadcnDemoSplitter = ({
   data,
 }: DemoSplitterProps): React.JSX.Element => {
   const [stacked, setStacked] = useState(
-    () => window.matchMedia(stackedLayoutQuery).matches
+    () => window.matchMedia(stackedLayoutQuery).matches,
   );
 
   useEffect(() => {

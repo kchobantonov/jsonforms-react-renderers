@@ -113,7 +113,7 @@ export interface TemplateRenderProps<T = unknown> {
 }
 
 export type TemplateRender<T = unknown> = (
-  props: TemplateRenderProps<T>
+  props: TemplateRenderProps<T>,
 ) => React.ReactNode;
 
 /** The React-only element: `template` may be a function here. */
@@ -135,12 +135,12 @@ export const tsxTemplateLayoutTester: RankedTester = rankWith(
     uiTypeIs('TemplateLayout'),
     (uischema) =>
       typeof (uischema as { template?: unknown } | undefined)?.template ===
-      'function'
-  )
+      'function',
+  ),
 );
 
 export const TsxTemplateLayoutRendererComponent = (
-  props: LayoutProps & { uischema: ReactTemplateLayoutElement }
+  props: LayoutProps & { uischema: ReactTemplateLayoutElement },
 ) => {
   const { uischema, schema, path, enabled, visible, renderers, cells } = props;
   const ctx = useJsonForms();
@@ -151,7 +151,7 @@ export const TsxTemplateLayoutRendererComponent = (
 
   useEffect(() => {
     for (const diagnostic of diagnostics) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
   }, [diagnostics.join('\u0000')]);
@@ -194,11 +194,11 @@ export const TsxTemplateLayoutRendererComponent = (
         stays usable.
       */
       if (!element) {
-        // eslint-disable-next-line no-console
+        // oxlint-disable-next-line no-console
         console.warn(
           `template.unknownSlot: no child is named ${JSON.stringify(
-            name
-          )}; known names are ${JSON.stringify(Object.keys(current.byName))}.`
+            name,
+          )}; known names are ${JSON.stringify(Object.keys(current.byName))}.`,
         );
         return <>{fallback ?? null}</>;
       }
@@ -224,7 +224,7 @@ export const TsxTemplateLayoutRendererComponent = (
       }
       ctx.dispatch?.(Actions.update(target, () => value));
     },
-    [ctx.dispatch, enabled]
+    [ctx.dispatch, enabled],
   );
 
   if (visible === false) {
@@ -265,5 +265,5 @@ export const TsxTemplateLayoutRendererComponent = (
 };
 
 export const TsxTemplateLayoutRenderer = withJsonFormsLayoutProps(
-  TsxTemplateLayoutRendererComponent as any
+  TsxTemplateLayoutRendererComponent as any,
 );

@@ -83,7 +83,7 @@ const PROBE_INSTANT = '2001-02-03T04:05:06';
  */
 export const saveFormatSatisfies = (
   jsonFormat: unknown,
-  saveFormat: string
+  saveFormat: string,
 ): boolean => {
   const pattern = RFC3339[jsonFormat as keyof typeof RFC3339];
   if (!pattern) {
@@ -107,7 +107,7 @@ const warned = new Set<string>();
  */
 export const warnOnSaveFormat = (
   jsonFormat: unknown,
-  saveFormat: string
+  saveFormat: string,
 ): void => {
   if (saveFormatSatisfies(jsonFormat, saveFormat)) {
     return;
@@ -117,12 +117,12 @@ export const warnOnSaveFormat = (
     return;
   }
   warned.add(key);
-  // eslint-disable-next-line no-console
+  // oxlint-disable-next-line no-console
   console.warn(
     `${SAVE_FORMAT_DIAGNOSTIC}: the save format ${JSON.stringify(
-      saveFormat
+      saveFormat,
     )} produces values that \`format: ${JSON.stringify(
-      jsonFormat
-    )}\` rejects, so the control cannot be made valid. Either drop the schema \`format\` and select the control with \`options.format\`, or use a save format carrying the parts RFC 3339 requires.`
+      jsonFormat,
+    )}\` rejects, so the control cannot be made valid. Either drop the schema \`format\` and select the control with \`options.format\`, or use a save format carrying the parts RFC 3339 requires.`,
   );
 };

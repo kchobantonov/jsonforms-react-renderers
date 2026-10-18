@@ -172,7 +172,7 @@ const AntdDemoShell = ({
                   window.open(
                     'https://github.com/kchobantonov/jsonforms-react-renderers',
                     '_blank',
-                    'noopener,noreferrer'
+                    'noopener,noreferrer',
                   )
                 }
                 type='text'
@@ -304,5 +304,5 @@ renderExample(
     Ui: antdDemoUi,
     ProviderSettings: AntdSettings,
     initialProviderSettings: { inputVariant: 'outlined' },
-  }
+  },
 );

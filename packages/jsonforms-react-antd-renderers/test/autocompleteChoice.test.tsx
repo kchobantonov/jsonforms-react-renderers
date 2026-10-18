@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -79,13 +79,13 @@ const render = ({
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const search = () =>
     container.querySelector<HTMLInputElement>(
-      'input.ant-select-selection-search-input'
+      'input.ant-select-selection-search-input',
     ) ?? container.querySelector<HTMLInputElement>('.ant-select input');
 
   return {
@@ -164,7 +164,7 @@ describe('what searching does and does not do', () => {
     const field = search()!;
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!;
     act(() => {
       setter.call(field, 'Marketing');
@@ -173,7 +173,7 @@ describe('what searching does and does not do', () => {
     await settle();
     act(() => {
       field.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
       );
     });
     await settle();

@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms, DispatchCell } from '@jsonforms/react';
-import { afterEach, expect, it } from 'vitest';
+import { afterEach, expect, it } from 'vite-plus/test';
 import { FileControlRenderer } from '../src/renderers/FileControlRenderer';
 import { shadcnExtendedCells } from '../src';
 let cleanup = () => {};
@@ -30,8 +30,8 @@ const mount = (cell = false, showUnfocusedDescription = false, data = '') => {
         renderers={[
           { tester: () => 100, renderer: cell ? Cell : FileControlRenderer },
         ]}
-      />
-    )
+      />,
+    ),
   );
   cleanup = () => {
     act(() => root.unmount());
@@ -61,12 +61,12 @@ it.each([
 ])('restores the attachment display from persisted data: %s', (data, label) => {
   let container = mount(false, false, data);
   expect(
-    (container.querySelector('input[readonly]') as HTMLInputElement).value
+    (container.querySelector('input[readonly]') as HTMLInputElement).value,
   ).toBe(label);
   cleanup();
   container = mount(false, false, data);
   expect(
-    (container.querySelector('input[readonly]') as HTMLInputElement).value
+    (container.querySelector('input[readonly]') as HTMLInputElement).value,
   ).toBe(label);
   expect(container.querySelector('input')!.style.display).toBe('none');
   expect(container.querySelector('[aria-label="Clear value"]')).not.toBeNull();

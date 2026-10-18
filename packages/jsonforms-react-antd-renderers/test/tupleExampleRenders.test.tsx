@@ -2,7 +2,7 @@ import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -41,8 +41,8 @@ const render = () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -52,7 +52,7 @@ describe('the tuple-control spec example', () => {
     const { container, unmount } = render();
     // Eight controls, seven of which are real tuples plus the misconfigured one.
     expect(
-      container.querySelectorAll('[data-tuple-control]').length
+      container.querySelectorAll('[data-tuple-control]').length,
     ).toBeGreaterThanOrEqual(8);
     unmount();
   });
@@ -60,7 +60,7 @@ describe('the tuple-control spec example', () => {
   it('draws the diagnostic exactly once, for the one control that earns it', () => {
     const { container, unmount } = render();
     expect(container.querySelectorAll('[data-tuple-diagnostic]')).toHaveLength(
-      1
+      1,
     );
     unmount();
   });
@@ -84,11 +84,11 @@ describe('the tuple-control spec example', () => {
       input, not in the document text.
     */
     const values = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input')
+      container.querySelectorAll<HTMLInputElement>('input'),
     ).map((field) => field.value);
     expect(values).toContain('Imported extra value');
     expect(
-      container.querySelectorAll('[data-tuple-delete]').length
+      container.querySelectorAll('[data-tuple-delete]').length,
     ).toBeGreaterThan(0);
     unmount();
   });
@@ -115,7 +115,7 @@ describe('the tuple-control spec example', () => {
 describe('the survey tuple, laid out by options.layout', () => {
   const positionLabels = (container: HTMLElement) => {
     const region = Array.from(
-      container.querySelectorAll<HTMLElement>('[data-tuple-layout]')
+      container.querySelectorAll<HTMLElement>('[data-tuple-layout]'),
     )[0];
     return Array.from(region.querySelectorAll('.ant-form-item'))
       .map((item) => item.querySelector('label')?.textContent ?? '')
@@ -160,7 +160,7 @@ describe('the survey tuple, laid out by options.layout', () => {
 describe('registry entry combinations', () => {
   const openDialogFor = async (container: HTMLElement, label: string) => {
     const button = Array.from(
-      container.querySelectorAll<HTMLButtonElement>('button')
+      container.querySelectorAll<HTMLButtonElement>('button'),
     ).find((entry) => entry.getAttribute('aria-label') === `Edit ${label}`);
     expect(button, `no Edit action for ${label}`).toBeTruthy();
     act(() => button!.click());

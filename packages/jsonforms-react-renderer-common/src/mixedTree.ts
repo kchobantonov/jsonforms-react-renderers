@@ -27,15 +27,15 @@ export const mixedDataType = (value: unknown): string | null => {
 const childSchema = (
   schema: JsonSchema,
   key: string | number,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): { dynamic: boolean; schema: JsonSchema } => {
   const resolveChild = (candidate: JsonSchema): JsonSchema =>
     typeof candidate === 'object' && candidate.$ref
-      ? resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate
+      ? (resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate)
       : candidate;
   const resolved =
     typeof schema === 'object' && schema.$ref
-      ? resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema
+      ? (resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema)
       : schema;
   if (typeof resolved !== 'object') return { dynamic: false, schema: {} };
   if (typeof key === 'number') {
@@ -44,8 +44,8 @@ const childSchema = (
       dynamic: false,
       schema: resolveChild(
         Array.isArray(items)
-          ? items[key] ?? {}
-          : (items as JsonSchema | undefined) ?? {}
+          ? (items[key] ?? {})
+          : ((items as JsonSchema | undefined) ?? {}),
       ),
     };
   }
@@ -76,7 +76,7 @@ const childSchema = (
       resolved.additionalProperties === false
         ? {}
         : resolveChild(
-            (resolved.additionalProperties as JsonSchema | undefined) ?? {}
+            (resolved.additionalProperties as JsonSchema | undefined) ?? {},
           ),
   };
 };
@@ -87,13 +87,13 @@ export const buildMixedTree = (
   rootSchema: JsonSchema,
   label = 'Value',
   path: MixedTreePath = [],
-  dynamic = false
+  dynamic = false,
 ): MixedTreeNode => {
   const entries: Array<[string | number, unknown]> = Array.isArray(data)
     ? data.map((value, index) => [index, value])
     : data && typeof data === 'object'
-    ? Object.entries(data)
-    : [];
+      ? Object.entries(data)
+      : [];
   return {
     children: entries.map(([key, value]) => {
       const resolved = childSchema(schema, key, rootSchema);
@@ -103,7 +103,7 @@ export const buildMixedTree = (
         rootSchema,
         typeof key === 'number' ? `Item ${key}` : key,
         [...path, key],
-        resolved.dynamic
+        resolved.dynamic,
       );
     }),
     data,
@@ -117,7 +117,7 @@ export const buildMixedTree = (
 
 export const findMixedTreeNode = (
   node: MixedTreeNode,
-  path: MixedTreePath
+  path: MixedTreePath,
 ): MixedTreeNode | undefined => {
   if (mixedPathKey(node.path) === mixedPathKey(path)) return node;
   for (const child of node.children) {
@@ -132,14 +132,14 @@ export const mixedTreeLabel = (node: MixedTreeNode) =>
     ? node.type === 'array'
       ? '[]'
       : node.type === 'object'
-      ? '{}'
-      : node.label
+        ? '{}'
+        : node.label
     : node.label;
 
 const updateMixedParent = (
   data: unknown,
   parentPath: MixedTreePath,
-  update: (parent: unknown) => unknown
+  update: (parent: unknown) => unknown,
 ): unknown => {
   if (parentPath.length === 0) return update(data);
   const [segment, ...remaining] = parentPath;
@@ -158,7 +158,7 @@ const updateMixedParent = (
 
 export const deleteMixedTreeNode = (
   data: unknown,
-  path: MixedTreePath
+  path: MixedTreePath,
 ): unknown => {
   if (path.length === 0) return data;
   const parentPath = path.slice(0, -1);
@@ -169,7 +169,7 @@ export const deleteMixedTreeNode = (
     }
     if (parent && typeof parent === 'object' && typeof segment === 'string') {
       return Object.fromEntries(
-        Object.entries(parent).filter(([key]) => key !== segment)
+        Object.entries(parent).filter(([key]) => key !== segment),
       );
     }
     return parent;
@@ -179,7 +179,7 @@ export const deleteMixedTreeNode = (
 export const renameMixedTreeNode = (
   data: unknown,
   path: MixedTreePath,
-  nextName: string
+  nextName: string,
 ): unknown => {
   if (path.length === 0) return data;
   const parentPath = path.slice(0, -1);
@@ -193,7 +193,7 @@ export const renameMixedTreeNode = (
       Object.entries(parent).map(([key, value]) => [
         key === segment ? nextName : key,
         value,
-      ])
+      ]),
     );
   });
 };

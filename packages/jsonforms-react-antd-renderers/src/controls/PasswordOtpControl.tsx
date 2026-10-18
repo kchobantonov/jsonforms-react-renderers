@@ -32,7 +32,7 @@ export const PasswordOtpControl = (props: ControlProps) => (
  * `undefined` and the variant would never be selected.
  */
 export const hasSegmentedLength: Tester = schemaMatches(
-  (schema) => otpLength(schema) !== undefined
+  (schema) => otpLength(schema) !== undefined,
 );
 
 /**
@@ -55,7 +55,7 @@ export const hasSegmentedLength: Tester = schemaMatches(
  */
 export const passwordOtpControlTester: RankedTester = rankWith(
   5,
-  and(isPasswordControl, optionIs('variant', 'otp'), hasSegmentedLength)
+  and(isPasswordControl, optionIs('variant', 'otp'), hasSegmentedLength),
 );
 
 export default withJsonFormsControlProps(PasswordOtpControl);

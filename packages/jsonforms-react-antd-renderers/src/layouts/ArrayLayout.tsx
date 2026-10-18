@@ -65,7 +65,7 @@ interface ExtraProps {
 const ArrayLayoutComponent = (
   props: { ctx: JsonFormsStateContext } & ArrayLayoutProps & {
       translations: ArrayTranslations;
-    }
+    },
 ) => {
   /*
     The expanded item is tracked by **index**, not by panel key, because the
@@ -86,13 +86,13 @@ const ArrayLayoutComponent = (
     const collapsed = resolveCollapsed(
       props.uischema.options,
       props.config,
-      'array'
+      'array',
     );
     return collapsed || props.data === 0 ? undefined : 0;
   });
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
-    [props.schema]
+    [props.schema],
   );
   const {
     arraySchema,
@@ -129,7 +129,7 @@ const ArrayLayoutComponent = (
   const hideAvatar = appliedUiSchemaOptions.hideAvatar === true;
   const avatarStyle = useMemo(
     (): React.CSSProperties => ({ marginRight: '10px' }),
-    []
+    [],
   );
 
   /*
@@ -144,10 +144,10 @@ const ArrayLayoutComponent = (
         errorsAt(
           path,
           schema,
-          (errorPath: string) => errorPath === path
-        )(props.ctx.core?.errors ?? []).map((error) => error.message)
+          (errorPath: string) => errorPath === path,
+        )(props.ctx.core?.errors ?? []).map((error) => error.message),
       ),
-    [path, schema, props.ctx.core]
+    [path, schema, props.ctx.core],
   );
   const summaryErrors = appliedUiSchemaOptions.hideArraySummaryValidation
     ? ownErrors
@@ -161,7 +161,7 @@ const ArrayLayoutComponent = (
   */
   const trackSwap = useCallback((from: number, to: number) => {
     setExpandedIndex((current) =>
-      current === from ? to : current === to ? from : current
+      current === from ? to : current === to ? from : current,
     );
   }, []);
   // Deletion shifts every later item down one; the open panel must not end up
@@ -171,8 +171,8 @@ const ArrayLayoutComponent = (
       current === undefined || current < removed
         ? current
         : current === removed
-        ? undefined
-        : current - 1
+          ? undefined
+          : current - 1,
     );
   }, []);
   const handleAddItem = useCallback(
@@ -186,7 +186,7 @@ const ArrayLayoutComponent = (
         setExpandedIndex(inserted);
       }
     },
-    [addItem, data, appliedUiSchemaOptions.collapseNewItems]
+    [addItem, data, appliedUiSchemaOptions.collapseNewItems],
   );
 
   const getExtra = ({
@@ -244,7 +244,7 @@ const ArrayLayoutComponent = (
                 discarded: [
                   Resolve.data(
                     props.ctx.core.data,
-                    composePaths(path, `${rowIndex}`)
+                    composePaths(path, `${rowIndex}`),
                   ),
                 ],
                 options: uischema?.options,
@@ -274,9 +274,9 @@ const ArrayLayoutComponent = (
         path,
         undefined,
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
   );
 
   const doDisableAdd =
@@ -305,7 +305,7 @@ const ArrayLayoutComponent = (
     }
     const labelValue = Resolve.data(
       props.ctx.core.data,
-      composePaths(childPath, childLabelProp)
+      composePaths(childPath, childLabelProp),
     );
     if (
       labelValue === undefined ||
@@ -327,7 +327,7 @@ const ArrayLayoutComponent = (
         label={computeLabel(
           label,
           required,
-          appliedUiSchemaOptions.hideRequiredAsterisk
+          appliedUiSchemaOptions.hideRequiredAsterisk,
         )}
         description={description}
         errors={summaryErrors}
@@ -424,7 +424,7 @@ const ArrayLayoutComponent = (
 };
 
 export const withContextToJsonFormsRendererProps = (
-  Component: ComponentType<ArrayLayoutProps>
+  Component: ComponentType<ArrayLayoutProps>,
 ): ComponentType<OwnPropsOfJsonFormsRenderer> =>
   function WithContextToJsonFormsRendererProps({
     ctx,
@@ -435,9 +435,11 @@ export const withContextToJsonFormsRendererProps = (
 
 export const ArrayLayout = React.memo(
   withJsonFormsContext(
-    withContextToJsonFormsRendererProps(ArrayLayoutComponent)
-  )
+    withContextToJsonFormsRendererProps(ArrayLayoutComponent),
+  ),
 );
+
+ArrayLayout.displayName = 'ArrayLayout';
 
 const ItemValidationIndicator = ({
   path,
@@ -452,7 +454,7 @@ const ItemValidationIndicator = ({
     { type: 'Control', scope: '#', options } as any,
     path,
     config,
-    false
+    false,
   );
   return indicator.show ? (
     <ContainerValidationIndicator count={indicator.count} />

@@ -40,7 +40,7 @@ export const DateTimeControl = (props: ControlProps) => (
 
 export const dateTimeControlTester: RankedTester = rankWith(
   2,
-  isDateTimeControl
+  isDateTimeControl,
 );
 
 export default withJsonFormsControlProps(DateTimeControl);

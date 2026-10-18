@@ -20,24 +20,17 @@
   "devDependencies": {
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^8.7.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.32.2",
-    "prettier": "^2.8.4",
     "rimraf": "^3.0.2",
     "tslib": "^2.5.0",
-    "vitest": "4.1.12",
-    "@types/node": "^22.0.0"
+    "vitest": "catalog:",
+    "@types/node": "^22.0.0",
+    "vite-plus": "catalog:"
   },
   "scripts": {
     "build": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json",
-    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
-    "lint:fix": "pnpm lint --fix",
-    "test": "vitest run",
+    "lint": "vp lint .",
+    "lint:fix": "vp run lint --fix",
+    "test": "vp test run",
     "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
   },

@@ -7,7 +7,7 @@ const config = defineJsonFormsExampleConfig({
 
 config.resolve.alias = {
   '@jsonforms-react-shadcn-ui': fileURLToPath(
-    new URL('./src/components/ui', import.meta.url)
+    new URL('./src/components/ui', import.meta.url),
   ),
   '@': fileURLToPath(new URL('./src', import.meta.url)),
 };
@@ -25,8 +25,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-extended-renderers/src/index.tsx',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
             {
@@ -34,8 +34,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-renderer-common/src',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
             {
@@ -43,8 +43,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-shadcn-renderers/src/index.tsx',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
             {
@@ -52,8 +52,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-shadcn-extended-renderers/src/index.tsx',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
           ]

@@ -46,7 +46,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
   const { token } = theme.useToken();
   const errors = usePathErrorMessages(
     props.path,
-    labelDetailErrorPaths(props.path, props.uischema.options)
+    labelDetailErrorPaths(props.path, props.uischema.options),
   );
   /*
     The default message carries the locale bundle (§6.5), so it must not be
@@ -72,7 +72,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     props.schema?.title,
     t,
     d,
-    props.schema
+    props.schema,
   );
   const isArray = Array.isArray(props.data) || props.schema?.type === 'array';
   const label =
@@ -89,7 +89,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     props.uischema.scope,
     props.path,
     props.rootSchema,
-    { type: 'Control', scope: '#', label: false } as any
+    { type: 'Control', scope: '#', label: false } as any,
   );
   // Cell removal shares the destructive-change policy.
   const canClear =
@@ -240,14 +240,16 @@ export const antdCompositeCellTester: RankedTester = (_ui, schema, context) =>
   _ui.options?.summary?.type === 'Label'
     ? 6
     : schema?.type === 'object' ||
-      schema?.type === 'array' ||
-      Boolean(
-        schema?.anyOf?.length || schema?.oneOf?.length || schema?.allOf?.length
-      ) ||
-      isMixedSchema({ ..._ui, scope: '#' }, schema, context)
-    ? 1
-    : -1;
+        schema?.type === 'array' ||
+        Boolean(
+          schema?.anyOf?.length ||
+          schema?.oneOf?.length ||
+          schema?.allOf?.length,
+        ) ||
+        isMixedSchema({ ..._ui, scope: '#' }, schema, context)
+      ? 1
+      : -1;
 
 export default withJsonFormsCellProps(
-  withTranslateProps(AntdCompositeCell) as any
+  withTranslateProps(AntdCompositeCell) as any,
 );

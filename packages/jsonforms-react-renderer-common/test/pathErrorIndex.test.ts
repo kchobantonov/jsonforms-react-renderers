@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { indexedPathErrors, labelDetailErrorPaths } from '../src/errorSummary';
 describe('shared descendant error lists', () => {
   it('indexes required fields, avoids sibling prefix matches and reuses validation results', () => {
@@ -38,13 +38,13 @@ it('limits Label errors to explicit detail controls, excluding unrelated row fie
           { type: 'Control', scope: '#/properties/lastName' },
         ],
       },
-    })
+    }),
   ).toEqual(['rows.1.firstName', 'rows.1.lastName']);
   expect(
     labelDetailErrorPaths('rows.1.contact', {
       summary,
       detail: { type: 'Control', scope: '#' },
-    })
+    }),
   ).toEqual(['rows.1.contact']);
   expect(labelDetailErrorPaths('rows.1.contact', {})).toBeUndefined();
 });

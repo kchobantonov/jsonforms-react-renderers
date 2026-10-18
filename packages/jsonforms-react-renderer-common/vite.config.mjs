@@ -1,10 +1,10 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 const root = fileURLToPath(new URL('.', import.meta.url));
 const pkg = JSON.parse(
-  readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
 );
 const dependencies = [
   ...Object.keys(pkg.dependencies),
@@ -17,8 +17,8 @@ const entry = Object.fromEntries(
       .map((name) => [
         dir + name.replace(/\.tsx?$/, ''),
         resolve(root, 'src', dir, name),
-      ])
-  )
+      ]),
+  ),
 );
 export default defineConfig({
   build: {
@@ -33,7 +33,7 @@ export default defineConfig({
     outDir: 'lib',
     emptyOutDir: true,
     sourcemap: true,
-    rollupOptions: {
+    rolldownOptions: {
       external: (id) =>
         dependencies.some((name) => id === name || id.startsWith(name + '/')),
     },

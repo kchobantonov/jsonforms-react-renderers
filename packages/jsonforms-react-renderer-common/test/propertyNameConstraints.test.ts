@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { validateAdditionalPropertyName } from '../src/additionalPropertyName';
 it('checks full property-name constraints for new and unchanged rename drafts without an injected validator', () => {
   const schema = {
@@ -13,10 +13,10 @@ it('checks full property-name constraints for new and unchanged rename drafts wi
       rootSchema: schema,
     });
   expect(check('sensor-x').errors?.map((error) => error.keyword)).toContain(
-    'minLength'
+    'minLength',
   );
   expect(
-    check('a-very-long-name').errors?.map((error) => error.keyword)
+    check('a-very-long-name').errors?.map((error) => error.keyword),
   ).toContain('pattern');
   expect(check('sensor-x', 'sensor-x').error).toBe('invalid');
   expect(check('sensor-xy').error).toBeUndefined();

@@ -4,7 +4,7 @@ import React from 'react';
 
 export const separatorRendererTester: RankedTester = rankWith(
   1,
-  uiTypeIs('Separator')
+  uiTypeIs('Separator'),
 );
 
 /**
@@ -51,5 +51,5 @@ export const SeparatorRendererComponent = ({
 };
 
 export const SeparatorRenderer = withJsonFormsLayoutProps(
-  SeparatorRendererComponent
+  SeparatorRendererComponent,
 );

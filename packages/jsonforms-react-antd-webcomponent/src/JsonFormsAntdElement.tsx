@@ -176,7 +176,7 @@ export class JsonFormsAntdElement extends HTMLElement {
       translate: this.state.translations
         ? (createTranslator(
             this.state.translations,
-            this.state.locale
+            this.state.locale,
           ) as never)
         : (((_key: string, fallback?: string) => fallback) as unknown as never),
     }),
@@ -222,7 +222,7 @@ export class JsonFormsAntdElement extends HTMLElement {
     const root = this.root;
     this.colorScheme?.removeEventListener(
       'change',
-      this.handleColorSchemeChange
+      this.handleColorSchemeChange,
     );
     this.colorScheme = undefined;
 
@@ -315,7 +315,7 @@ export class JsonFormsAntdElement extends HTMLElement {
         detail,
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -356,7 +356,7 @@ export class JsonFormsAntdElement extends HTMLElement {
           direction={rtl ? 'rtl' : 'ltr'}
           getPopupContainer={() =>
             (this.shadowRoot?.querySelector(
-              '.jsonforms-react-antd'
+              '.jsonforms-react-antd',
             ) as HTMLElement | null) ?? this
           }
           theme={{
@@ -422,13 +422,13 @@ export class JsonFormsAntdElement extends HTMLElement {
             <slot name='form-footer' />
           </div>
         </LocalizedConfigProvider>
-      </StyleProvider>
+      </StyleProvider>,
     );
   }
 }
 
 export const registerJsonFormsAntd = (
-  tagName = JSON_FORMS_ANTD_TAG
+  tagName = JSON_FORMS_ANTD_TAG,
 ): CustomElementConstructor => {
   const existing = customElements.get(tagName);
   if (existing) return existing;

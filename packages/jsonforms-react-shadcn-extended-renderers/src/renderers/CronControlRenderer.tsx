@@ -53,7 +53,7 @@ import {
 
 export const cronControlTester = rankWith(
   3,
-  and(isStringControl, or(formatIs('cron'), optionIs('format', 'cron')))
+  and(isStringControl, or(formatIs('cron'), optionIs('format', 'cron'))),
 );
 const periods: CronPeriod[] = [
   'year',
@@ -127,15 +127,15 @@ const FieldPicker = ({
                           checked === true
                             ? [...selected, value]
                             : selected.filter((v) => v !== value),
-                          field
-                        )
+                          field,
+                        ),
                       )
                     }
                     aria-label={`${name} ${labelFor(value, field)}`}
                   />
                   {labelFor(value, field)}
                 </label>
-              )
+              ),
             )}
           </div>
         </PopoverContent>
@@ -238,7 +238,7 @@ export const ShadcnCronControl = (props: ControlProps) => {
           onChange={(event) =>
             props.handleChange(
               props.path,
-              event.currentTarget.value || undefined
+              event.currentTarget.value || undefined,
             )
           }
         />
@@ -288,7 +288,7 @@ export const ShadcnCronControl = (props: ControlProps) => {
             {shownFields.some(
               (field) =>
                 parseField(draft[CRON_FIELDS.indexOf(field)] ?? '*', field) ===
-                undefined
+                undefined,
             ) && (
               <p className='text-sm text-muted-foreground'>
                 {label('cron.advanced')}

@@ -17,5 +17,5 @@ export interface CategoryValidationLabelProps {
  * {@link CategoryHeader}, which is where the behaviour lives.
  */
 export const CategoryValidationLabel = (
-  props: CategoryValidationLabelProps
+  props: CategoryValidationLabelProps,
 ) => <CategoryHeader {...props} />;

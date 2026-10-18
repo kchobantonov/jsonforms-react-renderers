@@ -41,7 +41,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
     props.uischema,
     props.path,
     props.config,
-    false
+    false,
   );
   const object = React.useContext(ObjectErrorContext);
   const objectOwned = object?.uischema === props.uischema;

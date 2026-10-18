@@ -120,5 +120,5 @@ export const ListWithDetailMasterItem = ({
   re-typed here rather than at each call site.
 */
 export default withJsonFormsMasterListItemProps(
-  ListWithDetailMasterItem
+  ListWithDetailMasterItem,
 ) as React.ComponentType<OwnPropsOfMasterListItem & { hideAvatar?: boolean }>;

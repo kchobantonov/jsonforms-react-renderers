@@ -33,7 +33,7 @@ for (const field of [
         new Map([
           ['renderer', '0.1.0'],
           ['common', '0.2.0'],
-        ])
+        ]),
       );
       assert.equal(result.version, '0.1.0');
       assert.equal(result[field].common, expected);
@@ -49,7 +49,7 @@ for (const field of [
             name: 'renderer',
             [field]: { common: `${protocol}:*` },
           }),
-        /unresolved local dependency/
+        /unresolved local dependency/,
       );
     });
   }
@@ -66,7 +66,7 @@ test('retains current versions when changesets were already consumed', () => {
 test('rejects private packages', () =>
   assert.throws(
     () => assertPublishableManifest({ name: 'demo', private: true }),
-    /private package/
+    /private package/,
   ));
 test('fails clearly for unsupported workspace aliases', () =>
   assert.throws(
@@ -78,7 +78,7 @@ test('fails clearly for unsupported workspace aliases', () =>
           dependencies: { common: 'workspace:another@*' },
         },
         {},
-        new Map([['common', '2.0.0']])
+        new Map([['common', '2.0.0']]),
       ),
-    /unsupported workspace range/
+    /unsupported workspace range/,
   ));

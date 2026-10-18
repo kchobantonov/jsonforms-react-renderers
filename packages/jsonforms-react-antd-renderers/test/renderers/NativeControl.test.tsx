@@ -28,7 +28,7 @@ const createNativeControl = (props: ControlProps) => {
 
 const defaultControlProps = (): ControlProps => {
   return {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line @typescript-eslint/no-empty-function
     handleChange: () => {},
     enabled: false,
     visible: true,

@@ -30,7 +30,7 @@ export default {
   resolve: {
     alias: {
       '@jsonforms-react-shadcn-ui': fileURLToPath(
-        new URL('./src/components/ui', import.meta.url)
+        new URL('./src/components/ui', import.meta.url),
       ),
     },
   },

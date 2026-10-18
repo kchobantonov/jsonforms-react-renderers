@@ -96,15 +96,15 @@ export const AntdColorControl = (props: ControlProps) => {
       options,
       props.config,
       'colorSaveFormat',
-      DEFAULT_COLOR_SAVE_FORMAT
-    )
+      DEFAULT_COLOR_SAVE_FORMAT,
+    ),
   );
   const textEntry =
     resolveExtendedOption<boolean>(
       options,
       props.config,
       'colorTextEntry',
-      true
+      true,
     ) !== false;
 
   if (!props.visible) return null;
@@ -247,7 +247,7 @@ export const AntdColorControl = (props: ControlProps) => {
             */
             <span role='button' aria-label={t('editor.chooseColor')}>
               {swatch(14)}
-            </span>
+            </span>,
           )}
         />
       ) : (
@@ -283,7 +283,7 @@ export const AntdColorControl = (props: ControlProps) => {
           >
             {swatch(16)}
             <span>{value ?? ''}</span>
-          </button>
+          </button>,
         )
       )}
     </ControlFormItem>

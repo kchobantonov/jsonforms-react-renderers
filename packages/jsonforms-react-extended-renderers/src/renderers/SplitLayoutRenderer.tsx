@@ -16,16 +16,16 @@ export const sharedSplitLayoutTester: RankedTester = rankWith(
   4,
   and(
     or(uiTypeIs('HorizontalLayout'), uiTypeIs('VerticalLayout')),
-    (ui) => String(ui.options?.variant ?? '').toLowerCase() === 'splitter'
-  )
+    (ui) => String(ui.options?.variant ?? '').toLowerCase() === 'splitter',
+  ),
 );
 
 export const splitCssSize = (value: unknown): string | undefined =>
   typeof value === 'number' && Number.isFinite(value) && value > 0
     ? `${value}px`
     : typeof value === 'string' && value.trim()
-    ? value.trim()
-    : undefined;
+      ? value.trim()
+      : undefined;
 
 /**
  * The initial share of each pane.
@@ -59,7 +59,7 @@ export const SharedSplitLayout = (props: LayoutProps) => {
   const elements = useEffectiveElements(
     layout.elements,
     props.path,
-    props.config
+    props.config,
   );
   const count = elements.length;
   const [stored, setSizes] = React.useState<number[]>([]);
@@ -84,12 +84,12 @@ export const SharedSplitLayout = (props: LayoutProps) => {
   const adjust = (index: number, delta: number, original = sizes) => {
     const limited = Math.max(
       1 - original[index],
-      Math.min(original[index + 1] - 1, delta)
+      Math.min(original[index + 1] - 1, delta),
     );
     setSizes(
       original.map((size, i) =>
-        i === index ? size + limited : i === index + 1 ? size - limited : size
-      )
+        i === index ? size + limited : i === index + 1 ? size - limited : size,
+      ),
     );
   };
   if (!props.visible) return null;
@@ -108,7 +108,7 @@ export const SharedSplitLayout = (props: LayoutProps) => {
         minWidth: 0,
         height: horizontal
           ? undefined
-          : splitCssSize(options.height) ?? '20rem',
+          : (splitCssSize(options.height) ?? '20rem'),
         minHeight: horizontal ? undefined : splitCssSize(options.minHeight),
       }}
     >
@@ -164,8 +164,8 @@ export const SharedSplitLayout = (props: LayoutProps) => {
                   event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')
                     ? 2
                     : event.key === (horizontal ? 'ArrowLeft' : 'ArrowUp')
-                    ? -2
-                    : 0;
+                      ? -2
+                      : 0;
                 if (delta) {
                   event.preventDefault();
                   adjust(index, delta);
@@ -195,7 +195,7 @@ export const SharedSplitLayout = (props: LayoutProps) => {
                       current.start) /
                       current.total) *
                       100,
-                    current.sizes
+                    current.sizes,
                   );
               }}
               onPointerUp={() => {

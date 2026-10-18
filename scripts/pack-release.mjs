@@ -16,7 +16,7 @@ import { releaseManifest } from './release-manifest.mjs';
 // copies. No version changes, Git writes, npm publishing, or lifecycle scripts.
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.resolve(
-  process.argv[2] ?? path.join(tmpdir(), 'jsonforms-react-release-packs')
+  process.argv[2] ?? path.join(tmpdir(), 'jsonforms-react-release-packs'),
 );
 const staging = mkdtempSync(path.join(tmpdir(), 'jsonforms-react-release-'));
 const run = (command, args, cwd = root) =>
@@ -25,7 +25,7 @@ mkdirSync(output, { recursive: true });
 try {
   const planPath = path.join(staging, 'plan.json');
   const hasPendingChangesets = readdirSync(path.join(root, '.changeset')).some(
-    (file) => file.endsWith('.md') && file !== 'README.md'
+    (file) => file.endsWith('.md') && file !== 'README.md',
   );
   // Release PRs have already consumed their changesets. Comparing to HEAD
   // avoids demanding another changeset for the version/changelog commit.
@@ -39,13 +39,13 @@ try {
   ]);
   const plan = JSON.parse(readFileSync(planPath, 'utf8'));
   const versions = new Map(
-    plan.releases.map((release) => [release.name, release.newVersion])
+    plan.releases.map((release) => [release.name, release.newVersion]),
   );
   const overrides = {};
   for (const directory of readdirSync(path.join(root, 'packages')).sort()) {
     const packageRoot = path.join(root, 'packages', directory);
     const original = JSON.parse(
-      readFileSync(path.join(packageRoot, 'package.json'), 'utf8')
+      readFileSync(path.join(packageRoot, 'package.json'), 'utf8'),
     );
     if (original.private) continue;
     const unpack = path.join(staging, directory);
@@ -54,7 +54,7 @@ try {
     run(
       'pnpm',
       ['--config.ignore-scripts=true', 'pack', '--out', raw],
-      packageRoot
+      packageRoot,
     );
     run('tar', ['-xzf', raw, '-C', unpack]);
     const packedRoot = path.join(unpack, 'package');
@@ -62,7 +62,7 @@ try {
     const manifest = releaseManifest(
       original,
       JSON.parse(readFileSync(manifestPath, 'utf8')),
-      versions
+      versions,
     );
     writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
     run('pnpm', ['exec', 'publint', packedRoot, '--pack', 'false']);
@@ -70,13 +70,13 @@ try {
     run(
       'pnpm',
       ['--config.ignore-scripts=true', 'pack', '--out', tarball],
-      packedRoot
+      packedRoot,
     );
     overrides[manifest.name] = `file:${tarball}`;
   }
   writeFileSync(
     path.join(output, 'overrides.json'),
-    JSON.stringify(overrides, null, 2) + '\n'
+    JSON.stringify(overrides, null, 2) + '\n',
   );
   console.log(`Validated release tarballs and overrides: ${output}`);
 } finally {

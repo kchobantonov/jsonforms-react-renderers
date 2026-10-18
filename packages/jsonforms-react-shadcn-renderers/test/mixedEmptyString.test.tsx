@@ -6,9 +6,9 @@ import { shadcnRenderers, shadcnCells } from '../src';
 it.each(
   [false, true].flatMap((nested) =>
     [false, true].flatMap((typing) =>
-      ['string', 'number', 'integer'].map((type) => ({ nested, typing, type }))
-    )
-  )
+      ['string', 'number', 'integer'].map((type) => ({ nested, typing, type })),
+    ),
+  ),
 )(
   'preserves mixed $type when clearing (nested=$nested, typing=$typing)',
   async ({ nested, typing, type }) => {
@@ -40,21 +40,21 @@ it.each(
             onChange={(event) => {
               latest = event.data;
             }}
-          />
-        )
+          />,
+        ),
       );
       const clear = host.querySelector<HTMLButtonElement>(
-        'button[aria-label="Clear value"]'
+        'button[aria-label="Clear value"]',
       );
       expect(clear).not.toBeNull();
       if (typing) {
         const input = Array.from(host.querySelectorAll('input')).find(
-          (input) => input.value === String(initial)
+          (input) => input.value === String(initial),
         )!;
         await act(async () => {
           Object.getOwnPropertyDescriptor(
             HTMLInputElement.prototype,
-            'value'
+            'value',
           )!.set!.call(input, '');
           input.dispatchEvent(new Event('input', { bubbles: true }));
         });
@@ -73,22 +73,24 @@ it.each(
         await act(async () =>
           host
             .querySelector<HTMLButtonElement>(
-              'button[aria-label="Clear value"]'
+              'button[aria-label="Clear value"]',
             )!
-            .click()
+            .click(),
         );
         expect(
           host.querySelector<HTMLInputElement>(
-            'input[role="spinbutton"], input[type="number"]'
-          )!.value
+            'input[role="spinbutton"], input[type="number"]',
+          )!.value,
         ).toBe('0');
       }
       const typeClear = host.querySelector<HTMLElement>(
-        'button[aria-label="Clear type"]'
+        'button[aria-label="Clear type"]',
       );
       expect(typeClear).toBeTruthy();
       await act(async () =>
-        typeClear!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+        typeClear!.dispatchEvent(
+          new MouseEvent('mousedown', { bubbles: true }),
+        ),
       );
       await act(async () => typeClear!.click());
       await act(async () => {
@@ -100,5 +102,5 @@ it.each(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

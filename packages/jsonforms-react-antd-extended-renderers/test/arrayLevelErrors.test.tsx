@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 
 /**
@@ -22,7 +22,7 @@ vi.mock('antd', async () => {
         'span',
         { 'data-testid': 'tooltip' },
         React.createElement('span', { 'data-testid': 'tooltip-title' }, title),
-        children
+        children,
       ),
   };
 });
@@ -86,8 +86,8 @@ const draw = async (reviewers: unknown[]) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await settle();
   return { container, unmount: () => act(() => root.unmount()) };
@@ -95,7 +95,7 @@ const draw = async (reviewers: unknown[]) => {
 
 const tooltips = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('[data-testid="tooltip-title"]')).map(
-    (node) => node.textContent ?? ''
+    (node) => node.textContent ?? '',
   );
 
 describe('an array-level error', () => {
@@ -132,11 +132,11 @@ describe('an array-level error', () => {
   it('is announced, not only shown on hover', async () => {
     const view = await draw([]);
     const named = Array.from(
-      view.container.querySelectorAll('[aria-label]')
+      view.container.querySelectorAll('[aria-label]'),
     ).map((node) => node.getAttribute('aria-label') ?? '');
     expect(
       named.join('\n'),
-      'the array error is reachable only by hovering'
+      'the array error is reachable only by hovering',
     ).toContain('must contain');
     view.unmount();
   });

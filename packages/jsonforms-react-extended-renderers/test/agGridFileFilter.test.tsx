@@ -47,16 +47,16 @@ it('supplies only filenames as the default grid filter values', async () => {
             options: { variant: 'ag-grid' },
           }}
           renderers={[{ tester: extendedAgGridTester, renderer: Renderer }]}
-        />
-      )
+        />,
+      ),
     );
     await flushUntil(() => Boolean(captured.props));
     for (const field of ['file', 'files']) {
       const column = captured.props.columnDefs.find(
-        (entry: any) => entry.colId === field
+        (entry: any) => entry.colId === field,
       );
       expect(column.valueGetter({ data: captured.props.rowData[0] })).toBe(
-        'receipt.txt'
+        'receipt.txt',
       );
     }
   } finally {

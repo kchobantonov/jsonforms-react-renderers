@@ -73,7 +73,7 @@ const parseStoredSettings = (value: string | null) => {
 
 export const readPersistedDemoSettings = (
   storage: DemoSettingsStorage | undefined,
-  key: string
+  key: string,
 ):
   | Partial<PersistedDemoSettings>
   | undefined
@@ -92,7 +92,7 @@ export const readPersistedDemoSettings = (
 export const writePersistedDemoSettings = (
   storage: DemoSettingsStorage | undefined,
   key: string,
-  settings: PersistedDemoSettings
+  settings: PersistedDemoSettings,
 ) => {
   if (!storage) return;
   try {
@@ -144,12 +144,12 @@ const combinedSearchParams = (location: LocationLike) => {
 const booleanParam = (
   params: URLSearchParams,
   key: string,
-  fallback: boolean
+  fallback: boolean,
 ) => (params.has(key) ? params.get(key) === 'true' : fallback);
 
 export const readDemoQueryState = (
   location: LocationLike,
-  defaults: DemoQueryState
+  defaults: DemoQueryState,
 ): DemoQueryState => {
   const params = combinedSearchParams(location);
   return {
@@ -160,7 +160,7 @@ export const readDemoQueryState = (
     useWebComponent: booleanParam(
       params,
       'use-webcomponent',
-      defaults.useWebComponent
+      defaults.useWebComponent,
     ),
     drawer: booleanParam(params, 'drawer', defaults.drawer),
   };
@@ -178,7 +178,7 @@ export const writeDemoQueryValue = (
   history: HistoryLike,
   key: DemoQueryKey,
   value: boolean | DemoTab,
-  defaultValue: boolean | DemoTab
+  defaultValue: boolean | DemoTab,
 ) => {
   const { route, query } = splitDemoHash(location.hash);
   const params = new URLSearchParams(query);
@@ -191,7 +191,7 @@ export const writeDemoQueryValue = (
   } else {
     params.set(
       key,
-      key === 'active-tab' ? TAB_TO_QUERY[value as DemoTab] : String(value)
+      key === 'active-tab' ? TAB_TO_QUERY[value as DemoTab] : String(value),
     );
   }
   const queryString = params.toString();
@@ -202,6 +202,6 @@ export const writeDemoQueryValue = (
   history.replaceState(
     {},
     '',
-    `${location.pathname}${search}${hash ? `#${hash}` : ''}`
+    `${location.pathname}${search}${hash ? `#${hash}` : ''}`,
   );
 };

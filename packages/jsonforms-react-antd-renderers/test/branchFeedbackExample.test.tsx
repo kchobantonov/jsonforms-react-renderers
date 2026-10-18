@@ -12,10 +12,10 @@ it('shows branch navigation and contrasts enabled and disabled branch errors', a
   const root = createRoot(host);
   const category =
     (ui.elements[0] as any).elements?.find(
-      (entry: any) => entry.i18n === 'branchFeedback.navigation'
+      (entry: any) => entry.i18n === 'branchFeedback.navigation',
     ) ??
     (ui.elements[1] as any)?.elements?.find(
-      (entry: any) => entry.i18n === 'branchFeedback.navigation'
+      (entry: any) => entry.i18n === 'branchFeedback.navigation',
     );
   try {
     await act(async () =>
@@ -29,26 +29,26 @@ it('shows branch navigation and contrasts enabled and disabled branch errors', a
           config={{ validateActiveBranch: true, restrict: true }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
     const shortTabs = Array.from(host.querySelectorAll('[role="tab"]')).filter(
-      (tab) => tab.textContent?.includes('Short text')
+      (tab) => tab.textContent?.includes('Short text'),
     );
 
     expect(shortTabs).toHaveLength(2);
     await act(async () =>
-      shortTabs.forEach((tab) => (tab as HTMLElement).click())
+      shortTabs.forEach((tab) => (tab as HTMLElement).click()),
     );
     expect(host.textContent).toContain('5');
     const invalid = host.querySelectorAll(
-      'input[aria-invalid="true"], .ant-input-status-error'
+      'input[aria-invalid="true"], .ant-input-status-error',
     );
     expect(invalid.length).toBe(1);
     expect(
       Array.from(host.querySelectorAll('input')).filter(
-        (input) => input.value === 'Longer text'
-      ).length
+        (input) => input.value === 'Longer text',
+      ).length,
     ).toBeGreaterThanOrEqual(2);
   } finally {
     act(() => root.unmount());

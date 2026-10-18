@@ -13,8 +13,8 @@ describe('ArrayLayout unrestricted items', () => {
       arrayLayoutTester(
         { type: 'Control', scope: '#' },
         booleanItemsSchema({ type: 'array', items: true }),
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(4);
   });
 
@@ -31,7 +31,7 @@ describe('ArrayLayout unrestricted items', () => {
           },
         })}
         renderers={antdRenderers}
-      />
+      />,
     );
 
     expect(html).toContain('Examples');

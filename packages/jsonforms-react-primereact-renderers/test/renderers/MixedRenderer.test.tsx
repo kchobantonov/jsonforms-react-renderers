@@ -29,7 +29,7 @@ const renderMixedValue = (data: unknown) =>
       schema={schema}
       uischema={{ type: 'Control', scope: '#' }}
       renderers={renderers}
-    />
+    />,
   );
 
 describe('MixedRenderer', () => {
@@ -40,13 +40,13 @@ describe('MixedRenderer', () => {
     const html = renderMixedValue(data);
 
     expect(html).toContain(
-      '<details class="jsonforms-mixed-renderer-detail" open="">'
+      '<details class="jsonforms-mixed-renderer-detail" open="">',
     );
   });
 
   it('does not wrap primitive values in a detail panel', () => {
     expect(renderMixedValue('value')).not.toContain(
-      'jsonforms-mixed-renderer-detail'
+      'jsonforms-mixed-renderer-detail',
     );
   });
 
@@ -74,8 +74,8 @@ describe('MixedRenderer', () => {
           minLength: 4,
         },
         'string',
-        {}
-      )
+        {},
+      ),
     ).toEqual({ type: 'string', minLength: 4 });
   });
 });

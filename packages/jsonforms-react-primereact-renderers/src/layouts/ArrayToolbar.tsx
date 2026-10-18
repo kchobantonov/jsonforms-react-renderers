@@ -20,7 +20,7 @@ export interface ArrayLayoutToolbarProps {
 const renderTitle = (
   label: string,
   errors: string,
-  button: React.JSX.Element
+  button: React.JSX.Element,
 ) => (
   <div className='flex align-items-center justify-content-center gap-2'>
     <div className='flex-grow-1 p-text-ellipsis'>{label}</div>
@@ -55,7 +55,7 @@ export const ArrayLayoutToolbar = React.memo(function ArrayLayoutToolbar({
           aria-label={translations.addTooltip}
           onClick={addItem(path, createDefault())}
           icon={PrimeIcons.PLUS_CIRCLE}
-        />
+        />,
       )}
       subTitle={description}
     >

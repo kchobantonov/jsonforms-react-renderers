@@ -4,7 +4,7 @@ import React from 'react';
 
 export const spacerRendererTester: RankedTester = rankWith(
   1,
-  uiTypeIs('Spacer')
+  uiTypeIs('Spacer'),
 );
 
 /**

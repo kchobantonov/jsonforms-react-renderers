@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 
 const fromPackage = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url));
@@ -10,7 +10,7 @@ export default defineConfig({
       {
         find: '@chobantonov/jsonforms-react-renderer-common',
         replacement: fileURLToPath(
-          new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+          new URL('../jsonforms-react-renderer-common/src', import.meta.url),
         ),
       },
       {
@@ -27,7 +27,7 @@ export default defineConfig({
         */
         find: '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers',
         replacement: fromPackage(
-          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers'
+          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers',
         ),
       },
       {
@@ -37,6 +37,8 @@ export default defineConfig({
     ],
   },
   test: {
+    maxWorkers: 2,
+    sequence: { groupOrder: 0 },
     environment: 'jsdom',
     setupFiles: [
       './test/setup/matchMedia.ts',

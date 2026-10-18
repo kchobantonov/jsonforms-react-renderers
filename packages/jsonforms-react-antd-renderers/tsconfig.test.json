@@ -10,7 +10,6 @@
     "rootDir": "..",
     "declaration": false,
     "composite": false,
-    "baseUrl": ".",
     // Mirrors the aliases in vitest.config.mts: tests resolve sibling packages from
     // src, not from built lib/, so type-checking does not depend on build order.
     "paths": {

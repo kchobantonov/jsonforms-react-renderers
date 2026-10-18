@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { createAjv } from '@jsonforms/core';
 import { JsonForms } from '@jsonforms/react';
@@ -36,7 +36,7 @@ const settle = async (ms = 400) => {
 const setNativeValue = (field: HTMLInputElement, value: string) =>
   Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    'value'
+    'value',
   )!.set!.call(field, value);
 
 const mapSchema = {
@@ -64,17 +64,17 @@ const render = (data: any = { labels: {} }) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const nameField = () =>
     container.querySelector<HTMLInputElement>(
-      'input[placeholder="Property name"]'
+      'input[placeholder="Property name"]',
     )!;
   const addButton = () =>
     Array.from(container.querySelectorAll('button')).find((button) =>
-      button.getAttribute('aria-label')?.startsWith('Add property')
+      button.getAttribute('aria-label')?.startsWith('Add property'),
     ) as HTMLButtonElement | undefined;
 
   const typeName = async (name: string) => {
@@ -240,8 +240,8 @@ describe('the property-name schema', () => {
     expect(
       createAdditionalPropertyNameSchema(
         { type: 'object', additionalProperties: true } as any,
-        {} as any
-      )
+        {} as any,
+      ),
     ).toEqual({ type: 'string' });
   });
 });
@@ -272,7 +272,7 @@ describe('names a data path cannot address', () => {
         schema: { type: 'object', additionalProperties: true } as any,
         rootSchema: {} as any,
         data: {},
-      }).error
+      }).error,
     ).toBeUndefined();
   });
 
@@ -284,7 +284,7 @@ describe('names a data path cannot address', () => {
         schema: { type: 'object', additionalProperties: true } as any,
         rootSchema: {} as any,
         data: { 'items[0]': 'a' },
-      }).error
+      }).error,
     ).toBeUndefined();
   });
 
@@ -299,7 +299,7 @@ describe('names a data path cannot address', () => {
         } as any,
         rootSchema: {} as any,
         data: {},
-      }).error
+      }).error,
     ).toBe('already-defined');
   });
 });

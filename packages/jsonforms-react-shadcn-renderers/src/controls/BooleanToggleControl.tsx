@@ -33,5 +33,5 @@ export const ShadcnBooleanToggleControl = (props: ControlProps) => {
 };
 export const booleanToggleControlTester = rankWith(
   3,
-  and(isBooleanControl, optionIs('toggle', true))
+  and(isBooleanControl, optionIs('toggle', true)),
 );

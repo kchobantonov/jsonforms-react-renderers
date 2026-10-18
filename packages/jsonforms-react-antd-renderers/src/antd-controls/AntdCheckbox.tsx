@@ -12,7 +12,7 @@ export const AntdCheckbox = React.memo(function AntdCheckbox(
     WithClassname &
     Props & {
       inputProps?: React.ComponentProps<typeof Checkbox> & React.AriaAttributes;
-    }
+    },
 ) {
   const {
     data,

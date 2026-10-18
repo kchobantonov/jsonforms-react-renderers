@@ -29,7 +29,7 @@ import { Input } from '@jsonforms-react-shadcn-ui/input';
 import React from 'react';
 
 const FileActionButton = (
-  props: React.ButtonHTMLAttributes<HTMLButtonElement>
+  props: React.ButtonHTMLAttributes<HTMLButtonElement>,
 ) => <Button {...props} type='button' variant='ghost' size='sm' />;
 const FilePill = (props: React.HTMLAttributes<HTMLSpanElement>) => (
   <span {...props} className='bg-secondary text-secondary-foreground text-sm' />
@@ -52,13 +52,13 @@ export const isStringFileSchema = (schema: JsonSchema): boolean =>
 
 const singleFileTester: RankedTester = rankWith(
   2,
-  and(uiTypeIs('Control'), schemaMatches(isStringFileSchema))
+  and(uiTypeIs('Control'), schemaMatches(isStringFileSchema)),
 );
 
 export const fileControlTester: RankedTester = (ui, schema, context) =>
   Math.max(
     singleFileTester(ui, schema, context),
-    fileArrayTester(ui, schema, context)
+    fileArrayTester(ui, schema, context),
   );
 
 const optionNumber = (value: unknown): number | undefined => {
@@ -70,7 +70,7 @@ const optionNumber = (value: unknown): number | undefined => {
 
 export const readFile = (
   file: File,
-  schema: JsonSchemaWithContent
+  schema: JsonSchemaWithContent,
 ): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -86,8 +86,8 @@ export const readFile = (
           marker < 0
             ? dataUrl
             : `${dataUrl.slice(0, marker)};filename=${encodeURIComponent(
-                file.name
-              )}${dataUrl.slice(marker)}`
+                file.name,
+              )}${dataUrl.slice(marker)}`,
         );
       } else {
         resolve(dataUrl.slice(dataUrl.indexOf(',') + 1));
@@ -106,7 +106,7 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
   const [busy, setBusy] = React.useState(false);
   const cell = React.useContext(ShadcnCellMode);
   const [severity, setSeverity] = React.useState<'warning' | 'error'>(
-    'warning'
+    'warning',
   );
   React.useEffect(() => {
     setLocalError('');
@@ -120,13 +120,13 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
     schema.formatMinimum ??
       schema.formatExclusiveMinimum ??
       options.formatMinimum ??
-      options.formatExclusiveMinimum
+      options.formatExclusiveMinimum,
   );
   const maximum = optionNumber(
     schema.formatMaximum ??
       schema.formatExclusiveMaximum ??
       options.formatMaximum ??
-      options.formatExclusiveMaximum
+      options.formatExclusiveMaximum,
   );
   const exclusiveMin =
     schema.formatMinimum === undefined &&
@@ -174,7 +174,7 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
                     bound: t(exclusiveMin ? 'file.moreThan' : 'file.atLeast'),
                     limit: minimum,
                   }),
-                })
+                }),
               );
               event.currentTarget.value = '';
               return;
@@ -191,7 +191,7 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
                     bound: t(exclusiveMax ? 'file.lessThan' : 'file.atMost'),
                     limit: maximum,
                   }),
-                })
+                }),
               );
               event.currentTarget.value = '';
               return;
@@ -233,18 +233,18 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
           aria-invalid={Boolean(props.errors)}
           value={
             props.data
-              ? attachmentName(props.data) ??
+              ? (attachmentName(props.data) ??
                 (attachment?.value === props.data
                   ? attachment.name
-                  : t('file.attached'))
+                  : t('file.attached')))
               : ''
           }
           title={
             props.data
-              ? attachmentName(props.data) ??
+              ? (attachmentName(props.data) ??
                 (attachment?.value === props.data
                   ? attachment.name
-                  : t('file.attached'))
+                  : t('file.attached')))
               : ''
           }
         />

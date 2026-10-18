@@ -72,7 +72,7 @@ export const collectBoundPaths = (element: UISchemaElement): BoundPath[] => {
  */
 export const boundDataPaths = (element: UISchemaElement, path = ''): string[] =>
   collectBoundPaths(element).map(({ relative }) =>
-    [path, relative].filter(Boolean).join('.')
+    [path, relative].filter(Boolean).join('.'),
   );
 
 const resolveSegments = (context: unknown, segments: string[]): unknown =>
@@ -81,31 +81,31 @@ const resolveSegments = (context: unknown, segments: string[]): unknown =>
       current !== null && typeof current === 'object'
         ? (current as Record<string, unknown>)[key]
         : undefined,
-    context
+    context,
   );
 
 export const groupHasData = (
   element: UISchemaElement,
   data: unknown,
-  path = ''
+  path = '',
 ): boolean => {
   // Resolved once for the whole subtree. It used to be resolved again for
   // every Control, which is the same answer each time.
   const context = path ? Resolve.data(data, path) : data;
   return collectBoundPaths(element).some(({ segments }) =>
-    hasGroupValue(resolveSegments(context, segments))
+    hasGroupValue(resolveSegments(context, segments)),
   );
 };
 
 export const useGroupState = (
   uischema: UISchemaElement,
   path: string,
-  config?: Record<string, unknown>
+  config?: Record<string, unknown>,
 ) => {
   const context = useJsonForms();
   const { collapsible, collapsed, setExpanded } = useGroupExpansion(
     uischema,
-    config
+    config,
   );
   const showDataIndicator =
     groupOption(uischema, config, 'showDataIndicator') === true;
@@ -115,7 +115,7 @@ export const useGroupState = (
   // locale change or any unrelated parent render no longer walks the group.
   const hasData = useMemo(
     () => showDataIndicator && groupHasData(uischema, data, path),
-    [showDataIndicator, uischema, data, path]
+    [showDataIndicator, uischema, data, path],
   );
   return {
     contentId,
@@ -130,7 +130,7 @@ export const useGroupState = (
 const groupOption = (
   uischema: UISchemaElement,
   config: Record<string, unknown> | undefined,
-  name: string
+  name: string,
 ) => {
   const namespaced = config?.[JSONFORMS_EXTENDED_CONFIG_KEY] as
     | Record<string, unknown>
@@ -147,7 +147,7 @@ export const useGroupExpansion = (
   uischema: UISchemaElement,
   config?: Record<string, unknown>,
   defaultCollapsible = false,
-  component: CollapseComponent = 'group'
+  component: CollapseComponent = 'group',
 ) => {
   const collapsible =
     (groupOption(uischema, config, 'collapsible') ?? defaultCollapsible) ===
@@ -155,7 +155,7 @@ export const useGroupExpansion = (
   const initiallyCollapsed = resolveCollapsed(
     uischema.options,
     config,
-    component
+    component,
   );
   const [collapsed, setCollapsed] = useState(initiallyCollapsed);
   useEffect(() => setCollapsed(initiallyCollapsed), [initiallyCollapsed]);
@@ -164,7 +164,7 @@ export const useGroupExpansion = (
     collapsed: collapsible && collapsed,
     setExpanded: useCallback(
       (expanded: boolean) => setCollapsed(!expanded),
-      []
+      [],
     ),
   };
 };
@@ -175,7 +175,7 @@ export type CollapseComponent = 'group' | 'mixed' | 'accordion' | 'array';
 export const resolveCollapsed = (
   options: Record<string, any> | undefined,
   config: any,
-  component: CollapseComponent
+  component: CollapseComponent,
 ): boolean =>
   (options?.collapsed ??
     config?.jsonformsExtended?.[component]?.collapsed ??

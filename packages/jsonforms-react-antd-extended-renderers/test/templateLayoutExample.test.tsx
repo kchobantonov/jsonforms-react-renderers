@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -74,8 +74,8 @@ const draw = (override?: any, configOverride?: any) => {
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -100,11 +100,11 @@ const draw = (override?: any, configOverride?: any) => {
       active()?.querySelector<HTMLInputElement>('[data-slot] input') ?? null,
     tabs: () =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-tabs-tab')).map(
-        (tab) => tab.textContent ?? ''
+        (tab) => tab.textContent ?? '',
       ),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -140,12 +140,12 @@ describe('the two engines, split into categories', () => {
     const view = draw();
     await settle();
     const labels = Array.from(
-      view.container.querySelectorAll<HTMLElement>('.ant-form-item label')
+      view.container.querySelectorAll<HTMLElement>('.ant-form-item label'),
     ).map((label) => label.textContent);
     expect(labels).toContain('Customer');
     await view.selectTab('lang: ractive');
     const after = Array.from(
-      view.container.querySelectorAll<HTMLElement>('.ant-form-item label')
+      view.container.querySelectorAll<HTMLElement>('.ant-form-item label'),
     ).map((label) => label.textContent);
     expect(after).toContain('Customer');
     view.unmount();
@@ -160,10 +160,10 @@ describe('the two engines, split into categories', () => {
     const view = draw();
     await view.selectTab('lang: ractive');
     const notes = Array.from(
-      view.container.querySelectorAll<HTMLElement>('.ant-tabs-content')
+      view.container.querySelectorAll<HTMLElement>('.ant-tabs-content'),
     ).map(
       (panel) =>
-        panel.querySelector<HTMLInputElement>('[data-slot] input')?.value
+        panel.querySelector<HTMLInputElement>('[data-slot] input')?.value,
     );
     expect(notes).toEqual(['Seat near the front, please.', 'Vegetarian meal.']);
     view.unmount();
@@ -257,7 +257,7 @@ describe('the jsx profile rendering the whole elements array', () => {
     const block = view.active()?.querySelector<HTMLElement>('[data-children]');
     expect(block, 'the array template rendered nothing').toBeTruthy();
     const values = Array.from(
-      block!.querySelectorAll<HTMLInputElement>('input')
+      block!.querySelectorAll<HTMLInputElement>('input'),
     ).map((input) => input.value);
     expect(values).toEqual(['REG-4417', '2']);
     view.unmount();
@@ -284,7 +284,7 @@ describe('the native profile', () => {
     const view = draw();
     await view.selectTab('native (TypeScript)');
     expect(
-      view.active()?.querySelector('[data-native-extra]')?.textContent
+      view.active()?.querySelector('[data-native-extra]')?.textContent,
     ).toContain('editable');
     view.unmount();
   });
@@ -298,10 +298,10 @@ describe('the native profile', () => {
     const view = draw();
     await view.selectTab('native (TypeScript)');
     expect(
-      view.active()?.querySelector('[data-fallback]')?.textContent
+      view.active()?.querySelector('[data-fallback]')?.textContent,
     ).toContain('nothing is named that');
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'template.unknownSlot'
+      'template.unknownSlot',
     );
     warn.mockRestore();
     view.unmount();
@@ -320,7 +320,7 @@ describe('the native profile', () => {
 
     await view.selectTab('lang: jsx');
     expect(
-      view.active()?.querySelector('[data-template-diagnostic]')
+      view.active()?.querySelector('[data-template-diagnostic]'),
     ).toBeTruthy();
     view.unmount();
   });
@@ -353,7 +353,7 @@ describe('the language-resolution category', () => {
     const view = draw();
     await view.selectTab('Language resolution');
     const diagnostic = view.container.querySelector(
-      '[data-template-diagnostic="unsupported"]'
+      '[data-template-diagnostic="unsupported"]',
     );
     expect(diagnostic).toBeTruthy();
     expect(diagnostic?.textContent).toContain('handlebars');

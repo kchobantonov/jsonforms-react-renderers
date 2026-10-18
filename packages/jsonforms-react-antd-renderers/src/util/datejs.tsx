@@ -9,7 +9,7 @@ export const createOnChangeHandler =
   (
     path: string,
     handleChange: (path: string, value: any) => void,
-    saveFormat: string
+    saveFormat: string,
   ) =>
   (value: dayjs.Dayjs) => {
     if (!value) {
@@ -27,7 +27,7 @@ export const createOnBlurHandler =
     format: string,
     saveFormat: string,
     rerenderChild: () => void,
-    onBlur: () => void
+    onBlur: () => void,
   ) =>
   (e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>) => {
     const date = dayjs(e.target.value, format);

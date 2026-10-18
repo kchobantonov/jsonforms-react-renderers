@@ -17,7 +17,7 @@ export const useTranslator = (): Translator => {
   const translate = useJsonForms().i18n?.translate;
   return useMemo(
     () => translate ?? ((_id, defaultMessage) => defaultMessage),
-    [translate]
+    [translate],
   );
 };
 
@@ -52,10 +52,10 @@ export const useI18n = () => {
       return values === undefined
         ? message
         : message.replace(/\{(\w+)\}/g, (placeholder, name: string) =>
-            values[name] === undefined ? placeholder : String(values[name])
+            values[name] === undefined ? placeholder : String(values[name]),
           );
     },
-    [translate, locale]
+    [translate, locale],
   );
 };
 

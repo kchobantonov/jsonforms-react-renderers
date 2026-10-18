@@ -1,5 +1,5 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
 import examples, { isSpecExample } from '../src/examples';
 import data from '@chobantonov/jsonforms-extended-spec/examples/string-controls/data.json';
@@ -10,7 +10,7 @@ import uischema from '@chobantonov/jsonforms-extended-spec/examples/string-contr
 const example = examples.find((e) => e.name === 'spec-string-controls');
 
 const controls = exampleElements(uischema as any).filter(
-  (element: any) => element.type === 'Control'
+  (element: any) => element.type === 'Control',
 );
 const optionsFor = (property: string) =>
   controls.find((c: any) => c.scope === `#/properties/${property}`)?.options ??
@@ -37,7 +37,7 @@ describe('the string-controls spec example', () => {
       (validate.errors ?? []).map((error) => [
         error.instancePath,
         error.keyword,
-      ])
+      ]),
     ).toEqual([
       ['/gateCode', 'pattern'],
       ['/legacyReference', 'pattern'],
@@ -82,7 +82,7 @@ describe('the string-controls spec example', () => {
   test('ships both catalogs with matching keys', () => {
     expect(Object.keys(translations).sort()).toEqual(['bg', 'en']);
     expect(Object.keys(translations.bg).sort()).toEqual(
-      Object.keys(translations.en).sort()
+      Object.keys(translations.en).sort(),
     );
   });
 });

@@ -19,15 +19,12 @@ jobs:
       - name: Make Changesets base branch available
         if: github.event_name == 'pull_request'
         run: git show-ref --verify --quiet refs/heads/master || git branch master origin/master
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1.21.2
         with:
-          version: 10.28.2
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: pnpm
+          node-version-file: .node-version
+          cache: true
+          run-install: false
       - name: Checkout local specification dependency
         uses: actions/checkout@v4
         with:
@@ -38,20 +35,18 @@ jobs:
       - name: Build specification package
         run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
-      - name: Check formatting
-        run: pnpm check-format
+        run: vp install --frozen-lockfile
+      - name: Check formatting and lint
+        run: vp check
       - name: Test release tooling
-        run: pnpm test:release
+        run: vp run test:release
       - name: Build
-        run: pnpm build
+        run: vp run build
       - name: Validate release tarballs
         run: node scripts/pack-release.mjs
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
       - name: Test packed web components
-        run: pnpm test:packed
+        run: vp run test:packed
       - name: Run tests
-        run: pnpm --workspace-concurrency=1 -r --if-present test
+        run: vp test run

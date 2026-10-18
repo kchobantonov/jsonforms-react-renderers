@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -62,19 +62,21 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const dialog = () =>
     document.querySelector(
-      '.ant-modal-wrap:not([style*="display: none"]) .ant-modal'
+      '.ant-modal-wrap:not([style*="display: none"]) .ant-modal',
     );
   return {
     container,
     dialog,
     accept: async () => {
       const ok = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((button) => button.textContent?.includes('Yes'));
       act(() => ok!.click());
       await settle();
@@ -82,7 +84,9 @@ const render = (schema: any, uischema: any, data: any, config?: any) => {
     },
     cancel: async () => {
       const no = Array.from(
-        document.querySelectorAll<HTMLButtonElement>('.ant-modal-footer button')
+        document.querySelectorAll<HTMLButtonElement>(
+          '.ant-modal-footer button',
+        ),
       ).find((button) => button.textContent?.includes('No'));
       act(() => no!.click());
       await settle();
@@ -101,7 +105,7 @@ const mapSchema = {
 
 const deleteProperty = async (container: HTMLElement) => {
   const button = Array.from(
-    container.querySelectorAll<HTMLButtonElement>('button')
+    container.querySelectorAll<HTMLButtonElement>('button'),
   ).find((element) => element.getAttribute('aria-label')?.startsWith('Delete'));
   act(() => button!.click());
   await settle();
@@ -142,7 +146,7 @@ describe('a dynamic property delete', () => {
     const { container, cancel, dialog, stored, unmount } = render(
       mapSchema,
       uischema,
-      { labels: { note: 'value' } }
+      { labels: { note: 'value' } },
     );
     await settle();
     await deleteProperty(container);
@@ -159,7 +163,7 @@ describe('a dynamic property delete', () => {
         ...uischema,
         options: { confirmation: { delete: 'never' } },
       },
-      { labels: { note: 'value' } }
+      { labels: { note: 'value' } },
     );
     await settle();
     await deleteProperty(container);
@@ -180,7 +184,7 @@ describe('a dynamic property delete', () => {
             renderers: { additionalProperties: { delete: 'never' } },
           },
         },
-      }
+      },
     );
     await settle();
     await deleteProperty(container);

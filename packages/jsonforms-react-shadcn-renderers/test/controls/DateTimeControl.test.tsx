@@ -44,13 +44,13 @@ describe('ShadcnDateTimeControl', () => {
     });
 
     expect(
-      document.body.querySelector('[data-slot="calendar"]')
+      document.body.querySelector('[data-slot="calendar"]'),
     ).not.toBeNull();
     expect(
-      document.body.querySelector('[data-slot="time-picker"]')
+      document.body.querySelector('[data-slot="time-picker"]'),
     ).not.toBeNull();
     expect(
-      document.body.querySelector('input[type="datetime-local"]')
+      document.body.querySelector('input[type="datetime-local"]'),
     ).toBeNull();
 
     await act(async () => root.unmount());

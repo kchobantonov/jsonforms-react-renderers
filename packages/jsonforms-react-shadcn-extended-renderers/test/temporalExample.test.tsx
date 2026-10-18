@@ -15,10 +15,10 @@ const fixture = (name: string) =>
   JSON.parse(
     readFileSync(
       require.resolve(
-        `@chobantonov/jsonforms-extended-spec/examples/temporal-controls/${name}.json`
+        `@chobantonov/jsonforms-extended-spec/examples/temporal-controls/${name}.json`,
       ),
-      'utf8'
-    )
+      'utf8',
+    ),
   );
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.ResizeObserver = class {
@@ -41,9 +41,9 @@ it('mounts the complete temporal example including the canonical tuple fixture',
             ajv={createFormsAjv()}
             renderers={[...shadcnExtendedRenderers, ...shadcnRenderers]}
             cells={[...shadcnExtendedCells, ...shadcnCells]}
-          />
-        )
-      )
+          />,
+        ),
+      ),
     ).not.toThrow();
     expect(container.textContent).toContain('In other structures');
   } finally {

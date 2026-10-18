@@ -26,18 +26,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1.21.2
         with:
-          version: 10.28.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: pnpm
+          node-version-file: .node-version
+          cache: true
+          run-install: false
           registry-url: https://registry.npmjs.org
-
       - name: Checkout local specification dependency
         uses: actions/checkout@v4
         with:
@@ -48,7 +43,7 @@ jobs:
       - name: Build specification package
         run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Configure npm authentication
         run: pnpm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
@@ -61,8 +56,8 @@ jobs:
         with:
           title: 'task: release'
           commit: 'chore: release packages'
-          version: pnpm run changeset:version
-          publish: pnpm run changeset:publish
+          version: vp run changeset:version
+          publish: vp run changeset:publish
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

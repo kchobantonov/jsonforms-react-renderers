@@ -11,7 +11,7 @@ export interface ControlHelpProps {
 
 export const getControlHelp = (
   { description, errors, visible = true, config, uischema }: ControlHelpProps,
-  focused: boolean
+  focused: boolean,
 ): string | undefined => {
   if (!visible) return undefined;
   if (errors) return errors;
@@ -21,7 +21,7 @@ export const getControlHelp = (
     focused,
     uischema?.options?.showUnfocusedDescription ??
       config?.showUnfocusedDescription ??
-      false
+      false,
   )
     ? undefined
     : description;

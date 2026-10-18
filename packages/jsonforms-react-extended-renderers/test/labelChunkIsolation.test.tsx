@@ -1,7 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
 
@@ -52,8 +59,8 @@ const draw = async (uischema: any) => {
         ]}
         cells={[]}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 60));
@@ -74,10 +81,10 @@ describe('a label reaches only for what it needs', () => {
           await new Promise((resolve) => setTimeout(resolve, 10));
         });
         expect(container.querySelector('strong')?.textContent).toBe(
-          'Doors open'
+          'Doors open',
         );
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
   });
 
@@ -93,7 +100,7 @@ describe('a label reaches only for what it needs', () => {
       options: { interpolate: true },
     });
     expect(container.textContent).toContain(
-      'Seats are limited. {note} is literal.'
+      'Seats are limited. {note} is literal.',
     );
   });
 
@@ -110,7 +117,7 @@ describe('a label reaches only for what it needs', () => {
         });
         expect(container.querySelector('strong')?.textContent).toBe('Seats');
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
   });
 

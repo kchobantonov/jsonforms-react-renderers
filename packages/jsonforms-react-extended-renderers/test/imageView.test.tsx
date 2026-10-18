@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createExtendedRenderers } from '../src';
 import { resolveImageView } from '../src/renderers/ImageViewRenderer';
@@ -51,22 +51,22 @@ const draw = (uischema: any, data: any = {}, config?: any) => {
         renderers={renderers}
         cells={[]}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return {
     container,
     images: () =>
       Array.from(container.querySelectorAll<HTMLImageElement>('img')).map(
-        (img) => img.getAttribute('src')
+        (img) => img.getAttribute('src'),
       ),
     alts: () =>
       Array.from(container.querySelectorAll<HTMLImageElement>('img')).map(
-        (img) => img.getAttribute('alt')
+        (img) => img.getAttribute('alt'),
       ),
     diagnostics: () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('[data-image-diagnostic]')
+        container.querySelectorAll<HTMLElement>('[data-image-diagnostic]'),
       ).map((el) => el.getAttribute('data-image-diagnostic')),
     unmount: () => act(() => root.unmount()),
   };
@@ -106,7 +106,7 @@ describe('the source fields are top-level', () => {
         alt: 'Top',
         options: { src: '/legacy.png', alt: 'Legacy' },
       } as any,
-      {}
+      {},
     );
     expect(resolved.src).toBe('/top.png');
     expect(resolved.alt).toBe('Top');
@@ -119,7 +119,7 @@ describe('src and scope are not fallbacks for one another', () => {
   it('treats an empty src as a deliberate blank, not a missing value', () => {
     const view = draw(
       { type: 'ImageView', src: '', scope: '#/properties/photo', alt: '' },
-      { photo: '/photo.png' }
+      { photo: '/photo.png' },
     );
     expect(view.images()).toEqual([]);
     expect(view.diagnostics()).toEqual([]);
@@ -135,7 +135,7 @@ describe('src and scope are not fallbacks for one another', () => {
         scope: '#/properties/photo',
         alt: 'Logo',
       },
-      { photo: '/photo.png' }
+      { photo: '/photo.png' },
     );
     expect(view.images()).toEqual([]);
     expect(view.diagnostics()).toEqual(['image.urlRefused']);
@@ -154,7 +154,7 @@ describe('resolving a scope', () => {
   it('reads the image URL out of the data', () => {
     const view = draw(
       { type: 'ImageView', scope: '#/properties/photo', alt: 'Profile photo' },
-      { photo: '/people/ada.png' }
+      { photo: '/people/ada.png' },
     );
     expect(view.images()).toEqual(['/people/ada.png']);
     view.unmount();
@@ -164,7 +164,7 @@ describe('resolving a scope', () => {
   it('shows nothing, quietly, when the property is unset', () => {
     const view = draw(
       { type: 'ImageView', scope: '#/properties/photo', alt: 'Profile photo' },
-      {}
+      {},
     );
     expect(view.images()).toEqual([]);
     expect(view.diagnostics()).toEqual([]);
@@ -175,7 +175,7 @@ describe('resolving a scope', () => {
   it('refuses a scope whose schema cannot hold a string', () => {
     const view = draw(
       { type: 'ImageView', scope: '#/properties/size', alt: 'Size' },
-      { size: 4 }
+      { size: 4 },
     );
     expect(view.diagnostics()).toEqual(['image.scopeNotString']);
     view.unmount();
@@ -186,7 +186,7 @@ describe('resolving a scope', () => {
   it('diagnoses a non-string value rather than coercing it', () => {
     const resolved = resolveImageView(
       { type: 'ImageView', scope: '#/properties/photo', alt: 'Photo' } as any,
-      { schema, rootSchema: schema, data: { photo: { url: '/x.png' } } }
+      { schema, rootSchema: schema, data: { photo: { url: '/x.png' } } },
     );
     expect(resolved.src).toBeUndefined();
     expect(resolved.diagnostics.map((d) => d.code)).toEqual([
@@ -226,7 +226,7 @@ describe('resolving a scope', () => {
   it('applies the URL policy to a scoped source', () => {
     const view = draw(
       { type: 'ImageView', scope: '#/properties/photo', alt: 'Photo' },
-      { photo: 'javascript:alert(1)' }
+      { photo: 'javascript:alert(1)' },
     );
     expect(view.images()).toEqual([]);
     expect(view.diagnostics()).toEqual(['image.urlRefused']);
@@ -238,7 +238,7 @@ describe('resolving a scope', () => {
     const dataUrl = 'data:image/png;base64,iVBORw0KGgo=';
     const refused = draw(
       { type: 'ImageView', src: dataUrl, alt: 'Inline' },
-      {}
+      {},
     );
     expect(refused.images()).toEqual([]);
     refused.unmount();
@@ -250,7 +250,7 @@ describe('resolving a scope', () => {
         jsonformsExtended: {
           security: { urlPolicy: { allowImageDataUrls: true } },
         },
-      }
+      },
     );
     expect(allowed.images()).toEqual([dataUrl]);
     allowed.unmount();
@@ -291,7 +291,7 @@ describe('visibility', () => {
           condition: { scope: '#/properties/photo', schema: { const: 'hide' } },
         },
       },
-      { photo: 'hide' }
+      { photo: 'hide' },
     );
     expect(view.images()).toEqual([]);
     expect(view.diagnostics()).toEqual([]);
@@ -307,12 +307,12 @@ it('keeps long blocked sources out of the warning and exposes details on focus',
   const button = view.container.querySelector('button')!;
   act(() => button.focus());
   expect(
-    view.container.querySelector('[role="tooltip"]')?.textContent
+    view.container.querySelector('[role="tooltip"]')?.textContent,
   ).toContain('configured URL policy');
   act(() =>
     button.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
-    )
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+    ),
   );
   expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
   view.unmount();

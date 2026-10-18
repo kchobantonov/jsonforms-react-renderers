@@ -9,50 +9,50 @@ is background evidence and may predate fixes. Reproduce its claims before acting
 ## Current implementation gaps and verification work
 
 - [ ] **Default inline object errors.** Current objectControl.test.tsx still
-  passes assertions that minProperties and forbidden-key message text is absent
-  in its fixture. Shared container indicators exist, so this is a specific
-  inline/discoverability gap, not universal absence of object feedback. Verify
-  default and configured presentations before closing it.
+      passes assertions that minProperties and forbidden-key message text is absent
+      in its fixture. Shared container indicators exist, so this is a specific
+      inline/discoverability gap, not universal absence of object feedback. Verify
+      default and configured presentations before closing it.
 - [ ] **Stale legacy-detail regression.** objectControl.test.tsx still expects
-  elements-only detail layouts to be ignored. It now fails because the shared
-  detail resolver deliberately normalizes them to VerticalLayout. Update that
-  expectation to the supported layout semantics; preserve the field-selection
-  assertion rather than dropping the test.
+      elements-only detail layouts to be ignored. It now fails because the shared
+      detail resolver deliberately normalizes them to VerticalLayout. Update that
+      expectation to the supported layout semantics; preserve the field-selection
+      assertion rather than dropping the test.
 
 - [ ] **Required-state accessibility when hiding the asterisk.** The old claim
-  that ordinary controls ignore hideRequiredAsterisk is obsolete: Antd
-  ControlFormItem consumes it, and requiredAsterisk.test.tsx covers local/global
-  precedence and retained validation. However, it passes showRequired to
-  Form.Item.required. Verify that accessible required state survives hiding the
-  marker across controls and cells; the existing test does not prove that.
+      that ordinary controls ignore hideRequiredAsterisk is obsolete: Antd
+      ControlFormItem consumes it, and requiredAsterisk.test.tsx covers local/global
+      precedence and retained validation. However, it passes showRequired to
+      Form.Item.required. Verify that accessible required state survives hiding the
+      marker across controls and cells; the existing test does not prove that.
 - [ ] **Pre-touch container summaries.** Audit array, tuple, object and descendant
-  indicators against touch filtering. Ordinary control filtering and container
-  validation indicators exist; their presence is not proof of touch-aware
-  summaries. Resolve a consistent policy and test each container family.
+      indicators against touch filtering. Ordinary control filtering and container
+      validation indicators exist; their presence is not proof of touch-aware
+      summaries. Resolve a consistent policy and test each container family.
 - [ ] **Read-only versus disabled.** Verify separateReadonlyFromDisabled across
-  controls and cells, including mutation guards. The core option being typed
-  does not establish consistent adapter presentation.
+      controls and cells, including mutation guards. The core option being typed
+      does not establish consistent adapter presentation.
 - [ ] **Config precedence and compound defaults.** Audit remaining namespace,
-  restrict and option-bag merging differences. Base lodash merging can merge
-  arrays by index; Monaco/grid option bags have different replacement semantics.
-  Use the spec's config-consumption inventory to target individual settings.
+      restrict and option-bag merging differences. Base lodash merging can merge
+      arrays by index; Monaco/grid option bags have different replacement semantics.
+      Use the spec's config-consumption inventory to target individual settings.
 - [ ] **Interpolation/markup beyond Label.** Label interpolation is implemented
-  with CEL. Other text-bearing elements and control descriptions still need an
-  explicit contract, integration and translation-order coverage. Do not restart
-  the obsolete ICU implementation proposal.
+      with CEL. Other text-bearing elements and control descriptions still need an
+      explicit contract, integration and translation-order coverage. Do not restart
+      the obsolete ICU implementation proposal.
 - [ ] **Pending analysis and submit policy.** Complete stale-result handling and
-  host submit integration without replacing the existing owner-based
-  additional-error store.
+      host submit integration without replacing the existing owner-based
+      additional-error store.
 - [ ] **File error publication.** Verify read/conversion failures reach host
-  validity through the appropriate error integration, including cleanup. Local
-  feedback alone does not establish additional-error publication.
+      validity through the appropriate error integration, including cleanup. Local
+      feedback alone does not establish additional-error publication.
 - [ ] **Structured diagnostics.** Make stable codes and reporting consistent.
-  Template/Slot name lookup and examples exist, but missing-name/duplicate-name
-  diagnostics and cyclic named-template expansion guards remain open.
+      Template/Slot name lookup and examples exist, but missing-name/duplicate-name
+      diagnostics and cyclic named-template expansion guards remain open.
 - [ ] **Collection parity.** Pagination and row-detail implementations and tests
-  exist in Antd and shadcn. Verify remaining native interaction, keyboard and
-  narrow-layout cases and other renderer families; do not list them as wholly
-  unimplemented.
+      exist in Antd and shadcn. Verify remaining native interaction, keyboard and
+      narrow-layout cases and other renderer families; do not list them as wholly
+      unimplemented.
 
 Evidence: shared errorSummary.tsx, validationIndicator.ts, rowDetail.tsx and
 collectionPagination.ts; Antd util/cellMode.tsx; both ObjectRenderer and
@@ -64,34 +64,34 @@ Paths are under the corresponding packages in this repository.
 ## Upstream-dependent workarounds
 
 - [ ] **Tuple tester scope resolution.** The sibling core source still restricts
-  schemaMatches/schemaSubPathMatches scope resolution to object schemas.
-  Antd TupleControlRenderer retains the documented re-rooting workaround.
-  Remove it only after the installed core version contains the fix and tuple
-  scoped-control regressions pass. Old full-suite counts are not current evidence.
+      schemaMatches/schemaSubPathMatches scope resolution to object schemas.
+      Antd TupleControlRenderer retains the documented re-rooting workaround.
+      Remove it only after the installed core version contains the fix and tuple
+      scoped-control regressions pass. Old full-suite counts are not current evidence.
 - [ ] **Root schema inference.** demo-common/src/app/demoSchema.ts wraps data for
-  core inference. Its TODO tracks JSON Forms PR #2478. After upgrading to a
-  released version containing the fix, test absent data, null, scalar/array roots
-  and regeneration, then remove the adapter and App.tsx override. Keep Monaco's
-  independent stale-schema cleanup. No claim about the PR's current merge status
-  is made by this source review.
+      core inference. Its TODO tracks JSON Forms PR #2478. After upgrading to a
+      released version containing the fix, test absent data, null, scalar/array roots
+      and regeneration, then remove the adapter and App.tsx override. Keep Monaco's
+      independent stale-schema cleanup. No claim about the PR's current merge status
+      is made by this source review.
 
 ## Open designs
 
 - [ ] **Dynamic UI-element overlays and remote choices.** Neither is an
-  implemented authoring contract. Revisit placement above tester dispatch,
-  stable UI-schema identity, typed values, trust boundaries, lifecycle and remote
-  cancellation before publishing option shapes. The old claim that the shape
-  was already agreed is superseded by the spec's design backlog. Label dynamic
-  interpolation remains a separate implemented capability.
+      implemented authoring contract. Revisit placement above tester dispatch,
+      stable UI-schema identity, typed values, trust boundaries, lifecycle and remote
+      cancellation before publishing option shapes. The old claim that the shape
+      was already agreed is superseded by the spec's design backlog. Label dynamic
+      interpolation remains a separate implemented capability.
 - [ ] **Composite-dialog Remove footer action.** Decide whether to implement
-  showRemoveButton/removeLabel with ownership and confirmation guards or retire
-  the proposal. Existing cell removal is separate; removed schema options should
-  not be reintroduced until implemented.
+      showRemoveButton/removeLabel with ownership and confirmation guards or retire
+      the proposal. Existing cell removal is separate; removed schema options should
+      not be reintroduced until implemented.
 - [ ] **Separate showClearButton option.** Decide whether it adds anything to
-  clearable; no new option should be published without a consumer.
+      clearable; no new option should be published without a consumer.
 - [ ] **Graphical editor.** Implement the authoring workflow described in the
-  spec, including drag/drop, branch preview and lossless round trips. Current
-  conditionalFields support is runtime field discovery, not a graphical editor.
+      spec, including drag/drop, branch preview and lossless round trips. Current
+      conditionalFields support is runtime field discovery, not a graphical editor.
 
 See the [spec backlog](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/todo.md)
 for portable design decisions and promotion criteria.
@@ -99,13 +99,13 @@ for portable design decisions and promotion criteria.
 ## Test infrastructure and housekeeping
 
 - [ ] Confirm sustained full-suite stability before closing the historical
-  heavy-component watch item. Earlier fixes added shared ResizeObserver/act
-  setup, asserted intended promise rejection, and used wall-clock flush budgets.
-  These are implemented mitigations, not three outstanding fixes. On recurrence,
-  inspect exit status and unhandled Errors as well as test assertions.
+      heavy-component watch item. Earlier fixes added shared ResizeObserver/act
+      setup, asserted intended promise rejection, and used wall-clock flush budgets.
+      These are implemented mitigations, not three outstanding fixes. On recurrence,
+      inspect exit status and unhandled Errors as well as test assertions.
 - [ ] Re-run lint to establish the current baseline before removing redundant
-  per-file observer stubs or other test scaffolding. The old count of 11 lint
-  errors was a historical observation and is no longer presented as current.
+      per-file observer stubs or other test scaffolding. The old count of 11 lint
+      errors was a historical observation and is no longer presented as current.
 
 ## Completed items removed from the backlog
 
@@ -133,12 +133,12 @@ validator lacks the keywords. Conditional object discovery is already available
 through `conditionalFields`; extend it rather than introduce another switch.
 
 - [ ] Strengthen conditional/composition coverage: conditions within anyOf/oneOf,
-  referenced branches, named Template/Slot placement, nested identifier scopes,
-  and recursive combinations. Preserve authored positions and inactive data.
+      referenced branches, named Template/Slot placement, nested identifier scopes,
+      and recursive combinations. Preserve authored positions and inactive data.
 - [ ] Add contains feedback identifying matching array items and explaining
-  missing matches. Existing collection-action checks are only partial coverage.
+      missing matches. Existing collection-action checks are only partial coverage.
 - [ ] Explain not failures as forbidden combinations. Do not generate positive
-  fields from the negated schema. A graphical condition builder is future work.
+      fields from the negated schema. A graphical condition builder is future work.
 - [ ] Handle boolean schema false according to the agreed presentation policy:
   - Absent optional forbidden property: show no editor and exclude it from Add
     property choices. Do not show a warning merely because the schema forbids it.
@@ -152,13 +152,13 @@ through `conditionalFields`; extend it rather than introduce another switch.
   - Test explicit and generated controls, existing/absent values, root values,
     required properties, array positions and read-only forms in both renderers.
 - [ ] Define consistent explicit Use default / Use example actions; retain
-  existing creation defaults without implying universal initialization.
+      existing creation defaults without implying universal initialization.
 - [ ] Define writeOnly presentation for summaries, tree labels and previews.
-  Password widgets alone do not define this policy or secure stored data.
+      Password widgets alone do not define this policy or secure stored data.
 - [ ] Audit external registered references and nested $id resolution before
-  claiming general reference coverage; remote fetching remains a host concern.
+      claiming general reference coverage; remote fetching remains a host concern.
 - [ ] Assess additional format/content editors where they improve editing;
-  ordinary validation does not require a dedicated widget for every keyword.
+      ordinary validation does not require a dedicated widget for every keyword.
 
 For graphical authoring, plan constraint panels, reference selection and lossless
 preservation of unsupported keywords. Keep editor-only preview/selection state

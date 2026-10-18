@@ -54,7 +54,7 @@ export const ShadcnEnumControl = ({
           disabled={!enabled || readonly}
           value={(() => {
             const index = (options ?? []).findIndex((option) =>
-              isEqual(option.value, data)
+              isEqual(option.value, data),
             );
             return index < 0 ? '' : `option-${index}`;
           })()}

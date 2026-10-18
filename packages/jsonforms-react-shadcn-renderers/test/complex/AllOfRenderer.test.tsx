@@ -64,16 +64,16 @@ describe('Shadcn allOf renderer', () => {
           }}
           renderers={shadcnRenderers}
           onChange={onChange}
-        />
+        />,
       );
     });
 
     const labels = Array.from(container.querySelectorAll('label')).map(
-      (label) => label.textContent
+      (label) => label.textContent,
     );
 
     expect(labels).toEqual(
-      expect.arrayContaining(['Street Address *', 'City *', 'State *'])
+      expect.arrayContaining(['Street Address *', 'City *', 'State *']),
     );
     expect(container.querySelectorAll('input')).toHaveLength(3);
     expect(container.querySelectorAll('[role="combobox"]')).toHaveLength(1);
@@ -107,8 +107,8 @@ it('resolves Geometry inside an allOf branch without an explicit object type', (
           schema={schema}
           uischema={{ type: 'Control', scope: '#/properties/element' }}
           renderers={shadcnRenderers}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelectorAll('input')).toHaveLength(2);
     expect(host.textContent).toContain('Geometry');

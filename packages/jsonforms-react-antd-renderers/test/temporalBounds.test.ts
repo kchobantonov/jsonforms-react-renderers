@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   disabledDateFor,
   disabledTimeFor,
@@ -22,7 +22,7 @@ describe('what the date picker disables', () => {
     const bounds = temporalBounds(
       { formatMinimum: '2026-09-25', formatMaximum: '2026-09-19' },
       DATE_FORMATS,
-      'day'
+      'day',
     );
     expect(disabledDateFor(bounds)!(dayjs('2026-09-22'))).toBe(true);
   });
@@ -31,8 +31,8 @@ describe('what the date picker disables', () => {
     temporalBounds(
       { formatMinimum: '2026-09-19', formatMaximum: '2026-09-25' },
       DATE_FORMATS,
-      'day'
-    )
+      'day',
+    ),
   )!;
 
   it('offers the bounds themselves', () => {
@@ -51,7 +51,7 @@ describe('what the date picker disables', () => {
 
   it('returns nothing to install when no bound applies', () => {
     expect(
-      disabledDateFor(temporalBounds({}, DATE_FORMATS, 'day'))
+      disabledDateFor(temporalBounds({}, DATE_FORMATS, 'day')),
     ).toBeUndefined();
   });
 });
@@ -62,7 +62,7 @@ describe('what the time picker disables', () => {
     { formatMinimum: '09:00:00Z', formatMaximum: '17:00:00Z' },
     ['HH:mm:ssZ'],
     'minute',
-    true
+    true,
   );
   const at = disabledTimeFor(bounds, true, 'minute')!(undefined as any);
 
@@ -81,7 +81,7 @@ describe('what the time picker disables', () => {
       { formatMinimum: '09:30:00Z' },
       ['HH:mm:ssZ'],
       'minute',
-      true
+      true,
     );
     const slot = disabledTimeFor(lower, true, 'minute')!(undefined as any);
     const hour = lower.min!.hour();
@@ -94,11 +94,11 @@ describe('what the time picker disables', () => {
   /* Seconds are only offered - and only restricted - at second precision. */
   it('adds seconds only when the precision asks for them', () => {
     const minuteSlot = disabledTimeFor(bounds, true, 'minute')!(
-      undefined as any
+      undefined as any,
     );
     expect(minuteSlot.disabledSeconds).toBeUndefined();
     const secondSlot = disabledTimeFor(bounds, true, 'second')!(
-      undefined as any
+      undefined as any,
     );
     expect(secondSlot.disabledSeconds).toBeDefined();
   });
@@ -111,7 +111,7 @@ describe('date-time bounds apply per boundary day', () => {
       formatMaximum: '2026-09-25T17:00:00Z',
     },
     ['YYYY-MM-DDTHH:mm:ssZ'],
-    'minute'
+    'minute',
   );
   const disabledTime = disabledTimeFor(bounds, false, 'minute')!;
 
@@ -187,7 +187,7 @@ describe('the disabledTime signature', () => {
       { formatMinimum: '09:00:00Z' },
       ['HH:mm:ssZ'],
       'minute',
-      true
+      true,
     );
     const slot = disabledTimeFor(bounds, true, 'minute')!;
     // Typed non-null; a bare time picker really can call it with nothing.

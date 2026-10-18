@@ -44,8 +44,8 @@ it.each(['object', 'mixed', 'cell'] as const)(
                 items: { type: 'object', properties: { value: object } },
               }
             : kind === 'mixed'
-            ? { ...object, type: ['object', 'string'] }
-            : object;
+              ? { ...object, type: ['object', 'string'] }
+              : object;
         const ui = {
           type: 'Control',
           scope: '#',
@@ -68,21 +68,21 @@ it.each(['object', 'mixed', 'cell'] as const)(
               uischemas={registry}
               renderers={shadcnRenderers}
               cells={shadcnCells}
-            />
-          )
+            />,
+          ),
         );
         if (kind === 'cell')
           await act(async () =>
             host
               .querySelector<HTMLButtonElement>('button[aria-label^="Edit"]')!
-              .click()
+              .click(),
           );
         const area =
           kind === 'cell' ? document.querySelector('[role="dialog"]')! : host;
         expect(area).toBeTruthy();
         expect(area.textContent).not.toContain('No applicable');
         const values = Array.from(area.querySelectorAll('input')).map(
-          (input) => input.value
+          (input) => input.value,
         );
         expect(values.includes('Ada')).toBe(expected !== 'inline');
         expect(values.includes('Keep')).toBe(expected !== 'registered');
@@ -93,7 +93,7 @@ it.each(['object', 'mixed', 'cell'] as const)(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it.each(['nested', 'tree'])(
@@ -121,8 +121,8 @@ it.each(['nested', 'tree'])(
             }}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       expect(host.querySelector('input[value="Keep"]')).toBeTruthy();
       expect(host.querySelector('input[value="Ada"]')).toBeNull();
@@ -131,7 +131,7 @@ it.each(['nested', 'tree'])(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it.each(['GENERATE', 'REGISTERED'])(
@@ -177,18 +177,18 @@ it.each(['GENERATE', 'REGISTERED'])(
               ...shadcnRenderers,
             ]}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       await act(async () =>
         host
           .querySelector<HTMLButtonElement>('button[aria-label^="Edit"]')!
-          .click()
+          .click(),
       );
       const dialog = document.querySelector('[role="dialog"]')!;
       expect(dialog).toBeTruthy();
       const values = Array.from(dialog.querySelectorAll('input')).map(
-        (input) => input.value
+        (input) => input.value,
       );
       expect(values).toContain('Ada');
       expect(values.includes('Keep')).toBe(detail === 'GENERATE');
@@ -196,7 +196,7 @@ it.each(['GENERATE', 'REGISTERED'])(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('switches the mixed inline layout when the value type changes', async () => {
@@ -226,7 +226,7 @@ it('switches the mixed inline layout when the value type changes', async () => {
         }}
         renderers={shadcnRenderers}
         cells={shadcnCells}
-      />
+      />,
     );
   try {
     await act(async () => render({ name: 'Ada', note: 'Keep' }));
@@ -242,18 +242,14 @@ it('switches the mixed inline layout when the value type changes', async () => {
 });
 
 it('renders the published editor-detail example', async () => {
-  const schema = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/editor-details/schema.json'
-  );
-  const ui = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/editor-details/uischema.json'
-  );
-  const data = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/editor-details/data.json'
-  );
-  const registrations = await import(
-    '@chobantonov/jsonforms-extended-spec/examples/editor-details/uischemas.mjs'
-  );
+  const schema =
+    await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/schema.json');
+  const ui =
+    await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/uischema.json');
+  const data =
+    await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/data.json');
+  const registrations =
+    await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/uischemas.mjs');
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
@@ -267,22 +263,22 @@ it('renders the published editor-detail example', async () => {
           uischemas={registrations.uischemas}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelector('input[value="Generated field"]')).toBeTruthy();
     expect(
-      host.querySelector('input[value="Type-specific field"]')
+      host.querySelector('input[value="Type-specific field"]'),
     ).toBeTruthy();
     await act(async () =>
       host
         .querySelector<HTMLButtonElement>('button[aria-label^="Edit"]')!
-        .click()
+        .click(),
     );
     const dialog = document.querySelector('[role="dialog"]')!;
     expect(dialog.textContent).toContain('Registered name');
     expect(
-      dialog.querySelector('input[value="Open the cell editor"]')
+      dialog.querySelector('input[value="Open the cell editor"]'),
     ).toBeNull();
   } finally {
     act(() => root.unmount());

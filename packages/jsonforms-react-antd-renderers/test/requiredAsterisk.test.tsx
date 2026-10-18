@@ -3,7 +3,7 @@ import React, { act } from 'react';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { antdRenderers } from '../src';
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -24,7 +24,7 @@ it('updates required markers from config while retaining required validation and
       data={{}}
       config={{ hideRequiredAsterisk: false }}
       renderers={antdRenderers}
-    />
+    />,
   );
   try {
     expect(wrapper.find('label.ant-form-item-required')).toHaveLength(1);
@@ -34,7 +34,7 @@ it('updates required markers from config while retaining required validation and
     wrapper.update();
     expect(wrapper.find('label.ant-form-item-required')).toHaveLength(0);
     expect(
-      wrapper.find('.ant-form-item-has-error').hostNodes().length
+      wrapper.find('.ant-form-item-has-error').hostNodes().length,
     ).toBeGreaterThan(0);
     await act(async () => {
       wrapper.setProps({ uischema: ui(false) });

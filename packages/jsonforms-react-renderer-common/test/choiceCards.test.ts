@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { choiceCardsTester, isCardPresentation } from '../src/choiceCards';
 
 describe('choice card selection', () => {
@@ -11,15 +11,15 @@ describe('choice card selection', () => {
       choiceCardsTester(
         { type: 'Control', scope: '#', options: { format: 'cards' } },
         schema as any,
-        { rootSchema: schema, config: {} } as any
-      )
+        { rootSchema: schema, config: {} } as any,
+      ),
     ).toBe(21);
     expect(
       choiceCardsTester(
         { type: 'Control', scope: '#' },
         schema as any,
-        { rootSchema: schema, config: {} } as any
-      )
+        { rootSchema: schema, config: {} } as any,
+      ),
     ).toBe(-1);
   });
   it('does not select an ordinary scalar control', () => {
@@ -27,8 +27,8 @@ describe('choice card selection', () => {
       choiceCardsTester(
         { type: 'Control', scope: '#', options: { format: 'cards' } },
         { type: 'string' },
-        { rootSchema: {}, config: {} }
-      )
+        { rootSchema: {}, config: {} },
+      ),
     ).toBe(-1);
   });
   it('rejects interactive content even inside a layout', () => {
@@ -36,7 +36,7 @@ describe('choice card selection', () => {
       isCardPresentation({
         type: 'VerticalLayout',
         elements: [{ type: 'Control', scope: '#' }],
-      })
+      }),
     ).toBe(false);
     expect(isCardPresentation({ type: 'Link', href: '/' })).toBe(false);
     expect(
@@ -46,7 +46,7 @@ describe('choice card selection', () => {
           { type: 'ImageView', src: '/image.png' },
           { type: 'Label', text: 'Choice' },
         ],
-      })
+      }),
     ).toBe(true);
   });
 });

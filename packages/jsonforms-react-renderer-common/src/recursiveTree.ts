@@ -10,10 +10,10 @@ export const buildRecursiveTree = (
   childrenProperty: string,
   labelProperty: string,
   fallback: string,
-  path: MixedTreePath = []
+  path: MixedTreePath = [],
 ): MixedTreeNode => {
   const resolved = schema.$ref
-    ? resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema
+    ? (resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema)
     : schema;
   const branch = recursiveNodeSchema(schema, rootSchema, data);
   const collection = branch.properties?.[childrenProperty];
@@ -42,7 +42,7 @@ export const buildRecursiveTree = (
         childrenProperty,
         labelProperty,
         String(index + 1),
-        [...path, childrenProperty, index]
+        [...path, childrenProperty, index],
       );
     }),
   };
@@ -53,7 +53,7 @@ export const buildRecursiveTree = (
 export const recursiveTreeSelection = (
   tree: MixedTreeNode,
   previous: MixedTreeNode,
-  previousTree: MixedTreeNode
+  previousTree: MixedTreeNode,
 ): MixedTreeNode => {
   const identity = (node: MixedTreeNode): MixedTreeNode | undefined =>
     node.data === previous.data
@@ -74,7 +74,7 @@ export const recursiveTreeSelection = (
 };
 export const recursiveTreeParent = (
   tree: MixedTreeNode,
-  path: MixedTreePath
+  path: MixedTreePath,
 ): MixedTreeNode => {
   for (let length = path.length - 2; length >= 0; length -= 2) {
     const parent = findMixedTreeNode(tree, path.slice(0, length));
@@ -86,10 +86,10 @@ export const recursiveTreeParent = (
 export const recursiveNodeSchema = (
   schema: JsonSchema,
   rootSchema: JsonSchema,
-  data: unknown
+  data: unknown,
 ): JsonSchema => {
   const resolved = schema.$ref
-    ? resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema
+    ? (resolveSchema(rootSchema, schema.$ref, rootSchema) ?? schema)
     : schema;
   let branch = resolved;
   for (const keyword of ['oneOf', 'anyOf'] as const) {
@@ -97,7 +97,7 @@ export const recursiveNodeSchema = (
     if (index !== undefined) {
       const candidate = resolved[keyword]![index];
       branch = candidate.$ref
-        ? resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate
+        ? (resolveSchema(rootSchema, candidate.$ref, rootSchema) ?? candidate)
         : candidate;
     }
   }

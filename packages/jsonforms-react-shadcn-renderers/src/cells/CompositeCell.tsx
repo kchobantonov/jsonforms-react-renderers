@@ -63,12 +63,12 @@ export const ShadcnCompositeCell = (props: Props) => {
     (error) =>
       error.params?.source === 'monaco' &&
       (error.instancePath === pointer ||
-        error.instancePath.startsWith(pointer + '/'))
+        error.instancePath.startsWith(pointer + '/')),
   );
 
   const errors = usePathErrorMessages(
     props.path,
-    labelDetailErrorPaths(props.path, props.uischema.options)
+    labelDetailErrorPaths(props.path, props.uischema.options),
   );
   const t = useTranslator();
   const d = useI18nDefault();
@@ -87,7 +87,7 @@ export const ShadcnCompositeCell = (props: Props) => {
     props.schema?.title,
     t,
     d,
-    props.schema
+    props.schema,
   );
   const enabled =
     props.enabled &&
@@ -98,7 +98,7 @@ export const ShadcnCompositeCell = (props: Props) => {
     text(
       props.schema.type === 'array'
         ? 'composite.itemsLabel'
-        : 'composite.detailsLabel'
+        : 'composite.detailsLabel',
     );
   const current = () => Resolve.data(parent.core?.data, props.path);
   const close = () => {
@@ -198,7 +198,7 @@ export const ShadcnCompositeCell = (props: Props) => {
                     options,
                     config: props.config,
                   },
-                  [props.data]
+                  [props.data],
                 )
               )
                 setPendingDelete({ value: props.data, path: props.path });
@@ -248,7 +248,7 @@ export const ShadcnCompositeCell = (props: Props) => {
                   props.uischema.scope,
                   props.path,
                   props.rootSchema,
-                  { type: 'Control', scope: '#', label: false } as any
+                  { type: 'Control', scope: '#', label: false } as any,
                 )}
                 path={props.path}
                 enabled={enabled}
@@ -280,7 +280,7 @@ export const ShadcnCompositeCell = (props: Props) => {
               onClick={() => {
                 if (!enabled || conflicted || invalidEditorDraft) return;
                 const next = copy(
-                  Resolve.data(draftRef.current?.data, props.path)
+                  Resolve.data(draftRef.current?.data, props.path),
                 );
                 if (!equal(next, original.current))
                   props.handleChange(props.path, next);
@@ -298,15 +298,17 @@ export const ShadcnCompositeCell = (props: Props) => {
 export const shadcnCompositeCellTester = (
   _ui: any,
   schema: any,
-  context: any
+  context: any,
 ) =>
   _ui.options?.summary?.type === 'Label'
     ? 6
     : schema?.type === 'object' ||
-      schema?.type === 'array' ||
-      Boolean(
-        schema?.anyOf?.length || schema?.oneOf?.length || schema?.allOf?.length
-      ) ||
-      isMixedSchema({ ..._ui, scope: '#' }, schema, context)
-    ? 1
-    : -1;
+        schema?.type === 'array' ||
+        Boolean(
+          schema?.anyOf?.length ||
+          schema?.oneOf?.length ||
+          schema?.allOf?.length,
+        ) ||
+        isMixedSchema({ ..._ui, scope: '#' }, schema, context)
+      ? 1
+      : -1;

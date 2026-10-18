@@ -30,8 +30,8 @@ it.each([
             >
               <button>Errors</button>
             </ErrorFeedback>
-          </JsonFormsContext.Provider>
-        )
+          </JsonFormsContext.Provider>,
+        ),
       );
       await act(async () => {
         host.querySelector('button')!.focus();
@@ -39,22 +39,24 @@ it.each([
       });
       if (count === 1 || local) {
         expect(
-          document.querySelector('.ant-tooltip [role="tooltip"]')?.textContent
+          document.querySelector('.ant-tooltip [role="tooltip"]')?.textContent,
         ).toBe(
-          local ? 'The usual control message' : 'value: Please check this value'
+          local
+            ? 'The usual control message'
+            : 'value: Please check this value',
         );
         expect(document.querySelector('.ant-popover')).toBeNull();
       } else {
         expect(
-          document.querySelector('.ant-popover-content')?.textContent
+          document.querySelector('.ant-popover-content')?.textContent,
         ).toContain('4 errors');
         expect(
-          document.querySelector('.ant-popover-content')?.textContent
+          document.querySelector('.ant-popover-content')?.textContent,
         ).toContain('Show 1 more');
       }
     } finally {
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

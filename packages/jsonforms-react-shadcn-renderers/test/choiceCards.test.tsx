@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { shadcnRenderers, shadcnCells } from '../src';
 
 it('selects typed cards, translates labels and swaps selected content', async () => {
@@ -45,8 +45,8 @@ it('selects typed cards, translates labels and swaps selected content', async ()
           onChange={({ data }) => {
             value = data.selection;
           }}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelector('[aria-label="Изключено"]')).not.toBeNull();
     const radios = host.querySelectorAll<HTMLInputElement>('input[type=radio]');
@@ -54,7 +54,7 @@ it('selects typed cards, translates labels and swaps selected content', async ()
     expect(radios[0].style.clipPath).toBe('inset(50%)');
     act(() => radios[0].focus());
     expect(
-      radios[0].closest<HTMLElement>('.jsonforms-choice-card')?.style.outline
+      radios[0].closest<HTMLElement>('.jsonforms-choice-card')?.style.outline,
     ).toContain('2px');
     expect(radios[2].disabled).toBe(true);
     act(() => {
@@ -64,7 +64,7 @@ it('selects typed cards, translates labels and swaps selected content', async ()
       radios[1].focus();
     });
     expect(
-      radios[1].closest<HTMLElement>('.jsonforms-choice-card')!.style.outline
+      radios[1].closest<HTMLElement>('.jsonforms-choice-card')!.style.outline,
     ).toBe('');
     await act(async () => radios[1].click());
     await act(async () => {
@@ -150,19 +150,19 @@ it.each([false, true])(
             onChange={({ data }) => {
               value = data;
             }}
-          />
-        )
+          />,
+        ),
       );
       await act(async () =>
-        (host.querySelector('[aria-label="Post"]') as HTMLElement).click()
+        (host.querySelector('[aria-label="Post"]') as HTMLElement).click(),
       );
       expect(host.textContent).toContain('Street address');
       expect(
         (host.querySelector('[aria-label="Post"]') as HTMLInputElement).style
-          .clipPath
+          .clipPath,
       ).toBe('');
       expect(
-        (host.querySelector('[aria-label="Post"]') as HTMLInputElement).checked
+        (host.querySelector('[aria-label="Post"]') as HTMLInputElement).checked,
       ).toBe(true);
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 30));
@@ -174,7 +174,7 @@ it.each([false, true])(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it.each([
@@ -206,7 +206,7 @@ it.each([
     document.body.append(host);
     const root = createRoot(host);
     const tester = vi.fn((schema: any) =>
-      schema.title === 'Person' ? 10 : -1
+      schema.title === 'Person' ? 10 : -1,
     );
     const schema = {
       type: 'object',
@@ -266,8 +266,8 @@ it.each([
             onChange={({ data }) => {
               value = data;
             }}
-          />
-        )
+          />,
+        ),
       );
       expect(host.textContent).toContain(label);
       if (label !== 'Registered name')
@@ -276,11 +276,11 @@ it.each([
         expect(tester).toHaveBeenCalledWith(
           schema.definitions.person,
           '#/properties/selection',
-          'selection'
+          'selection',
         );
       } else if (registered) {
         expect(
-          tester.mock.calls.some(([branch]) => branch.title === 'Person')
+          tester.mock.calls.some(([branch]) => branch.title === 'Person'),
         ).toBe(false);
       }
       const input = host.querySelector<HTMLInputElement>('input[type="text"]')!;
@@ -288,7 +288,7 @@ it.each([
       await act(async () => {
         Object.getOwnPropertyDescriptor(
           HTMLInputElement.prototype,
-          'value'
+          'value',
         )!.set!.call(input, 'Grace');
         input.dispatchEvent(new Event('input', { bubbles: true }));
       });
@@ -300,5 +300,5 @@ it.each([
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );

@@ -47,7 +47,7 @@ export const templateLangTester = (lang: TemplateLang): RankedTester =>
  */
 export const unsupportedTemplateLangTester: RankedTester = rankWith(
   1,
-  uiTypeIs('TemplateLayout')
+  uiTypeIs('TemplateLayout'),
 );
 
 export interface TemplateDiagnosticProps {
@@ -83,7 +83,7 @@ export const TemplateDiagnostic = ({
   const message =
     resolved.diagnostic === 'unsupported'
       ? `Unsupported template language ${JSON.stringify(
-          resolved.requested
+          resolved.requested,
         )}. This renderer set implements "ractive" and "jsx".`
       : 'Template rendering is disabled. It compiles the template string into ' +
         'executable code, which requires ' +

@@ -1,6 +1,6 @@
 import React, { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vite-plus/test';
 import { FileArrayInput, fileArrayTester } from '../src/FileArrayInput';
 let cleanup = () => {};
 afterEach(() => cleanup());
@@ -8,7 +8,7 @@ const mount = (
   restrict: boolean,
   initial: string[] = ['old'],
   extra = {},
-  inputProps = {}
+  inputProps = {},
 ) => {
   const container = document.createElement('div');
   document.body.append(container);
@@ -56,7 +56,7 @@ const mount = (
       Object.defineProperty(input, 'files', {
         configurable: true,
         value: names.map(
-          (name) => new File([name], name, { type: 'text/plain' })
+          (name) => new File([name], name, { type: 'text/plain' }),
         ),
       });
       await act(async () => {
@@ -78,17 +78,17 @@ it('reports rejected cell selections locally without marking stored data invalid
     true,
     ['old'],
     {},
-    { cell: true, FeedbackComponent: Feedback }
+    { cell: true, FeedbackComponent: Feedback },
   );
   await view.select(['one.txt', 'two.txt']);
   expect(view.data()).toEqual(['old']);
   expect(
-    view.container.querySelector('input')?.getAttribute('aria-invalid')
+    view.container.querySelector('input')?.getAttribute('aria-invalid'),
   ).toBe('false');
   const feedback = view.container.querySelector('[data-feedback="warning"]');
   expect(feedback?.getAttribute('data-cell')).toBe('true');
   expect(feedback?.getAttribute('aria-label')).toContain(
-    'existing files were kept'
+    'existing files were kept',
   );
   expect(view.container.querySelector('[role="alert"]')).toBeNull();
 });
@@ -101,21 +101,21 @@ it('selects file arrays including referenced items without claiming ordinary arr
   expect(
     fileArrayTester({ type: 'Control', scope: '#' } as any, schema, {
       rootSchema: schema,
-    } as any)
+    } as any),
   ).toBe(7);
   const ordinary = { type: 'array', items: { type: 'string' } } as any;
   expect(
     fileArrayTester({ type: 'Control', scope: '#' } as any, ordinary, {
       rootSchema: ordinary,
-    } as any)
+    } as any),
   ).toBe(-1);
 });
 it('blocks additions above maxItems and removal below minItems when restricted', async () => {
   const c = mount(true);
   expect(
     c.container.querySelector<HTMLButtonElement>(
-      'button[aria-label^="Remove "]'
-    )!.disabled
+      'button[aria-label^="Remove "]',
+    )!.disabled,
   ).toBe(true);
   await c.select(['a', 'b']);
   expect(c.data()).toEqual(['old']);
@@ -129,7 +129,7 @@ it('appends a batch in order and permits count violations when unrestricted', as
     act(() =>
       c.container
         .querySelector<HTMLButtonElement>('button[aria-label^="Remove "]')!
-        .click()
+        .click(),
     );
   expect(c.data()).toEqual([]);
 });
@@ -140,7 +140,7 @@ it('appends within maxItems and removes only one duplicate occurrence', async ()
   act(() =>
     c.container
       .querySelectorAll<HTMLButtonElement>('button[aria-label^="Remove "]')[2]
-      .click()
+      .click(),
   );
   expect(c.data()).toEqual(['YQ==', 'Yg==']);
 });
@@ -162,9 +162,9 @@ it('clears all files when unrestricted and blocks clear-all below minItems', () 
   act(() =>
     (
       c.container.querySelector(
-        '[aria-label="Clear all files"]'
+        '[aria-label="Clear all files"]',
       ) as HTMLButtonElement
-    ).click()
+    ).click(),
   );
   expect(c.data()).toEqual([]);
   cleanup();
@@ -172,16 +172,16 @@ it('clears all files when unrestricted and blocks clear-all below minItems', () 
   expect(
     (
       c.container.querySelector(
-        '[aria-label="Clear all files"]'
+        '[aria-label="Clear all files"]',
       ) as HTMLButtonElement
-    ).disabled
+    ).disabled,
   ).toBe(true);
 });
 
 it('places clear-all last and reveals it on hover or focus within the field', () => {
   const c = mount(false, ['a']);
   const clear = c.container.querySelector(
-    '[aria-label="Clear all files"]'
+    '[aria-label="Clear all files"]',
   ) as HTMLButtonElement;
   expect(clear.parentElement!.lastElementChild).toBe(clear);
   expect(clear.style.opacity).toBe('0');
@@ -190,7 +190,7 @@ it('places clear-all last and reveals it on hover or focus within the field', ()
   act(() => c.container.querySelector('button')!.blur());
   expect(clear.style.opacity).toBe('0');
   act(() =>
-    clear.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
+    clear.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })),
   );
   expect(clear.style.opacity).toBe('1');
 });

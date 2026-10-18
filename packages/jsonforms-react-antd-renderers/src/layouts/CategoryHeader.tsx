@@ -44,7 +44,7 @@ export const CategoryIndicators = ({
     category as UISchemaElement,
     path,
     config,
-    false
+    false,
   );
   const group = useGroupState(category as UISchemaElement, path, config);
 

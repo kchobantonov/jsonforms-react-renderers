@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -67,8 +67,8 @@ const render = (uischema: any, config?: any, data: any = {}) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const row = () => container.querySelector<HTMLElement>('[data-layout="row"]');
   return {
@@ -77,11 +77,11 @@ const render = (uischema: any, config?: any, data: any = {}) => {
     /** The sized wrapper around each participating child. */
     items: () =>
       Array.from(
-        (row() ?? container).querySelectorAll<HTMLElement>(':scope > div')
+        (row() ?? container).querySelectorAll<HTMLElement>(':scope > div'),
       ),
     diagnostics: () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('[data-layout-diagnostic]')
+        container.querySelectorAll<HTMLElement>('[data-layout-diagnostic]'),
       ).map((element) => element.getAttribute('data-layout-diagnostic') ?? ''),
     unmount: () => act(() => root.unmount()),
   };
@@ -137,8 +137,8 @@ describe('resolving container options', () => {
       resolveGap(
         undefined,
         { jsonformsExtended: { layoutDefaults: { gap: 0 } } },
-        'row'
-      )
+        'row',
+      ),
     ).toBe(0);
   });
 });
@@ -165,13 +165,13 @@ describe('a child’s participation', () => {
     layout: any,
     direction: any = 'row',
     grid = 16,
-    gap: any = 0
+    gap: any = 0,
   ) =>
     itemSizing(
       { type: 'Control', options: { layout } } as any,
       direction,
       grid,
-      gap
+      gap,
     );
 
   /* "Conflict precedence: Fixed > Span > Weight > Auto." */
@@ -224,7 +224,7 @@ describe('a child’s participation', () => {
       'row',
       16,
       0,
-      140
+      140,
     );
     expect(parentOnly.style.minWidth).toBe('140px');
     const childWins = itemSizing(
@@ -232,7 +232,7 @@ describe('a child’s participation', () => {
       'row',
       16,
       0,
-      140
+      140,
     );
     expect(childWins.style.minWidth).toBe('90px');
   });
@@ -244,7 +244,7 @@ describe('diagnostics rather than silence', () => {
       { type: 'Control', options: { layout } } as any,
       direction,
       grid,
-      0
+      0,
     );
 
   /* "Clamp span above gridColumns and diagnose." */
@@ -266,10 +266,10 @@ describe('diagnostics rather than silence', () => {
 
   it('rejects a span that is not a positive integer', () => {
     expect(sizing({ span: 0 }).diagnostics.join(' ')).toContain(
-      'positive integer'
+      'positive integer',
     );
     expect(sizing({ span: 2.5 }).diagnostics.join(' ')).toContain(
-      'positive integer'
+      'positive integer',
     );
   });
 
@@ -314,7 +314,7 @@ describe('a rendered horizontal layout', () => {
     await settle();
     expect(
       column.container.querySelector<HTMLElement>('[data-layout="column"]')!
-        .style.gap
+        .style.gap,
     ).toBe('16px');
     column.unmount();
   });
@@ -407,7 +407,7 @@ describe('a rendered horizontal layout', () => {
         type: 'HorizontalLayout',
         elements: [control('#/properties/a', { span: 2 })],
       },
-      { jsonformsExtended: { layoutDefaults: { gridColumns: 4 } } }
+      { jsonformsExtended: { layoutDefaults: { gridColumns: 4 } } },
     );
     await settle();
     // 2 of 4, not 2 of 16. The 16px is the row default gap, not a column count.

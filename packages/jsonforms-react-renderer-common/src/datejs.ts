@@ -22,7 +22,7 @@ export const formatDate = (date: dayjs.Dayjs, saveFormat: string) => {
   const yearToken = '__JSONFORMS_FOUR_DIGIT_YEAR__';
   const formatWithYearPlaceholder = saveFormat.replace(
     /YYYY/g,
-    `[${yearToken}]`
+    `[${yearToken}]`,
   );
 
   return date
@@ -32,7 +32,7 @@ export const formatDate = (date: dayjs.Dayjs, saveFormat: string) => {
 
 export const getData = (
   data: any,
-  format: string | string[] | undefined
+  format: string | string[] | undefined,
 ): dayjs.Dayjs | null => {
   if (!data) {
     return null;

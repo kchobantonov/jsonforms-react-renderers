@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { useMonacoSchema } from '../src/app/useMonacoSchema';
 const { defaults } = vi.hoisted(() => ({
   defaults: {

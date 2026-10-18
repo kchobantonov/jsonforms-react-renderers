@@ -45,7 +45,7 @@ export const AntdOtp = React.memo(function AntdOtp(
     WithClassname & {
       inputProps?: Record<string, unknown>;
       label?: React.ReactNode;
-    }
+    },
 ) {
   const {
     data,

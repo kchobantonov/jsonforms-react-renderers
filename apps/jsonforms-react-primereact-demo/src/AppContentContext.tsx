@@ -30,7 +30,7 @@ export const AppContentContextProvider: React.FC<
 
   const switchTheme = (currentTheme, newTheme, linkElementId, callback) => {
     const linkElement = document.getElementById(
-      linkElementId
+      linkElementId,
     ) as HTMLLinkElement;
     const cloneLinkElement = linkElement.cloneNode(true) as HTMLLinkElement;
     const newThemeUrl =
@@ -48,7 +48,7 @@ export const AppContentContextProvider: React.FC<
     });
     linkElement.parentNode?.insertBefore(
       cloneLinkElement,
-      linkElement.nextSibling
+      linkElement.nextSibling,
     );
   };
 
@@ -63,7 +63,7 @@ export const AppContentContextProvider: React.FC<
 
   const contextValue = useMemo(
     () => ({ theme, darkMode, changeTheme }),
-    [theme, darkMode, changeTheme]
+    [theme, darkMode, changeTheme],
   );
 
   return (

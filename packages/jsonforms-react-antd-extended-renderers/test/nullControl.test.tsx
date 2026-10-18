@@ -71,8 +71,8 @@ const render = (data: any = {}, options?: Record<string, unknown>) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
 
   const box = () => container.querySelector<HTMLInputElement>('input')!;
@@ -111,7 +111,7 @@ describe('selecting the null control', () => {
       antdNullControlTester(control, union as any, {
         rootSchema: union as any,
         config: {},
-      })
+      }),
     ).toBe(-1);
   });
 
@@ -125,7 +125,7 @@ describe('selecting the null control', () => {
         antdNullControlTester(control, other as any, {
           rootSchema: other as any,
           config: {},
-        })
+        }),
       ).toBe(-1);
     }
   });
@@ -172,7 +172,7 @@ describe('the three states of a null property', () => {
       expect(box().indeterminate).toBe(true);
       expect(stored()).toBe(value);
       unmount();
-    }
+    },
   );
 });
 
@@ -224,12 +224,12 @@ describe('toggling', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     expect(container.querySelector<HTMLInputElement>('input')!.disabled).toBe(
-      true
+      true,
     );
     act(() => root.unmount());
   });
@@ -271,8 +271,8 @@ describe('the label and validation', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     // Ticking the box is what satisfies `required`: the property then exists.

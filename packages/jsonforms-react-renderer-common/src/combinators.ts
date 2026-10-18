@@ -18,7 +18,7 @@ import type { JsonSchema } from '@jsonforms/core';
 
 /** The names the enclosing schema declares itself, outside any branch. */
 export const enclosingPropertyNames = (
-  schema: JsonSchema | undefined
+  schema: JsonSchema | undefined,
 ): string[] =>
   Object.keys((schema as { properties?: object })?.properties ?? {});
 
@@ -37,7 +37,7 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 export const discardedByBranchChange = (
   data: unknown,
   schema: JsonSchema | undefined,
-  excludeDiscriminator = false
+  excludeDiscriminator = false,
 ): unknown => {
   if (!isPlainObject(data)) {
     return data;
@@ -57,7 +57,7 @@ export const discardedByBranchChange = (
         (property) =>
           property &&
           Object.prototype.hasOwnProperty.call(property, 'const') &&
-          (property.const === null || typeof property.const !== 'object')
+          (property.const === null || typeof property.const !== 'object'),
       ) &&
       new Set(fixed.map((property) => JSON.stringify(property!.const))).size ===
         fixed.length &&
@@ -80,7 +80,7 @@ export const discardedByBranchChange = (
 export const branchChangeData = (
   data: unknown,
   defaults: unknown,
-  schema: JsonSchema | undefined
+  schema: JsonSchema | undefined,
 ): unknown => {
   const names = enclosingPropertyNames(schema);
   if (names.length === 0 || !isPlainObject(data)) {
@@ -112,7 +112,7 @@ export const branchChangeData = (
 /** An object-only array slot remains an editable object when its choice is cleared. */
 export const clearedBranchValue = (
   arrayItem: boolean,
-  branches: JsonSchema[]
+  branches: JsonSchema[],
 ): Record<string, unknown> | undefined =>
   arrayItem &&
   branches.length > 0 &&

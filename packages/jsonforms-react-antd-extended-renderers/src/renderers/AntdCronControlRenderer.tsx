@@ -62,8 +62,8 @@ export const antdCronControlTester: RankedTester = rankWith(
   3,
   and(
     isStringControl,
-    or(formatIs('cron'), and(uiTypeIs('Control'), optionIs('format', 'cron')))
-  )
+    or(formatIs('cron'), and(uiTypeIs('Control'), optionIs('format', 'cron'))),
+  ),
 );
 
 /** Offered coarsest-repeating first, which is how a schedule is described out loud. */
@@ -350,7 +350,7 @@ export const AntdCronControl = (props: ControlProps) => {
       {shownFields.some(
         (field) =>
           parseField(draft[CRON_FIELDS.indexOf(field)] ?? '*', field) ===
-          undefined
+          undefined,
       ) && (
         <Typography.Text
           type='secondary'
@@ -444,7 +444,7 @@ export const AntdCronControl = (props: ControlProps) => {
             onChange={(event) =>
               props.handleChange(
                 props.path,
-                event.currentTarget.value || undefined
+                event.currentTarget.value || undefined,
               )
             }
             onBlur={onBlurTouch}

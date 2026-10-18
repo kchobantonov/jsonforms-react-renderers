@@ -14,10 +14,10 @@ export const isValidColumns = (value: unknown): boolean =>
 /** Allocate direct, visible children without changing their UI schemas. */
 export const horizontalLayoutWidths = (
   values: readonly unknown[],
-  gap = '1rem'
+  gap = '1rem',
 ) => {
   const fixed = values.map((value) =>
-    typeof value === 'number' && isValidColumns(value) ? value : undefined
+    typeof value === 'number' && isValidColumns(value) ? value : undefined,
   );
   const rows: number[][] = [[]];
   const allAuto = fixed.every((value) => value === undefined);
@@ -34,7 +34,7 @@ export const horizontalLayoutWidths = (
   return rows.flatMap((indices, row) => {
     const reserved = indices.reduce(
       (sum, index) => sum + (fixed[index] ?? 0),
-      0
+      0,
     );
     const autos = indices.filter((index) => fixed[index] === undefined).length;
     return indices.map((index) => {

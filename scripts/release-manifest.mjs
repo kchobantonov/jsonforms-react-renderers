@@ -15,7 +15,7 @@ export const releaseManifest = (original, packed, versions) => {
       const prefix = range.slice('workspace:'.length);
       if (!['*', '^', '~'].includes(prefix)) {
         throw new Error(
-          `${original.name}: unsupported workspace range ${range}`
+          `${original.name}: unsupported workspace range ${range}`,
         );
       }
       manifest[field] ??= {};
@@ -33,7 +33,7 @@ export const assertPublishableManifest = (manifest) => {
     for (const [name, range] of Object.entries(manifest[field] ?? {})) {
       if (/^(workspace|catalog|link|file):/.test(range)) {
         throw new Error(
-          `${manifest.name}: unresolved local dependency ${field}.${name}: ${range}`
+          `${manifest.name}: unresolved local dependency ${field}.${name}: ${range}`,
         );
       }
     }

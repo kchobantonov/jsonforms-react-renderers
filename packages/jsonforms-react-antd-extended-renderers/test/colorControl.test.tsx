@@ -91,7 +91,7 @@ const render = ({
     </ConfigProvider>
   );
   act(() =>
-    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form)
+    root.render(cell ? <CellModeProvider>{form}</CellModeProvider> : form),
   );
 
   const input = () => container.querySelector<HTMLInputElement>('input');
@@ -99,7 +99,7 @@ const render = ({
     const field = input()!;
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!;
     act(() => {
       setter.call(field, text);
@@ -140,7 +140,7 @@ describe('antd color control', () => {
     // A custom swatch trigger, not antd's default one: that trigger's own
     // border/padding/min-height made it sit off-centre inside the prefix.
     const swatch = container.querySelector<HTMLElement>(
-      '[aria-label="Choose a color"]'
+      '[aria-label="Choose a color"]',
     );
     expect(swatch).toBeTruthy();
     const prefix = container.querySelector('.ant-input-prefix');
@@ -174,7 +174,7 @@ describe('antd color control', () => {
   it('shows the current value in the swatch', () => {
     const { container, unmount } = render();
     const swatch = container.querySelector<HTMLElement>(
-      '[aria-label="Choose a color"] span'
+      '[aria-label="Choose a color"] span',
     );
     expect(swatch!.style.background).toBe('rgb(0, 255, 0)');
     unmount();
@@ -194,7 +194,7 @@ describe('antd color control', () => {
       options: { format: 'color' },
     });
     expect(
-      container.querySelector('[aria-label="Choose a color"]')
+      container.querySelector('[aria-label="Choose a color"]'),
     ).toBeTruthy();
     unmount();
   });
@@ -222,7 +222,7 @@ describe('color save formats', () => {
       await blur();
       expect(stored()).toBe(expected);
       unmount();
-    }
+    },
   );
 
   it('accepts any supported representation as input regardless of save format', async () => {
@@ -312,7 +312,7 @@ describe('color save formats', () => {
       data: { brand: 'hsb(120, 100%, 100%)' },
     });
     const swatch = container.querySelector<HTMLElement>(
-      '[aria-label="Choose a color"] span'
+      '[aria-label="Choose a color"] span',
     );
     expect(swatch!.style.background).toBe('rgb(0, 255, 0)');
     unmount();
@@ -368,7 +368,7 @@ describe('colorTextEntry', () => {
     });
     expect(container.querySelector('input')).toBeNull();
     const trigger = container.querySelector<HTMLButtonElement>(
-      '[data-color-trigger]'
+      '[data-color-trigger]',
     );
     expect(trigger).toBeTruthy();
     expect(trigger!.tagName).toBe('BUTTON');
@@ -382,7 +382,7 @@ describe('colorTextEntry', () => {
       options: { colorTextEntry: false },
     });
     const trigger = container.querySelector<HTMLButtonElement>(
-      '[data-color-trigger]'
+      '[data-color-trigger]',
     );
     expect(trigger!.getAttribute('aria-label')).toBe('Choose a color');
     expect(trigger!.tabIndex).toBe(0);
@@ -396,7 +396,7 @@ describe('colorTextEntry', () => {
       options: { colorTextEntry: false },
     });
     expect(
-      container.querySelector('[data-color-trigger]')!.textContent
+      container.querySelector('[data-color-trigger]')!.textContent,
     ).toContain('octarine');
     unmount();
   });
@@ -421,7 +421,7 @@ describe('colorTextEntry', () => {
 describe('clearing from the picker', () => {
   const open = async (container: HTMLElement) => {
     const trigger = container.querySelector<HTMLElement>(
-      '[aria-label="Choose a color"], [data-color-trigger]'
+      '[aria-label="Choose a color"], [data-color-trigger]',
     )!;
     act(() => {
       trigger.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -446,7 +446,7 @@ describe('clearing from the picker', () => {
     });
     await open(container);
     const clear = document.querySelector<HTMLElement>(
-      '.ant-color-picker-clear'
+      '.ant-color-picker-clear',
     )!;
     act(() => {
       clear.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -503,7 +503,7 @@ describe('the picker panel follows the save format', () => {
     act(() => {
       container
         .querySelector<HTMLElement>(
-          '[aria-label="Choose a color"], [data-color-trigger]'
+          '[aria-label="Choose a color"], [data-color-trigger]',
         )!
         .dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -512,7 +512,7 @@ describe('the picker panel follows the save format', () => {
   const close = async () => {
     act(() => {
       document.body.dispatchEvent(
-        new MouseEvent('mousedown', { bubbles: true })
+        new MouseEvent('mousedown', { bubbles: true }),
       );
       document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -548,7 +548,7 @@ describe('the picker panel follows the save format', () => {
     expect(selectedFormat()).toBe('rgb');
 
     const select = document.querySelector<HTMLElement>(
-      '.ant-color-picker-format-select'
+      '.ant-color-picker-format-select',
     )!;
     act(() => {
       select.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
@@ -556,7 +556,7 @@ describe('the picker panel follows the save format', () => {
     });
     await settle();
     const hexOption = Array.from(
-      document.querySelectorAll<HTMLElement>('.ant-select-item-option')
+      document.querySelectorAll<HTMLElement>('.ant-select-item-option'),
     ).find((option) => option.textContent?.trim().toLowerCase() === 'hex')!;
     act(() => {
       hexOption.dispatchEvent(new MouseEvent('click', { bubbles: true }));

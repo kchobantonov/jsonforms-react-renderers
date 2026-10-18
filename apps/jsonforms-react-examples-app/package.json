@@ -6,12 +6,12 @@
   "type": "module",
   "scripts": {
     "build": "node prepare-examples-app.js",
-    "dev": "vite dist",
-    "preview": "vite preview --outDir dist",
+    "dev": "vp dist",
+    "preview": "vp preview --outDir dist",
     "clean": "rimraf dist",
     "test": "echo 'Nothing to do'",
-    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx",
-    "lint:fix": "pnpm lint --fix"
+    "lint": "vp lint .",
+    "lint:fix": "vp run lint --fix"
   },
   "dependencies": {
     "jsonforms-react-antd-demo": "workspace:*",
@@ -22,6 +22,7 @@
     "@types/fs-extra": "^9.0.13",
     "fs-extra": "^11.1.0",
     "rimraf": "^3.0.2",
-    "vite": "^7.3.7"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   }
 }

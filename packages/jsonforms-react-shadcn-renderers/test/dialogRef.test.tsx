@@ -26,16 +26,16 @@ describe.each([
             <UI.DialogPortal>
               <UI.DialogOverlay ref={ref} />
             </UI.DialogPortal>
-          </UI.Dialog>
-        )
+          </UI.Dialog>,
+        ),
       );
       expect(document.querySelector('[role="dialog"]')?.textContent).toContain(
-        'Delete item?'
+        'Delete item?',
       );
       expect(ref.current).toBeInstanceOf(HTMLDivElement);
       expect(ref.current?.dataset.slot).toBe('dialog-overlay');
       expect(errors.mock.calls.flat().join(' ')).not.toMatch(
-        /cannot be given refs|check the render method/i
+        /cannot be given refs|check the render method/i,
       );
     } finally {
       act(() => root.unmount());

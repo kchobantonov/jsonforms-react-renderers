@@ -2,7 +2,7 @@ import { flattenExampleNavigation } from '../../jsonforms-react-antd-renderers/t
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -66,13 +66,13 @@ const draw = (locale = 'en', configOverride?: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   /** One markup label, found by a distinctive word in its text. */
   const labelWith = (needle: string) =>
     Array.from(
-      container.querySelectorAll<HTMLElement>('[data-markup-label]')
+      container.querySelectorAll<HTMLElement>('[data-markup-label]'),
     ).find((el) => el.textContent?.includes(needle));
   return {
     container,
@@ -80,7 +80,7 @@ const draw = (locale = 'en', configOverride?: any) => {
     links: () => Array.from(container.querySelectorAll('a')),
     diagnostics: () =>
       Array.from(
-        container.querySelectorAll<HTMLElement>('[data-markup-diagnostic]')
+        container.querySelectorAll<HTMLElement>('[data-markup-diagnostic]'),
       ),
     unmount: () => act(() => root.unmount()),
   };
@@ -94,7 +94,7 @@ describe('the markup-label spec example', () => {
     expect(joining, 'the joining-instructions label is missing').toBeTruthy();
     expect(joining!.getAttribute('data-markup-label')).toBe('markdown');
     expect(joining!.querySelector('strong')?.textContent).toBe(
-      'Joining instructions.'
+      'Joining instructions.',
     );
     expect(joining!.querySelector('code')?.textContent).toBe('WS-2417');
     // The source characters are consumed, not shown.
@@ -134,7 +134,7 @@ describe('the markup-label spec example', () => {
     await settle();
     const joining = view.labelWith('Doors open')!;
     const venue = Array.from(joining.querySelectorAll('a')).map((a) =>
-      a.getAttribute('href')
+      a.getAttribute('href'),
     );
     expect(venue).toContain('https://example.com/venue');
     expect(venue).toContain('mailto:workshops@example.com');
@@ -144,7 +144,7 @@ describe('the markup-label spec example', () => {
     expect(legacy.querySelector('a')).toBeNull();
     expect(legacy.textContent).toContain('old policy page');
     expect(view.container.innerHTML).not.toContain(
-      'http://example.com/policy-2019'
+      'http://example.com/policy-2019',
     );
     view.unmount();
   });
@@ -157,7 +157,7 @@ describe('the markup-label spec example', () => {
     // Not claimed by the markup renderer at all - the base one draws it.
     expect(rates).toBeUndefined();
     expect(view.container.textContent).toContain(
-      'Rates are 120 EUR* per seat (*excluding VAT).'
+      'Rates are 120 EUR* per seat (*excluding VAT).',
     );
     view.unmount();
   });
@@ -168,12 +168,12 @@ describe('the markup-label spec example', () => {
     const diagnostics = view.diagnostics();
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].getAttribute('data-markup-diagnostic')).toBe(
-      'markupUnsupported'
+      'markupUnsupported',
     );
     expect(diagnostics[0].textContent).toContain('"asciidoc"');
     // The whole point: the words are still on the page.
     expect(view.container.textContent).toContain(
-      'This notice was authored for a markup language'
+      'This notice was authored for a markup language',
     );
     view.unmount();
   });
@@ -192,11 +192,11 @@ describe('the markup-label spec example', () => {
     // Still parsed: the option is about the box, not about the Markdown.
     expect(fineprint.querySelector('strong')?.textContent).toBe('15 minutes');
     expect(fineprint.querySelector('a')?.getAttribute('href')).toBe(
-      'https://example.com/terms'
+      'https://example.com/terms',
     );
     // Its neighbour, which says nothing, keeps the wrapper.
     expect(
-      view.labelWith('Doors open')!.querySelector('.ant-typography')
+      view.labelWith('Doors open')!.querySelector('.ant-typography'),
     ).toBeTruthy();
     view.unmount();
   });
@@ -226,7 +226,7 @@ describe('the markup-label spec example', () => {
     expect(joining, 'the Bulgarian joining label is missing').toBeTruthy();
     // Markdown in the catalog string is parsed the same way.
     expect(joining!.querySelector('strong')?.textContent).toBe(
-      'Инструкции за пристигане.'
+      'Инструкции за пристигане.',
     );
     expect(joining!.querySelector('code')?.textContent).toBe('WS-2417');
     view.unmount();
@@ -236,7 +236,7 @@ describe('the markup-label spec example', () => {
     const view = draw('bg');
     await settle();
     expect(view.diagnostics()[0].textContent).toContain(
-      'Неподдържано маркиране'
+      'Неподдържано маркиране',
     );
     view.unmount();
   });
@@ -290,7 +290,7 @@ describe('the host gate and the typography option', () => {
     expect(joining.querySelector('.ant-typography')).toBeNull();
     // Still parsed - the option is about the box, not about the Markdown.
     expect(joining.querySelector('strong')?.textContent).toBe(
-      'Joining instructions.'
+      'Joining instructions.',
     );
     view.unmount();
   });
@@ -313,12 +313,12 @@ describe('the host gate and the typography option', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     const labels = Array.from(
-      container.querySelectorAll<HTMLElement>('[data-markup-label]')
+      container.querySelectorAll<HTMLElement>('[data-markup-label]'),
     );
     const joining = labels.find((el) => el.textContent?.includes('Doors open'));
     const bring = labels.find((el) => el.textContent?.includes('A laptop'));

@@ -1,7 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 import { useDebouncedChange } from '../src/debounce';
 
 /*
@@ -51,8 +58,8 @@ const mountProbe = (data: any = 'first', path = 'items.0.name') => {
           data={nextData}
           path={nextPath}
           api={api}
-        />
-      )
+        />,
+      ),
     );
   render(data);
   return {
@@ -114,7 +121,7 @@ describe('disposing a debounced control', () => {
 
     expect(
       handleChange.mock.calls.map(([p]) => p),
-      'a queued edit reached a path it was not typed into'
+      'a queued edit reached a path it was not typed into',
     ).not.toContain('items.0.name');
   });
 

@@ -85,13 +85,13 @@ export const ObjectRenderer = ({
                 label,
               },
         uischema,
-        rootSchema
+        rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, label, uischema, rootSchema]
+    [uischemas, schema, uischema.scope, path, label, uischema, rootSchema],
   );
   const dispatchUiSchema = useMemo(
     () => (isEmpty(path) ? detailUiSchema : withoutGroupFrame(detailUiSchema)),
-    [detailUiSchema, path]
+    [detailUiSchema, path],
   );
 
   if (!visible) {

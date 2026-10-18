@@ -35,12 +35,12 @@ const render = (data?: string, extra: any = {}) =>
             ...extra,
           } as any)}
         />
-      </JsonFormsContext.Provider>
-    )
+      </JsonFormsContext.Provider>,
+    ),
   );
 const button = (name: string) =>
   Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
-    (el) => (el.getAttribute('aria-label') ?? el.textContent) === name
+    (el) => (el.getAttribute('aria-label') ?? el.textContent) === name,
   )!;
 const click = (name: string) => act(() => button(name).click());
 const edit = (value: string, selector = 'input[aria-label="Expression"]') =>
@@ -48,7 +48,7 @@ const edit = (value: string, selector = 'input[aria-label="Expression"]') =>
     const input = document.querySelector<HTMLInputElement>(selector)!;
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -74,22 +74,22 @@ it.each([{ format: 'cron' }, {}])(
           options: schema.format ? {} : { format: 'cron' },
         },
         { type: 'string', ...schema },
-        { rootSchema: {}, config: {} }
-      )
+        { rootSchema: {}, config: {} },
+      ),
     ).toBe(3);
-  }
+  },
 );
 it('registers the specialized cron renderer', () =>
   expect(
-    shadcnExtendedRenderers.some((entry) => entry.tester === cronControlTester)
+    shadcnExtendedRenderers.some((entry) => entry.tester === cronControlTester),
   ).toBe(true));
 it('does not select ordinary text', () =>
   expect(
     cronControlTester(
       { type: 'Control', scope: '#' },
       { type: 'string' },
-      { rootSchema: {}, config: {} }
-    )
+      { rootSchema: {}, config: {} },
+    ),
   ).toBe(-1));
 it.each([undefined, '0 0 9 * * MON', '0 0 9 L * ?'])(
   'does not rewrite untouched %s',
@@ -98,7 +98,7 @@ it.each([undefined, '0 0 9 * * MON', '0 0 9 L * ?'])(
     click('Choose a schedule');
     click('Apply');
     expect(write).not.toHaveBeenCalled();
-  }
+  },
 );
 it('cancels draft edits', () => {
   render('0 0 9 * * *');
@@ -138,7 +138,7 @@ it.each([{ readonly: true }, { enabled: false }])(
     expect(button('Choose a schedule').disabled).toBe(true);
     expect(container.querySelector('input')!.disabled).toBe(true);
     expect(button('Clear value')).toBeUndefined();
-  }
+  },
 );
 it('clears to undefined', () => {
   render('0 0 9 * * *');
@@ -168,14 +168,14 @@ it('changes a selected hour without rewriting unrelated fields', () => {
   click('Choose a schedule');
   click('Hours');
   const checkbox = document.querySelector<HTMLButtonElement>(
-    '[role="checkbox"][aria-label="Hours 10"]'
+    '[role="checkbox"][aria-label="Hours 10"]',
   )!;
   expect(checkbox).toBeTruthy();
   act(() => checkbox.click());
   // Checkbox choices stage edits while the original form value is unchanged.
   expect(write).not.toHaveBeenCalled();
   const draft = document.querySelector<HTMLInputElement>(
-    'input[aria-label="Expression"]'
+    'input[aria-label="Expression"]',
   )!;
   expect(draft.value).toBe('0 0 9,10 * * MON');
 });

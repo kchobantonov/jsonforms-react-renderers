@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vite-plus/test';
 import { shadcnRenderers, shadcnCells } from '../src';
 let cleanup = () => {};
 afterEach(() => {
@@ -25,8 +25,8 @@ const mount = (schema: any, options: any, initial: any) => {
         onChange={(event) => {
           data = event.data;
         }}
-      />
-    )
+      />,
+    ),
   );
   act(() => vi.runAllTimers());
   cleanup = () => {
@@ -44,11 +44,11 @@ it('selects radio presentation for oneOf constants and preserves typed values', 
       ],
     },
     { format: 'radio' },
-    1
+    1,
   );
   expect(container.querySelectorAll('[role=radio]')).toHaveLength(2);
   act(() =>
-    (container.querySelectorAll('[role=radio]')[1] as HTMLElement).click()
+    (container.querySelectorAll('[role=radio]')[1] as HTMLElement).click(),
   );
   act(() => vi.runAllTimers());
   expect(data()).toBe(2);
@@ -57,12 +57,12 @@ it('removes only the chosen duplicate chip', () => {
   const { container, data } = mount(
     { type: 'array', items: { type: 'string' } },
     { variant: 'chips' },
-    ['a', 'b', 'a']
+    ['a', 'b', 'a'],
   );
   act(() =>
     (
       container.querySelectorAll('[aria-label="Remove a"]')[1] as HTMLElement
-    ).click()
+    ).click(),
   );
   act(() => vi.runAllTimers());
   expect(data()).toEqual(['a', 'b']);
@@ -71,11 +71,11 @@ it('honors minimum item restriction on chip removal', () => {
   const { container } = mount(
     { type: 'array', items: { type: 'string' }, minItems: 1 },
     { variant: 'chips', restrict: true },
-    ['a']
+    ['a'],
   );
   expect(
     (container.querySelector('[aria-label="Remove a"]') as HTMLButtonElement)
-      .disabled
+      .disabled,
   ).toBe(true);
 });
 it('selects automatic enum checkboxes', () => {
@@ -86,11 +86,11 @@ it('selects automatic enum checkboxes', () => {
       uniqueItems: true,
     },
     {},
-    ['a']
+    ['a'],
   );
   expect(container.querySelectorAll('[role=checkbox]')).toHaveLength(2);
   act(() =>
-    (container.querySelectorAll('[role=checkbox]')[1] as HTMLElement).click()
+    (container.querySelectorAll('[role=checkbox]')[1] as HTMLElement).click(),
   );
   act(() => vi.runAllTimers());
   expect(data()).toEqual(['a', 'b']);
@@ -104,11 +104,11 @@ it('shows removable pills for multi-select without nesting buttons', () => {
       uniqueItems: true,
     },
     { variant: 'multi-select' },
-    ['Email', 'Post']
+    ['Email', 'Post'],
   );
   expect(container.querySelector('button button')).toBeNull();
   const remove = container.querySelector(
-    '[aria-label="Remove Email"]'
+    '[aria-label="Remove Email"]',
   ) as HTMLButtonElement;
   expect(remove).not.toBeNull();
   act(() => remove.click());
@@ -120,10 +120,10 @@ it('renders empty and dotted property values without resolving the containing ob
   const view = mount(
     { type: 'object', additionalProperties: { type: 'string' } },
     { allowEmptyPropertyNames: true },
-    { '': 'unnamed label', 'literal.key': 'literal value' }
+    { '': 'unnamed label', 'literal.key': 'literal value' },
   );
   const inputs = Array.from(view.container.querySelectorAll('input')).map(
-    (input) => input.value
+    (input) => input.value,
   );
   expect(inputs).toContain('unnamed label');
   expect(inputs).toContain('literal value');
@@ -139,23 +139,23 @@ it('shows a dynamic-only object title once without an empty static group', () =>
       additionalProperties: { type: 'integer' },
     },
     {},
-    { weekly: 40 }
+    { weekly: 40 },
   );
   expect(
     Array.from(
-      view.container.querySelectorAll('.shadcn-jsonforms-group-title')
-    ).filter((node) => node.textContent === 'Quota')
+      view.container.querySelectorAll('.shadcn-jsonforms-group-title'),
+    ).filter((node) => node.textContent === 'Quota'),
   ).toHaveLength(1);
   const group = view.container.querySelector('.shadcn-jsonforms-group')!;
   expect(group).not.toBeNull();
   expect(group.querySelector('.shadcn-jsonforms-layout')).toBeNull();
   const additional = group.querySelector<HTMLElement>(
-    '.jsonforms-additional-properties'
+    '.jsonforms-additional-properties',
   )!;
   expect(additional).not.toBeNull();
   expect(additional.style.boxShadow).toBe('none');
   expect(
-    view.container.querySelector<HTMLInputElement>('input[value="40"]')
+    view.container.querySelector<HTMLInputElement>('input[value="40"]'),
   ).not.toBeNull();
 });
 
@@ -176,7 +176,7 @@ it('renders fields from every matching dynamic property pattern', () => {
       additionalProperties: false,
     },
     {},
-    { 'sensor-room': { reading: 12, location: 'Office' } }
+    { 'sensor-room': { reading: 12, location: 'Office' } },
   );
   expect(view.container.querySelector('input[value="12"]')).not.toBeNull();
   expect(view.container.querySelector('input[value="Office"]')).not.toBeNull();

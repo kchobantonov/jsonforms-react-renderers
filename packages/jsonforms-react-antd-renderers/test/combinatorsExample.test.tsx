@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
@@ -60,15 +60,15 @@ const draw = (override?: any) => {
               locale: 'en',
               translate: createTranslator(
                 (key: string, fallback?: string) =>
-                  (translations.en as Record<string, string>)[key] ?? fallback
+                  (translations.en as Record<string, string>)[key] ?? fallback,
               ),
             }}
             onChange={({ data: next }) => {
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -86,11 +86,11 @@ const draw = (override?: any) => {
     },
     labels: () =>
       Array.from(
-        active()?.querySelectorAll<HTMLElement>('.ant-form-item label') ?? []
+        active()?.querySelectorAll<HTMLElement>('.ant-form-item label') ?? [],
       ).map((label) => label.textContent),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -106,8 +106,8 @@ describe('the three presentations', () => {
     await settle();
     expect(
       Array.from(
-        view.container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
-      ).map((tab) => tab.textContent)
+        view.container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
+      ).map((tab) => tab.textContent),
     ).toEqual([
       'oneOf',
       'anyOf',
@@ -150,7 +150,7 @@ describe('the three presentations', () => {
     const view = draw();
     await view.selectTab('allOf');
     expect(view.labels()).toEqual(
-      expect.arrayContaining(['Item', 'Asset tag', 'In working order'])
+      expect.arrayContaining(['Item', 'Asset tag', 'In working order']),
     );
     expect(view.active()?.querySelector('.ant-tabs')).toBeNull();
     view.unmount();
@@ -167,7 +167,7 @@ describe('composition that describes one editor', () => {
     const view = draw();
     await view.selectTab('One input, several alternatives');
     expect(view.labels()).toEqual(
-      expect.arrayContaining(['Number of attendees', 'Seats per table'])
+      expect.arrayContaining(['Number of attendees', 'Seats per table']),
     );
     const panel = view.active()!;
     expect(panel.querySelectorAll('.ant-tabs')).toHaveLength(0);
@@ -184,7 +184,7 @@ describe('composition that describes one editor', () => {
     const view = draw();
     await view.selectTab('One input, several alternatives');
     const inputs = Array.from(
-      view.active()!.querySelectorAll<HTMLInputElement>('input')
+      view.active()!.querySelectorAll<HTMLInputElement>('input'),
     );
     for (const input of inputs) {
       expect(input.getAttribute('min')).toBeNull();
@@ -199,7 +199,7 @@ describe('composition that describes one editor', () => {
     await view.selectTab('One input, several alternatives');
     await settle();
     expect(view.active()?.textContent).toContain(
-      'Enter a multiple of three or of five, but not of both.'
+      'Enter a multiple of three or of five, but not of both.',
     );
     view.unmount();
   });
@@ -236,7 +236,7 @@ describe('a schema condition is not a rule', () => {
     await view.selectTab('Schema condition vs UI rule');
     await settle();
     expect(view.active()?.textContent).toContain(
-      'Required for an urgent request.'
+      'Required for an urgent request.',
     );
     view.unmount();
   });
@@ -246,7 +246,7 @@ describe('a schema condition is not a rule', () => {
     await view.selectTab('Schema condition vs UI rule');
     await settle();
     expect(view.active()?.textContent).not.toContain(
-      'Required for an urgent request.'
+      'Required for an urgent request.',
     );
     view.unmount();
   });
@@ -261,7 +261,7 @@ describe('a schema condition is not a rule', () => {
     const view = draw({ urgent: true, neededBy: undefined });
     await view.selectTab('Schema condition vs UI rule');
     const required = Array.from(
-      view.active()!.querySelectorAll('.ant-form-item-required')
+      view.active()!.querySelectorAll('.ant-form-item-required'),
     );
     expect(required).toHaveLength(0);
     view.unmount();
@@ -339,7 +339,7 @@ describe('fields that appear from the schema alone', () => {
   */
   it('uses no UI rule to do it', () => {
     const appointment = (uischema as any).elements[1].elements.find(
-      (category: any) => category.name === 'schemaVisibility'
+      (category: any) => category.name === 'schemaVisibility',
     );
     const serialised = JSON.stringify(appointment);
     expect(serialised).not.toContain('"rule"');

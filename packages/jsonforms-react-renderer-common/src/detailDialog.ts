@@ -13,7 +13,7 @@ export type DetailDialogOptions = {
 export const useDetailDialog = (
   open: boolean,
   options: DetailDialogOptions = {},
-  getSurface?: () => HTMLElement | null | undefined
+  getSurface?: () => HTMLElement | null | undefined,
 ) => {
   const config = useJsonForms().config;
   options = { ...config?.jsonformsExtended?.dialog, ...options };
@@ -37,7 +37,7 @@ export const useDetailDialog = (
     () => () => {
       if (frame.current !== undefined) cancelAnimationFrame(frame.current);
     },
-    []
+    [],
   );
   const drag = React.useRef<{
     x: number;
@@ -105,15 +105,15 @@ export const useDetailDialog = (
             drag.current.bounds.left,
             Math.min(
               drag.current.bounds.right,
-              drag.current.left + event.clientX - drag.current.x
-            )
+              drag.current.left + event.clientX - drag.current.x,
+            ),
           ),
           y: Math.max(
             drag.current.bounds.top,
             Math.min(
               drag.current.bounds.bottom,
-              drag.current.top + event.clientY - drag.current.y
-            )
+              drag.current.top + event.clientY - drag.current.y,
+            ),
           ),
         };
         if (frame.current === undefined)

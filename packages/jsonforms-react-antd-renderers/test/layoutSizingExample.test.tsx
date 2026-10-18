@@ -2,7 +2,7 @@ import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -44,8 +44,8 @@ const draw = (override?: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   const rows = () =>
     Array.from(container.querySelectorAll<HTMLElement>('[data-layout="row"]'));
@@ -122,7 +122,7 @@ describe('the layout-sizing spec example', () => {
     await settle();
     // The outer VerticalLayout asks for 1.5rem; the config default is 1rem.
     const column = view.container.querySelector<HTMLElement>(
-      '[data-layout="column"]'
+      '[data-layout="column"]',
     )!;
     expect(column.style.gap).toBe('1.5rem');
     expect(view.rows()[0].style.gap).toBe('1rem');
@@ -183,7 +183,7 @@ describe('a hidden middle child', () => {
     const shown = draw({ showTeam: true });
     await settle();
     expect(
-      shown.itemsIn(rowsFor(shown).weight).map((item) => item.style.flexGrow)
+      shown.itemsIn(rowsFor(shown).weight).map((item) => item.style.flexGrow),
     ).toEqual(['1', '2', '1']);
     shown.unmount();
 
@@ -191,7 +191,7 @@ describe('a hidden middle child', () => {
     await settle();
     // Two children of equal weight: half each, with nothing left over.
     expect(
-      hidden.itemsIn(rowsFor(hidden).weight).map((item) => item.style.flexGrow)
+      hidden.itemsIn(rowsFor(hidden).weight).map((item) => item.style.flexGrow),
     ).toEqual(['1', '1']);
     hidden.unmount();
   });

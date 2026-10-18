@@ -103,7 +103,7 @@ export const allowsScriptEvaluation = (config: unknown): boolean => {
  */
 export const resolveTemplateLang = (
   uischema: UISchemaElement | undefined,
-  config: unknown
+  config: unknown,
 ): ResolvedTemplateLang => {
   const requested = (uischema as { lang?: unknown } | undefined)?.lang;
 
@@ -151,7 +151,7 @@ export const resolveTemplateLang = (
  */
 export const resolveTemplateEngine = (
   uischema: UISchemaElement | undefined,
-  config: unknown
+  config: unknown,
 ): ResolvedTemplateLang => {
   const resolved = resolveTemplateLang(uischema, config);
   if (resolved.lang && !allowsScriptEvaluation(config)) {

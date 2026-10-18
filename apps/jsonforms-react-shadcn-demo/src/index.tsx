@@ -133,7 +133,7 @@ const ShadcnDemoShell = ({
               window.open(
                 'https://github.com/kchobantonov/jsonforms-react-renderers',
                 '_blank',
-                'noopener,noreferrer'
+                'noopener,noreferrer',
               )
             }
           >
@@ -249,9 +249,9 @@ const ShadcnWrapper = ({
     () =>
       createShadcnRendererStyle(
         rendererSettings as ShadcnRendererSettings,
-        dark
+        dark,
       ),
-    [dark, rendererSettings]
+    [dark, rendererSettings],
   );
 
   return (
@@ -344,7 +344,7 @@ const demoRoot = renderExample(
     initialLayout: 'demo-and-data',
     Shell: ShadcnDemoShell,
     Ui: shadcnDemoUi,
-  }
+  },
 );
 
 if (import.meta.hot) {

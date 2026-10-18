@@ -132,7 +132,7 @@ function valueOf(text: string, field: CronField): number | undefined {
  */
 export function parseField(
   text: string,
-  field: CronField
+  field: CronField,
 ): number[] | undefined {
   const [low, high] = FIELD_RANGE[field];
   const all = (): number[] =>
@@ -197,7 +197,7 @@ export function labelFor(value: number, field: CronField): string {
  */
 export function formatField(
   values: readonly number[],
-  field: CronField
+  field: CronField,
 ): string {
   const [low, high] = FIELD_RANGE[field];
   const sorted = [...new Set(values)]
@@ -211,7 +211,7 @@ export function formatField(
   if (!named && sorted.length > 2) {
     const step = sorted[1] - sorted[0];
     const even = sorted.every(
-      (value, index) => index === 0 || value - sorted[index - 1] === step
+      (value, index) => index === 0 || value - sorted[index - 1] === step,
     );
     // Only when the run really goes to the end of the field: `0,15,30` is evenly spaced too, and
     // writing it as a step would add 45 to the schedule.
@@ -274,7 +274,7 @@ export function cronProblem(expression: string): string | undefined {
   const fields = splitCron(expression);
   if (!fields) return 'sixFields';
   const bad = CRON_FIELDS.findIndex(
-    (field, index) => !validField(fields[index], field)
+    (field, index) => !validField(fields[index], field),
   );
   return bad < 0 ? undefined : CRON_FIELDS[bad];
 }
@@ -397,11 +397,11 @@ const COARSENESS: Record<CronField, number> = {
  */
 export function standDown(
   fields: readonly string[],
-  period: CronPeriod
+  period: CronPeriod,
 ): string[] {
   const shown = new Set(fieldsForPeriod(period));
   return CRON_FIELDS.map((field, index) =>
-    shown.has(field) ? fields[index] ?? '*' : '*'
+    shown.has(field) ? (fields[index] ?? '*') : '*',
   );
 }
 
@@ -420,7 +420,7 @@ export function standDown(
  */
 export function withTimeDefaults(
   fields: readonly string[],
-  changed: CronField
+  changed: CronField,
 ): string[] {
   const from = COARSENESS[changed];
   return CRON_FIELDS.map((field, index) => {

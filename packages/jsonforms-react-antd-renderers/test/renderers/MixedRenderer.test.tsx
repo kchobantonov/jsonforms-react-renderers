@@ -35,7 +35,7 @@ const renderMixedValue = (data: unknown) =>
       schema={schema}
       uischema={{ type: 'Control', scope: '#' }}
       renderers={renderers}
-    />
+    />,
   );
 
 const renderMixedPrimitive = (data: unknown) =>
@@ -55,7 +55,7 @@ const renderMixedPrimitive = (data: unknown) =>
       }}
       uischema={{ type: 'Control', scope: '#' }}
       renderers={antdRenderers}
-    />
+    />,
   );
 
 describe('MixedRenderer', () => {
@@ -82,7 +82,7 @@ describe('MixedRenderer', () => {
     expect(html).toContain('ant-select-allow-clear');
     expect(html).not.toContain('<select');
     expect(html.indexOf('class="jsonforms-mixed-renderer-type"')).toBeLessThan(
-      html.indexOf('class="jsonforms-mixed-renderer-value"')
+      html.indexOf('class="jsonforms-mixed-renderer-value"'),
     );
   });
 
@@ -98,7 +98,7 @@ describe('MixedRenderer', () => {
 
       expect(html).toContain('jsonforms-mixed-renderer-primitive');
       expect(html).toContain(expectedClass);
-    }
+    },
   );
 
   it('does not render a value control for null', () => {
@@ -136,7 +136,7 @@ describe('MixedRenderer', () => {
         schema={schema}
         uischema={{ type: 'Control', scope: '#' }}
         renderers={antdRenderers}
-      />
+      />,
     );
 
     expect(html).toContain('aria-label="Rename custom"');
@@ -154,8 +154,8 @@ describe('MixedRenderer', () => {
           minLength: 4,
         },
         'string',
-        {}
-      )
+        {},
+      ),
     ).toEqual({ type: 'string', minLength: 4 });
   });
 
@@ -167,7 +167,7 @@ describe('MixedRenderer', () => {
         properties: { title: { type: 'string' } },
       },
       'object',
-      {}
+      {},
     );
 
     expect(objectSchema).not.toHaveProperty('default');
@@ -191,7 +191,7 @@ describe('AntdMixedTree', () => {
         disconnect() {}
         observe() {}
         unobserve() {}
-      }
+      },
     );
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -208,7 +208,7 @@ describe('AntdMixedTree', () => {
     const tree = buildMixedTree(
       [[], false, 0, null, 0.5, {}, ''],
       booleanItemsSchema({ type: 'array', items: true }),
-      {}
+      {},
     );
 
     act(() => {
@@ -222,11 +222,11 @@ describe('AntdMixedTree', () => {
           root={tree}
           selectedPath={[]}
           validateRename={() => undefined}
-        />
+        />,
       );
     });
     const showPrimitives = container.querySelector(
-      '[aria-label="Show primitives"]'
+      '[aria-label="Show primitives"]',
     ) as HTMLButtonElement;
     act(() => showPrimitives.click());
 
@@ -240,17 +240,17 @@ describe('AntdMixedTree', () => {
       'string',
     ].forEach((type) => {
       expect(
-        container.querySelector(`[aria-label="${type} value"]`)
+        container.querySelector(`[aria-label="${type} value"]`),
       ).not.toBeNull();
     });
     const labels = Array.from(
-      container.querySelectorAll('.jsonforms-mixed-tree-label')
+      container.querySelectorAll('.jsonforms-mixed-tree-label'),
     ).map((element) => element.textContent);
     expect(labels).toEqual(tree.children.map((node) => node.label));
     expect(
       container.querySelector(
-        '.ant-tree-treenode:first-child > .ant-tree-node-content-wrapper .ant-tree-iconEle [aria-label="array value"]'
-      )
+        '.ant-tree-treenode:first-child > .ant-tree-node-content-wrapper .ant-tree-iconEle [aria-label="array value"]',
+      ),
     ).not.toBeNull();
   });
 
@@ -268,19 +268,19 @@ describe('AntdMixedTree', () => {
           root={tree}
           selectedPath={[]}
           validateRename={() => undefined}
-        />
+        />,
       );
     });
 
     expect(
       container.querySelector(
-        '.ant-tree-treenode:first-child > .ant-tree-node-content-wrapper .ant-tree-iconEle [aria-label="object value"]'
-      )
+        '.ant-tree-treenode:first-child > .ant-tree-node-content-wrapper .ant-tree-iconEle [aria-label="object value"]',
+      ),
     ).not.toBeNull();
     expect(
       container.querySelector(
-        '.ant-tree-treenode:first-child .jsonforms-mixed-tree-label'
-      )
+        '.ant-tree-treenode:first-child .jsonforms-mixed-tree-label',
+      ),
     ).toBeNull();
   });
 
@@ -288,7 +288,7 @@ describe('AntdMixedTree', () => {
     const tree = buildMixedTree(
       [{ nested: { deep: true } }],
       booleanItemsSchema({ type: 'array', items: true }),
-      {}
+      {},
     );
 
     act(() => {
@@ -302,7 +302,7 @@ describe('AntdMixedTree', () => {
           root={tree}
           selectedPath={[]}
           validateRename={() => undefined}
-        />
+        />,
       );
     });
 
@@ -330,32 +330,32 @@ describe('AntdMixedTree', () => {
           })}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
-        />
+        />,
       );
     });
 
     const item = Array.from(
-      container.querySelectorAll('.jsonforms-mixed-tree-label')
+      container.querySelectorAll('.jsonforms-mixed-tree-label'),
     ).find((element) => element.textContent === 'Item 0') as HTMLElement;
     act(() => item.click());
 
     const detail = container.querySelector(
-      '.jsonforms-mixed-renderer-detail-type'
+      '.jsonforms-mixed-renderer-detail-type',
     );
     expect(detail?.querySelector('.ant-select')).not.toBeNull();
     expect(detail?.textContent).toContain('object');
     const breadcrumb = container.querySelector('.ant-breadcrumb');
     expect(
-      breadcrumb?.querySelector('[aria-label="array value"]')
+      breadcrumb?.querySelector('[aria-label="array value"]'),
     ).not.toBeNull();
     expect(breadcrumb?.querySelector('[aria-label="object value"]')).toBeNull();
     expect(breadcrumb?.textContent).toContain('Item 0');
     expect(
-      breadcrumb?.querySelector('[aria-label="array value"]')?.closest('a')
+      breadcrumb?.querySelector('[aria-label="array value"]')?.closest('a'),
     ).not.toBeNull();
     expect(
       container.querySelector('.jsonforms-mixed-renderer-detail-control')
-        ?.textContent
+        ?.textContent,
     ).toContain('Additional Properties');
   });
 
@@ -394,30 +394,30 @@ describe('AntdMixedTree', () => {
             },
           ]}
           renderers={antdRenderers}
-        />
+        />,
       );
     });
 
     const propertiesNode = Array.from(
-      container.querySelectorAll('.jsonforms-mixed-tree-label')
+      container.querySelectorAll('.jsonforms-mixed-tree-label'),
     ).find((element) => element.textContent === 'properties') as HTMLElement;
     const propertiesRow = propertiesNode.closest('.ant-tree-treenode');
     const switcher = propertiesRow?.querySelector(
-      '.ant-tree-switcher'
+      '.ant-tree-switcher',
     ) as HTMLElement;
     act(() => switcher.click());
 
     const nameNode = Array.from(
-      container.querySelectorAll('.jsonforms-mixed-tree-label')
+      container.querySelectorAll('.jsonforms-mixed-tree-label'),
     ).find((element) => element.textContent === 'name') as HTMLElement;
     act(() => nameNode.click());
 
     expect(container.querySelector('.ant-breadcrumb')?.textContent).toContain(
-      'name'
+      'name',
     );
     expect(
       container.querySelector('.jsonforms-mixed-renderer-detail-control')
-        ?.textContent
+        ?.textContent,
     ).toContain('Resolved recursive detail');
   });
 
@@ -440,34 +440,34 @@ describe('AntdMixedTree', () => {
           })}
           uischema={{ type: 'Control', scope: '#' }}
           renderers={antdRenderers}
-        />
+        />,
       );
     });
 
     const showPrimitives = container.querySelector(
-      '[aria-label="Show primitives"]'
+      '[aria-label="Show primitives"]',
     ) as HTMLElement;
     act(() => showPrimitives.click());
 
     const item = Array.from(
-      container.querySelectorAll('.jsonforms-mixed-tree-label')
+      container.querySelectorAll('.jsonforms-mixed-tree-label'),
     ).find((element) => element.textContent === 'Item 0') as HTMLElement;
     act(() => item.click());
 
     const primitiveDetail = container.querySelector(
-      '.jsonforms-mixed-renderer-detail-primitive'
+      '.jsonforms-mixed-renderer-detail-primitive',
     );
     const type = primitiveDetail?.querySelector(
-      '.jsonforms-mixed-renderer-detail-type'
+      '.jsonforms-mixed-renderer-detail-type',
     );
     const control = primitiveDetail?.querySelector(
-      '.jsonforms-mixed-renderer-detail-control'
+      '.jsonforms-mixed-renderer-detail-control',
     );
 
     expect(type?.textContent).toContain('string');
     expect(control?.querySelector('.ant-input')).not.toBeNull();
     expect(
-      Boolean(type && control && type.compareDocumentPosition(control) & 4)
+      Boolean(type && control && type.compareDocumentPosition(control) & 4),
     ).toBe(true);
   });
 
@@ -495,7 +495,7 @@ describe('AntdMixedTree', () => {
             })}
             uischema={{ type: 'Control', scope: '#' }}
             renderers={antdRenderers}
-          />
+          />,
         );
       });
 
@@ -503,15 +503,15 @@ describe('AntdMixedTree', () => {
       act(() => (headers[headers.length - 1] as HTMLElement).click());
 
       const nested = container.querySelector(
-        '.jsonforms-mixed-nested-navigation'
+        '.jsonforms-mixed-nested-navigation',
       );
       expect(nested?.textContent).toContain(type);
       expect(nested?.querySelector('[aria-label^="View "]')).not.toBeNull();
       expect(nested?.querySelector('.anticon-eye')).not.toBeNull();
       expect(
-        nested?.querySelector('.jsonforms-mixed-renderer-structured')
+        nested?.querySelector('.jsonforms-mixed-renderer-structured'),
       ).toBeNull();
-    }
+    },
   );
 });
 
@@ -543,8 +543,8 @@ it('can reveal and hide a mixed control without changing hook order', () => {
             uischema={uischema}
             data={{ show, value: 'visible value' }}
             renderers={antdRenderers}
-          />
-        )
+          />,
+        ),
       );
     }
     expect(container.querySelector('input')).not.toBeNull();

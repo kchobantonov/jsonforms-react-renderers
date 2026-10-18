@@ -33,7 +33,7 @@ export type PrimeReactExtendedRendererOptions = {
 };
 
 export const createPrimeReactExtendedRenderers = (
-  options: PrimeReactExtendedRendererOptions = {}
+  options: PrimeReactExtendedRendererOptions = {},
 ): JsonFormsRendererRegistryEntry[] => {
   const buttonRenderer = createButtonRenderer({
     ButtonComponent: Button,

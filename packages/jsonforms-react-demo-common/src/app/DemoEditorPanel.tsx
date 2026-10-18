@@ -66,8 +66,8 @@ export const DemoEditorPanel = ({
                 reloadOriginalEditorModel(
                   oldModels,
                   activeTab,
-                  currentExample[activeTab]
-                )
+                  currentExample[activeTab],
+                ),
               )
             }
           >

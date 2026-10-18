@@ -54,7 +54,7 @@ export const InputShell = ({
   });
   const help = getControlHelp(
     { description, errors, config: config ?? ctx.config, uischema },
-    focused
+    focused,
   );
   const cell = useContext(ShadcnCellMode);
   if (cell)
@@ -127,7 +127,7 @@ export const ShadcnInputControl = ({
   const handleChange = (target: string, value: any) =>
     originalHandleChange(
       target,
-      keepEmptyString && value === undefined ? '' : value
+      keepEmptyString && value === undefined ? '' : value,
     );
   if (!visible) return null;
   const id = makeId(path, label);
@@ -151,7 +151,7 @@ export const ShadcnInputControl = ({
           className='shadcn-jsonforms-input pr-10'
           type={inputType}
           maxLength={
-            uischema.options?.restrict ?? config?.restrict
+            (uischema.options?.restrict ?? config?.restrict)
               ? schema.maxLength
               : undefined
           }
@@ -184,7 +184,7 @@ export const ShadcnInputControl = ({
 };
 
 export const ShadcnNumberControl = (
-  props: ControlProps & { integer?: boolean }
+  props: ControlProps & { integer?: boolean },
 ) => {
   const {
     config,
@@ -200,7 +200,7 @@ export const ShadcnNumberControl = (
   const handleChange = (target: string, value: any) =>
     originalHandleChange(
       target,
-      keepSelectedType && value === undefined ? 0 : value
+      keepSelectedType && value === undefined ? 0 : value,
     );
   if (!visible) return null;
   const id = makeId(path, props.label);
@@ -229,8 +229,8 @@ export const ShadcnNumberControl = (
               value === ''
                 ? undefined
                 : props.integer
-                ? Math.trunc(Number(value))
-                : Number(value)
+                  ? Math.trunc(Number(value))
+                  : Number(value),
             );
           }}
         />

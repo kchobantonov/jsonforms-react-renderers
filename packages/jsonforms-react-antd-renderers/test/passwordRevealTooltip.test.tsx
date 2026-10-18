@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 
@@ -45,8 +45,8 @@ const render = (uischema: any, data: any = { password: 'hunter2' }) => {
         renderers={antdRenderers}
         cells={antdCells}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   const toggle = () =>
     container.querySelector<HTMLButtonElement>('[data-password-toggle]')!;
@@ -116,10 +116,10 @@ describe('the reveal toggle is a single control', () => {
     const { container, unmount } = render(passwordUi);
     const suffix = container.querySelector('.ant-input-suffix')!;
     const focusable = Array.from(
-      suffix.querySelectorAll<HTMLElement>('[tabindex], button')
+      suffix.querySelectorAll<HTMLElement>('[tabindex], button'),
     ).filter((element) => element.tabIndex >= 0);
     expect(
-      focusable.map((element) => element.getAttribute('aria-label'))
+      focusable.map((element) => element.getAttribute('aria-label')),
     ).toEqual(['Show password', 'Clear value']);
     unmount();
   });

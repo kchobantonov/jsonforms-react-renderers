@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /*
   Browser APIs jsdom does not implement and antd calls anyway.

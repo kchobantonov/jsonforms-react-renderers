@@ -11,7 +11,7 @@ export const conditionalFieldsEnabled = (ui: any, config: any): boolean =>
 
 export const hasConditionalFields = (
   schema: any,
-  seen = new Set<any>()
+  seen = new Set<any>(),
 ): boolean => {
   if (!schema || typeof schema !== 'object' || seen.has(schema)) return false;
   seen.add(schema);
@@ -31,7 +31,7 @@ const evaluate = (
   ajv: Ajv,
   condition: any,
   root: JsonSchema,
-  data: unknown
+  data: unknown,
 ) => {
   if (typeof condition === 'boolean') return condition;
   let roots = validators.get(ajv);
@@ -51,7 +51,7 @@ export const projectConditionalFields = (
   schema: JsonSchema,
   rootSchema: JsonSchema,
   data: unknown,
-  ajv: Ajv
+  ajv: Ajv,
 ) => {
   const properties: Record<string, any> = Object.create(null);
   const known = new Set<string>();
@@ -66,7 +66,7 @@ export const projectConditionalFields = (
         visit(Resolve.schema(rootSchema, input.$ref, rootSchema), active);
       } catch {
         diagnostics.push(
-          'A conditional schema reference could not be resolved.'
+          'A conditional schema reference could not be resolved.',
         );
       }
     }
@@ -94,7 +94,7 @@ export const projectConditionalFields = (
           matches = evaluate(ajv, input.if, rootSchema, data);
         } catch {
           diagnostics.push(
-            'A conditional field condition could not be evaluated.'
+            'A conditional field condition could not be evaluated.',
           );
         }
       }
@@ -127,7 +127,7 @@ export const useConditionalFields = (
   root: JsonSchema,
   data: unknown,
   ui: any,
-  config: any
+  config: any,
 ) => {
   const context = useJsonForms();
   const enabled =
@@ -137,7 +137,7 @@ export const useConditionalFields = (
       enabled && context.core?.ajv
         ? projectConditionalFields(schema, root, data, context.core.ajv)
         : { schema, known: new Set<string>(), diagnostics: [] as string[] },
-    [enabled, schema, root, data, context.core?.ajv]
+    [enabled, schema, root, data, context.core?.ajv],
   );
 };
 
@@ -146,7 +146,7 @@ export const useConditionalFields = (
 export const conditionalLayout = (
   ui: UISchemaElement,
   schema: JsonSchema,
-  known: Set<string>
+  known: Set<string>,
 ): UISchemaElement => {
   if (known.size === 0) return ui;
   const visit = (element: any): any => {

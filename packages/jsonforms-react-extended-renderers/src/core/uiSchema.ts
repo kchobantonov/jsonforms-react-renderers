@@ -47,7 +47,7 @@ export type ExtendedLayout = Omit<Layout, 'elements'> & {
 
 /** Whether an element carries a usable name. */
 export const isNamedUISchemaElement = (
-  uischema: UISchemaElement | undefined
+  uischema: UISchemaElement | undefined,
 ): uischema is NamedUISchemaElement =>
   typeof (uischema as ExtendedUISchemaElement | undefined)?.name === 'string' &&
   (uischema as NamedUISchemaElement).name !== '';

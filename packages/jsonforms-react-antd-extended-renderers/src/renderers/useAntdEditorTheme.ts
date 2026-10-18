@@ -29,7 +29,8 @@ export const useAntdEditorTheme = (): EditorTheme => {
 
 const firstColor = (...candidates: unknown[]): string | undefined =>
   candidates.find(
-    (value): value is string => typeof value === 'string' && value.trim() !== ''
+    (value): value is string =>
+      typeof value === 'string' && value.trim() !== '',
   );
 
 const isDark = (color: unknown): boolean | undefined => {

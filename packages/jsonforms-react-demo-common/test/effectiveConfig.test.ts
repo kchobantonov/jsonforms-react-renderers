@@ -1,12 +1,12 @@
 import { exampleElements } from './exampleElements';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import examples from '../src/examples';
 
 /** Mirrors App.tsx: the example's config is merged under the settings toggles. */
 const effective = (
   configOptions: Record<string, unknown>,
   exampleConfig: Record<string, unknown> | undefined,
-  key: string
+  key: string,
 ) => Boolean(configOptions[key] ?? exampleConfig?.[key]);
 
 describe('settings toggles reflect what the form is using', () => {
@@ -23,8 +23,8 @@ describe('settings toggles reflect what the form is using', () => {
       effective(
         { showUnfocusedDescription: false },
         exampleConfig,
-        'showUnfocusedDescription'
-      )
+        'showUnfocusedDescription',
+      ),
     ).toBe(false);
   });
 
@@ -41,7 +41,7 @@ describe('settings toggles reflect what the form is using', () => {
   */
   test('the empty-name switch follows the example that sets it', () => {
     const additional = examples.find(
-      (e) => e.name === 'spec-additional-properties'
+      (e) => e.name === 'spec-additional-properties',
     );
     const config = additional!.config as Record<string, unknown>;
     expect(config.allowEmptyPropertyNames).toBe(true);
@@ -50,8 +50,8 @@ describe('settings toggles reflect what the form is using', () => {
       effective(
         { allowEmptyPropertyNames: false },
         config,
-        'allowEmptyPropertyNames'
-      )
+        'allowEmptyPropertyNames',
+      ),
     ).toBe(false);
   });
 
@@ -59,10 +59,10 @@ describe('settings toggles reflect what the form is using', () => {
     // The switch writes global config; section 18 gives the element the last
     // word, which is why the example carries an explicit `false` on one control.
     const additional = examples.find(
-      (e) => e.name === 'spec-additional-properties'
+      (e) => e.name === 'spec-additional-properties',
     );
     const quota = exampleElements(additional!.uischema as any).find(
-      (element: any) => element.scope === '#/properties/quota'
+      (element: any) => element.scope === '#/properties/quota',
     );
     expect(quota.options.allowEmptyPropertyNames).toBe(false);
   });

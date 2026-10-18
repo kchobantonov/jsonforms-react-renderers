@@ -1,5 +1,5 @@
 import { demoSchema } from '../src/app/demoSchema';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { createAjv, Generate } from '@jsonforms/core';
 import examples from '../src/examples';
 

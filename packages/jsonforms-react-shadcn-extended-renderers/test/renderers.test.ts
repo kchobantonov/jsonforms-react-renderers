@@ -54,46 +54,50 @@ describe('Shadcn extended renderer registry', () => {
       rank(
         colorControlTester,
         { type: 'Control', scope: '#/properties/value' },
-        { type: 'string', format: 'color' }
-      )
+        { type: 'string', format: 'color' },
+      ),
     ).toBe(2);
     expect(
       rank(
         durationControlTester,
         { type: 'Control', scope: '#/properties/value' },
-        { type: 'string', format: 'duration' }
-      )
+        { type: 'string', format: 'duration' },
+      ),
     ).toBe(3);
     expect(
       rank(
         fileControlTester,
         { type: 'Control', scope: '#' },
-        { type: 'string', contentEncoding: 'base64' }
-      )
+        { type: 'string', contentEncoding: 'base64' },
+      ),
     ).toBe(2);
     expect(
       rank(
         fileControlTester,
         { type: 'Control', scope: '#' },
-        { type: 'string' }
-      )
+        { type: 'string' },
+      ),
     ).toBe(-1);
     expect(
-      rank(nullControlTester, { type: 'Control', scope: '#' }, { type: 'null' })
+      rank(
+        nullControlTester,
+        { type: 'Control', scope: '#' },
+        { type: 'null' },
+      ),
     ).toBe(2);
     expect(
       rank(
         splitLayoutTester,
         { type: 'HorizontalLayout', options: { variant: 'splitter' } },
-        {}
-      )
+        {},
+      ),
     ).toBe(5);
     expect(
       rank(
         agGridArrayTester,
         { type: 'Control', scope: '#', options: { variant: 'ag-grid' } },
-        { type: 'array' }
-      )
+        { type: 'array' },
+      ),
     ).toBe(25);
   });
 });

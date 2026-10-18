@@ -41,7 +41,7 @@ import {
  */
 export const chipsControlTester: RankedTester = rankWith(
   6,
-  and(uiTypeIs('Control'), isChipsControl)
+  and(uiTypeIs('Control'), isChipsControl),
 );
 
 export const ChipsControl = (props: ControlProps) => {
@@ -111,7 +111,7 @@ export const ChipsControl = (props: ControlProps) => {
   };
 
   const remaining = choices?.filter(
-    (choice) => !unique || !isSelected(values, choice.value)
+    (choice) => !unique || !isSelected(values, choice.value),
   );
 
   return (

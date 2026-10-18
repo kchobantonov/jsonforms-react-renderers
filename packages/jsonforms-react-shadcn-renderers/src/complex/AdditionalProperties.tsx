@@ -97,13 +97,13 @@ export const AdditionalProperties = ({
     objectSchema.additionalProperties === undefined;
   const reservedPropertyNames = Object.keys(objectSchema.properties ?? {});
   const additionalKeys = Object.keys(objectData ?? {}).filter(
-    (key) => !reservedPropertyNames.includes(key)
+    (key) => !reservedPropertyNames.includes(key),
   );
   const page = useCollectionPagination(
     additionalKeys,
     uischema.options?.additionalProperties?.pagination,
     config,
-    'additionalProperties'
+    'additionalProperties',
   );
   const additionalPropertyItems = useMemo(
     () =>
@@ -113,10 +113,10 @@ export const AdditionalProperties = ({
           path,
           schema,
           rootSchema,
-          allowIfMissing
-        )
+          allowIfMissing,
+        ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema]
+    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||
@@ -130,7 +130,7 @@ export const AdditionalProperties = ({
     value: any,
     nameSchema: JsonSchema,
     root: JsonSchema,
-    currentName?: string
+    currentName?: string,
   ) => {
     const result = validateAdditionalPropertyName({
       name,
@@ -147,9 +147,9 @@ export const AdditionalProperties = ({
             result.error === 'already-defined'
               ? 'additionalProperties.nameTaken'
               : result.error === 'required'
-              ? 'additionalProperties.nameRequired'
-              : 'additionalProperties.nameInvalid',
-            { name }
+                ? 'additionalProperties.nameRequired'
+                : 'additionalProperties.nameInvalid',
+            { name },
           )
         : undefined)
     );
@@ -159,7 +159,7 @@ export const AdditionalProperties = ({
     propertyName,
     data,
     schema,
-    rootSchema
+    rootSchema,
   );
   const maxPropertiesReached =
     objectSchema.maxProperties !== undefined &&
@@ -187,13 +187,13 @@ export const AdditionalProperties = ({
       path,
       schema,
       rootSchema,
-      allowIfMissing
+      allowIfMissing,
     );
     const updatedData = objectData ? { ...objectData } : {};
 
     updatedData[propertyName] = createDefaultValue(
       additionalProperty.schema,
-      rootSchema
+      rootSchema,
     );
     handleChange(path, updatedData);
     setNewPropertyName('');
@@ -231,7 +231,7 @@ export const AdditionalProperties = ({
       data,
       schema,
       rootSchema,
-      propertyToRename
+      propertyToRename,
     );
     if (trimmed === propertyToRename) {
       setRenamingPropertyName(null);
@@ -246,7 +246,7 @@ export const AdditionalProperties = ({
       Object.entries(objectData).map(([key, value]) => [
         key === propertyToRename ? trimmed : key,
         value,
-      ])
+      ]),
     );
     handleChange(path, updatedData);
     setRenamingPropertyName(null);
@@ -264,7 +264,7 @@ export const AdditionalProperties = ({
         data,
         schema,
         rootSchema,
-        renamingPropertyName
+        renamingPropertyName,
       )
     : undefined;
   const renameDisabled = !enabled || readonly || Boolean(renameError);
@@ -430,8 +430,8 @@ export const AdditionalProperties = ({
                               assignOwnProperty(
                                 { ...objectData },
                                 item.propertyName,
-                                value
-                              )
+                                value,
+                              ),
                             )
                           }
                         />

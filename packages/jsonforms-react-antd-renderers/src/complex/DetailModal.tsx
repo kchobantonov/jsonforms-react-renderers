@@ -16,7 +16,7 @@ export const DetailModal = ({
   const geometry = useDetailDialog(
     !!props.open,
     options,
-    () => surface.current?.firstElementChild as HTMLElement | null
+    () => surface.current?.firstElementChild as HTMLElement | null,
   );
   const [restoredWidth, setRestoredWidth] = React.useState<string>();
   React.useEffect(() => {

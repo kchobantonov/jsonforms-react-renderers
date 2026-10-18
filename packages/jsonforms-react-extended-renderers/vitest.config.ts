@@ -1,15 +1,17 @@
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   resolve: {
     alias: {
       '@chobantonov/jsonforms-react-renderer-common': fileURLToPath(
-        new URL('../jsonforms-react-renderer-common/src', import.meta.url)
+        new URL('../jsonforms-react-renderer-common/src', import.meta.url),
       ),
     },
   },
   test: {
+    maxWorkers: 2,
+    sequence: { groupOrder: 4 },
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./test/setup/matchMedia.ts'],

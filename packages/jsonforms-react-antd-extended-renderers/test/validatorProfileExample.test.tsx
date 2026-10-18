@@ -1,7 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
@@ -83,7 +90,7 @@ const draw = (options?: { locale?: string; config?: any }) => {
     i18n: () => ({
       locale,
       translate: createTranslator(
-        (key: string, fallback?: string) => catalog(locale)?.[key] ?? fallback
+        (key: string, fallback?: string) => catalog(locale)?.[key] ?? fallback,
       ),
     }),
     localizers: ajvLocalizers,
@@ -106,7 +113,7 @@ const draw = (options?: { locale?: string; config?: any }) => {
               locale,
               translate: createTranslator(
                 (key: string, fallback?: string) =>
-                  catalog(locale)?.[key] ?? fallback
+                  catalog(locale)?.[key] ?? fallback,
               ),
               /*
                 Ajv's own wording, localized when the error is **rendered**.
@@ -116,7 +123,7 @@ const draw = (options?: { locale?: string; config?: any }) => {
               */
               translateError: createAjvErrorTranslator(
                 ajvLocalizers,
-                () => locale
+                () => locale,
               ),
             }}
             renderers={[...antdRenderers, ...antdExtendedRenderers]}
@@ -125,8 +132,8 @@ const draw = (options?: { locale?: string; config?: any }) => {
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -136,9 +143,9 @@ const draw = (options?: { locale?: string; config?: any }) => {
   /** The message antd shows under the control whose label matches. */
   const messageFor = (label: string) => {
     const item = Array.from(
-      (active() ?? container).querySelectorAll<HTMLElement>('.ant-form-item')
+      (active() ?? container).querySelectorAll<HTMLElement>('.ant-form-item'),
     ).find((candidate) =>
-      candidate.querySelector('label')?.textContent?.trim().startsWith(label)
+      candidate.querySelector('label')?.textContent?.trim().startsWith(label),
     );
     return (
       item?.querySelector<HTMLElement>('.ant-form-item-explain')?.textContent ??
@@ -154,11 +161,11 @@ const draw = (options?: { locale?: string; config?: any }) => {
     data: () => current,
     tabs: () =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-tabs-tab')).map(
-        (tab) => tab.textContent ?? ''
+        (tab) => tab.textContent ?? '',
       ),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -210,7 +217,7 @@ describe('ordinary validator errors', () => {
 
     await view.setLocale('bg');
     const bulgarian = view.messageFor(
-      catalog('bg')['fullName.label'] ?? 'Full name'
+      catalog('bg')['fullName.label'] ?? 'Full name',
     );
     expect(bulgarian || view.messageFor('Full name')).toMatch(/[Ѐ-ӿ]/);
     view.unmount();
@@ -221,7 +228,7 @@ describe('ordinary validator errors', () => {
       const keys = Object.keys(catalog(locale));
       const errorKeys = keys.filter(
         (key) =>
-          key.startsWith('error.') && !key.startsWith('error.errorMessage.')
+          key.startsWith('error.') && !key.startsWith('error.errorMessage.'),
       );
       expect(errorKeys, `${locale} defines validator error text`).toEqual([]);
     }
@@ -271,7 +278,7 @@ describe('defaults', () => {
     expect(opensOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(
       (new Date(closesOn).getTime() - new Date(opensOn).getTime()) /
-        (24 * 60 * 60 * 1000)
+        (24 * 60 * 60 * 1000),
     ).toBe(14);
     expect(year).toBe(new Date().getFullYear());
     view.unmount();
@@ -318,7 +325,7 @@ describe('a default computed by a function in the schema', () => {
     await settle();
     expect(view.data().computed.greeting).toBeUndefined();
     expect(warn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'dynamicDefaults.evaluationDisabled'
+      'dynamicDefaults.evaluationDisabled',
     );
     view.unmount();
   });
@@ -329,10 +336,10 @@ describe('messages written into the schema', () => {
     const view = draw();
     await view.selectTab('Messages in the schema');
     expect(view.messageFor('Nickname')).toContain(
-      catalog('en')['error.errorMessage.nicknameRequired']
+      catalog('en')['error.errorMessage.nicknameRequired'],
     );
     expect(view.messageFor('Age')).toContain(
-      catalog('en')['error.errorMessage.tooYoung']
+      catalog('en')['error.errorMessage.tooYoung'],
     );
     view.unmount();
   });
@@ -342,7 +349,7 @@ describe('messages written into the schema', () => {
     await view.selectTab('Messages in the schema');
     await view.setLocale('bg');
     expect(view.messageFor('Age')).toContain(
-      catalog('bg')['error.errorMessage.tooYoung']
+      catalog('bg')['error.errorMessage.tooYoung'],
     );
     view.unmount();
   });

@@ -24,8 +24,8 @@ export const antdSplitLayoutTester: RankedTester = rankWith(
   5,
   and(
     or(uiTypeIs('HorizontalLayout'), uiTypeIs('VerticalLayout')),
-    hasAntdSplitLayoutVariant
-  )
+    hasAntdSplitLayoutVariant,
+  ),
 );
 
 export const AntdSplitLayout = (props: LayoutProps) => {
@@ -39,7 +39,7 @@ export const AntdSplitLayout = (props: LayoutProps) => {
   const elements = useEffectiveElements(
     layout.elements,
     props.path,
-    props.config
+    props.config,
   );
   /* "Initial sizes use normal sizing", not equal shares. */
   const shares = initialSplitSizes(elements);
@@ -74,7 +74,9 @@ export const AntdSplitLayout = (props: LayoutProps) => {
           }
         : {})}
       style={{
-        height: vertical ? splitCssSize(options.height) ?? '20rem' : undefined,
+        height: vertical
+          ? (splitCssSize(options.height) ?? '20rem')
+          : undefined,
         minHeight: vertical ? splitCssSize(options.minHeight) : undefined,
       }}
     >

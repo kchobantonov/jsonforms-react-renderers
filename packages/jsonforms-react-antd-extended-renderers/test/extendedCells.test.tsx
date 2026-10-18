@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { DispatchCell, JsonForms } from '@jsonforms/react';
 import {
@@ -91,8 +91,8 @@ const drawColumn = async (field: string, cells: any) => {
             latest = next;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 60));
@@ -110,7 +110,7 @@ const drawColumn = async (field: string, cells: any) => {
       const field = container.querySelector<HTMLInputElement>('input')!;
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!;
       act(() => {
         setter.call(field, text);
@@ -185,8 +185,8 @@ describe('the antd table', () => {
             cells={cells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 80));
@@ -213,7 +213,7 @@ describe('the antd table', () => {
       asserted rather than just the colour one.
     */
     expect(view.values()).toEqual(
-      expect.arrayContaining(['Ana', '#3366ff', 'P2DT3H'])
+      expect.arrayContaining(['Ana', '#3366ff', 'P2DT3H']),
     );
     view.unmount();
   });
@@ -224,7 +224,7 @@ describe('the antd table', () => {
     expect(view.durationTrigger()).toBeNull();
     // The values are still right - it is the control that is missing.
     expect(view.values()).toEqual(
-      expect.arrayContaining(['Ana', '#3366ff', 'P2DT3H'])
+      expect.arrayContaining(['Ana', '#3366ff', 'P2DT3H']),
     );
     view.unmount();
   });
@@ -320,7 +320,7 @@ describe('the extended cells', () => {
       monacoControlTester,
     } = require('@chobantonov/jsonforms-react-extended-renderers');
     expect(
-      antdExtendedCells.some((entry) => entry.tester === monacoControlTester)
+      antdExtendedCells.some((entry) => entry.tester === monacoControlTester),
     ).toBe(false);
   });
 });

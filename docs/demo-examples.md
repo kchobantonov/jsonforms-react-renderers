@@ -10,20 +10,20 @@ fixtures or be registered by a host.
 The removed local examples are covered as follows. This maps authored scenarios;
 renderer support is established separately by integration tests.
 
-| Removed example | Spec coverage |
-| --- | --- |
-| Color | `color-control`: hex3 output, ordinary colors, alpha colors and restrictions |
-| Duration | `temporal-controls`: ordinary and week durations, hidden action bar |
-| Null | `null-control`: absent versus explicit null |
-| Monaco Editor | `code-editor`: growing/fixed editors, initialization actions and JSON conversion; `additional-errors`: dynamic language |
-| AG Grid / Table Cells | `array-controls`: staff table and grid with scalar formats, alpha color, reorder controls, native widths/filter/pagination, object/array summaries, Clear and nested cell detail |
-| File | `file-control`: data URI, named binary URI and base64 encodings; explicit UI file-size limits |
-| Collapsible Groups | `group-layout`: open/collapsed groups, data indicators, false and zero |
-| Horizontal Layout Sizing | `layout-sizing`: fixed/automatic spans, wrapping, hidden fields, nested presentation and groups |
-| Split Layout | `split-layout`: horizontal, vertical and three-pane splitters |
-| Spacer / Separator / ImageView / Presentation Renderers / combined presentation | `presentation`: spacing, separators, static/data images, inline-image permission and visibility rules |
-| Link | `presentation`: explicit translations, unprefixed label, new tab, relative/mail URLs, empty/refused destinations |
-| Template Layout | `template-layout`: named and positional slots, nested templates, data, validation errors and actions; native augmentation demonstrates host components |
+| Removed example                                                                 | Spec coverage                                                                                                                                                                    |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Color                                                                           | `color-control`: hex3 output, ordinary colors, alpha colors and restrictions                                                                                                     |
+| Duration                                                                        | `temporal-controls`: ordinary and week durations, hidden action bar                                                                                                              |
+| Null                                                                            | `null-control`: absent versus explicit null                                                                                                                                      |
+| Monaco Editor                                                                   | `code-editor`: growing/fixed editors, initialization actions and JSON conversion; `additional-errors`: dynamic language                                                          |
+| AG Grid / Table Cells                                                           | `array-controls`: staff table and grid with scalar formats, alpha color, reorder controls, native widths/filter/pagination, object/array summaries, Clear and nested cell detail |
+| File                                                                            | `file-control`: data URI, named binary URI and base64 encodings; explicit UI file-size limits                                                                                    |
+| Collapsible Groups                                                              | `group-layout`: open/collapsed groups, data indicators, false and zero                                                                                                           |
+| Horizontal Layout Sizing                                                        | `layout-sizing`: fixed/automatic spans, wrapping, hidden fields, nested presentation and groups                                                                                  |
+| Split Layout                                                                    | `split-layout`: horizontal, vertical and three-pane splitters                                                                                                                    |
+| Spacer / Separator / ImageView / Presentation Renderers / combined presentation | `presentation`: spacing, separators, static/data images, inline-image permission and visibility rules                                                                            |
+| Link                                                                            | `presentation`: explicit translations, unprefixed label, new tab, relative/mail URLs, empty/refused destinations                                                                 |
+| Template Layout                                                                 | `template-layout`: named and positional slots, nested templates, data, validation errors and actions; native augmentation demonstrates host components                           |
 
 The old File example's schema-level size hint is represented by the spec's
 explicit UI size limit. Unused translation assets and library-specific template
@@ -52,16 +52,22 @@ how the demo switches from an explicit schema to inference.
 Pass an explicit catalog to the existing entry point:
 
 ```tsx
-import { listExamples, renderExample } from '@chobantonov/jsonforms-react-demo-common';
+import {
+  listExamples,
+  renderExample,
+} from '@chobantonov/jsonforms-react-demo-common';
 
 renderExample(renderers, cells, Wrapper, {
-  examples: [...listExamples(), {
-    name: 'local-workflow',
-    label: 'Local workflow',
-    schema: { type: 'string' },
-    uischema: { type: 'Control', scope: '#' },
-    data: 'Hello',
-  }],
+  examples: [
+    ...listExamples(),
+    {
+      name: 'local-workflow',
+      label: 'Local workflow',
+      schema: { type: 'string' },
+      uischema: { type: 'Control', scope: '#' },
+      data: 'Hello',
+    },
+  ],
 });
 ```
 

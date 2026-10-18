@@ -35,18 +35,20 @@ it.each(ui.elements)(
             }
             renderers={antdRenderers}
             cells={antdCells}
-          />
-        )
+          />,
+        ),
       );
       expect(host.textContent).not.toContain('No applicable renderer');
       expect(host.querySelectorAll('input[id*="kind"]').length).toBe(0);
       expect(host.textContent).toContain('Вид');
       expect(
         Array.from(
-          host.querySelectorAll('[role="combobox"], .ant-select-selection-item')
+          host.querySelectorAll(
+            '[role="combobox"], .ant-select-selection-item',
+          ),
         ).some((element) =>
-          ['file', 'folder'].includes(element.textContent?.trim() ?? '')
-        )
+          ['file', 'folder'].includes(element.textContent?.trim() ?? ''),
+        ),
       ).toBe(false);
       expect(host.textContent).toContain('Деца');
       expect(host.textContent).toContain('Папка');
@@ -56,7 +58,7 @@ it.each(ui.elements)(
       act(() => root.unmount());
       host.remove();
     }
-  }
+  },
 );
 
 it('adds one child to an empty recursive folder without generating descendants', async () => {
@@ -78,8 +80,8 @@ it('adds one child to an empty recursive folder without generating descendants',
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     const add = host
       .querySelector<HTMLElement>('[aria-label="plus"]')
@@ -93,7 +95,7 @@ it('adds one child to an empty recursive folder without generating descendants',
     expect(latest.empty.children[0]).toEqual({});
     expect(host.textContent).toContain('Choose a kind.');
     expect(
-      host.querySelector('[role="combobox"][aria-invalid="true"]')
+      host.querySelector('[role="combobox"][aria-invalid="true"]'),
     ).not.toBeNull();
     expect(JSON.stringify(latest.empty).length).toBeLessThan(300);
     expect(latest.populated).toEqual(data.populated);
@@ -125,8 +127,8 @@ it('initializes the selected folder when switching from a file', async () => {
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => {
       host
@@ -134,7 +136,7 @@ it('initializes the selected folder when switching from a file', async () => {
         .dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     });
     const folder = document.querySelector<HTMLElement>(
-      '.ant-select-item-option[title="Folder"]'
+      '.ant-select-item-option[title="Folder"]',
     );
     expect(folder).not.toBeNull();
     await act(async () => folder!.click());
@@ -173,8 +175,8 @@ it('creates a file only after choosing a branch for an empty node', async () => 
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     await act(async () => {
       host
@@ -182,7 +184,7 @@ it('creates a file only after choosing a branch for an empty node', async () => 
         .dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     });
     const folder = document.querySelector<HTMLElement>(
-      '.ant-select-item-option[title="File"]'
+      '.ant-select-item-option[title="File"]',
     );
     expect(folder).not.toBeNull();
     await act(async () => folder!.click());
@@ -216,8 +218,8 @@ it('clears the selected branch when the document is externally cleared', async (
           }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
   };
   try {
@@ -261,15 +263,15 @@ it('clears a child kind to an empty object without removing its slot', async () 
           onChange={(event) => {
             latest = event.data;
           }}
-        />
-      )
+        />,
+      ),
     );
     const clears = host.querySelectorAll('.ant-select-clear');
     expect(clears.length).toBeGreaterThan(1);
     await act(async () =>
       clears[clears.length - 1].dispatchEvent(
-        new MouseEvent('click', { bubbles: true })
-      )
+        new MouseEvent('click', { bubbles: true }),
+      ),
     );
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 30));
@@ -307,8 +309,8 @@ it('marks invalid child headers while collapsed and honors the indicator setting
           uischema={{ type: 'Control', scope: '#/properties/empty' }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
   };
   try {
@@ -317,14 +319,14 @@ it('marks invalid child headers while collapsed and honors the indicator setting
       Array.from(host.querySelectorAll('.ant-collapse-header'));
     expect(
       headers().some((header) =>
-        header.querySelector('[data-container-validation-indicator]')
-      )
+        header.querySelector('[data-container-validation-indicator]'),
+      ),
     ).toBe(true);
     await render(false);
     expect(
       headers().some((header) =>
-        header.querySelector('[data-container-validation-indicator]')
-      )
+        header.querySelector('[data-container-validation-indicator]'),
+      ),
     ).toBe(false);
   } finally {
     act(() => root.unmount());

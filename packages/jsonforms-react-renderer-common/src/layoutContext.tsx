@@ -14,7 +14,7 @@ import { useJsonForms } from '@jsonforms/react';
 export const useEffectiveElements = (
   elements: UISchemaElement[],
   path: string,
-  config?: unknown
+  config?: unknown,
 ): UISchemaElement[] => {
   const ctx = useJsonForms();
   const data = ctx.core?.data;
@@ -35,9 +35,9 @@ export interface AjvProps {
 }
 
 // TODO fix @typescript-eslint/ban-types
-// eslint-disable-next-line @typescript-eslint/ban-types
+// oxlint-disable-next-line @typescript-eslint/ban-types
 export const withAjvProps = <P extends {}>(
-  Component: ComponentType<AjvProps & P>
+  Component: ComponentType<AjvProps & P>,
 ) =>
   function WithAjvProps(props: P) {
     const ctx = useJsonForms();

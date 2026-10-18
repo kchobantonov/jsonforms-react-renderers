@@ -41,19 +41,17 @@ export const categorizationAccordionTester: RankedTester = rankWith(
   and(
     uiTypeIs('Categorization'),
     categorizationHasCategory,
-    optionIs('variant', 'accordion')
-  )
+    optionIs('variant', 'accordion'),
+  ),
 );
 
 export interface CategorizationAccordionLayoutRendererProps
-  extends StatePropsOfLayout,
-    AjvProps,
-    TranslateProps {
+  extends StatePropsOfLayout, AjvProps, TranslateProps {
   data?: unknown;
 }
 
 export const CategorizationAccordionLayoutRenderer = (
-  props: CategorizationAccordionLayoutRendererProps
+  props: CategorizationAccordionLayoutRendererProps,
 ) => {
   const {
     data,
@@ -77,13 +75,13 @@ export const CategorizationAccordionLayoutRenderer = (
     undefined,
     // Closable: an accordion here may be closed entirely. This is the one
     // place the project differs from section 8; see Adjustment 10.2.
-    true
+    true,
   );
 
   const labels = useMemo(
     () =>
       categories.map((category) => deriveLabelForUISchemaElement(category, t)),
-    [categories, t]
+    [categories, t],
   );
 
   /*
@@ -102,17 +100,17 @@ export const CategorizationAccordionLayoutRenderer = (
   const baseId = useId();
   useEffect(() => {
     const items = rootRef.current?.querySelectorAll<HTMLElement>(
-      ':scope > .ant-collapse > .ant-collapse-item'
+      ':scope > .ant-collapse > .ant-collapse-item',
     );
     items?.forEach((item, index) => {
       const header = item.querySelector<HTMLElement>(
-        ':scope > .ant-collapse-header'
+        ':scope > .ant-collapse-header',
       );
       // `-panel` in antd 6, `-content` in 5. Accepting both means a version
       // bump degrades to "no relationship" rather than to a crash, and the
       // accessibility test says which one is actually in use.
       const panel = item.querySelector<HTMLElement>(
-        ':scope > .ant-collapse-panel, :scope > .ant-collapse-content'
+        ':scope > .ant-collapse-panel, :scope > .ant-collapse-content',
       );
       if (!header || !panel) {
         return;
@@ -169,7 +167,7 @@ export const CategorizationAccordionLayoutRenderer = (
           // open header removes its key and leaves none, which closes the
           // accordion - see Adjustment 10.2.
           const opened = (Array.isArray(keys) ? keys : [keys]).filter(
-            (key) => String(key) !== String(active)
+            (key) => String(key) !== String(active),
           );
           if (opened.length > 0) {
             select(Number(opened[0]));
@@ -213,6 +211,6 @@ export const CategorizationAccordionLayoutRenderer = (
 
 export default withAjvProps(
   withTranslateProps(
-    withJsonFormsLayoutProps(CategorizationAccordionLayoutRenderer)
-  )
+    withJsonFormsLayoutProps(CategorizationAccordionLayoutRenderer),
+  ),
 );

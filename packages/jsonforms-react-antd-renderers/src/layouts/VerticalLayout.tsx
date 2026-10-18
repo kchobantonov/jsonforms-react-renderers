@@ -15,7 +15,7 @@ import { withJsonFormsLayoutProps } from '@jsonforms/react';
  */
 export const verticalLayoutTester: RankedTester = rankWith(
   1,
-  uiTypeIs('VerticalLayout')
+  uiTypeIs('VerticalLayout'),
 );
 
 export const VerticalLayoutRenderer = ({

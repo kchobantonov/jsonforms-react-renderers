@@ -72,16 +72,16 @@ describe('PrimeReact boolean toggle control tester', () => {
 
   it('should fail', () => {
     expect(booleanToggleControlTester(undefined, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(booleanToggleControlTester(null, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(
-      booleanToggleControlTester({ type: 'Foo' }, undefined, undefined)
+      booleanToggleControlTester({ type: 'Foo' }, undefined, undefined),
     ).toBe(NOT_APPLICABLE);
     expect(
-      booleanToggleControlTester({ type: 'Control' }, undefined, undefined)
+      booleanToggleControlTester({ type: 'Control' }, undefined, undefined),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanToggleControlTester(
@@ -90,8 +90,8 @@ describe('PrimeReact boolean toggle control tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanToggleControlTester(
@@ -107,8 +107,8 @@ describe('PrimeReact boolean toggle control tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
 
     // Not applicable for boolean control if toggle option is false
@@ -129,8 +129,8 @@ describe('PrimeReact boolean toggle control tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
 
     // Not applicable for boolean control if toggle option is not given
@@ -148,8 +148,8 @@ describe('PrimeReact boolean toggle control tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -165,8 +165,8 @@ describe('PrimeReact boolean toggle control tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(3);
   });
 });
@@ -192,7 +192,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={control} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeTruthy();
@@ -213,7 +213,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={control} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBe(false);
@@ -233,7 +233,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={control} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeFalsy();
@@ -246,7 +246,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     // Make sure a toggle is rendered by checking for the thumb element
@@ -271,7 +271,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const input = wrapper.find(Switch);
@@ -295,7 +295,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -320,7 +320,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: undefined };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -344,7 +344,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: null };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -368,7 +368,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, bar: 11 };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -391,7 +391,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, null: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -414,7 +414,7 @@ describe('PrimeReact boolean toggle control', () => {
           }}
         />
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, undefined: false };
     wrapper.setProps({ initState: { renderers: primereactRenderers, core } });
@@ -434,7 +434,7 @@ describe('PrimeReact boolean toggle control', () => {
           uischema={uischema}
           enabled={false}
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeTruthy();
@@ -447,7 +447,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={uischema} />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeFalsy();
@@ -460,7 +460,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch);
     expect(input.props().inputId).toBe('myid-input');
@@ -478,7 +478,7 @@ describe('PrimeReact boolean toggle control', () => {
         }}
       >
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch);
     expect(input.props()['aria-describedby']).toBe('myid-input-help');
@@ -493,7 +493,7 @@ describe('PrimeReact boolean toggle control', () => {
         initState={{ renderers: primereactRenderers, core }}
       >
         <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch);
     expect(input.props()['aria-describedby']).toBeUndefined();

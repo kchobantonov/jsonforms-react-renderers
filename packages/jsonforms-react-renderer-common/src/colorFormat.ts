@@ -90,7 +90,7 @@ const FUNCTIONAL = /^(rgba?|hsla?|hsba?)\(([^()]*)\)$/i;
 const NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)%?$/;
 
 const parseArgs = (
-  text: string
+  text: string,
 ): { value: number; percent: boolean }[] | undefined => {
   // CSS Color 4 permits `rgb(0 255 0 / 50%)`; the specification's initial
   // profile is the comma-separated form only, so a space-separated argument
@@ -112,7 +112,7 @@ const parseArgs = (
 };
 
 const parseAlpha = (
-  arg: { value: number; percent: boolean } | undefined
+  arg: { value: number; percent: boolean } | undefined,
 ): number | undefined => {
   if (arg === undefined) {
     return 1;
@@ -176,7 +176,7 @@ export const parseColor = (value: unknown): Rgba | undefined => {
     if (
       channels.some(
         ({ value: channel, percent }) =>
-          percent || !Number.isInteger(channel) || channel < 0 || channel > 255
+          percent || !Number.isInteger(channel) || channel < 0 || channel > 255,
       )
     ) {
       return undefined;
@@ -227,7 +227,7 @@ const hueToRgbChannel = (p: number, q: number, t: number): number => {
 export const hslToRgb = (
   h: number,
   s: number,
-  l: number
+  l: number,
 ): { r: number; g: number; b: number } => {
   const hue = normalizeHue(h) / 360;
   const saturation = clamp(s, 0, 100) / 100;
@@ -252,7 +252,7 @@ export const hslToRgb = (
 export const hsbToRgb = (
   h: number,
   s: number,
-  b: number
+  b: number,
 ): { r: number; g: number; b: number } => {
   const hue = normalizeHue(h) / 60;
   const saturation = clamp(s, 0, 100) / 100;
@@ -295,14 +295,14 @@ const hueOf = (
   g: number,
   b: number,
   max: number,
-  delta: number
+  delta: number,
 ): number => {
   const sixth =
     max === r
       ? ((g - b) / delta + (g < b ? 6 : 0)) / 6
       : max === g
-      ? ((b - r) / delta + 2) / 6
-      : ((r - g) / delta + 4) / 6;
+        ? ((b - r) / delta + 2) / 6
+        : ((r - g) / delta + 4) / 6;
   return sixth * 360;
 };
 
@@ -340,7 +340,7 @@ const toHex3Digit = (channel: number): string =>
  */
 export const serializeColor = (
   color: Rgba,
-  format: ColorSaveFormat
+  format: ColorSaveFormat,
 ): string | undefined => {
   const opaque = !isTransparent(color);
   switch (format) {
@@ -349,7 +349,7 @@ export const serializeColor = (
         return undefined;
       }
       return `#${toHex3Digit(color.r)}${toHex3Digit(color.g)}${toHex3Digit(
-        color.b
+        color.b,
       )}`;
     case 'rgb':
       return opaque

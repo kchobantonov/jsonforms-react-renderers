@@ -76,13 +76,13 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
     indexOfFittingSchema !== null && indexOfFittingSchema !== undefined
       ? indexOfFittingSchema
       : !isEmpty(data)
-      ? 0 // uses the first schema and report errors if not empty
-      : null
+        ? 0 // uses the first schema and report errors if not empty
+        : null,
   );
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
-    [setConfirmDialogOpen]
+    [setConfirmDialogOpen],
   );
   const cancel = useCallback(() => {
     setConfirmDialogOpen(false);
@@ -93,7 +93,7 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
     'oneOf',
     uischema,
     path,
-    uischemas
+    uischemas,
   );
 
   const openNewTab = (newIndex: number | null) => {
@@ -101,7 +101,7 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
       path,
       newIndex !== null
         ? createDefaultValue(oneOfRenderInfos[newIndex].schema, rootSchema)
-        : undefined
+        : undefined,
     );
     setSelectedIndex(newIndex);
   };
@@ -123,7 +123,7 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
         setConfirmDialogOpen(true);
       }
     },
-    [setConfirmDialogOpen, setSelectedIndex, data]
+    [setConfirmDialogOpen, setSelectedIndex, data],
   );
 
   const [focused, onFocus, onBlur] = useFocus();
@@ -133,7 +133,7 @@ export const OneOfRenderer = (props: CombinatorRendererProps) => {
     visible,
     description,
     focused,
-    appliedUiSchemaOptions.showUnfocusedDescription
+    appliedUiSchemaOptions.showUnfocusedDescription,
   );
   const help = !isValid ? errors : showDescription ? description : null;
 

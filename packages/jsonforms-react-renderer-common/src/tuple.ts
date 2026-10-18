@@ -49,7 +49,7 @@ type PositionalSchema = JsonSchema & { prefixItems?: TupleSchema[] };
  */
 export const tupleDefinition = (
   schema: JsonSchema | undefined,
-  explicit = false
+  explicit = false,
 ): TupleDefinition | undefined => {
   const candidate = schema as PositionalSchema | undefined;
   if (candidate?.type !== 'array') {
@@ -80,7 +80,7 @@ export const tupleDefinition = (
       // declares.
       prefix: Array.from(
         { length: minItems as number },
-        () => (candidate.items ?? true) as TupleSchema
+        () => (candidate.items ?? true) as TupleSchema,
       ),
       tail: false,
     };
@@ -105,7 +105,7 @@ export const tupleControlTester: RankedTester = (uischema, schema, context) => {
   const resolved = Resolve.schema(
     schema,
     uischema.scope,
-    context?.rootSchema ?? schema
+    context?.rootSchema ?? schema,
   );
   const explicit = uischema.options?.variant === 'tuple';
   return explicit || (resolved && tupleDefinition(resolved)) ? 25 : -1;
@@ -114,10 +114,10 @@ export const tupleControlTester: RankedTester = (uischema, schema, context) => {
 /** Follows a `$ref` on a positional schema, leaving anything else alone. */
 export const resolveTupleSchema = (
   schema: TupleSchema,
-  root: JsonSchema
+  root: JsonSchema,
 ): TupleSchema =>
   typeof schema === 'object' && schema.$ref
-    ? Resolve.schema(root, schema.$ref, root) ?? schema
+    ? (Resolve.schema(root, schema.$ref, root) ?? schema)
     : schema;
 
 /**
@@ -132,7 +132,7 @@ export const resolveTupleSchema = (
  */
 export const tupleInitialValue = (
   schema: TupleSchema,
-  root: JsonSchema
+  root: JsonSchema,
 ): unknown => {
   const resolved = resolveTupleSchema(schema, root);
   if (typeof resolved !== 'object') {
@@ -176,7 +176,7 @@ export const tupleInitialValue = (
  */
 export const tupleEmptyValue = (
   schema: TupleSchema,
-  root: JsonSchema
+  root: JsonSchema,
 ): unknown => {
   const resolved = resolveTupleSchema(schema, root);
   if (typeof resolved !== 'object') {

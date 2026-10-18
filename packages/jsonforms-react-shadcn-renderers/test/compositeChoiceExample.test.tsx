@@ -1,7 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { shadcnRenderers, shadcnCells } from '../src';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/schema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/data.json';
@@ -12,7 +12,7 @@ it('keeps composite choices selected in the spec fixture after JSON reload', asy
   const root = createRoot(host);
   try {
     const category = ui.elements[0].elements.find(
-      (c) => c.i18n === 'compositeChoices.navigation'
+      (c) => c.i18n === 'compositeChoices.navigation',
     ) as any;
     for (let reload = 0; reload < 2; reload++) {
       await act(async () =>
@@ -23,11 +23,11 @@ it('keeps composite choices selected in the spec fixture after JSON reload', asy
             uischema={category.elements[0]}
             renderers={shadcnRenderers}
             cells={shadcnCells}
-          />
-        )
+          />,
+        ),
       );
       expect(
-        host.querySelectorAll('[role="radio"][aria-checked="true"]')
+        host.querySelectorAll('[role="radio"][aria-checked="true"]'),
       ).toHaveLength(2);
       const selects = Array.from(host.querySelectorAll('[role="combobox"]'));
       // Four choice selectors plus the table page-size selector.

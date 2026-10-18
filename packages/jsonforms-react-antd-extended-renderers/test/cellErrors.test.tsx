@@ -60,11 +60,11 @@ const render = async (options: Record<string, unknown>) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await flushUntil(() =>
-    Boolean(container.querySelector('.ant-form-item-has-error'))
+    Boolean(container.querySelector('.ant-form-item-has-error')),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -98,18 +98,18 @@ describe('control (not in a cell)', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await flushUntil(() =>
-      Boolean(container.querySelector('.ant-form-item-has-error'))
+      Boolean(container.querySelector('.ant-form-item-has-error')),
     );
     const item = container.querySelector('.ant-form-item-has-error')!;
     expect(item.querySelector('.ant-form-item-label')!.textContent).toContain(
-      'First name'
+      'First name',
     );
     expect(item.querySelector('.ant-form-item-explain')!.textContent).toMatch(
-      /required/i
+      /required/i,
     );
     act(() => root.unmount());
   });
@@ -122,7 +122,7 @@ describe.each([
   it('marks the invalid cell with an error state', async () => {
     const view = await render(options);
     expect(
-      view.container.querySelectorAll('.ant-form-item-has-error').length
+      view.container.querySelectorAll('.ant-form-item-has-error').length,
     ).toBe(1);
     view.unmount();
   });
@@ -145,7 +145,7 @@ describe.each([
   it('keeps the whole cell to one row, with no explanation block', async () => {
     const view = await render(options);
     expect(
-      view.container.querySelectorAll('.ant-form-item-explain').length
+      view.container.querySelectorAll('.ant-form-item-explain').length,
     ).toBe(0);
     view.unmount();
   });

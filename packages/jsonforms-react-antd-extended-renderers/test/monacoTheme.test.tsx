@@ -81,8 +81,8 @@ const renderForm = async (dark: boolean) => {
           ]}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   // the renderer is lazy, so wait for the chunk and the deferred onMount
   await flushUntil(() => spy.themeProp !== undefined);
@@ -117,7 +117,7 @@ describe('Monaco editor theming', () => {
       const { unmount } = await renderForm(dark as boolean);
       expect(spy.themeProp).toBe(expected);
       unmount();
-    }
+    },
   );
 
   // The surface color is applied per instance through Monaco's --vscode-*
@@ -128,11 +128,11 @@ describe('Monaco editor theming', () => {
   ])('recolors only its own instance (%s)', async (_label, dark) => {
     const { container, unmount } = await renderForm(dark as boolean);
     const scoped = container.querySelector<HTMLElement>(
-      '[style*="--vscode-editor-background"]'
+      '[style*="--vscode-editor-background"]',
     );
     expect(scoped).toBeTruthy();
     expect(
-      scoped!.style.getPropertyValue('--vscode-editor-background').trim()
+      scoped!.style.getPropertyValue('--vscode-editor-background').trim(),
     ).toBe(expectedBackground(dark as boolean));
     unmount();
   });

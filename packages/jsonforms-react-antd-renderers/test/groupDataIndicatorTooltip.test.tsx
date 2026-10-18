@@ -54,8 +54,8 @@ const render = (data: any, i18n?: any) => {
         cells={antdCells}
         i18n={i18n}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -76,7 +76,7 @@ describe('group data-presence indicator tooltip', () => {
     const { container, unmount } = render(withData);
     const dot = container.querySelector<HTMLElement>('[data-group-indicator]');
     expect(dot!.getAttribute('aria-label')).toBe(
-      dot!.closest('[data-tooltip]')!.getAttribute('data-tooltip')
+      dot!.closest('[data-tooltip]')!.getAttribute('data-tooltip'),
     );
     unmount();
   });
@@ -99,7 +99,7 @@ describe('group data-presence indicator tooltip', () => {
     const { container, unmount } = render(withData, {
       locale: 'bg',
       translate: createTranslator((key, fallback) =>
-        key === 'group.dataIndicator' ? 'Разделът съдържа данни' : fallback
+        key === 'group.dataIndicator' ? 'Разделът съдържа данни' : fallback,
       ),
     });
     const dot = container.querySelector<HTMLElement>('[data-group-indicator]');
@@ -114,7 +114,7 @@ describe('group data-presence indicator tooltip', () => {
     });
     const dot = container.querySelector<HTMLElement>('[data-group-indicator]');
     expect(dot!.getAttribute('aria-label')).toBe(
-      i18nDefaults['group.dataIndicator']
+      i18nDefaults['group.dataIndicator'],
     );
     unmount();
   });

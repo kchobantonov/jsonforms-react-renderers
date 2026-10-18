@@ -11,7 +11,7 @@ export interface TableColumnDefinition {
 export const tableColumnFields = (
   properties: Record<string, unknown>,
   definitions: TableColumnDefinition[] | undefined,
-  fallback: string[]
+  fallback: string[],
 ) =>
   definitions === undefined
     ? fallback
@@ -19,11 +19,11 @@ export const tableColumnFields = (
         (field) =>
           Object.prototype.hasOwnProperty.call(properties, field) ||
           definitions.some(
-            (column) => column.field === field && column.scope === '#'
-          )
+            (column) => column.field === field && column.scope === '#',
+          ),
       );
 export const tableColumnStyle = (
-  definition?: TableColumnDefinition
+  definition?: TableColumnDefinition,
 ): CSSProperties => {
   const style: CSSProperties = {};
   for (const key of ['width', 'minWidth', 'maxWidth'] as const) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
@@ -51,7 +51,7 @@ const uischema: any = { type: 'Control', scope: '#/properties/span' };
 /** A form catalog for the locale under test, or none at all. */
 const draw = async (
   locale: string | undefined,
-  catalog?: Record<string, string>
+  catalog?: Record<string, string>,
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -70,12 +70,12 @@ const draw = async (
             : {
                 locale,
                 translate: createTranslator(
-                  (id, defaultMessage) => catalog?.[id] ?? defaultMessage
+                  (id, defaultMessage) => catalog?.[id] ?? defaultMessage,
                 ),
               }
         }
         onChange={() => undefined}
-      />
+      />,
     );
   });
   return { container, root };
@@ -83,7 +83,7 @@ const draw = async (
 
 const labels = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('button')).map(
-    (button) => `${button.textContent} ${button.getAttribute('aria-label')}`
+    (button) => `${button.textContent} ${button.getAttribute('aria-label')}`,
   );
 
 describe('renderer locale bundles', () => {
@@ -154,7 +154,7 @@ describe('a form with a locale and no catalog', () => {
           // A locale, and nothing else. No `translate`.
           i18n={{ locale: 'bg' } as any}
           onChange={() => undefined}
-        />
+        />,
       );
     });
     return { container, unmount: () => act(() => root.unmount()) };
@@ -175,7 +175,7 @@ describe('a form with a locale and no catalog', () => {
         elements: [{ type: 'Control', scope: '#/properties/name' }],
       },
       { type: 'object', properties: { name: { type: 'string' } } },
-      { name: 'Ada' }
+      { name: 'Ada' },
     );
     const text = labelsIn(container);
     expect(text).toContain('Секцията съдържа данни');
@@ -195,7 +195,7 @@ describe('a form with a locale and no catalog', () => {
         type: 'object',
         properties: { name: { type: 'string', minLength: 5 } },
       },
-      { name: 'a' }
+      { name: 'a' },
     );
     const text = labelsIn(container);
     expect(text).toContain('Тази секция съдържа грешки');
@@ -226,7 +226,7 @@ describe('a form with a locale and no catalog', () => {
           },
         },
       },
-      { people: [{ name: 'Ada', tags: ['a', 'b'] }] }
+      { people: [{ name: 'Ada', tags: ['a', 'b'] }] },
     );
     const text = container.textContent ?? '';
     expect(text).toContain('елемента');
@@ -245,7 +245,7 @@ describe('a form with a locale and no catalog', () => {
           doc: { type: 'string', contentEncoding: 'base64' },
         },
       },
-      {}
+      {},
     );
     const text = labelsIn(container);
     expect(text).toContain('Изберете файл');

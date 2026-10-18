@@ -83,7 +83,7 @@ export const localizeBg: NonNullable<AjvLocalizers[string]> = (errors) => {
 /** The localizer for a locale, falling back from `bg-BG` to `bg`. */
 const localizerFor = (
   localizers: AjvLocalizers,
-  locale: string | undefined
+  locale: string | undefined,
 ): AjvLocalizers[string] => {
   if (!locale) {
     return undefined;
@@ -103,7 +103,7 @@ const localizerFor = (
  */
 export const unwrapErrorMessageErrors = (
   errors: ErrorObject[] | null | undefined,
-  i18n?: () => JsonFormsI18nState | undefined
+  i18n?: () => JsonFormsI18nState | undefined,
 ): ErrorObject[] => {
   if (!errors?.length) {
     return errors ?? [];
@@ -177,7 +177,7 @@ export const schemaMessageKey = (message: string) =>
  */
 export const createAjvErrorTranslator = (
   localizers: AjvLocalizers,
-  getLocale: () => string | undefined
+  getLocale: () => string | undefined,
 ): ErrorTranslator => {
   return (error, translate, uischema) => {
     /*
@@ -218,7 +218,7 @@ export const createAjvErrorTranslator = (
  */
 export const ajvTranslations = (
   ajv: Ajv,
-  options: AjvI18nOptions = {}
+  options: AjvI18nOptions = {},
 ): Ajv => {
   const localizers = options.localizers;
   const compile = ajv.compile.bind(ajv) as Ajv['compile'];
@@ -245,12 +245,12 @@ export const ajvTranslations = (
             for a keyword the author has already replaced.
           */
           localize(
-            validate.errors.filter((error) => error.keyword !== 'errorMessage')
+            validate.errors.filter((error) => error.keyword !== 'errorMessage'),
           );
         }
         wrapper.errors = unwrapErrorMessageErrors(
           validate.errors,
-          options.i18n
+          options.i18n,
         );
       } else {
         wrapper.errors = validate.errors;

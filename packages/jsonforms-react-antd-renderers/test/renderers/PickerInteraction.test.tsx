@@ -17,7 +17,7 @@ describe('picker selection commits', () => {
         observe() {}
         unobserve() {}
         disconnect() {}
-      }
+      },
     );
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -73,8 +73,8 @@ describe('picker selection commits', () => {
     expect(container.querySelector('input')!.value).toBe('2024.06');
     expect(
       document.querySelector(
-        '.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)'
-      )
+        '.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)',
+      ),
     ).toBeNull();
   });
 
@@ -87,8 +87,8 @@ describe('picker selection commits', () => {
     expect(output()).toBe('2026');
     expect(
       document.querySelector(
-        '.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)'
-      )
+        '.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)',
+      ),
     ).toBeNull();
   });
 
@@ -125,8 +125,8 @@ describe('picker selection commits', () => {
       const hour = initial.includes('am') ? '3' : '15';
       await click(
         document.querySelector(
-          `.ant-picker-time-panel-column:first-child li[data-value="${hour}"] .ant-picker-time-panel-cell-inner`
-        )!
+          `.ant-picker-time-panel-column:first-child li[data-value="${hour}"] .ant-picker-time-panel-cell-inner`,
+        )!,
       );
       await act(async () => refresh());
       await click(document.querySelector('.ant-picker-ok button')!);
@@ -137,6 +137,6 @@ describe('picker selection commits', () => {
       check(output());
       await act(async () => refresh());
       check(output());
-    }
+    },
   );
 });

@@ -1,5 +1,5 @@
 import { createAjv } from '@jsonforms/core';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { readFile } from '../src/renderers/FileControlRenderer';
 
 it('preserves a complete data URI for the supplier logo and passes URI validation', async () => {
@@ -20,12 +20,12 @@ it('preserves a complete data URI for the supplier logo and passes URI validatio
 it('retains the distinct filename-bearing and raw base64 encodings', async () => {
   const file = new File(['logo'], 'my logo.png', { type: 'image/png' });
   expect(await readFile(file, { type: 'string', format: 'binary' })).toBe(
-    'data:image/png;filename=my%20logo.png;base64,bG9nbw=='
+    'data:image/png;filename=my%20logo.png;base64,bG9nbw==',
   );
   expect(
-    await readFile(file, { type: 'string', contentEncoding: 'base64' })
+    await readFile(file, { type: 'string', contentEncoding: 'base64' }),
   ).toBe('bG9nbw==');
   expect(await readFile(file, { type: 'string', format: 'byte' })).toBe(
-    'bG9nbw=='
+    'bG9nbw==',
   );
 });

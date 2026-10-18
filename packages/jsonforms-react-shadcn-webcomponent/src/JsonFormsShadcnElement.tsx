@@ -213,7 +213,7 @@ export class JsonFormsShadcnElement extends HTMLElement {
         bubbles: true,
         composed: true,
         detail: { data, errors },
-      })
+      }),
     );
   }
 
@@ -223,7 +223,7 @@ export class JsonFormsShadcnElement extends HTMLElement {
         bubbles: true,
         composed: true,
         detail: event,
-      })
+      }),
     );
   }
 
@@ -292,13 +292,13 @@ export class JsonFormsShadcnElement extends HTMLElement {
           />
           <slot name='form-footer' />
         </div>
-      </>
+      </>,
     );
   }
 }
 
 export const registerJsonFormsShadcn = (
-  tagName: string = JSON_FORMS_SHADCN_TAG
+  tagName: string = JSON_FORMS_SHADCN_TAG,
 ) => {
   if (!customElements.get(tagName)) {
     customElements.define(tagName, JsonFormsShadcnElement);

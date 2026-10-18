@@ -31,22 +31,22 @@ const draw = (data?: string, extra: any = {}, locale = 'en') =>
             ...extra,
           } as any)}
         />
-      </JsonFormsContext.Provider>
-    )
+      </JsonFormsContext.Provider>,
+    ),
   );
 const button = (name: string) =>
   Array.from(document.querySelectorAll('button')).find(
-    (b) => (b.getAttribute('aria-label') ?? b.textContent) === name
+    (b) => (b.getAttribute('aria-label') ?? b.textContent) === name,
   )!;
 const click = (name: string) => act(() => button(name).click());
 const edit = (label: string, value: string) =>
   act(() => {
     const el = document.querySelector<HTMLInputElement>(
-      `input[aria-label="${label}"]`
+      `input[aria-label="${label}"]`,
     )!;
     Object.getOwnPropertyDescriptor(
       HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!.call(el, value);
     el.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -71,10 +71,10 @@ it.each([true, false])(
           options: schemaBased ? {} : { format: 'duration' },
         },
         { type: 'string', ...(schemaBased ? { format: 'duration' } : {}) },
-        { rootSchema: {}, config: {} }
-      )
+        { rootSchema: {}, config: {} },
+      ),
     ).toBe(3);
-  }
+  },
 );
 it('shows only populated component units', () => {
   draw('P2DT3H');
@@ -135,7 +135,7 @@ it.each([{ enabled: false }, { readonly: true }])(
     draw('PT1H', extra);
     expect(button('Choose a duration').disabled).toBe(true);
     expect(button('Clear value')).toBeUndefined();
-  }
+  },
 );
 it('clears to undefined', () => {
   draw('PT1H');

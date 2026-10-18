@@ -34,7 +34,7 @@ const eventToValue = (e: InputNumberChangeEvent) =>
 
 export const PrimeInputNumber = React.memo(function PrimeInputNumber(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof InputNumber> },
 ) {
   const {
     data,
@@ -56,7 +56,7 @@ export const PrimeInputNumber = React.memo(function PrimeInputNumber(
     null,
     data,
     path,
-    eventToValue
+    eventToValue,
   );
 
   return (

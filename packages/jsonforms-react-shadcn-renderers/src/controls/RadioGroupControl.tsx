@@ -15,13 +15,13 @@ import {
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnRadioGroupControl = (
-  props: ControlProps & OwnPropsOfEnum
+  props: ControlProps & OwnPropsOfEnum,
 ) => {
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
   const options = props.options ?? [];
   const selected = options.findIndex((option) =>
-    isEqual(option.value, props.data)
+    isEqual(option.value, props.data),
   );
   const orientation =
     (props.uischema.options?.vertical ??
@@ -68,5 +68,5 @@ export const ShadcnRadioGroupControl = (
 };
 export const radioGroupControlTester = rankWith(
   20,
-  and(isEnumControl, optionIs('format', 'radio'))
+  and(isEnumControl, optionIs('format', 'radio')),
 );

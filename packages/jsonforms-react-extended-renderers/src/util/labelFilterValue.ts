@@ -16,11 +16,11 @@ export const labelFilterValue = (
   item: unknown,
   config: unknown,
   locale?: string,
-  translate?: (key: string, fallback?: string) => string | undefined
+  translate?: (key: string, fallback?: string) => string | undefined,
 ): string => {
   const text = label.i18n
-    ? translate?.(label.i18n + '.text', label.text ?? '') ?? label.text ?? ''
-    : label.text ?? '';
+    ? (translate?.(label.i18n + '.text', label.text ?? '') ?? label.text ?? '')
+    : (label.text ?? '');
   const markup = resolveMarkup(label.options, config);
   const plain = (value: string) =>
     markup.markdown ? markdownPlainText(value, markdownProfile(config)) : value;
@@ -35,7 +35,7 @@ export const labelFilterValue = (
       dynamicAllowed: dynamicValuesEnabled(config),
     }),
     locale,
-    translate
+    translate,
   );
   return plain(
     renderTemplate(
@@ -43,7 +43,7 @@ export const labelFilterValue = (
       buildTextScope(params.params, locale),
       markup.markdown ? escapeMarkdown : undefined,
       locale,
-      translate
-    ).text
+      translate,
+    ).text,
   );
 };

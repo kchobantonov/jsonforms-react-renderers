@@ -52,7 +52,7 @@ export const createMonacoControl = ({
     const { isDark, customTheme } = useEditorAppearance(
       anchor,
       options.theme ?? options.mode,
-      hostTheme?.isDark
+      hostTheme?.isDark,
     );
     // Monaco's own vocabulary lives here, not in the shared appearance hook.
     const theme = customTheme ?? (isDark ? 'vs-dark' : 'vs');
@@ -88,7 +88,7 @@ export const createMonacoControl = ({
     const owner = useId();
     const [monacoApi, setMonacoApi] = useState<any>(null);
     const modelUri = `inmemory://jsonforms/mixed-${encodeURIComponent(
-      owner
+      owner,
     )}.json`;
     const schemaValidation = options.validateJsonSchema === true;
     useEffect(() => {
@@ -106,7 +106,7 @@ export const createMonacoControl = ({
             key === '$ref' && typeof child === 'string' && child.startsWith('#')
               ? rootUri + child
               : rebase(child),
-          ])
+          ]),
         );
       };
       const registrations = [
@@ -124,7 +124,7 @@ export const createMonacoControl = ({
         validate: true,
         schemas: [
           ...(defaults.diagnosticsOptions.schemas ?? []).filter(
-            (entry) => !owned(entry)
+            (entry) => !owned(entry),
           ),
           ...registrations,
         ],
@@ -133,7 +133,7 @@ export const createMonacoControl = ({
         defaults.setDiagnosticsOptions({
           ...defaults.diagnosticsOptions,
           schemas: (defaults.diagnosticsOptions.schemas ?? []).filter(
-            (entry) => !owned(entry)
+            (entry) => !owned(entry),
           ),
         });
     }, [
@@ -145,7 +145,7 @@ export const createMonacoControl = ({
     ]);
     const propagate = resolvePropagateErrors(
       props.uischema.options,
-      props.config
+      props.config,
     );
     const summary =
       propagate && (schemaValidation ? invalid : errorCount > 0)
@@ -158,11 +158,11 @@ export const createMonacoControl = ({
               message: schemaValidation
                 ? t('editor.invalidJson')
                 : errorCount === 1
-                ? t('editor.languageError')
-                : t('editor.languageErrors').replace(
-                    '{count}',
-                    String(errorCount)
-                  ),
+                  ? t('editor.languageError')
+                  : t('editor.languageErrors').replace(
+                      '{count}',
+                      String(errorCount),
+                    ),
             }),
           ]
         : [];
@@ -238,9 +238,9 @@ export const createMonacoControl = ({
     const rows = monaco.autoGrow
       ? Math.max(
           monaco.minRows ?? 3,
-          Math.min(monaco.maxRows ?? 30, text.split('\n').length)
+          Math.min(monaco.maxRows ?? 30, text.split('\n').length),
         )
-      : monaco.rows ?? 10;
+      : (monaco.rows ?? 10);
     const disabled = !props.enabled || props.readonly;
     const label = maximized ? t('editor.restore') : t('editor.maximize');
     return (
@@ -282,7 +282,7 @@ export const createMonacoControl = ({
               value={text}
               language={language}
               width={options.width}
-              height={maximized ? '100%' : options.height ?? rows * 20 + 20}
+              height={maximized ? '100%' : (options.height ?? rows * 20 + 20)}
               theme={theme}
               options={{
                 automaticLayout: true,
@@ -312,7 +312,7 @@ export const createMonacoControl = ({
                 if (decoded.valid) {
                   lastCommitted.current = encodeEditorValue(
                     decoded.value,
-                    convert
+                    convert,
                   );
                   props.handleChange(props.path, decoded.value);
                 }

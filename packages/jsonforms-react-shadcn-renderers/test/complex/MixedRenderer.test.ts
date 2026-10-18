@@ -21,8 +21,8 @@ describe('Shadcn mixed renderer schemas', () => {
           minLength: 4,
         },
         'string',
-        {}
-      )
+        {},
+      ),
     ).toEqual({ type: 'string', minLength: 4 });
   });
 
@@ -34,7 +34,7 @@ describe('Shadcn mixed renderer schemas', () => {
         renderers: shadcnRenderers,
         schema: { type: ['null', 'string'] },
         uischema: { type: 'Control', scope: '#/' },
-      })
+      }),
     );
 
     expect(markup).toContain('>null<');
@@ -73,17 +73,17 @@ it('keeps the type selector controlled when data is set and cleared', () => {
             handleChange,
             renderers: shadcnRenderers,
             cells: shadcnCells,
-          } as any)
-        )
+          } as any),
+        ),
       );
       expect(host.querySelector('[role="combobox"]')?.textContent).toBe(
-        expected
+        expected,
       );
     }
     expect(handleChange).not.toHaveBeenCalled();
     const messages = [...warn.mock.calls, ...error.mock.calls].flat().join(' ');
     expect(messages).not.toMatch(
-      /uncontrolled.*controlled|controlled.*uncontrolled/i
+      /uncontrolled.*controlled|controlled.*uncontrolled/i,
     );
   } finally {
     act(() => root.unmount());

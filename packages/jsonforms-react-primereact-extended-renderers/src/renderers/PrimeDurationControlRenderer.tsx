@@ -71,7 +71,7 @@ export const PrimeDurationControl = (props: ControlProps) => {
                   state.disabled ||
                   (field === 'weeks'
                     ? durationFields.some(
-                        (part) => part !== 'weeks' && state.draft[part] > 0
+                        (part) => part !== 'weeks' && state.draft[part] > 0,
                       )
                     : state.draft.weeks > 0)
                 }

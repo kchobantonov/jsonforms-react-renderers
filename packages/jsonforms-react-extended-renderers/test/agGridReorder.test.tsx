@@ -58,14 +58,14 @@ const render = async (options: Record<string, unknown>, config?: any) => {
         ]}
         cells={[]}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   await flushUntil(() => Boolean(captured.props));
   // What the grid is handed back is the observable result of a data change.
   const order = () =>
     (captured.props.rowData as { value: { name: string } }[]).map(
-      (row) => row.value.name
+      (row) => row.value.name,
     );
   return { order, unmount: () => act(() => root.unmount()) };
 };
@@ -123,7 +123,7 @@ describe('ag-grid reordering', () => {
     act(() =>
       captured.props.onFilterChanged({
         api: { getFilterModel: () => ({ name: { filter: 'a' } }) },
-      })
+      }),
     );
     await flushUntil(() => captured.props.suppressRowDrag === true);
     act(() => captured.props.onRowDragEnd(dragEvent(0, 2)));
@@ -168,8 +168,8 @@ it('preserves cell renderer identity across form data updates', async () => {
           uischema={uischema}
           renderers={renderers}
           cells={cells}
-        />
-      )
+        />,
+      ),
     );
   try {
     draw('a');
@@ -200,7 +200,7 @@ describe('portable grid options', () => {
         jsonformsExtended: {
           array: { pagination: { pageSize: 2, pageSizeOptions: [2, 4] } },
         },
-      }
+      },
     );
     expect(captured.props).toMatchObject({
       pagination: true,
@@ -218,7 +218,7 @@ describe('portable grid options', () => {
         pagination: { pageSize: 3, pageSizeOptions: [3, 6] },
         agGridOptions: { pagination: false, paginationPageSize: 8 },
       },
-      { jsonformsExtended: { array: { pagination: false } } }
+      { jsonformsExtended: { array: { pagination: false } } },
     );
     expect(captured.props).toMatchObject({
       pagination: false,
@@ -275,7 +275,7 @@ describe('portable grid options', () => {
       flex: 0,
     });
     expect(captured.props.columnDefs[0].children[0].cellRenderer).toBeTypeOf(
-      'function'
+      'function',
     );
     expect(captured.props.columnDefs[1].valueGetter).toBe(valueGetter);
     app.unmount();
@@ -292,10 +292,10 @@ it('uses a Control summary for the grid value used by text filtering', async () 
   expect(
     column.valueGetter({
       data: { value: { name: { city: 'Boston', phone: '555' } } },
-    })
+    }),
   ).toBe('Boston');
   expect(
-    column.valueGetter({ data: { value: { name: { city: 'Seattle' } } } })
+    column.valueGetter({ data: { value: { name: { city: 'Seattle' } } } }),
   ).toBe('Seattle');
   app.unmount();
 });

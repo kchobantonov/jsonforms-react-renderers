@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 
@@ -18,8 +18,8 @@ const render = (schema: any, uischema: any, data: any) => {
         renderers={antdRenderers}
         cells={antdCells}
         onChange={() => undefined}
-      />
-    )
+      />,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -80,7 +80,7 @@ describe('checkbox control', () => {
     const { container, unmount } = render(
       schemaFor({ type: 'boolean' }),
       control(),
-      { agreed: value }
+      { agreed: value },
     );
     expect(checkbox(container).checked).toBe(false);
     expect(isIndeterminate(container)).toBe(true);
@@ -99,7 +99,7 @@ describe('checkbox control', () => {
     const { container, unmount } = render(
       schemaFor({ type: 'boolean' }),
       control(),
-      { agreed: value }
+      { agreed: value },
     );
     expect(checkbox(container).checked).toBe(false);
     expect(isIndeterminate(container)).toBe(true);
@@ -120,8 +120,8 @@ describe('checkbox control', () => {
           renderers={antdRenderers}
           cells={antdCells}
           onChange={({ data }) => seen.push(data)}
-        />
-      )
+        />,
+      ),
     );
     expect(seen.every((d) => d.agreed === undefined)).toBe(true);
     act(() => root.unmount());
@@ -148,7 +148,7 @@ describe('switch control', () => {
     const { container, unmount } = render(
       schemaFor({ type: 'boolean' }),
       toggle,
-      {}
+      {},
     );
     const el = switchEl(container);
     expect(el.getAttribute('aria-checked')).toBe('false');
@@ -162,7 +162,7 @@ describe('switch control', () => {
       toggle,
       {
         agreed: 'false',
-      }
+      },
     );
     const el = switchEl(container);
     expect(el.getAttribute('aria-checked')).toBe('false');
@@ -199,7 +199,7 @@ describe('boolean cells in a table', () => {
       rows: [{ active: 'false', notify: true }],
     });
     const boxes = container.querySelectorAll<HTMLInputElement>(
-      'input[type="checkbox"]'
+      'input[type="checkbox"]',
     );
     // The string 'false' must not read as checked in a cell either.
     expect(Array.from(boxes).every((b) => !b.checked)).toBe(true);
@@ -222,10 +222,10 @@ describe('enum array checkboxes', () => {
         },
       },
       { type: 'Control', scope: '#/properties/channels' },
-      { channels: ['SMS'] }
+      { channels: ['SMS'] },
     );
     const boxes = Array.from(
-      container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+      container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
     );
     expect(boxes.map((b) => b.checked)).toEqual([false, true]);
     unmount();

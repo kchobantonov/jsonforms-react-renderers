@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { resolveEditorDetail } from '../src/detail';
 const schema = { type: 'object', properties: { name: { type: 'string' } } };
 const fallback = { type: 'Control', scope: '#' };
@@ -13,8 +13,8 @@ it('carries generation through delegated controls and preserves registry modes',
       '#',
       'record',
       schema,
-      fallback
-    )
+      fallback,
+    ),
   ).toEqual({ ...fallback, options: { detail: 'GENERATE' } });
   for (const mode of ['DEFAULT', 'REGISTERED', 'GENERATED', 'custom']) {
     expect(
@@ -25,8 +25,8 @@ it('carries generation through delegated controls and preserves registry modes',
         '#',
         'record',
         schema,
-        fallback
-      )
+        fallback,
+      ),
     ).toBe(registered);
   }
   expect(
@@ -37,8 +37,8 @@ it('carries generation through delegated controls and preserves registry modes',
       '#',
       'record',
       schema,
-      fallback
-    )
+      fallback,
+    ),
   ).toBe(fallback);
 });
 it('normalizes legacy inline layouts and falls back when no registry matches', () => {
@@ -51,8 +51,8 @@ it('normalizes legacy inline layouts and falls back when no registry matches', (
       '#',
       'record',
       schema,
-      fallback
-    )
+      fallback,
+    ),
   ).toEqual({ type: 'VerticalLayout', elements });
   expect(
     resolveEditorDetail(
@@ -62,7 +62,7 @@ it('normalizes legacy inline layouts and falls back when no registry matches', (
       '#',
       'record',
       schema,
-      fallback
-    )
+      fallback,
+    ),
   ).toBe(fallback);
 });

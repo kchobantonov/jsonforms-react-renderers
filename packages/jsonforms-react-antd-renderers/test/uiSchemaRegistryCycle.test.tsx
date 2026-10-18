@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { antdCells, antdRenderers } from '../src';
@@ -91,15 +91,15 @@ const draw = (entry: unknown, schema: any = objectSchema, uischema?: any) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
 
 const values = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLInputElement>('input')).map(
-    (input) => input.value
+    (input) => input.value,
   );
 
 /*
@@ -149,7 +149,7 @@ describe.each(selfResolving)(
       warn.mockRestore();
       view.unmount();
     }, 15000);
-  }
+  },
 );
 
 describe('entries the guard must not touch', () => {
@@ -175,7 +175,7 @@ describe('entries the guard must not touch', () => {
     // Only City - which is the detail's doing, not the generated layout's.
     expect(values(view.container)).toEqual(['Portland']);
     expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
+      warn.mock.calls.map((call) => String(call[0])).join('\n'),
     ).not.toContain(UI_SCHEMA_CYCLE_DIAGNOSTIC);
     warn.mockRestore();
     view.unmount();
@@ -191,7 +191,7 @@ describe('entries the guard must not touch', () => {
 
     expect(values(view.container)).toEqual(['Portland']);
     expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
+      warn.mock.calls.map((call) => String(call[0])).join('\n'),
     ).not.toContain(UI_SCHEMA_CYCLE_DIAGNOSTIC);
     warn.mockRestore();
     view.unmount();
@@ -245,14 +245,14 @@ describe('entries the guard must not touch', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
 
     expect(values(container)).toEqual(['Portland', 'Salem']);
     expect(
-      warn.mock.calls.map((call) => String(call[0])).join('\n')
+      warn.mock.calls.map((call) => String(call[0])).join('\n'),
     ).not.toContain(UI_SCHEMA_CYCLE_DIAGNOSTIC);
     warn.mockRestore();
     act(() => root.unmount());
@@ -300,9 +300,11 @@ describe('a tuple position whose registry entry resolves to itself', () => {
       await settle();
 
       const edit = Array.from(
-        view.container.querySelectorAll<HTMLButtonElement>('button')
+        view.container.querySelectorAll<HTMLButtonElement>('button'),
       ).find((button) =>
-        (button.getAttribute('aria-label') ?? '').toLowerCase().includes('edit')
+        (button.getAttribute('aria-label') ?? '')
+          .toLowerCase()
+          .includes('edit'),
       );
       expect(edit, 'no edit action on the complex position').toBeTruthy();
       act(() => edit!.click());
@@ -313,6 +315,6 @@ describe('a tuple position whose registry entry resolves to itself', () => {
       warn.mockRestore();
       view.unmount();
     },
-    15000
+    15000,
   );
 });

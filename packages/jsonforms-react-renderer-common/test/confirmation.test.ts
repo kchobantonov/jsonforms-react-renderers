@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   confirmationRequired,
   fallbackConfirmationPolicy,
@@ -11,7 +11,7 @@ describe('resolving the policy', () => {
     options: any,
     config: any,
     catalogId: any = 'arrayTable',
-    operation: any = 'delete'
+    operation: any = 'delete',
   ) => resolveConfirmationPolicy({ options, config, catalogId, operation });
 
   it('prefers the element option above everything', () => {
@@ -25,8 +25,8 @@ describe('resolving the policy', () => {
               renderers: { arrayTable: { delete: 'always' } },
             },
           },
-        }
-      )
+        },
+      ),
     ).toBe('never');
   });
 
@@ -39,7 +39,7 @@ describe('resolving the policy', () => {
             renderers: { arrayTable: { delete: 'never' } },
           },
         },
-      })
+      }),
     ).toBe('never');
   });
 
@@ -47,7 +47,7 @@ describe('resolving the policy', () => {
     expect(
       resolve(undefined, {
         jsonformsExtended: { confirmation: { default: 'never' } },
-      })
+      }),
     ).toBe('never');
   });
 
@@ -72,25 +72,25 @@ describe('resolving the policy', () => {
         undefined,
         { jsonformsExtended: { confirmation: { default: 'always' } } },
         'mixed',
-        'typeChange'
-      )
+        'typeChange',
+      ),
     ).toBe('always');
   });
 
   it('ignores a value that is not a policy, rather than reading it as never', () => {
     expect(resolve({ confirmation: { delete: 'sometimes' } }, undefined)).toBe(
-      'complex'
+      'complex',
     );
     expect(
       resolve(undefined, {
         jsonformsExtended: { confirmation: { default: true } },
-      })
+      }),
     ).toBe('complex');
   });
 
   it('reads nothing from an unrelated config shape', () => {
     expect(resolve(undefined, { confirmation: { default: 'never' } })).toBe(
-      'complex'
+      'complex',
     );
   });
 });
@@ -160,7 +160,7 @@ it('defaults composite cell deletion to complex while preserving policy override
   for (const value of [{ key: undefined }, [{}]])
     expect(confirmationRequired(resolve(), [value])).toBe(true);
   expect(
-    resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } })
+    resolve({}, { jsonformsExtended: { confirmation: { default: 'always' } } }),
   ).toBe('always');
   expect(
     resolve(
@@ -169,14 +169,14 @@ it('defaults composite cell deletion to complex while preserving policy override
         jsonformsExtended: {
           confirmation: { renderers: { compositeCell: { delete: 'never' } } },
         },
-      }
-    )
+      },
+    ),
   ).toBe('never');
   expect(
     resolve(
       { confirmation: { delete: 'never' } },
-      { jsonformsExtended: { confirmation: { default: 'always' } } }
-    )
+      { jsonformsExtended: { confirmation: { default: 'always' } } },
+    ),
   ).toBe('never');
 });
 

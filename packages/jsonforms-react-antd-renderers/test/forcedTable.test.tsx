@@ -20,7 +20,7 @@ const flatSchema: any = {
 };
 const ctx: any = { rootSchema: nestedSchema, config: {} };
 const control = (options?: Record<string, unknown>) =>
-  ({ type: 'Control', scope: '#', options } as any);
+  ({ type: 'Control', scope: '#', options }) as any;
 
 describe('forced table tester', () => {
   it('loses to the detail renderer for nested items by default', () => {
@@ -45,7 +45,7 @@ describe('forced table tester', () => {
   it('does not claim non-arrays', () => {
     const objectSchema: any = { type: 'object', properties: {} };
     expect(
-      arrayControlTester(control({ table: true }), objectSchema, ctx)
+      arrayControlTester(control({ table: true }), objectSchema, ctx),
     ).toBe(-1);
   });
 });

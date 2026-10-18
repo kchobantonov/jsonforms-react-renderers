@@ -32,8 +32,8 @@ it('defaults to tree and lets local layout override the config', () => {
           }}
           renderers={antdRenderers}
           cells={antdCells}
-        />
-      )
+        />,
+      ),
     );
   try {
     render('nested');
@@ -41,13 +41,13 @@ it('defaults to tree and lets local layout override the config', () => {
     render();
     expect(
       host.querySelector(
-        '[role="tree"], .jsonforms-mixed-tree, [data-panel-group]'
-      )
+        '[role="tree"], .jsonforms-mixed-tree, [data-panel-group]',
+      ),
     ).toBeTruthy();
     render('tree', 'nested');
     expect(host.querySelector('input[value="Ada"]')).toBeTruthy();
     expect(
-      host.querySelector('[role="tree"], .jsonforms-mixed-tree')
+      host.querySelector('[role="tree"], .jsonforms-mixed-tree'),
     ).toBeNull();
   } finally {
     act(() => root.unmount());

@@ -174,11 +174,11 @@ function createElementWithPolicy(
       const result = processReactType(
         child,
         child.props || {},
-        ...(child.children || [])
+        ...(child.children || []),
       );
       if (!React.isValidElement(result)) {
         throw new Error(
-          `[ElementRender] must return a valid React element, got ${typeof result}`
+          `[ElementRender] must return a valid React element, got ${typeof result}`,
         );
       }
       if (result.key == null && fallbackKey != null) {
@@ -259,7 +259,7 @@ class TemplateErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error, errorInfo) {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.error('template.renderError:', error, errorInfo);
     this.setState({
       error: error,
@@ -401,7 +401,7 @@ export default function DynamicJSXRenderer({
             }, 'Template function error: ' + error.message);
           };
         }
-        `
+        `,
       );
 
       const TemplateComponent = fn(React, pragma, useTrackedSnapshot);
@@ -432,7 +432,7 @@ export default function DynamicJSXRenderer({
               React.createElement(
                 'strong',
                 { key: 'title' },
-                'Template Runtime Error: '
+                'Template Runtime Error: ',
               ),
               React.createElement('span', { key: 'message' }, error.message),
               React.createElement(
@@ -442,7 +442,7 @@ export default function DynamicJSXRenderer({
                   React.createElement(
                     'summary',
                     { key: 'summary' },
-                    'Available Variables'
+                    'Available Variables',
                   ),
                   React.createElement(
                     'div',
@@ -450,11 +450,11 @@ export default function DynamicJSXRenderer({
                       key: 'vars',
                       style: { fontSize: '12px', marginTop: '5px' },
                     },
-                    'data, errorsData, additionalErrorsData, elements, schema, uischema, translate, locale, path'
+                    'data, errorsData, additionalErrorsData, elements, schema, uischema, translate, locale, path',
                   ),
-                ]
+                ],
               ),
-            ]
+            ],
           );
         }
       });

@@ -210,11 +210,11 @@ export const DemoSettingsPanel = ({
       <UiToggle
         checked={Boolean(
           configOptions.jsonformsExtended?.collapsed ??
-            (
-              exampleConfig?.jsonformsExtended as
-                | Record<string, unknown>
-                | undefined
-            )?.collapsed
+          (
+            exampleConfig?.jsonformsExtended as
+              | Record<string, unknown>
+              | undefined
+          )?.collapsed,
         )}
         label='Start panels collapsed'
         description='Collapse Groups, mixed panels and accordion categories. Array items use this setting when mounted; local options override it.'
@@ -246,7 +246,7 @@ export const DemoSettingsPanel = ({
           <UiSelect
             key={component}
             label={`${component[0].toUpperCase()}${component.slice(
-              1
+              1,
             )} expansion`}
             value={
               value === undefined ? 'inherit' : value ? 'collapsed' : 'expanded'
@@ -274,11 +274,11 @@ export const DemoSettingsPanel = ({
         description='Show validation indicators on containers; local UI schema options take precedence.'
         checked={Boolean(
           configOptions.jsonformsExtended?.showValidationIndicator ??
-            (
-              exampleConfig?.jsonformsExtended as
-                | Record<string, unknown>
-                | undefined
-            )?.showValidationIndicator
+          (
+            exampleConfig?.jsonformsExtended as
+              | Record<string, unknown>
+              | undefined
+          )?.showValidationIndicator,
         )}
         onChange={(value) =>
           setConfigOption('jsonformsExtended', {
@@ -320,7 +320,7 @@ export const DemoSettingsPanel = ({
             value
               .split(',')
               .map((keyword) => keyword.trim())
-              .filter(Boolean)
+              .filter(Boolean),
           )
         }
       />

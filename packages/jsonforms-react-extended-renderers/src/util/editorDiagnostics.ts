@@ -30,7 +30,7 @@ export interface EditorMarker {
 /** Only error-level markers count. "Warnings … stay inside Monaco." */
 export const countBlockingMarkers = (markers: EditorMarker[] | undefined) =>
   (markers ?? []).filter(
-    (marker) => (marker?.severity ?? 0) >= MONACO_SEVERITY_ERROR
+    (marker) => (marker?.severity ?? 0) >= MONACO_SEVERITY_ERROR,
   ).length;
 
 /**
@@ -47,7 +47,7 @@ export const countBlockingMarkers = (markers: EditorMarker[] | undefined) =>
  */
 export const resolvePropagateErrors = (
   elementOptions: Record<string, unknown> | undefined,
-  config: unknown
+  config: unknown,
 ): boolean => {
   const own = elementOptions?.['propagateErrors'];
   if (own !== undefined) {
@@ -103,4 +103,4 @@ export const editorSummaryError = ({
       errorCount,
       owner,
     },
-  } as ErrorObject);
+  }) as ErrorObject;

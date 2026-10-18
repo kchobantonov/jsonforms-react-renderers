@@ -14,7 +14,7 @@ export const parseDateValue = (value: unknown): Date | undefined => {
   const date = new Date(
     Number(match[1]),
     Number(match[2]) - 1,
-    Number(match[3])
+    Number(match[3]),
   );
   return date.getFullYear() === Number(match[1]) &&
     date.getMonth() === Number(match[2]) - 1 &&
@@ -67,12 +67,12 @@ export const formatDateTimeValue = (date: Date, time: TimeValue) => {
   const offsetHours = pad(Math.floor(Math.abs(offset) / 60));
   const offsetMinutes = pad(Math.abs(offset) % 60);
   return `${formatDateValue(date)}T${formatTimeValue(
-    time
+    time,
   )}${sign}${offsetHours}:${offsetMinutes}`;
 };
 
 export const formatDisplayDateTime = (
   date: Date,
   time: TimeValue,
-  ampm = false
+  ampm = false,
 ) => `${formatDisplayDate(date)}, ${formatDisplayTime(time, ampm)}`;

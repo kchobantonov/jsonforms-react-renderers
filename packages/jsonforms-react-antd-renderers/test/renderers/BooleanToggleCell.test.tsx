@@ -42,16 +42,16 @@ describe('Ant Design boolean toggle cell tester', () => {
 
   it('should fail', () => {
     expect(booleanToggleCellTester(undefined, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(booleanToggleCellTester(null, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(booleanToggleCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE
+      NOT_APPLICABLE,
     );
     expect(
-      booleanToggleCellTester({ type: 'Control' }, undefined, undefined)
+      booleanToggleCellTester({ type: 'Control' }, undefined, undefined),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanToggleCellTester(
@@ -60,8 +60,8 @@ describe('Ant Design boolean toggle cell tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanToggleCellTester(
@@ -77,8 +77,8 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
 
     // Not applicable for boolean cell if toggle option is false
@@ -99,8 +99,8 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
 
     // Not applicable for boolean cell if toggle option is not given
@@ -118,8 +118,8 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(NOT_APPLICABLE);
   });
 
@@ -135,8 +135,8 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined
-      )
+        undefined,
+      ),
     ).toBe(3);
   });
 });
@@ -159,7 +159,7 @@ describe('Ant Design boolean toggle cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeTruthy();
@@ -178,7 +178,7 @@ describe('Ant Design boolean toggle cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBe(false);
@@ -196,7 +196,7 @@ describe('Ant Design boolean toggle cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanToggleCell schema={schema} uischema={control} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().autoFocus).toBeFalsy();
@@ -207,7 +207,7 @@ describe('Ant Design boolean toggle cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     // Make sure a toggle is rendered by checking for the thumb element
@@ -230,7 +230,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
 
     const input = wrapper.find(Switch);
@@ -252,7 +252,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -275,7 +275,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: undefined };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -297,7 +297,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, foo: null };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -319,7 +319,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, bar: 11 };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -340,7 +340,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, null: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -361,7 +361,7 @@ describe('Ant Design boolean toggle cell', () => {
           }}
         />
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     core.data = { ...core.data, undefined: false };
     wrapper.setProps({ initState: { renderers: antdRenderers, core } });
@@ -380,7 +380,7 @@ describe('Ant Design boolean toggle cell', () => {
           enabled={false}
           path='foo'
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeTruthy();
@@ -391,7 +391,7 @@ describe('Ant Design boolean toggle cell', () => {
     wrapper = mount(
       <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
         <BooleanToggleCell schema={schema} uischema={uischema} path='foo' />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch).first();
     expect(input.props().disabled).toBeFalsy();
@@ -407,7 +407,7 @@ describe('Ant Design boolean toggle cell', () => {
           path='foo'
           id='myid'
         />
-      </JsonFormsStateProvider>
+      </JsonFormsStateProvider>,
     );
     const input = wrapper.find(Switch);
     expect(input.props().id).toBe('myid');

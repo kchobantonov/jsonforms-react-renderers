@@ -37,7 +37,7 @@ export interface AjvKeywordOptions {
 
 export const registerAjvKeywords = (
   ajv: Ajv,
-  options: AjvKeywordOptions = {}
+  options: AjvKeywordOptions = {},
 ): Ajv => {
   keywords(ajv);
 
@@ -54,7 +54,7 @@ export const registerAjvKeywords = (
 
   const defaults = dynamicDefaults.DEFAULTS as Record<string, unknown>;
   defaults.dynamic = makeDynamic(
-    options.allowScriptEvaluation ?? (() => false)
+    options.allowScriptEvaluation ?? (() => false),
   );
   defaults.searchParams = searchParams;
   /*

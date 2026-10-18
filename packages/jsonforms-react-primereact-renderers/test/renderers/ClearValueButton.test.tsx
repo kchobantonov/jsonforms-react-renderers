@@ -5,7 +5,7 @@ import { PrimeClearValueButton } from '../../src/prime-controls/PrimeClearValueB
 describe('PrimeReact clear value button', () => {
   it.each([0, false, 'value'])('renders for populated data %s', (data) => {
     const markup = renderToStaticMarkup(
-      <PrimeClearValueButton data={data} enabled onClear={() => undefined} />
+      <PrimeClearValueButton data={data} enabled onClear={() => undefined} />,
     );
 
     expect(markup).toContain('aria-label="Clear value"');
@@ -15,10 +15,10 @@ describe('PrimeReact clear value button', () => {
     'does not render for empty data %s',
     (data) => {
       const markup = renderToStaticMarkup(
-        <PrimeClearValueButton data={data} enabled onClear={() => undefined} />
+        <PrimeClearValueButton data={data} enabled onClear={() => undefined} />,
       );
 
       expect(markup).not.toContain('aria-label="Clear value"');
-    }
+    },
   );
 });

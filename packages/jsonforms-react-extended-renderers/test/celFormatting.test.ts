@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { renderTemplate, resolveTextParams } from '../src/util/celTemplate';
 import {
   buildNamespaceScope,
@@ -16,7 +16,7 @@ const render = (
   template: string,
   locale: string,
   params: Record<string, unknown>,
-  data: unknown = {}
+  data: unknown = {},
 ) => {
   const ns = buildNamespaceScope({ data, locale, dynamicAllowed: true });
   const resolved = resolveTextParams(params, ns, locale);
@@ -24,7 +24,7 @@ const render = (
     splitTemplate(template),
     buildTextScope(resolved.params, locale),
     undefined,
-    locale
+    locale,
   );
   return { text: out.text, failures: [...resolved.failures, ...out.failures] };
 };
@@ -46,7 +46,7 @@ describe('numbers follow the locale', () => {
         { amount: '{data.v}' },
         {
           v: 148.5,
-        }
+        },
       ).text;
     // The symbol moves; that is the whole reason this cannot be done by hand.
     expect(out('en')).toContain('148.50');
@@ -56,7 +56,8 @@ describe('numbers follow the locale', () => {
 
   it('takes an explicit number of fraction digits', () => {
     expect(
-      render('{number(amount, 2)}', 'en', { amount: '{data.v}' }, { v: 3 }).text
+      render('{number(amount, 2)}', 'en', { amount: '{data.v}' }, { v: 3 })
+        .text,
     ).toBe('3.00');
   });
 
@@ -67,7 +68,7 @@ describe('numbers follow the locale', () => {
   */
   it('leaves an unformatted number alone', () => {
     expect(render('{ref}', 'de', { ref: '{data.v}' }, { v: 2026 }).text).toBe(
-      '2026'
+      '2026',
     );
   });
 });
@@ -129,7 +130,7 @@ describe('dates follow the locale', () => {
       '{date(d)}',
       'en',
       { d: '{data.v}' },
-      { v: 'not a date' }
+      { v: 'not a date' },
     );
     expect(out.failures).toHaveLength(1);
     expect(out.text).toBe('');
@@ -151,12 +152,12 @@ describe('the formatters do not widen the security surface', () => {
 
 describe('translate, in a parameter value', () => {
   const tr = (key: string, fallback?: string) =>
-    ((
+    (
       { 'plan.Team': 'Екип', 'plan.Starter': 'Начален' } as Record<
         string,
         string
       >
-    )[key] ?? fallback);
+    )[key] ?? fallback;
 
   const viaParam = (value: string, data: unknown, locale = 'bg') => {
     const ns = buildNamespaceScope({ data, locale, dynamicAllowed: true });
@@ -166,7 +167,7 @@ describe('translate, in a parameter value', () => {
       buildTextScope(resolved.params, locale),
       undefined,
       locale,
-      tr
+      tr,
     );
     return {
       text: out.text,
@@ -195,19 +196,19 @@ describe('translate, in a parameter value', () => {
   it('is available on the single-expression path and the mixed one alike', () => {
     expect(viaParam('{translate("plan.Team")}', {}).text).toBe('Екип');
     expect(viaParam('Plan: {translate("plan.Team")}', {}).text).toBe(
-      'Plan: Екип'
+      'Plan: Екип',
     );
   });
 
   it('falls back to the key when the catalog has no entry', () => {
     expect(viaParam('{translate("plan.Unknown")}', {}).text).toBe(
-      'plan.Unknown'
+      'plan.Unknown',
     );
   });
 
   it('takes an explicit fallback', () => {
     expect(viaParam('{translate("plan.Unknown", "Custom")}', {}).text).toBe(
-      'Custom'
+      'Custom',
     );
   });
 });

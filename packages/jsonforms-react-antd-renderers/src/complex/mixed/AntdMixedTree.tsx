@@ -73,7 +73,7 @@ export const AntdMixedTree = ({
 
   useEffect(() => {
     const ancestorKeys = selectedPath.map((_, index) =>
-      mixedPathKey(selectedPath.slice(0, index))
+      mixedPathKey(selectedPath.slice(0, index)),
     );
     setExpandedKeys((current) => [
       ...new Set([...current, mixedPathKey([]), ...ancestorKeys]),
@@ -133,14 +133,14 @@ export const AntdMixedTree = ({
                 title={t(
                   showPrimitives
                     ? 'mixed.hidePrimitives'
-                    : 'mixed.showPrimitives'
+                    : 'mixed.showPrimitives',
                 )}
               >
                 <Button
                   aria-label={t(
                     showPrimitives
                       ? 'mixed.hidePrimitives'
-                      : 'mixed.showPrimitives'
+                      : 'mixed.showPrimitives',
                   )}
                   icon={
                     showPrimitives ? <EyeOutlined /> : <EyeInvisibleOutlined />
@@ -165,7 +165,7 @@ export const AntdMixedTree = ({
                     setRenameValue(
                       domainTree
                         ? node.label
-                        : String(node.path[node.path.length - 1])
+                        : String(node.path[node.path.length - 1]),
                     );
                   }}
                   size='small'
@@ -207,7 +207,7 @@ export const AntdMixedTree = ({
 
   nodeMap.clear();
   const treeData = [toDataNode(root)].filter((node): node is DataNode =>
-    Boolean(node)
+    Boolean(node),
   );
 
   return (

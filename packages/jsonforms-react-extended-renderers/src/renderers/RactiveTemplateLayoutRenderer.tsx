@@ -14,7 +14,7 @@ const RactiveTemplate = createLazyTemplate<RactiveTemplateProps>(
     loading: 'template.loading',
     error: 'template.loadError',
     renderError: 'template.renderError',
-  }
+  },
 );
 import {
   ractiveTransitionAttributes,
@@ -45,7 +45,7 @@ import { TemplateDiagnostic } from './templateEngines';
 const SLOT_ATTR = 'data-jsonforms-slot';
 
 export const RactiveTemplateLayoutRenderer = (
-  props: LayoutProps & { uischema: TemplateLayoutElement }
+  props: LayoutProps & { uischema: TemplateLayoutElement },
 ) => {
   const { uischema, schema, path, enabled, visible, renderers, cells, config } =
     props;
@@ -69,7 +69,7 @@ export const RactiveTemplateLayoutRenderer = (
   */
   useEffect(() => {
     for (const diagnostic of diagnostics) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
   }, [diagnostics.join('\u0000')]);
@@ -83,11 +83,11 @@ export const RactiveTemplateLayoutRenderer = (
   useEffect(() => {
     const eaten = ractiveTransitionAttributes(template);
     if (eaten.length > 0) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(
         `template.ractiveTransitionAttribute: ${JSON.stringify(
-          eaten
-        )} end in -in, -out or -in-out, which Ractive parses as transition directives. This profile registers no transitions, so they are dropped from the DOM. Rename them.`
+          eaten,
+        )} end in -in, -out or -in-out, which Ractive parses as transition directives. This profile registers no transitions, so they are dropped from the DOM. Rename them.`,
       );
     }
   }, [template]);
@@ -140,7 +140,7 @@ export const RactiveTemplateLayoutRenderer = (
       translate: (key: string, fallback?: string) =>
         ctx.i18n?.translate?.(key, fallback) ?? fallback ?? key,
     }),
-    [ctx.core?.data, ctx.core?.errors, ctx.i18n?.locale, nameKey]
+    [ctx.core?.data, ctx.core?.errors, ctx.i18n?.locale, nameKey],
   );
 
   if (visible === false) {

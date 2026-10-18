@@ -57,7 +57,7 @@ export type Combinator = (typeof COMBINATORS)[number];
 
 const resolveBranch = (
   branch: JsonSchema,
-  rootSchema: JsonSchema | undefined
+  rootSchema: JsonSchema | undefined,
 ): JsonSchema | undefined => {
   const ref = (branch as { $ref?: string }).$ref;
   if (ref === undefined) {
@@ -87,7 +87,7 @@ const isScalarNarrowing = (branch: JsonSchema | undefined): boolean => {
     (key) =>
       key === 'type' ||
       VALIDATION_KEYWORDS.has(key) ||
-      ANNOTATION_KEYWORDS.has(key)
+      ANNOTATION_KEYWORDS.has(key),
   );
 };
 
@@ -105,13 +105,13 @@ const typeOf = (schema: JsonSchema | undefined): string | undefined => {
  */
 export const scalarCompositionType = (
   schema: JsonSchema | undefined,
-  rootSchema?: JsonSchema
+  rootSchema?: JsonSchema,
 ): string | undefined => {
   if (schema === undefined || typeof schema !== 'object') {
     return undefined;
   }
   const present = COMBINATORS.filter((keyword) =>
-    Array.isArray((schema as Record<string, unknown>)[keyword])
+    Array.isArray((schema as Record<string, unknown>)[keyword]),
   );
   // Two combinators at once is not one unambiguous editor.
   if (present.length !== 1) {
@@ -166,7 +166,7 @@ export const scalarCompositionType = (
  */
 export const scalarCompositionSchema = (
   schema: JsonSchema,
-  rootSchema?: JsonSchema
+  rootSchema?: JsonSchema,
 ): JsonSchema => {
   const record = schema as Record<string, unknown>;
   const rest: Record<string, unknown> = {};

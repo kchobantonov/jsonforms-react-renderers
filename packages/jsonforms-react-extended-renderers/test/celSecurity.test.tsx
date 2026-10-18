@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { renderTemplate, resolveTextParams } from '../src/util/celTemplate';
 import {
   buildNamespaceScope,
@@ -26,13 +26,13 @@ const render = (
   template: string,
   namespaceScope: Record<string, unknown>,
   textParams?: Record<string, unknown>,
-  escape?: (text: string) => string
+  escape?: (text: string) => string,
 ) => {
   const resolved = resolveTextParams(textParams, namespaceScope);
   const rendered = renderTemplate(
     splitTemplate(template),
     buildTextScope(resolved.params, 'en'),
-    escape
+    escape,
   );
   return {
     text: rendered.text,
@@ -43,7 +43,7 @@ const render = (
 /** A parameter whose value is the expression under test. */
 const viaParam = (
   expression: string,
-  namespaceScope: Record<string, unknown>
+  namespaceScope: Record<string, unknown>,
 ) => render('{v}', namespaceScope, { v: `{${expression}}` });
 
 describe('CEL cannot reach the host', () => {
@@ -61,7 +61,7 @@ describe('CEL cannot reach the host', () => {
   ])('refuses %s', (_label, expression) => {
     const result = viaParam(
       expression,
-      buildNamespaceScope({ data: { x: 1 }, dynamicAllowed: true })
+      buildNamespaceScope({ data: { x: 1 }, dynamicAllowed: true }),
     );
     expect(result.failures).toHaveLength(1);
     expect(result.text).toBe('');
@@ -82,7 +82,7 @@ describe('CEL cannot reach the host', () => {
   ])('yields nothing for %s', (_label, expression) => {
     const result = viaParam(
       expression,
-      buildNamespaceScope({ data: { x: 1 }, dynamicAllowed: true })
+      buildNamespaceScope({ data: { x: 1 }, dynamicAllowed: true }),
     );
     expect(result.text).toBe('');
   });
@@ -119,7 +119,7 @@ describe('CEL cannot reach the host', () => {
     expect(direct.failures.join(' ')).toContain('data');
     // Declared as a parameter, the same value resolves.
     expect(render('Value: {v}', open, { v: '{data.secret}' }).text).toBe(
-      'Value: shown'
+      'Value: shown',
     );
   });
 
@@ -157,7 +157,7 @@ describe('a substituted value cannot become markup', () => {
       '{v}',
       scope(value),
       { v: '{data.v}' },
-      escapeMarkdown
+      escapeMarkdown,
     );
     void template;
     return renderMarkdown(text);
@@ -215,7 +215,7 @@ describe('a substituted value cannot become markup', () => {
       '**Welcome**, {v}!',
       scope('*not emphasis*'),
       { v: '{data.v}' },
-      escapeMarkdown
+      escapeMarkdown,
     );
     const out = html(renderMarkdown(text));
     // The author's bold survives...
@@ -236,7 +236,7 @@ describe('a substituted value cannot become markup', () => {
       '[docs]({v})',
       scope('javascript:alert(1)'),
       { v: '{data.v}' },
-      escapeMarkdown
+      escapeMarkdown,
     );
     const out = html(renderMarkdown(text));
     // No anchor, and no javascript: destination anywhere in the output.
@@ -258,7 +258,7 @@ describe('without Markdown there is nothing to escape', () => {
         data: { v: 'Ana (she/her) - welcome!' },
         dynamicAllowed: true,
       }),
-      { v: '{data.v}' }
+      { v: '{data.v}' },
     );
     expect(text).toBe('Hello Ana (she/her) - welcome!');
     expect(text).not.toContain('\\');

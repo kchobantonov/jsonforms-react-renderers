@@ -18,8 +18,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-extended-renderers/src/index.tsx',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
             {
@@ -27,8 +27,8 @@ export default ({ command }) => ({
               replacement: fileURLToPath(
                 new URL(
                   '../../packages/jsonforms-react-renderer-common/src',
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             },
             ...['antd-renderers', 'antd-extended-renderers'].map((name) => ({
@@ -38,8 +38,8 @@ export default ({ command }) => ({
                   `../../packages/jsonforms-react-${name}/src/index.${
                     name === 'antd-renderers' ? 'ts' : 'tsx'
                   }`,
-                  import.meta.url
-                )
+                  import.meta.url,
+                ),
               ),
             })),
           ]

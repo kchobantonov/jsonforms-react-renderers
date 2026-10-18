@@ -23,7 +23,7 @@ export const createOnChangeHandler =
   (
     path: string,
     handleChange: (path: string, value: any) => void,
-    saveFormat: string
+    saveFormat: string,
   ) =>
   (event: FormEvent<Date>) => {
     const value = dayjs(event.value);
@@ -42,7 +42,7 @@ export const createOnBlurHandler =
     format: string,
     saveFormat: string,
     rerenderChild: () => void,
-    onBlur: () => void
+    onBlur: () => void,
   ) =>
   (e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>) => {
     const date = dayjs(e.target.value, format);
@@ -60,7 +60,7 @@ export const formatDate = (date: dayjs.Dayjs, saveFormat: string) => {
   const yearToken = '__JSONFORMS_FOUR_DIGIT_YEAR__';
   const formatWithYearPlaceholder = saveFormat.replace(
     /YYYY/g,
-    `[${yearToken}]`
+    `[${yearToken}]`,
   );
 
   return date
@@ -70,7 +70,7 @@ export const formatDate = (date: dayjs.Dayjs, saveFormat: string) => {
 
 export const getData = (
   data: any,
-  format: string | string[] | undefined
+  format: string | string[] | undefined,
 ): Date | null => {
   if (!data) {
     return null;

@@ -15,11 +15,11 @@ export const checkTooltip = (
   uiSchema: ControlElement,
   wrapper: ReactWrapper<any, any>,
   findTooltipWrapper: (
-    wrapper: ReactWrapper<any, any>
+    wrapper: ReactWrapper<any, any>,
   ) => ReactWrapper<any, any>,
   tooltipEnum: ArrayTranslationEnum,
   tooltipFilter: EnzymePropSelector | string,
-  data?: any
+  data?: any,
 ): ReactWrapper<any, any> => {
   wrapper = mount(
     <JsonForms
@@ -27,15 +27,15 @@ export const checkTooltip = (
       schema={schema}
       uischema={uiSchema}
       renderers={primereactRenderers}
-    />
+    />,
   );
 
   expect(
     findTooltipWrapper(wrapper).find(Tooltip).filter(tooltipFilter).props()[
       'title'
-    ]
+    ],
   ).toBe(
-    arrayDefaultTranslations.find((ar) => ar.key == tooltipEnum).default()
+    arrayDefaultTranslations.find((ar) => ar.key == tooltipEnum).default(),
   );
   return wrapper;
 };
@@ -45,10 +45,10 @@ export const checkTooltipTranslation = (
   uiSchema: ControlElement,
   wrapper: ReactWrapper<any, any>,
   findTooltipWrapper: (
-    wrapper: ReactWrapper<any, any>
+    wrapper: ReactWrapper<any, any>,
   ) => ReactWrapper<any, any>,
   tooltipFilter: EnzymePropSelector | string,
-  data?: any
+  data?: any,
 ): ReactWrapper<any, any> => {
   const translate = () => 'Translated';
   wrapper = mount(
@@ -58,13 +58,13 @@ export const checkTooltipTranslation = (
       uischema={uiSchema}
       renderers={primereactRenderers}
       i18n={{ locale: 'en', translate: translate }}
-    />
+    />,
   );
 
   expect(
     findTooltipWrapper(wrapper).find(Tooltip).filter(tooltipFilter).props()[
       'title'
-    ]
+    ],
   ).toBe('Translated');
   return wrapper;
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { createAjv, createDefaultValue } from '@jsonforms/core';
@@ -69,8 +69,8 @@ const draw = (override?: any) => {
               current = next;
             }}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
 
@@ -85,11 +85,11 @@ const draw = (override?: any) => {
     current: () => current,
     tabs: () =>
       Array.from(container.querySelectorAll<HTMLElement>('.ant-tabs-tab')).map(
-        (tab) => tab.textContent ?? ''
+        (tab) => tab.textContent ?? '',
       ),
     selectTab: async (label: string) => {
       const tab = Array.from(
-        container.querySelectorAll<HTMLElement>('.ant-tabs-tab')
+        container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
       ).find((candidate) => candidate.textContent?.includes(label));
       expect(tab, `no tab labelled ${label}`).toBeTruthy();
       act(() => tab!.click());
@@ -103,7 +103,7 @@ const draw = (override?: any) => {
     */
     byLabel: (label: string) =>
       Array.from(
-        active()?.querySelectorAll<HTMLButtonElement>('button') ?? []
+        active()?.querySelectorAll<HTMLButtonElement>('button') ?? [],
       ).filter((button) => button.getAttribute('aria-label') === label),
     unmount: () => act(() => root.unmount()),
   };
@@ -136,17 +136,17 @@ describe('the scalar and composite cells tab', () => {
     const view = draw();
     await view.selectTab('Scalar and composite cells');
     await flushUntil(
-      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0
+      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0,
     );
     const headers = Array.from(view.active()?.querySelectorAll('th') ?? []).map(
-      (header) => header.textContent?.trim()
+      (header) => header.textContent?.trim(),
     );
     expect(headers).toEqual(
-      expect.arrayContaining(['Name *', 'Tenure', 'Address', 'Phone numbers'])
+      expect.arrayContaining(['Name *', 'Tenure', 'Address', 'Phone numbers']),
     );
     expect(view.active()?.querySelector('.ag-paging-panel')).toBeTruthy();
     expect(
-      view.active()?.querySelectorAll('.ag-cell[col-id="name"]')
+      view.active()?.querySelectorAll('.ag-cell[col-id="name"]'),
     ).toHaveLength(1);
     expect(view.current().staff).toHaveLength(2);
     view.unmount();
@@ -163,7 +163,7 @@ describe('the table tab', () => {
     const view = draw();
     await view.selectTab('Table');
     const headers = Array.from(view.active()?.querySelectorAll('th') ?? []).map(
-      (th) => th.textContent?.trim()
+      (th) => th.textContent?.trim(),
     );
     expect(headers).toContain('Title *');
     expect(headers).toContain('Room');
@@ -178,7 +178,7 @@ describe('the table tab', () => {
     expect(textOf(view.active())).toContain('Aurora');
     // The detail form is behind a dialog, not in the cell.
     expect(
-      view.active()?.querySelectorAll('input[value="Aurora"]').length
+      view.active()?.querySelectorAll('input[value="Aurora"]').length,
     ).toBe(0);
     view.unmount();
   });
@@ -211,11 +211,11 @@ describe('the expandable tab', () => {
     const view = draw();
     await view.selectTab('Expandable');
     const panels = Array.from(
-      view.active()?.querySelectorAll('.ant-collapse') ?? []
+      view.active()?.querySelectorAll('.ant-collapse') ?? [],
     );
     expect(panels.length).toBeGreaterThanOrEqual(2);
     const open = panels.map(
-      (panel) => panel.querySelectorAll('.ant-collapse-item-active').length
+      (panel) => panel.querySelectorAll('.ant-collapse-item-active').length,
     );
     expect(open[0], 'the first array should open its first item').toBe(1);
     expect(open[1], 'collapsed should leave every item closed').toBe(0);
@@ -237,7 +237,7 @@ describe('the list-with-detail tab', () => {
 describe('the grid tab', () => {
   const cellsOf = (view: ReturnType<typeof draw>, colId: string) =>
     Array.from(view.active()?.querySelectorAll('.ag-cell') ?? []).filter(
-      (cell) => cell.getAttribute('col-id') === colId
+      (cell) => cell.getAttribute('col-id') === colId,
     );
 
   /*
@@ -249,7 +249,7 @@ describe('the grid tab', () => {
     const view = draw();
     await view.selectTab('AG Grid');
     await flushUntil(
-      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0
+      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0,
     );
     expect(view.active()?.querySelector('.ag-root')).toBeTruthy();
     expect(view.active()?.querySelector('.ant-collapse')).toBeNull();
@@ -265,7 +265,7 @@ describe('the grid tab', () => {
     const view = draw();
     await view.selectTab('AG Grid');
     await flushUntil(
-      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0
+      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0,
     );
     const code = cellsOf(view, 'code')[0];
     expect(code, 'no code column').toBeTruthy();
@@ -280,7 +280,7 @@ describe('the grid tab', () => {
     const view = draw();
     await view.selectTab('AG Grid');
     await flushUntil(
-      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0
+      () => (view.active()?.querySelectorAll('.ag-cell').length ?? 0) > 0,
     );
     const holder = cellsOf(view, 'holder')[0];
     expect(holder).toBeTruthy();
@@ -306,7 +306,7 @@ describe('the bounds tab', () => {
     const deletes = view.byLabel('Delete button');
     expect(deletes.length).toBeGreaterThan(0);
     expect(deletes[0].disabled, 'Delete should be refused at minItems').toBe(
-      true
+      true,
     );
 
     // ...and the handler is guarded too, which is the part a user can reach
@@ -360,7 +360,7 @@ describe('the bounds tab', () => {
     validate({ active: true });
     expect(
       validate.errors?.map((error: any) => error.keyword),
-      'the missing name must remain an error'
+      'the missing name must remain an error',
     ).toContain('required');
   });
 
@@ -378,7 +378,7 @@ describe('the bounds tab', () => {
 
     // "These options leave existing item values editable."
     const editable = Array.from(
-      view.active()?.querySelectorAll<HTMLInputElement>('input') ?? []
+      view.active()?.querySelectorAll<HTMLInputElement>('input') ?? [],
     ).filter((input) => input.value === 'Unlock the hall');
     expect(editable.length, 'the checklist fields should be editable').toBe(1);
     expect(editable[0].disabled).toBe(false);
@@ -408,7 +408,7 @@ describe('the bounds tab', () => {
     validate({ reviewers: [] });
     const empty = validate.errors ?? [];
     expect(empty.map((error: any) => error.instancePath)).toContain(
-      '/reviewers'
+      '/reviewers',
     );
     expect(empty.map((error: any) => error.keyword)).toContain('contains');
 

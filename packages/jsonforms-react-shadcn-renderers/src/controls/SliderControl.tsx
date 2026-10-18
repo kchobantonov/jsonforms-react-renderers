@@ -54,7 +54,7 @@ export const ShadcnSliderControl = (props: ControlProps) => {
             onValueChange={([value]) =>
               props.handleChange(
                 props.path,
-                props.schema.type === 'integer' ? Math.trunc(value) : value
+                props.schema.type === 'integer' ? Math.trunc(value) : value,
               )
             }
           />

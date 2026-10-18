@@ -32,8 +32,8 @@ it('defaults to tree and lets local layout override the config', () => {
           }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
   try {
     render('nested');
@@ -43,7 +43,7 @@ it('defaults to tree and lets local layout override the config', () => {
     render('tree', 'nested');
     expect(host.querySelector('input[value="Ada"]')).toBeTruthy();
     expect(
-      host.querySelector('[role="tree"], .jsonforms-mixed-tree')
+      host.querySelector('[role="tree"], .jsonforms-mixed-tree'),
     ).toBeNull();
   } finally {
     act(() => root.unmount());

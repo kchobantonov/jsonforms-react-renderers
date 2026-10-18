@@ -185,5 +185,5 @@ renderExample(
     webComponentTag: JSON_FORMS_PRIMEREACT_TAG,
     Shell: PrimeReactDemoShell,
     Ui: primereactDemoUi,
-  }
+  },
 );

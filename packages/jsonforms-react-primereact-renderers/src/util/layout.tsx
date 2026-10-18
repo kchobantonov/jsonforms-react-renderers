@@ -46,7 +46,7 @@ export const renderColumnLayoutElements = (
   path: string,
   enabled: boolean,
   renderers?: JsonFormsRendererRegistryEntry[],
-  cells?: JsonFormsCellRendererRegistryEntry[]
+  cells?: JsonFormsCellRendererRegistryEntry[],
 ) => {
   return (
     <>
@@ -74,7 +74,7 @@ export const renderRowLayoutElements = (
   path: string,
   enabled: boolean,
   renderers?: JsonFormsRendererRegistryEntry[],
-  cells?: JsonFormsCellRendererRegistryEntry[]
+  cells?: JsonFormsCellRendererRegistryEntry[],
 ) => {
   return (
     <div className='grid'>
@@ -114,7 +114,7 @@ const PrimeLayoutRendererComponent = ({
         path,
         enabled,
         renderers,
-        cells
+        cells,
       );
     }
     return renderRowLayoutElements(
@@ -123,7 +123,7 @@ const PrimeLayoutRendererComponent = ({
       path,
       enabled,
       renderers,
-      cells
+      cells,
     );
   }
 };
@@ -134,9 +134,9 @@ export interface AjvProps {
 }
 
 // TODO fix @typescript-eslint/ban-types
-// eslint-disable-next-line @typescript-eslint/ban-types
+// oxlint-disable-next-line @typescript-eslint/ban-types
 export const withAjvProps = <P extends {}>(
-  Component: ComponentType<AjvProps & P>
+  Component: ComponentType<AjvProps & P>,
 ) =>
   function WithAjvProps(props: P) {
     const ctx = useJsonForms();
@@ -145,7 +145,6 @@ export const withAjvProps = <P extends {}>(
     return <Component {...props} ajv={ajv} />;
   };
 
-export interface PrimeLabelableLayoutRendererProps
-  extends PrimeLayoutRendererProps {
+export interface PrimeLabelableLayoutRendererProps extends PrimeLayoutRendererProps {
   label?: string;
 }

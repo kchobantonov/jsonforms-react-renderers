@@ -31,15 +31,15 @@ describe.each([
     expect(renderMarkup(<Cell {...props} visible={false} />)).toBe(''));
   it('honors disabled state', () =>
     expect(renderMarkup(<Cell {...props} enabled={false} />)).toContain(
-      'disabled'
+      'disabled',
     ));
   it('exposes validation state', () =>
     expect(renderMarkup(<Cell {...props} errors='Invalid' />)).toContain(
-      'aria-invalid="true"'
+      'aria-invalid="true"',
     ));
   it('has an accessible name', () =>
     expect(renderMarkup(<Cell {...props} />)).toContain(
-      'aria-label="items.0.value"'
+      'aria-label="items.0.value"',
     ));
 });
 
@@ -69,14 +69,14 @@ describe('cell edits', () => {
           schema={{ type }}
           data={7}
           handleChange={handleChange}
-        />
-      )
+        />,
+      ),
     );
     const input = container.querySelector('input')!;
     act(() => {
       Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
-        'value'
+        'value',
       )!.set!.call(input, value);
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -91,17 +91,17 @@ describe('cell edits', () => {
             tester(props.uischema, { type } as any, {
               rootSchema: {},
               config: {},
-            }) >= 0
-        )
+            }) >= 0,
+        ),
       ).toBe(true);
-    }
+    },
   );
   it.each([undefined, null, 'false', 0, {}, []])(
     'does not present invalid boolean %j as an answer',
     (data) => {
       expect(
-        renderMarkup(<ShadcnBooleanCell {...props} data={data} />)
+        renderMarkup(<ShadcnBooleanCell {...props} data={data} />),
       ).toContain('data-state="indeterminate"');
-    }
+    },
   );
 });

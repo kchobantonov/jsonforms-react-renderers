@@ -70,7 +70,7 @@ export const useDebouncedChange = (
   data: any,
   path: string,
   eventToValueFunction: (ev: any) => any = eventToValue,
-  timeout = 300
+  timeout = 300,
 ): [any, (event: any) => void, () => void] => {
   const [input, setInput] = useState(data ?? defaultValue);
   /** What this control last wrote, so its own echo is not read as a change. */
@@ -87,7 +87,7 @@ export const useDebouncedChange = (
         lastWritten.current = newValue;
         handleChange(path, newValue);
       }, timeout),
-    [handleChange, path, timeout]
+    [handleChange, path, timeout],
   );
   useEffect(() => {
     if (data === lastWritten.current) {
@@ -117,7 +117,7 @@ export const useDebouncedChange = (
       setInput(newValue ?? defaultValue);
       debouncedUpdate(newValue);
     },
-    [debouncedUpdate, eventToValueFunction]
+    [debouncedUpdate, eventToValueFunction],
   );
   const onClear = useCallback(() => {
     // Clearing supersedes whatever is still queued. Without this, a keystroke

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { defaultTranslator } from '@jsonforms/core';
 import { formatErrorSummary, ErrorSummaryList } from '../src/errorSummary';
 const schema = {
@@ -24,7 +24,7 @@ const errors = [0, 1].map((index) => ({
 describe('structured error summaries', () => {
   it('keeps identical messages on different rows separate', () => {
     expect(
-      formatErrorSummary(errors, schema, undefined, defaultTranslator)
+      formatErrorSummary(errors, schema, undefined, defaultTranslator),
     ).toEqual([
       {
         path: 'Comments / 1 / Message',
@@ -48,7 +48,7 @@ describe('structured error summaries', () => {
         : fallback;
     expect(
       formatErrorSummary(errors, schema, ui, translate, () => 'Other')[0]
-        .message
+        .message,
     ).toBe('Please shorten your comment.');
   });
   it('preserves host and schema custom messages and missing-property paths', () => {
@@ -60,7 +60,7 @@ describe('structured error summaries', () => {
       message: 'Enter a comment for this booking.',
     };
     expect(
-      formatErrorSummary([error], schema, undefined, defaultTranslator)[0]
+      formatErrorSummary([error], schema, undefined, defaultTranslator)[0],
     ).toEqual({
       path: 'Comments / 1 / Message',
       message: 'Enter a comment for this booking.',
@@ -87,8 +87,8 @@ it('expands and collapses a bounded summary without changing its count', () => {
               {label}
             </button>
           )}
-        />
-      )
+        />,
+      ),
     );
     expect(host.querySelectorAll('li')).toHaveLength(3);
     expect(host.textContent).toContain('7 errors');
@@ -96,7 +96,7 @@ it('expands and collapses a bounded summary without changing its count', () => {
     act(() => host.querySelector('button')!.click());
     expect(host.querySelectorAll('li')).toHaveLength(7);
     expect(host.querySelector('button')?.getAttribute('aria-expanded')).toBe(
-      'true'
+      'true',
     );
     act(() => host.querySelector('button')!.click());
     expect(host.querySelectorAll('li')).toHaveLength(3);

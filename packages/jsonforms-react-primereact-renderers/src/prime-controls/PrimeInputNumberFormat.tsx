@@ -36,7 +36,7 @@ export const PrimeInputNumberFormat = (
       inputProps?: React.ComponentProps<
         typeof InputText | typeof InputTextarea
       >;
-    }
+    },
 ) => {
   const {
     className,

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   markdownEnabled,
   resolveMarkup,
@@ -55,13 +55,13 @@ describe('the markdown gate', () => {
     expect(markdownEnabled({})).toBe(true);
     expect(markdownEnabled(withMarkup({ markdown: {} }))).toBe(true);
     expect(markdownEnabled(withMarkup({ markdown: { enabled: true } }))).toBe(
-      true
+      true,
     );
   });
 
   it('is off only for an explicit false', () => {
     expect(markdownEnabled(withMarkup({ markdown: { enabled: false } }))).toBe(
-      false
+      false,
     );
   });
 
@@ -80,7 +80,7 @@ describe('the markdown gate', () => {
   it('keeps interpolation when markdown is refused', () => {
     const off = withMarkup({ markdown: { enabled: false } });
     expect(
-      resolveMarkup({ markup: 'markdown', interpolate: true }, off)
+      resolveMarkup({ markup: 'markdown', interpolate: true }, off),
     ).toMatchObject({ markdown: false, interpolate: true });
   });
 
@@ -105,7 +105,7 @@ describe('the typography option', () => {
 
   it('is switchable per form', () => {
     expect(
-      typographyEnabled(undefined, withMarkup({ typography: false }))
+      typographyEnabled(undefined, withMarkup({ typography: false })),
     ).toBe(false);
   });
 

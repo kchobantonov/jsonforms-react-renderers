@@ -27,7 +27,7 @@ let catalogs: Record<string, RendererLocaleCatalog> = defaultRendererLocales;
 
 /** Replaces the supported set wholesale. */
 export const setRendererLocales = (
-  next: Record<string, RendererLocaleCatalog>
+  next: Record<string, RendererLocaleCatalog>,
 ): void => {
   catalogs = next;
 };
@@ -41,7 +41,7 @@ const normalize = (locale: string) => locale.toLowerCase().replace(/_/g, '-');
 /** Adds or replaces one language, leaving the others alone. */
 export const registerRendererLocale = (
   locale: string,
-  catalog: RendererLocaleCatalog
+  catalog: RendererLocaleCatalog,
 ): void => {
   catalogs = { ...catalogs, [normalize(locale)]: catalog };
 };
@@ -54,7 +54,7 @@ export const registerRendererLocale = (
  * region nobody translated separately.
  */
 export const resolveRendererLocale = (
-  locale: string | undefined
+  locale: string | undefined,
 ): RendererLocaleCatalog | undefined => {
   if (!locale) return undefined;
   const code = normalize(locale);
@@ -71,5 +71,5 @@ export const resolveRendererLocale = (
  */
 export const rendererDefault = (
   locale: string | undefined,
-  key: I18nKey
+  key: I18nKey,
 ): string => resolveRendererLocale(locale)?.[key] ?? i18nDefaults[key];

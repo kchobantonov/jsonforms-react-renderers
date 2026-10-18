@@ -110,7 +110,7 @@ describe('Shadcn anyOf renderer', () => {
           uischema={uischema}
           renderers={shadcnRenderers}
           onChange={onChange}
-        />
+        />,
       );
     });
 
@@ -118,13 +118,13 @@ describe('Shadcn anyOf renderer', () => {
     expect(container.textContent).toContain('anyOf-0');
     expect(container.textContent).toContain('anyOf-1');
     expect(container.textContent).toContain(
-      'Addresses or Users (AnyOf Array Items)'
+      'Addresses or Users (AnyOf Array Items)',
     );
     expect(container.querySelectorAll('input')).toHaveLength(3);
     expect(
       Array.from(container.querySelectorAll('button')).filter(
-        (button) => button.getAttribute('aria-label') === 'Add'
-      )
+        (button) => button.getAttribute('aria-label') === 'Add',
+      ),
     ).toHaveLength(2);
     expect(onChange).not.toHaveBeenCalled();
   });

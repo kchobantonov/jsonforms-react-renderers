@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import {
@@ -116,8 +116,8 @@ const draw = async (locale: string, useCatalog = true) => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
   paint();
   await settle();
@@ -125,9 +125,9 @@ const draw = async (locale: string, useCatalog = true) => {
   /** The message antd renders under one control, by its label. */
   const messageFor = (label: string) => {
     const item = Array.from(
-      container.querySelectorAll<HTMLElement>('.ant-form-item')
+      container.querySelectorAll<HTMLElement>('.ant-form-item'),
     ).find((candidate) =>
-      candidate.querySelector('label')?.textContent?.includes(label)
+      candidate.querySelector('label')?.textContent?.includes(label),
     );
     return (
       item?.querySelector<HTMLElement>('.ant-form-item-explain')?.textContent ??
@@ -221,8 +221,8 @@ describe('a schema with no messages of its own', () => {
             cells={antdCells}
             onChange={() => undefined}
           />
-        </ConfigProvider>
-      )
+        </ConfigProvider>,
+      ),
     );
     await settle();
     return {

@@ -47,7 +47,7 @@ export const isMaskPattern = (value: unknown): value is MaskPattern => {
 
 export const hasMaskPattern: Tester = (uischema: UISchemaElement) =>
   isMaskPattern(
-    (uischema as { options?: Record<string, unknown> }).options?.mask
+    (uischema as { options?: Record<string, unknown> }).options?.mask,
   );
 
 /**
@@ -74,7 +74,7 @@ const hasSpecializedFormat: Tester = or(
   ...SPECIALIZED_STRING_FORMATS.flatMap((format) => [
     formatIs(format),
     optionIs('format', format),
-  ])
+  ]),
 );
 
 /**
@@ -84,5 +84,5 @@ const hasSpecializedFormat: Tester = or(
  */
 export const extendedMaskTester = rankWith(
   4,
-  and(isStringControl, hasMaskPattern, not(hasSpecializedFormat))
+  and(isStringControl, hasMaskPattern, not(hasSpecializedFormat)),
 );

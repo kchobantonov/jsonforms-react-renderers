@@ -14,7 +14,7 @@ export const defaultShadcnRendererSettings: ShadcnRendererSettings = {
 
 export const createShadcnRendererStyle = (
   settings: ShadcnRendererSettings = defaultShadcnRendererSettings,
-  dark = false
+  dark = false,
 ) => {
   const radius =
     settings.borderRadius ?? defaultShadcnRendererSettings.borderRadius;

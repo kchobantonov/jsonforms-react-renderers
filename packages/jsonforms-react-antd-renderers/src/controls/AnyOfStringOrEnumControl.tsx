@@ -23,7 +23,8 @@ interface AutoCompleteOption {
 
 const findEnumSchema = (schemas: JsonSchema[]) =>
   schemas.find(
-    (s) => s.enum !== undefined && (s.type === 'string' || s.type === undefined)
+    (s) =>
+      s.enum !== undefined && (s.type === 'string' || s.type === undefined),
   );
 const findTextSchema = (schemas: JsonSchema[]) =>
   schemas.find((s) => s.type === 'string' && s.enum === undefined);
@@ -45,7 +46,7 @@ const AntdAutocompleteInputText = (props: EnumCellProps & WithClassname) => {
   const maxLength = stringSchema.maxLength;
   const appliedUiSchemaOptions = useMemo(
     () => merge({}, config, uischema.options),
-    [config, uischema.options]
+    [config, uischema.options],
   );
   const options: AutoCompleteOption[] = enumSchema.enum?.map((value) => ({
     value,
@@ -57,15 +58,15 @@ const AntdAutocompleteInputText = (props: EnumCellProps & WithClassname) => {
     '',
     data,
     path,
-    (ev: any) => ev || undefined
+    (ev: any) => ev || undefined,
   );
   const onSearch = (searchText: string) => {
     setFilteredOptions(
       !searchText
         ? options
         : options.filter((option) =>
-            option.value.toLowerCase().includes(searchText)
-          )
+            option.value.toLowerCase().includes(searchText),
+          ),
     );
   };
   const inputStyle = { width: '100%' };
@@ -100,7 +101,7 @@ const hasEnumAndText = (schemas: JsonSchema[]) => {
   const enumSchema = findEnumSchema(schemas);
   const stringSchema = findTextSchema(schemas);
   const remainingSchemas = schemas.filter(
-    (s) => s !== enumSchema || s !== stringSchema
+    (s) => s !== enumSchema || s !== stringSchema,
   );
   const wrongType = remainingSchemas.find((s) => s.type && s.type !== 'string');
   return enumSchema && stringSchema && !wrongType;
@@ -110,11 +111,11 @@ const simpleAnyOf = and(
   schemaMatches(
     (schema) =>
       Object.prototype.hasOwnProperty.call(schema, 'anyOf') &&
-      hasEnumAndText(schema.anyOf)
-  )
+      hasEnumAndText(schema.anyOf),
+  ),
 );
 export const anyOfStringOrEnumControlTester: RankedTester = rankWith(
   5,
-  simpleAnyOf
+  simpleAnyOf,
 );
 export default withJsonFormsControlProps(AnyOfStringOrEnumControl);

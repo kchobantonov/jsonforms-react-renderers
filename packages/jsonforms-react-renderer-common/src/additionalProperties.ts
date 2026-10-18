@@ -33,7 +33,7 @@ export const hasAdditionalProperties = (schema: JsonSchema): boolean => {
   return (
     Boolean(
       objectSchema.patternProperties &&
-        Object.keys(objectSchema.patternProperties).length > 0
+      Object.keys(objectSchema.patternProperties).length > 0,
     ) ||
     typeof objectSchema.additionalProperties === 'object' ||
     objectSchema.additionalProperties === true
@@ -44,7 +44,7 @@ export const getMatchingAdditionalPropertySchema = (
   propName: string,
   parentSchema: JsonSchema,
   rootSchema: JsonSchema,
-  allowIfMissing: boolean
+  allowIfMissing: boolean,
 ): JsonSchema => {
   const objectSchema = toObjectSchema(parentSchema);
   let propSchema: JsonSchema | undefined;
@@ -93,13 +93,13 @@ export const toAdditionalPropertyItem = (
   parentPath: string,
   parentSchema: JsonSchema,
   rootSchema: JsonSchema,
-  allowIfMissing: boolean
+  allowIfMissing: boolean,
 ): AdditionalPropertyItem => {
   let propSchema = getMatchingAdditionalPropertySchema(
     propName,
     parentSchema,
     rootSchema,
-    allowIfMissing
+    allowIfMissing,
   );
   let propUiSchema: UISchemaElement = createControlElement('#');
 
@@ -108,7 +108,7 @@ export const toAdditionalPropertyItem = (
       propSchema,
       'Group',
       undefined,
-      rootSchema
+      rootSchema,
     );
     (propUiSchema as GroupLayout).label = propSchema.title ?? propName;
   }
@@ -122,7 +122,7 @@ export const toAdditionalPropertyItem = (
     if (propSchema.type === 'object') {
       propSchema.additionalProperties =
         propSchema.additionalProperties !== false
-          ? propSchema.additionalProperties ?? true
+          ? (propSchema.additionalProperties ?? true)
           : false;
     } else if (propSchema.type === 'array') {
       propSchema.items = propSchema.items ?? {};

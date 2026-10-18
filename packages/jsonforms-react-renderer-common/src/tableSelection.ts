@@ -12,7 +12,7 @@ export const useTableSelection = (props: any) => {
   const schema = Resolve.schema(
     ctx.core?.schema,
     props.uischema.scope,
-    ctx.core?.schema
+    ctx.core?.schema,
   );
   const options = { ...props.config, ...props.uischema.options };
   const [selected, setSelected] = useState<number[]>([]);
@@ -41,7 +41,7 @@ export const useTableSelection = (props: any) => {
     if (!allowed(indices)) return;
     props.removeItems(
       props.path,
-      [...indices].sort((a, b) => b - a)
+      [...indices].sort((a, b) => b - a),
     )();
     setSelected([]);
   };
@@ -66,7 +66,7 @@ export const useTableSelection = (props: any) => {
             catalogId: 'arrayTable',
             operation: 'delete',
           },
-          selected.map((index) => rows![index])
+          selected.map((index) => rows![index]),
         )
       ) {
         setPending({ indices: [...selected], rows: rows! });

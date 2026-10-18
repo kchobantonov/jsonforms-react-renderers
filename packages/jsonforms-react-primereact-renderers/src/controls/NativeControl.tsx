@@ -45,7 +45,7 @@ export const NativeControl = (props: ControlProps) => {
     handleChange,
     '',
     data,
-    path
+    path,
   );
   const fieldType = appliedUiSchemaOptions.format ?? schema.format;
 
@@ -74,7 +74,7 @@ export const NativeControl = (props: ControlProps) => {
 
 export const nativeControlTester: RankedTester = rankWith(
   2,
-  or(isDateControl, isTimeControl)
+  or(isDateControl, isTimeControl),
 );
 
 export default withJsonFormsControlProps(NativeControl);

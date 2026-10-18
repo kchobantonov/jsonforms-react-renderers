@@ -21,7 +21,7 @@ vi.mock('antd', async () => {
         'span',
         { 'data-testid': 'tooltip' },
         React.createElement('span', { 'data-testid': 'tooltip-title' }, title),
-        children
+        children,
       ),
   };
 });
@@ -70,11 +70,11 @@ const render = async (options: Record<string, unknown>) => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await flushUntil(() =>
-    Boolean(container.querySelector('.ant-form-item-has-error'))
+    Boolean(container.querySelector('.ant-form-item-has-error')),
   );
   return { container, unmount: () => act(() => root.unmount()) };
 };
@@ -91,7 +91,7 @@ describe.each([
     // the tooltip's own content is the validation message (JSON Forms words
     // it differently per context, so match the substance rather than the text)
     expect(
-      tooltip.querySelector('[data-testid="tooltip-title"]')!.textContent
+      tooltip.querySelector('[data-testid="tooltip-title"]')!.textContent,
     ).toMatch(/required/i);
     // and it is the feedback icon that it wraps
     expect(tooltip.querySelector('.anticon-exclamation-circle')).toBeTruthy();
@@ -101,7 +101,7 @@ describe.each([
   it('names the icon with the message, so it is not hover-only', async () => {
     const view = await render(options);
     const icon = view.container.querySelector(
-      '.ant-form-item-has-error .anticon-exclamation-circle'
+      '.ant-form-item-has-error .anticon-exclamation-circle',
     )!;
     expect(icon.getAttribute('aria-label')).toMatch(/required/i);
     view.unmount();

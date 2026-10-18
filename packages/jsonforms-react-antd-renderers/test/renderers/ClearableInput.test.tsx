@@ -22,12 +22,12 @@ describe('Ant Design clearable input wrapper', () => {
       root.render(
         <AntdClearableInput data='Accountant' enabled onClear={vi.fn()}>
           <input />
-        </AntdClearableInput>
+        </AntdClearableInput>,
       );
     });
     const input = container.querySelector('input') as HTMLInputElement;
     const button = container.querySelector(
-      'button[aria-label="Clear value"]'
+      'button[aria-label="Clear value"]',
     ) as HTMLButtonElement;
 
     expect(button.style.opacity).toBe('0');
@@ -40,11 +40,11 @@ describe('Ant Design clearable input wrapper', () => {
       root.render(
         <AntdClearableInput data={undefined} enabled onClear={vi.fn()}>
           <input />
-        </AntdClearableInput>
+        </AntdClearableInput>,
       );
     });
     expect(
-      container.querySelector('button[aria-label="Clear value"]')
+      container.querySelector('button[aria-label="Clear value"]'),
     ).toBeNull();
   });
 });

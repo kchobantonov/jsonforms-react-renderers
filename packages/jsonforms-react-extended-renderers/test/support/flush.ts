@@ -24,7 +24,7 @@ import { act } from 'react-dom/test-utils';
 export const flushUntil = async (
   done: () => boolean,
   attempts = 25,
-  timeoutMs = 5000
+  timeoutMs = 5000,
 ): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
   let ticks = 0;
@@ -39,7 +39,7 @@ export const flushUntil = async (
   // failure at the first assertion instead of here, where the cause is.
   if (!done()) {
     throw new Error(
-      `flushUntil: condition still false after ${ticks} ticks / ${timeoutMs}ms`
+      `flushUntil: condition still false after ${ticks} ticks / ${timeoutMs}ms`,
     );
   }
 };

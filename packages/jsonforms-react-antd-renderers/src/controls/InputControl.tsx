@@ -39,7 +39,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
           changedPath === props.path &&
           value === undefined
           ? clearedDynamicPropertyValue(props.schema, props.rootSchema)
-          : value
+          : value,
       );
     },
     [
@@ -48,7 +48,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       props.path,
       props.rootSchema,
       props.schema,
-    ]
+    ],
   );
 
   const help = getControlHelp({ ...props, errors }, focused);

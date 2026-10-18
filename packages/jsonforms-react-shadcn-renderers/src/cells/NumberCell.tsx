@@ -33,8 +33,8 @@ export const ShadcnNumberCell = ({
             value === ''
               ? undefined
               : schema.type === 'integer'
-              ? Math.trunc(Number(value))
-              : Number(value)
+                ? Math.trunc(Number(value))
+                : Number(value),
           );
         }}
       />

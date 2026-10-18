@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { createRoot } from 'react-dom/client';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { resolveCollapsed, useGroupExpansion } from '../src/groupState';
 import { useCategorySelection } from '../src/categoryState';
 
@@ -57,7 +57,7 @@ it.each([
         undefined,
         { jsonformsExtended: { collapsed } },
         undefined,
-        closable
+        closable,
       );
       return null;
     };
@@ -67,7 +67,7 @@ it.each([
     act(() => root.render(<Harness />));
     expect(state!.active).toBe(1);
     act(() => root.unmount());
-  }
+  },
 );
 
 it.each(['group', 'mixed', 'accordion', 'array'] as const)(
@@ -85,9 +85,9 @@ it.each(['group', 'mixed', 'accordion', 'array'] as const)(
       resolveCollapsed(
         {},
         { jsonformsExtended: { collapsed: true } },
-        component
-      )
+        component,
+      ),
     ).toBe(true);
     expect(resolveCollapsed({}, { collapsed: true }, component)).toBe(false);
-  }
+  },
 );

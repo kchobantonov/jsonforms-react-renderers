@@ -26,9 +26,9 @@ export const scalarCompositionTester: RankedTester = rankWith(
 
     schemaMatches(
       (schema, rootSchema) =>
-        scalarCompositionType(schema, rootSchema) !== undefined
-    )
-  )
+        scalarCompositionType(schema, rootSchema) !== undefined,
+    ),
+  ),
 );
 
 const COMPOSITION_KEYWORDS = ['oneOf', 'anyOf', 'allOf'];
@@ -50,7 +50,7 @@ export const ScalarCompositionRenderer = ({
   const compositionErrors = (ctx.core?.errors ?? []).filter(
     (error) =>
       getControlPath(error) === path &&
-      COMPOSITION_KEYWORDS.includes(error.keyword)
+      COMPOSITION_KEYWORDS.includes(error.keyword),
   );
   const message =
     ctx.core?.validationMode !== 'ValidateAndHide' &&
@@ -61,7 +61,7 @@ export const ScalarCompositionRenderer = ({
           ctx.i18n?.translate as any,
           schema,
           uischema,
-          path
+          path,
         )
       : undefined;
 

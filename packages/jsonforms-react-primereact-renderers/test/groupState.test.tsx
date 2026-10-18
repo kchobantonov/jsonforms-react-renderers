@@ -50,10 +50,10 @@ describe('Group collapse and data indicator', () => {
     };
     expect(groupHasData(nested, { unrelated: 'yes' })).toBe(false);
     expect(groupHasData(nested, { rows: [{ 'a/b': false }] }, 'rows.0')).toBe(
-      true
+      true,
     );
     expect(groupHasData(nested, { rows: [{ 'a/b': '' }] }, 'rows.0')).toBe(
-      false
+      false,
     );
   });
   it('preserves mounted children and user collapse state, reacts to options and data', async () => {
@@ -67,7 +67,7 @@ describe('Group collapse and data indicator', () => {
         observe() {}
         unobserve() {}
         disconnect() {}
-      }
+      },
     );
     const render = async (ui = group, value: unknown = 0, config = {}) => {
       await act(async () =>
@@ -78,8 +78,8 @@ describe('Group collapse and data indicator', () => {
             uischema={ui}
             config={config}
             renderers={renderers}
-          />
-        )
+          />,
+        ),
       );
     };
     const toggle = () =>
@@ -88,7 +88,7 @@ describe('Group collapse and data indicator', () => {
       await render();
       const input = container.querySelector('input')!;
       const content = document.getElementById(
-        toggle().getAttribute('aria-controls')!
+        toggle().getAttribute('aria-controls')!,
       )!;
       expect(content.hidden).toBe(true);
       expect(toggle().getAttribute('aria-label')).toBe('Details');

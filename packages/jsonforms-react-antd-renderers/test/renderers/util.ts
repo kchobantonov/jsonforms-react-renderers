@@ -10,7 +10,7 @@ import React from 'react';
 export const initCore = (
   schema: JsonSchema,
   uischema: UISchemaElement,
-  data?: any
+  data?: any,
 ) => {
   return { schema, uischema, data, ajv: createAjv() };
 };
@@ -26,7 +26,7 @@ export const TestEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
 
 export const createTesterContext = (
   rootSchema: JsonSchema,
-  config?: any
+  config?: any,
 ): TesterContext => {
   return { rootSchema, config };
 };

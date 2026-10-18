@@ -29,16 +29,16 @@ export const isBase64String = and(
       (Object.prototype.hasOwnProperty.call(schema, 'contentEncoding') &&
         (schema as any).contentEncoding == 'base64') ||
       schema.format === 'binary' ||
-      schema.format === 'byte'
-  )
+      schema.format === 'byte',
+  ),
 );
 
 const singleFileTester = rankWith(2, isBase64String);
 export const fileControlTester: RankedTester = (ui, schema, context) =>
   Math.max(
     singleFileTester(ui, schema, context),
-    fileArrayTester(ui, schema, context)
+    fileArrayTester(ui, schema, context),
   );
 export default withJsonFormsControlProps(
-  withTranslateProps(React.memo(FileControl))
+  withTranslateProps(React.memo(FileControl)),
 );

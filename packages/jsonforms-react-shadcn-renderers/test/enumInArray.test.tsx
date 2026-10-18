@@ -35,23 +35,23 @@ it.each([{}, { table: false }])(
             renderers={shadcnRenderers}
             cells={shadcnCells}
             onChange={onChange}
-          />
-        )
+          />,
+        ),
       );
       expect(Boolean(host.querySelector('table'))).toBe(
-        options.table !== false
+        options.table !== false,
       );
       const selects = Array.from(
         (host.querySelector('table') ?? host).querySelectorAll(
-          '[role="combobox"]'
-        )
+          '[role="combobox"]',
+        ),
       );
       expect(selects.map((s) => s.textContent)).toEqual(['bar', 'FooBar']);
       expect(host.textContent).not.toContain('No applicable cell');
     } finally {
       act(() => root.unmount());
     }
-  }
+  },
 );
 
 it('humanizes property names while preserving explicit column titles', () => {
@@ -76,11 +76,11 @@ it('humanizes property names while preserving explicit column titles', () => {
           uischema={{ type: 'Control', scope: '#' }}
           renderers={shadcnRenderers}
           cells={shadcnCells}
-        />
-      )
+        />,
+      ),
     );
     expect(
-      Array.from(host.querySelectorAll('th')).map((th) => th.textContent)
+      Array.from(host.querySelectorAll('th')).map((th) => th.textContent),
     ).toEqual([
       '', // Row selection column.
       'Name No Default',

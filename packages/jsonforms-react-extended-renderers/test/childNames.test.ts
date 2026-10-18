@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
   ractiveTransitionAttributes,
   resolveChildNames,
@@ -15,7 +15,7 @@ const child = (name?: string) =>
     type: 'Control',
     scope: '#/properties/x',
     ...(name ? { name } : {}),
-  } as any);
+  }) as any;
 
 describe("naming a template's children", () => {
   it('keeps explicit names', () => {
@@ -112,27 +112,27 @@ describe('ractive transition attributes', () => {
   it('leaves ordinary attributes alone', () => {
     expect(
       ractiveTransitionAttributes(
-        '<p data-greeting class="a" aria-hidden="true">x</p>'
-      )
+        '<p data-greeting class="a" aria-hidden="true">x</p>',
+      ),
     ).toEqual([]);
   });
 
   /* `-input` is not `-in`; the pattern anchors on the whole attribute name. */
   it('does not fire on a name that merely contains in or out', () => {
     expect(
-      ractiveTransitionAttributes('<p data-input data-outer data-about>x</p>')
+      ractiveTransitionAttributes('<p data-input data-outer data-about>x</p>'),
     ).toEqual([]);
   });
 
   it('finds several, without repeating one', () => {
     expect(
-      ractiveTransitionAttributes('<p a-out><span b-in></span><i a-out></i>')
+      ractiveTransitionAttributes('<p a-out><span b-in></span><i a-out></i>'),
     ).toEqual(['a-out', 'b-in']);
   });
 
   it('copes with an attribute that has a value', () => {
     expect(
-      ractiveTransitionAttributes('<p fade-in="{opacity:0}">x</p>')
+      ractiveTransitionAttributes('<p fade-in="{opacity:0}">x</p>'),
     ).toEqual(['fade-in']);
   });
 });

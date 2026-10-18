@@ -28,7 +28,7 @@ export const AntdInputText = React.memo(function AntdInputText(
         | typeof Input.Password
         | typeof AutoComplete
       >;
-    }
+    },
 ) {
   const [focused, onFocus, onBlur] = useFocus();
 
@@ -49,9 +49,9 @@ export const AntdInputText = React.memo(function AntdInputText(
     (target: string, value: any) =>
       originalHandleChange(
         target,
-        keepEmptyString && value === undefined ? '' : value
+        keepEmptyString && value === undefined ? '' : value,
       ),
-    [originalHandleChange, keepEmptyString]
+    [originalHandleChange, keepEmptyString],
   );
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -61,7 +61,7 @@ export const AntdInputText = React.memo(function AntdInputText(
     '',
     data,
     path,
-    eventToValue
+    eventToValue,
   );
 
   let InputComponent: React.ComponentType<any> = Input;
@@ -72,7 +72,7 @@ export const AntdInputText = React.memo(function AntdInputText(
 
   if (isArray(suggestions) && every(suggestions, isString)) {
     const options: AutoCompleteOption[] = (suggestions as string[]).map(
-      (suggestion) => ({ value: suggestion })
+      (suggestion) => ({ value: suggestion }),
     );
     InputComponent = AutoComplete;
 

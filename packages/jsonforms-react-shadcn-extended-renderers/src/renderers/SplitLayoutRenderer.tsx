@@ -16,8 +16,8 @@ export const splitLayoutTester: RankedTester = rankWith(
   5,
   and(
     or(uiTypeIs('HorizontalLayout'), uiTypeIs('VerticalLayout')),
-    hasSplitLayoutVariant
-  )
+    hasSplitLayoutVariant,
+  ),
 );
 
 import React from 'react';
@@ -38,7 +38,7 @@ export const ShadcnSplitLayout = (props: LayoutProps) => {
   const elements = useEffectiveElements(
     layout.elements,
     props.path,
-    props.config
+    props.config,
   );
   const horizontal = layout.type === 'HorizontalLayout';
   const options = { ...props.config, ...layout.options };
@@ -58,7 +58,7 @@ export const ShadcnSplitLayout = (props: LayoutProps) => {
         minWidth: 0,
         height: horizontal
           ? undefined
-          : splitCssSize(options.height) ?? '20rem',
+          : (splitCssSize(options.height) ?? '20rem'),
       }}
     >
       {elements.map((element, index) => (

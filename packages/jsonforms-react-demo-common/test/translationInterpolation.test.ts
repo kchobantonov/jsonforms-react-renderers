@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { defaultErrorTranslator } from '@jsonforms/core';
 import { translatorFor } from '../src/i18nCatalogs';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/numeric-controls/translations.json';
@@ -7,9 +7,9 @@ import translations from '@chobantonov/jsonforms-extended-spec/examples/numeric-
 const ajvError = (
   keyword: string,
   params: Record<string, unknown>,
-  instancePath = '/x'
+  instancePath = '/x',
 ) =>
-  ({ keyword, params, instancePath, schemaPath: '#', message: 'raw' } as any);
+  ({ keyword, params, instancePath, schemaPath: '#', message: 'raw' }) as any;
 
 const translate = (locale: string) =>
   translatorFor(translations as any, locale);
@@ -18,24 +18,24 @@ describe('catalog interpolation', () => {
   test('fills {limit} from error.params, in both locales', () => {
     const error = ajvError('minimum', { comparison: '>=', limit: 1 });
     expect(
-      defaultErrorTranslator(error, translate('en'), undefined as any)
+      defaultErrorTranslator(error, translate('en'), undefined as any),
     ).toBe('Enter a value of at least 1.');
     expect(
-      defaultErrorTranslator(error, translate('bg'), undefined as any)
+      defaultErrorTranslator(error, translate('bg'), undefined as any),
     ).toBe('Въведете стойност поне 1.');
   });
 
   test('fills {multipleOf}', () => {
     const error = ajvError('multipleOf', { multipleOf: 2 });
     expect(
-      defaultErrorTranslator(error, translate('bg'), undefined as any)
+      defaultErrorTranslator(error, translate('bg'), undefined as any),
     ).toBe('Въведете число, кратно на 2.');
   });
 
   test('fills the exclusive bound', () => {
     const error = ajvError('exclusiveMinimum', { comparison: '>', limit: 0 });
     expect(
-      defaultErrorTranslator(error, translate('bg'), undefined as any)
+      defaultErrorTranslator(error, translate('bg'), undefined as any),
     ).toBe('Въведете стойност по-голяма от 0.');
   });
 
@@ -47,7 +47,7 @@ describe('catalog interpolation', () => {
       const rendered = defaultErrorTranslator(
         error,
         translate(locale),
-        undefined as any
+        undefined as any,
       );
       expect(rendered).not.toMatch(/\{[a-z]+\}/i);
     }
@@ -56,7 +56,7 @@ describe('catalog interpolation', () => {
   test('keeps an unknown placeholder visible rather than blanking it', () => {
     const t = translatorFor({ en: { 'error.x': 'a {nope} b' } }, 'en');
     expect(t('error.x', undefined, { error: { params: {} } })).toBe(
-      'a {nope} b'
+      'a {nope} b',
     );
   });
 

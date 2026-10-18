@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { Upload } from 'antd';
 import { AntdFile } from '../src/antd-controls/AntdFile';
 
@@ -15,7 +15,7 @@ vi.mock('antd', async (importOriginal) => {
         upload.props = props;
         return null;
       },
-      { LIST_IGNORE: actual.Upload.LIST_IGNORE }
+      { LIST_IGNORE: actual.Upload.LIST_IGNORE },
     ),
   };
 });
@@ -51,8 +51,8 @@ describe('file size rejection', () => {
             id: 'f',
             visible: true,
           } as any)}
-        />
-      )
+        />,
+      ),
     );
     return {
       container,

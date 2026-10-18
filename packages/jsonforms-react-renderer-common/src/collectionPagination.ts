@@ -8,7 +8,7 @@ export const resolvePagination = (
   local: PaginationOption | undefined,
   config: any,
   kind: 'array' | 'additionalProperties' | 'additionalItems',
-  defaultEnabled = true
+  defaultEnabled = true,
 ) => {
   const option =
     local ?? config?.jsonformsExtended?.[kind]?.pagination ?? defaultEnabled;
@@ -20,7 +20,7 @@ export const resolvePagination = (
   const choices = [
     ...new Set([
       ...(settings.pageSizeOptions ?? [5, 10, 25, 50]).filter(
-        (n) => Number.isInteger(n) && n > 0
+        (n) => Number.isInteger(n) && n > 0,
       ),
       size,
     ]),
@@ -33,7 +33,7 @@ export const useCollectionPagination = (
   local: PaginationOption | undefined,
   config: any,
   kind: 'array' | 'additionalProperties' | 'additionalItems',
-  defaultEnabled = true
+  defaultEnabled = true,
 ) => {
   const pending = useMemo(() => new Set<PendingChange>(), []);
   const resolved = resolvePagination(local, config, kind, defaultEnabled);

@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, vi } from 'vitest';
+import { beforeAll, afterAll, vi } from 'vite-plus/test';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
@@ -59,7 +59,7 @@ const properties = {
 
 const open = async (
   addressSchema: Record<string, unknown> = properties,
-  cellOptions: Record<string, unknown> = {}
+  cellOptions: Record<string, unknown> = {},
 ) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -81,21 +81,21 @@ const open = async (
             latest = data;
           }}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await flushUntil(() =>
-    Boolean(container.querySelector('[aria-label^="Edit"]'))
+    Boolean(container.querySelector('[aria-label^="Edit"]')),
   );
   act(() =>
-    container.querySelector<HTMLElement>('[aria-label^="Edit"]')!.click()
+    container.querySelector<HTMLElement>('[aria-label^="Edit"]')!.click(),
   );
   await flushUntil(() => Boolean(document.querySelector('.ant-modal-footer')));
 
   const footer = () => document.querySelector('.ant-modal-footer')!;
   const button = (text: string) =>
     Array.from(footer().querySelectorAll('button')).find((element) =>
-      element.textContent?.includes(text)
+      element.textContent?.includes(text),
     );
   // JsonForms debounces its onChange by 10ms, and the text controls debounce
   // their writes by 300ms, so settling has to outlast both.
@@ -110,16 +110,16 @@ const open = async (
   };
   const type = async (label: string, text: string, wait = true) => {
     const field = Array.from(
-      document.querySelectorAll<HTMLInputElement>('.ant-modal input')
+      document.querySelectorAll<HTMLInputElement>('.ant-modal input'),
     ).find((input) =>
       input
         .closest('.ant-form-item')
         ?.querySelector('label')
-        ?.textContent?.includes(label)
+        ?.textContent?.includes(label),
     )!;
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     )!.set!;
     act(() => {
       setter.call(field, text);
@@ -203,7 +203,7 @@ describe('composite detail dialog', () => {
   it('disables Clear when the schema requires a property', async () => {
     const dialog = await open(
       { ...properties, required: ['street'] },
-      { showEmptyButton: true }
+      { showEmptyButton: true },
     );
     expect(dialog.button('Clear')!.disabled).toBe(true);
     dialog.unmount();
@@ -212,7 +212,7 @@ describe('composite detail dialog', () => {
   it('honours restrict:false to allow clearing anyway', async () => {
     const dialog = await open(
       { ...properties, required: ['street'] },
-      { showEmptyButton: true, restrict: false }
+      { showEmptyButton: true, restrict: false },
     );
     expect(dialog.button('Clear')!.disabled).toBe(false);
     dialog.unmount();
@@ -240,7 +240,7 @@ beforeAll(() => {
       observe() {}
       unobserve() {}
       disconnect() {}
-    }
+    },
   );
 });
 afterAll(() => vi.unstubAllGlobals());

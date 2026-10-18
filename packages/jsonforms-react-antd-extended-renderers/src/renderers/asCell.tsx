@@ -35,7 +35,7 @@ import React from 'react';
   reject every renderer this is meant to wrap.
 */
 export const asCell = <P extends { uischema?: UISchemaElement }>(
-  Control: React.ComponentType<P>
+  Control: React.ComponentType<P>,
 ): React.ComponentType<P> => {
   const Cell = (props: P) => (
     <Control {...props} uischema={{ ...props.uischema, scope: '#' } as any} />

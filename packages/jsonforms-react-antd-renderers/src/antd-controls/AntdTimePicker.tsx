@@ -29,7 +29,7 @@ const TIME_PICKER_STYLE = {
 
 export const AntdTimePicker = React.memo(function AntdTimePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof TimePicker> }
+    WithClassname & { inputProps?: React.ComponentProps<typeof TimePicker> },
 ) {
   const {
     data,
@@ -53,7 +53,7 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
   const rootData = useJsonForms().core?.data;
   const boundsSchema = useMemo(
     () => resolveDataBounds(schema, path, rootData),
-    [schema, path, rootData]
+    [schema, path, rootData],
   );
 
   const format =
@@ -79,10 +79,10 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
         boundsSchema,
         [saveFormat, format, ...JSON_SCHEMA_TIME_FORMATS],
         precision,
-        true
+        true,
       ),
       true,
-      precision
+      precision,
     );
   }, [restrict, schema, saveFormat, format]);
 
@@ -97,13 +97,13 @@ export const AntdTimePicker = React.memo(function AntdTimePicker(
 
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),
-    [path, handleChange, saveFormat]
+    [path, handleChange, saveFormat],
   );
 
   // Keep the controlled value stable while the popup holds an unconfirmed selection.
   const value = useMemo(
     () => getData(data, [saveFormat, format, ...JSON_SCHEMA_TIME_FORMATS]),
-    [data, saveFormat, format]
+    [data, saveFormat, format],
   );
 
   return (

@@ -19,7 +19,7 @@ export const ErrorFeedback = ({
   const [open, setOpen] = React.useState(false);
   const count = useErrorSummaryCount(
     local ? '' : errors,
-    local ? undefined : path
+    local ? undefined : path,
   );
   const entries = useErrorSummary(errors, path, open && !local);
   if (count <= 1)

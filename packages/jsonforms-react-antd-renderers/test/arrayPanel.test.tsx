@@ -18,8 +18,8 @@ it('keeps array editors mounted and honors an explicit false override', () => {
           config={{ jsonformsExtended: { collapsible: true, collapsed: true } }}
         >
           <input defaultValue='Keep' />
-        </ArrayPanel>
-      )
+        </ArrayPanel>,
+      ),
     );
   try {
     render({});
@@ -28,7 +28,7 @@ it('keeps array editors mounted and honors an explicit false override', () => {
     act(() =>
       container
         .querySelector<HTMLButtonElement>('button[aria-expanded]')!
-        .click()
+        .click(),
     );
     expect(input.parentElement!.hidden).toBe(false);
     expect(container.querySelector('input')).toBe(input);
@@ -50,15 +50,15 @@ it('keeps the AG Grid frame contents mounted while collapsing', () => {
       root.render(
         <AntdArrayFrame label='Grid' options={{ collapsible: true }}>
           <div data-grid>Grid contents</div>
-        </AntdArrayFrame>
-      )
+        </AntdArrayFrame>,
+      ),
     );
     const grid = container.querySelector('[data-grid]')!;
     const toggle = container.querySelector<HTMLButtonElement>(
-      'button[aria-controls]'
+      'button[aria-controls]',
     )!;
     const body = document.getElementById(
-      toggle.getAttribute('aria-controls')!
+      toggle.getAttribute('aria-controls')!,
     )!;
     act(() => toggle.click());
     expect(body.hidden).toBe(true);

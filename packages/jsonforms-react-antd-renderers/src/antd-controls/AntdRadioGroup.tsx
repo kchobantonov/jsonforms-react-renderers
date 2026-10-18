@@ -8,7 +8,7 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
     WithClassname &
     OwnPropsOfEnum & {
       inputProps?: React.ComponentProps<typeof Radio.Group>;
-    }
+    },
 ) {
   const { data, options, handleChange, path, enabled, uischema, inputProps } =
     props;

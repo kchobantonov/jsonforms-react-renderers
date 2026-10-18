@@ -72,11 +72,11 @@ const openDetail = async () => {
           cells={antdCells}
           onChange={() => undefined}
         />
-      </ConfigProvider>
-    )
+      </ConfigProvider>,
+    ),
   );
   await flushUntil(() =>
-    Boolean(container.querySelector('[aria-label^="Edit"]'))
+    Boolean(container.querySelector('[aria-label^="Edit"]')),
   );
   const edit = container.querySelector<HTMLElement>('[aria-label^="Edit"]');
   act(() => edit!.click());

@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { createAjvErrorTranslator } from '../src/core/ajvI18n';
 
 it('prefers field-specific messages while retaining localized AJV fallback', () => {
@@ -15,7 +15,7 @@ it('prefers field-specific messages while retaining localized AJV fallback', () 
         errors[0].message = 'localized fallback';
       },
     },
-    () => 'en'
+    () => 'en',
   );
   expect(
     translateError(
@@ -24,11 +24,11 @@ it('prefers field-specific messages while retaining localized AJV fallback', () 
         key === 'reviewers.error.contains'
           ? 'Select Lead for at least one reviewer.'
           : fallback,
-      undefined
-    )
+      undefined,
+    ),
   ).toBe('Select Lead for at least one reviewer.');
   expect(translateError(error, (_key, fallback) => fallback, undefined)).toBe(
-    'localized fallback'
+    'localized fallback',
   );
   expect(error.message).toBe('must contain a valid item');
 });
