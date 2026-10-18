@@ -1,4 +1,3 @@
-
 import { defineJsonFormsExampleConfig } from '../../vite/example-config.mjs';
 import { fileURLToPath, URL } from 'node:url';
 

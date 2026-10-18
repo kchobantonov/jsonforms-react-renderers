@@ -83,7 +83,7 @@ jobs:
         if: github.event_name == 'push'
         run: vp run build:pages
         env:
-          GITHUB_PAGES: "true"
+          GITHUB_PAGES: 'true'
 
       - name: Upload GitHub Pages artifact
         if: github.event_name == 'push'
