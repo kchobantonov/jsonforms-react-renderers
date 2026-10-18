@@ -1,7 +1,7 @@
 # Shared React renderer behavior
 
 `@chobantonov/jsonforms-react-renderer-common` contains UI-independent behavior
-for the Ant Design, PrimeReact, and shadcn renderer families. It depends on
+for the Ant Design and shadcn renderer families. It depends on
 React and JSON Forms, but does not depend on a UI library, a renderer family,
 or the optional extended renderer package.
 
@@ -24,8 +24,7 @@ accept family spacing defaults; their fallback is zero. Ant Design's wrapper
 retains its 16px horizontal gap and zero vertical gap.
 
 Existing module paths in the renderer packages remain compatibility exports.
-PrimeReact, and shadcn already consume the shared group-state hook;
-PrimeReact also consumes shared focus and debounced-change hooks. Other shared
+Shadcn consumes the shared group-state hook. Other shared
 APIs support porting features without importing Ant Design. This extraction
 does not register new controls or claim feature parity between the families.
 

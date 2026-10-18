@@ -33,7 +33,7 @@ const workspaceOverrides = Object.fromEntries(
       : version,
   ]),
 );
-const styles = ['antd', 'primereact', 'shadcn'];
+const styles = ['antd', 'shadcn'];
 const dependencies = {
   ...overrides,
   react: '18.3.1',

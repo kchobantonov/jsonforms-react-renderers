@@ -48,10 +48,8 @@ renderer registries to match Ant Design's catalogue.
 
 - Ant Design imports the extracted behavior through compatibility exports at its
   existing module paths. Its public names and renderer registrations remain.
-- PrimeReact, and shadcn use the same group-state hook, including namespaced
+- Shadcn use the same group-state hook, including namespaced
   options with the existing flat-config fallback.
-- PrimeReact uses the shared focus and debounce hooks. Pending edits now cancel
-  on clear, unmount, rebinding, and external replacement as specified in §18.4.
 - Ant Design and the shared splitter use the same effective-child visibility
   hook. Each retains its own splitter implementation.
 - Portable layout gaps default to 16px in both directions. Explicit zero stays

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig",
-  "compilerOptions": {
-    "lib": ["ES2022", "DOM"],
-    "types": ["vitest/globals", "node"]
-  },
-  "include": ["test/**/*.ts", "test/**/*.tsx"]
-}

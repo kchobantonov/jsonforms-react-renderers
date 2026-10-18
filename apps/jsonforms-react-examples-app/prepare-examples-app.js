@@ -12,7 +12,6 @@ const distDir = join(__dirname, 'dist');
 const appsDir = join(__dirname, '..');
 const examples = {
   'react-antd': join(appsDir, 'jsonforms-react-antd-demo', 'dist'),
-  'react-primereact': join(appsDir, 'jsonforms-react-primereact-demo', 'dist'),
   'react-shadcn': join(appsDir, 'jsonforms-react-shadcn-demo', 'dist'),
 };
 

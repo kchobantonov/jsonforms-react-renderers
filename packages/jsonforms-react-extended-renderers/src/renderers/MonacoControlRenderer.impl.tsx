@@ -199,11 +199,8 @@ export const createMonacoControl = ({
       : undefined;
 
     useEffect(() => {
-      // Never re-sync from props while the field has focus. @monaco-editor/react
-      // applies an external value by replacing the full model range with
-      // forceMoveMarkers, which moves the caret to the end of the document, so a
-      // re-sync mid-typing reads as "the cursor will not go past this line".
-      // Anything that arrives while focused is picked up on blur.
+      // Schema-validated drafts survive blur and echoes of committed data;
+      // a changed external value replaces the draft even while focused.
       if (schemaValidation) {
         if (lastExternal.current !== encoded) {
           lastExternal.current = encoded;
@@ -214,11 +211,12 @@ export const createMonacoControl = ({
         }
         return;
       }
+      // Other editors defer external updates until blur to avoid moving the
+      // caret while typing. The schema-validation branch has already returned.
       if (focused) return;
-      if (lastCommitted.current !== encoded && (!schemaValidation || !invalid))
-        setText(encoded);
-      if (!schemaValidation) setInvalid(false);
-    }, [encoded, language, convert, focused]);
+      if (lastCommitted.current !== encoded) setText(encoded);
+      setInvalid(false);
+    }, [encoded, language, convert, focused, schemaValidation]);
 
     useEffect(() => {
       // Toggling maximize swaps the container between fixed and inline layout.

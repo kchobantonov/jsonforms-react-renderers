@@ -10,7 +10,6 @@
   "ignore": [
     "jsonforms-react-antd-demo",
     "@chobantonov/jsonforms-react-examples-app",
-    "jsonforms-react-primereact-demo",
     "jsonforms-react-shadcn-demo",
     "@chobantonov/jsonforms-react-demo-common"
   ]

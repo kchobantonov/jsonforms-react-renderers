@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "jsonforms-react-antd-demo": "workspace:*",
-    "jsonforms-react-primereact-demo": "workspace:*",
     "jsonforms-react-shadcn-demo": "workspace:*"
   },
   "devDependencies": {

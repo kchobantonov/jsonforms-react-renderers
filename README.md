@@ -23,7 +23,6 @@ output formats and browser targets are preserved. See the
 - Test (all packages): `vp run test`
 - Clean generated package output: `vp run clean`
 - Run React Ant Design examples: `vp run example:antd:dev`
-- Run React PrimeReact examples: `vp run example:primereact:dev`
 - Run React Shadcn UI examples: `vp run example:shadcn:dev`
 - Build examples app: `vp run examples-app:build`
 - Run the examples selector: `vp run examples-app:dev`
@@ -33,16 +32,12 @@ output formats and browser targets are preserved. See the
 - `packages/jsonforms-react-antd-renderers` - Ant Design renderer set.
 - `packages/jsonforms-react-antd-extended-renderers` - optional advanced Ant Design renderers.
 - `packages/jsonforms-react-antd-webcomponent` - Ant Design custom element.
-- `packages/jsonforms-react-primereact-renderers` - PrimeReact renderer set.
-- `packages/jsonforms-react-primereact-extended-renderers` - optional advanced PrimeReact renderers.
-- `packages/jsonforms-react-primereact-webcomponent` - PrimeReact custom element.
 - `packages/jsonforms-react-shadcn-renderers` - Shadcn UI renderer set.
 - `packages/jsonforms-react-shadcn-extended-renderers` - optional advanced Shadcn UI renderers.
 - `packages/jsonforms-react-shadcn-webcomponent` - Shadcn UI custom element.
 - `packages/jsonforms-react-extended-renderers` - shared extended renderers.
 - `packages/jsonforms-react-demo-common` - shared React demo state, editor plumbing, UI adapter contracts, and examples; each renderer demo supplies its own UI-library shell and controls.
 - `apps/jsonforms-react-antd-demo` - Ant Design demo app.
-- `apps/jsonforms-react-primereact-demo` - PrimeReact demo app.
 - `apps/jsonforms-react-shadcn-demo` - Shadcn UI demo app.
 - `apps/jsonforms-react-examples-app` - aggregated React examples app.
 
@@ -100,13 +95,13 @@ Select **Spec: Split layout** (or open `#spec-split-layout`) in any React demo f
 same horizontal and vertical split-pane example as Svelte. Set
 `options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
 Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.
-Ant Design and PrimeReact use their native splitters; Shadcn uses the
+Ant Design uses its native splitter; Shadcn uses the
 shared draggable splitter with arrow-key resizing. Resizing preserves form data
 and does not change `options.columns`.
 
 ### Collapsible groups
 
-Groups in Ant Design, PrimeReact, and Shadcn support
+Groups in Ant Design and Shadcn support
 Svelte's `options.collapsible`, `options.collapsed`, and
 `options.showDataIndicator` (all opt-in with `true`). Collapsed content stays
 mounted, preserving edits. The accessible data indicator checks bound descendant
@@ -124,25 +119,23 @@ renderer sets.
 
 ### Extended control availability
 
-| Renderer                                                   | Ant Design     | PrimeReact     | Shadcn |
-| ---------------------------------------------------------- | -------------- | -------------- | ------ |
-| Button actions                                             | Yes            | Yes            | Yes    |
-| Color, Duration, Null                                      | Yes            | Yes            | Yes    |
-| File                                                       | Yes (base set) | Yes (base set) | Yes    |
-| Monaco editor                                              | Yes            | Yes            | Yes    |
-| AG Grid arrays                                             | Yes            | Yes            | Yes    |
-| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes            | Yes            | Yes    |
+| Renderer                                                   | Ant Design     | Shadcn |
+| ---------------------------------------------------------- | -------------- | ------ |
+| Button actions                                             | Yes            | Yes    |
+| Color, Duration, Null                                      | Yes            | Yes    |
+| File                                                       | Yes (base set) | Yes    |
+| Monaco editor                                              | Yes            | Yes    |
+| AG Grid arrays                                             | Yes            | Yes    |
+| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes            | Yes    |
 
 The shared demos include **Color**, **Duration**, **Null**, **Monaco Editor**, and
 **AG Grid**. Use string schema `format: "color"` or `format: "duration"`, or
-schema `type: "null"` for those controls. PrimeReact also accepts the color
-and duration format in UI schema `options.format`.
+schema `type: "null"` for those controls.
 
 Duration pickers support weeks or year/month/day/time components, `showActions`
 (default `true`), `okLabel`, `cancelLabel`, `placeholder`, and `focus`. With
 `showActions: false`, component edits apply immediately. Weeks cannot be combined
-with the other components. PrimeReact also exposes `clearable` (default
-`true`). Null controls distinguish explicit `null` from an absent value.
+with the other components. Null controls distinguish explicit `null` from an absent value.
 
 Monaco is selected with `options: { format: "code", language: "javascript" }`.
 Use `language: "json", convertJson: true` to edit JSON values; incomplete JSON

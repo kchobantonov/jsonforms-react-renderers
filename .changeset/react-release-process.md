@@ -3,9 +3,6 @@
 '@chobantonov/jsonforms-react-antd-renderers': patch
 '@chobantonov/jsonforms-react-antd-webcomponent': patch
 '@chobantonov/jsonforms-react-extended-renderers': patch
-'@chobantonov/jsonforms-react-primereact-extended-renderers': patch
-'@chobantonov/jsonforms-react-primereact-renderers': patch
-'@chobantonov/jsonforms-react-primereact-webcomponent': patch
 '@chobantonov/jsonforms-react-renderer-common': patch
 '@chobantonov/jsonforms-react-shadcn-extended-renderers': patch
 '@chobantonov/jsonforms-react-shadcn-renderers': patch
