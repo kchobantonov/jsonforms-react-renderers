@@ -181,10 +181,13 @@ export const AntdFile = React.memo(function AntdFile(
     name: string;
   }>();
   const [severity, setSeverity] = useState<'warning' | 'error'>('warning');
-  React.useEffect(() => {
-    setRejection(undefined);
-  }, [props.data]);
+
   const [rejection, setRejection] = useState<string | undefined>(undefined);
+  const [previousData, setPreviousData] = React.useState(props.data);
+  if (!Object.is(previousData, props.data)) {
+    setPreviousData(() => props.data);
+    setRejection(undefined);
+  }
 
   /** Why a selection breaks its size bounds, or undefined if it passes. */
   const sizeRejection = (file: { size: number }): string | undefined => {
@@ -297,7 +300,7 @@ export const AntdFile = React.memo(function AntdFile(
       setAttachment({ value: base64, name: file.name });
       handleChange(path, base64);
       onSuccess('Ok');
-    } catch (err: any) {
+    } catch {
       // A failed read of a *new* file is not a reason to discard the value
       // that is already committed, for the same reason a size rejection is
       // not. Report it and leave the form data untouched.

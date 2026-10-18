@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getJsonDataType, JsonDataType } from './mixed';
 
 /** Numeric editor intent cannot be reconstructed from JSON: 2 is both types. */
@@ -13,9 +13,9 @@ export const useMixedType = (
     types: string;
   }>();
   const typeKey = types.join(',');
-  useEffect(() => {
-    if (typeof data !== 'number') setNumeric(undefined);
-  }, [data]);
+  if (typeof data !== 'number' && numeric !== undefined) {
+    setNumeric(undefined);
+  }
   const detected = getJsonDataType(data);
   const inferred =
     detected && types.includes(detected)
@@ -32,15 +32,13 @@ export const useMixedType = (
       : inferred;
   // Retain an inferred numeric editor too: resetting a number to zero must not
   // switch the editor to integer merely because zero satisfies both types.
-  useEffect(() => {
-    if (
-      typeof data === 'number' &&
-      selectedType &&
-      (numeric?.path !== path || numeric.types !== typeKey)
-    ) {
-      setNumeric({ type: selectedType, path, types: typeKey });
-    }
-  }, [data, selectedType, numeric, path, typeKey]);
+  if (
+    typeof data === 'number' &&
+    selectedType &&
+    (numeric?.path !== path || numeric.types !== typeKey)
+  ) {
+    setNumeric({ type: selectedType, path, types: typeKey });
+  }
   const selectNumericType = (type: JsonDataType) =>
     setNumeric({ type, path, types: typeKey });
   return { selectedType, selectNumericType };

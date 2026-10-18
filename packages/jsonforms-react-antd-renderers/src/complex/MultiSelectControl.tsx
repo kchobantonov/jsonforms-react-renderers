@@ -62,7 +62,7 @@ export const MultiSelectControl = (props: ControlProps) => {
 
   const options = {
     ...props.config,
-    ...(uischema.options ?? {}),
+    ...uischema.options,
   } as Record<string, any>;
   const values = asArrayValue(data);
   const itemSchema = resolveItemSchema(schema, rootSchema);

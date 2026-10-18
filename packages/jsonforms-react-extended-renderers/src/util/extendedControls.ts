@@ -28,7 +28,7 @@ export const colorPickerValue = (value: unknown) => {
   if (typeof value !== 'string') return '#000000';
   if (/^#[a-f\d]{6}$/i.test(value)) return value;
   if (/^#[a-f\d]{3}$/i.test(value))
-    return '#' + [...value.slice(1)].map((c) => c + c).join('');
+    return '#' + Array.from(value.slice(1), (c) => c + c).join('');
   if (/^#[a-f\d]{8}$/i.test(value)) return value.slice(0, 7);
   return '#000000';
 };

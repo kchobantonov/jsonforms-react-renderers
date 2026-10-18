@@ -1,3 +1,4 @@
+import React, { useLayoutEffect, useState, useRef } from 'react';
 import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
@@ -6,7 +7,6 @@ import {
   labelDetailErrorPaths,
 } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
 import { ValidationIcon } from '../complex/ValidationIcon';
-import React, { useState, useRef } from 'react';
 import { Button, theme } from 'antd';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
@@ -55,7 +55,9 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
   const d = useI18nDefault();
   const confirmation = useConfirmation();
   const latest = useRef(props);
-  latest.current = props;
+  useLayoutEffect(() => {
+    latest.current = props;
+  }, [props]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const options = (props.uischema?.options ??

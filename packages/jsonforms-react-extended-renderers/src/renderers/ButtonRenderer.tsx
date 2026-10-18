@@ -1,3 +1,10 @@
+import React, {
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   BaseUISchemaElement,
   LayoutProps,
@@ -13,7 +20,6 @@ import {
   withJsonFormsLayoutProps,
   withTranslateProps,
 } from '@jsonforms/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHandleAction, type ActionEvent } from './actionContext';
 import { allowsScriptEvaluation } from '../util/templateLang';
 
@@ -199,7 +205,7 @@ export const createButtonRenderer = ({
     // "Missing optional Button params are normalized to `{}` when
     // constructing ActionEvent", so a host can read `event.params.x` without
     // guarding every access.
-    const params = element.params ?? {};
+    const params = useMemo(() => element.params ?? {}, [element.params]);
 
     const activate = useCallback(async () => {
       if (running.current) {

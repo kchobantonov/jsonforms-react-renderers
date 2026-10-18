@@ -10,7 +10,7 @@ import {
   useJsonForms,
   withJsonFormsLayoutProps,
 } from '@jsonforms/react';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { proxy } from 'valtio';
 import type { ExtendedUISchemaElement } from '../core/uiSchema';
 import { resolveChildNames } from '../util/childNames';
@@ -65,6 +65,12 @@ export const templateRendererTester: RankedTester = rankWith(
 /**
  * Default renderer for a template layout.
  */
+const TemplateElementControl = React.memo(function TemplateElementControl(
+  props: RenderableElementProps,
+) {
+  return <JsonFormsDispatch {...props} />;
+});
+
 export const TemplateLayoutRenderer = ({
   enabled,
   schema,
@@ -89,10 +95,6 @@ export const TemplateLayoutRenderer = ({
 
   const template = uischema.template;
 
-  const renderablesRef = useRef<Record<string, React.MemoExoticComponent<any>>>(
-    {},
-  );
-
   const { names: childNames, diagnostics: nameDiagnostics } = useMemo(
     () => resolveChildNames(uischema.elements),
     [uischema.elements],
@@ -103,7 +105,7 @@ export const TemplateLayoutRenderer = ({
       // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
-  }, [nameDiagnostics.join('\u0000')]);
+  }, [nameDiagnostics]);
 
   /*
     The array a template receives as `elements`.
@@ -137,54 +139,21 @@ export const TemplateLayoutRenderer = ({
       */
       const key = name ?? `\u0000unnamed:${index}`;
 
-      if (!renderablesRef.current[key]) {
-        // Memoized component for this element
-        renderablesRef.current[key] = React.memo(
-          function TemplateElementControl({
-            schema,
-            path,
-            enabled,
-            renderers,
-            cells,
-            uischema,
-          }: RenderableElementProps) {
-            return (
-              <JsonFormsDispatch
-                key={`${path}-${index}`}
-                uischema={uischema}
-                schema={schema}
-                path={path}
-                enabled={enabled}
-                renderers={renderers}
-                cells={cells}
-              />
-            );
-          },
-        );
-        renderablesRef.current[key].displayName = `TemplateElement(${key})`;
-      }
-
-      /*
-        The render function still rides on the element, because that is how a
-        template reaches it through `elements['name']`. Recorded as a known
-        mutation in its own right; the *name* no longer is one.
-      */
-      (element as any)[ElementRender] = function TemplateElement() {
-        const Renderable = renderablesRef.current[
-          key
-        ] as React.ComponentType<RenderableElementProps>;
-        return (
-          <Renderable
-            schema={schema}
-            enabled={enabled}
-            renderers={renderers}
-            cells={cells}
-            uischema={element}
-          />
-        );
+      return {
+        ...element,
+        [ElementRender]: function TemplateElement() {
+          return (
+            <TemplateElementControl
+              key={key}
+              schema={schema}
+              enabled={enabled}
+              renderers={renderers}
+              cells={cells}
+              uischema={element}
+            />
+          );
+        },
       };
-
-      return element;
     });
   }, [cells, enabled, renderers, schema, uischema, childNames]);
 
@@ -213,14 +182,16 @@ export const TemplateLayoutRenderer = ({
   const ctx = useJsonForms();
 
   // Create a stable proxy that gets updated with new data
-  const { dataProxy, errorsProxy, additionalErrorsProxy } = useMemo(() => {
-    const dataProxy = proxy({ __val__: ctx.core?.data });
-    const errorsProxy = proxy({ __val__: ctx.core?.errors });
-    const additionalErrorsProxy = proxy({
-      __val__: ctx.core?.additionalErrors,
-    });
-    return { dataProxy, errorsProxy, additionalErrorsProxy };
-  }, []);
+  const [{ dataProxy, errorsProxy, additionalErrorsProxy }] = React.useState(
+    () => {
+      const dataProxy = proxy({ __val__: ctx.core?.data });
+      const errorsProxy = proxy({ __val__: ctx.core?.errors });
+      const additionalErrorsProxy = proxy({
+        __val__: ctx.core?.additionalErrors,
+      });
+      return { dataProxy, errorsProxy, additionalErrorsProxy };
+    },
+  );
 
   // Update proxies efficiently
   useEffect(() => {
@@ -358,7 +329,7 @@ export const TemplateLayoutRenderer = ({
       dataProxy,
       errorsProxy,
       additionalErrorsProxy,
-      ctx.i18n,
+      ctx,
       components,
     ],
   );

@@ -23,7 +23,10 @@ const mount = (
   };
   const Harness = () => {
     const [data, setData] = useState(initial);
-    current = data;
+    const committedCurrent = data;
+    React.useLayoutEffect(() => {
+      current = committedCurrent;
+    });
     return (
       <FileArrayInput
         {...({

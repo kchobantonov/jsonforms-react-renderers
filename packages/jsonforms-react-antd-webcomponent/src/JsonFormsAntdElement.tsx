@@ -3,14 +3,12 @@ import {
   ExtendedJsonForms,
   createAdditionalErrorStore,
   createFormsAjv,
+  createAjvErrorTranslator,
+  type AjvLocalizers,
 } from '@chobantonov/jsonforms-react-antd-extended-renderers';
 import { antdWebcomponentCells, antdWebcomponentRenderers } from './renderers';
 import { ConfigProvider, Form, InputProps, theme as antdTheme } from 'antd';
 import { useAntdLocale } from '@chobantonov/jsonforms-react-antd-renderers';
-import {
-  createAjvErrorTranslator,
-  type AjvLocalizers,
-} from '@chobantonov/jsonforms-react-antd-extended-renderers';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { StyleProvider } from '@ant-design/cssinjs';

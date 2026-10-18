@@ -178,23 +178,21 @@ export const useAntdLocale = (
   locale: string | undefined,
 ): Locale | undefined => {
   const key = localeKey(locale);
-  const [resolved, setResolved] = useState<Locale | undefined>(undefined);
+  const [resolved, setResolved] = useState<{ key: string; locale: Locale }>();
 
   useEffect(() => {
     if (!key) {
-      setResolved(undefined);
       return;
     }
     const cached = cache.get(key);
     if (cached) {
       // Re-applied, not just re-read: another locale may have been the last
       // one to set dayjs.
-      setResolved(apply(cached));
+      apply(cached);
       return;
     }
     const load = loaders[key];
     if (!load) {
-      setResolved(undefined);
       return;
     }
     let live = true;
@@ -202,7 +200,7 @@ export const useAntdLocale = (
       .then((value) => {
         cache.set(key, value);
         if (live) {
-          setResolved(apply(value));
+          setResolved({ key, locale: apply(value) });
         }
       })
       .catch(() => {
@@ -217,5 +215,8 @@ export const useAntdLocale = (
     };
   }, [key]);
 
-  return resolved;
+  return key
+    ? (cache.get(key)?.antd ??
+        (resolved?.key === key ? resolved.locale : undefined))
+    : undefined;
 };

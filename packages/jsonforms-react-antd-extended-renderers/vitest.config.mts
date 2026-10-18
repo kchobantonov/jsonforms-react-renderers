@@ -38,6 +38,9 @@ export default defineConfig({
   },
   test: {
     maxWorkers: 2,
+    // Cold lazy-loaded editor/grid fixtures can exceed five seconds before assertions finish.
+    // Keep this above flushUntil's own diagnostic deadline to avoid orphaned act scopes.
+    testTimeout: 20000,
     sequence: { groupOrder: 0 },
     environment: 'jsdom',
     setupFiles: [

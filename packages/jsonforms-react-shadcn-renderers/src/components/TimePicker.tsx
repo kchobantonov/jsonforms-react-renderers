@@ -26,9 +26,11 @@ export const TimePicker = ({
   const parsedValue = parseTimeValue(value);
   const [time, setTime] = React.useState<TimeValue | undefined>(parsedValue);
 
-  React.useEffect(() => {
-    setTime(parseTimeValue(value));
-  }, [value]);
+  const [previousValue, setPreviousValue] = React.useState(value);
+  if (previousValue !== value) {
+    setPreviousValue(value);
+    setTime(parsedValue);
+  }
 
   const commit = (next: TimeValue) => {
     setTime(next);

@@ -56,6 +56,36 @@ describe('AdditionalProperties', () => {
     container.remove();
   });
 
+  it('refreshes properties whose delimiter-joined keys collide', () => {
+    const schema = { type: 'object', additionalProperties: { type: 'string' } };
+    const uischema: ControlElement = {
+      type: 'Control',
+      scope: '#',
+      options: { additionalProperties: { pagination: false } },
+    };
+    const render = (data: Record<string, string>) =>
+      act(() =>
+        root.render(
+          <AdditionalProperties
+            data={data}
+            enabled
+            handleChange={vi.fn()}
+            label='Map'
+            path=''
+            schema={schema}
+            rootSchema={schema}
+            uischema={uischema}
+            renderers={[{ tester: () => 100, renderer: () => null }]}
+          />,
+        ),
+      );
+    render({ a: '', ['b\u0000c']: '' });
+    expect(container.querySelector('[aria-label="Delete c"]')).toBeNull();
+    render({ a: '', b: '', c: '' });
+    expect(container.querySelector('[aria-label="Delete b"]')).not.toBeNull();
+    expect(container.querySelector('[aria-label="Delete c"]')).not.toBeNull();
+  });
+
   it('resolves a propertyNames $ref against the root schema', () => {
     const rootSchema = {
       type: 'object',
@@ -125,7 +155,10 @@ describe('AdditionalProperties', () => {
     const ajv = createAjv({ unicodeRegExp: false });
     let nestedAjv: unknown;
     const AjvProbe = () => {
-      nestedAjv = useJsonForms().core?.ajv;
+      const committedNestedAjv = useJsonForms().core?.ajv;
+      React.useLayoutEffect(() => {
+        nestedAjv = committedNestedAjv;
+      });
       return null;
     };
     const schema = {

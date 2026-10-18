@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-thenable -- JSON Schema conditionals require a non-callable `then` keyword. */
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';

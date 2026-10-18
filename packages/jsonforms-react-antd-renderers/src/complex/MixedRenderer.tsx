@@ -37,7 +37,7 @@ import {
   withJsonFormsControlProps,
 } from '@jsonforms/react';
 import { Breadcrumb, Collapse, Flex, Typography } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AntdMixedNavigationContext } from './mixed/AntdMixedNavigationContext';
 import { AntdMixedSplitPane } from './mixed/AntdMixedSplitPane';
 import { useConfirmation } from '../util/useConfirmation';
@@ -105,7 +105,10 @@ export const MixedRendererComponent = ({
   const t = useI18n();
   const confirmation = useConfirmation();
   const parentNavigation = React.useContext(AntdMixedNavigationContext);
-  const uischemas = jsonforms.uischemas ?? [];
+  const uischemas = useMemo(
+    () => jsonforms.uischemas ?? [],
+    [jsonforms.uischemas],
+  );
   const { collapsible, collapsed, setExpanded } = useGroupExpansion(
     uischema,
     config,
@@ -166,9 +169,13 @@ export const MixedRendererComponent = ({
       ? { ...element, label: false }
       : element;
 
-  useEffect(() => {
-    if (tree && !findMixedTreeNode(tree, selectedPath)) setSelectedPath([]);
-  }, [tree, selectedPath]);
+  if (
+    tree &&
+    selectedPath.length > 0 &&
+    !findMixedTreeNode(tree, selectedPath)
+  ) {
+    setSelectedPath([]);
+  }
 
   const renderNodeControl = (node?: MixedTreeNode) => {
     if (!node) return null;
@@ -380,7 +387,7 @@ export const MixedRendererComponent = ({
   );
   if (!visible) return null;
 
-  const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const appliedOptions = { ...config, ...uischema.options };
   const restrict = appliedOptions.restrict !== false;
   const parentNode = (node: MixedTreeNode) =>
     tree ? findMixedTreeNode(tree, node.path.slice(0, -1)) : undefined;

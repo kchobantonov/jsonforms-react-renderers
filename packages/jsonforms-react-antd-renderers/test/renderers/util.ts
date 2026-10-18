@@ -20,7 +20,7 @@ export const TestEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
   const { data, errors } = ctx.core;
   React.useEffect(() => {
     onChange({ data, errors });
-  }, [data, errors]);
+  }, [data, errors, onChange]);
   return null;
 };
 

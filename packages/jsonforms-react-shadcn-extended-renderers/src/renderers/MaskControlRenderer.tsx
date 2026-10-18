@@ -65,13 +65,14 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
   // treat it as a finalized value", so nothing is masked until composition ends
   // - otherwise the intermediate romaji of a Japanese entry would be filtered
   // away character by character and the word could never be typed.
-  const composing = useRef(false);
+  const [composing, setComposing] = useState(false);
+  const composingRef = useRef(false);
 
   const stored = typeof data === 'string' ? data : '';
   const returnMaskedValue = settings?.returnMaskedValue === true;
 
   const display = useMemo(() => {
-    if (composing.current && draft !== undefined) return draft;
+    if (composing && draft !== undefined) return draft;
     if (!mask) {
       return stored;
     }
@@ -82,7 +83,7 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
       return draft;
     }
     return displayValue(mask, stored, returnMaskedValue);
-  }, [draft, mask, returnMaskedValue, stored]);
+  }, [composing, draft, mask, returnMaskedValue, stored]);
 
   const commit = useCallback(
     (next: string) => {
@@ -122,7 +123,7 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
       // the text as typed at this point, because React has not committed yet.
       const field = inputRef.current;
       const raw = field ? field.value : event.currentTarget.value;
-      if (composing.current) {
+      if (composingRef.current) {
         setDraft(raw);
         return;
       }
@@ -187,10 +188,12 @@ export const ShadcnMaskControl = React.memo(function ShadcnMaskControl(
           value={display}
           onChange={onChange}
           onCompositionStart={() => {
-            composing.current = true;
+            composingRef.current = true;
+            setComposing(true);
           }}
           onCompositionEnd={(event) => {
-            composing.current = false;
+            composingRef.current = false;
+            setComposing(false);
             // The composed text was let through unmasked, so mask it now the
             // session is over rather than waiting for the next keystroke.
             onChange(event);

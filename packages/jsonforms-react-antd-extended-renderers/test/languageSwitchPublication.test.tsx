@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React, { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { describe, expect, it, vi } from 'vite-plus/test';
 
 const harness = vi.hoisted(() => ({ emit: undefined as any }));
 vi.mock('@monaco-editor/react', () => ({
   default: function MockMonaco(props: any) {
+    const { onValidate, language, value } = props;
     harness.emit = (m: unknown[]) => props.onValidate?.(m);
     // Like a real language service: re-validates whenever the language changes,
     // and only JavaScript is unhappy with this snippet.
     React.useEffect(() => {
-      props.onValidate?.(
-        props.language === 'javascript' ? [{ severity: 8 }] : [],
-      );
-    }, [props.language, props.value]);
+      onValidate?.(language === 'javascript' ? [{ severity: 8 }] : []);
+    }, [onValidate, language, value]);
     return React.createElement('textarea', {
       'data-monaco': true,
       value: props.value ?? '',
@@ -101,7 +99,7 @@ describe('switching a language that makes the editor publish', () => {
     const root = createRoot(container);
     let latest: any = { language: 'json', snippet: '{}' };
     const Host = () => {
-      const store = React.useRef(createAdditionalErrorStore()).current;
+      const [store] = React.useState(createAdditionalErrorStore);
       const [data, setData] = useState(latest);
       return (
         <ConfigProvider theme={{ token: { motion: false } }}>

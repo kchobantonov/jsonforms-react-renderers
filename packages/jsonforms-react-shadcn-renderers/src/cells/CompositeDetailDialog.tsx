@@ -73,7 +73,7 @@ export const CompositeDetailDialog = ({
   // Apply has to read the draft in the same tick it flushes pending writes
   // into it, which React state cannot do.
   const draftRef = useRef<JsonFormsCore | undefined>();
-  const originalRef = useRef<unknown>();
+  const [original, setOriginal] = useState<unknown>();
   const pending = useMemo(() => new Set<PendingChange>(), []);
 
   const value = draft ? at(draft.data, path) : undefined;
@@ -99,11 +99,14 @@ export const CompositeDetailDialog = ({
   // Opening is driven by the parent, so the draft is taken the first time the
   // dialog renders open and released whenever it closes.
   if (open && !draft && parent.core) {
-    originalRef.current = cloneDeep(current());
+    setOriginal(cloneDeep(current()));
     const started = { ...parent.core, data: cloneDeep(parent.core.data) };
-    draftRef.current = started;
     setDraft(started);
   }
+
+  React.useLayoutEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
 
   const release = useCallback(() => {
     pending.forEach((change) => change.cancel());
@@ -120,11 +123,11 @@ export const CompositeDetailDialog = ({
     // Whatever a debounced control is still holding belongs in this Apply.
     pending.forEach((change) => change.flush());
     const next = cloneDeep(at(draftRef.current?.data, path));
-    const changed = !isEqual(originalRef.current, next);
+    const changed = !isEqual(original, next);
     release();
     if (changed) onApply(next);
     onClose();
-  }, [pending, path, release, onApply, onClose]);
+  }, [original, pending, path, release, onApply, onClose]);
 
   const context = useMemo(
     () => ({ ...parent, core: draft ?? parent.core, dispatch: localDispatch }),
@@ -142,7 +145,7 @@ export const CompositeDetailDialog = ({
     (!restricted || !preventsEmpty(schema, isArray));
   // The draft was taken from data that has since moved on, so applying it
   // would silently overwrite the newer value.
-  const conflicted = Boolean(draft) && !isEqual(current(), originalRef.current);
+  const conflicted = Boolean(draft) && !isEqual(current(), original);
 
   const text = (
     override: string | undefined,

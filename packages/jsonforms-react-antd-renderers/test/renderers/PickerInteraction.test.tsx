@@ -33,7 +33,10 @@ describe('picker selection commits', () => {
     const Harness = () => {
       const [data, setData] = useState(initial);
       const [, setRevision] = useState(0);
-      refresh = () => setRevision((value) => value + 1);
+      const committedRefresh = () => setRevision((value) => value + 1);
+      React.useLayoutEffect(() => {
+        refresh = committedRefresh;
+      });
       return (
         <>
           <Picker
@@ -44,7 +47,7 @@ describe('picker selection commits', () => {
             id='picker'
             uischema={{ type: 'Control', scope: '#', options }}
             handleChange={(_: string, value: string) => setData(value)}
-            inputProps={{ onFocus: refresh, onBlur: refresh }}
+            inputProps={{ onFocus: committedRefresh, onBlur: committedRefresh }}
           />
           <output>{data}</output>
         </>

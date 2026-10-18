@@ -14,7 +14,7 @@ import {
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import { Input } from '@jsonforms-react-shadcn-ui/input';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   parseColor,
   serializeColor,
@@ -46,7 +46,12 @@ export const normalizeColor = (value: unknown): string => {
 export const ShadcnColorControl = (props: ControlProps) => {
   const t = useExtendedTranslator();
   const [rejectedText, setRejectedText] = useState<string>();
-  useEffect(() => setRejectedText(undefined), [props.data]);
+
+  const [previousData, setPreviousData] = React.useState(props.data);
+  if (!Object.is(previousData, props.data)) {
+    setPreviousData(() => props.data);
+    setRejectedText(undefined);
+  }
   const hex3 =
     resolveExtendedOption<string>(
       props.uischema.options,

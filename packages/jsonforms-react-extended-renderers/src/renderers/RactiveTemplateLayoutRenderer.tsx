@@ -52,14 +52,17 @@ export const RactiveTemplateLayoutRenderer = (
   const ctx = useJsonForms();
   const resolved = resolveTemplateEngine(uischema, config);
 
-  const children = uischema.elements ?? [];
+  const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
   /*
     Collision-aware: an index fallback never steals a name another child
     declared, and a child that cannot be addressed is reported rather than
     silently left off the form.
   */
-  const { names, diagnostics } = resolveChildNames(children);
-  const nameKey = names.join('\u0000');
+  const { names, diagnostics } = useMemo(
+    () => resolveChildNames(children),
+    [children],
+  );
+  const nameKey = JSON.stringify(names);
 
   /*
     Reported to the author rather than rendered: a child that cannot be
@@ -72,7 +75,7 @@ export const RactiveTemplateLayoutRenderer = (
       // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
-  }, [diagnostics.join('\u0000')]);
+  }, [diagnostics]);
 
   /*
     An attribute Ractive will eat as a transition directive. This profile
@@ -95,8 +98,8 @@ export const RactiveTemplateLayoutRenderer = (
   /* One placeholder partial per child, so `{{> body}}` resolves. */
   const partials = useMemo(() => {
     const map: Record<string, string> = {};
-    for (const name of names) {
-      if (name !== undefined) {
+    for (const name of JSON.parse(nameKey) as (string | null)[]) {
+      if (name !== null) {
         map[name] = `<div ${SLOT_ATTR}="${name}"></div>`;
       }
     }
@@ -105,8 +108,9 @@ export const RactiveTemplateLayoutRenderer = (
 
   const slots = useMemo(() => {
     const map: Record<string, React.ReactNode> = {};
+    const childNames = resolveChildNames(children).names;
     children.forEach((element, index) => {
-      const name = names[index];
+      const name = childNames[index];
       if (name === undefined) {
         return;
       }
@@ -122,7 +126,7 @@ export const RactiveTemplateLayoutRenderer = (
       );
     });
     return map;
-  }, [nameKey, schema, path, enabled, renderers, cells]);
+  }, [children, schema, path, enabled, renderers, cells]);
 
   /*
     Rebuilt whenever a binding changes; the template component turns that into
@@ -134,13 +138,13 @@ export const RactiveTemplateLayoutRenderer = (
       data: ctx.core?.data,
       errors: ctx.core?.errors,
       context: buildFormContext({ ctx: ctx as any, schema, uischema }),
-      elements: names
-        .filter((name): name is string => name !== undefined)
+      elements: resolveChildNames(uischema.elements ?? [])
+        .names.filter((name): name is string => name !== undefined)
         .map((name) => ({ name })),
       translate: (key: string, fallback?: string) =>
         ctx.i18n?.translate?.(key, fallback) ?? fallback ?? key,
     }),
-    [ctx.core?.data, ctx.core?.errors, ctx.i18n?.locale, nameKey],
+    [ctx, schema, uischema],
   );
 
   if (visible === false) {

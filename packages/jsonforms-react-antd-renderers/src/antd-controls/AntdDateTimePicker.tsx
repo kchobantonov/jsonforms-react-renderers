@@ -45,7 +45,10 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
     inputProps,
     schema,
   } = props as typeof props & { schema?: Record<string, unknown> };
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const appliedUiSchemaOptions = useMemo(
+    () => merge({}, config, uischema.options),
+    [config, uischema.options],
+  );
   /*
     A `$data` bound points at another part of the form - the other end of a
     date range, typically - so the bounds have to be recomputed as that value
@@ -75,7 +78,7 @@ export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
         [saveFormat, format, ...JSON_SCHEMA_DATE_TIME_FORMATS],
         format.includes('s') ? 'second' : 'minute',
       ),
-    [schema, saveFormat, format],
+    [boundsSchema, saveFormat, format],
   );
   const disabledDate = useMemo(
     () => (restrict ? disabledDateFor(bounds) : undefined),

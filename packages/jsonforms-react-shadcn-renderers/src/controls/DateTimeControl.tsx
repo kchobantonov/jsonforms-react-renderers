@@ -38,6 +38,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
     visible,
   } = props;
   const [open, setOpen] = React.useState(false);
+  const [calendarYear] = React.useState(() => new Date().getFullYear());
   const [draftDate, setDraftDate] = React.useState<Date>();
   const [draftTime, setDraftTime] = React.useState<TimeValue>();
 
@@ -105,8 +106,8 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
               selected={draftDate}
               defaultMonth={draftDate ?? selectedDate}
               captionLayout='dropdown'
-              startMonth={new Date(new Date().getFullYear() - 100, 0)}
-              endMonth={new Date(new Date().getFullYear() + 20, 11)}
+              startMonth={new Date(calendarYear - 100, 0)}
+              endMonth={new Date(calendarYear + 20, 11)}
               onSelect={(date) => {
                 const nextTime =
                   draftTime ??

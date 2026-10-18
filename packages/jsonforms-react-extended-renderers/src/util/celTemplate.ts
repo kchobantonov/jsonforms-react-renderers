@@ -37,7 +37,7 @@ const messageOf = (error: unknown): string =>
  * namespace at all is `Unknown variable` and stays an error.
  */
 const isAbsentData = (error: unknown): boolean =>
-  /^No such key:/.test(messageOf(error));
+  messageOf(error).startsWith('No such key:');
 
 /**
  * Explains the one failure whose own message explains nothing.
@@ -74,7 +74,10 @@ const findsConstructorKey = (value: unknown, depth = 0): boolean => {
 
 const explain = (error: unknown, scope: Record<string, unknown>): string => {
   const message = messageOf(error);
-  if (/^Unsupported type: object/.test(message) && findsConstructorKey(scope)) {
+  if (
+    message.startsWith('Unsupported type: object') &&
+    findsConstructorKey(scope)
+  ) {
     return `${message} - a value in scope has a property named "constructor", which this evaluator cannot read`;
   }
   return message;

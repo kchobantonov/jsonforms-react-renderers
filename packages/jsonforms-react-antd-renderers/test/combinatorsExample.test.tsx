@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
@@ -44,7 +43,7 @@ const draw = (override?: any) => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
-  let current: any = { ...data, ...(override ?? {}) };
+  let current: any = { ...data, ...override };
   const paint = () =>
     act(() =>
       root.render(

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
@@ -58,7 +57,7 @@ const draw = (extraConfig?: Record<string, unknown>, locale = 'en') => {
           data={data}
           schema={schema as any}
           uischema={filteringUiSchema as any}
-          config={{ ...config, ...(extraConfig ?? {}) }}
+          config={{ ...config, ...extraConfig }}
           i18n={{
             locale,
             // The demo supplies this; without it the raw Ajv text shows and

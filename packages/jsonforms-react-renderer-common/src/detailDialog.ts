@@ -19,12 +19,14 @@ export const useDetailDialog = (
   options = { ...config?.jsonformsExtended?.dialog, ...options };
   const [maximized, setMaximized] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  useEffect(() => {
+  const [wasOpen, setWasOpen] = useState(open);
+  if (wasOpen !== open) {
+    setWasOpen(open);
     if (!open) {
       setMaximized(false);
       setOffset({ x: 0, y: 0 });
     }
-  }, [open]);
+  }
   const frame = React.useRef<number>();
   const nextOffset = React.useRef<{ x: number; y: number }>();
   const flushOffset = () => {

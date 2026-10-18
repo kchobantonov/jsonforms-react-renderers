@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { extendedAgGridTester } from '@chobantonov/jsonforms-react-extended-renderers';

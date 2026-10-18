@@ -1,5 +1,4 @@
-import React from 'react';
-import { act } from 'react-dom/test-utils';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it } from 'vite-plus/test';
 import { useCollectionDelete } from '../src/useCollectionDelete';
@@ -16,7 +15,7 @@ it.each(['additionalItems', 'additionalProperties'])(
     let options: any = { confirmation: { delete: 'always' } };
     let config: any = undefined;
     const Harness = () => {
-      state = useCollectionDelete({
+      const committedState = useCollectionDelete({
         data,
         identity,
         catalogId,
@@ -27,6 +26,9 @@ it.each(['additionalItems', 'additionalProperties'])(
         remove: () => {
           removed++;
         },
+      });
+      React.useLayoutEffect(() => {
+        state = committedState;
       });
       return null;
     };

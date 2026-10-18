@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ConfigProvider, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -46,10 +45,13 @@ const drawCalendar = async (locale: string | undefined) => {
   const root = createRoot(container);
   let resolvedLocale: ReturnType<typeof useAntdLocale>;
   const View = () => {
-    resolvedLocale = useAntdLocale(locale);
+    const committedResolvedLocale = useAntdLocale(locale);
+    React.useLayoutEffect(() => {
+      resolvedLocale = committedResolvedLocale;
+    });
     return (
       <ConfigProvider
-        locale={resolvedLocale}
+        locale={committedResolvedLocale}
         theme={{ token: { motion: false } }}
       >
         <DatePicker open value={dayjs('2026-01-15')} />

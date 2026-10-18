@@ -79,7 +79,7 @@ export const ShadcnCompositeCell = (props: Props) => {
   }>();
   const [draft, setDraft] = useState<JsonFormsCore>();
   const draftRef = useRef<JsonFormsCore>();
-  const original = useRef<unknown>();
+  const [original, setOriginal] = useState<unknown>();
   const options = props.uischema.options ?? {};
   const summary = compositeSummaryPresentation(
     props.data,
@@ -118,7 +118,7 @@ export const ShadcnCompositeCell = (props: Props) => {
   };
   const value = draft && Resolve.data(draft.data, props.path);
   const isArray = props.schema.type === 'array';
-  const conflicted = !!draft && !equal(current(), original.current);
+  const conflicted = !!draft && !equal(current(), original);
   const canClear =
     enabled &&
     !options.disableRemove &&
@@ -165,7 +165,7 @@ export const ShadcnCompositeCell = (props: Props) => {
           title={text('composite.edit', { label })}
           aria-label={text('composite.edit', { label })}
           onClick={() => {
-            original.current = copy(current());
+            setOriginal(copy(current()));
             draftRef.current = {
               ...parent.core,
               data: copy(parent.core?.data),
@@ -282,7 +282,7 @@ export const ShadcnCompositeCell = (props: Props) => {
                 const next = copy(
                   Resolve.data(draftRef.current?.data, props.path),
                 );
-                if (!equal(next, original.current))
+                if (!equal(next, original))
                   props.handleChange(props.path, next);
                 close();
               }}

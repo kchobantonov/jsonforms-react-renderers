@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 
 /**
@@ -100,8 +99,11 @@ const draw = (options: Record<string, unknown> = {}, config?: any) => {
 
   const Host = () => {
     const [elementOptions, setOptions] = useState(options);
-    setElementOptions = setOptions;
-    const store = React.useRef(createAdditionalErrorStore()).current;
+    const committedSetElementOptions = setOptions;
+    React.useLayoutEffect(() => {
+      setElementOptions = committedSetElementOptions;
+    });
+    const [store] = React.useState(createAdditionalErrorStore);
     return (
       <ConfigProvider theme={{ token: { motion: false } }}>
         <ExtendedJsonForms
@@ -340,12 +342,15 @@ describe('a server error and an editor error on one field', () => {
     let store: any;
 
     const Host = () => {
-      store = React.useRef(createAdditionalErrorStore()).current;
+      const committedStore = React.useState(createAdditionalErrorStore)[0];
+      React.useLayoutEffect(() => {
+        store = committedStore;
+      });
       const [data, setData] = React.useState({ settings: '{}', other: '' });
       return (
         <ConfigProvider theme={{ token: { motion: false } }}>
           <ExtendedJsonForms
-            store={store}
+            store={committedStore}
             data={data}
             schema={schema}
             uischema={

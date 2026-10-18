@@ -1,6 +1,6 @@
 import { findDetailUISchema as findUISchema } from './detail';
 import { PendingChange, PendingChangesProvider } from './pendingChanges';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   coreReducer,
   Generate,
@@ -33,8 +33,15 @@ export const useRowDetail = (props: any) => {
   const array = Resolve.data(context.core?.data, props.path) as
     | unknown[]
     | undefined;
-  const previousArray = useRef(array);
-  useEffect(() => {
+  const [previous, setPrevious] = useState({
+    array,
+    presentation: options?.presentation,
+  });
+  const previousArray = previous.array;
+  if (
+    previousArray !== array ||
+    previous.presentation !== options?.presentation
+  ) {
     if (
       selection &&
       options?.presentation === 'panel' &&
@@ -44,12 +51,11 @@ export const useRowDetail = (props: any) => {
       if (moved >= 0) setSelection({ index: moved, source: selection.source });
       else if (
         array &&
-        previousArray.current &&
-        array.length === previousArray.current.length &&
+        previousArray &&
+        array.length === previousArray.length &&
         array.every(
           (value, index) =>
-            index === selection.index ||
-            value === previousArray.current?.[index],
+            index === selection.index || value === previousArray?.[index],
         )
       ) {
         setSelection({
@@ -58,8 +64,8 @@ export const useRowDetail = (props: any) => {
         });
       } else setSelection(undefined);
     }
-    previousArray.current = array;
-  }, [array, selection, options?.presentation]);
+    setPrevious({ array, presentation: options?.presentation });
+  }
   const rowPath = selection
     ? [props.path, selection.index].filter((x) => x !== '').join('.')
     : '';

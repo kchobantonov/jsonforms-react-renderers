@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 import type { ErrorObject } from 'ajv';
 import { coreReducer, Actions } from '@jsonforms/core';
@@ -267,7 +266,7 @@ describe('the React surface', () => {
     document.body.appendChild(container);
     const root = createRoot(container);
     const Harness = () => {
-      const store = useRef(createAdditionalErrorStore()).current;
+      const [store] = React.useState(createAdditionalErrorStore);
       return (
         <AdditionalErrorStoreProvider store={store}>
           {children}

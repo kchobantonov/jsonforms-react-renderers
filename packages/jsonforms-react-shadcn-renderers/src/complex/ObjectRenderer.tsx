@@ -38,7 +38,10 @@ export const ShadcnObjectRenderer = ({
   visible,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
-  const uischemas = jsonforms.uischemas ?? [];
+  const uischemas = useMemo(
+    () => jsonforms.uischemas ?? [],
+    [jsonforms.uischemas],
+  );
   const conditional = useConditionalFields(
     originalSchema,
     rootSchema,

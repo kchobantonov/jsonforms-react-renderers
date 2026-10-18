@@ -16,7 +16,7 @@ export interface WithInput {
 
 export const InputControl = (props: ControlProps & WithInput) => {
   const cell = useCellMode();
-  const { id, label, visible, required, config, input } = props;
+  const { id, label, visible, required, config, input, handleChange } = props;
   /*
     Replaces `useFocus`: the same focus state, plus the touch state pre-touch
     error filtering needs, and the filtered message. With filtering off this
@@ -33,7 +33,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
   const preserveDynamicPropertyKey = useDynamicProperty(props.path);
   const handleInputChange = useCallback(
     (changedPath: string, value: unknown) => {
-      props.handleChange(
+      handleChange(
         changedPath,
         preserveDynamicPropertyKey &&
           changedPath === props.path &&
@@ -44,7 +44,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
     },
     [
       preserveDynamicPropertyKey,
-      props.handleChange,
+      handleChange,
       props.path,
       props.rootSchema,
       props.schema,

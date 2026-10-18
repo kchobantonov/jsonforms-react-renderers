@@ -54,6 +54,8 @@ export default defineConfig({
   },
   test: {
     maxWorkers: 2,
+    // Full native-dialog fixtures can exceed five seconds under workspace load.
+    testTimeout: 20000,
     sequence: { groupOrder: 1 },
     globals: true,
     environment: 'jsdom',

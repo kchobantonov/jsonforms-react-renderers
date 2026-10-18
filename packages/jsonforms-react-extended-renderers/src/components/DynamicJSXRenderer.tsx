@@ -1,7 +1,7 @@
 import * as Sucrase from 'sucrase';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 
-import { subscribe } from 'valtio';
+import { useSnapshot } from 'valtio';
 import { ElementRender } from './elementRender';
 import { sanitizeUrlProps } from '../util/templateUrls';
 import { UrlPolicy, defaultUrlPolicy } from '../util/urlPolicy';
@@ -22,89 +22,7 @@ function unwrapSafeProxy(proxyObj: any) {
  * Supports special proxies: objects, arrays, or { _value: primitive }.
  */
 export function useTrackedSnapshot(proxy: any) {
-  const accessedKeys = useRef(new Set<string>());
-  const previousValues = useRef(new Map<string, any>());
-  const [, forceUpdate] = useState({});
-  const isTracking = useRef(false);
-  const subscriptionRef = useRef<null | (() => void)>(null);
-
-  const getValueAtPath = (obj: any, path: string) => {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
-  };
-
-  const trackingProxy = useMemo(() => {
-    // Unwrap the proxy right here, before creating the tracking proxy.
-    const unwrapped = unwrapSafeProxy(proxy);
-
-    function createTrackingProxy(obj: any, path = '') {
-      if (!obj || (typeof obj !== 'object' && !Array.isArray(obj))) return obj;
-
-      return new Proxy(obj, {
-        get(target, prop, receiver) {
-          if (isTracking.current) {
-            const fullPath = path ? `${path}.${String(prop)}` : String(prop);
-            accessedKeys.current.add(fullPath);
-
-            const currentValue = Reflect.get(target, prop, receiver);
-            previousValues.current.set(fullPath, currentValue);
-          }
-
-          const value = Reflect.get(target, prop, receiver);
-
-          if (value && typeof value === 'object') {
-            const fullPath = path ? `${path}.${String(prop)}` : String(prop);
-            return createTrackingProxy(value, fullPath);
-          }
-
-          return value;
-        },
-      });
-    }
-
-    return createTrackingProxy(unwrapped);
-  }, [proxy]);
-
-  useEffect(() => {
-    if (subscriptionRef.current) {
-      subscriptionRef.current();
-      subscriptionRef.current = null;
-    }
-
-    if (accessedKeys.current.size === 0) return;
-
-    const unsubscribe = subscribe(proxy, () => {
-      let hasRelevantChange = false;
-
-      accessedKeys.current.forEach((path) => {
-        const currentValue = getValueAtPath(proxy.__val__, path);
-        const previousValue = previousValues.current.get(path);
-        if (currentValue !== previousValue) {
-          hasRelevantChange = true;
-          previousValues.current.set(path, currentValue);
-        }
-      });
-
-      if (hasRelevantChange) forceUpdate({});
-    });
-
-    subscriptionRef.current = unsubscribe;
-
-    return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current();
-        subscriptionRef.current = null;
-      }
-    };
-  }, [proxy]);
-
-  // Enable tracking during render
-  isTracking.current = true;
-  const result = trackingProxy;
-
-  // Disable tracking after render (microtask)
-  Promise.resolve().then(() => (isTracking.current = false));
-
-  return result;
+  return unwrapSafeProxy(useSnapshot(proxy));
 }
 
 /**
@@ -324,22 +242,23 @@ class TemplateErrorBoundary extends React.Component<
   }
 }
 
+interface CompiledTemplateProps {
+  runtimePragma: ReturnType<typeof makeCreateElement>;
+  bindings: Record<string, unknown>;
+}
+
 // Define the type for the props received by the dynamic component
 export default function DynamicJSXRenderer({
   jsxTemplate,
   props,
   urlPolicy,
 }: any) {
-  /*
-    Refreshed on every render, not captured once: `config` can change, and a
-    policy captured at mount would go on permitting what the host has since
-    forbidden. The pragma below reads through the ref, so it stays stable.
-  */
-  const policyRef = useRef<UrlPolicy>(urlPolicy ?? defaultUrlPolicy);
-  policyRef.current = urlPolicy ?? defaultUrlPolicy;
-  const pragma = useMemo(() => makeCreateElement(() => policyRef.current), []);
+  // Policy changes update the compiled template's runtime bindings without
+  // replacing its component type or discarding a child's draft.
+  const policy = urlPolicy ?? defaultUrlPolicy;
+  const pragma = useMemo(() => makeCreateElement(() => policy), [policy]);
   // Compile once when jsxTemplate changes
-  const Component = useMemo(() => {
+  const Component = useMemo<React.ComponentType<CompiledTemplateProps>>(() => {
     try {
       // Compile JSX to JS code
       // const { code } = Babel.transform(jsxTemplate, {
@@ -404,17 +323,22 @@ export default function DynamicJSXRenderer({
         `,
       );
 
-      const TemplateComponent = fn(React, pragma, useTrackedSnapshot);
-
-      // Wrap in memo so React handles props changes
-      if (typeof TemplateComponent !== 'function') {
-        throw new Error('Template must export a function component');
-      }
-
-      // Wrap the component to catch runtime errors
-      const SafeTemplate = React.memo((templateProps) => {
+      // The component type belongs to the source, while the URL policy belongs
+      // to this render. Invoke the compiled render function inside this stable
+      // component so policy replacements preserve its hooks and child state.
+      const SafeTemplate = React.memo(function SafeTemplate({
+        runtimePragma,
+        bindings,
+      }: CompiledTemplateProps) {
+        const renderTemplate = useMemo(
+          () => fn(React, runtimePragma, useTrackedSnapshot),
+          [runtimePragma],
+        );
         try {
-          return React.createElement(TemplateComponent, templateProps);
+          if (typeof renderTemplate !== 'function') {
+            throw new Error('Template must export a function component');
+          }
+          return renderTemplate(bindings);
         } catch (error) {
           console.error('Template render error:', error);
           return React.createElement(
@@ -464,7 +388,7 @@ export default function DynamicJSXRenderer({
     } catch (err) {
       console.error('JSX compile error:', err);
       // Fallback component if compile fails
-      const CompileError = React.memo((_props) => (
+      const CompileError = React.memo<CompiledTemplateProps>((_props) => (
         <div
           style={{
             color: 'red',
@@ -495,14 +419,15 @@ export default function DynamicJSXRenderer({
       CompileError.displayName = 'TemplateCompileError';
       return CompileError;
     }
-  }, [jsxTemplate, pragma]);
+  }, [jsxTemplate]);
 
   return (
     <TemplateErrorBoundary
       template={jsxTemplate}
       availableVariables={Object.keys(props)}
     >
-      <Component {...props} />
+      {/* eslint-disable-next-line react/static-components -- Runtime templates must be compiled; the component type is memoized until its source changes. */}
+      <Component runtimePragma={pragma} bindings={props} />
     </TemplateErrorBoundary>
   );
 }

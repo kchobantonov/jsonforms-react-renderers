@@ -19,9 +19,7 @@ export const DetailModal = ({
     () => surface.current?.firstElementChild as HTMLElement | null,
   );
   const [restoredWidth, setRestoredWidth] = React.useState<string>();
-  React.useEffect(() => {
-    if (!props.open) setRestoredWidth(undefined);
-  }, [props.open]);
+  if (!props.open && restoredWidth !== undefined) setRestoredWidth(undefined);
   const toggle = () => {
     if (!geometry.maximized) {
       // Native CSS resizing writes an inline width on the content container.

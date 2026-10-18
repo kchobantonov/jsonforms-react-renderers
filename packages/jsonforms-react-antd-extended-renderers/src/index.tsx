@@ -64,7 +64,7 @@ export const createAntdExtendedRenderers = (
       components: {
         Alert,
         Button,
-        ...(options.components ?? {}),
+        ...options.components,
       },
       includeButtonRenderer: false,
     }),

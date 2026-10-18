@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-thenable -- JSON Schema conditionals require a non-callable `then` keyword. */
 import Ajv from 'ajv';
 import { describe, expect, it } from 'vite-plus/test';
 import { JsonSchema, JsonSchema7 } from '@jsonforms/core';

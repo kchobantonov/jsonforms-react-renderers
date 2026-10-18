@@ -81,13 +81,18 @@ export const useDebouncedChange = (
     each time. Only the identity mattered before; now the cleanup below hangs
     off it, so it should be created exactly once per (handleChange, path).
   */
+  const commit = useCallback(
+    (newValue: any) => {
+      lastWritten.current = newValue;
+      handleChange(path, newValue);
+    },
+    [handleChange, path],
+  );
   const debouncedUpdate = useMemo(
     () =>
-      debounce((newValue: any) => {
-        lastWritten.current = newValue;
-        handleChange(path, newValue);
-      }, timeout),
-    [handleChange, path, timeout],
+      // eslint-disable-next-line react/refs -- lodash only schedules commit; constructing a debouncer does not execute the ref-backed callback.
+      debounce(commit, timeout),
+    [commit, timeout],
   );
   useEffect(() => {
     if (data === lastWritten.current) {
@@ -98,7 +103,7 @@ export const useDebouncedChange = (
     debouncedUpdate.cancel();
     lastWritten.current = data;
     setInput(data ?? defaultValue);
-  }, [data]);
+  }, [data, debouncedUpdate, defaultValue]);
   /*
     Disposal, and rebinding. The returned cleanup runs both when this control
     unmounts and when `debouncedUpdate` is replaced, so the instance that is
@@ -117,7 +122,7 @@ export const useDebouncedChange = (
       setInput(newValue ?? defaultValue);
       debouncedUpdate(newValue);
     },
-    [debouncedUpdate, eventToValueFunction],
+    [debouncedUpdate, eventToValueFunction, defaultValue],
   );
   const onClear = useCallback(() => {
     // Clearing supersedes whatever is still queued. Without this, a keystroke

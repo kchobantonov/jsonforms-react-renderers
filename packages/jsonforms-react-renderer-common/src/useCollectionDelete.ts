@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { ConfirmationCatalogId, shouldConfirm } from './confirmation';
 
 /** Invalidates pending deletion if the collection or its binding changes. */
@@ -13,7 +13,9 @@ export const useCollectionDelete = <K extends string | number>(settings: {
   remove: (key: K) => void;
 }) => {
   const current = useRef(settings);
-  current.current = settings;
+  useLayoutEffect(() => {
+    current.current = settings;
+  }, [settings]);
   const pending = useRef<{ key: K; data: unknown; identity: unknown }>();
   const [confirming, setConfirming] = useState(false);
   const cancel = () => {

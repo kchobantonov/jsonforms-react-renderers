@@ -108,10 +108,14 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
   const [severity, setSeverity] = React.useState<'warning' | 'error'>(
     'warning',
   );
-  React.useEffect(() => {
-    setLocalError('');
-  }, [props.data]);
+
   const [localError, setLocalError] = React.useState('');
+  const [previousData, setPreviousData] = React.useState(props.data);
+  if (!Object.is(previousData, props.data)) {
+    setPreviousData(() => props.data);
+    setLocalError('');
+  }
+
   if (!props.visible) return null;
   const schema = props.schema as JsonSchemaWithContent;
   const options = { ...props.config, ...props.uischema.options };
@@ -202,7 +206,7 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
               const value = await readFile(file, schema);
               props.handleChange(props.path, value);
               setAttachment({ value, name: file.name });
-            } catch (error) {
+            } catch {
               setSeverity('error');
               setLocalError(t('file.readFailed'));
             } finally {

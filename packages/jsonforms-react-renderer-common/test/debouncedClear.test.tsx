@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import {
   afterEach,
   beforeEach,
@@ -15,21 +14,31 @@ import { useDebouncedChange } from '../src/debounce';
 const Probe = ({
   handleChange,
   data,
-  api,
+  report,
+  defaultValue = '',
 }: {
   handleChange: (path: string, value: any) => void;
   data: any;
-  api: { type?: (v: string) => void; clear?: () => void; input?: any };
+  defaultValue?: string;
+  report: (api: {
+    type?: (v: string) => void;
+    clear?: () => void;
+    input?: any;
+  }) => void;
 }) => {
   const [input, onChange, onClear] = useDebouncedChange(
     handleChange,
-    '',
+    defaultValue,
     data,
     'field',
   );
-  api.type = (value: string) => onChange({ target: { value } } as any);
-  api.clear = onClear;
-  api.input = input;
+  React.useLayoutEffect(() => {
+    report({
+      type: (value: string) => onChange({ target: { value } } as any),
+      clear: onClear,
+      input,
+    });
+  });
   return null;
 };
 
@@ -41,7 +50,13 @@ const mountProbe = (data: any = 'committed') => {
   document.body.appendChild(container);
   const root = createRoot(container);
   act(() =>
-    root.render(<Probe handleChange={handleChange} data={data} api={api} />),
+    root.render(
+      <Probe
+        handleChange={handleChange}
+        data={data}
+        report={(value) => Object.assign(api, value)}
+      />,
+    ),
   );
   return { api, handleChange, unmount: () => act(() => root.unmount()) };
 };
@@ -49,6 +64,34 @@ const mountProbe = (data: any = 'committed') => {
 describe('clearing a debounced control', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
+
+  it('uses the latest empty-input fallback after host configuration changes', () => {
+    const handleChange = vi.fn();
+    const api: { type?: (v: string) => void; input?: any } = {};
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      const render = (defaultValue: string) =>
+        act(() =>
+          root.render(
+            <Probe
+              handleChange={handleChange}
+              data='committed'
+              report={(value) => Object.assign(api, value)}
+              defaultValue={defaultValue}
+            />,
+          ),
+        );
+      render('old fallback');
+      render('new fallback');
+      act(() => api.type!(undefined as any));
+      expect(api.input).toBe('new fallback');
+      act(() => vi.advanceTimersByTime(300));
+      expect(handleChange).toHaveBeenCalledWith('field', undefined);
+    } finally {
+      act(() => root.unmount());
+    }
+  });
 
   it('does not let a queued keystroke restore the cleared value', () => {
     const { api, handleChange, unmount } = mountProbe();

@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React, { act, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { ConfigProvider, theme as antTheme } from 'antd';
 import { useEditorAppearance } from '@chobantonov/jsonforms-react-extended-renderers';
 import { useAntdEditorTheme } from '../src/renderers/useAntdEditorTheme';
@@ -17,7 +16,10 @@ describe('useAntdEditorTheme', () => {
   const capture = (dark: boolean) => {
     let result: any;
     const Probe = () => {
-      result = useAntdEditorTheme();
+      const committedResult = useAntdEditorTheme();
+      React.useLayoutEffect(() => {
+        result = committedResult;
+      });
       return null;
     };
     const unmount = render(
@@ -62,7 +64,14 @@ describe('useEditorAppearance', () => {
     let result: any;
     const Probe = () => {
       const ref = useRef<HTMLDivElement>(null);
-      result = useEditorAppearance(ref, explicitTheme, hostIsDark);
+      const committedResult = useEditorAppearance(
+        ref,
+        explicitTheme,
+        hostIsDark,
+      );
+      React.useLayoutEffect(() => {
+        result = committedResult;
+      });
       return <div ref={ref} />;
     };
     const unmount = render(<Probe />);

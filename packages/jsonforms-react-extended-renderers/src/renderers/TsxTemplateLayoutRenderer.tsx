@@ -13,7 +13,7 @@ import {
   useJsonForms,
   withJsonFormsLayoutProps,
 } from '@jsonforms/react';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import type { ExtendedUISchemaElement } from '../core/uiSchema';
 import { resolveChildNames } from '../util/childNames';
 import { buildFormContext, type FormContext } from '../util/formContext';
@@ -139,6 +139,37 @@ export const tsxTemplateLayoutTester: RankedTester = rankWith(
   ),
 );
 
+type SlotContextValue = Pick<
+  LayoutProps,
+  'schema' | 'path' | 'enabled' | 'renderers' | 'cells'
+> & {
+  byName: Record<string, ExtendedUISchemaElement>;
+};
+const SlotContext = React.createContext<SlotContextValue | undefined>(
+  undefined,
+);
+const Slot = ({ name, children: fallback }: SlotProps) => {
+  const current = React.useContext(SlotContext);
+  const element = current?.byName[name];
+  if (!current || !element) {
+    // oxlint-disable-next-line no-console
+    console.warn(
+      `template.unknownSlot: no child is named ${JSON.stringify(name)}; known names are ${JSON.stringify(Object.keys(current?.byName ?? {}))}.`,
+    );
+    return <>{fallback ?? null}</>;
+  }
+  return (
+    <JsonFormsDispatch
+      uischema={element}
+      schema={current.schema}
+      path={current.path}
+      enabled={current.enabled}
+      renderers={current.renderers}
+      cells={current.cells}
+    />
+  );
+};
+
 export const TsxTemplateLayoutRendererComponent = (
   props: LayoutProps & { uischema: ReactTemplateLayoutElement },
 ) => {
@@ -146,15 +177,18 @@ export const TsxTemplateLayoutRendererComponent = (
   const ctx = useJsonForms();
   const fireActionEvent = useHandleAction();
 
-  const children = uischema.elements ?? [];
-  const { names, diagnostics } = resolveChildNames(children);
+  const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
+  const { names, diagnostics } = useMemo(
+    () => resolveChildNames(children),
+    [children],
+  );
 
   useEffect(() => {
     for (const diagnostic of diagnostics) {
       // oxlint-disable-next-line no-console
       console.warn(diagnostic);
     }
-  }, [diagnostics.join('\u0000')]);
+  }, [diagnostics]);
 
   const byName = useMemo(() => {
     const map: Record<string, ExtendedUISchemaElement> = {};
@@ -165,57 +199,7 @@ export const TsxTemplateLayoutRendererComponent = (
       }
     });
     return map;
-  }, [children, names.join('\u0000')]);
-
-  /*
-    `Slot` is used as a **component type**, so its identity is load-bearing:
-    React unmounts and remounts the whole subtree whenever the type changes.
-    A `useCallback` over `[byName, schema, path, enabled, renderers, cells]`
-    looks safe and is not - a parent that builds its `renderers` array inline
-    hands a new one every render, which remounted every slotted control on
-    every keystroke and took the cursor with it. That is precisely the
-    no-remount guarantee the string profiles are held to.
-
-    So the component is created **once**, and reads what it needs from a ref.
-    It re-runs on every render anyway, because the template function does, so
-    it never shows a stale value.
-  */
-  const slotState = useRef({ byName, schema, path, enabled, renderers, cells });
-  slotState.current = { byName, schema, path, enabled, renderers, cells };
-
-  const Slot = useMemo(() => {
-    const SlotComponent = ({ name, children: fallback }: SlotProps) => {
-      const current = slotState.current;
-      const element = current.byName[name];
-      /*
-        A name no child answers to is an authoring mistake that would otherwise
-        render nothing and say nothing - the same silence the child-name
-        collision used to produce. The fallback still renders, so the form
-        stays usable.
-      */
-      if (!element) {
-        // oxlint-disable-next-line no-console
-        console.warn(
-          `template.unknownSlot: no child is named ${JSON.stringify(
-            name,
-          )}; known names are ${JSON.stringify(Object.keys(current.byName))}.`,
-        );
-        return <>{fallback ?? null}</>;
-      }
-      return (
-        <JsonFormsDispatch
-          uischema={element}
-          schema={current.schema}
-          path={current.path}
-          enabled={current.enabled}
-          renderers={current.renderers}
-          cells={current.cells}
-        />
-      );
-    };
-    SlotComponent.displayName = 'Slot';
-    return SlotComponent;
-  }, []);
+  }, [children, names]);
 
   const handleChange = useCallback(
     (target: string, value: unknown) => {
@@ -224,7 +208,7 @@ export const TsxTemplateLayoutRendererComponent = (
       }
       ctx.dispatch?.(Actions.update(target, () => value));
     },
-    [ctx.dispatch, enabled],
+    [ctx, enabled],
   );
 
   if (visible === false) {
@@ -238,7 +222,9 @@ export const TsxTemplateLayoutRendererComponent = (
   }
 
   return (
-    <>
+    <SlotContext.Provider
+      value={{ byName, schema, path, enabled, renderers, cells }}
+    >
       {template({
         data: ctx.core?.data,
         path: path ?? '',
@@ -260,7 +246,7 @@ export const TsxTemplateLayoutRendererComponent = (
           fireActionEvent,
         }),
       })}
-    </>
+    </SlotContext.Provider>
   );
 };
 

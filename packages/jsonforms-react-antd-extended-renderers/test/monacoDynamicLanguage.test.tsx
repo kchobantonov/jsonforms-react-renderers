@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
@@ -14,12 +13,13 @@ vi.mock('@monaco-editor/react', () => {
   const editor = { focus() {}, layout() {}, getAction: () => undefined };
   return {
     default: function MockMonaco(props: any) {
+      const [onMount] = React.useState(() => props.onMount);
       spy.language = props.language;
       props.beforeMount?.(monaco);
       React.useEffect(() => {
-        const timer = setTimeout(() => props.onMount?.(editor, monaco), 0);
+        const timer = setTimeout(() => onMount?.(editor, monaco), 0);
         return () => clearTimeout(timer);
-      }, []);
+      }, [onMount]);
       return React.createElement('div');
     },
   };

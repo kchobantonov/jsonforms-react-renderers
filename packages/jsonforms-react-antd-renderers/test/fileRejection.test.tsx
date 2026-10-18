@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { describe, expect, it, vi } from 'vite-plus/test';
 import { Upload } from 'antd';
 import { AntdFile } from '../src/antd-controls/AntdFile';

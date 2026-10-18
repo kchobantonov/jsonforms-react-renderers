@@ -1,3 +1,4 @@
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { MixedScalarContext } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
 import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
@@ -56,7 +57,6 @@ import {
   CollapsibleTrigger,
 } from '@jsonforms-react-shadcn-ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   MixedNavigationContext,
   MixedTree,
@@ -111,7 +111,9 @@ export const MixedRendererComponent = ({
   visible,
 }: ControlProps) => {
   const latest = useRef({ data, path, enabled, readonly });
-  latest.current = { data, path, enabled, readonly };
+  useLayoutEffect(() => {
+    latest.current = { data, path, enabled, readonly };
+  }, [data, path, enabled, readonly]);
   const jsonforms = useJsonForms();
   const structuredLayout =
     uischema.options?.structuredLayout ??
@@ -126,7 +128,10 @@ export const MixedRendererComponent = ({
   const t = useI18n();
   const confirmation = useConfirmation();
   const parentNavigation = React.useContext(MixedNavigationContext);
-  const uischemas = jsonforms.uischemas ?? [];
+  const uischemas = useMemo(
+    () => jsonforms.uischemas ?? [],
+    [jsonforms.uischemas],
+  );
   const { collapsible, collapsed, setExpanded } = useGroupExpansion(
     uischema,
     config,
@@ -187,9 +192,13 @@ export const MixedRendererComponent = ({
       ? { ...element, label: false }
       : element;
 
-  useEffect(() => {
-    if (tree && !findMixedTreeNode(tree, selectedPath)) setSelectedPath([]);
-  }, [tree, selectedPath]);
+  if (
+    tree &&
+    selectedPath.length > 0 &&
+    !findMixedTreeNode(tree, selectedPath)
+  ) {
+    setSelectedPath([]);
+  }
 
   const renderNodeControl = (node?: MixedTreeNode) => {
     if (!node) return null;
@@ -425,7 +434,7 @@ export const MixedRendererComponent = ({
     }),
     [path, tree, setExpanded],
   );
-  const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const appliedOptions = { ...config, ...uischema.options };
   const restrict = appliedOptions.restrict !== false;
   const parentNode = (node: MixedTreeNode) =>
     tree ? findMixedTreeNode(tree, node.path.slice(0, -1)) : undefined;

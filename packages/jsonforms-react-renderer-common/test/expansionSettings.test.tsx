@@ -1,5 +1,4 @@
-import React from 'react';
-import { act } from 'react-dom/test-utils';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it } from 'vite-plus/test';
 import { resolveCollapsed, useGroupExpansion } from '../src/groupState';
@@ -11,7 +10,14 @@ it('shares Group defaults with mixed frames and preserves user expansion', () =>
   let options: any = {};
   let config: any = { jsonformsExtended: { collapsed: true } };
   const Harness = () => {
-    state = useGroupExpansion({ type: 'Control', options }, config, true);
+    const committedState = useGroupExpansion(
+      { type: 'Control', options },
+      config,
+      true,
+    );
+    React.useLayoutEffect(() => {
+      state = committedState;
+    });
     return null;
   };
   const render = () => act(() => root.render(<Harness />));
@@ -44,7 +50,7 @@ it.each([
     const root = createRoot(document.createElement('div'));
     let state: ReturnType<typeof useCategorySelection>;
     const Harness = () => {
-      state = useCategorySelection(
+      const committedState = useCategorySelection(
         {
           type: 'Categorization',
           options,
@@ -59,6 +65,9 @@ it.each([
         undefined,
         closable,
       );
+      React.useLayoutEffect(() => {
+        state = committedState;
+      });
       return null;
     };
     act(() => root.render(<Harness />));

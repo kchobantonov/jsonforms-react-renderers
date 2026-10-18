@@ -1,3 +1,10 @@
+import React, {
+  useLayoutEffect,
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+} from 'react';
 import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
 import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
@@ -15,7 +22,6 @@ import {
 import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
 import { useEditorAppearance } from '../util/useEditorAppearance';
 import { useExtendedTranslator } from '../util/useExtendedTranslator';
-import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
   composePaths,
   ControlProps,
@@ -38,6 +44,36 @@ import {
   EditorArrayFrameProps,
   EditorRendererComponents,
 } from './EditorControlFrame';
+
+// A bounded cache for one set of summary bindings. Its mutation is internal to
+// this factory; the renderer only memoizes the callable it returns.
+const createSummaryValue = (
+  summaryData: unknown,
+  summaryConfig: unknown,
+  summaryI18n: ReturnType<typeof useJsonForms>['i18n'],
+) => {
+  // The cache belongs to these bindings, not to unrelated selection renders.
+  const cache = new Map<unknown, Map<unknown, string>>();
+  return (label: any, item: unknown) => {
+    let values = cache.get(label);
+    if (!values) {
+      values = new Map();
+      cache.set(label, values);
+    }
+    if (values.has(item)) return values.get(item)!;
+    const text = labelFilterValue(
+      label,
+      summaryData,
+      item,
+      summaryConfig,
+      summaryI18n?.locale,
+      summaryI18n?.translate,
+    );
+    if (values.size >= 1000) values.delete(values.keys().next().value);
+    values.set(item, text);
+    return text;
+  };
+};
 
 const PlainArrayFrame = ({
   label,
@@ -199,7 +235,9 @@ export const createAgGridControl = ({
     });
     // Keep the action renderer stable as selection and form data change.
     const detailRef = useRef(detail);
-    detailRef.current = detail;
+    useLayoutEffect(() => {
+      detailRef.current = detail;
+    }, [detail]);
     useEffect(() => {
       const host = anchor.current;
       if (!host || !RowDetailFrame || detail.options?.presentation !== 'panel')
@@ -279,7 +317,7 @@ export const createAgGridControl = ({
           </span>
         ),
       }),
-      [],
+      [props.path],
     );
     const showSortButtons = Boolean(options.showSortButtons);
     // `cells: { <field>: { summary, detail } }` from the uischema: how a
@@ -288,33 +326,14 @@ export const createAgGridControl = ({
       string,
       Record<string, unknown>
     >;
-    const summaryCache = useMemo(
-      () => new Map<unknown, Map<unknown, string>>(),
-      [formContext.core?.data, formContext.i18n, props.config, cellOptions],
+    const summaryData = formContext.core?.data;
+    const summaryI18n = formContext.i18n;
+    const summaryConfig = props.config;
+    const summaryValue = useMemo(
+      () => createSummaryValue(summaryData, summaryConfig, summaryI18n),
+      [summaryData, summaryConfig, summaryI18n],
     );
-    const summaryValue = (label: any, item: unknown) => {
-      let values = summaryCache.get(label);
-      if (!values) {
-        values = new Map();
-        summaryCache.set(label, values);
-      }
-      if (values.has(item)) return values.get(item)!;
-      const text = labelFilterValue(
-        label,
-        formContext.core?.data,
-        item,
-        props.config,
-        formContext.i18n?.locale,
-        formContext.i18n?.translate,
-      );
-      if (values.size >= 1000) values.delete(values.keys().next().value);
-      values.set(item, text);
-      return text;
-    };
-    const controlSummaryRef = useRef<
-      (summary: any, value: unknown, schema: JsonSchema) => string
-    >(() => '');
-    controlSummaryRef.current = (summary, value, schema) =>
+    const controlSummary = (summary: any, value: unknown, schema: JsonSchema) =>
       compositeSummary(
         value,
         summary,
@@ -323,8 +342,12 @@ export const createAgGridControl = ({
         summaryDefault,
         schema,
       );
+    const controlSummaryRef = useRef(controlSummary);
     const summaryValueRef = useRef(summaryValue);
-    summaryValueRef.current = summaryValue;
+    useLayoutEffect(() => {
+      controlSummaryRef.current = controlSummary;
+      summaryValueRef.current = summaryValue;
+    });
     const columns: ColDef[] = useMemo(
       () =>
         Object.entries(
@@ -563,7 +586,7 @@ export const createAgGridControl = ({
         rows.length - selected.length < props.schema.minItems);
     // The grid selects rows, so removal belongs in the header. Array
     // renderers without selection keep their per-row delete instead.
-    const actions: EditorArrayAction[] = [
+    let actions: EditorArrayAction[] = [
       {
         key: 'remove',
         label: t('array.removeSelected'),
@@ -612,21 +635,24 @@ export const createAgGridControl = ({
       },
     ];
     if (RowDetailFrame && detail.options?.presentation === 'panel') {
-      actions.unshift({
-        key: 'details',
-        icon:
-          detail.panelOpen && HideDetailsIcon ? (
-            <HideDetailsIcon />
-          ) : ShowDetailsIcon ? (
-            <ShowDetailsIcon />
-          ) : undefined,
-        label: detail.t(
-          detail.panelOpen
-            ? 'collection.hideDetails'
-            : 'collection.showDetails',
-        ),
-        onClick: () => detail.setPanelOpen((open) => !open),
-      });
+      actions = [
+        {
+          key: 'details',
+          icon:
+            detail.panelOpen && HideDetailsIcon ? (
+              <HideDetailsIcon />
+            ) : ShowDetailsIcon ? (
+              <ShowDetailsIcon />
+            ) : undefined,
+          label: detail.t(
+            detail.panelOpen
+              ? 'collection.hideDetails'
+              : 'collection.showDetails',
+          ),
+          onClick: () => detail.setPanelOpen((open) => !open),
+        },
+        ...actions,
+      ];
     }
     if (!props.visible) return null;
     return (

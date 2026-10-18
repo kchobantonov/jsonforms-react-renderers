@@ -92,7 +92,7 @@ const ArrayLayoutComponent = (
   });
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema, props.rootSchema),
-    [props.schema],
+    [props.schema, props.rootSchema],
   );
   const {
     arraySchema,
@@ -121,7 +121,10 @@ const ArrayLayoutComponent = (
 
   const t = useI18n();
   const confirmation = useConfirmation();
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const appliedUiSchemaOptions = useMemo(
+    () => merge({}, config, uischema.options),
+    [config, uischema.options],
+  );
   const showSortButtons =
     appliedUiSchemaOptions.showSortButtons ||
     appliedUiSchemaOptions.showArrayLayoutSortButtons;
@@ -276,7 +279,7 @@ const ArrayLayoutComponent = (
         uischema,
         rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
+    [uischemas, schema, path, uischema, rootSchema],
   );
 
   const doDisableAdd =

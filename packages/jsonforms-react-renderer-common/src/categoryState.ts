@@ -1,6 +1,6 @@
 import { resolveCollapsed } from './groupState';
 import { Categorization, Category, isVisible } from '@jsonforms/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 /**
  * A category's stable identity, for keeping the selection across a reorder.
@@ -140,13 +140,12 @@ export const useCategorySelection = (
           ),
   );
 
-  const previousCollapsed = useRef(initiallyCollapsed);
-  useEffect(() => {
-    if (previousCollapsed.current !== initiallyCollapsed) {
-      previousCollapsed.current = initiallyCollapsed;
-      if (closable) setSelectedKey(initiallyCollapsed ? null : undefined);
-    }
-  }, [initiallyCollapsed, closable]);
+  const [previousCollapsed, setPreviousCollapsed] =
+    useState(initiallyCollapsed);
+  if (previousCollapsed !== initiallyCollapsed) {
+    setPreviousCollapsed(initiallyCollapsed);
+    if (closable) setSelectedKey(initiallyCollapsed ? null : undefined);
+  }
 
   const fromKey =
     typeof selectedKey !== 'string'

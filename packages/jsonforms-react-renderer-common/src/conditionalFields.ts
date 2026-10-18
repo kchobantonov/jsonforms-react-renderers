@@ -130,14 +130,15 @@ export const useConditionalFields = (
   config: any,
 ) => {
   const context = useJsonForms();
+  const ajv = context.core?.ajv;
   const enabled =
     conditionalFieldsEnabled(ui, config) && hasConditionalFields(schema);
   return useMemo(
     () =>
-      enabled && context.core?.ajv
-        ? projectConditionalFields(schema, root, data, context.core.ajv)
+      enabled && ajv
+        ? projectConditionalFields(schema, root, data, ajv)
         : { schema, known: new Set<string>(), diagnostics: [] as string[] },
-    [enabled, schema, root, data, context.core?.ajv],
+    [enabled, schema, root, data, ajv],
   );
 };
 

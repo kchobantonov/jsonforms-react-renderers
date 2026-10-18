@@ -97,7 +97,10 @@ export const TupleField = ({
   const array = arrayPath
     ? get(context.core?.data, arrayPath.split('.'))
     : context.core?.data;
-  const data: unknown[] = Array.isArray(array) ? array : [];
+  const data: unknown[] = useMemo(
+    () => (Array.isArray(array) ? array : []),
+    [array],
+  );
   const value = data[index];
 
   const renderSchema = tupleRenderSchema(schema);
@@ -122,6 +125,7 @@ export const TupleField = ({
     ) ?? String((uischema as { label?: unknown }).label ?? '');
 
   const parentDispatch = context.dispatch;
+  /* eslint-disable react/preserve-manual-memoization -- The updater only mutates a deep-cloned tuple; lodash cloneDeep aliasing is opaque to the compiler. */
   const intercept = useCallback(
     (action: any) => {
       const inside =
@@ -134,7 +138,7 @@ export const TupleField = ({
       if (!enabled) {
         return;
       }
-      const source = cloneDeep(data);
+      const source = [...cloneDeep(data)];
       // '' for a write to the position itself, otherwise the path within it.
       const relative =
         action.path === path ? '' : action.path.slice(path.length + 1);
@@ -198,6 +202,7 @@ export const TupleField = ({
       t,
     ],
   );
+  /* eslint-enable react/preserve-manual-memoization */
 
   const scoped = useMemo(
     () => ({ ...context, dispatch: intercept }),
@@ -206,7 +211,7 @@ export const TupleField = ({
 
   const dialogOptions = {
     ...options,
-    ...(uischema.options ?? {}),
+    ...uischema.options,
   } as CompositeDetailDialogOptions;
 
   /*

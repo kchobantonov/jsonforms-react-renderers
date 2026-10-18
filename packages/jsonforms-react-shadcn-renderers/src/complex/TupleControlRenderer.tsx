@@ -132,7 +132,7 @@ export const TupleControl = (props: Props) => {
 
   const options = {
     ...props.config,
-    ...(uischema.options ?? {}),
+    ...uischema.options,
   } as Record<string, any>;
   const vertical =
     (uischema.options?.vertical ??

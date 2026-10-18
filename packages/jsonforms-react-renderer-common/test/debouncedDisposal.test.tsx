@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import {
   afterEach,
   beforeEach,
@@ -32,15 +31,17 @@ const Probe = ({
   handleChange,
   data,
   path = 'field',
-  api,
+  report,
 }: {
   handleChange: (path: string, value: any) => void;
   data: any;
   path?: string;
-  api: { type?: (v: string) => void };
+  report: (api: { type?: (v: string) => void }) => void;
 }) => {
   const [, onChange] = useDebouncedChange(handleChange, '', data, path);
-  api.type = (value: string) => onChange({ target: { value } } as any);
+  React.useLayoutEffect(() => {
+    report({ type: (value: string) => onChange({ target: { value } } as any) });
+  });
   return null;
 };
 
@@ -57,7 +58,7 @@ const mountProbe = (data: any = 'first', path = 'items.0.name') => {
           handleChange={handleChange}
           data={nextData}
           path={nextPath}
-          api={api}
+          report={(value) => Object.assign(api, value)}
         />,
       ),
     );

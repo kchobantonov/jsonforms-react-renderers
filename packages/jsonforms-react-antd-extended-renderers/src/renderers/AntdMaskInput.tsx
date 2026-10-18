@@ -223,6 +223,7 @@ export const AntdMaskInput = React.memo(function AntdMaskInput(
         // accepted text back by hand, with the caret where the refused
         // character would have gone.
         if (field) {
+          // eslint-disable-next-line react/immutability -- This is the DOM input behind an Antd ref, restored in an event handler after a rejected keystroke.
           field.value = display;
           const restore = Math.max(0, (caret ?? display.length) - 1);
           field.setSelectionRange(restore, restore);

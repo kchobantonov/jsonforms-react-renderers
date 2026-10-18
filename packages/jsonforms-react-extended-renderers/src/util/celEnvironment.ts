@@ -210,7 +210,8 @@ const toMaps = (value: unknown): unknown => {
 };
 
 const isUnsupportedObject = (error: unknown): boolean =>
-  error instanceof Error && /^Unsupported type: object/.test(error.message);
+  error instanceof Error &&
+  error.message.startsWith('Unsupported type: object');
 
 /**
  * Evaluates one expression against a scope.

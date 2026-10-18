@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
@@ -61,7 +60,7 @@ const render = (value: any, data: any, variant: string, options?: any) => {
             {
               type: 'Control',
               scope: '#/properties/value',
-              options: { variant, ...(options ?? {}) },
+              options: { variant, ...options },
             } as any
           }
           renderers={antdRenderers}

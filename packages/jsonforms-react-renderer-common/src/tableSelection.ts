@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Resolve } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
 import { shouldConfirm } from './confirmation';
@@ -20,10 +20,12 @@ export const useTableSelection = (props: any) => {
     indices: number[];
     rows: unknown[];
   }>();
-  useEffect(() => {
+  const [previousRows, setPreviousRows] = useState(rows);
+  if (previousRows !== rows) {
+    setPreviousRows(rows);
     setSelected([]);
     setPending(undefined);
-  }, [rows]);
+  }
   const allowed = (indices: number[]) =>
     props.enabled &&
     !props.readonly &&

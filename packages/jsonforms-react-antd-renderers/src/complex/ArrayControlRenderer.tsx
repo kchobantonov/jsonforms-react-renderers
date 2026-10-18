@@ -73,7 +73,7 @@ export const ArrayControlRenderer = (
     const p = path.substring(0, path.lastIndexOf('.'));
     removeItems(p, [rowData])();
     setOpen(false);
-  }, [setOpen, path, rowData]);
+  }, [setOpen, path, rowData, removeItems]);
 
   if (!visible) {
     return null;

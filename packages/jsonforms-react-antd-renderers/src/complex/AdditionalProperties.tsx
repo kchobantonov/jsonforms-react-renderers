@@ -90,7 +90,7 @@ export const AdditionalProperties = ({
   const t = useI18n();
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
-  const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const appliedOptions = { ...config, ...uischema.options };
   const restrict = appliedOptions.restrict !== false;
   /*
     Section 18: defaults to false, available in global config and
@@ -117,9 +117,10 @@ export const AdditionalProperties = ({
     config,
     'additionalProperties',
   );
+  const additionalKeySnapshot = JSON.stringify(additionalKeys);
   const additionalPropertyItems = useMemo(
     () =>
-      additionalKeys.map((propertyName) =>
+      (JSON.parse(additionalKeySnapshot) as string[]).map((propertyName) =>
         toAdditionalPropertyItem(
           propertyName,
           path,
@@ -128,7 +129,7 @@ export const AdditionalProperties = ({
           allowIfMissing,
         ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
+    [additionalKeySnapshot, allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||
@@ -448,7 +449,7 @@ export const AdditionalProperties = ({
                             handleChange(
                               path,
                               assignOwnProperty(
-                                { ...(objectData ?? {}) },
+                                { ...objectData },
                                 item.propertyName,
                                 next,
                               ),

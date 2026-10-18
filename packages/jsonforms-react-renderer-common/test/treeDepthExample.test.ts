@@ -1,6 +1,5 @@
-import { createDefaultValue } from '@jsonforms/core';
+import { createDefaultValue, createAjv } from '@jsonforms/core';
 import { clearedBranchValue } from '../src/combinators';
-import { createAjv } from '@jsonforms/core';
 import { expect, it } from 'vite-plus/test';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/tree-max-depth/schema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/tree-max-depth/data.json';

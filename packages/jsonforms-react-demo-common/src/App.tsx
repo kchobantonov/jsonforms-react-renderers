@@ -195,20 +195,20 @@ const App = ({
   Shell = DefaultDemoShell,
   Ui = defaultDemoUi,
 }: AppProps) => {
-  const initialProviderSettingsRef = useRef(initialProviderSettings).current;
-  const defaultDrawer = useRef(
-    window.matchMedia('(min-width: 1280px)').matches,
-  ).current;
-  const queryDefaults = useRef({
+  const [initialProviderSettingsRef] = useState(() => initialProviderSettings);
+  const [defaultDrawer] = useState(
+    () => window.matchMedia('(min-width: 1280px)').matches,
+  );
+  const [queryDefaults] = useState(() => ({
     readonly: false,
     formOnly: false,
     activeTab: 'demo' as DemoTab,
     useWebComponent: false,
     drawer: defaultDrawer,
-  }).current;
-  const initialQuery = useRef(
+  }));
+  const [initialQuery] = useState(() =>
     readDemoQueryState(window.location, queryDefaults),
-  ).current;
+  );
   const preferenceStorage = useMemo(
     () =>
       settingsStorage === undefined
@@ -288,7 +288,7 @@ const App = ({
   const [rendererSettings, setRendererSettings] = useState<Record<string, any>>(
     {
       ...initialProviderSettingsRef,
-      ...(initialPersisted?.rendererSettings ?? {}),
+      ...initialPersisted?.rendererSettings,
     },
   );
   const [preferencesHydrated, setPreferencesHydrated] = useState(
@@ -449,6 +449,7 @@ const App = ({
 
   useEffect(() => {
     if (layout === 'demo-and-data' && activeTab === 'data') {
+      // eslint-disable-next-line react/set-state-in-effect -- Keep tab state and the browser URL synchronized when the externally restored layout hides the data tab.
       setActiveTab('demo');
       setQueryOption('active-tab', 'demo', 'demo');
     }
@@ -474,7 +475,7 @@ const App = ({
       // Temporary upstream inference workaround; removal criteria are in demoSchema.ts.
       schema: demoSchema(exampleProps.schema, exampleProps.data),
       config: {
-        ...(exampleProps.config ?? {}),
+        ...exampleProps.config,
         ...configOptions,
       },
       readonly,
@@ -482,7 +483,7 @@ const App = ({
       i18n: {
         ...(translations
           ? { locale, translate: translatorFor(translations, locale) }
-          : { ...(exampleProps.i18n ?? {}), locale }),
+          : { ...exampleProps.i18n, locale }),
         translateError: demoErrorTranslator,
       },
     }),

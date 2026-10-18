@@ -79,7 +79,11 @@ export const RactiveTemplate = ({
     A `src` may have begun loading, which is the honest limit of doing it here.
   */
   const policyRef = useRef<UrlPolicy>(urlPolicy ?? defaultUrlPolicy);
-  policyRef.current = urlPolicy ?? defaultUrlPolicy;
+  const latest = useRef({ data, onError });
+  React.useLayoutEffect(() => {
+    policyRef.current = urlPolicy ?? defaultUrlPolicy;
+    latest.current = { data, onError };
+  }, [urlPolicy, data, onError]);
 
   const sanitize = () => {
     if (host.current) {
@@ -111,11 +115,11 @@ export const RactiveTemplate = ({
         el: container,
         template,
         partials,
-        data: { ...data },
+        data: { ...latest.current.data },
       });
       reportPlaceholders();
     } catch (error) {
-      onError?.((error as Error).message);
+      latest.current.onError?.((error as Error).message);
     }
     return () => {
       instance.current?.teardown();
@@ -140,7 +144,7 @@ export const RactiveTemplate = ({
       }
       reportPlaceholders();
     } catch (error) {
-      onError?.((error as Error).message);
+      latest.current.onError?.((error as Error).message);
     }
   }, [data]);
 

@@ -1,3 +1,4 @@
+import { act } from 'react';
 import './MatchMediaMock';
 import * as React from 'react';
 import {
@@ -8,7 +9,6 @@ import {
 import BooleanToggleCell, {
   booleanToggleCellTester,
 } from '../../src/cells/BooleanToggleCell';
-import { act } from 'react-dom/test-utils';
 import { antdRenderers } from '../../src';
 
 import Enzyme, { mount, ReactWrapper } from 'enzyme';

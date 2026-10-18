@@ -1,7 +1,6 @@
 import { flattenExampleNavigation } from './flattenExampleNavigation';
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
@@ -36,7 +35,7 @@ const draw = (override?: any) => {
     root.render(
       <ConfigProvider theme={{ token: { motion: false } }}>
         <JsonForms
-          data={{ ...data, ...(override ?? {}) }}
+          data={{ ...data, ...override }}
           schema={schema as any}
           uischema={flattenExampleNavigation(uischema)}
           config={config}

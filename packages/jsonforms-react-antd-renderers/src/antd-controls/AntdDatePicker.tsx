@@ -38,7 +38,10 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
     inputProps,
     schema,
   } = props as typeof props & { schema?: Record<string, unknown> };
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const appliedUiSchemaOptions = useMemo(
+    () => merge({}, config, uischema.options),
+    [config, uischema.options],
+  );
   /*
     A `$data` bound points at another part of the form - the other end of a
     date range, typically - so the bounds have to be recomputed as that value
@@ -92,7 +95,7 @@ export const AntdDatePicker = React.memo(function AntdDatePicker(
         'day',
       ),
     );
-  }, [restrict, schema, saveFormat, format]);
+  }, [restrict, boundsSchema, saveFormat, format]);
 
   const picker = datePickerMode(appliedUiSchemaOptions.views, saveFormat);
 

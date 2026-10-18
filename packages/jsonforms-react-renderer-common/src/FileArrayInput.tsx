@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import {
   CellProps,
   JsonSchema,
@@ -98,12 +98,17 @@ export const FileArrayInput = (
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [severity, setSeverity] = useState<'warning' | 'error'>('warning');
-  useEffect(() => {
+
+  const [previousData, setPreviousData] = React.useState(props.data);
+  if (!Object.is(previousData, props.data)) {
+    setPreviousData(() => props.data);
     setError('');
-  }, [props.data]);
+  }
   const [names, setNames] = useState<Map<string, string>>(new Map());
   const latest = useRef(props);
-  latest.current = props;
+  useLayoutEffect(() => {
+    latest.current = props;
+  }, [props]);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;

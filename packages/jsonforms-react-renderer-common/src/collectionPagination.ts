@@ -1,5 +1,5 @@
 import { PendingChange } from './pendingChanges';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export type PaginationOption =
   | boolean
@@ -39,22 +39,40 @@ export const useCollectionPagination = (
   const resolved = resolvePagination(local, config, kind, defaultEnabled);
   const [size, setSize] = useState(resolved.size);
   const [page, setPage] = useState(1);
-  const previous = useRef(keys.slice());
-  useEffect(() => {
+  const keySnapshot = JSON.stringify(keys);
+  const [previous, setPrevious] = useState({
+    keySnapshot,
+    size: resolved.size,
+    enabled: resolved.enabled,
+  });
+  const pages = Math.max(1, Math.ceil(keys.length / size));
+  if (
+    previous.size !== resolved.size ||
+    previous.enabled !== resolved.enabled
+  ) {
+    setPrevious({
+      keySnapshot,
+      size: resolved.size,
+      enabled: resolved.enabled,
+    });
     setSize(resolved.size);
     setPage(1);
-  }, [resolved.size, resolved.enabled]);
-  useEffect(() => {
-    const added = keys.findIndex((key) => !previous.current.includes(key));
-    if (keys.length > previous.current.length && added >= 0)
-      setPage(Math.floor(added / size) + 1);
-    previous.current = keys.slice();
-  }, [keys.join('\u0000'), size]);
-  const pages = Math.max(1, Math.ceil(keys.length / size));
+  } else if (previous.keySnapshot !== keySnapshot) {
+    const previousKeys = JSON.parse(previous.keySnapshot) as (
+      | string
+      | number
+    )[];
+    const added = keys.findIndex((key) => !previousKeys.includes(key));
+    setPrevious({ ...previous, keySnapshot });
+    setPage(
+      keys.length > previousKeys.length && added >= 0
+        ? Math.floor(added / size) + 1
+        : Math.min(page, pages),
+    );
+  } else if (page > pages) {
+    setPage(pages);
+  }
   const current = Math.min(page, pages);
-  useEffect(() => {
-    if (page > pages) setPage(pages);
-  }, [page, pages]);
   const start = resolved.enabled ? (current - 1) * size : 0;
   return {
     pending,

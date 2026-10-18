@@ -72,8 +72,10 @@ export const ShadcnDateControl = (props: ControlProps) => {
     options.views.includes('year') &&
     !options.views.includes('day') &&
     !options.views.includes('date');
-  const [draft, setDraft] = React.useState(selected ?? new Date());
+  const [initialDate] = React.useState(() => new Date());
+  const [draft, setDraft] = React.useState(selected ?? initialDate);
   const [open, setOpen] = React.useState(false);
+  const [calendarYear] = React.useState(() => new Date().getFullYear());
 
   if (!visible) return null;
 
@@ -168,15 +170,12 @@ export const ShadcnDateControl = (props: ControlProps) => {
                       {Array.from(
                         {
                           length:
-                            (max?.getFullYear() ??
-                              new Date().getFullYear() + 100) -
-                            (min?.getFullYear() ??
-                              new Date().getFullYear() - 100) +
+                            (max?.getFullYear() ?? calendarYear + 100) -
+                            (min?.getFullYear() ?? calendarYear - 100) +
                             1,
                         },
                         (_, index) =>
-                          (min?.getFullYear() ??
-                            new Date().getFullYear() - 100) + index,
+                          (min?.getFullYear() ?? calendarYear - 100) + index,
                       ).map((year) => (
                         <SelectItem key={year} value={String(year)}>
                           {year}
@@ -219,8 +218,8 @@ export const ShadcnDateControl = (props: ControlProps) => {
                 }}
                 disabled={disabledDates}
                 captionLayout='dropdown'
-                startMonth={min ?? new Date(new Date().getFullYear() - 100, 0)}
-                endMonth={max ?? new Date(new Date().getFullYear() + 20, 11)}
+                startMonth={min ?? new Date(calendarYear - 100, 0)}
+                endMonth={max ?? new Date(calendarYear + 20, 11)}
               />
             )}
           </PopoverContent>

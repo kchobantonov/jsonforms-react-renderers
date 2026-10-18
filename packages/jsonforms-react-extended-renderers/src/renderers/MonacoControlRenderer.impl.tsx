@@ -214,8 +214,10 @@ export const createMonacoControl = ({
       // Other editors defer external updates until blur to avoid moving the
       // caret while typing. The schema-validation branch has already returned.
       if (focused) return;
+      /* eslint-disable react/set-state-in-effect -- Synchronize the external editor only after blur; replacing this with unconditional derivation would discard invalid drafts. */
       if (lastCommitted.current !== encoded) setText(encoded);
       setInvalid(false);
+      /* eslint-enable react/set-state-in-effect */
     }, [encoded, language, convert, focused, schemaValidation]);
 
     useEffect(() => {

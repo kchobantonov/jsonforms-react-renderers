@@ -101,7 +101,7 @@ export const ListWithDetailRenderer = (
   );
   const handleCreateDefaultValue = useCallback(
     () => createDefaultValue(schema, rootSchema),
-    [createDefaultValue],
+    [schema, rootSchema],
   );
   const foundUISchema = useMemo(
     () =>
@@ -114,7 +114,7 @@ export const ListWithDetailRenderer = (
         uischema,
         rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, uischema, rootSchema],
+    [uischemas, schema, path, uischema, rootSchema],
   );
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   /*
@@ -134,9 +134,11 @@ export const ListWithDetailRenderer = (
   const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
   const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
 
-  React.useEffect(() => {
+  const [previousSchema, setPreviousSchema] = React.useState(schema);
+  if (previousSchema !== schema) {
+    setPreviousSchema(schema);
     setSelectedIndex(undefined);
-  }, [schema]);
+  }
 
   if (!visible) {
     return null;

@@ -260,7 +260,7 @@ export const GenericAdditionalProperties = ({
   >(null);
   const [renameValue, setRenameValue] = useState('');
   const objectSchema = toObjectSchema(schema);
-  const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const appliedOptions = { ...config, ...uischema.options };
   const objectData =
     typeof data === 'object' && data !== null && !Array.isArray(data)
       ? data
@@ -272,9 +272,10 @@ export const GenericAdditionalProperties = ({
   const additionalKeys = Object.keys(objectData ?? {}).filter(
     (key) => !reservedPropertyNames.includes(key),
   );
+  const additionalKeySnapshot = JSON.stringify(additionalKeys);
   const additionalPropertyItems = useMemo(
     () =>
-      additionalKeys.map((propertyName) =>
+      (JSON.parse(additionalKeySnapshot) as string[]).map((propertyName) =>
         toAdditionalPropertyItem(
           propertyName,
           path,
@@ -283,7 +284,7 @@ export const GenericAdditionalProperties = ({
           allowIfMissing,
         ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
+    [additionalKeySnapshot, allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||

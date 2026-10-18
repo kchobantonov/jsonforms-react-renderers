@@ -1,18 +1,24 @@
 import { X } from 'lucide-react';
-import { missingDiscriminatorError } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
-import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
-import { useJsonForms } from '@jsonforms/react';
-import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
-import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/combinators';
-import { Button } from '@jsonforms-react-shadcn-ui/button';
-import { useId, useEffect } from 'react';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import {
+  missingDiscriminatorError,
+  discriminatorBranch,
+} from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import {
+  useJsonForms,
+  JsonFormsDispatch,
+  withJsonFormsAnyOfProps,
+} from '@jsonforms/react';
+import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
+import {
+  clearedBranchValue,
   branchChangeData,
   discardedByBranchChange,
 } from '@chobantonov/jsonforms-react-renderer-common/combinators';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+import React, { useId, useCallback, useState } from 'react';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { useConfirmation } from './mixed/useConfirmation';
-import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
 import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
 import {
   Select,
@@ -30,8 +36,6 @@ import {
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
-import { JsonFormsDispatch, withJsonFormsAnyOfProps } from '@jsonforms/react';
-import React, { useCallback, useState } from 'react';
 import {
   Tabs,
   TabsContent,
@@ -78,7 +82,24 @@ export const ShadcnAnyOfRenderer = ({
   );
   const confirmation = useConfirmation();
   const [pendingIndex, setPendingIndex] = useState<number>();
-  useEffect(() => {
+  const [previousInput, setPreviousInput] = useState({
+    initialized: false,
+    data,
+    indexOfFittingSchema,
+    combinator,
+  });
+  if (
+    !previousInput.initialized ||
+    previousInput.data !== data ||
+    previousInput.indexOfFittingSchema !== indexOfFittingSchema ||
+    previousInput.combinator !== combinator
+  ) {
+    setPreviousInput({
+      initialized: true,
+      data,
+      indexOfFittingSchema,
+      combinator,
+    });
     if (
       combinator === 'oneOf' &&
       (data === undefined ||
@@ -91,7 +112,7 @@ export const ShadcnAnyOfRenderer = ({
       setSelectedIndex(-1);
       setPendingIndex(undefined);
     }
-  }, [data, indexOfFittingSchema, combinator]);
+  }
 
   const translate = useTranslator();
   const [primaryErrors, additionalErrors] = displayableErrors(

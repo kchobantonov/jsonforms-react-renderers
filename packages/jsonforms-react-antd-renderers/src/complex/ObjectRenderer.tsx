@@ -48,7 +48,10 @@ export const ObjectRenderer = ({
   readonly,
 }: ControlProps) => {
   const jsonforms = useJsonForms();
-  const uischemas = jsonforms.uischemas ?? [];
+  const uischemas = useMemo(
+    () => jsonforms.uischemas ?? [],
+    [jsonforms.uischemas],
+  );
   const conditional = useConditionalFields(
     originalSchema,
     rootSchema,
@@ -85,7 +88,7 @@ export const ObjectRenderer = ({
         uischema,
         rootSchema,
       ),
-    [uischemas, schema, uischema.scope, path, generated, uischema, rootSchema],
+    [uischemas, schema, path, generated, uischema, rootSchema],
   );
   /*
     A registry entry that is a Control matching this object's schema resolves

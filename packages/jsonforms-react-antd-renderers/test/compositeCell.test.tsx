@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { JsonForms } from '@jsonforms/react';
 import { antdRenderers, antdCells } from '../src';
 

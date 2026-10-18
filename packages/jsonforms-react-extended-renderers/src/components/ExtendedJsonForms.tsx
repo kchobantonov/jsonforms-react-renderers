@@ -1,3 +1,10 @@
+import React, {
+  useLayoutEffect,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Actions, Generate } from '@jsonforms/core';
 import {
   JsonFormsDispatch,
@@ -6,7 +13,6 @@ import {
   useJsonForms,
 } from '@jsonforms/react';
 import type { JsonFormsReactProps } from '@jsonforms/react';
-import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AdditionalErrorStore,
   AdditionalErrorStoreProvider,
@@ -117,7 +123,9 @@ const AdditionalErrorsBridge = ({ store }: { store: AdditionalErrorStore }) => {
   const ctx = useJsonForms();
   const dispatch = ctx.dispatch;
   const coreRef = useRef(ctx.core);
-  coreRef.current = ctx.core;
+  useLayoutEffect(() => {
+    coreRef.current = ctx.core;
+  }, [ctx.core]);
 
   useEffect(() => {
     if (!dispatch) {
@@ -167,13 +175,10 @@ export const ExtendedJsonForms = ({
     Per mounted form, not per render: a store is the identity errors are
     published against, and a new one each render would lose them.
   */
-  const fallback = useRef<AdditionalErrorStore>();
-  if (!fallback.current) {
-    fallback.current = createAdditionalErrorStore();
-  }
+  const [fallback] = useState(createAdditionalErrorStore);
   const inherited = useAdditionalErrorStore();
   const outerAction = useHandleAction();
-  const effective = store ?? (inherited.inert ? fallback.current : inherited);
+  const effective = store ?? (inherited.inert ? fallback : inherited);
 
   /*
     Composed from the same pieces `<JsonForms>` uses, rather than rendering it,

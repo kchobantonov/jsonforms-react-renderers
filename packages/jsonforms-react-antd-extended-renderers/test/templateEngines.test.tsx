@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 import { ConfigProvider } from 'antd';
 import { JsonForms } from '@jsonforms/react';
@@ -86,6 +85,12 @@ const draw = (
   return {
     container,
     paint,
+    setUiSchema: (next: any) => {
+      uischema = next;
+    },
+    setConfig: (next: any) => {
+      config = next;
+    },
     setData: (next: any) => {
       current = next;
     },
@@ -508,4 +513,61 @@ describe('ractive attribute names', () => {
     expect(view.container.querySelector('[data-in]')).toBeNull();
     view.unmount();
   });
+});
+
+describe('template host replacement', () => {
+  it('replaces a Ractive child whose slot name stays the same', async () => {
+    const layout = {
+      type: 'TemplateLayout',
+      lang: 'ractive',
+      template: '{{>body}}',
+      elements: [{ type: 'Control', name: 'body', scope: '#/properties/note' }],
+    };
+    const view = draw(layout, allowed);
+    try {
+      await settle();
+      expect(view.container.querySelector('input')?.value).toBe('keep me');
+      view.setUiSchema({
+        ...layout,
+        elements: [
+          { type: 'Control', name: 'body', scope: '#/properties/firstName' },
+        ],
+      });
+      view.paint();
+      await settle();
+      expect(view.container.querySelector('input')?.value).toBe('Ada');
+    } finally {
+      view.unmount();
+    }
+  });
+  it.each(['ractive', 'jsx'])(
+    'refreshes %s context when only host config changes',
+    async (lang) => {
+      const view = draw(
+        {
+          type: 'TemplateLayout',
+          lang,
+          template:
+            lang === 'jsx'
+              ? '<span data-context>{context.config.marker}</span>'
+              : '<span data-context>{{context.config.marker}}</span>',
+        },
+        { ...allowed, marker: 'before' },
+      );
+      try {
+        await settle();
+        expect(
+          view.container.querySelector('[data-context]')?.textContent,
+        ).toBe('before');
+        view.setConfig({ ...allowed, marker: 'after' });
+        view.paint();
+        await settle();
+        expect(
+          view.container.querySelector('[data-context]')?.textContent,
+        ).toBe('after');
+      } finally {
+        view.unmount();
+      }
+    },
+  );
 });

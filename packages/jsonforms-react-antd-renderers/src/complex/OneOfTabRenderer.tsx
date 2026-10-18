@@ -64,24 +64,21 @@ export const OneOfTabRenderer = ({
     setSelectedIndex(newIndex);
   };
 
-  const confirm = useCallback(() => {
+  const confirm = () => {
     openNewTab(newSelectedIndex);
     setConfirmDialogOpen(false);
-  }, [handleChange, createDefaultValue, newSelectedIndex]);
+  };
 
-  const handleTabChange = useCallback(
-    (value: string) => {
-      const newOneOfIndex = parseInt(value, 10);
+  const handleTabChange = (value: string) => {
+    const newOneOfIndex = parseInt(value, 10);
 
-      setNewSelectedIndex(newOneOfIndex);
-      if (isEmpty(data)) {
-        openNewTab(newOneOfIndex);
-      } else {
-        setConfirmDialogOpen(true);
-      }
-    },
-    [setConfirmDialogOpen, setSelectedIndex, data],
-  );
+    setNewSelectedIndex(newOneOfIndex);
+    if (isEmpty(data)) {
+      openNewTab(newOneOfIndex);
+    } else {
+      setConfirmDialogOpen(true);
+    }
+  };
 
   if (!visible) {
     return null;

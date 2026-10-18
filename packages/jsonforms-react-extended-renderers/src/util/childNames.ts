@@ -37,8 +37,9 @@ export const resolveChildNames = (
   elements: readonly ExtendedUISchemaElement[] | undefined,
 ): ResolvedChildNames => {
   const children = elements ?? [];
-  const names: (string | undefined)[] = new Array(children.length).fill(
-    undefined,
+  const names: (string | undefined)[] = Array.from(
+    { length: children.length },
+    () => undefined,
   );
   const byName: Record<string, number> = {};
   const diagnostics: string[] = [];

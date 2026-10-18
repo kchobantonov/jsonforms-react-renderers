@@ -1,4 +1,4 @@
-import { act } from 'react-dom/test-utils';
+import { act } from 'react';
 
 /**
  * The editor renderers are behind React.lazy, so the first render only produces

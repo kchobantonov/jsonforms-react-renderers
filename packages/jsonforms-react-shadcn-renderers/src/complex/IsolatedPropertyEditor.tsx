@@ -1,3 +1,4 @@
+import React, { useLayoutEffect, useRef } from 'react';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
@@ -6,7 +7,6 @@ import {
 } from '@jsonforms/core';
 import { JsonForms, useJsonForms } from '@jsonforms/react';
 import isEqual from 'lodash/isEqual';
-import React, { useRef } from 'react';
 
 export interface ShadcnIsolatedPropertyEditorProps {
   value: unknown;
@@ -59,7 +59,9 @@ export const ShadcnIsolatedPropertyEditor = ({
     loop. Only a real change is forwarded.
   */
   const latest = useRef(value);
-  latest.current = value;
+  useLayoutEffect(() => {
+    latest.current = value;
+  }, [value]);
 
   return (
     <JsonForms

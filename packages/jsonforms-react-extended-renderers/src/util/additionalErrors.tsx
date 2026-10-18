@@ -1,8 +1,13 @@
+import React, {
+  useLayoutEffect,
+  createContext,
+  useContext,
+  useRef,
+} from 'react';
 import type { JsonFormsCore, Middleware } from '@jsonforms/core';
 import type { ErrorObject } from 'ajv';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
-import React, { createContext, useContext, useRef } from 'react';
 
 /**
  * Errors that have nothing to do with JSON Schema validation.
@@ -340,7 +345,9 @@ export const useOwnedAdditionalErrors = (
     );
   }, [store, owner, wanted]);
   const latest = useRef({ errors, options });
-  latest.current = { errors, options };
+  useLayoutEffect(() => {
+    latest.current = { errors, options };
+  }, [errors, options]);
 
   const signature = errors
     .map((error) => `${error.instancePath}|${error.keyword}|${error.message}`)

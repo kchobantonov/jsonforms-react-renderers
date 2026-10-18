@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { ConfigProvider, theme as antTheme } from 'antd';
 import { JsonForms } from '@jsonforms/react';
 import { monacoControlTester } from '@chobantonov/jsonforms-react-extended-renderers';
@@ -28,6 +27,7 @@ vi.mock('@monaco-editor/react', () => {
   const editor = { focus() {}, layout() {}, getAction: () => undefined };
   return {
     default: function MockMonaco(props: any) {
+      const [onMount] = React.useState(() => props.onMount);
       spy.themeProp = props.theme;
       // Faithful to @monaco-editor/react's ordering, which is what the bug
       // hinged on: beforeMount runs during render with the monaco instance,
@@ -39,9 +39,9 @@ vi.mock('@monaco-editor/react', () => {
         // parent's effects have run. That ordering is the whole bug: a theme
         // registered only in an effect is registered never, because monacoRef
         // is still null when that effect runs.
-        const timer = setTimeout(() => props.onMount?.(editor, monaco), 0);
+        const timer = setTimeout(() => onMount?.(editor, monaco), 0);
         return () => clearTimeout(timer);
-      }, []);
+      }, [onMount]);
       return React.createElement('div');
     },
   };

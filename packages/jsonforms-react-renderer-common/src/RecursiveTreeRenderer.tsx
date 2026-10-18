@@ -1,5 +1,11 @@
+import React, {
+  useLayoutEffect,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { resolveEditorDetail } from './detail';
-import React, { createContext, useContext, useMemo, useState } from 'react';
 import {
   ControlProps,
   JsonSchema7,
@@ -164,9 +170,7 @@ export const createRecursiveTreeRenderer = (
     const select = (node: MixedTreeNode) => setSelection({ node, tree });
     // Updating this remembered snapshot prevents a later mutation from comparing
     // against an obsolete array index after an external reorder.
-    React.useEffect(() => {
-      if (selection.tree !== tree) setSelection({ node: selected, tree });
-    }, [tree, selected, selection.tree]);
+    if (selection.tree !== tree) setSelection({ node: selected, tree });
     const nodePath = (node: MixedTreeNode) =>
       node.path.reduce<string>(
         (p, segment) => composePaths(p, String(segment)),
@@ -238,7 +242,9 @@ export const createRecursiveTreeRenderer = (
       canRename,
       validateRename,
     });
-    current.current = { tree, props, canDelete, canRename, validateRename };
+    useLayoutEffect(() => {
+      current.current = { tree, props, canDelete, canRename, validateRename };
+    });
     const onDelete = (node: MixedTreeNode) => {
       if (!canDelete(node)) return;
       confirmation.request({

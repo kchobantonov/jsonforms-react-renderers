@@ -87,7 +87,7 @@ export const AdditionalProperties = ({
     typeof objectSchema.additionalProperties.title === 'string'
       ? objectSchema.additionalProperties.title
       : undefined;
-  const appliedOptions = { ...(config ?? {}), ...(uischema.options ?? {}) };
+  const appliedOptions = { ...config, ...uischema.options };
   const objectData =
     typeof data === 'object' && data !== null && !Array.isArray(data)
       ? data
@@ -105,9 +105,10 @@ export const AdditionalProperties = ({
     config,
     'additionalProperties',
   );
+  const additionalKeySnapshot = JSON.stringify(additionalKeys);
   const additionalPropertyItems = useMemo(
     () =>
-      additionalKeys.map((propertyName) =>
+      (JSON.parse(additionalKeySnapshot) as string[]).map((propertyName) =>
         toAdditionalPropertyItem(
           propertyName,
           path,
@@ -116,7 +117,7 @@ export const AdditionalProperties = ({
           allowIfMissing,
         ),
       ),
-    [additionalKeys.join('\u0000'), allowIfMissing, path, rootSchema, schema],
+    [additionalKeySnapshot, allowIfMissing, path, rootSchema, schema],
   );
   const shouldShow =
     hasAdditionalProperties(schema) ||

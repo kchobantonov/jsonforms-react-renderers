@@ -237,8 +237,7 @@ export class JsonFormsShadcnElement extends HTMLElement {
     const dark =
       parseBoolean(this.state.dark) ?? parseMode(this.state.mode) === 'dark';
     const rendererSettings = {
-      ...((parseJson(this.state.rendererSettings) as ShadcnRendererSettings) ??
-        {}),
+      ...(parseJson(this.state.rendererSettings) as ShadcnRendererSettings),
       accentColor: this.state.accentColor,
       borderRadius:
         typeof this.state.borderRadius === 'string'
@@ -276,7 +275,7 @@ export class JsonFormsShadcnElement extends HTMLElement {
             uischema={parseJson(this.state.uischema) as any}
             uischemas={parseJson(this.state.uischemas) as any}
             config={{
-              ...((parseJson(this.state.config) as Record<string, any>) ?? {}),
+              ...(parseJson(this.state.config) as Record<string, any>),
               readonly: parseBoolean(this.state.readonly),
             }}
             readonly={parseBoolean(this.state.readonly)}

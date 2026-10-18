@@ -71,7 +71,7 @@ export const ChipsControl = (props: ControlProps) => {
 
   const options = {
     ...props.config,
-    ...(uischema.options ?? {}),
+    ...uischema.options,
   } as Record<string, any>;
   const values = asArrayValue(data);
   const itemSchema = resolveItemSchema(schema, rootSchema);

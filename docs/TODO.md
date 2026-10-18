@@ -102,10 +102,14 @@ for portable design decisions and promotion criteria.
       heavy-component watch item. Earlier fixes added shared ResizeObserver/act
       setup, asserted intended promise rejection, and used wall-clock flush budgets.
       These are implemented mitigations, not three outstanding fixes. On recurrence,
-      inspect exit status and unhandled Errors as well as test assertions.
-- [ ] Re-run lint to establish the current baseline before removing redundant
-      per-file observer stubs or other test scaffolding. The old count of 11 lint
-      errors was a historical observation and is no longer presented as current.
+      inspect exit status and unhandled Errors as well as test assertions. Cold
+      Antd native-dialog and extended-grid fixtures exceeded the five-second test
+      deadline; their suites now allow twenty seconds so flush diagnostics complete before the
+      runner aborts an active `act` scope. Sustained stability remains unverified.
+- [x] Establish a clean lint baseline: `vp run check` reports zero warnings and
+      errors. Fixed hook dependencies, render-time ref writes, derived-state resets,
+      and unstable memoization; documented narrow compiler/API false positives.
+      Redundant observer stubs remain a separate housekeeping opportunity.
 
 ## Completed items removed from the backlog
 

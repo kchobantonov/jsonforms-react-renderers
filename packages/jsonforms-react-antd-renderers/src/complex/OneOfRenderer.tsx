@@ -1,12 +1,18 @@
-import { missingDiscriminatorError } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
+import {
+  missingDiscriminatorError,
+  discriminatorBranch,
+} from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
 import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
-import { useJsonForms } from '@jsonforms/react';
+import {
+  useJsonForms,
+  JsonFormsDispatch,
+  withJsonFormsOneOfProps,
+} from '@jsonforms/react';
 import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/combinators';
 import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
 import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { shouldConfirm } from '../util/confirmation';
 
@@ -24,7 +30,6 @@ import {
   rankWith,
 } from '@jsonforms/core';
 import { Select, Form } from 'antd';
-import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
 import CombinatorProperties from './CombinatorProperties';
 import merge from 'lodash/merge';
 import { useFocus } from '../util';
@@ -85,8 +90,18 @@ export const OneOfRenderer = ({
     the incoming data for correction", and blanking the form mid-edit would
     hide the very field the correction needs.
   */
-  const chosen = useRef(false);
-  useEffect(() => {
+  const [chosen, setChosen] = useState(false);
+  const [previousInput, setPreviousInput] = useState({
+    initialized: false,
+    data,
+    indexOfFittingSchema,
+  });
+  if (
+    !previousInput.initialized ||
+    previousInput.data !== data ||
+    previousInput.indexOfFittingSchema !== indexOfFittingSchema
+  ) {
+    setPreviousInput({ initialized: true, data, indexOfFittingSchema });
     if (
       data === undefined ||
       (data !== null &&
@@ -95,23 +110,17 @@ export const OneOfRenderer = ({
         Object.keys(data).length === 0 &&
         (indexOfFittingSchema == null || indexOfFittingSchema < 0))
     ) {
-      chosen.current = false;
+      setChosen(false);
       setSelectedIndex(null);
       setConfirmDialogOpen(false);
-    }
-  }, [data, indexOfFittingSchema]);
-
-  useEffect(() => {
-    if (
-      data !== undefined &&
-      !chosen.current &&
-      indexOfFittingSchema !== null &&
-      indexOfFittingSchema !== undefined &&
+    } else if (
+      !chosen &&
+      indexOfFittingSchema != null &&
       indexOfFittingSchema >= 0
     ) {
       setSelectedIndex(indexOfFittingSchema);
     }
-  }, [indexOfFittingSchema, data]);
+  }
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
     [setConfirmDialogOpen],
@@ -167,50 +176,47 @@ export const OneOfRenderer = ({
     setSelectedIndex(newIndex);
   };
 
-  const confirm = useCallback(() => {
+  const confirm = () => {
     openNewTab(newSelectedIndex);
     setConfirmDialogOpen(false);
-  }, [handleChange, createDefaultValue, newSelectedIndex, data, schema]);
+  };
 
-  const handleTabChange = useCallback(
-    (value: string | null) => {
-      const newOneOfIndex =
-        value === null || value === undefined ? null : parseInt(value, 10);
+  const handleTabChange = (value: string | null) => {
+    const newOneOfIndex =
+      value === null || value === undefined ? null : parseInt(value, 10);
 
-      // Re-selecting the branch already in use is not a change.
-      if (newOneOfIndex === selectedIndex) {
-        return;
-      }
-      chosen.current = true;
+    // Re-selecting the branch already in use is not a change.
+    if (newOneOfIndex === selectedIndex) {
+      return;
+    }
+    setChosen(true);
 
-      setNewSelectedIndex(newOneOfIndex);
-      /*
+    setNewSelectedIndex(newOneOfIndex);
+    /*
         Was `!isEmpty(data)`, which is close to `always` but not the policy:
         it could not be configured, and lodash's `isEmpty` calls `0` and `false`
         empty - values section 14 explicitly counts as existing. Clearing the
         selection (`null`) is a branchChange too, and used to skip the prompt
         entirely.
       */
-      if (
-        shouldConfirm(
-          {
-            options: uischema.options as Record<string, unknown> | undefined,
-            config,
-            catalogId: 'oneOf',
-            operation: 'branchChange',
-          },
-          // Only what the switch actually discards: the enclosing properties
-          // survive it, so they are not values being thrown away.
-          [discardedByBranchChange(data, schema)],
-        )
-      ) {
-        setConfirmDialogOpen(true);
-        return;
-      }
-      openNewTab(newOneOfIndex);
-    },
-    [config, data, schema, selectedIndex, uischema],
-  );
+    if (
+      shouldConfirm(
+        {
+          options: uischema.options as Record<string, unknown> | undefined,
+          config,
+          catalogId: 'oneOf',
+          operation: 'branchChange',
+        },
+        // Only what the switch actually discards: the enclosing properties
+        // survive it, so they are not values being thrown away.
+        [discardedByBranchChange(data, schema)],
+      )
+    ) {
+      setConfirmDialogOpen(true);
+      return;
+    }
+    openNewTab(newOneOfIndex);
+  };
 
   const [focused, onFocus, onBlur] = useFocus();
 

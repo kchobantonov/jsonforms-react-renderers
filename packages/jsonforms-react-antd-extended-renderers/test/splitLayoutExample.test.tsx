@@ -87,7 +87,7 @@ const draw = (override?: any) => {
     root.render(
       <ConfigProvider theme={{ token: { motion: false } }}>
         <JsonForms
-          data={{ ...data, ...(override ?? {}) }}
+          data={{ ...data, ...override }}
           schema={schema as any}
           uischema={flattenExampleNavigation(uischema)}
           config={config}

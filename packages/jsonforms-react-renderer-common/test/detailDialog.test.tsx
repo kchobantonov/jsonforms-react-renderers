@@ -11,7 +11,14 @@ it('uses measured viewport edges, including negative offsets, and remeasures aft
   let rect = { left: 300, top: 100, width: 400, height: 300 };
   const surface = { getBoundingClientRect: () => rect } as HTMLElement;
   const Probe = () => {
-    geometry = useDetailDialog(true, { draggable: true }, () => surface);
+    const committedGeometry = useDetailDialog(
+      true,
+      { draggable: true },
+      () => surface,
+    );
+    React.useLayoutEffect(() => {
+      geometry = committedGeometry;
+    });
     return null;
   };
   act(() => root.render(<Probe />));
@@ -52,7 +59,10 @@ it('inherits form dialog settings and lets local false override them', () => {
   const root = createRoot(host);
   let geometry: ReturnType<typeof useDetailDialog>;
   const Probe = () => {
-    geometry = useDetailDialog(true, { draggable: false });
+    const committedGeometry = useDetailDialog(true, { draggable: false });
+    React.useLayoutEffect(() => {
+      geometry = committedGeometry;
+    });
     return null;
   };
   act(() =>

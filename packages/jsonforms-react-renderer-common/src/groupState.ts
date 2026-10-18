@@ -1,7 +1,7 @@
 import { Resolve, toDataPathSegments, UISchemaElement } from '@jsonforms/core';
 import { JSONFORMS_EXTENDED_CONFIG_KEY } from './configNamespaces';
 import { useJsonForms } from '@jsonforms/react';
-import { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { useCallback, useId, useMemo, useState } from 'react';
 
 /** Matches Svelte Group semantics: false and zero count, empty containers do not. */
 export const hasGroupValue = (value: unknown): boolean => {
@@ -158,7 +158,12 @@ export const useGroupExpansion = (
     component,
   );
   const [collapsed, setCollapsed] = useState(initiallyCollapsed);
-  useEffect(() => setCollapsed(initiallyCollapsed), [initiallyCollapsed]);
+  const [previousCollapsed, setPreviousCollapsed] =
+    useState(initiallyCollapsed);
+  if (previousCollapsed !== initiallyCollapsed) {
+    setPreviousCollapsed(initiallyCollapsed);
+    setCollapsed(initiallyCollapsed);
+  }
   return {
     collapsible,
     collapsed: collapsible && collapsed,

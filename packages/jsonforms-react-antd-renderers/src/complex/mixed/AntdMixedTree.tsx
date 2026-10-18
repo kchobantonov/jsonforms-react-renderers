@@ -5,7 +5,7 @@ import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import { Button, Flex, Input, Tooltip, Tree, Typography } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { useI18n } from '../../util/translate';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AntdAdditionalPropertyRenameDialog } from '../additionalProperties/AntdAdditionalPropertyRenameDialog';
 import { AntdJsonTypeIcon } from './AntdJsonTypeIcon';
 import {
@@ -53,7 +53,7 @@ export const AntdMixedTree = ({
   const [renamingNode, setRenamingNode] = useState<MixedTreeNode | null>(null);
   const [renameValue, setRenameValue] = useState('');
   const normalizedSearch = search.trim().toLowerCase();
-  const nodeMap = useMemo(() => new Map<string, MixedTreeNode>(), [root]);
+  const nodeMap = new Map<string, MixedTreeNode>();
   const renameError = renamingNode
     ? validateRename(renamingNode, renameValue.trim())
     : undefined;
@@ -71,14 +71,17 @@ export const AntdMixedTree = ({
     return keys;
   }, [normalizedSearch, root]);
 
-  useEffect(() => {
+  const selectedKey = JSON.stringify(selectedPath);
+  const [previousSelectedKey, setPreviousSelectedKey] = useState<string>();
+  if (previousSelectedKey !== selectedKey) {
+    setPreviousSelectedKey(selectedKey);
     const ancestorKeys = selectedPath.map((_, index) =>
       mixedPathKey(selectedPath.slice(0, index)),
     );
     setExpandedKeys((current) => [
       ...new Set([...current, mixedPathKey([]), ...ancestorKeys]),
     ]);
-  }, [selectedPath]);
+  }
 
   const closeRename = () => {
     setRenamingNode(null);
@@ -205,7 +208,6 @@ export const AntdMixedTree = ({
     };
   };
 
-  nodeMap.clear();
   const treeData = [toDataNode(root)].filter((node): node is DataNode =>
     Boolean(node),
   );
