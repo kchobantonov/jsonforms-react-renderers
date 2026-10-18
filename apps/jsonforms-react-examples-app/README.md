@@ -7,7 +7,7 @@ JSON Forms eliminates the tedious task of writing fully-featured forms by hand b
 ## React Examples App
 
 This project is the selector shell for all JSON Forms React renderer demos. It
-aggregates the independently built Ant Design, Material UI, PrimeReact, and
+aggregates the independently built Ant Design, PrimeReact, and
 Shadcn applications and makes them reachable from one page.
 
 From the repository root, build and start the selector with:

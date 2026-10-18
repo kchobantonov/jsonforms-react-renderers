@@ -24,10 +24,10 @@ The [renderer/demo guide](https://github.com/kchobantonov/jsonforms-extended-spe
 | Dynamic properties and mixed data (§18)         | `additionalProperties`, `additionalPropertyName`, `literalPropertySchema`, `dynamicProperties`, `mixedTree`                      | Property editors, tree widgets and navigation                                 |
 | Composite cells (§18.13–14)                     | `cellMode`, `compositeActions`, `compositeSummary`, `uiSchemaCycle`                                                              | Cell frames, validation tooltips and detail dialogs                           |
 | Value conversion (§18)                          | `numeric`, `datejs`, `temporalFormats`, `temporalBounds`, `colorFormat`, `maskFormat`, `maskControls`, legacy `duration` helpers | Picker format mapping, picker events, upload controls and widget presentation |
-| Editor detail selection | `detail`, `rowDetail` | Native dialogs and detail dispatch |
-| Conditional object fields | `conditionalFields` | Object renderer opt-in, layout and diagnostics |
-| Recursive node trees | `RecursiveTreeRenderer`, `recursiveTree` | Native tree rows, actions and selected-node presentation |
-| Container error summaries | `errorSummary`, `validationIndicator` | Icons, tooltips and inline feedback |
+| Editor detail selection                         | `detail`, `rowDetail`                                                                                                            | Native dialogs and detail dispatch                                            |
+| Conditional object fields                       | `conditionalFields`                                                                                                              | Object renderer opt-in, layout and diagnostics                                |
+| Recursive node trees                            | `RecursiveTreeRenderer`, `recursiveTree`                                                                                         | Native tree rows, actions and selected-node presentation                      |
+| Container error summaries                       | `errorSummary`, `validationIndicator`                                                                                            | Icons, tooltips and inline feedback                                           |
 | Small React/web utilities                       | `focus`, `clearAffordance`, `visuallyHidden`                                                                                     | Actual buttons, icons and focus targets                                       |
 
 The schema files under `@chobantonov/jsonforms-extended-spec/schemas/` define the public configuration and UI
@@ -48,7 +48,7 @@ renderer registries to match Ant Design's catalogue.
 
 - Ant Design imports the extracted behavior through compatibility exports at its
   existing module paths. Its public names and renderer registrations remain.
-- MUI, PrimeReact, and shadcn use the same group-state hook, including namespaced
+- PrimeReact, and shadcn use the same group-state hook, including namespaced
   options with the existing flat-config fallback.
 - PrimeReact uses the shared focus and debounce hooks. Pending edits now cancel
   on clear, unmount, rebinding, and external replacement as specified in §18.4.

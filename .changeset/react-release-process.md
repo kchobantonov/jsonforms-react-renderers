@@ -3,8 +3,6 @@
 '@chobantonov/jsonforms-react-antd-renderers': patch
 '@chobantonov/jsonforms-react-antd-webcomponent': patch
 '@chobantonov/jsonforms-react-extended-renderers': patch
-'@chobantonov/jsonforms-react-mui-extended-renderers': patch
-'@chobantonov/jsonforms-react-mui-webcomponent': patch
 '@chobantonov/jsonforms-react-primereact-extended-renderers': patch
 '@chobantonov/jsonforms-react-primereact-renderers': patch
 '@chobantonov/jsonforms-react-primereact-webcomponent': patch

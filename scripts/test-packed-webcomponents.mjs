@@ -24,7 +24,7 @@ const overrides = JSON.parse(
 const workspace = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
-const styles = ['antd', 'mui', 'primereact', 'shadcn'];
+const styles = ['antd', 'primereact', 'shadcn'];
 const dependencies = {
   ...overrides,
   react: '18.3.1',

@@ -14,7 +14,6 @@ const examples = {
   'react-antd': join(appsDir, 'jsonforms-react-antd-demo', 'dist'),
   'react-primereact': join(appsDir, 'jsonforms-react-primereact-demo', 'dist'),
   'react-shadcn': join(appsDir, 'jsonforms-react-shadcn-demo', 'dist'),
-  'react-mui': join(appsDir, 'jsonforms-react-mui-demo', 'dist'),
 };
 
 // Clean and recreate dist dir

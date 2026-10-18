@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   URL_REFUSED_DIAGNOSTIC,
   sanitizeUrlAttributes,
@@ -17,6 +17,8 @@ import { defaultUrlPolicy } from '../src/util/urlPolicy';
 
 const quiet = () =>
   vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+afterEach(() => vi.restoreAllMocks());
 
 const hostile = 'javascript:alert(1)';
 

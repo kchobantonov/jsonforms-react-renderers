@@ -30,7 +30,8 @@
     "prettier": "^2.8.4",
     "rimraf": "^3.0.2",
     "tslib": "^2.5.0",
-    "vitest": "2.1.9"
+    "vitest": "4.1.12",
+    "@types/node": "^22.0.0"
   },
   "scripts": {
     "build": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json",

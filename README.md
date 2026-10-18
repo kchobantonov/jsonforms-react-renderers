@@ -5,12 +5,16 @@ for the shared renderer behavior, UI Schema options, and reference examples.
 
 ### First time setup
 
-- Install [node.js](https://nodejs.org/) (only Node v18.19+ < 19 is currently supported)
-- Install pnpm: <https://pnpm.io/installation> (use pnpm 8.6.2+)
+- Install [Node.js](https://nodejs.org/) 22.12 or newer within Node 22.
+- Install pnpm: <https://pnpm.io/installation> (the workspace pins pnpm 10.28.2).
 - Clone this repository
 - Install dependencies: `pnpm i --frozen-lockfile`
 
 ### Build & Testing
+
+The workspace uses Vite 7 and Vitest 4. Library output formats and browser
+targets are preserved. Vite+ adoption is tracked separately in
+[the toolchain plan](docs/toolchain-upgrade.md).
 
 - Build (all packages): `pnpm run build`
 - Build renderer packages: `pnpm run build:libs`
@@ -19,7 +23,6 @@ for the shared renderer behavior, UI Schema options, and reference examples.
 - Run React Ant Design examples: `pnpm run example:antd:dev`
 - Run React PrimeReact examples: `pnpm run example:primereact:dev`
 - Run React Shadcn UI examples: `pnpm run example:shadcn:dev`
-- Run React MUI examples: `pnpm run example:mui:dev`
 - Build examples app: `pnpm run examples-app:build`
 - Run the examples selector: `pnpm run examples-app:dev`
 
@@ -34,14 +37,11 @@ for the shared renderer behavior, UI Schema options, and reference examples.
 - `packages/jsonforms-react-shadcn-renderers` - Shadcn UI renderer set.
 - `packages/jsonforms-react-shadcn-extended-renderers` - optional advanced Shadcn UI renderers.
 - `packages/jsonforms-react-shadcn-webcomponent` - Shadcn UI custom element.
-- `packages/jsonforms-react-mui-extended-renderers` - optional advanced MUI renderers layered on top of `@jsonforms/material-renderers`.
-- `packages/jsonforms-react-mui-webcomponent` - MUI custom element backed by `@jsonforms/material-renderers`.
 - `packages/jsonforms-react-extended-renderers` - shared extended renderers.
 - `packages/jsonforms-react-demo-common` - shared React demo state, editor plumbing, UI adapter contracts, and examples; each renderer demo supplies its own UI-library shell and controls.
 - `apps/jsonforms-react-antd-demo` - Ant Design demo app.
 - `apps/jsonforms-react-primereact-demo` - PrimeReact demo app.
 - `apps/jsonforms-react-shadcn-demo` - Shadcn UI demo app.
-- `apps/jsonforms-react-mui-demo` - MUI demo app.
 - `apps/jsonforms-react-examples-app` - aggregated React examples app.
 
 ### Presentation renderers
@@ -98,13 +98,13 @@ Select **Spec: Split layout** (or open `#spec-split-layout`) in any React demo f
 same horizontal and vertical split-pane example as Svelte. Set
 `options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
 Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.
-Ant Design and PrimeReact use their native splitters; Shadcn and MUI use the
+Ant Design and PrimeReact use their native splitters; Shadcn uses the
 shared draggable splitter with arrow-key resizing. Resizing preserves form data
 and does not change `options.columns`.
 
 ### Collapsible groups
 
-Groups in Ant Design, PrimeReact, Shadcn, and the MUI extended set support
+Groups in Ant Design, PrimeReact, and Shadcn support
 Svelte's `options.collapsible`, `options.collapsed`, and
 `options.showDataIndicator` (all opt-in with `true`). Collapsed content stays
 mounted, preserving edits. The accessible data indicator checks bound descendant
@@ -120,58 +120,26 @@ for the required demo layout, settings, renderer behavior, Web Component
 parity, project structure, and acceptance checklist for new UI-library
 renderer sets.
 
-### MUI file controls
-
-The MUI extended registry (including the MUI web component) supports string schemas
-with `contentEncoding: "base64"`, `format: "binary"`, or `format: "byte"`.
-The **File** demo exercises all three encodings:
-
-- `format: "uri"` with base64 encoding stores the complete data URI.
-- `format: "binary"` stores a data URI with a percent-encoded `filename` parameter.
-- Other base64/byte strings store only the base64 payload.
-
-`contentMediaType` supplies the file chooser's MIME filter; `options.accept` is the
-fallback. `formatMinimum`, `formatMaximum`, `formatExclusiveMinimum`, and
-`formatExclusiveMaximum` accept nonnegative numbers or numeric strings, in bytes.
-Schema limits take precedence over UI options; UI options override form config.
-Invalid selections leave the current value intact. Reading shows a cancellable
-MUI progress dialog and does not upload files to a server.
-
-The renderer honors visibility, read-only/disabled state, `clearable`, `focus`,
-`placeholder`, descriptions, and validation errors. File messages use the same
-translation keys as the Svelte implementation. Clearing dynamic properties keeps
-their key; canceling the chooser or an in-progress read preserves existing data.
-
-### MUI password controls
-
-The MUI extended registry renders string fields with schema `format: "password"`
-or UI schema `options.format: "password"` as masked inputs with show/hide and clear
-buttons. It supports `clearable`, `placeholder`, `focus`, `restrict` (schema
-`maxLength`), `trim`, and `autoComplete` (defaults to `current-password`), along
-with standard JSON Forms labels, descriptions, validation, and read-only rules.
-
 ### Extended control availability
 
-| Renderer                                                   | MUI | Ant Design     | PrimeReact     | Shadcn |
-| ---------------------------------------------------------- | --- | -------------- | -------------- | ------ |
-| Button actions                                             | Yes | Yes            | Yes            | Yes    |
-| Color, Duration, Null                                      | Yes | Yes            | Yes            | Yes    |
-| File                                                       | Yes | Yes (base set) | Yes (base set) | Yes    |
-| Monaco editor                                              | Yes | Yes            | Yes            | Yes    |
-| AG Grid arrays                                             | Yes | Yes            | Yes            | Yes    |
-| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes | Yes            | Yes            | Yes    |
+| Renderer                                                   | Ant Design     | PrimeReact     | Shadcn |
+| ---------------------------------------------------------- | -------------- | -------------- | ------ |
+| Button actions                                             | Yes            | Yes            | Yes    |
+| Color, Duration, Null                                      | Yes            | Yes            | Yes    |
+| File                                                       | Yes (base set) | Yes (base set) | Yes    |
+| Monaco editor                                              | Yes            | Yes            | Yes    |
+| AG Grid arrays                                             | Yes            | Yes            | Yes    |
+| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes            | Yes            | Yes    |
 
 The shared demos include **Color**, **Duration**, **Null**, **Monaco Editor**, and
 **AG Grid**. Use string schema `format: "color"` or `format: "duration"`, or
-schema `type: "null"` for those controls. MUI and PrimeReact also accept the color
-and duration format in UI schema `options.format`. MUI composes its color field
-from a TextField and browser color input; it does not require a third-party MUI
-color picker.
+schema `type: "null"` for those controls. PrimeReact also accepts the color
+and duration format in UI schema `options.format`.
 
 Duration pickers support weeks or year/month/day/time components, `showActions`
 (default `true`), `okLabel`, `cancelLabel`, `placeholder`, and `focus`. With
 `showActions: false`, component edits apply immediately. Weeks cannot be combined
-with the other components. MUI and PrimeReact also expose `clearable` (default
+with the other components. PrimeReact also exposes `clearable` (default
 `true`). Null controls distinguish explicit `null` from an absent value.
 
 Monaco is selected with `options: { format: "code", language: "javascript" }`.

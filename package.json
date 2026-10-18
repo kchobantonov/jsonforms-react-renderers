@@ -1,7 +1,7 @@
 {
   "name": "jsonforms-react-renderers",
   "engines": {
-    "node": "^22.0.0",
+    "node": "^22.12.0",
     "pnpm": ">=10.28.2"
   },
   "pnpm": {
@@ -23,30 +23,25 @@
     "example:primereact:build": "pnpm --filter jsonforms-react-primereact-demo build",
     "example:shadcn:dev": "pnpm --filter jsonforms-react-shadcn-demo dev",
     "example:shadcn:build": "pnpm --filter jsonforms-react-shadcn-demo build",
-    "example:mui:dev": "pnpm --filter jsonforms-react-mui-demo dev",
-    "example:mui:build": "pnpm --filter jsonforms-react-mui-demo build",
     "wc:shadcn:build": "pnpm --filter @chobantonov/jsonforms-react-shadcn-webcomponent build",
     "wc:antd:build": "pnpm --filter @chobantonov/jsonforms-react-antd-webcomponent build",
     "wc:primereact:build": "pnpm --filter @chobantonov/jsonforms-react-primereact-webcomponent build",
-    "wc:mui:build": "pnpm --filter @chobantonov/jsonforms-react-mui-webcomponent build",
     "build": "pnpm -r --if-present build",
     "build:antd": "pnpm --filter jsonforms-react-antd-demo... --if-present build",
     "build:primereact": "pnpm --filter jsonforms-react-primereact-demo... --if-present build",
-    "build:mui": "pnpm --filter jsonforms-react-mui-demo... --if-present build",
     "build:shadcn": "pnpm --filter jsonforms-react-shadcn-demo... --if-present build",
-    "build:libs": "pnpm --filter @chobantonov/jsonforms-react-renderer-common build && pnpm --filter @chobantonov/jsonforms-react-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-primereact-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-shadcn-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-mui-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-mui-webcomponent build",
+    "build:libs": "pnpm --filter @chobantonov/jsonforms-react-renderer-common build && pnpm --filter @chobantonov/jsonforms-react-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-antd-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-primereact-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-primereact-webcomponent build && pnpm --filter @chobantonov/jsonforms-react-shadcn-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-extended-renderers build && pnpm --filter @chobantonov/jsonforms-react-shadcn-webcomponent build",
     "bundle": "pnpm -r --if-present bundle",
     "clean": "pnpm -r --if-present clean",
     "doc": "pnpm -r --if-present doc",
     "test": "pnpm -r --if-present test",
     "test:antd": "pnpm --filter jsonforms-react-antd-demo... --if-present test",
     "test:primereact": "pnpm --filter jsonforms-react-primereact-demo... --if-present test",
-    "test:mui": "pnpm --filter jsonforms-react-mui-demo... --if-present test",
     "test:shadcn": "pnpm --filter jsonforms-react-shadcn-demo... --if-present test",
     "test-cov": "pnpm -r --if-present test-cov",
     "lint": "eslint packages apps scripts --ext .js,.cjs,.mjs,.ts,.tsx",
     "lint:fix": "pnpm lint --fix",
-    "examples-app:build": "pnpm run example:antd:build && pnpm run example:primereact:build && pnpm run example:shadcn:build && pnpm run example:mui:build && node apps/jsonforms-react-examples-app/prepare-examples-app.js",
+    "examples-app:build": "pnpm run example:antd:build && pnpm run example:primereact:build && pnpm run example:shadcn:build && node apps/jsonforms-react-examples-app/prepare-examples-app.js",
     "examples-app:dev": "pnpm run examples-app:build && pnpm --filter @chobantonov/jsonforms-react-examples-app dev",
     "examples-app:preview": "pnpm run examples-app:build && pnpm --filter @chobantonov/jsonforms-react-examples-app preview",
     "build:examples-app": "pnpm run examples-app:build",
@@ -90,7 +85,7 @@
     "ts-node": "^10.4.0",
     "tslib": "^2.5.0",
     "typescript": "~4.9.5",
-    "vite": "^5.4.21"
+    "vite": "^7.3.7"
   },
   "private": true,
   "packageManager": "pnpm@10.28.2"

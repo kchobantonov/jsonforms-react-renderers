@@ -22,6 +22,8 @@ const entry = Object.fromEntries(
 );
 export default defineConfig({
   build: {
+    // Preserve the Vite 5 browser baseline through the toolchain upgrade.
+    target: ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14'],
     lib: {
       entry,
       formats: ['es', 'cjs'],
