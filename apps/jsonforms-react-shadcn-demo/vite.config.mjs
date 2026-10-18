@@ -1,3 +1,4 @@
+
 import { defineJsonFormsExampleConfig } from '../../vite/example-config.mjs';
 import { fileURLToPath, URL } from 'node:url';
 
@@ -15,6 +16,14 @@ config.resolve.alias = {
 // Development reads renderer source so rebuilding lib/ cannot break an HMR import.
 export default ({ command }) => ({
   ...config,
+
+  // GitHub Pages deployment path.
+  // Use the default base path for local development and other builds.
+  base:
+    process.env.GITHUB_PAGES === 'true'
+      ? '/jsonforms-react-renderers/react-shadcn/'
+      : '/',
+
   resolve: {
     ...config.resolve,
     alias: [

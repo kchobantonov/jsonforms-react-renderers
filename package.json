@@ -18,6 +18,7 @@
     "build:antd": "vp run --filter jsonforms-react-antd-demo... build",
     "build:shadcn": "vp run --filter jsonforms-react-shadcn-demo... build",
     "build:libs": "vp run --cache --filter '@chobantonov/jsonforms-react-*-renderers' --filter '@chobantonov/jsonforms-react-*-webcomponent' --filter '@chobantonov/jsonforms-react-renderer-common' --concurrency-limit 2 build",
+    "build:pages": "vp run build:examples-app",
     "bundle": "vp run -r --concurrency-limit 2 bundle",
     "clean": "vp run -r --concurrency-limit 2 clean",
     "doc": "vp run -r --concurrency-limit 2 doc",

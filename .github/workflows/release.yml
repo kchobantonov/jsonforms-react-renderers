@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - '.changeset/**'
+      - ".changeset/**"
   workflow_dispatch:
 
 permissions:
@@ -41,7 +41,9 @@ jobs:
       - name: Place specification beside the renderer workspace
         run: mv .spec-source ../jsonforms-extended-spec
       - name: Build specification package
-        run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
+        run: |
+          pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile
+          pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
         run: vp install --frozen-lockfile
 
@@ -54,8 +56,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          title: 'task: release'
-          commit: 'chore: release packages'
+          title: "task: release"
+          commit: "chore: release packages"
           version: vp run changeset:version
           publish: vp run changeset:publish
           createGithubReleases: true

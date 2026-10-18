@@ -1,3 +1,4 @@
+
 import { defineJsonFormsExampleConfig } from '../../vite/example-config.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +9,14 @@ const config = defineJsonFormsExampleConfig({
 // Read source during development so renderer edits appear without rebuilding lib/.
 export default ({ command }) => ({
   ...config,
+
+  // Use the repository subpath when deploying to GitHub Pages.
+  // Keep the default base path for local development and other builds.
+  base:
+    process.env.GITHUB_PAGES === 'true'
+      ? '/jsonforms-react-renderers/react-antd/'
+      : '/',
+
   resolve: {
     ...config.resolve,
     alias:

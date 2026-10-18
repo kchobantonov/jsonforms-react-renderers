@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Build & Deploy to GitHub Pages
 
 on:
   push:
@@ -8,45 +8,100 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Make Changesets base branch available
         if: github.event_name == 'pull_request'
         run: git show-ref --verify --quiet refs/heads/master || git branch master origin/master
+
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1.21.2
         with:
           node-version-file: .node-version
           cache: true
           run-install: false
+
       - name: Checkout local specification dependency
         uses: actions/checkout@v4
         with:
           repository: kchobantonov/jsonforms-extended-spec
           path: .spec-source
+
       - name: Place specification beside the renderer workspace
         run: mv .spec-source ../jsonforms-extended-spec
+
       - name: Build specification package
-        run: pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile && pnpm --dir ../jsonforms-extended-spec build
+        run: |
+          pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile
+          pnpm --dir ../jsonforms-extended-spec build
+
       - name: Install dependencies
         run: vp install --frozen-lockfile
+
       - name: Check formatting and lint
         run: vp check
+
       - name: Test release tooling
         run: vp run test:release
-      - name: Build
+
+      - name: Build workspace
         run: vp run build
+
       - name: Validate release tarballs
         run: node scripts/pack-release.mjs
+
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
+
       - name: Test packed web components
         run: vp run test:packed
-      - name: Run tests
+
+      - name: Run workspace tests
         run: vp test run
+
+      # Build and deploy only after all checks and tests succeed.
+      - name: Setup GitHub Pages
+        if: github.event_name == 'push'
+        uses: actions/configure-pages@v5
+
+      - name: Build GitHub Pages website
+        if: github.event_name == 'push'
+        run: vp run build:pages
+        env:
+          GITHUB_PAGES: "true"
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./apps/jsonforms-react-examples-app/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
