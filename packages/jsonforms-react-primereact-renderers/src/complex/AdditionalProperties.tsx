@@ -1,3 +1,7 @@
+import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
+import { InputText } from 'primereact/inputtext';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import {
   composePaths,
   ControlElement,
@@ -198,6 +202,7 @@ const validatePropertyName = (
   data: any,
   schema: JsonSchema,
   rootSchema: JsonSchema,
+  t: ReturnType<typeof useI18n>,
   currentPropertyName?: string,
 ): string | undefined => {
   if (!propertyName) {
@@ -210,7 +215,7 @@ const validatePropertyName = (
     Object.prototype.hasOwnProperty.call(data, propertyName) &&
     propertyName !== currentPropertyName
   ) {
-    return `Property '${propertyName}' already defined`;
+    return t('additionalProperties.nameTaken', { name: propertyName });
   }
 
   if (
@@ -218,12 +223,12 @@ const validatePropertyName = (
     propertyName.includes(']') ||
     propertyName.includes('.')
   ) {
-    return `Property name '${propertyName}' is invalid`;
+    return t('additionalProperties.nameInvalid', { name: propertyName });
   }
 
   const pattern = getPropertyNamePattern(schema, rootSchema);
   if (pattern && !new RegExp(pattern).test(propertyName)) {
-    return `Property name must match pattern: ${pattern}`;
+    return t('additionalProperties.namePattern');
   }
 
   return undefined;
@@ -243,6 +248,7 @@ export const AdditionalProperties = ({
   schema,
   uischema,
 }: AdditionalPropertiesProps) => {
+  const t = useI18n();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
     string | null
@@ -289,6 +295,7 @@ export const AdditionalProperties = ({
     data,
     schema,
     rootSchema,
+    t,
   );
   const maxPropertiesReached =
     objectSchema.maxProperties !== undefined &&
@@ -346,9 +353,12 @@ export const AdditionalProperties = ({
       data,
       schema,
       rootSchema,
+      t,
       propertyToRename,
     );
     if (
+      !enabled ||
+      readonly ||
       renameError ||
       !trimmed ||
       trimmed === propertyToRename ||
@@ -371,10 +381,14 @@ export const AdditionalProperties = ({
   return (
     <div className='jsonforms-additional-properties'>
       <div className='jsonforms-additional-properties-add'>
-        <input
-          aria-label={label ? `Add property to ${label}` : 'Add property'}
+        <InputText
+          aria-label={
+            label
+              ? t('additionalProperties.addTo', { label })
+              : t('additionalProperties.add')
+          }
           disabled={!enabled || readonly}
-          placeholder='Property name'
+          placeholder={t('additionalProperties.namePlaceholder')}
           type='text'
           value={newPropertyName}
           onChange={(event) => setNewPropertyName(event.currentTarget.value)}
@@ -384,13 +398,13 @@ export const AdditionalProperties = ({
             }
           }}
         />
-        <button
+        <PrimeIconButton
+          icon='pi pi-plus'
+          aria-label={t('additionalProperties.add')}
+          tooltip={t('additionalProperties.add')}
           disabled={addPropertyDisabled}
-          type='button'
           onClick={addProperty}
-        >
-          Add
-        </button>
+        />
       </div>
       {propertyNameError ? (
         <div className='jsonforms-additional-properties-error'>
@@ -405,6 +419,7 @@ export const AdditionalProperties = ({
             data,
             schema,
             rootSchema,
+            t,
             item.propertyName,
           );
           const renameDisabled =
@@ -420,22 +435,26 @@ export const AdditionalProperties = ({
               key={item.propertyName}
             >
               <div className='jsonforms-additional-property-control'>
-                <JsonFormsDispatch
-                  schema={item.schema}
-                  uischema={item.uischema}
-                  path={item.path}
-                  enabled={enabled}
-                  renderers={renderers}
-                  cells={cells}
-                  readonly={readonly}
-                />
+                <DynamicPropertyProvider path={item.path}>
+                  <JsonFormsDispatch
+                    schema={item.schema}
+                    uischema={item.uischema}
+                    path={item.path}
+                    enabled={enabled}
+                    renderers={renderers}
+                    cells={cells}
+                    readonly={readonly}
+                  />
+                </DynamicPropertyProvider>
               </div>
               {enabled ? (
                 <div className='jsonforms-additional-property-actions'>
                   {isRenaming ? (
                     <>
-                      <input
-                        aria-label={`Rename ${item.propertyName}`}
+                      <InputText
+                        aria-label={t('additionalProperties.renameNamed', {
+                          name: item.propertyName,
+                        })}
                         autoFocus
                         disabled={readonly}
                         type='text'
@@ -452,22 +471,22 @@ export const AdditionalProperties = ({
                           }
                         }}
                       />
-                      <button
+                      <PrimeIconButton
+                        icon='pi pi-check'
+                        aria-label={t('additionalProperties.renameConfirm')}
+                        tooltip={t('additionalProperties.renameConfirm')}
                         disabled={renameDisabled}
-                        type='button'
                         onClick={() => renameProperty(item.propertyName)}
-                      >
-                        Save
-                      </button>
-                      <button
-                        type='button'
+                      />
+                      <PrimeIconButton
+                        icon='pi pi-times'
+                        aria-label={t('composite.cancel')}
+                        tooltip={t('composite.cancel')}
                         onClick={() => {
                           setRenamingPropertyName(null);
                           setRenameValue('');
                         }}
-                      >
-                        Cancel
-                      </button>
+                      />
                       {renameError ? (
                         <div className='jsonforms-additional-properties-error'>
                           {renameError}
@@ -476,23 +495,31 @@ export const AdditionalProperties = ({
                     </>
                   ) : (
                     <>
-                      <button
+                      <PrimeIconButton
+                        icon='pi pi-pencil'
+                        aria-label={t('additionalProperties.renameNamed', {
+                          name: item.propertyName,
+                        })}
+                        tooltip={t('additionalProperties.renameNamed', {
+                          name: item.propertyName,
+                        })}
                         disabled={readonly}
-                        type='button'
                         onClick={() => {
                           setRenamingPropertyName(item.propertyName);
                           setRenameValue(item.propertyName);
                         }}
-                      >
-                        Rename
-                      </button>
-                      <button
+                      />
+                      <PrimeIconButton
+                        icon='pi pi-trash'
+                        aria-label={t('additionalProperties.deleteNamed', {
+                          name: item.propertyName,
+                        })}
+                        tooltip={t('additionalProperties.deleteNamed', {
+                          name: item.propertyName,
+                        })}
                         disabled={removePropertyDisabled}
-                        type='button'
                         onClick={() => removeProperty(item.propertyName)}
-                      >
-                        Delete
-                      </button>
+                      />
                     </>
                   )}
                 </div>

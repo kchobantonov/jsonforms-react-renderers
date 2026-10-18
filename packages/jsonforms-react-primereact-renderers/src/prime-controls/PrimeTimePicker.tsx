@@ -29,7 +29,10 @@ import { PrimeIcons } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
 import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
-import { PrimeClearValueButton } from './PrimeClearValueButton';
+import {
+  PrimeClearValueButton,
+  PrimeClearableInput,
+} from './PrimeClearValueButton';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -77,7 +80,7 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
   ]);
 
   return (
-    <span style={{ display: 'block', position: 'relative' }}>
+    <PrimeClearableInput>
       <Calendar
         value={value as any}
         selectionMode='single'
@@ -105,6 +108,6 @@ export const PrimeTimePicker = React.memo(function PrimeTimePicker(
         enabled={enabled}
         onClear={() => handleChange(path, undefined)}
       />
-    </span>
+    </PrimeClearableInput>
   );
 });

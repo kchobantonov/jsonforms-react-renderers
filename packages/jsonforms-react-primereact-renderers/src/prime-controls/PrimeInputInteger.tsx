@@ -27,7 +27,10 @@ import { CellProps, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputNumber, InputNumberChangeEvent } from 'primereact/inputnumber';
 import { useDebouncedChange } from '../util';
-import { PrimeClearValueButton } from './PrimeClearValueButton';
+import {
+  PrimeClearValueButton,
+  PrimeClearableInput,
+} from './PrimeClearValueButton';
 
 const eventToValue = (e: InputNumberChangeEvent) =>
   e.value === null ? undefined : e.value;
@@ -60,7 +63,7 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
   );
 
   return (
-    <span style={{ display: 'block', position: 'relative' }}>
+    <PrimeClearableInput>
       <InputNumber
         value={inputValue}
         onChange={onChange}
@@ -80,6 +83,6 @@ export const PrimeInputInteger = React.memo(function PrimeInputInteger(
         enabled={enabled}
         onClear={onClear}
       />
-    </span>
+    </PrimeClearableInput>
   );
 });

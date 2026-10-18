@@ -23,7 +23,11 @@
   THE SOFTWARE.
 */
 import { ControlProps, isDescriptionHidden } from '@jsonforms/core';
-import React from 'react';
+import React, { useCallback } from 'react';
+import {
+  clearedDynamicPropertyValue,
+  useDynamicProperty,
+} from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
 
 import merge from 'lodash/merge';
 import { FloatLabel } from 'primereact/floatlabel';
@@ -48,6 +52,27 @@ export const InputControl = (props: ControlProps & WithInput) => {
     required,
   } = props;
   const isValid = errors.length === 0;
+  const preserveDynamicPropertyKey = useDynamicProperty(props.path);
+  const handleInputChange = useCallback(
+    (changedPath: string, value: unknown) => {
+      props.handleChange(
+        changedPath,
+        preserveDynamicPropertyKey &&
+          changedPath === props.path &&
+          value === undefined
+          ? clearedDynamicPropertyValue(props.schema, props.rootSchema)
+          : value,
+      );
+    },
+    [
+      preserveDynamicPropertyKey,
+      props.handleChange,
+      props.path,
+      props.rootSchema,
+      props.schema,
+    ],
+  );
+
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
   const showDescription = !isDescriptionHidden(
@@ -82,6 +107,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
         <FloatLabel>
           <InnerComponent
             {...props}
+            handleChange={handleInputChange}
             label={input === PrimeCheckbox ? ' ' : props.label}
             onFocus={onFocus}
             onBlur={onBlur}
@@ -120,6 +146,7 @@ export const InputControl = (props: ControlProps & WithInput) => {
       )}
       <InnerComponent
         {...props}
+        handleChange={handleInputChange}
         label={label}
         id={id + '-input'}
         isValid={isValid}

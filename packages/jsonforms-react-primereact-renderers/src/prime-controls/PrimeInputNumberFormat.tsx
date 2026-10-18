@@ -23,7 +23,10 @@
   THE SOFTWARE.
 */
 import React from 'react';
-import { PrimeClearValueButton } from './PrimeClearValueButton';
+import {
+  PrimeClearValueButton,
+  PrimeClearableInput,
+} from './PrimeClearValueButton';
 import { CellProps, Formatted, WithClassname } from '@jsonforms/core';
 import merge from 'lodash/merge';
 import { InputText } from 'primereact/inputtext';
@@ -70,7 +73,7 @@ export const PrimeInputNumberFormat = (
       : {};
 
   return (
-    <span style={{ display: 'block', position: 'relative' }}>
+    <PrimeClearableInput>
       <InputComponent
         value={formattedNumber}
         onChange={onChange}
@@ -90,6 +93,6 @@ export const PrimeInputNumberFormat = (
         enabled={enabled}
         onClear={() => handleChange(path, undefined)}
       />
-    </span>
+    </PrimeClearableInput>
   );
 };

@@ -24,7 +24,8 @@
 */
 import React from 'react';
 import { Card } from 'primereact/card';
-import { Button } from 'primereact/button';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import {
   GroupLayout,
   LayoutProps,
@@ -40,6 +41,7 @@ import { useGroupState } from '../util/groupState';
 export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
 
 export const GroupLayoutRenderer = (props: LayoutProps) => {
+  const t = useI18n();
   const group = useGroupState(props.uischema, props.path, props.config);
   const layout = props.uischema as GroupLayout;
   if (!props.visible) return null;
@@ -56,20 +58,24 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
         <span>{props.label}</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {group.hasData && (
-            <span role='img' aria-label='Contains data' data-group-indicator>
+            <span
+              role='img'
+              aria-label={t('group.dataIndicator')}
+              data-group-indicator
+            >
               ●
             </span>
           )}
           {group.collapsible && (
-            <Button
-              type='button'
+            <PrimeIconButton
               aria-label={props.label || 'Group'}
               aria-expanded={!group.collapsed}
               aria-controls={group.contentId}
               onClick={group.toggle}
-            >
-              <span aria-hidden='true'>{group.collapsed ? '▸' : '▾'}</span>
-            </Button>
+              icon={
+                group.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'
+              }
+            />
           )}
         </span>
       </div>

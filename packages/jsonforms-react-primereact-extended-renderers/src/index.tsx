@@ -1,9 +1,11 @@
 import {
+  PrimeButtonRenderer,
+  primeButtonRendererTester,
+} from './renderers/PrimeButtonRenderer';
+import {
   extendedAgGridTester,
   monacoControlTester,
-  createButtonRenderer,
   createExtendedRenderers,
-  buttonRendererTester,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { PrimeAgGridControlRenderer } from './renderers/PrimeAgGridControlRenderer';
 import { PrimeMonacoControlRenderer } from './renderers/PrimeMonacoControlRenderer';
@@ -23,7 +25,7 @@ import {
   PrimeSplitLayoutRenderer,
   primeSplitLayoutTester,
 } from './renderers/SplitLayoutRenderer';
-import { JsonFormsRendererRegistryEntry, RankedTester } from '@jsonforms/core';
+import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import React from 'react';
@@ -35,14 +37,6 @@ export type PrimeReactExtendedRendererOptions = {
 export const createPrimeReactExtendedRenderers = (
   options: PrimeReactExtendedRendererOptions = {},
 ): JsonFormsRendererRegistryEntry[] => {
-  const buttonRenderer = createButtonRenderer({
-    ButtonComponent: Button,
-    buttonProps: {
-      severity: 'secondary',
-      size: 'small',
-    },
-  });
-
   return [
     { tester: extendedAgGridTester, renderer: PrimeAgGridControlRenderer },
     { tester: monacoControlTester, renderer: PrimeMonacoControlRenderer },
@@ -54,8 +48,8 @@ export const createPrimeReactExtendedRenderers = (
     { tester: primeColorControlTester, renderer: PrimeColorControlRenderer },
     { tester: primeSplitLayoutTester, renderer: PrimeSplitLayoutRenderer },
     {
-      tester: buttonRendererTester as RankedTester,
-      renderer: buttonRenderer,
+      tester: primeButtonRendererTester,
+      renderer: PrimeButtonRenderer,
     },
     ...createExtendedRenderers({
       components: {
@@ -84,3 +78,5 @@ export * from './renderers/PrimeNullControlRenderer';
 export * from './renderers/PrimeMonacoControlRenderer';
 
 export * from './renderers/PrimeAgGridControlRenderer';
+
+export * from './renderers/PrimeButtonRenderer';

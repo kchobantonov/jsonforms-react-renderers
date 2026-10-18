@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 /*
   The MIT License
 
@@ -91,6 +92,7 @@ export const CategorizationStepperLayoutRenderer = (
     ajv,
     t,
   } = props;
+  const translate = useI18n();
   const categorization = uischema as Categorization;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const buttonWrapperStyle = {
@@ -136,20 +138,22 @@ export const CategorizationStepperLayoutRenderer = (
           {appliedUiSchemaOptions.showNavButtons ? (
             <div style={buttonWrapperStyle}>
               <Button
+                type='button'
                 style={buttonNextStyle}
                 color='primary'
                 disabled={activeCategory >= categories.length - 1}
                 onClick={() => handleStep(activeCategory + 1)}
               >
-                Next
+                {translate('categorization.next')}
               </Button>
               <Button
+                type='button'
                 style={buttonStyle}
                 color='default'
                 disabled={activeCategory <= 0}
                 onClick={() => handleStep(activeCategory - 1)}
               >
-                Previous
+                {translate('categorization.previous')}
               </Button>
             </div>
           ) : (

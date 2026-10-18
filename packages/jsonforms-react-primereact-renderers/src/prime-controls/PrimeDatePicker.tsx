@@ -28,7 +28,10 @@ import merge from 'lodash/merge';
 import { Calendar } from 'primereact/calendar';
 import React, { useMemo } from 'react';
 import { createOnChangeHandler, formatDate, getData } from '../util';
-import { PrimeClearValueButton } from './PrimeClearValueButton';
+import {
+  PrimeClearValueButton,
+  PrimeClearableInput,
+} from './PrimeClearValueButton';
 
 const JSON_SCHEMA_DATE_FORMATS = ['YYYY-MM-DD'];
 const DATE_PICKER_STYLE = {
@@ -76,7 +79,7 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
   }
 
   return (
-    <span style={{ display: 'block', position: 'relative' }}>
+    <PrimeClearableInput>
       <Calendar
         value={value as any}
         selectionMode='single'
@@ -100,6 +103,6 @@ export const PrimeDatePicker = React.memo(function PrimeDatePicker(
         enabled={enabled}
         onClear={() => handleChange(path, undefined)}
       />
-    </span>
+    </PrimeClearableInput>
   );
 });

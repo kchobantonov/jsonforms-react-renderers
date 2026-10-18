@@ -1,3 +1,8 @@
+import { FileCell } from './cells/FileCell';
+import {
+  PasswordOtpControl,
+  passwordOtpControlTester,
+} from './controls/PasswordOtpControl';
 /*
   The MIT License
 
@@ -152,6 +157,7 @@ export const primereactRenderers: JsonFormsRendererRegistryEntry[] = [
   { tester: anyOfControlTester, renderer: AnyOfRenderer },
   { tester: oneOfControlTester, renderer: OneOfRenderer },
   { tester: fileControlTester, renderer: FileControl },
+  { tester: passwordOtpControlTester, renderer: PasswordOtpControl },
   {
     tester: radioGroupControlTester,
     renderer: RadioGroupControl,
@@ -197,6 +203,7 @@ export const primereactRenderers: JsonFormsRendererRegistryEntry[] = [
 ];
 
 export const primereactCells: JsonFormsCellRendererRegistryEntry[] = [
+  { tester: fileControlTester, cell: FileCell },
   { tester: booleanCellTester, cell: BooleanCell },
   { tester: booleanToggleCellTester, cell: BooleanToggleCell },
   { tester: dateCellTester, cell: DateCell },

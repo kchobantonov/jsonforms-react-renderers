@@ -30,7 +30,7 @@ import {
   ArrayTranslations,
 } from '@jsonforms/core';
 import { PrimeIcons } from 'primereact/api';
-import { Button } from 'primereact/button';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
 import { Card } from 'primereact/card';
 import ValidationIcon from './ValidationIcon';
 
@@ -82,7 +82,7 @@ const TableToolbar = React.memo(function TableToolbar({
       title={renderTitle(
         label,
         errors,
-        <Button
+        <PrimeIconButton
           tooltip={translations.addTooltip}
           disabled={!enabled || disableAdd}
           aria-label={translations.addAriaLabel}

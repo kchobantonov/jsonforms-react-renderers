@@ -1,3 +1,5 @@
+import { PrimeIconButton } from './PrimeIconButton';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 /*
   The MIT License
 
@@ -33,7 +35,10 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Password, PasswordProps } from 'primereact/password';
 import React, { CSSProperties, useState } from 'react';
 import { useDebouncedChange } from '../util';
-import { PrimeClearValueButton } from './PrimeClearValueButton';
+import {
+  PrimeClearValueButton,
+  PrimeClearableInput,
+} from './PrimeClearValueButton';
 
 const eventToValue = (ev: any) =>
   ev.target.value === '' ? undefined : ev.target.value;
@@ -62,6 +67,7 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     errors,
     inputProps,
   } = props;
+  const t = useI18n();
   const maxLength = schema.maxLength;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
@@ -109,16 +115,48 @@ export const PrimeInputText = React.memo(function PrimeInputText(
     specificProps.rows = 5;
   }
 
-  if (schema.format === 'password') {
+  if (
+    schema.format === 'password' ||
+    appliedUiSchemaOptions.format === 'password'
+  ) {
     InputComponent = Password;
 
     (specificProps as PasswordProps).toggleMask = true; // be able to display the password as plain text
     (specificProps as PasswordProps).feedback = false; // do not show how strong is the password
-    (specificProps as PasswordProps).inputStyle = { width: '100%' };
+    (specificProps as PasswordProps).inputStyle = {
+      width: '100%',
+      paddingInlineEnd: '5rem',
+    };
+    const revealIcon = (revealed: boolean): PasswordProps['showIcon'] =>
+      function PasswordVisibilityIcon({ iconProps }) {
+        return (
+          <PrimeIconButton
+            icon={revealed ? 'pi pi-eye' : 'pi pi-eye-slash'}
+            aria-label={t(revealed ? 'password.hide' : 'password.show')}
+            tooltip={t(revealed ? 'password.hide' : 'password.show')}
+            aria-pressed={revealed}
+            disabled={!enabled}
+            style={{
+              position: 'absolute',
+              insetInlineEnd: '2.5rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '2rem',
+              height: '2rem',
+              padding: 0,
+            }}
+            onClick={
+              iconProps.onClick as React.MouseEventHandler<HTMLButtonElement>
+            }
+          />
+        );
+      };
+    (specificProps as PasswordProps).showIcon = revealIcon(false);
+    (specificProps as PasswordProps).hideIcon = revealIcon(true);
   }
 
   return (
-    <span style={{ display: 'block', position: 'relative' }}>
+    <PrimeClearableInput>
       <InputComponent
         value={inputText}
         onChange={onChange}
@@ -139,6 +177,6 @@ export const PrimeInputText = React.memo(function PrimeInputText(
         enabled={enabled}
         onClear={onClear}
       />
-    </span>
+    </PrimeClearableInput>
   );
 });

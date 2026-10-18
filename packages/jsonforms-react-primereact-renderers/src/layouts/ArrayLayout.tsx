@@ -45,7 +45,7 @@ import merge from 'lodash/merge';
 import range from 'lodash/range';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Avatar } from 'primereact/avatar';
-import { Button } from 'primereact/button';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
 import React, { ComponentType, useCallback, useMemo, useState } from 'react';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
 
@@ -109,7 +109,7 @@ const ArrayLayoutComponent = (
       <>
         {showSortButtons ? (
           <>
-            <Button
+            <PrimeIconButton
               tooltip={translations.up}
               aria-label={translations.upAriaLabel}
               icon={PrimeIcons.ARROW_UP}
@@ -119,7 +119,7 @@ const ArrayLayoutComponent = (
               }}
               disabled={!enabled || !enableUp}
             />
-            <Button
+            <PrimeIconButton
               tooltip={translations.down}
               aria-label={translations.downAriaLabel}
               icon={PrimeIcons.ARROW_DOWN}
@@ -131,7 +131,7 @@ const ArrayLayoutComponent = (
             />
           </>
         ) : null}
-        <Button
+        <PrimeIconButton
           onClick={(event) => {
             event.stopPropagation();
             removeItems(path, [rowIndex])();

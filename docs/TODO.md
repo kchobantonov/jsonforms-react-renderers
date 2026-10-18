@@ -165,3 +165,64 @@ preservation of unsupported keywords. Keep editor-only preview/selection state
 separate from runtime data. See the spec's
 [conditional authoring guidance](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/conditional-fields.md)
 and [Draft-07 audit](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/draft-07-visual-support.md).
+
+## PrimeReact spec parity
+
+Upgrade execution order (2026-10-18). Preserve staged work and close each
+checkbox only with executed evidence. Antd/shadcn are comparison implementations;
+the sibling spec remains the contract.
+
+1. Establish package tests, type checks and release-tooling baselines.
+2. Establish reusable native action, i18n, validation and option adapters before
+   porting feature families. Built-in text uses renderer-common locale catalogs;
+   icon actions share compact sizing, tooltip, accessible name and non-submit type.
+3. Resolve the v11 styled dependency/theme migration, then port controls/cells,
+   collections/compositions, layouts and extended renderers in that order.
+4. Run real-registry regressions per batch: editing, replacement, missing/invalid
+   data, readonly, English/Bulgarian and local-over-global options. Record browser
+   keyboard, focus, narrow-width and theme checks separately from jsdom tests.
+5. Verify demo/web-component lifecycle and packed consumers, then run the exact
+   CI formatting/lint, build, release-pack and full-suite gates. Prepare Changesets
+   only for verified deliverables; do not mark the workspace release-ready early.
+
+- [x] Establish the current PrimeReact test/typecheck/release-tooling baseline:
+      152 tests passed before this batch; 43 release-tooling tests passed.
+- [x] Add the native PrimeIconButton adapter and migrate collection, dynamic
+      property, file, password/OTP, clear and group actions. Shared presentation
+      supplies non-submit type, compact dimensions and hover/focus tooltips.
+      Regression verifies translated names, disabled actions and no form submit.
+- [x] Translate dynamic-property diagnostics, stepper navigation and group data
+      indicators through the existing shared catalogs; guard readonly rename.
+- [x] Run PrimeReact dependency/demo/web-component build (15 tasks) and renderer
+      typecheck. Workspace format/lint passes with 302 warnings and zero errors.
+      Renderer suite: 153 tests passed; added readonly-rename regression also
+      passed (4 additional-property tests). These are jsdom checks, not browser QA.
+- [ ] Verify remaining shared file-array action presentation and native overlay actions.
+- [ ] Audit built-in text against the shared catalogs; no renderer-local duplicates.
+- [ ] Verify CI/release gates and Changesets for all affected publishable packages.
+
+- [x] Compact single-file chooser with translated actions, stored filename display,
+      hover/focus clear, and preservation of committed data after rejected reads.
+- [x] Connect file arrays to the shared compact attachment editor and register file cells.
+- [x] Use native InputOtp for bounded password controls, with masking/reveal,
+      readonly guards and hover/focus clear; retain ordinary password cells.
+- [ ] Complete file and OTP interaction coverage, including rejected uploads,
+      partial entry, paste, translations, cells and browser layout.
+- [x] Upgrade all PrimeReact dependencies to the compatible 10.9.9 maintenance release.
+- [ ] Migrate to PrimeReact 11.2.0 styled components.
+      Target decision pending: official v11 styled setup requires a PrimeUI
+      commercial license key. Confirm v10 maintenance vs licensed v11 styled vs
+      v11 primitives/custom styling before rewriting imports and themes.
+      Source: https://primereact.dev/docs/styled/guides/installation/vite
+- [ ] Audit native capabilities and port remaining controls: cron, mask, color,
+      duration, temporal, choices, numeric and validation presentation.
+- [ ] Port collection detail modes, paging, tuple, object, mixed and recursive
+      editors; verify registry selection and compact cells against AntD/shadcn.
+- [x] Map native button loading, semantic colors and fullWidth.
+- [ ] Audit layout, splitter, label, templates and container feedback.
+- [ ] Audit every action: compact native icon buttons, translated tooltip and accessible
+      name; clear actions require data plus hover/focus, with centered placement.
+      Apply this to add/delete/reorder, password visibility and panel visibility.
+- [ ] Integrate spec examples and source filters in the PrimeReact demo and
+      verify the web component, English/Bulgarian, keyboard and narrow layouts.
+- [ ] Run package tests/builds and final browser acceptance after the implementation batches.

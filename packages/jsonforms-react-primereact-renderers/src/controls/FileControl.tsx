@@ -1,3 +1,4 @@
+import { fileArrayTester } from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
 /*
   The MIT License
 
@@ -56,7 +57,12 @@ export const isBase64String = and(
   ),
 );
 
-export const fileControlTester: RankedTester = rankWith(2, isBase64String);
+const singleFileTester = rankWith(2, isBase64String);
+export const fileControlTester: RankedTester = (ui, schema, context) =>
+  Math.max(
+    singleFileTester(ui, schema, context),
+    fileArrayTester(ui, schema, context),
+  );
 export default withJsonFormsControlProps(
   withTranslateProps(React.memo(FileControl)),
 );

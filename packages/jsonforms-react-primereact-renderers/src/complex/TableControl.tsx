@@ -37,7 +37,7 @@ import { JsonFormsStateContext, useJsonForms } from '@jsonforms/react';
 import { DataTable } from 'primereact/datatable';
 import { Column, ColumnBodyOptions, ColumnProps } from 'primereact/column';
 import { PrimeIcons } from 'primereact/api';
-import { Button } from 'primereact/button';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
 import range from 'lodash/range';
 import startCase from 'lodash/startCase';
 import union from 'lodash/union';
@@ -187,14 +187,14 @@ const ActionCell = ({
     <div>
       {showSortButtons ? (
         <>
-          <Button
+          <PrimeIconButton
             tooltip={translations.up}
             aria-label={translations.upAriaLabel}
             icon={PrimeIcons.ARROW_UP}
             onClick={moveUp}
             disabled={!enabled || !enableUp}
           />
-          <Button
+          <PrimeIconButton
             tooltip={translations.down}
             aria-label={translations.downAriaLabel}
             icon={PrimeIcons.ARROW_DOWN}
@@ -203,7 +203,7 @@ const ActionCell = ({
           />
         </>
       ) : null}
-      <Button
+      <PrimeIconButton
         tooltip={translations.removeTooltip}
         disabled={!enabled || disableRemove}
         aria-label={translations.removeAriaLabel}

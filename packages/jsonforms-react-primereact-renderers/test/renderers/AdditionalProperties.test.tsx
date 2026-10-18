@@ -1,3 +1,4 @@
+import TextControl, { textControlTester } from '../../src/controls/TextControl';
 import React, { act } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import {
@@ -53,6 +54,103 @@ describe('AdditionalProperties', () => {
     container.remove();
   });
 
+  it('clears a dynamic string without removing its key, and deletes only explicitly', () => {
+    const State = () => (
+      <output>{JSON.stringify(useJsonForms().core?.data)}</output>
+    );
+    act(() =>
+      root.render(
+        <JsonForms
+          schema={{ type: 'object', additionalProperties: { type: 'string' } }}
+          uischema={{ type: 'Control', scope: '#' }}
+          data={{ note: 'hello' }}
+          renderers={[
+            {
+              tester: rankWith(
+                5,
+                schemaMatches((schema) => schema.type === 'object'),
+              ),
+              renderer: (props: any) => (
+                <>
+                  {React.createElement(additionalPropertiesRenderer, props)}
+                  <State />
+                </>
+              ),
+            },
+            { tester: textControlTester, renderer: TextControl },
+          ]}
+        >
+          <State />
+        </JsonForms>,
+      ),
+    );
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('[aria-label="Clear value"]')!
+        .click(),
+    );
+    expect(container.querySelector('output')?.textContent).toBe('{"note":""}');
+    expect(
+      container.querySelector('[aria-label="Delete note"]'),
+    ).not.toBeNull();
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('[aria-label="Delete note"]')!
+        .click(),
+    );
+    expect(container.querySelector('output')?.textContent).toBe('{}');
+  });
+
+  it('blocks an open rename after the host switches to readonly', () => {
+    const handleChange = vi.fn();
+    const render = (readonly: boolean) =>
+      act(() =>
+        root.render(
+          <AdditionalProperties
+            data={{ note: 'hello' }}
+            enabled
+            readonly={readonly}
+            handleChange={handleChange}
+            label='Map'
+            path=''
+            schema={{
+              type: 'object',
+              additionalProperties: { type: 'string' },
+            }}
+            rootSchema={{
+              type: 'object',
+              additionalProperties: { type: 'string' },
+            }}
+            uischema={{ type: 'Control', scope: '#' }}
+            renderers={[{ tester: textControlTester, renderer: TextControl }]}
+          />,
+        ),
+      );
+    render(false);
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('[aria-label="Rename note"]')!
+        .click(),
+    );
+    const input = container.querySelector<HTMLInputElement>(
+      'input[aria-label="Rename note"]',
+    )!;
+    act(() => {
+      Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        'value',
+      )!.set!.call(input, 'renamed');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    render(true);
+    act(() =>
+      input.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      ),
+    );
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+
   it('resolves a propertyNames $ref against the root schema', () => {
     const rootSchema = {
       type: 'object',
@@ -106,7 +204,7 @@ describe('AdditionalProperties', () => {
     expect(
       container.querySelector('.jsonforms-additional-properties-error')
         ?.textContent,
-    ).toBe('Property name must match pattern: ^[A-Za-z_][A-Za-z0-9_]*$');
+    ).toBe('The property name does not match an allowed pattern.');
     expect(
       (container.querySelector('button') as HTMLButtonElement).disabled,
     ).toBe(true);

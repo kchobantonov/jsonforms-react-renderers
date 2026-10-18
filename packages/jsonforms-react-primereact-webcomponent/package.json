@@ -30,7 +30,7 @@
     "@jsonforms/core": "3.9.0-alpha.1",
     "@jsonforms/react": "3.9.0-alpha.1",
     "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "primereact": "^10.9.8",
+    "primereact": "^10.9.9",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
@@ -41,7 +41,7 @@
     "@jsonforms/react": "3.9.0-alpha.1",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "primereact": "^10.9.8",
+    "primereact": "^10.9.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^3.0.2",

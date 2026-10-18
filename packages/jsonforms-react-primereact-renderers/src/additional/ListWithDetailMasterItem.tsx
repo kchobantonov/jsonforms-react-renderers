@@ -25,8 +25,7 @@
 import type { StatePropsOfMasterItem } from '@jsonforms/core';
 import { withJsonFormsMasterListItemProps } from '@jsonforms/react';
 import { Avatar } from 'primereact/avatar';
-import { Button } from 'primereact/button';
-import { Tooltip } from 'primereact/tooltip';
+import { PrimeIconButton } from '../prime-controls/PrimeIconButton';
 import React from 'react';
 
 export const ListWithDetailMasterItem = ({
@@ -71,12 +70,8 @@ export const ListWithDetailMasterItem = ({
         {childLabel}
       </span>
 
-      <Tooltip
-        target={`#remove-button-${index}`}
-        content={translations.removeTooltip}
-      />
-      <Button
-        id={`remove-button-${index}`}
+      <PrimeIconButton
+        tooltip={translations.removeTooltip}
         icon='pi pi-trash'
         className='p-button-rounded p-button-text p-button-danger'
         disabled={!enabled || disableRemove}

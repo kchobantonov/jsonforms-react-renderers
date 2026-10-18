@@ -32,7 +32,13 @@ import { TranslateProps } from '@jsonforms/react';
 import merge from 'lodash/merge';
 import toNumber from 'lodash/toNumber';
 import { Button } from 'primereact/button';
-import { FileUpload, FileUploadSelectEvent } from 'primereact/fileupload';
+import { PrimeIconButton } from './PrimeIconButton';
+import {
+  attachmentName,
+  FileArrayInput,
+  fileItemSchema,
+} from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { InputText } from 'primereact/inputtext';
 import { ProgressBar } from 'primereact/progressbar';
 import React, { useRef, useState } from 'react';
@@ -150,6 +156,13 @@ const toBase64 = (
     reader.readAsDataURL(file);
   });
 
+const FileActionButton = ({
+  color: _color,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <Button {...props} type='button' text size='small' />
+);
+
 export const PrimeFile = React.memo(function PrimeFile(
   props: CellProps &
     WithClassname &
@@ -168,21 +181,33 @@ export const PrimeFile = React.memo(function PrimeFile(
     t,
   } = props;
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [fileData, setFileData] = useState<{
+  const fileInput = useRef<HTMLInputElement>(null);
+  const translate = useI18n();
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const editable =
+    enabled && !(props as CellProps & { readonly?: boolean }).readonly;
+  const [attachment, setAttachment] = useState<{
+    value: unknown;
     name: string;
-    size: number;
-  }>({
-    name: '',
-    size: 0,
-  });
+  }>();
+  const name = props.data
+    ? (attachmentName(props.data) ??
+      (attachment?.value === props.data
+        ? attachment.name
+        : translate('file.attached')))
+    : '';
+
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [isEncoding, setIsEncoding] = useState<boolean>(false);
 
-  const handleFileSelect = async (event: FileUploadSelectEvent) => {
-    const file = event.files[0];
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!editable || isEncoding) return;
     if (!file) return;
 
     try {
@@ -219,7 +244,6 @@ export const PrimeFile = React.memo(function PrimeFile(
               limit: `${maxFileSize}`,
             }),
           );
-          clearFile();
           return;
         }
       }
@@ -245,7 +269,6 @@ export const PrimeFile = React.memo(function PrimeFile(
               limit: `${minFileSize}`,
             }),
           );
-          clearFile();
           return;
         }
       }
@@ -267,15 +290,13 @@ export const PrimeFile = React.memo(function PrimeFile(
         schema.format,
       );
 
+      setAttachment({ value: base64, name: file.name });
       handleChange(path, base64);
-      setFileData({
-        name: file.name,
-        size: file.size,
-      });
       setIsEncoding(false);
-    } catch (err) {
-      setError(err?.message ?? err);
-      clearFile();
+    } catch {
+      setError(translate('file.readFailed'));
+    } finally {
+      setIsEncoding(false);
     }
   };
 
@@ -283,71 +304,98 @@ export const PrimeFile = React.memo(function PrimeFile(
     handleChange(path, undefined);
     setProgress(0);
     setIsEncoding(false);
-    setFileData({
-      name: '',
-      size: 0,
-    });
-    fileUploadRef.current?.clear();
+    setError(null);
   };
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
+  if (fileItemSchema(schema, props.rootSchema)) {
+    return <FileArrayInput {...props} ButtonComponent={FileActionButton} />;
+  }
   return (
-    <div>
-      <FileUpload
-        ref={fileUploadRef}
-        mode='basic'
-        disabled={!enabled}
-        customUpload
-        uploadHandler={() => {
-          // Required for FileUpload but unused
-        }}
-        chooseLabel=''
-        onSelect={handleFileSelect}
-        accept={(props.schema as any).contentMediaType}
-        auto
-        multiple={false}
-        style={{ display: 'none' }}
+    <div style={{ minWidth: 0, width: '100%' }}>
+      <input
+        ref={fileInput}
+        type='file'
+        hidden
+        disabled={!editable || isEncoding}
+        accept={
+          (schema as JsonSchema & { contentMediaType?: string })
+            .contentMediaType
+        }
+        onChange={handleFileSelect}
       />
-
-      <div className='p-inputgroup'>
+      <div
+        style={{ position: 'relative', minWidth: 0 }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocusCapture={() => setFocused(true)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null))
+            setFocused(false);
+        }}
+      >
         <InputText
+          {...inputProps}
           id={id}
           disabled={!enabled}
           placeholder={appliedUiSchemaOptions.placeholder}
-          value={
-            fileData.name
-              ? `${fileData.name} ${formatBytes(fileData.size)}`
-              : ''
-          }
+          value={name}
+          title={name}
           readOnly
-          style={{ flex: 1 }}
+          style={{ width: '100%', minWidth: 0, paddingInline: '2.5rem' }}
           invalid={!!errors}
-          {...inputProps}
+          aria-invalid={Boolean(errors)}
         />
-        <Button
-          disabled={!enabled || !fileData.name}
-          icon='pi pi-times'
-          onClick={clearFile}
+        <PrimeIconButton
+          type='button'
+          text
+          rounded
+          icon='pi pi-file'
+          aria-label={translate('file.select')}
+          tooltip={translate('file.select')}
+          disabled={!editable || isEncoding}
+          style={{
+            position: 'absolute',
+            insetInlineStart: '.25rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '2rem',
+            height: '2rem',
+            padding: 0,
+          }}
+          onClick={() => fileInput.current?.click()}
         />
-        <Button
-          icon='pi pi-upload'
-          disabled={!enabled || !!fileData.name}
-          onClick={() => fileUploadRef.current?.getInput()?.click()}
-        />
+        {editable &&
+          !!props.data &&
+          appliedUiSchemaOptions.clearable !== false && (
+            <PrimeIconButton
+              type='button'
+              text
+              rounded
+              icon='pi pi-times'
+              aria-label={translate('control.clearValue')}
+              tooltip={translate('control.clearValue')}
+              disabled={isEncoding}
+              style={{
+                position: 'absolute',
+                insetInlineEnd: '.25rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '2rem',
+                height: '2rem',
+                padding: 0,
+                opacity: hovered || focused ? 1 : 0,
+              }}
+              onClick={clearFile}
+            />
+          )}
       </div>
-
       {isEncoding && (
-        <div style={{ marginTop: '1rem' }}>
-          <ProgressBar value={progress} />
-        </div>
+        <ProgressBar value={progress} style={{ height: '.25rem' }} />
       )}
-
-      {(error || errors) && (
-        <small
-          className='p-error'
-          style={{ display: 'block', marginTop: '5px' }}
-        >
-          {error ?? errors}
+      {error && (
+        <small role='alert' className='p-error'>
+          {error}
         </small>
       )}
     </div>
