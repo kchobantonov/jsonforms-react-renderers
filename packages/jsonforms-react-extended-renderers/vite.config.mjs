@@ -1,7 +1,14 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite-plus';
+import { defineConfig, esmExternalRequirePlugin } from 'vite-plus';
+
+const esmRequireExternals = [
+  'react',
+  'react-dom',
+  'react/jsx-runtime',
+  'react/jsx-dev-runtime',
+];
 
 const packageJson = JSON.parse(
   readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
@@ -12,11 +19,17 @@ const externalPackages = new Set([
   ...Object.keys(packageJson.peerDependencies ?? {}),
 ]);
 const isExternal = (id) =>
+  !esmRequireExternals.includes(id) &&
   [...externalPackages].some(
-    (packageName) => id === packageName || id.startsWith(`${packageName}/`),
+    (name) => id === name || id.startsWith(`${name}/`),
   );
 
 export default defineConfig({
+  plugins: [
+    esmExternalRequirePlugin({
+      external: esmRequireExternals,
+    }),
+  ],
   build: {
     lib: {
       /*

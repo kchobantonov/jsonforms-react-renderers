@@ -21,7 +21,7 @@ export default ({ command }) => ({
   base:
     process.env.GITHUB_PAGES === 'true'
       ? '/jsonforms-react-renderers/react-shadcn/'
-      : '/',
+      : './',
 
   resolve: {
     ...config.resolve,
