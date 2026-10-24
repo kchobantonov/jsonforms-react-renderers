@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["ES2021", "dom"],
     "module": "ES2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2021",
     "jsx": "react",
     "noUnusedParameters": true,
@@ -17,6 +16,5 @@
     "esModuleInterop": true,
     "importHelpers": true,
     "resolveJsonModule": true
-  },
-  "types": ["jest"]
+  }
 }

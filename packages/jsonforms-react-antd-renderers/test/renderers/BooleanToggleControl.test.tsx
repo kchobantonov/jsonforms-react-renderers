@@ -1,0 +1,446 @@
+import { act } from 'react';
+import './MatchMediaMock';
+import * as React from 'react';
+import {
+  ControlElement,
+  NOT_APPLICABLE,
+  UISchemaElement,
+} from '@jsonforms/core';
+import BooleanToggleControl, {
+  booleanToggleControlTester,
+} from '../../src/controls/BooleanToggleControl';
+import { antdRenderers } from '../../src';
+
+import Enzyme, { mount, ReactWrapper } from 'enzyme';
+import Adapter from '@cfaester/enzyme-adapter-react-18';
+import { JsonFormsStateProvider } from '@jsonforms/react';
+import { initCore, TestEmitter } from './util';
+import { Switch } from 'antd';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+const data = { foo: true };
+const schema = {
+  type: 'object',
+  properties: {
+    foo: {
+      type: 'boolean',
+      description: 'My description',
+    },
+  },
+};
+const uischema: ControlElement = {
+  type: 'Control',
+  scope: '#/properties/foo',
+  options: {
+    toggle: true,
+  },
+};
+
+describe('Ant Design boolean toggle control tester', () => {
+  const control: ControlElement = {
+    type: 'Control',
+    scope: '#/properties/foo',
+    options: {
+      toggle: true,
+    },
+  };
+
+  it('should fail', () => {
+    expect(booleanToggleControlTester(undefined, undefined, undefined)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(booleanToggleControlTester(null, undefined, undefined)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(
+      booleanToggleControlTester({ type: 'Foo' }, undefined, undefined),
+    ).toBe(NOT_APPLICABLE);
+    expect(
+      booleanToggleControlTester({ type: 'Control' }, undefined, undefined),
+    ).toBe(NOT_APPLICABLE);
+    expect(
+      booleanToggleControlTester(
+        control,
+        {
+          type: 'object',
+          properties: { foo: { type: 'string' } },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+    expect(
+      booleanToggleControlTester(
+        control,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'string',
+            },
+            bar: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+
+    // Not applicable for boolean control if toggle option is false
+    expect(
+      booleanToggleControlTester(
+        {
+          type: 'Control',
+          scope: '#/properties/foo',
+          options: {
+            toggle: false,
+          },
+        } as UISchemaElement,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+
+    // Not applicable for boolean control if toggle option is not given
+    expect(
+      booleanToggleControlTester(
+        {
+          type: 'Control',
+          scope: '#/properties/foo',
+        } as UISchemaElement,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+  });
+
+  it('should succeed', () => {
+    expect(
+      booleanToggleControlTester(
+        control,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(3);
+  });
+});
+
+describe('Ant Design boolean toggle control', () => {
+  let wrapper: ReactWrapper;
+
+  afterEach(() => wrapper.unmount());
+
+  it('should autofocus via option', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+      options: {
+        focus: true,
+        toggle: true,
+      },
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={control} />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch).first();
+    expect(input.props().autoFocus).toBeTruthy();
+  });
+
+  it('should not autofocus via option', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+      options: {
+        focus: false,
+        toggle: true,
+      },
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={control} />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch).first();
+    expect(input.props().autoFocus).toBe(false);
+  });
+
+  it('should not autofocus by default', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+      options: {
+        toggle: true,
+      },
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={control} />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch).first();
+    expect(input.props().autoFocus).toBeFalsy();
+  });
+
+  it('should render', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+
+    // Make sure a toggle is rendered by checking for the thumb element
+    expect(wrapper.find(Switch)).toHaveLength(1);
+
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should update via input event', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+
+    const input = wrapper.find(Switch);
+    act(() => (input.props().onChange as any)(false));
+    wrapper.update();
+    expect(onChangeData.data.foo).toBeFalsy();
+  });
+
+  it('should update via action', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeFalsy();
+    expect(onChangeData.data.foo).toBeFalsy();
+  });
+
+  it('should update with undefined value', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: undefined };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeFalsy();
+  });
+
+  it('should update with null value', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: null };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeFalsy();
+  });
+
+  it('should not update with wrong ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, bar: 11 };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should not update with null ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, null: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should not update with an undefined ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, undefined: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find(Switch).first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('can be disabled', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl
+          schema={schema}
+          uischema={uischema}
+          enabled={false}
+        />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch).first();
+    expect(input.props().disabled).toBeTruthy();
+  });
+
+  it('should be enabled by default', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={uischema} />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch).first();
+    expect(input.props().disabled).toBeFalsy();
+  });
+
+  it('id should be present in output', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch);
+    expect(input.props().id).toBe('myid-input');
+  });
+
+  it('unfocused description displays and is referenced by aria-describedby', () => {
+    const core = initCore(schema, uischema, data);
+    const config = { showUnfocusedDescription: true };
+    wrapper = mount(
+      <JsonFormsStateProvider
+        initState={{
+          renderers: antdRenderers,
+          config: config,
+          core,
+        }}
+      >
+        <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch);
+    expect(input.props()['aria-describedby']).toBe('myid-input-help');
+    const description = wrapper.find('#myid-input-help').first();
+    expect(description.text()).toBe('My description');
+  });
+
+  it('tooltip description is referenced by aria-describedby', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanToggleControl schema={schema} uischema={uischema} id='myid' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find(Switch);
+    expect(input.props()['aria-describedby']).toBeUndefined();
+  });
+});

@@ -1,0 +1,46 @@
+{
+  "name": "jsonforms-react-antd-demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp run check && vp build",
+    "build:examples-app": "vp run build",
+    "preview": "vp preview",
+    "check": "tsc --noEmit",
+    "clean": "rimraf dist .nyc_output 2> /dev/null",
+    "test": "echo 'Nothing to do'",
+    "lint": "vp lint .",
+    "lint:fix": "vp run lint --fix"
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.3.2",
+    "@chobantonov/jsonforms-react-antd-extended-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
+    "@chobantonov/jsonforms-react-antd-webcomponent": "workspace:*",
+    "@chobantonov/jsonforms-react-demo-common": "workspace:*",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@jsonforms/core": "3.9.0-alpha.1",
+    "@jsonforms/react": "3.9.0-alpha.1",
+    "antd": "6.6.5",
+    "lucide-react": "1.37.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^5.2.0",
+    "rimraf": "^3.0.2",
+    "typescript": "~5.9.3",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kchobantonov/jsonforms-react-renderers"
+  },
+  "bugs": "https://github.com/kchobantonov/jsonforms-react-renderers/issues",
+  "homepage": "https://github.com/kchobantonov/jsonforms-react-renderers"
+}

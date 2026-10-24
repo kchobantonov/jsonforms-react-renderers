@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.base",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "types": ["vitest/globals", "node"],
+    "noEmit": true,
+    "rootDir": "../..",
+    "declaration": false,
+    "composite": false
+  },
+  "include": ["./**/*.ts", "./**/*.tsx", "../src/**/*.ts", "../src/**/*.tsx"]
+}

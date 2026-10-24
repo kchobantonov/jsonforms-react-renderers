@@ -1,0 +1,132 @@
+import React from 'react';
+import { Form } from 'antd';
+import { useJsonForms } from '@jsonforms/react';
+import { ErrorFeedback } from '../complex/ErrorFeedback';
+import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
+
+import { useCellMode } from '@chobantonov/jsonforms-react-renderer-common/cellMode';
+export {
+  CellModeProvider,
+  useCellMode,
+} from '@chobantonov/jsonforms-react-renderer-common/cellMode';
+
+export interface ControlFormItemProps {
+  path?: string;
+  id?: string;
+  htmlFor?: string;
+  label?: React.ReactNode;
+  required?: boolean;
+  hideRequiredAsterisk?: boolean;
+  /** Validation messages; drives the error state and, in cells, the tooltip. */
+  errors?: string;
+  /** Message shown under the control outside cells (errors or description). */
+  help?: React.ReactNode;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}
+
+/**
+ * The single Form.Item every antd control renders through.
+ *
+ * Outside a table it behaves as before: label above, message below. Inside a
+ * cell the column header already supplies the label and a message underneath
+ * would break the row height, so both are dropped and the validation message
+ * moves into a tooltip on the control's error state instead.
+ */
+export const ControlFormItem = ({
+  path,
+  id,
+  htmlFor,
+  label,
+  required,
+  hideRequiredAsterisk,
+  errors,
+  help,
+  style,
+  children,
+}: ControlFormItemProps) => {
+  const cell = useCellMode();
+  const context = useJsonForms();
+  const showRequired =
+    required && !(hideRequiredAsterisk ?? context.config?.hideRequiredAsterisk);
+  const isValid = !errors || errors.length === 0;
+
+  /**
+   * antd's hasFeedback accepts custom icons, so the validation message can hang
+   * off the error icon itself rather than the whole field. One message per line
+   * keeps multi-error tooltips readable.
+   *
+   * **`hasFeedback` stays on whether or not the field is valid, and the icon is
+   * suppressed instead.** It is not a style choice; switching it changes the
+   * DOM. antd composes the feedback icon into the input's `suffix`, and an antd
+   * `Input` with no prefix, suffix or `allowClear` renders a bare `<input>`
+   * while one with any of them nests it inside
+   * `<span class="ant-input-affix-wrapper">`. Turning feedback on at the moment
+   * a field becomes invalid therefore moves the input to a new position in the
+   * element tree, so React unmounts it and mounts a fresh one - and whoever was
+   * typing loses the caret mid-word. antd warns about exactly this in
+   * development: "dynamic add or remove prefix / suffix will make it lose focus
+   * caused by dom structure change".
+   *
+   * Returning `false` for a status is antd's own way to say it draws no icon,
+   * while the slot - and so the element tree - stays put. The only trace on a
+   * valid field is an empty suffix span holding four pixels open, which is a
+   * gutter the error icon then no longer has to push the text aside to claim.
+   *
+   * Any control that always has a prefix or suffix of its own - the color
+   * picker's swatch, the password field's reveal button - was already immune,
+   * which is why this only ever showed up on the plain text and masked fields.
+   */
+  const feedbackIcons = () => ({
+    success: false,
+    warning: false,
+    validating: false,
+    error: (
+      <ErrorFeedback errors={errors ?? ''} path={path} local>
+        <ExclamationCircleFilled
+          // In a cell the message exists only inside the tooltip, which opens
+          // on hover and so is not reachable by a screen reader. Naming the
+          // icon with the message keeps it announced.
+          tabIndex={0}
+          role='img'
+          aria-label={errors}
+          // antd sets pointer-events: none on .ant-form-item-feedback-icon so
+          // the icon never blocks the input. That also means it never receives
+          // hover, so the tooltip would never open - a descendant may opt back
+          // in without making the whole slot clickable.
+          style={{ pointerEvents: 'auto', cursor: 'help' }}
+        />
+      </ErrorFeedback>
+    ),
+  });
+
+  if (cell) {
+    return (
+      <Form.Item
+        required={showRequired}
+        hasFeedback={{ icons: feedbackIcons }}
+        validateStatus={isValid ? 'success' : 'error'}
+        style={{ marginBottom: 0, ...style }}
+        htmlFor={htmlFor}
+        id={id}
+      >
+        {children}
+      </Form.Item>
+    );
+  }
+
+  return (
+    <Form.Item
+      required={showRequired}
+      hasFeedback={{ icons: feedbackIcons }}
+      validateStatus={isValid ? 'success' : 'error'}
+      label={label}
+      help={help ?? null}
+      style={style}
+      htmlFor={htmlFor}
+      id={id}
+    >
+      {children}
+    </Form.Item>
+  );
+};

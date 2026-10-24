@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "master",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "jsonforms-react-antd-demo",
+    "@chobantonov/jsonforms-react-examples-app",
+    "jsonforms-react-shadcn-demo",
+    "@chobantonov/jsonforms-react-demo-common"
+  ]
+}

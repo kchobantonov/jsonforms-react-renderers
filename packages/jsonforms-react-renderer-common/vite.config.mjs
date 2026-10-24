@@ -1,0 +1,41 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite-plus';
+const root = fileURLToPath(new URL('.', import.meta.url));
+const pkg = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
+);
+const dependencies = [
+  ...Object.keys(pkg.dependencies),
+  ...Object.keys(pkg.peerDependencies),
+];
+const entry = Object.fromEntries(
+  ['', 'locale/'].flatMap((dir) =>
+    readdirSync(resolve(root, 'src', dir))
+      .filter((name) => /\.tsx?$/.test(name))
+      .map((name) => [
+        dir + name.replace(/\.tsx?$/, ''),
+        resolve(root, 'src', dir, name),
+      ]),
+  ),
+);
+export default defineConfig({
+  build: {
+    // Preserve the Vite 5 browser baseline through the toolchain upgrade.
+    target: ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14'],
+    lib: {
+      entry,
+      formats: ['es', 'cjs'],
+      fileName: (format, name) =>
+        `${name}.${format === 'es' ? 'esm' : 'cjs'}.js`,
+    },
+    outDir: 'lib',
+    emptyOutDir: true,
+    sourcemap: true,
+    rolldownOptions: {
+      external: (id) =>
+        dependencies.some((name) => id === name || id.startsWith(name + '/')),
+    },
+  },
+});

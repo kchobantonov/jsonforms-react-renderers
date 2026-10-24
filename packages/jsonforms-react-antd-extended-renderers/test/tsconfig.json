@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "types": ["vitest/globals", "node"],
+    "noEmit": true,
+    "baseUrl": "..",
+    "paths": {
+      "@chobantonov/jsonforms-react-antd-renderers": [
+        "../jsonforms-react-antd-renderers/src"
+      ],
+      "@chobantonov/jsonforms-react-extended-renderers": [
+        "../jsonforms-react-extended-renderers/src"
+      ]
+    },
+    "rootDir": "../..",
+    "declaration": false,
+    "composite": false
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"]
+}

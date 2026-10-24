@@ -1,0 +1,345 @@
+import './MatchMediaMock';
+import * as React from 'react';
+import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
+import BooleanCell, { booleanCellTester } from '../../src/cells/BooleanCell';
+import { antdRenderers } from '../../src';
+
+import Enzyme, { mount, ReactWrapper } from 'enzyme';
+import Adapter from '@cfaester/enzyme-adapter-react-18';
+import { JsonFormsStateProvider } from '@jsonforms/react';
+import { initCore, TestEmitter } from './util';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+const data = { foo: true };
+const schema = {
+  type: 'boolean',
+};
+const uischema: ControlElement = {
+  type: 'Control',
+  scope: '#/properties/foo',
+};
+
+describe('Ant Design boolean cell tester', () => {
+  const control: ControlElement = {
+    type: 'Control',
+    scope: '#/properties/foo',
+  };
+
+  it('should fail', () => {
+    expect(booleanCellTester(undefined, undefined, undefined)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(booleanCellTester(null, undefined, undefined)).toBe(NOT_APPLICABLE);
+    expect(booleanCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(booleanCellTester({ type: 'Control' }, undefined, undefined)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(
+      booleanCellTester(
+        control,
+        {
+          type: 'object',
+          properties: { foo: { type: 'string' } },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+    expect(
+      booleanCellTester(
+        control,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'string',
+            },
+            bar: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(NOT_APPLICABLE);
+  });
+
+  it('should succeed', () => {
+    expect(
+      booleanCellTester(
+        control,
+        {
+          type: 'object',
+          properties: {
+            foo: {
+              type: 'boolean',
+            },
+          },
+        },
+        undefined,
+      ),
+    ).toBe(2);
+  });
+});
+
+describe('Ant Design boolean cell', () => {
+  let wrapper: ReactWrapper;
+
+  afterEach(() => wrapper.unmount());
+
+  it('should autofocus via option', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+      options: {
+        focus: true,
+      },
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={control} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input').first();
+    expect(input.props().autoFocus).toBeTruthy();
+  });
+
+  it('should not autofocus via option', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+      options: {
+        focus: false,
+      },
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={control} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input').first();
+    expect(input.props().autoFocus).toBe(false);
+  });
+
+  it('should not autofocus by default', () => {
+    const control: ControlElement = {
+      type: 'Control',
+      scope: '#/properties/foo',
+    };
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={control} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input').first();
+    expect(input.props().autoFocus).toBeFalsy();
+  });
+
+  it('should render', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+
+    const input = wrapper.find('input').first();
+    expect(input.props().type).toBe('checkbox');
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should update via input event', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+
+    const input = wrapper.find('input');
+    input.simulate('change', { target: { value: false } });
+    expect(onChangeData.data.foo).toBeFalsy();
+  });
+
+  it('should update via action', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeFalsy();
+    expect(onChangeData.data.foo).toBeFalsy();
+  });
+
+  it('should update with undefined value', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: undefined };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeFalsy();
+  });
+
+  it('should update with null value', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, foo: null };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeFalsy();
+  });
+
+  it('should not update with wrong ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, bar: 11 };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should not update with null ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, null: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('should not update with an undefined ref', () => {
+    const core = initCore(schema, uischema, data);
+    const onChangeData: any = {
+      data: undefined,
+    };
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <TestEmitter
+          onChange={({ data }) => {
+            onChangeData.data = data;
+          }}
+        />
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    core.data = { ...core.data, undefined: false };
+    wrapper.setProps({ initState: { renderers: antdRenderers, core } });
+    wrapper.update();
+    const input = wrapper.find('input').first();
+    expect(input.props().checked).toBeTruthy();
+  });
+
+  it('can be disabled', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell
+          schema={schema}
+          uischema={uischema}
+          enabled={false}
+          path='foo'
+        />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input').first();
+    expect(input.props().disabled).toBeTruthy();
+  });
+
+  it('should be enabled by default', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={uischema} path='foo' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input').first();
+    expect(input.props().disabled).toBeFalsy();
+  });
+
+  it('id should be present in output', () => {
+    const core = initCore(schema, uischema, data);
+    wrapper = mount(
+      <JsonFormsStateProvider initState={{ renderers: antdRenderers, core }}>
+        <BooleanCell schema={schema} uischema={uischema} path='foo' id='myid' />
+      </JsonFormsStateProvider>,
+    );
+    const input = wrapper.find('input');
+    expect(input.props().id).toBe('myid');
+  });
+});

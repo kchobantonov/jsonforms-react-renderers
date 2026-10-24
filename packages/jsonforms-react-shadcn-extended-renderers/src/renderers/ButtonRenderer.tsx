@@ -1,0 +1,108 @@
+import {
+  LayoutProps,
+  RankedTester,
+  UISchemaElement,
+  rankWith,
+  uiTypeIs,
+} from '@jsonforms/core';
+import { useJsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
+import { useHandleAction } from '@chobantonov/jsonforms-react-extended-renderers';
+import { Button } from '@jsonforms-react-shadcn-ui/button';
+
+import React from 'react';
+
+export type ShadcnButtonElement = UISchemaElement & {
+  label?: string;
+  text?: string;
+  name?: string;
+  action?: string;
+  icon?: string;
+  color?: string;
+  params?: Record<string, unknown>;
+  script?: string;
+  options?: Record<string, any> & { fullWidth?: boolean };
+};
+
+export const shadcnButtonRendererTester: RankedTester = rankWith(
+  1,
+  uiTypeIs('Button'),
+);
+
+export const ShadcnButtonRenderer = ({
+  enabled,
+  visible,
+  uischema,
+}: LayoutProps & { uischema: ShadcnButtonElement }) => {
+  const handleAction = useHandleAction();
+  const jsonforms = useJsonForms();
+  const [loading, setLoading] = React.useState(false);
+  if (!visible) return null;
+  const options = uischema.options ?? {};
+  const label =
+    options.label ??
+    options.text ??
+    uischema.label ??
+    uischema.text ??
+    uischema.name ??
+    'Action';
+  const configuredAction = options.action ?? uischema.action;
+  const action = configuredAction ?? uischema.name ?? label;
+  const params = options.params ?? uischema.params;
+  const script = options.script ?? uischema.script;
+  const color = options.color ?? uischema.color;
+  const variants = {
+    primary: 'default',
+    secondary: 'outline',
+    alternative: 'secondary',
+    success: 'default',
+    warning: 'outline',
+    error: 'destructive',
+  } as const;
+  const variant =
+    options.variant ?? variants[color as keyof typeof variants] ?? 'default';
+  return (
+    <Button
+      className={
+        [
+          color === 'warning' && 'text-destructive',
+          options.fullWidth === true && 'w-full',
+        ]
+          .filter(Boolean)
+          .join(' ') || undefined
+      }
+      type='button'
+      variant={variant}
+      disabled={!enabled || options.disabled || loading}
+      aria-busy={loading || undefined}
+      onClick={async () => {
+        if (loading) return;
+        setLoading(true);
+        try {
+          if (configuredAction && handleAction) {
+            await handleAction({ action, label, params, element: uischema });
+          } else if (script) {
+            const AsyncFunction = Object.getPrototypeOf(async function () {
+              /* Used only to obtain the AsyncFunction constructor. */
+            }).constructor;
+            await new AsyncFunction(script).call({
+              action,
+              context: jsonforms,
+              params: params ? { ...params } : {},
+              element: uischema,
+            });
+          } else if (handleAction) {
+            await handleAction({ action, label, params, element: uischema });
+          }
+        } finally {
+          setLoading(false);
+        }
+      }}
+    >
+      {uischema.icon ? <span aria-hidden='true'>{uischema.icon}</span> : null}
+      {loading ? `${label}…` : label}
+    </Button>
+  );
+};
+
+export const ShadcnButtonRendererWithProps =
+  withJsonFormsLayoutProps(ShadcnButtonRenderer);

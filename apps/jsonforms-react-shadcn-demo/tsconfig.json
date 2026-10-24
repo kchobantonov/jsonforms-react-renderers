@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@jsonforms-react-shadcn-ui/*": ["./src/components/ui/*"]
+    },
+    "sourceMap": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

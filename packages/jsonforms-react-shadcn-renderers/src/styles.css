@@ -1,0 +1,370 @@
+.shadcn-jsonforms-root,
+.shadcn-jsonforms-layout {
+  box-sizing: border-box;
+}
+
+.shadcn-jsonforms-layout {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.shadcn-jsonforms-layout-column {
+  flex-direction: column;
+}
+
+.shadcn-jsonforms-layout-row {
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.shadcn-jsonforms-field {
+  display: grid;
+  gap: 5px;
+  min-width: 220px;
+}
+
+.shadcn-jsonforms-layout-row > .shadcn-jsonforms-field {
+  flex: 1 1 220px;
+}
+
+.shadcn-jsonforms-label {
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shadcn-jsonforms-input {
+  background: hsl(var(--background, 0 0% 100%));
+  border: 1px solid hsl(var(--input, 214.3 31.8% 91.4%));
+  border-radius: var(--shadcn-jsonforms-radius, 6px);
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font: inherit;
+  min-height: 36px;
+  padding: 7px 10px;
+}
+
+.shadcn-jsonforms-input:focus {
+  border-color: var(--shadcn-jsonforms-accent, #0f172a);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--shadcn-jsonforms-accent, #0f172a) 18%, transparent);
+  outline: none;
+}
+
+.shadcn-jsonforms-description {
+  color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+  font-size: 12px;
+}
+
+.shadcn-jsonforms-error {
+  color: hsl(var(--destructive, 0 84.2% 60.2%));
+  font-size: 12px;
+}
+
+.shadcn-jsonforms-checkbox {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.shadcn-jsonforms-group,
+.shadcn-jsonforms-array,
+.shadcn-jsonforms-object {
+  border: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
+  border-radius: var(--shadcn-jsonforms-radius, 6px);
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.shadcn-jsonforms-group > .shadcn-jsonforms-group-header,
+.shadcn-jsonforms-array h3,
+.shadcn-jsonforms-object h3 {
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.shadcn-jsonforms-array-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.shadcn-jsonforms-array-actions {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.shadcn-jsonforms-array-item {
+  border-top: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.shadcn-jsonforms-array-item-label {
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.shadcn-jsonforms-tab {
+  background: var(--shadcn-jsonforms-accent, #0f172a);
+  border: 0;
+  border-radius: var(--shadcn-jsonforms-radius, 6px);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  min-height: 34px;
+  padding: 7px 12px;
+}
+
+.shadcn-jsonforms-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.shadcn-jsonforms-tabs {
+  border-bottom: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.shadcn-jsonforms-tab {
+  background: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+}
+
+.shadcn-jsonforms-tab[data-active] {
+  background: var(--shadcn-jsonforms-accent, #0f172a);
+  color: #fff;
+}
+
+.shadcn-jsonforms-static-label {
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-weight: 600;
+}
+
+/* A full-width disclosure header, with status separated from the title. */
+.shadcn-jsonforms-group > .shadcn-jsonforms-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: auto;
+  text-align: start;
+  white-space: normal;
+}
+
+.shadcn-jsonforms-group-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.shadcn-jsonforms-group-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+  margin-inline-start: auto;
+}
+
+.shadcn-jsonforms-group-actions [data-group-indicator] {
+  font-size: 10px;
+}
+
+.shadcn-jsonforms-group[data-collapsible] {
+  display: block;
+  border: 0;
+  border-radius: 12px;
+  padding: 0;
+  background: hsl(var(--muted, 210 40% 96.1%));
+}
+
+.shadcn-jsonforms-group[data-collapsible] > .shadcn-jsonforms-group-header {
+  padding: 12px 16px;
+  border-radius: inherit;
+  color: hsl(var(--foreground, 222.2 84% 4.9%));
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.shadcn-jsonforms-group[data-collapsible] > .shadcn-jsonforms-group-content {
+  padding: 0 16px 16px;
+}
+
+/* Let AG Grid provide cell boundaries and keyboard-focus indication. */
+.ag-cell:has(.shadcn-jsonforms-grid-cell) {
+  padding-inline: 0;
+}
+.ag-cell:has(.shadcn-jsonforms-grid-cell) .ag-cell-wrapper,
+.ag-cell:has(.shadcn-jsonforms-grid-cell) .ag-cell-value,
+.shadcn-jsonforms-grid-cell-content,
+.shadcn-jsonforms-grid-cell-content > .shadcn-jsonforms-cell,
+.shadcn-jsonforms-grid-cell-content > .shadcn-jsonforms-cell > .group {
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.shadcn-jsonforms-grid-cell input:not([type='checkbox']):not([type='color']),
+.shadcn-jsonforms-grid-cell button[role='combobox'] {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+/* The shared grid suppresses its own cell focus border. Keep one indication. */
+.shadcn-jsonforms-grid-cell:focus-within {
+  box-shadow: inset 0 0 0 2px hsl(var(--ring, 222.2 84% 4.9%));
+}
+
+/* A compact focus halo fits table rows without the full-size input ring. */
+.shadcn-jsonforms-table-cell
+  input:not([type='checkbox']):not([type='color']):focus-visible,
+.shadcn-jsonforms-table-cell button[role='combobox']:focus-visible {
+  outline: none;
+  border-color: var(--shadcn-jsonforms-accent, #0f172a);
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--shadcn-jsonforms-accent, #0f172a) 20%, transparent);
+}
+
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error) {
+  position: relative;
+  padding-inline-end: 40px;
+}
+.shadcn-jsonforms-table-cell .shadcn-jsonforms-cell-error {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error) input,
+.shadcn-jsonforms-table-cell:has(.shadcn-jsonforms-cell-error)
+  button[role='combobox'] {
+  border-color: hsl(var(--destructive, 0 84% 60%));
+  box-shadow: 0 0 0 1px hsl(var(--destructive, 0 84% 60%) / 0.25);
+}
+
+/* Keep wide tables inside the panel; only the table body scrolls. */
+.shadcn-jsonforms-array,
+.shadcn-jsonforms-object {
+  min-width: 0;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+.shadcn-jsonforms-array > div,
+.shadcn-jsonforms-categorization,
+.shadcn-jsonforms-categorization > [role='tabpanel'] {
+  min-width: 0;
+  max-width: 100%;
+}
+.shadcn-jsonforms-array-header > :first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.shadcn-jsonforms-array-header > :last-child {
+  flex-shrink: 0;
+}
+
+.jsonforms-mixed-renderer-primitive,
+.jsonforms-mixed-renderer-detail-primitive {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .jsonforms-mixed-renderer-primitive,
+  .jsonforms-mixed-renderer-detail-primitive {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The mixed workspace's object panel supplies the detail outline. */
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .shadcn-jsonforms-group,
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .jsonforms-additional-properties {
+  border: 0;
+  box-shadow: none;
+}
+.jsonforms-mixed-renderer-detail-control
+  > .shadcn-jsonforms-object
+  > .shadcn-jsonforms-group {
+  padding: 0;
+}
+
+/* Preserve native checkbox behavior while keeping row selectors visible in both themes. */
+.shadcn-jsonforms-row-selection[data-state='unchecked'] {
+  border-color: color-mix(
+    in srgb,
+    hsl(var(--muted-foreground)) 60%,
+    hsl(var(--background))
+  );
+}
+.shadcn-jsonforms-row-selection:disabled {
+  opacity: 1;
+}
+.shadcn-jsonforms-row-selection:disabled[data-state='unchecked'] {
+  background-color: hsl(var(--muted));
+}
+.shadcn-jsonforms-row-selection[data-state='indeterminate'] {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* Constrain the viewport, not its content, for flex panels and capped lists. */
+.shadcn-jsonforms-scroll-region > [data-slot='scroll-area-viewport'] {
+  max-height: inherit;
+  min-height: 0;
+  height: auto;
+  flex: 1 1 auto;
+}
+
+/* Radix's table wrapper otherwise expands to the full, untruncated label.
+   Reserve only enough width for the avatar and actions; narrower panes scroll. */
+.shadcn-jsonforms-list-navigation > [data-slot='scroll-area-viewport'] > div {
+  display: block !important;
+  width: 100%;
+  min-width: 10rem !important;
+}
+
+/* Carry the split pane's definite height through Radix's content wrapper so
+   percentage-height grids retain their body as well as their pagination. */
+.shadcn-jsonforms-collection-pane > [data-slot='scroll-area-viewport'] {
+  height: 100%;
+}
+.shadcn-jsonforms-collection-pane > [data-slot='scroll-area-viewport'] > div {
+  height: 100%;
+}
+
+/* Tab labels must not determine the minimum width of a form or split pane. */
+.shadcn-jsonforms-categorization > [role='tablist'] {
+  max-width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.shadcn-jsonforms-categorization > [role='tablist'] > [role='tab'] {
+  flex: 0 0 auto;
+}
