@@ -1,6 +1,6 @@
 {
   "name": "jsonforms-react-shadcn-demo",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
   "description": "Shadcn UI demo for JSON Forms React",
   "repository": "https://github.com/kchobantonov/jsonforms-react-renderers",
