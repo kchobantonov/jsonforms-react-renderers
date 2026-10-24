@@ -8,6 +8,7 @@ import {
   antdRenderers,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { antdExtendedRenderers } from '../src';
+import { flushUntil } from './support/flush';
 
 /*
   Two template engines, selected per element.
@@ -31,14 +32,23 @@ import { antdExtendedRenderers } from '../src';
     }
   };
 
+const mountedRoots = new Set<ReturnType<typeof createRoot>>();
+
 afterEach(() => {
+  act(() => {
+    for (const root of mountedRoots) root.unmount();
+  });
+  mountedRoots.clear();
   document.body.innerHTML = '';
 });
 
-const settle = async (ms = 200) => {
+const settle = async () => {
+  // Flush committed updates before checking the fallback. Cold dynamic imports
+  // can exceed a fixed sleep under CI load; wait for completion instead.
   await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, ms));
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
+  await flushUntil(() => !document.querySelector('[data-template-loading]'));
 };
 
 const schema: any = {
@@ -62,6 +72,7 @@ const draw = (
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.add(root);
   let current = data;
   const paint = () =>
     act(() =>
@@ -99,7 +110,11 @@ const draw = (
       container
         .querySelector('[data-template-diagnostic]')
         ?.getAttribute('data-template-diagnostic'),
-    unmount: () => act(() => root.unmount()),
+    unmount: () => {
+      act(() => root.unmount());
+      mountedRoots.delete(root);
+      container.remove();
+    },
   };
 };
 

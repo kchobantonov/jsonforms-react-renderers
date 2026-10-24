@@ -1,6 +1,6 @@
 # Changesets
 
-This repository uses the same Changesets release process as jsonforms-svelte.
+This repository uses Changesets to version and publish its public React packages.
 
 1. Run `pnpm changeset` and select the public packages and version bump.
 2. Commit the generated Markdown file and merge it into `master`.

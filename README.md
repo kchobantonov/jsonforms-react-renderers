@@ -43,7 +43,7 @@ output formats and browser targets are preserved. See the
 
 ### Presentation renderers
 
-All four extended React renderer sets include the shared Svelte-compatible
+The Ant Design and Shadcn extended renderer sets include the shared
 presentation elements. They honor JSON Forms visibility rules and accept defaults
 from the form configuration, with UI Schema options taking precedence.
 
@@ -73,7 +73,7 @@ for adding host examples or native spec tabs.
 
 ### Horizontal layout columns
 
-All four extended React sets support Svelte's 16-column allocation on each
+The Ant Design and Shadcn extended renderer sets support 16-column allocation on each
 direct child of a `HorizontalLayout`:
 
 - `options.columns`: an integer from 2 through 16 reserves that fraction of the row.
@@ -87,12 +87,12 @@ the width calculation. Hidden children release their space; disabled children
 keep it. Columns apply to controls, presentation elements, and nested layouts,
 and do not affect vertical or split layouts.
 
-Select **Horizontal Layout Sizing** in any demo to explore the Svelte examples.
+Select **Horizontal Layout Sizing** in either React demo to explore column allocation.
 
 ### Split layouts
 
 Select **Spec: Split layout** (or open `#spec-split-layout`) in any React demo for the
-same horizontal and vertical split-pane example as Svelte. Set
+horizontal and vertical split-pane examples. Set
 `options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
 Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.
 Ant Design uses its native splitter; Shadcn uses the
@@ -102,7 +102,7 @@ and does not change `options.columns`.
 ### Collapsible groups
 
 Groups in Ant Design and Shadcn support
-Svelte's `options.collapsible`, `options.collapsed`, and
+`options.collapsible`, `options.collapsed`, and
 `options.showDataIndicator` (all opt-in with `true`). Collapsed content stays
 mounted, preserving edits. The accessible data indicator checks bound descendant
 controls, including hidden controls and nested paths; `false` and `0` count as
@@ -150,8 +150,8 @@ AG Grid is selected with `options: { variant: "ag-grid", height: 400 }` on an
 array control. It supports object and primitive rows, native cell editing,
 selection, sorting, filtering, adding and removing rows, and read-only mode.
 Schema `minItems`/`maxItems` restrict removal/addition unless `restrict: false`.
-The React implementation uses AG Grid Community; it does not claim parity with
-Svelte's advanced grid-specific features or enterprise options.
+The React implementation uses AG Grid Community. Enterprise options and
+advanced features beyond those listed here are not claimed as supported.
 
 ### React shadcn/ui component ownership
 
@@ -163,7 +163,7 @@ The demo and Web Component each include their own generated component sources.
 
 ## Releasing packages
 
-Releases use the same Changesets workflow as `jsonforms-svelte`:
+Releases use Changesets:
 
 1. Run `pnpm changeset`, select the public packages and bump type, and commit the
    generated file under `.changeset/`.
