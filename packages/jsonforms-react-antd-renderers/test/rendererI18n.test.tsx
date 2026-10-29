@@ -165,39 +165,50 @@ describe('renderer strings reach the translator', () => {
     const { container, unmount } = render(
       { type: 'object', additionalProperties: { type: 'string' } },
       { type: 'Control', scope: '#', options: { renameProperties: true } },
-      { existing: 'value' },
+      { existing: 'value', taken: 'other value' },
     );
-    const rename = Array.from(container.querySelectorAll('button')).find(
-      (button) =>
-        button.getAttribute('aria-label') ===
-        '«additionalProperties.renameNamed»',
-    );
-    expect(rename, 'no rename action').toBeTruthy();
-    await act(async () => {
-      rename!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
+    try {
+      const rename = Array.from(container.querySelectorAll('button')).find(
+        (button) =>
+          button.getAttribute('aria-label') ===
+          '«additionalProperties.renameNamed»',
+      );
+      expect(rename, 'no rename action').toBeTruthy();
+      await act(async () => {
+        rename!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
 
-    // The dialog is portalled, so it is read from the document, not the host.
-    const dialog = document.querySelector('.ant-modal') as HTMLElement;
-    expect(dialog, 'no rename dialog').toBeTruthy();
-    const text = textOf(dialog);
-    expect(text).toContain('«additionalProperties.renameNamed»');
-    expect(text).toContain('«additionalProperties.namePlaceholder»');
-    expect(text).not.toContain('Rename ');
-    expect(text).not.toContain('Property name');
+      // The dialog is portalled, so it is read from the document, not the host.
+      const dialog = document.querySelector('.ant-modal') as HTMLElement;
+      expect(dialog, 'no rename dialog').toBeTruthy();
+      const text = textOf(dialog);
+      for (const key of [
+        'additionalProperties.renameTitle',
+        'additionalProperties.renameDialogDescription',
+        'additionalProperties.renamePropertyNameLabel',
+        'additionalProperties.renameConfirm',
+        'combinator.cancel',
+      ]) {
+        expect(text).toContain(`«${key}»`);
+      }
+      expect(text).not.toContain('Rename ');
+      expect(text).not.toContain('Property name');
 
-    // A name already in use: a message that exists only in this state.
-    const input = dialog.querySelector('input') as HTMLInputElement;
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        'value',
-      )!.set!;
-      setter.call(input, 'existing');
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-    expect(textOf(dialog)).not.toContain('already');
-    unmount();
+      // A name already in use: a message that exists only in this state.
+      const input = dialog.querySelector('input') as HTMLInputElement;
+      await act(async () => {
+        const setter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value',
+        )!.set!;
+        setter.call(input, 'taken');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      expect(textOf(dialog)).toContain('«additionalProperties.nameTaken»');
+      expect(textOf(dialog)).not.toContain('already');
+    } finally {
+      unmount();
+    }
   });
 
   it('every default has a key, so nothing is looked up by its English text', () => {
