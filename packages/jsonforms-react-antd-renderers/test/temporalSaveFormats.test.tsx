@@ -257,7 +257,11 @@ describe('an explicit save format still wins', () => {
   the one place the "prevent choices" half of section 18 is observable.
 */
 describe('the picker refuses what the bounds exclude', () => {
-  const openCalendar = async (schema: any, options?: any) => {
+  const openCalendar = async (
+    schema: any,
+    options?: any,
+    config = { restrict: true },
+  ) => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const root = createRoot(container);
@@ -276,6 +280,7 @@ describe('the picker refuses what the bounds exclude', () => {
             }
             renderers={antdRenderers}
             cells={antdCells}
+            config={config}
             onChange={() => undefined}
           />
         </ConfigProvider>,
@@ -334,9 +339,27 @@ describe('the picker refuses what the bounds exclude', () => {
   });
 
   /* "The preventive bound behavior above follows effective `restrict`." */
-  it('offers everything when restrict is off', async () => {
+  it('offers everything when flat config.restrict is false', async () => {
+    const view = await openCalendar(bounded, undefined, { restrict: false });
+    expect(view.disabledDays()).toEqual([]);
+    view.unmount();
+    document.body.innerHTML = '';
+  });
+
+  it('lets a local false override flat true', async () => {
     const view = await openCalendar(bounded, { restrict: false });
     expect(view.disabledDays()).toEqual([]);
+    view.unmount();
+    document.body.innerHTML = '';
+  });
+
+  it('lets a local true override flat false', async () => {
+    const view = await openCalendar(
+      bounded,
+      { restrict: true },
+      { restrict: false },
+    );
+    expect(view.disabledDays()).toContain('2026-09-30');
     view.unmount();
     document.body.innerHTML = '';
   });

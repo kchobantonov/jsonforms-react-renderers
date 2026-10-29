@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import {
   ControlProps,
+  defaultErrorTranslator,
+  getCombinedErrorMessage,
   and,
   rankWith,
   schemaMatches,
   uiTypeIs,
 } from '@jsonforms/core';
+import { useJsonForms } from '@jsonforms/react';
 import { Input } from '@jsonforms-react-shadcn-ui/input';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
@@ -14,10 +17,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@jsonforms-react-shadcn-ui/popover';
-import { X, Plus, ChevronDown } from 'lucide-react';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { X, Plus, ChevronDown, CircleAlert } from 'lucide-react';
+import {
+  useI18n,
+  useTranslator,
+} from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
 import {
   addChoice,
+  arrayChoiceItemErrors,
   arrayChoicesOf,
   asArrayValue,
   canAddChoice,
@@ -73,6 +81,8 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
   const [draft, setDraft] = useState('');
   const [search, setSearch] = useState('');
   const t = useI18n();
+  const context = useJsonForms();
+  const translate = useTranslator();
   if (!props.visible) return null;
   const { schema, rootSchema, data, path, handleChange } = props;
   const options = { ...props.config, ...props.uischema.options };
@@ -80,6 +90,31 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
   const dropdown = options.variant === 'multi-select';
   const values = asArrayValue(data);
   const choices = enumChoices(schema, rootSchema);
+  const [primary, additional] = displayableErrors(context.core ?? {});
+  const itemErrors = arrayChoiceItemErrors(
+    [...(primary ?? []), ...(additional ?? [])],
+    path,
+    values.length,
+  );
+  const itemSchema = resolveItemSchema(schema, rootSchema);
+  const itemMessages = itemErrors.map((errors, index) =>
+    getCombinedErrorMessage(
+      errors,
+      context.i18n?.translateError ?? defaultErrorTranslator,
+      translate,
+      itemSchema,
+      props.uischema,
+      path ? `${path}.${index}` : String(index),
+    ),
+  );
+  const errors = [
+    props.errors,
+    ...itemMessages.map((message, index) =>
+      message ? `${String(values[index])}: ${message}` : '',
+    ),
+  ]
+    .filter(Boolean)
+    .join('\n');
   const limits = {
     minItems: schema.minItems,
     maxItems: schema.maxItems,
@@ -154,11 +189,20 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
       {values.map((value, index) => (
         <span
           key={index}
-          className='inline-flex max-w-full items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-sm text-secondary-foreground'
+          className={`inline-flex max-w-full items-center gap-1 rounded-md border bg-secondary px-2 py-0.5 text-sm text-secondary-foreground ${itemMessages[index] ? 'border-destructive' : 'border-transparent'}`}
+          aria-invalid={Boolean(itemMessages[index])}
+          title={itemMessages[index] || undefined}
         >
           <span className='min-w-0 truncate' title={label(value)}>
             {label(value)}
           </span>
+          {itemMessages[index] ? (
+            <CircleAlert
+              className='h-3.5 w-3.5 text-destructive'
+              role='img'
+              aria-label={itemMessages[index]}
+            />
+          ) : null}
           <Button
             type='button'
             variant='ghost'
@@ -175,7 +219,7 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
     </>
   );
   return (
-    <InputShell {...props} id={id}>
+    <InputShell {...props} id={id} errors={errors}>
       {chips ? (
         <div className='flex min-w-0 flex-wrap items-center gap-2'>
           {pills}
@@ -185,6 +229,7 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
             value={draft}
             list={choices ? id + '-choices' : undefined}
             disabled={disabled || !canAddChoice(values, limits)}
+            aria-invalid={Boolean(errors)}
             placeholder={options.placeholder ?? t('chips.addPlaceholder')}
             onChange={(event) => setDraft(event.target.value)}
             onKeyDown={(event) => {
@@ -234,6 +279,7 @@ export const ShadcnArrayChoicesControl = (props: ControlProps) => {
                 size='icon'
                 aria-label={props.label}
                 disabled={disabled}
+                aria-invalid={Boolean(errors)}
                 className='h-7 w-7 shrink-0'
               >
                 <ChevronDown className='h-4 w-4' />

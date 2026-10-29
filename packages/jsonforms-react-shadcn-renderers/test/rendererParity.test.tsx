@@ -116,6 +116,36 @@ it('shows removable pills for multi-select without nesting buttons', () => {
   expect(data()).toEqual(['Post']);
 });
 
+it('marks an imported invalid multi-select pill and clears its field error on removal', () => {
+  const { container, data } = mount(
+    {
+      type: 'array',
+      items: { type: 'string', enum: ['Email', 'SMS'] },
+      uniqueItems: true,
+    },
+    { variant: 'multi-select' },
+    ['Email', 'Fax'],
+  );
+  expect(
+    container.querySelector('[aria-invalid="true"]')?.textContent,
+  ).toContain('Fax');
+  expect(container.querySelector('[role="alert"]')?.textContent).toContain(
+    'Fax',
+  );
+  const invalidPill = container.querySelector('span[aria-invalid="true"]');
+  expect(invalidPill?.classList.contains('border')).toBe(true);
+  expect(invalidPill?.classList.contains('border-destructive')).toBe(true);
+  expect(invalidPill?.classList.contains('ring-1')).toBe(false);
+  act(() =>
+    (
+      container.querySelector('[aria-label="Remove Fax"]') as HTMLButtonElement
+    ).click(),
+  );
+  act(() => vi.runAllTimers());
+  expect(data()).toEqual(['Email']);
+  expect(container.querySelector('[role="alert"]')).toBeNull();
+});
+
 it('renders empty and dotted property values without resolving the containing object', () => {
   const view = mount(
     { type: 'object', additionalProperties: { type: 'string' } },

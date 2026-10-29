@@ -232,7 +232,25 @@ describe('the multi-select control', () => {
     );
     await settle();
     expect(container.textContent).toContain('Fax');
+    expect(
+      container.querySelector('.ant-form-item-explain-error')?.textContent,
+    ).toContain('Fax');
+    expect(
+      container.querySelector('.ant-tag [aria-invalid="true"]')?.textContent,
+    ).toContain('Fax');
     expect(stored()).toEqual(['Email', 'Fax']);
+    const invalidTag = container
+      .querySelector('.ant-tag [aria-invalid="true"]')
+      ?.closest('.ant-tag');
+    act(() =>
+      invalidTag?.querySelector<HTMLElement>('.ant-tag-close-icon')?.click(),
+    );
+    await settle();
+    expect(stored()).toEqual(['Email']);
+    expect(
+      container.querySelector('.ant-form-item-explain-error')?.textContent ??
+        '',
+    ).not.toContain('Fax');
     unmount();
   });
 });

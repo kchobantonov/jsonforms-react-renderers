@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { temporalBounds } from '../src/temporalBounds';
+import { effectiveRestrict, temporalBounds } from '../src/temporalBounds';
 const DATE_FORMATS = ['YYYY-MM-DD'];
 const TIME_FORMATS = ['HH:mm:ssZ', 'HH:mm:ss', 'HH:mm'];
 describe('inclusive bounds', () => {
@@ -112,5 +112,22 @@ describe('several bounds at once', () => {
       'day',
     );
     expect(bounds.empty).toBe(true);
+  });
+});
+
+describe('effective temporal restriction', () => {
+  it('uses local, then flat config, and ignores the removed nested key', () => {
+    expect(effectiveRestrict(undefined, undefined)).toBe(true);
+    expect(effectiveRestrict(undefined, { restrict: false })).toBe(false);
+    expect(effectiveRestrict(undefined, { restrict: true })).toBe(true);
+    expect(
+      effectiveRestrict(undefined, { jsonformsExtended: { restrict: false } }),
+    ).toBe(true);
+    expect(effectiveRestrict({ restrict: false }, { restrict: true })).toBe(
+      false,
+    );
+    expect(effectiveRestrict({ restrict: true }, { restrict: false })).toBe(
+      true,
+    );
   });
 });

@@ -121,6 +121,9 @@ export const i18nDefaults = {
   'additionalProperties.rename': 'Rename property',
   'additionalProperties.renameNamed': 'Rename {name}',
   'additionalProperties.renameTitle': 'Rename property',
+  'additionalProperties.renameDialogDescription':
+    'Change the property name without changing its value.',
+  'additionalProperties.renamePropertyNameLabel': 'Property Name',
   'additionalProperties.renameConfirm': 'Rename',
   'additionalProperties.delete': 'Delete property',
   'additionalProperties.deleteNamed': 'Delete {name}',

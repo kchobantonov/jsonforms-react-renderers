@@ -88,7 +88,10 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'additionalProperties.addTo': 'Добавяне на свойство към {label}',
   'additionalProperties.rename': 'Преименуване на свойството',
   'additionalProperties.renameNamed': 'Преименуване на {name}',
-  'additionalProperties.renameTitle': 'Преименуване на свойството',
+  'additionalProperties.renameTitle': 'Преименуване на свойство',
+  'additionalProperties.renameDialogDescription':
+    'Променете името на свойството, без да променяте стойността му.',
+  'additionalProperties.renamePropertyNameLabel': 'Име на свойството',
   'additionalProperties.renameConfirm': 'Преименуване',
   'additionalProperties.delete': 'Изтриване на свойството',
   'additionalProperties.deleteNamed': 'Изтриване на {name}',

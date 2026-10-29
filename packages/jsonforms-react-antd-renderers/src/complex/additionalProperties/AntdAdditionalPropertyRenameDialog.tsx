@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Typography } from 'antd';
 import React from 'react';
 import { useI18n } from '../../util/translate';
 
@@ -31,24 +31,19 @@ export const AntdAdditionalPropertyRenameDialog = ({
       onCancel={onCancel}
       onOk={onRename}
       open={oldName !== null}
-      title={
-        oldName
-          ? t('additionalProperties.renameNamed', { name: oldName })
-          : t('additionalProperties.renameTitle')
-      }
+      title={t('additionalProperties.renameTitle')}
     >
+      <Typography.Paragraph type='secondary'>
+        {t('additionalProperties.renameDialogDescription')}
+      </Typography.Paragraph>
       <Form.Item
         help={error}
-        label={t('additionalProperties.namePlaceholder')}
+        label={t('additionalProperties.renamePropertyNameLabel')}
         validateStatus={error ? 'error' : undefined}
       >
         <Input
           autoFocus
-          aria-label={
-            oldName
-              ? t('additionalProperties.renameNamed', { name: oldName })
-              : t('additionalProperties.namePlaceholder')
-          }
+          aria-label={t('additionalProperties.renamePropertyNameLabel')}
           onChange={(event) => onChange(event.currentTarget.value)}
           onPressEnter={() => {
             if (!disabled) onRename();

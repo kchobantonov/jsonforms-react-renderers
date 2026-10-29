@@ -367,8 +367,23 @@ export const AdditionalProperties = ({
                   key={item.propertyName}
                 >
                   <div className='flex min-h-6 items-center justify-between gap-2 mb-2'>
-                    <span className='min-w-0 text-sm font-medium'>
-                      {item.propertyName || '\u00a0'}
+                    <span
+                      data-property-name-label={item.propertyName}
+                      className={`inline-flex min-w-0 items-center gap-1 text-sm font-medium ${
+                        nameErrors.has(item.propertyName)
+                          ? 'text-destructive'
+                          : ''
+                      }`}
+                    >
+                      <span className='min-w-0 break-all'>
+                        {item.propertyName || '\u00a0'}
+                      </span>
+                      {nameErrors.get(item.propertyName) && (
+                        <ErrorIndicator
+                          local
+                          errors={nameErrors.get(item.propertyName)!}
+                        />
+                      )}
                     </span>
                     {enabled ? (
                       <div className='jsonforms-additional-property-actions flex shrink-0 items-center gap-0.5'>
@@ -402,14 +417,6 @@ export const AdditionalProperties = ({
                       </div>
                     ) : null}
                   </div>
-                  {nameErrors.get(item.propertyName) && (
-                    <div className='flex min-h-6 items-center gap-1 pr-16 text-sm font-medium text-destructive'>
-                      <ErrorIndicator
-                        local
-                        errors={nameErrors.get(item.propertyName)!}
-                      />
-                    </div>
-                  )}
                   <div className='jsonforms-additional-property-control min-w-0'>
                     {needsIsolatedEditor(item.propertyName) ? (
                       <>
@@ -465,9 +472,9 @@ export const AdditionalProperties = ({
         >
           <DialogContent className='max-w-sm'>
             <DialogHeader>
-              <DialogTitle>Rename property</DialogTitle>
+              <DialogTitle>{t('additionalProperties.renameTitle')}</DialogTitle>
               <DialogDescription>
-                Change the property name without changing its value.
+                {t('additionalProperties.renameDialogDescription')}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -482,7 +489,7 @@ export const AdditionalProperties = ({
                 className='mb-2 block text-sm font-medium'
                 htmlFor='shadcn-rename-property'
               >
-                Property Name
+                {t('additionalProperties.renamePropertyNameLabel')}
               </label>
               <Input
                 id='shadcn-rename-property'
@@ -503,10 +510,10 @@ export const AdditionalProperties = ({
                   variant='outline'
                   onClick={closeRenameDialog}
                 >
-                  Cancel
+                  {t('combinator.cancel')}
                 </Button>
                 <Button type='submit' disabled={renameDisabled}>
-                  Rename
+                  {t('additionalProperties.renameConfirm')}
                 </Button>
               </DialogFooter>
             </form>

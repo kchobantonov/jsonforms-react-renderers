@@ -1,18 +1,24 @@
 import React from 'react';
-import { Select } from 'antd';
+import { Select, Tag, Tooltip } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import {
   ControlProps,
   RankedTester,
+  defaultErrorTranslator,
+  getCombinedErrorMessage,
   rankWith,
   and,
   uiTypeIs,
 } from '@jsonforms/core';
-import { withJsonFormsControlProps } from '@jsonforms/react';
+import { useJsonForms, withJsonFormsControlProps } from '@jsonforms/react';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { ControlFormItem } from '../util/cellMode';
 import { usePreTouchErrors } from '../util/preTouchErrors';
 import { useI18n } from '../util/translate';
 import {
   arrayChoicesOf,
+  arrayChoiceItemErrors,
   asArrayValue,
   canAddChoice,
   canRemoveChoice,
@@ -39,6 +45,8 @@ export const multiSelectControlTester: RankedTester = rankWith(
 
 export const MultiSelectControl = (props: ControlProps) => {
   const t = useI18n();
+  const context = useJsonForms();
+  const translate = useTranslator();
   const {
     data,
     enabled,
@@ -51,15 +59,6 @@ export const MultiSelectControl = (props: ControlProps) => {
     uischema,
     visible,
   } = props;
-  // See `usePreTouchErrors`; unchanged unless filtering is on.
-  const { errors, onFocus, onBlur } = usePreTouchErrors({
-    errors: props.errors,
-    path: props.path,
-    schema: props.schema,
-    uischema: props.uischema as any,
-    config: props.config,
-  });
-
   const options = {
     ...props.config,
     ...uischema.options,
@@ -67,6 +66,37 @@ export const MultiSelectControl = (props: ControlProps) => {
   const values = asArrayValue(data);
   const itemSchema = resolveItemSchema(schema, rootSchema);
   const choices = arrayChoicesOf(itemSchema) ?? [];
+  const [primary, additional] = displayableErrors(context.core ?? {});
+  const itemErrors = arrayChoiceItemErrors(
+    [...(primary ?? []), ...(additional ?? [])],
+    path,
+    values.length,
+  );
+  const itemMessages = itemErrors.map((errors, index) =>
+    getCombinedErrorMessage(
+      errors,
+      context.i18n?.translateError ?? defaultErrorTranslator,
+      translate,
+      itemSchema,
+      uischema,
+      path ? `${path}.${index}` : String(index),
+    ),
+  );
+  // See `usePreTouchErrors`; unchanged unless filtering is on.
+  const { errors, onFocus, onBlur } = usePreTouchErrors({
+    errors: [
+      props.errors,
+      ...itemMessages.map((message, index) =>
+        message ? `${String(values[index])}: ${message}` : '',
+      ),
+    ]
+      .filter(Boolean)
+      .join('\n'),
+    path,
+    schema,
+    uischema: uischema as any,
+    config: props.config,
+  });
   const limits = {
     minItems: schema.minItems,
     maxItems: schema.maxItems,
@@ -107,6 +137,29 @@ export const MultiSelectControl = (props: ControlProps) => {
         style={{ width: '100%' }}
         placeholder={options.placeholder}
         value={values}
+        status={errors ? 'error' : undefined}
+        tagRender={({ label: tagLabel, value, closable, onClose }) => {
+          const index = values.findIndex((entry) => sameChoice(entry, value));
+          const issue = errors && index >= 0 ? itemMessages[index] : '';
+          return (
+            <Tooltip title={issue || undefined}>
+              <Tag
+                color={issue ? 'red' : undefined}
+                closable={closable}
+                onClose={onClose}
+                onMouseDown={(event) => event.preventDefault()}
+              >
+                <span aria-invalid={Boolean(issue)}>{tagLabel}</span>
+                {issue ? (
+                  <ExclamationCircleOutlined
+                    aria-label={issue}
+                    style={{ marginInlineStart: 4 }}
+                  />
+                ) : null}
+              </Tag>
+            </Tooltip>
+          );
+        }}
         /*
           Searching filters the labels; it never creates a value. `mode="tags"`
           would, which is what makes it the wrong mode here even though it looks

@@ -103,6 +103,35 @@ describe('Shadcn AdditionalProperties', () => {
     expect(card?.textContent).not.toContain('Delete');
   });
 
+  it('keeps an invalid property-name indicator beside its red label', async () => {
+    await act(async () => {
+      root.render(
+        <JsonForms
+          data={{ 'sensor-deck-a': '4.5', 'sensor-x': '9.1' }}
+          schema={{ ...schema, propertyNames: { minLength: 9 } }}
+          uischema={{ type: 'Control', scope: '#/' }}
+          renderers={renderers}
+        />,
+      );
+    });
+
+    const label = container.querySelector<HTMLElement>(
+      '[data-property-name-label="sensor-x"]',
+    );
+    expect(label?.classList.contains('text-destructive')).toBe(true);
+    expect(label?.querySelector('button[aria-label]')).not.toBeNull();
+    expect(
+      label?.parentElement?.nextElementSibling?.classList.contains(
+        'jsonforms-additional-property-control',
+      ),
+    ).toBe(true);
+    const validLabel = container.querySelector<HTMLElement>(
+      '[data-property-name-label="sensor-deck-a"]',
+    );
+    expect(validLabel?.classList.contains('text-destructive')).toBe(false);
+    expect(validLabel?.querySelector('button[aria-label]')).toBeNull();
+  });
+
   it('opens property renaming in a Shadcn dialog', () => {
     act(() => {
       root.render(
@@ -123,6 +152,14 @@ describe('Shadcn AdditionalProperties', () => {
 
     expect(document.body.querySelector('[role="dialog"]')).not.toBeNull();
     expect(document.body.textContent).toContain('Rename property');
+    expect(document.body.textContent).toContain(
+      'Change the property name without changing its value.',
+    );
+    expect(
+      document.body.querySelector<HTMLLabelElement>(
+        'label[for="shadcn-rename-property"]',
+      )?.textContent,
+    ).toBe('Property Name');
     expect(
       document.body.querySelector<HTMLInputElement>('#shadcn-rename-property')
         ?.value,

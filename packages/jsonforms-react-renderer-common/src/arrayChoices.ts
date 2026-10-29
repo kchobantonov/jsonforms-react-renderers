@@ -1,4 +1,11 @@
-import { JsonSchema, Resolve, Tester, UISchemaElement } from '@jsonforms/core';
+import {
+  getControlPath,
+  JsonSchema,
+  Resolve,
+  Tester,
+  UISchemaElement,
+} from '@jsonforms/core';
+import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
 
 /**
@@ -13,6 +20,24 @@ export interface ArrayChoice {
   value: unknown;
   label: string;
 }
+
+/** Attribute direct item errors to their displayed pill without treating them as array errors. */
+export const arrayChoiceItemErrors = (
+  errors: readonly ErrorObject[],
+  path: string,
+  length: number,
+): ErrorObject[][] => {
+  const result: ErrorObject[][] = Array.from({ length }, () => []);
+  const prefix = path ? `${path}.` : '';
+  for (const error of errors) {
+    const target = getControlPath(error);
+    if (!target.startsWith(prefix)) continue;
+    const relative = target.slice(prefix.length);
+    if (!/^(0|[1-9]\d*)$/.test(relative)) continue;
+    result[Number(relative)]?.push(error);
+  }
+  return result;
+};
 
 /** The item schema, with a `$ref` followed. */
 export const resolveItemSchema = (

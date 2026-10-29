@@ -2,6 +2,7 @@
 export {
   resolveItemSchema,
   arrayChoicesOf,
+  arrayChoiceItemErrors,
   hasStringItems,
   isMultiSelectControl,
   isChipsControl,

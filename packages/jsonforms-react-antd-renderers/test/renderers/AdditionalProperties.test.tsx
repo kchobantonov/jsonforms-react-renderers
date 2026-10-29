@@ -231,6 +231,41 @@ describe('AdditionalProperties', () => {
     ).not.toBeNull();
   });
 
+  it('uses the shared rename dialog copy', async () => {
+    act(() => {
+      root.render(
+        <JsonForms
+          data={{ string12: 'value' }}
+          schema={{
+            type: 'object',
+            additionalProperties: { type: 'string' },
+          }}
+          uischema={{ type: 'Control', scope: '#' }}
+          renderers={antdRenderers}
+        />,
+      );
+    });
+
+    act(() => {
+      container
+        .querySelector<HTMLButtonElement>('[aria-label="Rename string12"]')
+        ?.click();
+    });
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+
+    const dialog = document.body.querySelector<HTMLElement>('[role="dialog"]');
+    expect(dialog).not.toBeNull();
+    expect(dialog?.textContent).toContain('Rename property');
+    expect(dialog?.textContent).toContain(
+      'Change the property name without changing its value.',
+    );
+    expect(dialog?.querySelector('label')?.textContent).toContain(
+      'Property Name',
+    );
+  });
+
   it('aligns an unrestricted dynamic primitive type and control without a repeated input label', () => {
     act(() => {
       root.render(

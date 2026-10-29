@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { getData } from './datejs';
-import { JSONFORMS_EXTENDED_CONFIG_KEY } from './configNamespaces';
 
 /**
  * Picker limits from `formatMinimum` and friends.
@@ -122,25 +121,7 @@ export const temporalBounds = (
   return { min, max, empty };
 };
 
-/**
- * Whether preventive constraints apply, per section 15.
- *
- * The section states the default plainly - "`restrict`: shared preferred
- * default **true**" - and JSON Forms core's `configDefault` sets
- * `restrict: false`. A renderer that merges the form config and then asks
- * `restrict !== false` therefore gets `false` every time, and the
- * specification's default is unreachable: nothing the author omits can ever
- * turn it on.
- *
- * So the flat `config.restrict` is deliberately **not** consulted. It cannot
- * be told apart from core's seeded default once the two have been merged, and
- * treating that seed as an author's choice is what defeats the contract. The
- * resolution order is the project's usual one (adjustment 1), minus that step:
- *
- * 1. the element's own `options.restrict` - flat, as element options always are;
- * 2. `config.jsonformsExtended.restrict`, for a form-wide setting;
- * 3. `true`.
- */
+/** Preventive picker limits follow the local option, then flat form config. */
 export const effectiveRestrict = (
   options: Record<string, unknown> | undefined,
   config: unknown,
@@ -148,13 +129,8 @@ export const effectiveRestrict = (
   if (typeof options?.restrict === 'boolean') {
     return options.restrict;
   }
-  const extended = (config as Record<string, unknown> | undefined)?.[
-    JSONFORMS_EXTENDED_CONFIG_KEY
-  ] as Record<string, unknown> | undefined;
-  if (typeof extended?.restrict === 'boolean') {
-    return extended.restrict;
-  }
-  return true;
+  const flat = (config as Record<string, unknown> | undefined)?.restrict;
+  return typeof flat === 'boolean' ? flat : true;
 };
 
 /**

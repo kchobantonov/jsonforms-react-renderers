@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vite-plus/test';
 import {
   addChoice,
   arrayChoicesOf,
+  arrayChoiceItemErrors,
   canAddChoice,
   canRemoveChoice,
   isChipsControl,
@@ -11,6 +12,7 @@ import {
   removeChoiceAt,
   sameChoice,
 } from '../src/arrayChoices';
+import type { ErrorObject } from 'ajv';
 const enumItems = (extra: Record<string, unknown> = {}) => ({
   type: 'array',
   uniqueItems: true,
@@ -40,6 +42,19 @@ const test = (tester: any, variant: string | undefined, value: any) => {
     config: {},
   });
 };
+
+it('attributes an imported invalid choice to its pill without taking another array error', () => {
+  const error = (instancePath: string): ErrorObject => ({
+    instancePath,
+    keyword: 'enum',
+    params: { allowedValues: ['Email', 'SMS'] },
+    schemaPath: '#/properties/imported/items/enum',
+  });
+  const invalid = error('/imported/1');
+  expect(
+    arrayChoiceItemErrors([invalid, error('/other/1')], 'imported', 2),
+  ).toEqual([[], [invalid]]);
+});
 
 describe('selecting the array-choice variants', () => {
   it('takes multi-select for a unique array of enum strings', () => {
