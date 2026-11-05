@@ -6,7 +6,6 @@ import { ContainerIndicator, ErrorIcon } from './ContainerIndicator';
 export interface ValidationIndicatorProps {
   /** Eligible errors at or below the container, or undefined to omit it. */
   count?: number;
-
 }
 
 /**

@@ -413,6 +413,4 @@ describe('a rendered horizontal layout', () => {
     expect(view.items()[0].style.flex).toBe('0 0 calc(50% - 0.5 * 16px)');
     view.unmount();
   });
-
-
 });

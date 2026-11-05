@@ -116,7 +116,6 @@ describe('resolving options', () => {
   it('never takes the mask itself from config', () => {
     expect(resolveMaskSettings({}, { mask: '###-###' })).toBeUndefined();
   });
-
 });
 
 describe('building the token table', () => {

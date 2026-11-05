@@ -86,8 +86,6 @@ describe('the source fields are top-level', () => {
     expect(view.alts()).toEqual(['Company']);
     view.unmount();
   });
-
-
 });
 
 describe('src and scope are not fallbacks for one another', () => {
