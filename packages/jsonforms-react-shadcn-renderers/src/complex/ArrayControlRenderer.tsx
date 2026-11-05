@@ -264,16 +264,7 @@ export const ShadcnArrayRenderer = ({
     [ctx.uischemas, schema, uischema, path, rootSchema],
   );
   const childLabelProp =
-    uischema.options?.elementLabelProp ??
-    uischema.options?.childLabelProp ??
-    (typeof options.labelRef === 'string'
-      ? options.labelRef
-          .split('/properties/')
-          .slice(1)
-          .map((part: string) => part.replace(/~1/g, '/').replace(/~0/g, '~'))
-          .join('.') || undefined
-      : undefined) ??
-    getFirstPrimitiveProp(schema);
+    uischema.options?.elementLabelProp ?? getFirstPrimitiveProp(schema);
 
   const listWithDetail = (uischema.type as string) === 'ListWithDetail';
   const nestedItems = isObjectArrayWithNesting(

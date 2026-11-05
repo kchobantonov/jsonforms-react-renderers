@@ -27,7 +27,7 @@ it('renders the issue 1713 list inside categorization and delegates its nested d
             type: 'ListWithDetail',
             scope: '#/properties/experiments',
             options: {
-              labelRef: '#/items/properties/ID',
+              elementLabelProp: 'ID',
               detail: {
                 type: 'Categorization',
                 elements: [
@@ -82,7 +82,7 @@ it('shows avatars and per-item delete actions, and respects hideAvatar', async (
     type: 'ListWithDetail',
     scope: '#',
     options: {
-      labelRef: '#/items/properties/ID',
+      elementLabelProp: 'ID',
       confirmation: { delete: 'never' },
     },
   };

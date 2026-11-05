@@ -126,7 +126,7 @@ export const useGroupState = (
   };
 };
 
-/** Element options override namespaced defaults, then legacy flat defaults. */
+/** Element options override namespaced defaults. */
 const groupOption = (
   uischema: UISchemaElement,
   config: Record<string, unknown> | undefined,
@@ -135,11 +135,7 @@ const groupOption = (
   const namespaced = config?.[JSONFORMS_EXTENDED_CONFIG_KEY] as
     | Record<string, unknown>
     | undefined;
-  return (
-    uischema.options?.[name] ??
-    namespaced?.[name] ??
-    (name === 'collapsed' ? undefined : config?.[name])
-  );
+  return uischema.options?.[name] ?? namespaced?.[name];
 };
 
 /** Shared outer-frame expansion; independent of tree and array-item state. */

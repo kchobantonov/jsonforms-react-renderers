@@ -604,9 +604,7 @@ export class TableControl extends React.Component<
       translations,
       ...this.props,
       disableRemove: doDisableRemove,
-      showSortButtons:
-        appliedUiSchemaOptions.showSortButtons ||
-        appliedUiSchemaOptions.showArrayTableSortButtons,
+      showSortButtons: appliedUiSchemaOptions.showSortButtons,
       moveUpCreator: moveUp,
       moveDownCreator: moveDown,
     });

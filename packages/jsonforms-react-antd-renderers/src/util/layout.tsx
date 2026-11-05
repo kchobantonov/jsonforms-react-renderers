@@ -18,7 +18,6 @@ import { JsonFormsDispatch } from '@jsonforms/react';
 import {
   containerStyle,
   itemSizing,
-  legacySizingDiagnostics,
   resolveGap,
   resolveGridColumns,
   type LayoutContainerOptions,
@@ -62,7 +61,7 @@ export const renderLayoutElements = (
             gap,
             layoutOptions?.minItemWidth,
           );
-          const all = [...diagnostics, ...legacySizingDiagnostics(child)];
+          const all = diagnostics;
           return (
             <div
               key={`${path}-${index}`}

@@ -339,7 +339,7 @@ describe('the native profile', () => {
 });
 
 describe('the language-resolution category', () => {
-  /* "then config.defaultTemplateLang" - the fixture sets it to ractive. */
+  /* The fixture sets the namespaced default to ractive. */
   it('resolves a template with no lang from config', async () => {
     const view = draw();
     await view.selectTab('Language resolution');

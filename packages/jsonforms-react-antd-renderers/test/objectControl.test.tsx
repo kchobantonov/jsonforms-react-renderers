@@ -193,13 +193,11 @@ describe('where an object gets its layout', () => {
     view.unmount();
   });
 
-  // Legacy elements-only details are normalized to a VerticalLayout.
-  it('uses an elements-only detail without generating extra fields', async () => {
+  it('falls back to generated fields for an incomplete detail layout', async () => {
     const view = draw();
     await settle();
     expect(view.valueOf('For coordinator')).toBe('Call on arrival');
-    // Only the explicitly authored field belongs in the detail.
-    expect(view.valueOf('For office')).toBeUndefined();
+    expect(view.valueOf('For office')).toBe('Room 3');
     view.unmount();
   });
 

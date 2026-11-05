@@ -51,23 +51,23 @@ describe('shared presentation renderers', () => {
     [null, '32px'],
     [NaN, '32px'],
     [Infinity, '32px'],
-  ])('normalizes spacer height %s to %s', (height, expected) => {
-    const spacer = render({ type: 'Spacer', options: { height } })
+  ])('normalizes spacer size %s to %s', (size, expected) => {
+    const spacer = render({ type: 'Spacer', size } as UISchemaElement)
       .firstElementChild as HTMLElement;
     expect(spacer.style.height).toBe(expected);
     expect(spacer.style.flexShrink).toBe('0');
     expect(spacer.getAttribute('aria-hidden')).toBe('true');
   });
 
-  test('inherits legacy spacer height while images require an element source', () => {
+  test('ignores config defaults while images require an element source', () => {
     const config = { height: 48, src: '/default.png', alt: 'Default' };
     expect(
       (render({ type: 'Spacer' }, config).firstElementChild as HTMLElement)
         .style.height,
-    ).toBe('48px');
+    ).toBe('32px');
     expect(
       (
-        render({ type: 'Spacer', options: { height: 16 } }, config)
+        render({ type: 'Spacer', size: 16 } as UISchemaElement, config)
           .firstElementChild as HTMLElement
       ).style.height,
     ).toBe('16px');
@@ -95,7 +95,8 @@ describe('shared presentation renderers', () => {
   test('renders responsive images with alternative text', () => {
     const img = render({
       type: 'ImageView',
-      options: { src: '/example.png', alt: 'Example' },
+      src: '/example.png',
+      alt: 'Example',
     }).querySelector('img')!;
     expect(img.getAttribute('src')).toBe('/example.png');
     expect(img.alt).toBe('Example');
@@ -104,7 +105,8 @@ describe('shared presentation renderers', () => {
     expect(
       render({
         type: 'ImageView',
-        options: { src: '/example.png', alt: 12 },
+        src: '/example.png',
+        alt: '',
       }).querySelector('img')!.alt,
     ).toBe('');
   });

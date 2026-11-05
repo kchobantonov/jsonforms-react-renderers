@@ -36,8 +36,7 @@ export const countBlockingMarkers = (markers: EditorMarker[] | undefined) =>
 /**
  * Whether this editor publishes into the form's additional errors.
  *
- * Resolution is element option, then the namespaced form config, then the flat
- * one - the order every other option in this renderer set uses.
+ * Resolution is element option, then namespaced form config.
  *
  * **The default is `false`, and the portable contract says `true`.** That is a
  * deliberate divergence, recorded in adjustment 31: publishing turns a
@@ -59,9 +58,7 @@ export const resolvePropagateErrors = (
   if (namespaced?.propagateErrors !== undefined) {
     return namespaced.propagateErrors === true;
   }
-  const flat = (config as { propagateErrors?: unknown } | undefined)
-    ?.propagateErrors;
-  return flat === true;
+  return false;
 };
 
 /** `a.b.0.c` - JSON Forms' path spelling - as the JSON Pointer `/a/b/0/c`. */

@@ -117,26 +117,6 @@ describe('resolving options', () => {
     expect(resolveMaskSettings({}, { mask: '###-###' })).toBeUndefined();
   });
 
-  it('prefers tokens over maskReplacers rather than merging them', () => {
-    const settings = resolveMaskSettings(
-      {
-        mask: '##',
-        tokens: { '#': '[0-1]' },
-        maskReplacers: { '#': '[7-9]' },
-      },
-      undefined,
-    )!;
-    expect('1').toMatch(settings.tokens['#'].pattern);
-    expect('8').not.toMatch(settings.tokens['#'].pattern);
-  });
-
-  it('accepts maskReplacers on its own, for documents written before tokens', () => {
-    const settings = resolveMaskSettings(
-      { mask: '##', maskReplacers: { '#': '[7-9]' } },
-      undefined,
-    )!;
-    expect('8').toMatch(settings.tokens['#'].pattern);
-  });
 });
 
 describe('building the token table', () => {

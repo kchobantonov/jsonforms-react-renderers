@@ -191,15 +191,6 @@ it.each([
     true,
     'Inline name',
   ],
-  [
-    {
-      elements: [
-        { type: 'Control', scope: '#/properties/name', label: 'Inline name' },
-      ],
-    },
-    true,
-    'Inline name',
-  ],
 ])(
   'resolves branch detail %j with registry=%s',
   async (detail, registered, label) => {

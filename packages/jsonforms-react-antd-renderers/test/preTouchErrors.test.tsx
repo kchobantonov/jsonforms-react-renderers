@@ -154,8 +154,8 @@ describe('the fixture itself', () => {
 
     const bg = draw(undefined, 'bg');
     await settle();
-    expect(bg.messageFor('Legal name')).toBe('Полето е задължително.');
-    expect(bg.messageFor('Member number')).toContain('седем цифри');
+    expect(bg.messageFor('Юридическо име')).toBe('Полето е задължително.');
+    expect(bg.messageFor('Членски номер')).toContain('седем цифри');
     bg.unmount();
   });
 

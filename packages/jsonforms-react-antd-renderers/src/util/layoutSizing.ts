@@ -14,7 +14,6 @@ export {
   spanBasis,
   itemOptionsOf,
   itemSizing,
-  legacySizingDiagnostics,
 } from '@chobantonov/jsonforms-react-renderer-common/layoutSizing';
 export type {
   Dimension,

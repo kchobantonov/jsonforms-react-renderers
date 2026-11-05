@@ -133,8 +133,7 @@ describe('Group collapse and data indicator', () => {
       expect(container.querySelector('.ant-card')).not.toBeNull();
       expect(toggle()?.getAttribute('aria-expanded') ?? 'true').toBe('true');
       await render({ ...group, options: {} }, 0, {
-        collapsible: true,
-        jsonformsExtended: { collapsed: true },
+        jsonformsExtended: { collapsible: true, collapsed: true },
       });
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
       await render({

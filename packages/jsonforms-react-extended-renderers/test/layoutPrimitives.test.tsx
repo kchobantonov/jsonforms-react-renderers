@@ -15,11 +15,10 @@ import { SeparatorRendererComponent } from '../src/renderers/SeparatorRenderer';
   review had recorded as divergent.
 */
 
-const spacer = (uischema: any, config?: any) =>
+const spacer = (uischema: any) =>
   SpacerRendererComponent({
     uischema,
     visible: true,
-    config,
   } as any) as React.ReactElement | null;
 
 describe('Spacer', () => {
@@ -31,10 +30,6 @@ describe('Spacer', () => {
     expect(spacer({ type: 'Spacer' })!.props.style.height).toBe('32px');
   });
 
-  /*
-    **`size` is a top-level field.** It used to read `options.height` only, so
-    a conformant `{"type":"Spacer","size":16}` silently fell back to 32.
-  */
   it('reads the top-level size', () => {
     expect(spacer({ type: 'Spacer', size: 16 })!.props.style.height).toBe(
       '16px',
@@ -45,20 +40,6 @@ describe('Spacer', () => {
     expect(spacer({ type: 'Spacer', size: '2rem' })!.props.style.height).toBe(
       '2rem',
     );
-  });
-
-  /* The superseded spelling still works, so existing forms do not shift. */
-  it('still honours the older options.height', () => {
-    expect(
-      spacer({ type: 'Spacer', options: { height: 8 } })!.props.style.height,
-    ).toBe('8px');
-  });
-
-  it('prefers size over the older spelling', () => {
-    expect(
-      spacer({ type: 'Spacer', size: 4, options: { height: 99 } })!.props.style
-        .height,
-    ).toBe('4px');
   });
 
   /*

@@ -41,19 +41,7 @@ it('carries generation through delegated controls and preserves registry modes',
     ),
   ).toBe(fallback);
 });
-it('normalizes legacy inline layouts and falls back when no registry matches', () => {
-  const elements = [{ type: 'Control', scope: '#/properties/name' }];
-  expect(
-    resolveEditorDetail(
-      { elements },
-      registry,
-      schema,
-      '#',
-      'record',
-      schema,
-      fallback,
-    ),
-  ).toEqual({ type: 'VerticalLayout', elements });
+it('falls back when no registry matches', () => {
   expect(
     resolveEditorDetail(
       'REGISTERED',

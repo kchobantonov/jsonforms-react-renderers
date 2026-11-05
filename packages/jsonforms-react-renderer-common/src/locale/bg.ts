@@ -76,11 +76,6 @@ export const bgRendererLocale: RendererLocaleCatalog = {
     'Данните, които новият избор не описва, ще бъдат отхвърлени.',
   'confirm.accept': 'Да',
   'confirm.decline': 'Не',
-  'combinator.clearFormTitle': 'Изчистване на формуляра?',
-  'combinator.clearFormMessage':
-    'Данните ви ще бъдат изчистени, ако напуснете този раздел. Желаете ли да продължите?',
-  'combinator.clearFormConfirm': 'Да',
-  'combinator.clearFormDecline': 'Не',
   'combinator.cancel': 'Отказ',
   'additionalProperties.title': 'Допълнителни свойства',
   'additionalProperties.namePlaceholder': 'Име на свойството',

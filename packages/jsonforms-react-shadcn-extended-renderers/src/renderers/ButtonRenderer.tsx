@@ -38,18 +38,15 @@ export const ShadcnButtonRenderer = ({
   const [loading, setLoading] = React.useState(false);
   if (!visible) return null;
   const options = uischema.options ?? {};
-  const label =
-    options.label ??
-    options.text ??
-    uischema.label ??
-    uischema.text ??
-    uischema.name ??
-    'Action';
-  const configuredAction = options.action ?? uischema.action;
-  const action = configuredAction ?? uischema.name ?? label;
-  const params = options.params ?? uischema.params;
-  const script = options.script ?? uischema.script;
-  const color = options.color ?? uischema.color;
+  const label = uischema.label ?? uischema.text ?? uischema.name ?? 'Action';
+  const configuredAction = uischema.action;
+  const script = uischema.script;
+  const action =
+    configuredAction ??
+    (script === undefined ? uischema.name : undefined) ??
+    '';
+  const params = uischema.params;
+  const color = uischema.color;
   const variants = {
     primary: 'default',
     secondary: 'outline',
@@ -78,7 +75,7 @@ export const ShadcnButtonRenderer = ({
         if (loading) return;
         setLoading(true);
         try {
-          if (configuredAction && handleAction) {
+          if (configuredAction !== undefined && handleAction) {
             await handleAction({ action, label, params, element: uischema });
           } else if (script) {
             const AsyncFunction = Object.getPrototypeOf(async function () {

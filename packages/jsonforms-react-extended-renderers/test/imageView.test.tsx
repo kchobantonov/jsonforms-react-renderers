@@ -87,29 +87,7 @@ describe('the source fields are top-level', () => {
     view.unmount();
   });
 
-  /* The shape this renderer used to require, kept working on purpose. */
-  it('still reads the legacy options.src', () => {
-    const view = draw({
-      type: 'ImageView',
-      options: { src: '/images/legacy.png', alt: 'Legacy' },
-    });
-    expect(view.images()).toEqual(['/images/legacy.png']);
-    view.unmount();
-  });
 
-  it('prefers the top-level field when both are present', () => {
-    const resolved = resolveImageView(
-      {
-        type: 'ImageView',
-        src: '/top.png',
-        alt: 'Top',
-        options: { src: '/legacy.png', alt: 'Legacy' },
-      } as any,
-      {},
-    );
-    expect(resolved.src).toBe('/top.png');
-    expect(resolved.alt).toBe('Top');
-  });
 });
 
 describe('src and scope are not fallbacks for one another', () => {

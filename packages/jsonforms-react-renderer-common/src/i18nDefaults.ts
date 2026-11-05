@@ -105,12 +105,6 @@ export const i18nDefaults = {
   'confirm.accept': 'Yes',
   'confirm.decline': 'No',
 
-  // oneOf / anyOf branch switching
-  'combinator.clearFormTitle': 'Clear form?',
-  'combinator.clearFormMessage':
-    'Your data will be cleared if you navigate away from this tab. Do you want to proceed?',
-  'combinator.clearFormConfirm': 'Yes',
-  'combinator.clearFormDecline': 'No',
   'combinator.cancel': 'Cancel',
 
   // Additional (dynamic) properties editor

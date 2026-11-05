@@ -9,10 +9,7 @@ import { extendedConfig } from './configNamespaces';
  * explicit lang, then the configured default, then ractive for the
  * default web profile. Keep that existing config name."
  *
- * `defaultTemplateLang` is read from `config.jsonformsExtended`, with the
- * specification's flat `config.defaultTemplateLang` still honoured beneath it.
- * Adjustment 1 puts every form-wide setting in the namespace; the key keeps
- * the name the specification gives it.
+ * `defaultTemplateLang` is read from `config.jsonformsExtended`.
  */
 
 /** The engines this renderer set implements. */
@@ -114,23 +111,10 @@ export const resolveTemplateLang = (
       : { requested: String(requested), diagnostic: 'unsupported' };
   }
 
-  /*
-    Namespaced, per adjustment 1: element options stay flat, form-wide
-    settings live under `jsonformsExtended`. The specification spells this one
-    `config.defaultTemplateLang` and says to keep the name - the *name* is
-    kept, and only its namespace changes, which is the project-wide rule for
-    every other config key.
-
-    The flat spelling is still read underneath, so forms written against the
-    specification's literal wording keep working.
-  */
   const namespaced = extendedConfig(config) as
     | { defaultTemplateLang?: unknown }
     | undefined;
-  const configured =
-    namespaced?.defaultTemplateLang ??
-    (config as { defaultTemplateLang?: unknown } | undefined)
-      ?.defaultTemplateLang;
+  const configured = namespaced?.defaultTemplateLang;
   if (configured !== undefined) {
     const fromConfig = asLang(configured);
     return fromConfig

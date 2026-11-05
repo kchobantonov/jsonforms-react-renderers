@@ -13,7 +13,7 @@ import { flushUntil } from './support/flush';
 /*
   Two template engines, selected per element.
 
-  `lang` chooses the engine, `config.defaultTemplateLang` supplies the default,
+  `lang` chooses the engine, `config.jsonformsExtended.defaultTemplateLang` supplies the default,
   and `ractive` is the default of last resort. Both engines compile strings
   into executable code, so both are gated on `allowScriptEvaluation`.
 */
@@ -166,14 +166,20 @@ describe('choosing the engine', () => {
     jsxSyntaxUnderRactive.unmount();
   });
 
-  /* "Resolve the language from explicit lang, then config.defaultTemplateLang" */
+  /* Resolve explicit lang, then the namespaced configured default. */
   it('falls back to defaultTemplateLang when lang is absent', async () => {
     const view = draw(
       {
         type: 'TemplateLayout',
         template: '<div data-out>Hi {data.firstName}</div>',
       },
-      { ...allowed, defaultTemplateLang: 'jsx' },
+      {
+        ...allowed,
+        jsonformsExtended: {
+          ...allowed.jsonformsExtended,
+          defaultTemplateLang: 'jsx',
+        },
+      },
     );
     await settle();
     expect(view.text()).toContain('Hi Ada');
@@ -198,7 +204,10 @@ describe('choosing the engine', () => {
   it('prefers explicit lang over the configured default', async () => {
     const view = draw(ractiveLayout(), {
       ...allowed,
-      defaultTemplateLang: 'jsx',
+      jsonformsExtended: {
+        ...allowed.jsonformsExtended,
+        defaultTemplateLang: 'jsx',
+      },
     });
     await settle();
     expect(view.text()).toContain('Hello Ada');
@@ -226,7 +235,13 @@ describe('languages that cannot be honoured', () => {
   it('diagnoses an unknown defaultTemplateLang too', async () => {
     const view = draw(
       { type: 'TemplateLayout', template: '<div>x</div>' },
-      { ...allowed, defaultTemplateLang: 'mustache' },
+      {
+        ...allowed,
+        jsonformsExtended: {
+          ...allowed.jsonformsExtended,
+          defaultTemplateLang: 'mustache',
+        },
+      },
     );
     await settle();
     expect(view.diagnostic()).toBe('unsupported');
@@ -426,15 +441,6 @@ describe("naming a template's children", () => {
   });
 });
 
-/*
-  Where the configured default lives.
-
-  Adjustment 1 puts every form-wide setting under `jsonformsExtended` and
-  leaves element options flat. The specification spells this key
-  `config.defaultTemplateLang`; the **name** is kept and only the namespace
-  changes, with the flat spelling still honoured so a form written against the
-  specification's literal wording keeps working.
-*/
 describe('the configured default language', () => {
   const noLang = {
     type: 'TemplateLayout',
@@ -449,29 +455,6 @@ describe('the configured default language', () => {
       },
     });
     await settle();
-    expect(view.text()).toContain('Hi Ada');
-    view.unmount();
-  });
-
-  /* The specification's flat spelling still works. */
-  it('still honours the flat key underneath', async () => {
-    const view = draw(noLang, { ...allowed, defaultTemplateLang: 'jsx' });
-    await settle();
-    expect(view.text()).toContain('Hi Ada');
-    view.unmount();
-  });
-
-  it('prefers the namespaced one when both are set', async () => {
-    const view = draw(noLang, {
-      jsonformsExtended: {
-        security: { allowScriptEvaluation: true },
-        defaultTemplateLang: 'jsx',
-      },
-      // A leftover flat key must not override the namespaced setting.
-      defaultTemplateLang: 'ractive',
-    });
-    await settle();
-    // jsx interpolates `{data.firstName}`; ractive would print it literally.
     expect(view.text()).toContain('Hi Ada');
     view.unmount();
   });

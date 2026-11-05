@@ -1,7 +1,6 @@
 import { ControlElement, UISchemaElement, findUISchema } from '@jsonforms/core';
 
-/** Editor details use upstream mode semantics and retain their caller's scope
- * and fallback. A bare elements container is the legacy vertical-layout form. */
+/** Editor details use upstream mode semantics and retain their caller's scope and fallback. */
 export const findDetailUISchema: typeof findUISchema = (
   registry,
   schema,
@@ -12,13 +11,6 @@ export const findDetailUISchema: typeof findUISchema = (
   rootSchema,
 ) => {
   const detail = control?.options?.detail;
-  const normalized =
-    detail &&
-    typeof detail === 'object' &&
-    !detail.type &&
-    Array.isArray(detail.elements)
-      ? { ...detail, type: 'VerticalLayout' }
-      : detail;
   const generate =
     typeof detail === 'string' && detail.toUpperCase() === 'GENERATE';
   const guardedFallback =
@@ -38,9 +30,7 @@ export const findDetailUISchema: typeof findUISchema = (
     schemaPath,
     path,
     guardedFallback,
-    control
-      ? { ...control, options: { ...control.options, detail: normalized } }
-      : undefined,
+    control,
     rootSchema,
   );
 };

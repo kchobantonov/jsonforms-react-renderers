@@ -87,12 +87,9 @@ export type ButtonUiSchemaBase = BaseUISchemaElement & {
   color?: ButtonSemanticColor;
   params?: Record<string, unknown>;
   options?: {
-    action?: string;
-    label?: string;
-    text?: string;
     disabled?: boolean;
     fullWidth?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 };
 
@@ -188,8 +185,6 @@ export const createButtonRenderer = ({
     const element = uischema;
     const label =
       deriveLabelForUISchemaElement(element as any, t) ??
-      element.options?.label ??
-      element.options?.text ??
       element.label ??
       element.text ??
       element.name ??
@@ -200,8 +195,9 @@ export const createButtonRenderer = ({
       host answering `setLocale` in English would stop recognising the command
       once the form was in Bulgarian. `name` is stable and is kept.
     */
-    const action = element.action ?? element.options?.action ?? element.name;
     const script = element.script;
+    const action =
+      element.action ?? (script === undefined ? element.name : undefined);
     // "Missing optional Button params are normalized to `{}` when
     // constructing ActionEvent", so a host can read `event.params.x` without
     // guarding every access.

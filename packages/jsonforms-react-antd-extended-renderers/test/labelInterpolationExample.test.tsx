@@ -80,9 +80,13 @@ const draw = async (tab: string, locale = 'en') => {
   await settle();
 
   const openTab = async (label: string) => {
+    const translatedLabel = translatorFor(translations as any, locale)(
+      label,
+      label,
+    );
     const found = Array.from(
       container.querySelectorAll<HTMLElement>('.ant-tabs-tab'),
-    ).find((candidate) => candidate.textContent?.trim() === label);
+    ).find((candidate) => candidate.textContent?.trim() === translatedLabel);
     if (!found) {
       throw new Error(`no tab labelled ${label}`);
     }

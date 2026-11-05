@@ -414,23 +414,5 @@ describe('a rendered horizontal layout', () => {
     view.unmount();
   });
 
-  /*
-    The two names the portable contract replaces. Both are reported rather than
-    ignored, because a form carrying them would otherwise be silently the wrong
-    size.
-  */
-  it('diagnoses the excluded columns and trim options', async () => {
-    const view = render({
-      type: 'HorizontalLayout',
-      elements: [
-        control('#/properties/a', undefined, { columns: 4 }),
-        control('#/properties/b', undefined, { trim: true }),
-      ],
-    });
-    await settle();
-    const all = view.diagnostics().join(' ');
-    expect(all).toContain('`columns` is not part of the portable contract');
-    expect(all).toContain('`trim` is excluded by the portable contract');
-    view.unmount();
-  });
+
 });

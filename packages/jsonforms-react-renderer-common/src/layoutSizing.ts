@@ -367,30 +367,3 @@ export const itemSizing = (
 
   return { style, diagnostics };
 };
-
-/**
- * Options a layout carries that this model does not define.
- *
- * `columns` is the one worth naming: it is the 2-16 encoding the Svelte and
- * Vuetify renderer families use, and the portable contract replaces it with
- * `options.layout.span` against a configurable `gridColumns`. A form carrying
- * it gets a diagnostic rather than silence, because the sizes would otherwise
- * be quietly wrong.
- */
-export const legacySizingDiagnostics = (
-  element: UISchemaElement | undefined,
-): string[] => {
-  const options = (element as { options?: Record<string, unknown> })?.options;
-  const diagnostics: string[] = [];
-  if (options?.['columns'] !== undefined) {
-    diagnostics.push(
-      '`columns` is not part of the portable contract; use `options.layout.span` with `gridColumns`.',
-    );
-  }
-  if (options?.['trim'] !== undefined) {
-    diagnostics.push(
-      '`trim` is excluded by the portable contract; use `options.layout.width` or `maxWidth`.',
-    );
-  }
-  return diagnostics;
-};

@@ -20,17 +20,17 @@ export const TabSwitchConfirmDialog = ({
   const t = useI18n();
   return (
     <Modal
-      title={t('combinator.clearFormTitle')}
+      title={t('confirm.branchChange.title')}
       open={open}
       afterClose={handleClose}
       onOk={confirm}
       onCancel={cancel}
-      okText={t('combinator.clearFormConfirm')}
-      cancelText={t('combinator.clearFormDecline')}
+      okText={t('confirm.accept')}
+      cancelText={t('confirm.decline')}
       aria-labelledby='alert-dialog-title'
       aria-describedby='alert-dialog-description'
     >
-      <p>{t('combinator.clearFormMessage')}</p>
+      <p>{t('confirm.branchChange.message')}</p>
     </Modal>
   );
 };

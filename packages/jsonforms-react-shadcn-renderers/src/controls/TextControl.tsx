@@ -15,7 +15,7 @@ import { Textarea } from '@jsonforms-react-shadcn-ui/textarea';
 
 export const ShadcnTextControl = (props: ControlProps) => {
   if (!props.visible) return null;
-  if (!(props.uischema.options?.multi || props.uischema.options?.multiLine)) {
+  if (!props.uischema.options?.multi) {
     return <ShadcnInputControl {...props} type='text' />;
   }
   const id = makeId(props.path, props.label);

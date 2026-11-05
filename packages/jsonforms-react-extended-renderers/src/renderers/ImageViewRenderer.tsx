@@ -92,26 +92,8 @@ export const resolveImageView = (
   },
 ): ResolvedImageView => {
   const diagnostics: ImageViewDiagnostic[] = [];
-  const options = (element as { options?: Record<string, unknown> }).options;
-
-  /*
-    `options.src` / `options.alt` are where this renderer used to read from,
-    before the top-level fields existed. Kept as a fallback so forms authored
-    against the old shape keep working; the top-level field wins when both are
-    present. See adjustment 23.
-  */
-  const src =
-    element.src !== undefined
-      ? element.src
-      : typeof options?.src === 'string'
-        ? (options.src as string)
-        : undefined;
-  const altField =
-    element.alt !== undefined
-      ? element.alt
-      : typeof options?.alt === 'string'
-        ? (options.alt as string)
-        : undefined;
+  const src = element.src;
+  const altField = element.alt;
 
   /*
     `alt` is required, and `alt: ""` is the documented way to mark an image

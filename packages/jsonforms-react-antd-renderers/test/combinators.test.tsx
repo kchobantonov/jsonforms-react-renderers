@@ -177,8 +177,11 @@ const draw = (schema: any, data: any, config?: any) => {
       expect(tab, `no tab ${label}`).toBeTruthy();
       act(() => tab!.click());
     },
-    /** The shared branchChange dialog: "Clear form?", Yes / No. */
+    /** The shared branchChange dialog: "Change the selection?", Yes / No. */
     answer: async (text: 'Yes' | 'No') => {
+      expect(document.querySelector('.ant-modal-title')?.textContent).toBe(
+        'Change the selection?',
+      );
       const button = Array.from(
         document.querySelectorAll<HTMLButtonElement>(
           '.ant-modal-footer button',

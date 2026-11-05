@@ -125,9 +125,7 @@ const ArrayLayoutComponent = (
     () => merge({}, config, uischema.options),
     [config, uischema.options],
   );
-  const showSortButtons =
-    appliedUiSchemaOptions.showSortButtons ||
-    appliedUiSchemaOptions.showArrayLayoutSortButtons;
+  const showSortButtons = appliedUiSchemaOptions.showSortButtons;
 
   const hideAvatar = appliedUiSchemaOptions.hideAvatar === true;
   const avatarStyle = useMemo(
@@ -300,9 +298,7 @@ const ArrayLayoutComponent = (
 
   const childLabelForIndex = (childPath: string, index: number) => {
     const childLabelProp =
-      uischema.options?.elementLabelProp ??
-      uischema.options?.childLabelProp ??
-      getFirstPrimitiveProp(schema);
+      uischema.options?.elementLabelProp ?? getFirstPrimitiveProp(schema);
     if (!childLabelProp) {
       return `${index}`;
     }

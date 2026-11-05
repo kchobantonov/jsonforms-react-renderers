@@ -186,10 +186,7 @@ export const resolveMaskSettings = (
     ...(config as Record<string, unknown> | undefined),
     ...(options as Record<string, unknown> | undefined),
   };
-  // `maskReplacers` is the older spelling of `tokens`. The specification says
-  // `tokens` wins outright when both are present rather than the two merging,
-  // which is what the inspected families do.
-  const specs = applied.tokens ?? applied.maskReplacers;
+  const specs = applied.tokens;
 
   const flag = (name: keyof typeof DEFAULT_MASK_SETTINGS) =>
     (applied[name] ?? DEFAULT_MASK_SETTINGS[name]) === true;

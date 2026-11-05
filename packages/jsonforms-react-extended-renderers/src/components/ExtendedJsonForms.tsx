@@ -25,6 +25,48 @@ import {
   useHandleAction,
 } from '../renderers/actionContext';
 
+// Keep authored UI options at the published spellings before core resolves them.
+export const canonicalUiOptions = <T,>(value: T): T => {
+  if (Array.isArray(value)) return value.map(canonicalUiOptions) as T;
+  if (
+    value === null ||
+    typeof value !== 'object' ||
+    Object.getPrototypeOf(value) !== Object.prototype
+  )
+    return value;
+  const entries = Object.entries(value);
+  let changed = false;
+  const result: Record<string, unknown> = {};
+  for (const [key, child] of entries) {
+    if (
+      key === 'options' &&
+      typeof (value as { type?: unknown }).type === 'string' &&
+      child &&
+      typeof child === 'object' &&
+      !Array.isArray(child) &&
+      Object.prototype.hasOwnProperty.call(child, 'readOnly')
+    ) {
+      const { readOnly: _ignored, ...rest } = child as Record<string, unknown>;
+      result[key] = canonicalUiOptions(rest);
+      changed = true;
+    } else {
+      const normalized = canonicalUiOptions(child);
+      result[key] = normalized;
+      changed ||= normalized !== child;
+    }
+  }
+  return (changed ? result : value) as T;
+};
+
+const canonicalConfig = <T extends Record<string, unknown> | undefined>(
+  value: T,
+): T =>
+  value && Object.prototype.hasOwnProperty.call(value, 'readOnly')
+    ? (Object.fromEntries(
+        Object.entries(value).filter(([key]) => key !== 'readOnly'),
+      ) as T)
+    : value;
+
 /**
  * `<JsonForms>` with this renderer set's integration already wired.
  *
@@ -192,7 +234,7 @@ export const ExtendedJsonForms = ({
   const uischemaToUse = useMemo(
     () =>
       typeof uischema === 'object'
-        ? uischema
+        ? canonicalUiOptions(uischema)
         : Generate.uiSchema(schemaToUse, undefined, undefined, schemaToUse),
     [uischema, schemaToUse],
   );
@@ -211,6 +253,8 @@ export const ExtendedJsonForms = ({
     [effective, middleware],
   ) as typeof effective.middleware;
 
+  const configToUse = useMemo(() => canonicalConfig(config), [config]);
+
   const form = (
     <JsonFormsStateProvider
       initState={{
@@ -227,7 +271,7 @@ export const ExtendedJsonForms = ({
           */
           additionalErrors,
         } as never,
-        config,
+        config: configToUse,
         uischemas,
         renderers,
         cells,

@@ -62,12 +62,6 @@ describe('the propagateErrors option', () => {
     ).toBe(true);
   });
 
-  it('falls back to the flat form config beneath that', () => {
-    expect(resolvePropagateErrors(undefined, { propagateErrors: true })).toBe(
-      true,
-    );
-  });
-
   /* An element may switch it off for one editor in a form that has it on. */
   it('lets an element override the config in either direction', () => {
     expect(
@@ -79,7 +73,7 @@ describe('the propagateErrors option', () => {
     expect(
       resolvePropagateErrors(
         { propagateErrors: true },
-        { propagateErrors: false },
+        { jsonformsExtended: { propagateErrors: false } },
       ),
     ).toBe(true);
   });
