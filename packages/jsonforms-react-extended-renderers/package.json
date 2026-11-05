@@ -1,6 +1,6 @@
 {
   "name": "@chobantonov/jsonforms-react-extended-renderers",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Extended Renderer Set for JSON Forms",
   "repository": {
     "type": "git",
