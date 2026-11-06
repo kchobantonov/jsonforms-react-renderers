@@ -88,7 +88,9 @@ export const DemoWorkspace = ({
       )}
 
       {formOnly ? (
-        <UiPanel className={`${formCardClassName} standalone`}>{renderForm()}</UiPanel>
+        <UiPanel className={`${formCardClassName} standalone`}>
+          {renderForm()}
+        </UiPanel>
       ) : (
         <div className='demo-tabs'>
           <UiTabs
@@ -159,7 +161,9 @@ export const DemoWorkspace = ({
                   form={
                     <section className='demo-data-pane demo-form-pane'>
                       <UiTypography component='h3'>Demo</UiTypography>
-                      <UiPanel className={formCardClassName}>{renderForm()}</UiPanel>
+                      <UiPanel className={formCardClassName}>
+                        {renderForm()}
+                      </UiPanel>
                     </section>
                   }
                   data={

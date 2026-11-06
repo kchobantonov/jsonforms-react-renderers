@@ -67,11 +67,13 @@ it('translates action button labels through the form locale', () => {
           <JsonForms
             schema={{}}
             data={{}}
-            uischema={{
-              type: 'Button',
-              label: 'static-text.English',
-              action: 'changeLang',
-            } as any}
+            uischema={
+              {
+                type: 'Button',
+                label: 'static-text.English',
+                action: 'changeLang',
+              } as any
+            }
             renderers={shadcnExtendedRenderers}
             i18n={{
               locale,
