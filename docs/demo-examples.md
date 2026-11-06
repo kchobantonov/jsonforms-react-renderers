@@ -42,10 +42,10 @@ passed through to the demo; named lookup uses entry.uischema.name, while ordinar
 registered details use declarative match rules. Keep these registries when copying examples.
 
 An explicit empty schema {} permits any JSON value. An omitted schema requests
-inference, and omitted initial data must remain absent. demoSchema.ts currently
-wraps root values around core inference; its upstream #2478 TODO describes when
-to remove that workaround. Clearing the Schema editor and applying changes is
-how the demo switches from an explicit schema to inference.
+inference from JSON Forms 3.9.0-alpha.2, and omitted initial data must remain
+absent. The inferred schema follows changes to the root JSON type. Clearing the
+Schema editor and applying changes switches the demo from an explicit schema
+to inference.
 
 ## Add a host-specific example
 

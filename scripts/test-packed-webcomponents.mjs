@@ -38,8 +38,8 @@ const dependencies = {
   ...overrides,
   react: '18.3.1',
   'react-dom': '18.3.1',
-  '@jsonforms/core': '3.9.0-alpha.1',
-  '@jsonforms/react': '3.9.0-alpha.1',
+  '@jsonforms/core': workspace.catalog['@jsonforms/core'],
+  '@jsonforms/react': workspace.catalog['@jsonforms/react'],
 };
 for (const style of styles) {
   const name = `@chobantonov/jsonforms-react-${style}-webcomponent`;

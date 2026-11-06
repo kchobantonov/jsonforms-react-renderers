@@ -1,4 +1,3 @@
-import { demoSchema } from '../src/app/demoSchema';
 import { describe, expect, it } from 'vite-plus/test';
 import { createAjv, Generate } from '@jsonforms/core';
 import examples from '../src/examples';
@@ -26,7 +25,7 @@ describe('generic JSON examples', () => {
 });
 
 it('infers every root JSON type without writing an authored schema', () => {
-  expect(demoSchema(undefined, undefined)).toEqual({});
+  expect(Generate.jsonSchema(undefined)).toEqual({});
   for (const [value, type] of [
     [[], 'array'],
     ['text', 'string'],
@@ -35,8 +34,6 @@ it('infers every root JSON type without writing an authored schema', () => {
     [2, 'integer'],
     [1.5, 'number'],
   ] as const) {
-    expect(demoSchema(undefined, value).type).toBe(type);
+    expect(Generate.jsonSchema(value).type).toBe(type);
   }
-  const supplied = {};
-  expect(demoSchema(supplied, { name: 'Sample' })).toBe(supplied);
 });

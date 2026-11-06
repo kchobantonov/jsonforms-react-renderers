@@ -6,9 +6,9 @@
   "types": "src/index.tsx",
   "dependencies": {
     "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
-    "@jsonforms/core": "3.9.0-alpha.1",
-    "@jsonforms/examples": "3.9.0-alpha.1",
-    "@jsonforms/react": "3.9.0-alpha.1",
+    "@jsonforms/core": "catalog:",
+    "@jsonforms/examples": "catalog:",
+    "@jsonforms/react": "catalog:",
     "@monaco-editor/react": "^4.6.0",
     "json-refs": "3.0.15",
     "lodash": "^4.18.1",

@@ -68,12 +68,6 @@ Paths are under the corresponding packages in this repository.
       Antd TupleControlRenderer retains the documented re-rooting workaround.
       Remove it only after the installed core version contains the fix and tuple
       scoped-control regressions pass. Old full-suite counts are not current evidence.
-- [ ] **Root schema inference.** demo-common/src/app/demoSchema.ts wraps data for
-      core inference. Its TODO tracks JSON Forms PR #2478. After upgrading to a
-      released version containing the fix, test absent data, null, scalar/array roots
-      and regeneration, then remove the adapter and App.tsx override. Keep Monaco's
-      independent stale-schema cleanup. No claim about the PR's current merge status
-      is made by this source review.
 
 ## Open designs
 

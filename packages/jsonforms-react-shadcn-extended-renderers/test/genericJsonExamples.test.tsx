@@ -3,7 +3,6 @@ import {
   NullControlRenderer as NullRenderer,
   nullControlTester as nullTester,
 } from '../../jsonforms-react-shadcn-extended-renderers/src/renderers/NullControlRenderer';
-import { demoSchema } from '../../jsonforms-react-demo-common/src/app/demoSchema';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -22,7 +21,7 @@ it.each(['json-editor', 'json-inference'])(
     const root = createRoot(host);
     const render = (data: any) => (
       <JsonForms
-        schema={demoSchema(example.schema, data)}
+        schema={example.schema}
         uischema={example.uischema}
         data={data}
         renderers={[

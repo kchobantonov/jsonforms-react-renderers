@@ -44,13 +44,13 @@
     "ajv": "^8.20.0"
   },
   "peerDependencies": {
-    "@jsonforms/core": "3.9.0-alpha.1",
-    "@jsonforms/react": "3.9.0-alpha.1",
+    "@jsonforms/core": "catalog:",
+    "@jsonforms/react": "catalog:",
     "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@jsonforms/core": "3.9.0-alpha.1",
-    "@jsonforms/react": "3.9.0-alpha.1",
+    "@jsonforms/core": "catalog:",
+    "@jsonforms/react": "catalog:",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@types/lodash": "^4.14.149",
