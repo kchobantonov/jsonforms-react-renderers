@@ -48,6 +48,7 @@ import {
   CellProps,
   JsonSchema,
   composePaths,
+  createControlElement,
   createDefaultValue,
   createCleanLabel,
   getFirstPrimitiveProp,
@@ -257,7 +258,10 @@ export const ShadcnArrayRenderer = ({
         schema,
         uischema.scope,
         path,
-        undefined,
+        // `items: true` resolves to a boolean schema; its generated layout is empty.
+        typeof schema === 'boolean' && schema
+          ? () => createControlElement('#')
+          : undefined,
         uischema,
         rootSchema,
       ),

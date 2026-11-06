@@ -12,6 +12,7 @@ import {
   Resolve,
   composePaths,
   computeLabel,
+  createControlElement,
   createDefaultValue,
   errorsAt,
   formatErrorMessage,
@@ -273,7 +274,11 @@ const ArrayLayoutComponent = (
         schema,
         uischema.scope,
         path,
-        undefined,
+        // JSON Forms generates an empty layout for `items: true`; dispatch
+        // the unrestricted item as a Control so mixed values remain editable.
+        typeof schema === 'boolean' && schema
+          ? () => createControlElement('#')
+          : undefined,
         uischema,
         rootSchema,
       ),

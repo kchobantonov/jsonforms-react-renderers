@@ -1,6 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
+import type { JsonSchema } from '@jsonforms/core';
 import { shadcnRenderers, shadcnCells } from '../src';
 
 it('renders structured mixed values in a collapsible workspace and navigates nested values', () => {
@@ -85,6 +86,42 @@ it('renders structured mixed values in a collapsible workspace and navigates nes
     container.remove();
   }
 });
+
+it.each([
+  ['array', [[]]],
+  ['object', [{}]],
+])(
+  'renders an unrestricted array item of type %s with a View action',
+  (type, data) => {
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      act(() =>
+        root.render(
+          <JsonForms
+            schema={
+              {
+                type: ['array', 'object', 'string'],
+                items: true,
+              } as unknown as JsonSchema
+            }
+            uischema={{ type: 'Control', scope: '#' }}
+            data={data}
+            renderers={shadcnRenderers}
+            cells={shadcnCells}
+          />,
+        ),
+      );
+      const view = container.querySelector<HTMLButtonElement>(
+        'button[aria-label^="View "]',
+      );
+      expect(view).toBeTruthy();
+      expect(view?.parentElement?.textContent).toContain(type);
+    } finally {
+      act(() => root.unmount());
+    }
+  },
+);
 
 it('renders scalar type selection beside its editor', () => {
   const container = document.createElement('div');

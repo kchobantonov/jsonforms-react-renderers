@@ -500,7 +500,11 @@ describe('AntdMixedTree', () => {
       });
 
       const headers = container.querySelectorAll('.ant-collapse-header');
-      act(() => (headers[headers.length - 1] as HTMLElement).click());
+      expect(
+        headers[headers.length - 1]?.parentElement?.classList.contains(
+          'ant-collapse-item-active',
+        ),
+      ).toBe(true);
 
       const nested = container.querySelector(
         '.jsonforms-mixed-nested-navigation',
