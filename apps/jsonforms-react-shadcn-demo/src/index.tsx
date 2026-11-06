@@ -243,6 +243,7 @@ const ShadcnWrapper = ({
   children,
   rendererSettings,
   dark,
+  formThemeOverride,
   rtl,
 }: DemoWrapperProps) => {
   const style = React.useMemo(
@@ -256,7 +257,11 @@ const ShadcnWrapper = ({
 
   return (
     <div
-      className='shadcn-jsonforms-root'
+      className={
+        formThemeOverride
+          ? `shadcn-jsonforms-root form-theme-${dark ? 'dark' : 'light'}`
+          : 'shadcn-jsonforms-root'
+      }
       dir={rtl ? 'rtl' : undefined}
       style={{
         ...style,

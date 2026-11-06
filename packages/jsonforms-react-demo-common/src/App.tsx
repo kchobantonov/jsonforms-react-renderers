@@ -27,6 +27,7 @@ import {
   JsonFormsRendererRegistryEntry,
   ValidationMode,
 } from '@jsonforms/core';
+import { applyDemoHostAction } from './app/demoHostActions';
 import { DemoFormPanel } from './app/DemoFormPanel';
 import { DemoHome } from './app/DemoHome';
 import { useMonacoSchema } from './app/useMonacoSchema';
@@ -260,6 +261,8 @@ const App = ({
       ? initialPersisted.mode
       : 'system',
   );
+  const [formModeOverride, setFormModeOverride] = useState<'light' | 'dark'>();
+  const [formLocaleOverride, setFormLocaleOverride] = useState<string>();
   const [rtl, setRtl] = useState(false);
   const [readonly, setReadonly] = useState(initialQuery.readonly);
   const [locale, setLocale] = useState(
@@ -298,6 +301,9 @@ const App = ({
 
   const currentExample = examples[currentIndex];
   const dark = mode === 'dark' || (mode === 'system' && systemDark);
+  const formDark = formModeOverride ? formModeOverride === 'dark' : dark;
+  const formMode = formModeOverride ?? mode;
+  const formLocale = formLocaleOverride ?? locale;
   const actions: Action[] = currentExample.actions ?? [];
   useEffect(() => {
     let cancelled = false;
@@ -377,6 +383,8 @@ const App = ({
     (index: number, resetActiveTab = true) => {
       const example = examples[index];
       setIndex(index);
+      setFormModeOverride(undefined);
+      setFormLocaleOverride(undefined);
       setExampleProps(getProps(example, cells, renderers));
       setTranslations(exampleTranslations(example));
       updateModels(example);
@@ -482,15 +490,18 @@ const App = ({
       validationMode,
       i18n: {
         ...(translations
-          ? { locale, translate: translatorFor(translations, locale) }
-          : { ...exampleProps.i18n, locale }),
+          ? {
+              locale: formLocale,
+              translate: translatorFor(translations, formLocale),
+            }
+          : { ...exampleProps.i18n, locale: formLocale }),
         translateError: demoErrorTranslator,
       },
     }),
     [
       configOptions,
       exampleProps,
-      locale,
+      formLocale,
       readonly,
       translations,
       validationMode,
@@ -542,16 +553,19 @@ const App = ({
     The host's side of section 14's action path.
 
     A Button hands over an `ActionEvent` and awaits the result; what the
-    command means is the application's business, not the renderer's. The one
-    command understood here changes the form's language, which is the clearest
-    demonstration that `params` carry the argument - `setLocale` with
-    `{ "locale": "bg" }`, rather than one action per language.
+    command means is the application's business, not the renderer's. This
+    host handles locale and theme commands within the form. `setLocale` uses
+    `{ "locale": "bg" }`; the portable Job example uses `changeLang`
+    with `{ "lang": "bg" }` and `toggleMode`.
   */
   const handleAction = useCallback(
     async (event: ActionEvent) => {
-      const next = (event.params as { locale?: unknown } | undefined)?.locale;
-      if (event.action === 'setLocale' && typeof next === 'string') {
-        setLocale(next);
+      if (
+        applyDemoHostAction(event.action, event.params, {
+          setLocale: setFormLocaleOverride,
+          toggleMode: () => setFormModeOverride(formDark ? 'light' : 'dark'),
+        })
+      ) {
         return;
       }
       /*
@@ -586,7 +600,7 @@ const App = ({
         { message: `Action handled: ${event.label}` },
       ]);
     },
-    [errorStore],
+    [formDark, errorStore],
   );
 
   const renderForm = () => (
@@ -601,10 +615,11 @@ const App = ({
       Wrapper={Wrapper}
       webComponentTag={webComponentTag}
       useWebComponent={useWebComponent}
-      dark={dark}
-      mode={mode}
+      dark={formDark}
+      mode={formMode}
+      formThemeOverride={formModeOverride !== undefined}
       rtl={rtl}
-      locale={locale}
+      locale={formLocale}
       validationMode={validationMode}
       rendererSettings={rendererSettings}
       onFormContext={(i18n, allowScriptEvaluation) => {
@@ -664,6 +679,8 @@ const App = ({
       setModels={setModels}
       setTranslations={setTranslations}
       dark={dark}
+      formDark={formDark}
+      formThemeOverride={formModeOverride !== undefined}
       setData={setData}
       renderForm={renderForm}
     />

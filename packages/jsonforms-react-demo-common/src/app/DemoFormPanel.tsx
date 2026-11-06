@@ -40,6 +40,7 @@ export interface DemoFormPanelProps {
   useWebComponent: boolean;
   dark: boolean;
   mode: DemoMode;
+  formThemeOverride?: boolean;
   rtl: boolean;
   locale: string;
   validationMode: ValidationMode;
@@ -69,6 +70,7 @@ export const DemoFormPanel = ({
   useWebComponent,
   dark,
   mode,
+  formThemeOverride,
   rtl,
   locale,
   validationMode,
@@ -123,6 +125,7 @@ export const DemoFormPanel = ({
       rendererSettings={rendererSettings}
       dark={dark}
       mode={mode}
+      formThemeOverride={formThemeOverride}
       rtl={rtl}
       locale={locale}
     >

@@ -22,6 +22,7 @@ export type DemoWrapperProps = React.PropsWithChildren<{
   dark: boolean;
   mode: string;
   rtl: boolean;
+  formThemeOverride?: boolean;
   /**
    * The form's language tag.
    *

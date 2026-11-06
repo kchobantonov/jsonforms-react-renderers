@@ -2,10 +2,16 @@ import {
   LayoutProps,
   RankedTester,
   UISchemaElement,
+  deriveLabelForUISchemaElement,
   rankWith,
   uiTypeIs,
 } from '@jsonforms/core';
-import { useJsonForms, withJsonFormsLayoutProps } from '@jsonforms/react';
+import {
+  TranslateProps,
+  useJsonForms,
+  withJsonFormsLayoutProps,
+  withTranslateProps,
+} from '@jsonforms/react';
 import { useHandleAction } from '@chobantonov/jsonforms-react-extended-renderers';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 
@@ -32,13 +38,19 @@ export const ShadcnButtonRenderer = ({
   enabled,
   visible,
   uischema,
-}: LayoutProps & { uischema: ShadcnButtonElement }) => {
+  t,
+}: LayoutProps & TranslateProps & { uischema: ShadcnButtonElement }) => {
   const handleAction = useHandleAction();
   const jsonforms = useJsonForms();
   const [loading, setLoading] = React.useState(false);
   if (!visible) return null;
   const options = uischema.options ?? {};
-  const label = uischema.label ?? uischema.text ?? uischema.name ?? 'Action';
+  const label =
+    deriveLabelForUISchemaElement(uischema as any, t) ??
+    uischema.label ??
+    uischema.text ??
+    uischema.name ??
+    'Action';
   const configuredAction = uischema.action;
   const script = uischema.script;
   const action =
@@ -101,5 +113,6 @@ export const ShadcnButtonRenderer = ({
   );
 };
 
-export const ShadcnButtonRendererWithProps =
-  withJsonFormsLayoutProps(ShadcnButtonRenderer);
+export const ShadcnButtonRendererWithProps = withJsonFormsLayoutProps(
+  withTranslateProps(ShadcnButtonRenderer as any) as any,
+);

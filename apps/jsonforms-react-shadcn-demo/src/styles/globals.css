@@ -568,7 +568,8 @@ body {
 }
 
 @layer base {
-  :root {
+  :root,
+  .form-theme-light {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -592,7 +593,8 @@ body {
   }
 
   .dark,
-  .app-dark {
+  .app-dark,
+  .form-theme-dark {
     --background: 0 0% 8%;
     --foreground: 0 0% 98%;
     --card: 0 0% 9%;

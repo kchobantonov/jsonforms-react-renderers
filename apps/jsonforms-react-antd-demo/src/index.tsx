@@ -242,10 +242,46 @@ const AntdDemoShell = ({
   unless its locale is set. The chunk for a language is fetched the first time
   it is chosen, so switching language in the sidebar loads ~5 KB.
 */
+const AntdFormSurface = ({
+  children,
+  rendererSettings,
+  formThemeOverride,
+}: Pick<
+  DemoWrapperProps,
+  'children' | 'rendererSettings' | 'formThemeOverride'
+>) => {
+  const { token } = antTheme.useToken();
+  return (
+    <div
+      className={formThemeOverride ? 'renderer-form-theme' : undefined}
+      style={
+        formThemeOverride
+          ? {
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              borderRadius: token.borderRadiusLG,
+              padding: token.padding,
+            }
+          : undefined
+      }
+    >
+      <Form
+        layout='vertical'
+        variant={
+          (rendererSettings.inputVariant ?? 'outlined') as InputProps['variant']
+        }
+      >
+        {children}
+      </Form>
+    </div>
+  );
+};
+
 const AntdWrapper = ({
   children,
   rendererSettings,
   dark,
+  formThemeOverride,
   rtl,
   locale,
 }: DemoWrapperProps) => (
@@ -254,14 +290,12 @@ const AntdWrapper = ({
     theme={createTheme(dark)}
     locale={useAntdLocale(locale)}
   >
-    <Form
-      layout='vertical'
-      variant={
-        (rendererSettings.inputVariant ?? 'outlined') as InputProps['variant']
-      }
+    <AntdFormSurface
+      rendererSettings={rendererSettings}
+      formThemeOverride={formThemeOverride}
     >
       {children}
-    </Form>
+    </AntdFormSurface>
   </ConfigProvider>
 );
 

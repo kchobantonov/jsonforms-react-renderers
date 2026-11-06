@@ -52,3 +52,39 @@ it('does not override the host Button colors through renderer CSS', () => {
   );
   expect(css).not.toContain('.shadcn-jsonforms-button');
 });
+
+it('translates action button labels through the form locale', () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  try {
+    for (const [locale, label] of [
+      ['en', 'English'],
+      ['bg', 'Английски'],
+    ]) {
+      act(() =>
+        root.render(
+          <JsonForms
+            schema={{}}
+            data={{}}
+            uischema={{
+              type: 'Button',
+              label: 'static-text.English',
+              action: 'changeLang',
+            } as any}
+            renderers={shadcnExtendedRenderers}
+            i18n={{
+              locale,
+              translate: (key, fallback) =>
+                key === 'static-text.English' ? label : fallback,
+            }}
+          />,
+        ),
+      );
+      expect(host.querySelector('button')?.textContent).toBe(label);
+    }
+  } finally {
+    act(() => root.unmount());
+    host.remove();
+  }
+});

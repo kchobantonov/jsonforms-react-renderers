@@ -40,6 +40,8 @@ export interface DemoWorkspaceProps {
     React.SetStateAction<TranslationCatalogs | undefined>
   >;
   dark: boolean;
+  formThemeOverride?: boolean;
+  formDark?: boolean;
   /** Applying the Data editor's text, in the demo-and-data layout. */
   setData: (data: unknown) => void;
   /** The form, rendered by the caller so the workspace stays presentational. */
@@ -60,6 +62,8 @@ export const DemoWorkspace = ({
   setModels,
   setTranslations,
   dark,
+  formThemeOverride,
+  formDark,
   setData,
   renderForm,
 }: DemoWorkspaceProps) => {
@@ -71,6 +75,10 @@ export const DemoWorkspace = ({
     Typography: UiTypography = DefaultDemoTypography,
   } = Ui;
 
+  const formCardClassName = `form-card${
+    formThemeOverride ? ` form-theme-${formDark ? 'dark' : 'light'}` : ''
+  }`;
+
   return (
     <section className={formOnly ? 'workspace form-only' : 'workspace'}>
       {!formOnly && (
@@ -80,7 +88,7 @@ export const DemoWorkspace = ({
       )}
 
       {formOnly ? (
-        <UiPanel className='form-card standalone'>{renderForm()}</UiPanel>
+        <UiPanel className={`${formCardClassName} standalone`}>{renderForm()}</UiPanel>
       ) : (
         <div className='demo-tabs'>
           <UiTabs
@@ -151,7 +159,7 @@ export const DemoWorkspace = ({
                   form={
                     <section className='demo-data-pane demo-form-pane'>
                       <UiTypography component='h3'>Demo</UiTypography>
-                      <UiPanel className='form-card'>{renderForm()}</UiPanel>
+                      <UiPanel className={formCardClassName}>{renderForm()}</UiPanel>
                     </section>
                   }
                   data={
@@ -210,7 +218,7 @@ export const DemoWorkspace = ({
                   }
                 />
               ) : (
-                <UiPanel className='form-card'>{renderForm()}</UiPanel>
+                <UiPanel className={formCardClassName}>{renderForm()}</UiPanel>
               )}
             </UiPanel>
           ) : (
