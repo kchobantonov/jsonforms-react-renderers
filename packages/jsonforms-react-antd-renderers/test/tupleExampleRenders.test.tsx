@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import { flattenExampleNavigation } from './flattenExampleNavigation';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -9,7 +10,9 @@ import config from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/
 import data from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/data.json';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/schema.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischema.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'tuple-control',
+)!.uischemas!;
 
 /*
   The spec example is otherwise only exercised by opening the demo. Its schema

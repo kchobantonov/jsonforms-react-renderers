@@ -7,6 +7,7 @@ import {
   translatorFor,
 } from '../src/i18nCatalogs';
 import examples from '../src/examples';
+import jobTranslations from '@chobantonov/jsonforms-extended-spec/examples/job-application/translations.json';
 import { stringifyEditorValue } from '../src/editorModels';
 
 const spec = examples.find(
@@ -96,5 +97,39 @@ describe('the locale switcher picks the catalog', () => {
     expect(Object.keys(catalogs.bg).sort()).toEqual(
       Object.keys(catalogs.en).sort(),
     );
+  });
+});
+
+describe('nested Job application translations', () => {
+  test('resolves action and category labels in both locales', () => {
+    const keys = [
+      'static-text.English',
+      'static-text.Bulgarian',
+      'static-text.actions.toggle-theme',
+      'static-text.category.personal-information',
+      'static-text.category.references',
+    ];
+    for (const locale of ['en', 'bg'] as const) {
+      const translate = translatorFor(jobTranslations, locale);
+      for (const key of keys) {
+        expect(translate(key, key)).not.toBe(key);
+      }
+      expect(translate('static-text.category.skills', 'fallback')).toBe(
+        jobTranslations[locale]['static-text'].category.skills,
+      );
+    }
+  });
+
+  test('prefers a literal dotted key over a nested path', () => {
+    const translate = translatorFor(
+      {
+        en: {
+          'static-text.English': 'Direct',
+          'static-text': { English: 'Nested' },
+        },
+      },
+      'en',
+    );
+    expect(translate('static-text.English', 'fallback')).toBe('Direct');
   });
 });

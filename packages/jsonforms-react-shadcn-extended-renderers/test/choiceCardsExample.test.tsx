@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -12,7 +13,9 @@ import data from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/
 import ui from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/uischema.json';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/translations.json';
 
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/choice-controls/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'choice-controls',
+)!.uischemas!;
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 

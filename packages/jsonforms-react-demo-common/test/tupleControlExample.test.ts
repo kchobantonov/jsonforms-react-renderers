@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import { exampleElements } from './exampleElements';
 import { describe, expect, test } from 'vite-plus/test';
 import { createAjv } from '@jsonforms/core';
@@ -6,7 +7,9 @@ import data from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/da
 import schema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/schema.json';
 import translations from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/translations.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischema.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/tuple-control/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'tuple-control',
+)!.uischemas!;
 
 const example = examples.find((e) => e.name === 'spec-tuple-control');
 

@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -5,7 +6,9 @@ import { createAjv } from '@jsonforms/core';
 import { shadcnRenderers, shadcnCells } from '../src';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/schema.json';
 import exampleData from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/data.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'recursive-tree',
+)!.uischemas!;
 const ui = {
   type: 'Control',
   scope: '#/properties/populated',

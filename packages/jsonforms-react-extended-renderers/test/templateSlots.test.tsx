@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
@@ -18,7 +19,9 @@ import {
 import schema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/schema.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/template-slots/data.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'template-slots',
+)!.uischemas!;
 
 const Layout = withJsonFormsLayoutProps((props: any) => (
   <section>

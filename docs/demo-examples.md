@@ -37,9 +37,9 @@ conditional-fields, recursive-tree, draft-07-metaschema, json-editor and
 json-inference. See each fixture's README for supported scope and host requirements.
 
 Template/Slot named UI-model composition is distinct from TemplateLayout source
-templates. Trusted uischemas.mjs modules are exported by the spec catalog and
+templates. Portable uischemas.json registries are exported by the spec catalog and
 passed through to the demo; named lookup uses entry.uischema.name, while ordinary
-registered details use testers. Do not drop these registries when copying examples.
+registered details use declarative match rules. Keep these registries when copying examples.
 
 An explicit empty schema {} permits any JSON value. An omitted schema requests
 inference, and omitted initial data must remain absent. demoSchema.ts currently

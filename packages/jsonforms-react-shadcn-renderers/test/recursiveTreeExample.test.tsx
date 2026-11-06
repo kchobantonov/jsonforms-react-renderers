@@ -1,5 +1,8 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import { createAjv } from '@jsonforms/core';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/recursive-tree/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'recursive-tree',
+)!.uischemas!;
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';

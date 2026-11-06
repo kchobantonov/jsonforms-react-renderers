@@ -2,7 +2,28 @@ import { ExampleDescription } from '@jsonforms/examples';
 import { Translator, createTranslator } from '@jsonforms/core';
 
 /** A `translations.json`: every locale in one object, keyed by locale code. */
-export type TranslationCatalogs = Record<string, Record<string, string>>;
+export type TranslationCatalogs = Record<string, Record<string, unknown>>;
+
+/** Resolve literal dotted keys first, then nested catalog paths. */
+const catalogMessage = (catalog: unknown, key: string): string | undefined => {
+  if (!catalog || typeof catalog !== 'object') return undefined;
+  if (Object.prototype.hasOwnProperty.call(catalog, key)) {
+    const value = (catalog as Record<string, unknown>)[key];
+    return typeof value === 'string' ? value : undefined;
+  }
+  let value: unknown = catalog;
+  for (const segment of key.split('.')) {
+    if (
+      !value ||
+      typeof value !== 'object' ||
+      !Object.prototype.hasOwnProperty.call(value, segment)
+    ) {
+      return undefined;
+    }
+    value = (value as Record<string, unknown>)[segment];
+  }
+  return typeof value === 'string' ? value : undefined;
+};
 
 /**
  * An example that carries its raw catalogs alongside the `i18n` state.
@@ -55,7 +76,7 @@ export const translatorFor = (
 ): Translator =>
   createTranslator((id, defaultMessage, values) => {
     const messages = catalogs[locale] ?? {};
-    const message = messages[id];
+    const message = catalogMessage(messages, id);
     return message === undefined
       ? defaultMessage
       : interpolate(message, values);

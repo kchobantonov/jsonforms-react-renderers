@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vite-plus/test';
@@ -10,7 +11,9 @@ import { shadcnExtendedRenderers } from '../src';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/schema.json';
 import data from '@chobantonov/jsonforms-extended-spec/examples/template-slots/data.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischema.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/template-slots/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'template-slots',
+)!.uischemas!;
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 
 it('renders named templates and slot overrides through the native registry', async () => {

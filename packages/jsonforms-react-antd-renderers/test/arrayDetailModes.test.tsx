@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -88,8 +89,11 @@ it('renders the published detail-mode example with its trusted registry', async 
     await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischema.json');
   const exampleData =
     await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/data.json');
-  const registry =
-    await import('@chobantonov/jsonforms-extended-spec/examples/array-detail-modes/uischemas.mjs');
+  const registry = {
+    uischemas: sharedSpecExamples.find(
+      (example) => example.id === 'array-detail-modes',
+    )!.uischemas!,
+  };
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);

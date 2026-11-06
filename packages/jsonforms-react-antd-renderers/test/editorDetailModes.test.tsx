@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import { TupleField } from '../src/complex/TupleField';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -248,8 +249,11 @@ it('renders the published editor-detail example', async () => {
     await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/uischema.json');
   const data =
     await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/data.json');
-  const registrations =
-    await import('@chobantonov/jsonforms-extended-spec/examples/editor-details/uischemas.mjs');
+  const registrations = {
+    uischemas: sharedSpecExamples.find(
+      (example) => example.id === 'editor-details',
+    )!.uischemas!,
+  };
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);

@@ -1,3 +1,4 @@
+import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
@@ -8,7 +9,9 @@ import config from '@chobantonov/jsonforms-extended-spec/examples/object-control
 import data from '@chobantonov/jsonforms-extended-spec/examples/object-control/data.json';
 import schema from '@chobantonov/jsonforms-extended-spec/examples/object-control/schema.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/object-control/uischema.json';
-import { uischemas } from '@chobantonov/jsonforms-extended-spec/examples/object-control/uischemas.mjs';
+const uischemas = sharedSpecExamples.find(
+  (example) => example.id === 'object-control',
+)!.uischemas!;
 import translations from '@chobantonov/jsonforms-extended-spec/examples/object-control/translations.json';
 import { translatorFor } from '../../jsonforms-react-demo-common/src/i18nCatalogs';
 
