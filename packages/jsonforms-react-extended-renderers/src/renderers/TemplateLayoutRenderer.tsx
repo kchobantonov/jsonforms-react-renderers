@@ -1,3 +1,5 @@
+import { useDynamicElements } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import {
   LayoutProps,
   RankedTester,
@@ -12,7 +14,6 @@ import {
 } from '@jsonforms/react';
 import React, { useEffect, useMemo } from 'react';
 import { proxy } from 'valtio';
-import type { ExtendedUISchemaElement } from '../core/uiSchema';
 import { resolveChildNames } from '../util/childNames';
 import { buildFormContext } from '../util/formContext';
 import {
@@ -72,6 +73,7 @@ const TemplateElementControl = React.memo(function TemplateElementControl(
 });
 
 export const TemplateLayoutRenderer = ({
+  path,
   enabled,
   schema,
   uischema,
@@ -94,6 +96,10 @@ export const TemplateLayoutRenderer = ({
   const engine = resolveTemplateEngine(uischema, config);
 
   const template = uischema.template;
+  const effectiveChildren = useDynamicElements(
+    uischema.elements ?? [],
+    path ?? '',
+  );
 
   const { names: childNames, diagnostics: nameDiagnostics } = useMemo(
     () => resolveChildNames(uischema.elements),
@@ -119,7 +125,7 @@ export const TemplateLayoutRenderer = ({
     because `childNames` already holds it positionally.
   */
   const namedElements = useMemo(() => {
-    const elements: ExtendedUISchemaElement[] = uischema.elements ?? [];
+    const elements = effectiveChildren;
 
     return elements.map((element, index) => {
       /*
@@ -145,6 +151,7 @@ export const TemplateLayoutRenderer = ({
           return (
             <TemplateElementControl
               key={key}
+              path={path}
               schema={schema}
               enabled={enabled}
               renderers={renderers}
@@ -155,7 +162,7 @@ export const TemplateLayoutRenderer = ({
         },
       };
     });
-  }, [cells, enabled, renderers, schema, uischema, childNames]);
+  }, [cells, enabled, renderers, schema, effectiveChildren, childNames, path]);
 
   const elementsByName = useMemo(() => {
     const map: Record<string, any> = {};
@@ -180,6 +187,7 @@ export const TemplateLayoutRenderer = ({
   }, [namedElements, elementsByName]);
 
   const ctx = useJsonForms();
+  const external = useDynamicExternal();
 
   // Create a stable proxy that gets updated with new data
   const [{ dataProxy, errorsProxy, additionalErrorsProxy }] = React.useState(
@@ -318,7 +326,12 @@ export const TemplateLayoutRenderer = ({
       locale: ctx.i18n?.locale,
       // Section 13's `context (extended FormContext)`, which this profile was
       // not exposing at all. The flat `locale` stays for templates using it.
-      context: buildFormContext({ ctx: ctx as any, schema, uischema }),
+      context: buildFormContext({
+        ctx: ctx as any,
+        schema,
+        uischema,
+        external,
+      }),
       // Pass the generic components prop to the renderer
       ...components,
     }),
@@ -331,6 +344,7 @@ export const TemplateLayoutRenderer = ({
       additionalErrorsProxy,
       ctx,
       components,
+      external,
     ],
   );
 

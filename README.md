@@ -3,6 +3,64 @@
 See the [JSON Forms Extended Specification](https://github.com/kchobantonov/jsonforms-extended-spec)
 for the shared renderer behavior, UI Schema options, and reference examples.
 
+### Experimental `$dynamic`
+
+Ant Design and shadcn resolve spec §11 overlays before normal renderer and cell
+selection. Enable them explicitly on the shared form component:
+
+```tsx
+<ExtendedJsonForms
+  schema={schema}
+  uischema={uischema}
+  data={data}
+  renderers={renderers}
+  cells={cells}
+  dynamic={{ external: { settings } }}
+  onChange={({ data }) => setData(data)}
+/>
+```
+
+Import `ExtendedJsonForms` from the shared extended-renderer package (also
+re-exported by the Ant Design extended package). For a base-only application,
+`DynamicJsonForms` from `@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider`
+provides the same explicit `dynamic` prop. Alternatively wrap plain `JsonForms`
+in `DynamicUiProvider value={...}` when using the supplied Ant Design/shadcn
+registries. Custom registries can use `withDynamicRenderers` and `withDynamicCells`.
+The ordinary interpolation `dynamicValues.enabled` option does not enable this.
+
+An element's own `$dynamic` supports ordered conditions, generic deep overlays,
+`bind`, CEL `expression`, restricted path `template`, and `literal`. Nested UI
+metadata remains untouched until that child is dispatched. Supported environment
+roots are `data`, `value`, `item`, `path`, `locale`, `external`, `config` (excluding
+`jsonformsExtended`), and core `errors`. Replace external namespaces and authored
+UI schemas immutably. Getter-bearing objects, indexed array getters, unsafe keys,
+non-JSON results, and out-of-range CEL integers are rejected. Diagnostics contain
+rule/target information, not bound values; use `dynamic.onDiagnostic` to collect them.
+
+Trusted in-process function leaves require `dynamic.trustedFunctions: true`.
+Never deserialize callbacks or enable that profile from untrusted configuration.
+Both web components expose the same **JavaScript property** `element.dynamic`;
+there is deliberately no attribute that enables executable callbacks.
+
+Prop-only changes preserve the selected renderer. A different renderer or Control
+scope replaces only that editing session, discards its unfinished draft, and
+retains committed data. Focus follows a replaced focused editor; it is not taken
+from the configuration form. Custom renderers must cancel their own asynchronous
+work on unmount; shared debounced editors already cancel pending writes. Parent
+layout visibility/sizing and category labels use effective child elements.
+Third-party parent consumers should use `useDynamicElements` rather than reading
+raw dynamic children. No whole-form remount or synthetic data update is needed.
+
+Open **Spec: Dynamic playground: preview and configuration forms** in either
+React demo. Preview and configuration data are independent; both direct React
+and web-component modes receive immutable `external.settings` replacements.
+The External tab edits the same host state as the configuration form and retains
+invalid JSON drafts without publishing them. The UI Schema editor shows the actual dynamic asset. Arbitrary extension payloads
+are forwarded, but only a renderer implementing those fields can display them.
+
+The implementation is experimental; these tests do not certify every custom
+renderer, asynchronous editor, or cross-adapter CEL behavior.
+
 ### First time setup
 
 - Install [Node.js](https://nodejs.org/) 22.18 or newer within Node 22.
@@ -213,3 +271,12 @@ vp run build
 ```
 
 New spec examples only need a catalog entry in the spec project. Run its build (or `pnpm generate:examples` there) to refresh the linked example module; no React registration file needs editing. The maintained [renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared design.
+
+### Dynamic external values in templates
+
+`ExtendedJsonForms` exposes host-owned `external` as `context.external`
+in JSX, Ractive and registered TSX template layouts. Replace the external object
+to update templates without changing form data. `settings` is only the
+playground's namespace; hosts can use their own keys. The bridge exposes external
+values, not resolver settings such as `trustedFunctions`, and does not change
+template security gates.

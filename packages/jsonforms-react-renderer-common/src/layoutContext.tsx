@@ -1,3 +1,4 @@
+import { useDynamicElements } from './DynamicUiProvider';
 import React, { ComponentType } from 'react';
 import Ajv from 'ajv';
 import { getAjv, isVisible, UISchemaElement } from '@jsonforms/core';
@@ -19,7 +20,8 @@ export const useEffectiveElements = (
   const ctx = useJsonForms();
   const data = ctx.core?.data;
   const ajv = ctx.core?.ajv;
-  return (elements ?? []).filter((element) => {
+  const effective = useDynamicElements(elements ?? [], path);
+  return effective.filter((element) => {
     if (!element) return false;
     try {
       return ajv ? isVisible(element, data, path, ajv, config) : true;

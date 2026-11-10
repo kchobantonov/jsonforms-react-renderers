@@ -1,3 +1,4 @@
+import { dynamicAuthoredElement } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import type { ExtendedUISchemaElement } from '../core/uiSchema';
 
 /**
@@ -49,7 +50,9 @@ export const resolveChildNames = (
     already taken - including one belonging to a later child.
   */
   children.forEach((element, index) => {
-    const explicit = element?.name;
+    const explicit = element
+      ? (dynamicAuthoredElement(element) as ExtendedUISchemaElement).name
+      : undefined;
     if (typeof explicit !== 'string' || explicit === '') {
       return;
     }

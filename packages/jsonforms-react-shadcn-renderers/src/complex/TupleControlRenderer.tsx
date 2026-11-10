@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import React from 'react';
 
 import {
@@ -127,6 +128,7 @@ export const TupleControl = (props: Props) => {
     visible,
   } = props;
 
+  const resolveTree = useDynamicTreeResolver(path);
   const t = useI18n();
   const jsonforms = useJsonForms();
 
@@ -183,7 +185,10 @@ export const TupleControl = (props: Props) => {
     } as UISchemaElement;
   };
 
-  const positionLayout = positionLayoutOf(options);
+  const authoredPositionLayout = positionLayoutOf(options);
+  const positionLayout = authoredPositionLayout
+    ? resolveTree(authoredPositionLayout)
+    : undefined;
 
   const hiddenPositionErrors = (): string[] => {
     if (!positionLayout || !definition) {

@@ -1,3 +1,8 @@
+import {
+  DynamicUiProvider,
+  withDynamicRenderers,
+  withDynamicCells,
+} from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import React, {
   useLayoutEffect,
   useState,
@@ -129,6 +134,8 @@ export interface ExtendedJsonFormsProps
    * other's published errors.
    */
   store?: AdditionalErrorStore;
+  /** Host-owned immutable values, independent of overlay activation. */
+  external?: Readonly<Record<string, unknown>>;
   /**
    * What a `Button` hands its command to.
    *
@@ -196,6 +203,7 @@ const AdditionalErrorsBridge = ({ store }: { store: AdditionalErrorStore }) => {
 };
 
 export const ExtendedJsonForms = ({
+  external,
   store,
   onAction,
   ajv,
@@ -255,6 +263,12 @@ export const ExtendedJsonForms = ({
 
   const configToUse = useMemo(() => canonicalConfig(config), [config]);
 
+  const rendererRegistry = useMemo(
+    () => withDynamicRenderers(renderers),
+    [renderers],
+  );
+  const cellRegistry = useMemo(() => withDynamicCells(cells), [cells]);
+
   const form = (
     <JsonFormsStateProvider
       initState={{
@@ -273,8 +287,8 @@ export const ExtendedJsonForms = ({
         } as never,
         config: configToUse,
         uischemas,
-        renderers,
-        cells,
+        renderers: rendererRegistry,
+        cells: cellRegistry,
         readonly,
         i18n,
       }}
@@ -288,7 +302,14 @@ export const ExtendedJsonForms = ({
 
   const wrapped = (
     <AdditionalErrorStoreProvider store={effective}>
-      {form}
+      <DynamicUiProvider
+        config={config}
+        external={external}
+        locale={i18n?.locale}
+        translate={i18n?.translate}
+      >
+        {form}
+      </DynamicUiProvider>
     </AdditionalErrorStoreProvider>
   );
 

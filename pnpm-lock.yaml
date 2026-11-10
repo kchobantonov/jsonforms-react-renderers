@@ -741,6 +741,9 @@ importers:
 
   packages/jsonforms-react-renderer-common:
     dependencies:
+      '@marcbachmann/cel-js':
+        specifier: 8.0.0
+        version: 8.0.0
       ajv:
         specifier: 8.20.0
         version: 8.20.0

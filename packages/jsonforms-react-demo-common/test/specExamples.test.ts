@@ -454,3 +454,17 @@ describe('categorization example', () => {
     expect(catalogs.bg['group.dataIndicator']).toBe('Секцията съдържа данни');
   });
 });
+
+test.each(['dynamic-playground'])(
+  'loads the authored dynamic UI and independent configuration for %s',
+  (id) => {
+    const example = examples.find(
+      (entry) => entry.name === `spec-${id}`,
+    ) as any;
+    expect(example).toBeDefined();
+    expect(JSON.stringify(example.uischema)).toContain('"$dynamic"');
+    expect(example.configuration.schema).toBeDefined();
+    expect(example.configuration.data).toBeDefined();
+    expect(example.data).not.toHaveProperty('settings');
+  },
+);

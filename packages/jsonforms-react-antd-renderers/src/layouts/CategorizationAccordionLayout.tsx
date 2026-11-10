@@ -76,6 +76,7 @@ export const CategorizationAccordionLayoutRenderer = (
     // Closable: an accordion here may be closed entirely. This is the one
     // place the project differs from section 8; see Adjustment 10.2.
     true,
+    path,
   );
 
   const labels = useMemo(

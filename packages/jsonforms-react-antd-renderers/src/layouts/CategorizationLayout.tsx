@@ -85,6 +85,8 @@ export const CategorizationLayoutRenderer = (
     ajv,
     config,
     selected,
+    false,
+    path,
   );
 
   /*

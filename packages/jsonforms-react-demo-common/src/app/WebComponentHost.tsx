@@ -13,6 +13,7 @@ import type { ActionEvent } from '@chobantonov/jsonforms-react-extended-renderer
  */
 export const WebComponentHost = ({
   tagName,
+  external,
   props,
   dark,
   mode,
@@ -24,6 +25,7 @@ export const WebComponentHost = ({
   onAction,
 }: {
   tagName: string;
+  external?: Readonly<Record<string, unknown>>;
   props: JsonFormsInitStateProps;
   dark: boolean;
   mode: string;
@@ -40,6 +42,7 @@ export const WebComponentHost = ({
     const element = ref.current as any;
     if (!element) return;
 
+    element.external = external;
     element.data = props.data;
     element.schema = props.schema;
     element.uischema = props.uischema;
@@ -54,7 +57,16 @@ export const WebComponentHost = ({
     element.mode = mode;
     element.rtl = rtl;
     element.rendererSettings = rendererSettings;
-  }, [props, dark, mode, rtl, locale, validationMode, rendererSettings]);
+  }, [
+    props,
+    external,
+    dark,
+    mode,
+    rtl,
+    locale,
+    validationMode,
+    rendererSettings,
+  ]);
 
   useEffect(() => {
     const element = ref.current;

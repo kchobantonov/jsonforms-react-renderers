@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import React, { useLayoutEffect, useState, useRef } from 'react';
 import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
@@ -44,9 +45,17 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
   const { t } = props;
   const context = useJsonForms();
   const { token } = theme.useToken();
+  const resolveTree = useDynamicTreeResolver(props.path);
+  const authoredDetail = props.uischema.options?.detail;
+  const errorOptions =
+    authoredDetail &&
+    typeof authoredDetail === 'object' &&
+    typeof authoredDetail.type === 'string'
+      ? { ...props.uischema.options, detail: resolveTree(authoredDetail) }
+      : props.uischema.options;
   const errors = usePathErrorMessages(
     props.path,
-    labelDetailErrorPaths(props.path, props.uischema.options),
+    labelDetailErrorPaths(props.path, errorOptions),
   );
   /*
     The default message carries the locale bundle (§6.5), so it must not be

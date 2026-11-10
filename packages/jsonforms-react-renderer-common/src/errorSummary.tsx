@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from './DynamicUiProvider';
 import { displayableErrors } from './validationIndicator';
 import React, { useState, useMemo } from 'react';
 import {
@@ -85,6 +86,10 @@ export const useErrorSummary = (
   active = true,
 ) => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver();
+  const effectiveUi = context.core?.uischema
+    ? resolveTree(context.core.uischema)
+    : undefined;
   const translate = useTranslator();
   const [primary, additional] = displayableErrors(context.core ?? {});
   const errors =
@@ -96,7 +101,7 @@ export const useErrorSummary = (
     const entries = formatErrorSummary(
       errors,
       context.core?.schema,
-      context.core?.uischema,
+      effectiveUi,
       translate,
       context.i18n?.translateError,
     );
@@ -111,7 +116,7 @@ export const useErrorSummary = (
     fallback,
     errors,
     context.core?.schema,
-    context.core?.uischema,
+    effectiveUi,
     translate,
     context.i18n?.translateError,
   ]);
@@ -135,6 +140,10 @@ export const usePathErrorIndicator = (
   includeChildren = true,
 ) => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver();
+  const effectiveUi = context.core?.uischema
+    ? resolveTree(context.core.uischema)
+    : undefined;
   const t = useI18n();
   const translate = useTranslator();
   const errors =
@@ -160,14 +169,14 @@ export const usePathErrorIndicator = (
       formatErrorSummary(
         own,
         context.core?.schema,
-        context.core?.uischema,
+        effectiveUi,
         translate,
         context.i18n?.translateError,
       ).map((entry) => entry.message),
     [
       own,
       context.core?.schema,
-      context.core?.uischema,
+      effectiveUi,
       translate,
       context.i18n?.translateError,
     ],
@@ -270,6 +279,10 @@ export const usePathErrorMessages = (
   includedPaths?: string[],
 ): string => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver();
+  const effectiveUi = context.core?.uischema
+    ? resolveTree(context.core.uischema)
+    : undefined;
   const translate = useTranslator();
   const index = indexedPathErrors(...displayableErrors(context.core ?? {}));
   const errors =
@@ -285,7 +298,7 @@ export const usePathErrorMessages = (
   return formatErrorSummary(
     errors,
     context.core?.schema,
-    context.core?.uischema,
+    effectiveUi,
     translate,
     context.i18n?.translateError,
   )
@@ -356,6 +369,10 @@ export const ObjectErrorContext = React.createContext<
 /** Disallowed keys belong to the dynamic-property editor, including literal keys. */
 export const useAdditionalPropertyErrors = (path: string) => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver();
+  const effectiveUi = context.core?.uischema
+    ? resolveTree(context.core.uischema)
+    : undefined;
   const translate = useTranslator();
   const [primary, additional] = displayableErrors(context.core ?? {});
   return useMemo(() => {
@@ -371,7 +388,7 @@ export const useAdditionalPropertyErrors = (path: string) => {
     return formatErrorSummary(
       errors,
       context.core?.schema,
-      context.core?.uischema,
+      effectiveUi,
       translate,
       context.i18n?.translateError,
     )
@@ -385,7 +402,7 @@ export const useAdditionalPropertyErrors = (path: string) => {
     additional,
     path,
     context.core?.schema,
-    context.core?.uischema,
+    effectiveUi,
     translate,
     context.i18n?.translateError,
   ]);
@@ -393,6 +410,10 @@ export const useAdditionalPropertyErrors = (path: string) => {
 
 export const usePropertyNameErrors = (path: string) => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver();
+  const effectiveUi = context.core?.uischema
+    ? resolveTree(context.core.uischema)
+    : undefined;
   const translate = useTranslator();
   const [primary, additional] = displayableErrors(context.core ?? {});
   return useMemo(() => {
@@ -419,7 +440,7 @@ export const usePropertyNameErrors = (path: string) => {
       const message = formatErrorSummary(
         [error],
         context.core?.schema,
-        context.core?.uischema,
+        effectiveUi,
         translate,
         context.i18n?.translateError,
       )[0].message;
@@ -431,7 +452,7 @@ export const usePropertyNameErrors = (path: string) => {
     additional,
     path,
     context.core?.schema,
-    context.core?.uischema,
+    effectiveUi,
     translate,
     context.i18n?.translateError,
   ]);

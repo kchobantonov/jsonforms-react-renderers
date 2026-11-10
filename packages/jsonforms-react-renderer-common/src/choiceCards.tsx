@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from './DynamicUiProvider';
 import React from 'react';
 import {
   JsonSchema,
@@ -140,6 +141,7 @@ export const createChoiceCards = (
           };
         })
       : [];
+    const resolveTree = useDynamicTreeResolver(path);
     const choices = (branchMode ? branches! : values).map((_, index) => {
       const choice =
         custom.find((item) =>
@@ -154,6 +156,10 @@ export const createChoiceCards = (
         (branchMode ? infos[index].label : String(values[index]));
       return {
         ...choice,
+        content: choice.content ? resolveTree(choice.content) : undefined,
+        selectedContent: choice.selectedContent
+          ? resolveTree(choice.selectedContent)
+          : undefined,
         label: choice.i18n
           ? (translate(`${choice.i18n}.label`, fallback) ?? fallback)
           : (translate(

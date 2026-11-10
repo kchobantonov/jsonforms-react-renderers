@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from './DynamicUiProvider';
 import { Resolve, toDataPathSegments, UISchemaElement } from '@jsonforms/core';
 import { JSONFORMS_EXTENDED_CONFIG_KEY } from './configNamespaces';
 import { useJsonForms } from '@jsonforms/react';
@@ -103,19 +104,21 @@ export const useGroupState = (
   config?: Record<string, unknown>,
 ) => {
   const context = useJsonForms();
+  const resolveTree = useDynamicTreeResolver(path);
+  const effectiveUi = resolveTree(uischema);
   const { collapsible, collapsed, setExpanded } = useGroupExpansion(
-    uischema,
+    effectiveUi,
     config,
   );
   const showDataIndicator =
-    groupOption(uischema, config, 'showDataIndicator') === true;
+    groupOption(effectiveUi, config, 'showDataIndicator') === true;
   const data = context.core?.data;
   const contentId = useId();
   // Only re-resolve when the data actually changes. Collapsing a panel, a
   // locale change or any unrelated parent render no longer walks the group.
   const hasData = useMemo(
-    () => showDataIndicator && groupHasData(uischema, data, path),
-    [showDataIndicator, uischema, data, path],
+    () => showDataIndicator && groupHasData(effectiveUi, data, path),
+    [showDataIndicator, effectiveUi, data, path],
   );
   return {
     contentId,

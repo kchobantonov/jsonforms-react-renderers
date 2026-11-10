@@ -401,6 +401,7 @@ describe('the form context', () => {
       'config',
       'data',
       'errors',
+      'external',
       'fireActionEvent',
       'locale',
       'readonly',

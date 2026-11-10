@@ -1,4 +1,8 @@
 import {
+  dynamicRendererEntry,
+  dynamicCellEntry,
+} from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import {
   RecursiveTreeRenderer,
   recursiveTreeTester,
 } from './complex/RecursiveTreeRenderer';
@@ -134,6 +138,7 @@ export * from './util';
 export * from './locale';
 
 export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
+  dynamicRendererEntry,
   { tester: recursiveTreeTester, renderer: RecursiveTreeRenderer },
   { tester: choiceCardsTester, renderer: ChoiceCards },
   // controls
@@ -224,6 +229,7 @@ export const antdRenderers: JsonFormsRendererRegistryEntry[] = [
 ];
 
 export const antdCells: JsonFormsCellRendererRegistryEntry[] = [
+  dynamicCellEntry,
   // Rank 1 fallback: objects and arrays that no specialised cell handles get a
   // summary plus a detail dialog instead of rendering nothing.
   {

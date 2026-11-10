@@ -22,6 +22,7 @@ import { DATA_MODEL_PATH, parseEditorValue } from './editorValue';
  * `DemoFormPanel` and `DemoEditorPanel`; this only decides which is on screen.
  */
 export interface DemoWorkspaceProps {
+  externalEditor?: React.ReactNode;
   Ui: DemoUi;
   currentExample: ExampleDescription;
   /** An example's own buttons, which rewrite its props. */
@@ -49,6 +50,7 @@ export interface DemoWorkspaceProps {
 }
 
 export const DemoWorkspace = ({
+  externalEditor,
   Ui,
   currentExample,
   actions,
@@ -103,10 +105,15 @@ export const DemoWorkspace = ({
                 'uischemas',
                 'i18n',
                 'config',
+                'external',
                 'data',
               ] as const
             )
-              .filter((tab) => layout !== 'demo-and-data' || tab !== 'data')
+              .filter(
+                (tab) =>
+                  (layout !== 'demo-and-data' || tab !== 'data') &&
+                  (tab !== 'external' || externalEditor),
+              )
               .map((tab) => ({
                 value: tab,
                 label:
@@ -225,10 +232,12 @@ export const DemoWorkspace = ({
                 <UiPanel className={formCardClassName}>{renderForm()}</UiPanel>
               )}
             </UiPanel>
+          ) : activeTab === 'external' ? (
+            externalEditor
           ) : (
             <DemoEditorPanel
               Ui={Ui}
-              activeTab={activeTab as Exclude<DemoTab, 'demo'>}
+              activeTab={activeTab as Exclude<DemoTab, 'demo' | 'external'>}
               models={models}
               setModels={setModels}
               currentExample={currentExample}

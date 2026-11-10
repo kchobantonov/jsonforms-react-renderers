@@ -188,3 +188,5 @@ export * from './util/markdownEscape';
 export * from './locale/bg';
 export * from './renderers/MonacoControlRenderer';
 export * from './renderers/AgGridControlRenderer';
+
+export { TRUST_DYNAMIC_FUNCTIONS } from '@chobantonov/jsonforms-react-renderer-common/dynamicConfig';

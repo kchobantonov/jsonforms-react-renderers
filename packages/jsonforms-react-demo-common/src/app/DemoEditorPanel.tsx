@@ -23,7 +23,7 @@ import { parseEditorValue } from './editorValue';
  */
 export interface DemoEditorPanelProps {
   Ui: DemoUi;
-  activeTab: Exclude<DemoTab, 'demo'>;
+  activeTab: Exclude<DemoTab, 'demo' | 'external'>;
   models: EditorModels;
   setModels: React.Dispatch<React.SetStateAction<EditorModels>>;
   currentExample: ExampleDescription;

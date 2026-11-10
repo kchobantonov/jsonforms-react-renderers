@@ -1,3 +1,7 @@
+import {
+  useDynamicElements,
+  dynamicAuthoredElement,
+} from './DynamicUiProvider';
 import { resolveCollapsed } from './groupState';
 import { Categorization, Category, isVisible } from '@jsonforms/core';
 import { useMemo, useState } from 'react';
@@ -13,7 +17,9 @@ import { useMemo, useState } from 'react';
  * Prefixed so a category named `2` cannot collide with the third unnamed one.
  */
 export const categoryKey = (category: Category, index: number): string => {
-  const name = (category as Category & { name?: unknown }).name;
+  const name = (
+    dynamicAuthoredElement(category) as Category & { name?: unknown }
+  ).name;
   return typeof name === 'string' && name.length > 0
     ? `name:${name}`
     : `index:${index}`;
@@ -109,13 +115,18 @@ export const useCategorySelection = (
   config: unknown,
   initiallySelected?: number,
   closable = false,
+  path = '',
 ): CategorySelection => {
+  const effectiveCategories = useDynamicElements(
+    categorization.elements ?? [],
+    path,
+  );
   const categories = useMemo(
     () =>
-      (categorization.elements ?? []).filter((category) =>
-        isVisible(category, data, undefined, ajv as never, config as never),
+      effectiveCategories.filter((category) =>
+        isVisible(category, data, path, ajv as never, config as never),
       ) as Category[],
-    [categorization, data, ajv, config],
+    [effectiveCategories, data, ajv, config, path],
   );
   /*
     `undefined` means untouched, so `options.initial` decides. `null` means

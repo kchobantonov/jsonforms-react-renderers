@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import {
   useConditionalFields,
   conditionalLayout,
@@ -101,8 +102,9 @@ export const ObjectRenderer = ({
     path,
     'the object renderer',
   );
+  const resolveTree = useDynamicTreeResolver(path);
   const dispatchUiSchema = conditionalLayout(
-    cycle ? generated : detailUiSchema,
+    resolveTree(cycle ? generated : detailUiSchema),
     schema,
     conditional.known,
   );

@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
 import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
 import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
@@ -66,9 +67,17 @@ export const ShadcnCompositeCell = (props: Props) => {
         error.instancePath.startsWith(pointer + '/')),
   );
 
+  const resolveTree = useDynamicTreeResolver(props.path);
+  const authoredDetail = props.uischema.options?.detail;
+  const errorOptions =
+    authoredDetail &&
+    typeof authoredDetail === 'object' &&
+    typeof authoredDetail.type === 'string'
+      ? { ...props.uischema.options, detail: resolveTree(authoredDetail) }
+      : props.uischema.options;
   const errors = usePathErrorMessages(
     props.path,
-    labelDetailErrorPaths(props.path, props.uischema.options),
+    labelDetailErrorPaths(props.path, errorOptions),
   );
   const t = useTranslator();
   const d = useI18nDefault();

@@ -1,3 +1,4 @@
+import { dynamicCellEntry } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import {
   ShadcnNumberFormatCell,
   numberFormatCellTester,
@@ -42,6 +43,7 @@ import { ShadcnTextCell } from './TextCell';
 
 export { ShadcnTextCell as ShadcnCell } from './TextCell';
 export const shadcnCells: JsonFormsCellRendererRegistryEntry[] = [
+  dynamicCellEntry,
   {
     tester: numberFormatCellTester,
     cell: withJsonFormsCellProps(ShadcnNumberFormatCell),

@@ -16,6 +16,7 @@ import type { JsonSchema, UISchemaElement } from '@jsonforms/core';
  * than as a greyed-out input has to be able to tell them apart.
  */
 export interface FormContext {
+  external?: Readonly<Record<string, unknown>>;
   [key: string]: unknown;
   config?: unknown;
   readonly?: boolean;
@@ -30,6 +31,7 @@ export interface FormContext {
 }
 
 export interface FormContextSources {
+  external?: Readonly<Record<string, unknown>>;
   /** `useJsonForms()`. */
   ctx: {
     core?: {
@@ -54,7 +56,9 @@ export const buildFormContext = ({
   schema,
   uischema,
   fireActionEvent,
+  external,
 }: FormContextSources): FormContext => ({
+  external,
   config: ctx.config,
   readonly: ctx.readonly === true,
   locale: ctx.i18n?.locale,

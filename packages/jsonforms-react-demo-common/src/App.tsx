@@ -1,3 +1,4 @@
+import type { JsonFormsInitStateProps } from '@jsonforms/react';
 import { isSpecExample, isPrefixedOfficialExample } from './examples';
 import React, {
   useCallback,
@@ -36,6 +37,7 @@ import {
 } from './app/useDemoChrome';
 import { DemoWorkspace } from './app/DemoWorkspace';
 import { DemoSettingsPanel } from './app/DemoSettings';
+import { ExternalEditor } from './app/ExternalEditor';
 import { EditorModels, stringifyEditorValue } from './editorModels';
 import {
   DemoLayout,
@@ -299,6 +301,20 @@ const App = ({
   const systemDark = useSystemDark();
 
   const currentExample = examples[currentIndex];
+  const [external, setExternalState] = useState<Record<string, unknown>>(
+    () => ({
+      settings: structuredClone(
+        (currentExample as any).configuration?.data ?? {},
+      ),
+    }),
+  );
+  const [externalDraft, setExternalDraft] = useState(() =>
+    JSON.stringify(external, null, 2),
+  );
+  const setExternal = (value: Record<string, unknown>) => {
+    setExternalState(value);
+    setExternalDraft(JSON.stringify(value, null, 2));
+  };
   const dark = mode === 'dark' || (mode === 'system' && systemDark);
   const formDark = formModeOverride ? formModeOverride === 'dark' : dark;
   const formMode = formModeOverride ?? mode;
@@ -382,6 +398,11 @@ const App = ({
     (index: number, resetActiveTab = true) => {
       const example = examples[index];
       setIndex(index);
+      const nextExternal = {
+        settings: structuredClone((example as any).configuration?.data ?? {}),
+      };
+      setExternalState(nextExternal);
+      setExternalDraft(JSON.stringify(nextExternal, null, 2));
       setFormModeOverride(undefined);
       setFormLocaleOverride(undefined);
       setExampleProps(getProps(example, cells, renderers));
@@ -455,12 +476,15 @@ const App = ({
   };
 
   useEffect(() => {
-    if (layout === 'demo-and-data' && activeTab === 'data') {
+    if (
+      (layout === 'demo-and-data' && activeTab === 'data') ||
+      (activeTab === 'external' && !(currentExample as any).configuration)
+    ) {
       // eslint-disable-next-line react/set-state-in-effect -- Keep tab state and the browser URL synchronized when the externally restored layout hides the data tab.
       setActiveTab('demo');
       setQueryOption('active-tab', 'demo', 'demo');
     }
-  }, [activeTab, layout, setQueryOption]);
+  }, [activeTab, layout, setQueryOption, currentExample]);
 
   const filteredExamples = useMemo(() => {
     const needle = search.trim().toLowerCase();
@@ -603,6 +627,15 @@ const App = ({
   const renderForm = () => (
     <DemoFormPanel
       jsonFormsProps={jsonFormsProps}
+      configuration={
+        (
+          currentExample as typeof currentExample & {
+            configuration?: JsonFormsInitStateProps;
+          }
+        ).configuration
+      }
+      external={external}
+      setExternal={setExternal}
       formKey={currentIndex}
       ajv={demoAjv}
       errorStore={errorStore}
@@ -663,6 +696,27 @@ const App = ({
     />
   ) : (
     <DemoWorkspace
+      externalEditor={
+        (currentExample as any).configuration ? (
+          <ExternalEditor
+            Ui={Ui}
+            onReload={() =>
+              setExternal({
+                settings: structuredClone(
+                  (currentExample as any).configuration.data,
+                ),
+              })
+            }
+            dark={dark}
+            value={externalDraft}
+            locale={formLocale}
+            onChange={(text, parsed) => {
+              setExternalDraft(text);
+              if (parsed) setExternalState(parsed);
+            }}
+          />
+        ) : undefined
+      }
       Ui={Ui}
       currentExample={currentExample}
       actions={actions}

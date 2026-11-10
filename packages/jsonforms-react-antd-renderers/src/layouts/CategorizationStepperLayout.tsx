@@ -84,7 +84,15 @@ export const CategorizationStepperLayoutRenderer = (
     categories,
     active: activeCategory,
     select,
-  } = useCategorySelection(categorization, data, ajv, config);
+  } = useCategorySelection(
+    categorization,
+    data,
+    ajv,
+    config,
+    undefined,
+    false,
+    path,
+  );
   const handleStep = (step: number) => {
     // "Previous/Next actions operate on visible categories and stop at the
     // first/last visible category."

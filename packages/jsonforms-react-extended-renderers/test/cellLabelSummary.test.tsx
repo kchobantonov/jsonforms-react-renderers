@@ -4,7 +4,7 @@ import { JsonForms } from '@jsonforms/react';
 import {
   CellSummary,
   ItemProvider,
-} from '../../jsonforms-react-renderer-common/src/CellSummary';
+} from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
 import { MarkupLabelRenderer, markupLabelTester } from '../src';
 import { it, expect, vi } from 'vite-plus/test';
 

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { JsonFormsInitStateProps } from '@jsonforms/react';
 import type { JsonFormsI18nState, ValidationMode } from '@jsonforms/core';
 import {
   ActionEvent,
   AdditionalErrorStore,
   ExtendedJsonForms,
+  createAdditionalErrorStore,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import type { DemoMode } from '../demoPreferences';
 import type { DemoWrapperProps } from './types';
@@ -27,6 +28,9 @@ import { WebComponentHost } from './WebComponentHost';
 export interface DemoFormPanelProps {
   /** Everything JSON Forms itself needs, already assembled. */
   jsonFormsProps: JsonFormsInitStateProps;
+  configuration?: JsonFormsInitStateProps;
+  external?: Record<string, unknown>;
+  setExternal?: (value: Record<string, unknown>) => void;
   /** Remounts the form when the example changes. */
   formKey: number;
   ajv: unknown;
@@ -57,7 +61,8 @@ export interface DemoFormPanelProps {
   ) => void;
 }
 
-export const DemoFormPanel = ({
+const DemoFormSurface = ({
+  external,
   jsonFormsProps,
   formKey,
   ajv,
@@ -82,6 +87,7 @@ export const DemoFormPanel = ({
       <WebComponentHost
         tagName={webComponentTag}
         props={jsonFormsProps}
+        external={external}
         dark={dark}
         mode={mode}
         rtl={rtl}
@@ -113,6 +119,7 @@ export const DemoFormPanel = ({
       store={errorStore}
       onAction={onAction}
       {...jsonFormsProps}
+      external={external}
       onChange={({ data, errors: nextErrors }) => {
         setData(data);
         setErrors(nextErrors ?? []);
@@ -135,3 +142,60 @@ export const DemoFormPanel = ({
     content
   );
 };
+
+const DynamicPlayground = (props: DemoFormPanelProps) => {
+  const configuration = props.configuration!;
+  const settings = props.external?.settings ?? configuration.data;
+  const setSettings = (settings: unknown) => {
+    // Initial form notifications must not overwrite a retained invalid External draft.
+    if (JSON.stringify(settings) !== JSON.stringify(props.external?.settings)) {
+      props.setExternal?.({ ...props.external, settings });
+    }
+  };
+  const [configurationErrors] = useState(createAdditionalErrorStore);
+  const configurationProps = {
+    ...props.jsonFormsProps,
+    ...configuration,
+    data: settings,
+    readonly: false,
+    config: {},
+  };
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+        gap: 24,
+      }}
+    >
+      <section aria-label={props.locale === 'bg' ? 'Преглед' : 'Preview'}>
+        <DemoFormSurface {...props} />
+      </section>
+      <section
+        aria-label={props.locale === 'bg' ? 'Настройки' : 'Configuration'}
+        data-testid='dynamic-playground-configuration'
+      >
+        <DemoFormSurface
+          {...props}
+          external={undefined}
+          jsonFormsProps={configurationProps}
+          errorStore={configurationErrors}
+          setData={setSettings}
+          setErrors={() => {
+            // Configuration validation stays in its own form.
+          }}
+          onFormContext={() => {
+            // Keep the preview validator context owned by the preview.
+          }}
+        />
+      </section>
+    </div>
+  );
+};
+
+export const DemoFormPanel = (props: DemoFormPanelProps) =>
+  props.configuration ? (
+    <DynamicPlayground key={props.formKey} {...props} />
+  ) : (
+    <DemoFormSurface {...props} />
+  );

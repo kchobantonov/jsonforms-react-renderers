@@ -85,3 +85,43 @@ describe('JsonFormsAntdElement', () => {
     await Promise.resolve();
   });
 });
+
+it('updates dynamic properties without replacing an unchanged editor or its data', async () => {
+  registerJsonFormsAntd();
+  const element = document.createElement(
+    JSON_FORMS_ANTD_TAG,
+  ) as JsonFormsAntdElement;
+  element.schema = { type: 'object', properties: { name: { type: 'string' } } };
+  element.data = { name: 'Ada' };
+  element.uischema = {
+    type: 'Control',
+    scope: '#/properties/name',
+    $dynamic: [
+      {
+        overlay: {
+          label: { bind: 'external.label' },
+          options: { readonly: { bind: 'external.readonly' } },
+        },
+      },
+    ],
+  } as any;
+  element.config = { jsonformsExtended: { dynamic: { enabled: true } } };
+  element.external = { label: 'First label', readonly: false };
+  document.body.append(element);
+  try {
+    await vi.waitFor(() =>
+      expect(element.shadowRoot?.textContent).toContain('First label'),
+    );
+    const input = element.shadowRoot!.querySelector('input')!;
+    expect(input.value).toBe('Ada');
+    element.external = { label: 'Second label', readonly: true };
+    await vi.waitFor(() => {
+      expect(element.shadowRoot?.textContent).toContain('Second label');
+      expect(input.disabled || input.readOnly).toBe(true);
+    });
+    expect(element.shadowRoot!.querySelector('input')).toBe(input);
+    expect(input.value).toBe('Ada');
+  } finally {
+    element.remove();
+  }
+});

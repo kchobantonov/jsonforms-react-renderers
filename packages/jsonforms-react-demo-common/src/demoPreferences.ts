@@ -7,7 +7,8 @@ export type DemoTab =
   | 'uischemas'
   | 'i18n'
   | 'config'
-  | 'data';
+  | 'data'
+  | 'external';
 
 export interface DemoSettingsStorage {
   getItem(key: string): string | null | Promise<string | null>;
@@ -44,6 +45,7 @@ const TAB_FROM_QUERY: Record<string, DemoTab> = {
   internationalization: 'i18n',
   i18n: 'i18n',
   config: 'config',
+  external: 'external',
   data: 'data',
 };
 
@@ -54,6 +56,7 @@ const TAB_TO_QUERY: Record<DemoTab, string> = {
   uischemas: 'uiSchemas',
   i18n: 'internationalization',
   config: 'config',
+  external: 'external',
   data: 'data',
 };
 

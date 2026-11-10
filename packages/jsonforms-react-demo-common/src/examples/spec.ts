@@ -86,7 +86,12 @@ registerSpecExamples(
       ...fixture,
       id,
       label: title,
-      uischema: nativeUiSchemas[id] ?? fixture.uischema,
+      uischema:
+        nativeUiSchemas[id] ??
+        (fixture['dynamic-uischema'] as
+          | ExampleDescription['uischema']
+          | undefined) ??
+        fixture.uischema,
     }),
   ),
 );

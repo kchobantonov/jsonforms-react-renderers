@@ -1,3 +1,4 @@
+import { useDynamicTreeResolver } from './DynamicUiProvider';
 import { ErrorObject } from 'ajv';
 import { UISchemaElement, getControlPath } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
@@ -162,11 +163,13 @@ export const useContainerValidation = (
   fallback: boolean,
 ): ContainerValidation => {
   const { core } = useJsonForms();
-  const enabled = resolveIndicatorOption(uischema, config, fallback);
+  const resolveTree = useDynamicTreeResolver(path);
+  const effectiveUi = resolveTree(uischema);
+  const enabled = resolveIndicatorOption(effectiveUi, config, fallback);
   // Presence is O(1) per bound path; the count needs a pass over the errors.
   // Hosts that only want the marker can skip that pass entirely.
   const wantCount = resolveIndicatorOption(
-    uischema,
+    effectiveUi,
     config,
     false,
     'showValidationIndicatorCount',
@@ -183,7 +186,7 @@ export const useContainerValidation = (
     if (index.size === 0) {
       return { show: false, count: 0 };
     }
-    const bound = boundDataPaths(uischema, path);
+    const bound = boundDataPaths(effectiveUi, path);
     if (!bound.some((candidate) => index.has(candidate))) {
       return { show: false, count: 0 };
     }
@@ -195,5 +198,5 @@ export const useContainerValidation = (
       belowAny(errorDataPath(error), bound),
     ).length;
     return { show: count > 0, count };
-  }, [enabled, wantCount, errors, additionalErrors, uischema, path]);
+  }, [enabled, wantCount, errors, additionalErrors, effectiveUi, path]);
 };

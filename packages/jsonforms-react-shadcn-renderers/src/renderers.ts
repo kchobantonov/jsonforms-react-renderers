@@ -1,3 +1,4 @@
+import { dynamicRendererEntry } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import {
   RecursiveTreeRenderer,
   recursiveTreeTester,
@@ -104,6 +105,7 @@ export * from './controls';
 export * from './layouts';
 
 export const shadcnRenderers: JsonFormsRendererRegistryEntry[] = [
+  dynamicRendererEntry,
   { tester: recursiveTreeTester, renderer: RecursiveTreeRenderer },
   { tester: choiceCardsTester, renderer: ChoiceCards },
   ...[chipsControlTester, multiSelectControlTester, enumArrayControlTester].map(

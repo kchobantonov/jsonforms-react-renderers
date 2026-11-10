@@ -91,7 +91,7 @@ it('renders the published named-template example with fallback and inherited ove
       ),
     );
     expect(
-      [...host.querySelectorAll('output[data-path="name"]')].map(
+      Array.from(host.querySelectorAll('output[data-path="name"]')).map(
         (el) => el.textContent,
       ),
     ).toEqual(['Contact name: Grace', 'Default name: Grace']);

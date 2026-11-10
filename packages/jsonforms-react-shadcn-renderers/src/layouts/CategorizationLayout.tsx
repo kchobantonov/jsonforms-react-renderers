@@ -78,6 +78,7 @@ export const ShadcnCategorizationLayout = (props: LayoutProps) => {
     props.config,
     undefined,
     variant === 'accordion',
+    props.path,
   );
   if (!props.visible || categories.length === 0) return null;
   const key = (category: Category, index: number) =>

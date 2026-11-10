@@ -1,3 +1,4 @@
+import { retainDynamicPresentation } from './dynamicTree';
 import { JsonSchema, Resolve, UISchemaElement } from '@jsonforms/core';
 import type Ajv from 'ajv';
 import cloneDeep from 'lodash/cloneDeep';
@@ -162,7 +163,10 @@ export const conditionalLayout = (
     )
       return undefined;
     return Array.isArray(element.elements)
-      ? { ...element, elements: element.elements.map(visit).filter(Boolean) }
+      ? retainDynamicPresentation(element, {
+          ...element,
+          elements: element.elements.map(visit).filter(Boolean),
+        })
       : element;
   };
   return visit(ui) ?? { type: 'VerticalLayout', elements: [] };

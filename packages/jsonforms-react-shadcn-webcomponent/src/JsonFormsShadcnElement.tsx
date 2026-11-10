@@ -57,6 +57,7 @@ export const createTranslator = (translations: JsonInput, locale = 'en') => {
 };
 
 type ElementState = {
+  external?: JsonInput;
   data?: JsonInput;
   schema?: JsonInput;
   uischema?: JsonInput;
@@ -83,6 +84,7 @@ const observedAttributes = [
   'uischema',
   'uischemas',
   'config',
+  'external',
   'readonly',
   'validation-mode',
   'locale',
@@ -157,6 +159,13 @@ export class JsonFormsShadcnElement extends HTMLElement {
   }
   set uischemas(value: JsonInput) {
     this.setValue('uischemas', value);
+  }
+  /** Host-owned external values; JSON attributes and object properties are supported. */
+  set external(value: JsonInput) {
+    this.setValue('external', value);
+  }
+  get external() {
+    return this.state.external;
   }
   set config(value: JsonInput) {
     this.setValue('config', value);
@@ -267,6 +276,11 @@ export class JsonFormsShadcnElement extends HTMLElement {
         >
           <slot name='form-header' />
           <ExtendedJsonForms
+            external={
+              parseJson(this.state.external) as
+                | Readonly<Record<string, unknown>>
+                | undefined
+            }
             ajv={this.ajv}
             store={this.errorStore}
             onAction={(event) => this.emitAction(event)}

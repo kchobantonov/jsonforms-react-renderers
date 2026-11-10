@@ -1,3 +1,5 @@
+import { useDynamicElements } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import {
   Actions,
   JsonSchema,
@@ -175,6 +177,7 @@ export const TsxTemplateLayoutRendererComponent = (
 ) => {
   const { uischema, schema, path, enabled, visible, renderers, cells } = props;
   const ctx = useJsonForms();
+  const external = useDynamicExternal();
   const fireActionEvent = useHandleAction();
 
   const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
@@ -190,16 +193,17 @@ export const TsxTemplateLayoutRendererComponent = (
     }
   }, [diagnostics]);
 
+  const effectiveChildren = useDynamicElements(children, path ?? '');
   const byName = useMemo(() => {
     const map: Record<string, ExtendedUISchemaElement> = {};
-    children.forEach((element, index) => {
+    effectiveChildren.forEach((element, index) => {
       const name = names[index];
       if (name !== undefined) {
         map[name] = element;
       }
     });
     return map;
-  }, [children, names]);
+  }, [effectiveChildren, names]);
 
   const handleChange = useCallback(
     (target: string, value: unknown) => {
@@ -244,6 +248,7 @@ export const TsxTemplateLayoutRendererComponent = (
           schema,
           uischema,
           fireActionEvent,
+          external,
         }),
       })}
     </SlotContext.Provider>

@@ -1,3 +1,4 @@
+import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import { LayoutProps } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React, { useEffect, useMemo } from 'react';
@@ -50,6 +51,7 @@ export const RactiveTemplateLayoutRenderer = (
   const { uischema, schema, path, enabled, visible, renderers, cells, config } =
     props;
   const ctx = useJsonForms();
+  const external = useDynamicExternal();
   const resolved = resolveTemplateEngine(uischema, config);
 
   const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
@@ -137,14 +139,19 @@ export const RactiveTemplateLayoutRenderer = (
     () => ({
       data: ctx.core?.data,
       errors: ctx.core?.errors,
-      context: buildFormContext({ ctx: ctx as any, schema, uischema }),
+      context: buildFormContext({
+        ctx: ctx as any,
+        schema,
+        uischema,
+        external,
+      }),
       elements: resolveChildNames(uischema.elements ?? [])
         .names.filter((name): name is string => name !== undefined)
         .map((name) => ({ name })),
       translate: (key: string, fallback?: string) =>
         ctx.i18n?.translate?.(key, fallback) ?? fallback ?? key,
     }),
-    [ctx, schema, uischema],
+    [ctx, schema, uischema, external],
   );
 
   if (visible === false) {
