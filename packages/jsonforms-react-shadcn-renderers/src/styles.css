@@ -167,6 +167,96 @@
   white-space: normal;
 }
 
+.shadcn-jsonforms-group-header > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.shadcn-jsonforms-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: inherit;
+}
+
+.shadcn-jsonforms-group[data-has-regions]:not([data-collapsible])
+  > .shadcn-jsonforms-group-header {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.shadcn-jsonforms-group[data-has-regions]:not([data-collapsible])
+  .shadcn-jsonforms-group-actions {
+  margin-inline-start: 0;
+}
+
+.shadcn-jsonforms-group[data-has-regions] [data-group-header] {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+  order: -1;
+}
+
+.shadcn-jsonforms-group[data-has-regions] [data-group-header] .group-header-title .shadcn-jsonforms-static-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.shadcn-jsonforms-group[data-has-regions] [data-group-header] .group-header-detail .shadcn-jsonforms-static-label {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+}
+
+.shadcn-jsonforms-group-region-header {
+  padding-block: 12px;
+}
+
+.shadcn-jsonforms-group-cover img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.shadcn-jsonforms-group[data-has-regions] {
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.shadcn-jsonforms-group[data-has-regions]:not([data-collapsible])
+  > .shadcn-jsonforms-group-header {
+  padding: 12px 16px;
+}
+
+.shadcn-jsonforms-group[data-has-regions]:not([data-collapsible])
+  > .shadcn-jsonforms-group-content {
+  padding: 0 16px 16px;
+}
+
+.shadcn-jsonforms-group[data-has-regions]:not([data-collapsible])
+  > .shadcn-jsonforms-group-footer {
+  padding-inline: 16px;
+}
+
+.shadcn-jsonforms-group-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  padding-inline: 0;
+  border-top: 1px solid hsl(var(--border));
+  margin-top: 16px;
+}
+
 .shadcn-jsonforms-group-title {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -202,6 +292,22 @@
 
 .shadcn-jsonforms-group[data-collapsible] > .shadcn-jsonforms-group-content {
   padding: 0 16px 16px;
+}
+
+.shadcn-jsonforms-group[data-has-regions][data-collapsible] {
+  border: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
+  background: hsl(var(--background, 0 0% 100%));
+}
+
+.shadcn-jsonforms-group[data-has-regions][data-collapsible]
+  > .shadcn-jsonforms-group-header {
+  flex-wrap: wrap;
+}
+
+.shadcn-jsonforms-group[data-has-regions][data-collapsible]
+  > .shadcn-jsonforms-group-header
+  [data-group-header] {
+  flex: 1 1 auto;
 }
 
 /* Let AG Grid provide cell boundaries and keyboard-focus indication. */

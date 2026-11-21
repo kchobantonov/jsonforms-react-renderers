@@ -23,6 +23,102 @@ const renderers = [
 ];
 
 describe('Group collapse and data indicator', () => {
+  it('keeps the cover and heading visible while the card body collapses', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const action = vi.fn();
+    vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    const regions = {
+      ...group,
+      cover: {
+        type: 'ImageView',
+        src: '/supplier.jpg',
+        alt: 'Supplier premises',
+      },
+      header: [{ type: 'Label', text: 'Verified' }],
+      footer: [{ type: 'Button', label: 'Verify', action: 'verifySupplier' }],
+    } as GroupLayout;
+    const regionRenderers = [
+      ...renderers,
+      {
+        tester: (ui: any) => (ui.type === 'ImageView' ? 10 : -1),
+        renderer: () => <img src='/supplier.jpg' alt='Supplier premises' />,
+      },
+      {
+        tester: (ui: any) => (ui.type === 'Label' ? 10 : -1),
+        renderer: () => <span>Verified</span>,
+      },
+      {
+        tester: (ui: any) => (ui.type === 'Button' ? 10 : -1),
+        renderer: () => (
+          <button type='button' onClick={action}>
+            Verify
+          </button>
+        ),
+      },
+    ];
+    try {
+      await act(async () =>
+        root.render(
+          <JsonForms
+            schema={{ type: 'object', properties: { value: {} } }}
+            data={{ value: 'kept' }}
+            uischema={regions}
+            renderers={regionRenderers}
+          />,
+        ),
+      );
+      const trigger = container.querySelector<HTMLElement>('[aria-expanded]')!;
+      expect(trigger.getAttribute('aria-expanded')).toBe('false');
+      expect(
+        container.querySelector('[data-group-cover] img')?.getAttribute('alt'),
+      ).toBe('Supplier premises');
+      expect(
+        container.querySelector('[data-group-header]')?.textContent,
+      ).toContain('Verified');
+      expect(container.querySelector('[role="group"]')?.getAttribute('aria-label')).toBe('Verified');
+      expect(container.textContent).not.toContain('Details');
+      expect(container.querySelector('[data-slot="card-header"]')).not.toBeNull();
+      expect(container.querySelector('[data-slot="card-content"]')).not.toBeNull();
+      expect(container.querySelector('[data-slot="card-footer"]')).not.toBeNull();
+      const button = container.querySelector<HTMLButtonElement>(
+        '[data-group-footer] button',
+      )!;
+      expect(button).not.toBeNull();
+      expect(trigger.contains(button)).toBe(false);
+      expect(
+        trigger.contains(container.querySelector('[data-group-header]')),
+      ).toBe(false);
+      expect(
+        container.querySelector('[data-group-cover]')?.closest('[hidden]'),
+      ).toBeNull();
+      expect(
+        container.querySelector('[data-group-header]')?.closest('[hidden]'),
+      ).toBeNull();
+      expect(
+        container.querySelector('[data-group-footer]')?.closest('[hidden]'),
+      ).not.toBeNull();
+      await act(async () => trigger.click());
+      expect(trigger.getAttribute('aria-expanded')).toBe('true');
+      await act(async () => button.click());
+      expect(action).toHaveBeenCalledOnce();
+      expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    } finally {
+      await act(async () => root.unmount());
+      container.remove();
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('recognizes meaningful values and ignores empty containers', () => {
     for (const value of [false, 0, 'text', [false], { count: 0 }])
       expect(hasGroupValue(value)).toBe(true);

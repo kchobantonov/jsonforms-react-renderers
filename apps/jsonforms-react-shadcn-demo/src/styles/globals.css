@@ -121,6 +121,16 @@ body {
   padding: 1rem 0.75rem 1.5rem;
 }
 
+.shadcn-demo-sidebar > .demo-ui-field {
+  display: grid;
+  gap: 0.375rem;
+  margin-inline: 0.25rem;
+}
+
+.shadcn-demo-sidebar > .demo-ui-field [data-slot='select-trigger'] {
+  width: 100%;
+}
+
 .shadcn-demo-search {
   position: relative;
   margin: 0.25rem 0.25rem 1rem;

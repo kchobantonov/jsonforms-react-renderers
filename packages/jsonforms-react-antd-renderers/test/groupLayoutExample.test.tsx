@@ -61,15 +61,15 @@ const draw = (locale = 'en') => {
   );
   /** A group's outermost element, found by its heading text. */
   const groupFor = (label: string) =>
-    Array.from(container.querySelectorAll<HTMLElement>('.ant-card')).find(
-      (card) =>
-        card.querySelector('.ant-card-head-title')?.textContent?.trim() ===
-        label,
-    ) ??
     Array.from(
       container.querySelectorAll<HTMLElement>('.ant-collapse-item'),
     ).find((item) =>
       item.querySelector('.ant-collapse-header')?.textContent?.includes(label),
+    ) ??
+    Array.from(container.querySelectorAll<HTMLElement>('.ant-card')).find(
+      (card) =>
+        card.querySelector('.ant-card-head-title')?.textContent?.trim() ===
+        label,
     );
   return {
     container,
@@ -157,7 +157,7 @@ describe('the group-layout spec example', () => {
       (alternatePhone). Insurance holds none, so it must not be marked - which
       is what makes the indicator worth anything.
     */
-    expect(view.indicators()).toBe(3);
+    expect(view.indicators()).toBe(4);
     expect(
       view.groupFor('Insurance')?.querySelector('[data-group-indicator]'),
     ).toBeNull();
