@@ -78,7 +78,9 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   const footer = regions.footer?.map((element, index) =>
     renderRegion(element, `footer-${index}`),
   );
-  const headerLabel = regions.header?.find((element) => element.type === 'Label') as { text?: string; i18n?: string } | undefined;
+  const headerLabel = regions.header?.find(
+    (element) => element.type === 'Label',
+  ) as { text?: string; i18n?: string } | undefined;
   const headerTitle = headerLabel?.i18n
     ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
     : headerLabel?.text;
@@ -218,7 +220,9 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
         <div data-group-header style={{ minWidth: 0 }}>
           <Card.Meta
             title={headerContent?.[0] ?? props.label ?? undefined}
-            description={headerContent?.length ? headerContent.slice(1) : undefined}
+            description={
+              headerContent?.length ? headerContent.slice(1) : undefined
+            }
           />
         </div>
         {(group.collapsible || extra) && (
@@ -249,7 +253,12 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
                   padding: token.paddingXS,
                 }}
               >
-                <svg aria-hidden='true' width='14' height='14' viewBox='0 0 14 14'>
+                <svg
+                  aria-hidden='true'
+                  width='14'
+                  height='14'
+                  viewBox='0 0 14 14'
+                >
                   <path
                     d='m5 3 4 4-4 4'
                     fill='none'
@@ -266,7 +275,11 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
         )}
       </div>
       {group.collapsible ? (
-        <div id={group.contentId} data-group-body style={{ display: group.collapsed ? 'none' : undefined }}>
+        <div
+          id={group.contentId}
+          data-group-body
+          style={{ display: group.collapsed ? 'none' : undefined }}
+        >
           {content}
           {footer?.length ? (
             <footer

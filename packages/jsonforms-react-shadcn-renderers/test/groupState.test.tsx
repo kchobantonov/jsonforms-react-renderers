@@ -85,11 +85,19 @@ describe('Group collapse and data indicator', () => {
       expect(
         container.querySelector('[data-group-header]')?.textContent,
       ).toContain('Verified');
-      expect(container.querySelector('[role="group"]')?.getAttribute('aria-label')).toBe('Verified');
+      expect(
+        container.querySelector('[role="group"]')?.getAttribute('aria-label'),
+      ).toBe('Verified');
       expect(container.textContent).not.toContain('Details');
-      expect(container.querySelector('[data-slot="card-header"]')).not.toBeNull();
-      expect(container.querySelector('[data-slot="card-content"]')).not.toBeNull();
-      expect(container.querySelector('[data-slot="card-footer"]')).not.toBeNull();
+      expect(
+        container.querySelector('[data-slot="card-header"]'),
+      ).not.toBeNull();
+      expect(
+        container.querySelector('[data-slot="card-content"]'),
+      ).not.toBeNull();
+      expect(
+        container.querySelector('[data-slot="card-footer"]'),
+      ).not.toBeNull();
       const button = container.querySelector<HTMLButtonElement>(
         '[data-group-footer] button',
       )!;

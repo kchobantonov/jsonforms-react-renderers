@@ -106,7 +106,10 @@ describe('Group collapse and data indicator', () => {
       );
       const cover = card.querySelector('[data-group-cover]')!;
       const header = card.querySelector('[data-group-header]')!;
-      expect(cover.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(
+        cover.compareDocumentPosition(header) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
       expect(header.querySelector('.ant-card-meta')).not.toBeNull();
       expect(card.querySelector('.ant-card-head')).toBeNull();
       expect(container.querySelectorAll('[data-group-header]')).toHaveLength(1);

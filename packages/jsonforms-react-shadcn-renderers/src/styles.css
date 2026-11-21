@@ -203,12 +203,18 @@
   order: -1;
 }
 
-.shadcn-jsonforms-group[data-has-regions] [data-group-header] .group-header-title .shadcn-jsonforms-static-label {
+.shadcn-jsonforms-group[data-has-regions]
+  [data-group-header]
+  .group-header-title
+  .shadcn-jsonforms-static-label {
   font-size: 1rem;
   font-weight: 600;
 }
 
-.shadcn-jsonforms-group[data-has-regions] [data-group-header] .group-header-detail .shadcn-jsonforms-static-label {
+.shadcn-jsonforms-group[data-has-regions]
+  [data-group-header]
+  .group-header-detail
+  .shadcn-jsonforms-static-label {
   font-size: 0.875rem;
   font-weight: 400;
   color: hsl(var(--muted-foreground));

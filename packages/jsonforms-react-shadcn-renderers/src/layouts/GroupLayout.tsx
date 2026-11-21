@@ -20,9 +20,17 @@ import {
   CollapsibleContent,
 } from '@jsonforms-react-shadcn-ui/collapsible';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
-import { CardContent, CardFooter, CardHeader, CardTitle } from '@jsonforms-react-shadcn-ui/card';
+import {
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@jsonforms-react-shadcn-ui/card';
 import { useGroupState } from '../util/groupState';
-import { useI18n, useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import {
+  useI18n,
+  useTranslator,
+} from '@chobantonov/jsonforms-react-renderer-common/translate';
 
 export const ShadcnGroupLayout = (props: LayoutProps) => {
   const regions = props.uischema as typeof props.uischema & {
@@ -46,9 +54,13 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
   const t = useI18n();
   const translate = useTranslator();
   const footer = regions.footer;
-  const hasRegions = Boolean(regions.cover || regions.header?.length || footer?.length);
+  const hasRegions = Boolean(
+    regions.cover || regions.header?.length || footer?.length,
+  );
   const HeaderSection = hasRegions ? CardHeader : 'div';
-  const headerLabel = regions.header?.find((element) => element.type === 'Label') as { text?: string; i18n?: string } | undefined;
+  const headerLabel = regions.header?.find(
+    (element) => element.type === 'Label',
+  ) as { text?: string; i18n?: string } | undefined;
   const headerTitle = headerLabel?.i18n
     ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
     : headerLabel?.text;
@@ -68,7 +80,9 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
 
   const header = (
     <>
-      {!regions.header?.length && <span className='shadcn-jsonforms-group-title'>{props.label}</span>}
+      {!regions.header?.length && (
+        <span className='shadcn-jsonforms-group-title'>{props.label}</span>
+      )}
       <span className='shadcn-jsonforms-group-actions'>
         {objectOwned ? (
           objectErrors ? (
@@ -122,7 +136,12 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
           {regions.header?.length ? (
             <div data-group-header>
               {regions.header.map((element, index) => (
-                <div className={index === 0 ? 'group-header-title' : 'group-header-detail'} key={index}>
+                <div
+                  className={
+                    index === 0 ? 'group-header-title' : 'group-header-detail'
+                  }
+                  key={index}
+                >
                   {renderRegion(element, `header-${index}`)}
                 </div>
               ))}
@@ -142,11 +161,22 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
         validation.show ||
         regions.header?.length ? (
         <HeaderSection className='shadcn-jsonforms-group-header px-0 gap-0'>
-          {hasRegions ? <CardTitle className='shadcn-jsonforms-group-heading'>{header}</CardTitle> : header}
+          {hasRegions ? (
+            <CardTitle className='shadcn-jsonforms-group-heading'>
+              {header}
+            </CardTitle>
+          ) : (
+            header
+          )}
           {regions.header?.length ? (
             <div data-group-header>
               {regions.header.map((element, index) => (
-                <div className={index === 0 ? 'group-header-title' : 'group-header-detail'} key={index}>
+                <div
+                  className={
+                    index === 0 ? 'group-header-title' : 'group-header-detail'
+                  }
+                  key={index}
+                >
                   {renderRegion(element, `header-${index}`)}
                 </div>
               ))}
@@ -176,7 +206,10 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
           </>
         )}
         {group.collapsible && Boolean(footer?.length) && (
-          <CardFooter className='shadcn-jsonforms-group-footer' data-group-footer>
+          <CardFooter
+            className='shadcn-jsonforms-group-footer'
+            data-group-footer
+          >
             {footer?.map((element, index) =>
               renderRegion(element, `footer-${index}`),
             )}
