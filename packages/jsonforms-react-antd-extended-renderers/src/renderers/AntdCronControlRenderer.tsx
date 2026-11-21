@@ -416,6 +416,8 @@ export const AntdCronControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      adornmentSchema={props.schema}
+      adornmentOptions={props.uischema.options as Record<string, unknown>}
       id={props.id}
       required={props.required}
       errors={localError || filteredErrors || undefined}

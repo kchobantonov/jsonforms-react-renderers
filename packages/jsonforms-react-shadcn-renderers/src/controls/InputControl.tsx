@@ -7,6 +7,7 @@ import {
 } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
 import { ControlProps } from '@jsonforms/core';
 import React, { useContext } from 'react';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
 import { ShadcnCellMode } from '../cells/asCell';
 import { ClearValueButton } from '../components/ClearValueButton';
 import { Input } from '@jsonforms-react-shadcn-ui/input';
@@ -57,6 +58,14 @@ export const InputShell = ({
     focused,
   );
   const cell = useContext(ShadcnCellMode);
+  const adornmentOptions = uischema?.options as
+    | Record<string, unknown>
+    | undefined;
+  const adorned = (
+    <InputAdornments schema={schema} options={adornmentOptions}>
+      {children}
+    </InputAdornments>
+  );
   if (cell)
     return (
       <div
@@ -65,7 +74,7 @@ export const InputShell = ({
         onFocusCapture={onFocus}
         onBlurCapture={onBlur}
       >
-        {children}
+        {adorned}
       </div>
     );
   return (
@@ -89,7 +98,7 @@ export const InputShell = ({
           ) : null}
         </label>
       ) : null}
-      {children}
+      {adorned}
       {help && !errors ? (
         <div className='shadcn-jsonforms-description'>{help}</div>
       ) : null}
@@ -217,7 +226,8 @@ export const ShadcnNumberControl = (
       <div className='group relative w-full'>
         <Input
           id={id}
-          className='shadcn-jsonforms-input pr-10'
+          className='shadcn-jsonforms-input'
+          style={{ paddingInlineEnd: 64 }}
           type='number'
           step={props.integer ? 1 : 'any'}
           disabled={!enabled || readonly}
@@ -235,6 +245,7 @@ export const ShadcnNumberControl = (
           }}
         />
         <ClearValueButton
+          trailingControlSpace={24}
           clearable={uischema.options?.clearable ?? config?.clearable ?? true}
           data={data}
           enabled={enabled}

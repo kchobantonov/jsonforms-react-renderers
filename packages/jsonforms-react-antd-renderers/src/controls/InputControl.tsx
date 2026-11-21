@@ -1,6 +1,7 @@
 import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
 import { ControlProps } from '@jsonforms/core';
 import React, { useCallback } from 'react';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
 
 import { AntdCheckbox } from '../antd-controls';
 import { ControlFormItem, useCellMode } from '../util';
@@ -76,19 +77,24 @@ export const InputControl = (props: ControlProps & WithInput) => {
       htmlFor={id + '-input'}
       id={id}
     >
-      <InnerComponent
-        {...props}
-        handleChange={handleInputChange}
-        label={cell || props.uischema.label === false ? '' : label}
-        inputProps={{
-          onFocus,
-          onBlur,
-          'aria-describedby': helpId,
-        }}
-        id={id + '-input'}
-        isValid={isValid}
-        visible={visible}
-      />
+      <InputAdornments
+        schema={props.schema}
+        options={props.uischema.options as Record<string, unknown>}
+      >
+        <InnerComponent
+          {...props}
+          handleChange={handleInputChange}
+          label={cell || props.uischema.label === false ? '' : label}
+          inputProps={{
+            onFocus,
+            onBlur,
+            'aria-describedby': helpId,
+          }}
+          id={id + '-input'}
+          isValid={isValid}
+          visible={visible}
+        />
+      </InputAdornments>
     </ControlFormItem>
   );
 };

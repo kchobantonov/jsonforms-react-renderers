@@ -28,6 +28,8 @@ describe('ShadcnDateControl', () => {
     expect(markup).toContain('Jun');
     expect(markup).not.toContain('type="date"');
     expect(markup).toContain('aria-label="Clear date"');
+    expect(markup).toContain('group-hover:opacity-100');
+    expect(markup).toContain('group-focus-within:opacity-100');
   });
 
   it('opens the Shadcn calendar popover', async () => {

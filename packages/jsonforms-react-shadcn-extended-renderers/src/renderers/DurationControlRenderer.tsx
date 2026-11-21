@@ -87,7 +87,7 @@ export const ShadcnDurationControl = (props: ControlProps) => {
               type='button'
               variant='ghost'
               size='icon'
-              className='absolute left-1 top-1 h-8 w-8'
+              className='absolute start-1 top-1/2 h-8 w-8 -translate-y-1/2'
               disabled={state.disabled}
               aria-label={editorText('editor.chooseDuration')}
               title={editorText('editor.chooseDuration')}

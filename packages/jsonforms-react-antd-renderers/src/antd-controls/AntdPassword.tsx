@@ -51,13 +51,15 @@ export const AntdPassword = React.memo(function AntdPassword(
       onClear={onClear}
     >
       {/*
-        The reveal and clear controls both go in antd's `suffix` slot. An
+        The clear and reveal controls both go in antd's `suffix` slot. An
         overlaid clear button landed on top of the reveal icon, and the
         `Form.Item` error icon on top of both - three icons in one corner.
         `Input` *composes* `suffix` with the feedback icon
         (`<>{suffix}{hasFeedback && feedbackIcon}</>`) rather than replacing it,
-        as `InputNumber` does, so the slot yields reveal / clear / error laid
+        as `InputNumber` does, so the slot yields clear / reveal / error laid
         out by antd and correct whether or not the value is currently invalid.
+        Clear comes first so its conditional appearance does not move the
+        persistent reveal control or leave a gap when hidden.
       */}
       {(clear) => (
         <Input
@@ -80,12 +82,12 @@ export const AntdPassword = React.memo(function AntdPassword(
           type={revealed ? 'text' : 'password'}
           suffix={
             <>
+              {clear}
               <AntdRevealButton
                 revealed={revealed}
                 onToggle={() => setRevealed((shown) => !shown)}
                 disabled={!enabled}
               />
-              {clear}
             </>
           }
           value={inputText}

@@ -84,12 +84,18 @@ export const ShadcnPasswordControl = (
   };
   return (
     <InputShell {...props} id={id}>
-      <div className='group relative flex min-w-0 items-center gap-2'>
+      <div
+        className={
+          props.segmented
+            ? 'group relative flex min-w-0 items-center gap-2'
+            : 'group relative min-w-0 w-full'
+        }
+      >
         <div
           role={props.segmented ? 'group' : undefined}
           aria-label={props.segmented ? label : undefined}
           className={`flex min-w-0 gap-1 overflow-x-auto${
-            props.segmented ? '' : ' flex-1'
+            props.segmented ? '' : ' w-full'
           }`}
         >
           {Array.from({ length }, (_, index) => (
@@ -102,7 +108,7 @@ export const ShadcnPasswordControl = (
               className={
                 props.segmented
                   ? 'w-10 shrink-0 px-1 text-center'
-                  : 'shadcn-jsonforms-input'
+                  : 'shadcn-jsonforms-input pr-20'
               }
               type={revealed ? 'text' : 'password'}
               disabled={disabled}
@@ -165,7 +171,11 @@ export const ShadcnPasswordControl = (
                 type='button'
                 variant='ghost'
                 size='icon'
-                className='h-7 w-7 shrink-0'
+                className={
+                  props.segmented
+                    ? 'h-7 w-7 shrink-0'
+                    : 'absolute inset-y-0 end-1 my-auto h-7 w-7'
+                }
                 disabled={disabled}
                 aria-label={revealLabel}
                 onMouseDown={(event) => event.preventDefault()}
@@ -181,8 +191,15 @@ export const ShadcnPasswordControl = (
             <TooltipContent>{revealLabel}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <div className='relative h-10 w-10 shrink-0'>
+        <div
+          className={
+            props.segmented
+              ? 'relative h-10 w-10 shrink-0'
+              : 'absolute inset-y-0 end-11 my-auto h-9 w-9'
+          }
+        >
           <ClearValueButton
+            adornmentAware={false}
             clearable={uischema.options?.clearable ?? config?.clearable ?? true}
             data={data}
             enabled={enabled}

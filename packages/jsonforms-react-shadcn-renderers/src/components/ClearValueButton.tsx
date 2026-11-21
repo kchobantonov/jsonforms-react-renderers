@@ -4,6 +4,8 @@ import { Button } from '@jsonforms-react-shadcn-ui/button';
 
 export interface ClearValueButtonProps {
   clearable?: boolean;
+  adornmentAware?: boolean;
+  trailingControlSpace?: number;
   data: unknown;
   enabled: boolean;
   onClear: () => void;
@@ -15,6 +17,8 @@ export const hasClearableValue = (data: unknown) =>
 
 export const ClearValueButton = ({
   clearable = true,
+  adornmentAware = true,
+  trailingControlSpace = 0,
   data,
   enabled,
   onClear,
@@ -27,7 +31,12 @@ export const ClearValueButton = ({
   return (
     <Button
       aria-label='Clear value'
-      className='absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
+      className='absolute top-1/2 h-8 w-8 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
+      style={{
+        insetInlineEnd: adornmentAware
+          ? `calc(0.25rem + var(--jf-end-adornment-space, 0px) + ${trailingControlSpace}px)`
+          : '0.25rem',
+      }}
       onClick={(event) => {
         event.stopPropagation();
         onClear();

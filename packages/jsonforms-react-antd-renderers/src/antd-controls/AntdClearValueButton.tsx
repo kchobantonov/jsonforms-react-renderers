@@ -59,7 +59,9 @@ export const AntdClearValueButton = ({
 }: AntdClearValueButtonProps) => {
   const t = useI18n();
   const populated = data !== undefined && data !== null && data !== '';
-  if (!clearable || !enabled || !populated) return null;
+  // A slotted button takes up space even at zero opacity. Password fields put
+  // it before the persistent reveal button, so remove it while inactive.
+  if (!clearable || !enabled || !populated || (inline && !visible)) return null;
 
   return (
     <Tooltip title={t('control.clearValue')}>
@@ -81,7 +83,7 @@ export const AntdClearValueButton = ({
             ? {}
             : {
                 insetBlockStart: '50%',
-                insetInlineEnd: offset,
+                insetInlineEnd: `calc(${offset}px + var(--jf-end-adornment-space, 0px))`,
                 position: 'absolute',
                 transform: 'translateY(-50%)',
                 zIndex: 2,

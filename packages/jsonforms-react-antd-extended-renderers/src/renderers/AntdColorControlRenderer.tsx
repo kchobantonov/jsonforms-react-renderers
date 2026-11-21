@@ -199,6 +199,8 @@ export const AntdColorControl = (props: ControlProps) => {
 
   return (
     <ControlFormItem
+      adornmentSchema={props.schema}
+      adornmentOptions={props.uischema.options as Record<string, unknown>}
       id={props.id}
       label={props.label}
       required={props.required}

@@ -113,13 +113,14 @@ describe('the reveal toggle is a single control', () => {
 
   it('is the only focusable control in the suffix besides clear', () => {
     const { container, unmount } = render(passwordUi);
+    act(() => container.querySelector('input')!.focus());
     const suffix = container.querySelector('.ant-input-suffix')!;
     const focusable = Array.from(
       suffix.querySelectorAll<HTMLElement>('[tabindex], button'),
     ).filter((element) => element.tabIndex >= 0);
     expect(
       focusable.map((element) => element.getAttribute('aria-label')),
-    ).toEqual(['Show password', 'Clear value']);
+    ).toEqual(['Clear value', 'Show password']);
     unmount();
   });
 

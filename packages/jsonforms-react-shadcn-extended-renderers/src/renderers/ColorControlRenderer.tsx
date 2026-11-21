@@ -104,7 +104,7 @@ export const ShadcnColorControl = (props: ControlProps) => {
             change(next);
           }}
         />
-        <div className='absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2'>
+        <div className='absolute start-1 top-1/2 h-8 w-8 -translate-y-1/2'>
           <Input
             aria-label={`${props.label || 'Color'} picker`}
             className='shadcn-jsonforms-color-picker h-full w-full cursor-pointer border-0 bg-transparent p-1 shadow-none disabled:cursor-not-allowed'

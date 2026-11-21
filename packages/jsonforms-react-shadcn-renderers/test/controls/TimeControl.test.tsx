@@ -28,6 +28,8 @@ describe('ShadcnTimeControl', () => {
     expect(markup).toContain('13:45');
     expect(markup).not.toContain('type="time"');
     expect(markup).toContain('aria-label="Clear time"');
+    expect(markup).toContain('group-hover:opacity-100');
+    expect(markup).toContain('group-focus-within:opacity-100');
   });
 
   it('opens the segmented Shadcn time picker', async () => {

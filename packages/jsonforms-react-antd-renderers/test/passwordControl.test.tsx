@@ -195,6 +195,7 @@ describe('reveal and clear stay separate', () => {
     const { container, toggle, unmount } = render(formatSchema, plain, {
       secret: 'hunter2',
     });
+    act(() => container.querySelector('input')!.focus());
     const clear = container.querySelector<HTMLElement>(
       'button[aria-label="Clear value"]',
     );
@@ -223,6 +224,7 @@ describe('trailing affordances do not collide', () => {
     const { container, unmount } = render(formatSchema, plain, {
       secret: 'hunter2',
     });
+    act(() => container.querySelector('input')!.focus());
     const clear = container.querySelector<HTMLElement>(
       'button[aria-label="Clear value"]',
     )!;
@@ -233,12 +235,18 @@ describe('trailing affordances do not collide', () => {
 
   it('shows reveal, clear and the error icon side by side when invalid', () => {
     const { container, unmount } = render(invalid, plain, { secret: 'short' });
+    act(() => container.querySelector('input')!.focus());
     const suffix = container.querySelector('.ant-input-suffix')!;
     expect(suffix.querySelector('[data-password-toggle]')).toBeTruthy();
     expect(
       suffix.querySelector('button[aria-label="Clear value"]'),
     ).toBeTruthy();
     expect(suffix.querySelector('.ant-form-item-feedback-icon')).toBeTruthy();
+    expect(
+      Array.from(suffix.querySelectorAll('button')).map((button) =>
+        button.getAttribute('aria-label'),
+      ),
+    ).toEqual(['Clear value', 'Show password']);
     // All three in one flex row: none of them is taken out of the flow, which
     // is what made them stack in the same corner.
     const positioned = Array.from(
@@ -254,6 +262,21 @@ describe('trailing affordances do not collide', () => {
     expect(
       container.querySelector('button[aria-label="Clear value"]'),
     ).toBeNull();
+    unmount();
+  });
+
+  it('does not reserve a clear-button slot while idle', () => {
+    const { container, toggle, unmount } = render(formatSchema, plain, {
+      secret: 'hunter2',
+    });
+    const clear = () =>
+      container.querySelector('button[aria-label="Clear value"]');
+    expect(clear()).toBeNull();
+    expect(toggle).toBeTruthy();
+    act(() => container.querySelector('input')!.focus());
+    expect(clear()).toBeTruthy();
+    act(() => container.querySelector('input')!.blur());
+    expect(clear()).toBeNull();
     unmount();
   });
 });

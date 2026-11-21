@@ -55,14 +55,18 @@ describe('clear affordance on numeric inputs', () => {
     expect(clear!.style.position).toBe('absolute');
     // The default offset put the button on top of the handles antd reveals
     // on hover.
-    expect(clear!.style.insetInlineEnd).toBe(`${CLEAR_OFFSET_WITH_HANDLES}px`);
+    expect(clear!.style.insetInlineEnd).toBe(
+      `calc(${CLEAR_OFFSET_WITH_HANDLES}px + var(--jf-end-adornment-space, 0px))`,
+    );
     expect(CLEAR_OFFSET_WITH_HANDLES).toBeGreaterThan(CLEAR_OFFSET);
     unmount();
   });
 
   it('keeps the narrower offset for a plain text input, which has no handles', () => {
     const { clear, unmount } = render({ type: 'string' }, { value: 'x' });
-    expect(clear!.style.insetInlineEnd).toBe(`${CLEAR_OFFSET}px`);
+    expect(clear!.style.insetInlineEnd).toBe(
+      `calc(${CLEAR_OFFSET}px + var(--jf-end-adornment-space, 0px))`,
+    );
     unmount();
   });
 

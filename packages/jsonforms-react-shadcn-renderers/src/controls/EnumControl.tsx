@@ -8,7 +8,10 @@ import {
 } from '@jsonforms/core';
 import { TranslateProps } from '@jsonforms/react';
 import React from 'react';
-import { ClearValueButton } from '../components/ClearValueButton';
+import {
+  ClearValueButton,
+  hasClearableValue,
+} from '../components/ClearValueButton';
 import { InputShell, makeId } from './InputControl';
 import {
   Select,
@@ -36,6 +39,9 @@ export const ShadcnEnumControl = ({
 }: ControlProps & OwnPropsOfEnum & TranslateProps) => {
   if (!visible) return null;
   const id = makeId(path, label);
+  const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
+  const showClear =
+    clearable && enabled && !readonly && hasClearableValue(data);
 
   return (
     <InputShell
@@ -68,9 +74,12 @@ export const ShadcnEnumControl = ({
         >
           <SelectTrigger
             id={id}
-            className='shadcn-jsonforms-input shadcn-jsonforms-select w-full min-w-0 pr-16'
+            className='shadcn-jsonforms-input shadcn-jsonforms-select w-full min-w-0 pr-3'
           >
-            <SelectValue placeholder='Select...' />
+            <SelectValue
+              className={showClear ? 'mr-10 min-w-0' : 'min-w-0'}
+              placeholder='Select...'
+            />
           </SelectTrigger>
           <SelectContent className='shadcn-jsonforms-select-content'>
             {(options ?? []).map((option, index) => (
@@ -85,7 +94,8 @@ export const ShadcnEnumControl = ({
           </SelectContent>
         </Select>
         <ClearValueButton
-          clearable={uischema.options?.clearable ?? config?.clearable ?? true}
+          clearable={clearable}
+          trailingControlSpace={36}
           data={data}
           enabled={enabled}
           readonly={readonly}

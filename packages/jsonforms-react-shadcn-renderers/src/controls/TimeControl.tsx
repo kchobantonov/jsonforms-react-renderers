@@ -58,7 +58,7 @@ export const ShadcnTimeControl = (props: ControlProps) => {
       description={description}
       errors={errors}
     >
-      <div className='relative w-full'>
+      <div className='group relative w-full'>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -101,7 +101,7 @@ export const ShadcnTimeControl = (props: ControlProps) => {
             type='button'
             variant='ghost'
             size='icon'
-            className='absolute right-1 top-1 h-8 w-8'
+            className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
             aria-label='Clear time'
             onClick={() => handleChange(path, undefined)}
           >

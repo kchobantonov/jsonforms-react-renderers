@@ -1,4 +1,5 @@
 import React from 'react';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
 import { Form } from 'antd';
 import { useJsonForms } from '@jsonforms/react';
 import { ErrorFeedback } from '../complex/ErrorFeedback';
@@ -23,6 +24,8 @@ export interface ControlFormItemProps {
   help?: React.ReactNode;
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  adornmentSchema?: { type?: unknown };
+  adornmentOptions?: Record<string, unknown>;
 }
 
 /**
@@ -44,6 +47,8 @@ export const ControlFormItem = ({
   help,
   style,
   children,
+  adornmentSchema,
+  adornmentOptions,
 }: ControlFormItemProps) => {
   const cell = useCellMode();
   const context = useJsonForms();
@@ -100,6 +105,14 @@ export const ControlFormItem = ({
     ),
   });
 
+  const content = adornmentOptions ? (
+    <InputAdornments schema={adornmentSchema} options={adornmentOptions}>
+      {children}
+    </InputAdornments>
+  ) : (
+    children
+  );
+
   if (cell) {
     return (
       <Form.Item
@@ -110,7 +123,7 @@ export const ControlFormItem = ({
         htmlFor={htmlFor}
         id={id}
       >
-        {children}
+        {content}
       </Form.Item>
     );
   }
@@ -126,7 +139,7 @@ export const ControlFormItem = ({
       htmlFor={htmlFor}
       id={id}
     >
-      {children}
+      {content}
     </Form.Item>
   );
 };
