@@ -284,9 +284,10 @@ describe('otp storage contract', () => {
   });
 
   it('clears the value', async () => {
-    const { clear, latest, unmount } = render(code(), otpUi, {
+    const { boxes, clear, latest, unmount } = render(code(), otpUi, {
       verificationCode: '482913',
     });
+    act(() => boxes()[0].focus());
     expect(clear()).toBeTruthy();
     act(() => clear()!.click());
     await settle();
