@@ -11,3 +11,7 @@ Clarify the normative spec when the contract itself needs clarification.
 Do not catalogue ordinary coding mistakes. Preserve behavior across renderer
 sets; explicitly record platform limitations and unverified support instead of
 claiming parity. Distinguish executable tests from proposed acceptance cases.
+
+Before reporting renderer work complete, run the repository lint and format
+checks (`pnpm run lint` and `pnpm run check-format`). Fix errors in changed files
+and report any remaining warnings or failures accurately.

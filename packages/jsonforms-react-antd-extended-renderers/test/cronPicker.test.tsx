@@ -283,8 +283,9 @@ describe('a schedule the value already states', () => {
     await form.openPicker();
     const input = form
       .rowFor('Days of month')
-      ?.querySelector<HTMLInputElement>('input')!;
-    act(() => input.focus());
+      ?.querySelector<HTMLInputElement>('input');
+    expect(input).toBeTruthy();
+    act(() => input!.focus());
     const clear = form
       .rowFor('Days of month')
       ?.querySelector<HTMLButtonElement>('button[aria-label="Clear value"]');
