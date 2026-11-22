@@ -83,3 +83,72 @@ it('supports dynamic selection and parent category labels through the published 
   ).toHaveLength(0);
   expect(host.querySelector('input[value="Ada"]')).toBe(name);
 });
+
+it('updates Group region children and accessible name without remounting the body', async () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  dispose = () => {
+    act(() => root.unmount());
+    host.remove();
+  };
+  const uischema = {
+    type: 'Group',
+    label: 'Fallback',
+    cover: {
+      type: 'Label',
+      text: 'Initial cover',
+      $dynamic: { text: { bind: 'external.cover' } },
+    },
+    header: [
+      {
+        type: 'Label',
+        text: 'Initial',
+        $dynamic: { text: { bind: 'external.title' } },
+      },
+    ],
+    elements: [{ type: 'Control', scope: '#/properties/name' }],
+    footer: [
+      {
+        type: 'Label',
+        text: 'Initial footer',
+        $dynamic: { text: { bind: 'external.footer' } },
+      },
+    ],
+  };
+  const update = async (title: string, cover: string, footer: string) => {
+    await act(async () =>
+      root.render(
+        <DynamicUiProvider
+          config={{ jsonformsExtended: { dynamic: { enabled: true } } }}
+          external={{ title, cover, footer }}
+        >
+          <JsonForms
+            data={{ name: 'Ada' }}
+            schema={{
+              type: 'object',
+              properties: { name: { type: 'string' } },
+            }}
+            uischema={uischema}
+            renderers={antdRenderers}
+            cells={antdCells}
+          />
+        </DynamicUiProvider>,
+      ),
+    );
+  };
+  await update('First title', 'First cover', 'First footer');
+  const frame = host.querySelector('[data-group-frame]');
+  expect(frame?.getAttribute('aria-label')).toBe('First title');
+  const input = host.querySelector('input[value="Ada"]');
+  expect(input).not.toBeNull();
+  await update('Second title', 'Second cover', 'Second footer');
+  expect(frame?.getAttribute('aria-label')).toBe('Second title');
+  expect(host.querySelector('[data-group-cover]')?.textContent).toContain(
+    'Second cover',
+  );
+  expect(host.querySelector('[data-group-footer]')?.textContent).toContain(
+    'Second footer',
+  );
+  expect(host.querySelector('input[value="Ada"]')).toBe(input);
+});

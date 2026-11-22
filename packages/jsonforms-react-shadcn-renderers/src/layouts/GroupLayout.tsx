@@ -11,6 +11,7 @@ import {
   uiTypeIs,
 } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { ShadcnLayout } from './Layout';
@@ -58,9 +59,12 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
     regions.cover || regions.header?.length || footer?.length,
   );
   const HeaderSection = hasRegions ? CardHeader : 'div';
-  const headerLabel = regions.header?.find(
-    (element) => element.type === 'Label',
-  ) as { text?: string; i18n?: string } | undefined;
+  const resolveHeader = useDynamicTreeResolver(props.path);
+  const headerLabel = regions.header
+    ?.map(resolveHeader)
+    .find((element) => element.type === 'Label') as
+    | { text?: string; i18n?: string }
+    | undefined;
   const headerTitle = headerLabel?.i18n
     ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
     : headerLabel?.text;

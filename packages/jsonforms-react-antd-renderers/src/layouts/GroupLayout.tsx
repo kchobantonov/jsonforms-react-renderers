@@ -1,6 +1,7 @@
 import { ObjectDetailContext } from '../complex/ObjectDetailContext';
 import { ValidationIcon } from '../complex/ValidationIcon';
 import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
 import React from 'react';
 import { Card, Collapse, theme as antTheme } from 'antd';
 import {
@@ -57,6 +58,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
     header?: UISchemaElement[];
     footer?: UISchemaElement[];
   };
+  const resolveHeader = useDynamicTreeResolver(props.path);
   if (!props.visible) return null;
   const renderRegion = (element: UISchemaElement, key: string) => (
     <JsonFormsDispatch
@@ -78,9 +80,11 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   const footer = regions.footer?.map((element, index) =>
     renderRegion(element, `footer-${index}`),
   );
-  const headerLabel = regions.header?.find(
-    (element) => element.type === 'Label',
-  ) as { text?: string; i18n?: string } | undefined;
+  const headerLabel = regions.header
+    ?.map(resolveHeader)
+    .find((element) => element.type === 'Label') as
+    | { text?: string; i18n?: string }
+    | undefined;
   const headerTitle = headerLabel?.i18n
     ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
     : headerLabel?.text;
