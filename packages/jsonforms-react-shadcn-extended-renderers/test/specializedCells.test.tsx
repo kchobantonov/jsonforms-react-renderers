@@ -77,7 +77,11 @@ it.each([
   expect(container.querySelector('td label')).toBeNull();
   expect(container.textContent).not.toContain('No applicable cell');
   if (format === 'color')
-    expect(container.querySelector('input[type="color"]')).toBeTruthy();
+    expect(
+      container.querySelector(
+        '.shadcn-jsonforms-color-control button[aria-label$=" picker"]',
+      ),
+    ).toBeTruthy();
   if (format === 'duration')
     expect(
       container.querySelector('[aria-label="Choose a duration"]'),

@@ -83,7 +83,11 @@ it('dispatches every spec grid column through the shadcn cells registry', async 
     expect(container.textContent).not.toContain('No applicable cell');
     expect(container.textContent).toContain(data.staff[0].address.street);
     expect(container.textContent).toContain(data.staff[0].phoneNumbers[0]);
-    expect(container.querySelectorAll('input[type="color"]')).toHaveLength(2);
+    expect(
+      container.querySelectorAll(
+        '.shadcn-jsonforms-color-control button[aria-label$=" picker"]',
+      ),
+    ).toHaveLength(2);
     expect(
       container.querySelectorAll('[aria-label="Choose a duration"]'),
     ).toHaveLength(2);
