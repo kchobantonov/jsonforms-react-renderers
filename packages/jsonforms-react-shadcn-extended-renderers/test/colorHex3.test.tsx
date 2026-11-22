@@ -13,8 +13,8 @@ const openPicker = (host: HTMLElement) =>
   );
 
 it.each([
-  ['picker', '#ed5050', '#e55'],
-  ['picker', '#c47878', '#c77'],
+  ['picker', '51', '#35a'],
+  ['picker', '68', '#45a'],
   ['text', '#aabbcc', '#abc'],
   ['text', '#ABC', '#abc'],
   ['text', '', undefined],
@@ -31,7 +31,7 @@ it.each([
           enabled: true,
           path: 'color',
           label: 'Color',
-          data: '#123',
+          data: kind === 'picker' ? '#2255aa' : '#123',
           errors: '',
           schema: {},
           uischema: { options: { colorSaveFormat: 'hex3' } },
@@ -43,7 +43,7 @@ it.each([
   expect(handleChange).not.toHaveBeenCalled();
   if (kind === 'picker') openPicker(host);
   const input = document.querySelector<HTMLInputElement>(
-    kind === 'picker' ? 'input[type="color"]' : 'input:not([type="color"])',
+    kind === 'picker' ? 'input[aria-label="Color R"]' : 'input:not([type])',
   )!;
   act(() => {
     input.value = value!;
@@ -91,7 +91,8 @@ it('rejects transparency without changing stored data and honors global hex3 con
   );
   openPicker(host);
   expect(
-    document.querySelector<HTMLInputElement>('input[type="color"]')!.disabled,
+    document.querySelector<HTMLInputElement>('input[aria-label="Color R"]')!
+      .disabled,
   ).toBe(true);
   act(() => root.unmount());
   host.remove();
@@ -129,7 +130,10 @@ it('shows a checkerboard only for an empty color without writing fallback black'
       expect(Boolean(host.querySelector('[data-color-empty-swatch]'))).toBe(
         !data,
       );
-      expect(document.querySelector('input[type="color"]')).not.toBeNull();
+      expect(
+        document.querySelector('input[aria-label="Color R"]'),
+      ).not.toBeNull();
+      expect(document.querySelector('input[type="color"]')).toBeNull();
     }
     expect(handleChange).not.toHaveBeenCalled();
   } finally {
@@ -161,12 +165,48 @@ it('clears a populated color from the picker footer', () => {
     ),
   );
   openPicker(host);
+  expect(document.querySelector('input[type="color"]')).toBeNull();
+  expect(document.querySelector('[role="slider"]')).not.toBeNull();
+  expect(document.querySelector('input[type="range"]')).not.toBeNull();
   const clear = document.querySelector<HTMLButtonElement>(
     '[data-color-panel-clear]',
   );
   expect(clear?.textContent).toBe('Clear value');
   act(() => clear!.click());
   expect(handleChange).toHaveBeenCalledWith('color', undefined);
+  act(() => root.unmount());
+  host.remove();
+});
+
+it('edits the spectrum with the keyboard in the same panel', () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const handleChange = vi.fn();
+  act(() =>
+    root.render(
+      <ShadcnColorControl
+        {...({
+          visible: true,
+          enabled: true,
+          path: 'color',
+          label: 'Color',
+          data: '#2255aa',
+          errors: '',
+          schema: {},
+          uischema: { options: {} },
+          handleChange,
+        } as any)}
+      />,
+    ),
+  );
+  openPicker(host);
+  const spectrum = document.querySelector<HTMLElement>('[role="slider"]')!;
+  act(() => Simulate.keyDown(spectrum, { key: 'ArrowRight' }));
+  expect(handleChange).toHaveBeenCalledWith(
+    'color',
+    expect.stringMatching(/^#[0-9a-f]{6}$/),
+  );
   act(() => root.unmount());
   host.remove();
 });
