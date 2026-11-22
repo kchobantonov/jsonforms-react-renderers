@@ -115,6 +115,32 @@ it('applies draft edits', () => {
   click('Apply');
   expect(write).toHaveBeenCalledWith('schedule', '0 0 10 * * *');
 });
+it('clears the Expression draft and applies it only when requested', () => {
+  render('0 0 9 * * *');
+  click('Choose a schedule');
+  const clear = button('Clear value: Expression');
+  expect(clear).toBeTruthy();
+  click('Clear value: Expression');
+  expect(
+    document.querySelector<HTMLInputElement>('input[aria-label="Expression"]')
+      ?.value,
+  ).toBe('');
+  expect(button('Clear value: Expression')).toBeUndefined();
+  expect(write).not.toHaveBeenCalled();
+  click('Apply');
+  expect(write).toHaveBeenCalledWith('schedule', '');
+});
+it('clears an advanced field back to Every', () => {
+  render('0 0 9 L * ?');
+  click('Choose a schedule');
+  expect(button('Clear value: Days of month')).toBeTruthy();
+  click('Clear value: Days of month');
+  expect(
+    document.querySelector<HTMLInputElement>('input[aria-label="Expression"]')
+      ?.value,
+  ).toBe('0 0 9 * * ?');
+  expect(write).not.toHaveBeenCalled();
+});
 it('prevents applying invalid expressions', () => {
   render();
   click('Choose a schedule');
@@ -167,15 +193,49 @@ it('changes a selected hour without rewriting unrelated fields', () => {
   render('0 0 9 * * MON');
   click('Choose a schedule');
   click('Hours');
-  const checkbox = document.querySelector<HTMLButtonElement>(
-    '[role="checkbox"][aria-label="Hours 10"]',
+  const choice = document.querySelector<HTMLButtonElement>(
+    '[role="listbox"][aria-label="Hours"] [role="option"]:nth-child(11)',
   )!;
-  expect(checkbox).toBeTruthy();
-  act(() => checkbox.click());
+  expect(choice.textContent).toBe('10');
+  act(() => choice.click());
   // Checkbox choices stage edits while the original form value is unchanged.
   expect(write).not.toHaveBeenCalled();
   const draft = document.querySelector<HTMLInputElement>(
     'input[aria-label="Expression"]',
   )!;
   expect(draft.value).toBe('0 0 9,10 * * MON');
+});
+it('shows a scrollable multi-select and clears its choices to Every', () => {
+  render('0 0 9 * * MON');
+  click('Choose a schedule');
+  expect(document.body.textContent).toContain('Expression');
+  click('Minutes');
+  const list = document.querySelector<HTMLElement>(
+    '[role="listbox"][aria-label="Minutes"]',
+  )!;
+  expect(list).toBeTruthy();
+  expect(list.querySelectorAll('[role="option"]')).toHaveLength(60);
+  expect(list.closest('.overflow-y-auto')).toBeTruthy();
+  act(() =>
+    list
+      .querySelector<HTMLButtonElement>('[role="option"]:nth-child(8)')!
+      .click(),
+  );
+  act(() =>
+    list
+      .querySelector<HTMLButtonElement>('[role="option"]:nth-child(16)')!
+      .click(),
+  );
+  expect(button('Minutes').textContent).toContain('0, 7, 15');
+  expect(
+    document.querySelector<HTMLInputElement>('input[aria-label="Expression"]')
+      ?.value,
+  ).toBe('0 0,7,15 9 * * MON');
+  click('Every: Minutes');
+  expect(button('Minutes').textContent).toContain('Every');
+  expect(
+    document.querySelector<HTMLInputElement>('input[aria-label="Expression"]')
+      ?.value,
+  ).toBe('0 * 9 * * MON');
+  expect(write).not.toHaveBeenCalled();
 });

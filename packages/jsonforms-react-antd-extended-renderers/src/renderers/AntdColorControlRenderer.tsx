@@ -2,10 +2,11 @@ import {
   ControlFormItem,
   usePreTouchErrors,
   useClearAffordance,
+  useI18n,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import { ControlProps, RankedTester } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
-import { ColorPicker, Input, theme as antTheme } from 'antd';
+import { Button, ColorPicker, Input, theme as antTheme } from 'antd';
 import type { AggregationColor } from 'antd/es/color-picker/color';
 import type { ColorFormatType } from 'antd/es/color-picker/interface';
 import {
@@ -41,8 +42,8 @@ const toRgba = (color: AggregationColor): Rgba => {
 
 /**
  * One field rather than three widgets in a row: the swatch is the input's
- * prefix, the color stays editable as text, and antd's own allowClear provides
- * the clear affordance - so it reads like any other antd input.
+ * prefix, the color stays editable as text, and the input and picker each
+ * provide a clear affordance.
  *
  * Three things the widget layout has to serve, all from section 18 and
  * Adjustment 8:
@@ -52,14 +53,15 @@ const toRgba = (color: AggregationColor): Rgba => {
  *   edited. Typed text is committed as typed and normalized on blur, so
  *   `#ff0` does not turn into `rgb(255, 255, 0)` between two keystrokes and
  *   move the caret.
- * - **The picker can clear.** `allowClear` puts the clear affordance inside the
- *   panel, which is the only affordance there is when text entry is off.
+ * - **The picker can clear.** A footer action clears from inside the panel,
+ *   including when text entry is off.
  * - **An unparseable value stays visible.** It is left in the data for the
  *   validator to report rather than being replaced by the picker's fallback
  *   black.
  */
 export const AntdColorControl = (props: ControlProps) => {
   const { token } = antTheme.useToken();
+  const message = useI18n();
   /*
     See `usePreTouchErrors` in the base package: the filtered message, plus the
     touch state it needs. Unchanged unless filtering is switched on.
@@ -91,6 +93,7 @@ export const AntdColorControl = (props: ControlProps) => {
   // than from the `jsonformsExtended` namespace.
   const shared = { ...props.config, ...options } as Record<string, unknown>;
   const clearable = shared.clearable !== false;
+  const disabled = !props.enabled || Boolean(props.readonly);
   const saveFormat = asColorSaveFormat(
     resolveExtendedOption(
       options,
@@ -170,7 +173,7 @@ export const AntdColorControl = (props: ControlProps) => {
 
   const picker = (children: React.ReactNode) => (
     <ColorPicker
-      disabled={!props.enabled}
+      disabled={disabled}
       // Never the stored text: `hsb(...)` is not CSS, and handing it to the
       // picker would parse as black. An unrecognized value opens the panel
       // empty rather than pretending to be a color.
@@ -189,8 +192,22 @@ export const AntdColorControl = (props: ControlProps) => {
       onOpenChange={(open) => {
         if (open) setPanelFormat(savedPanelFormat);
       }}
-      allowClear={clearable}
-      onClear={() => commit(undefined)}
+      panelRender={(panel) => (
+        <div>
+          {panel}
+          {clearable && value !== undefined && value !== '' && (
+            <Button
+              block
+              type='text'
+              disabled={disabled}
+              data-color-panel-clear=''
+              onClick={() => commit(undefined)}
+            >
+              {message('control.clearValue')}
+            </Button>
+          )}
+        </div>
+      )}
       onChangeComplete={commitColor}
     >
       {children}
@@ -229,7 +246,7 @@ export const AntdColorControl = (props: ControlProps) => {
           styles={{
             prefix: { lineHeight: 0, display: 'flex', alignItems: 'center' },
           }}
-          disabled={!props.enabled}
+          disabled={disabled}
           // An authored hint wins; otherwise the hint is the syntax of the
           // configured representation, which section 18 requires it to reflect.
           placeholder={
@@ -264,7 +281,7 @@ export const AntdColorControl = (props: ControlProps) => {
         picker(
           <button
             type='button'
-            disabled={!props.enabled}
+            disabled={disabled}
             aria-label={t('editor.chooseColor')}
             autoFocus={shared.focus === true}
             data-color-trigger

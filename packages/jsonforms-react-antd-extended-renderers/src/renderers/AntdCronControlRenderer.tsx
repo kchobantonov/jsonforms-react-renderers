@@ -122,16 +122,25 @@ const FieldPicker = ({
 
   if (values === undefined) {
     return (
-      <Space.Compact block>
-        {addon}
-        <Input
-          style={{ flex: 1, minWidth: 0 }}
-          disabled={disabled}
-          value={text}
-          aria-label={name}
-          onChange={(event) => onChange(event.currentTarget.value)}
-        />
-      </Space.Compact>
+      <AntdClearableInput
+        data={text}
+        enabled={!disabled}
+        onClear={() => onChange('')}
+      >
+        {(clear) => (
+          <Space.Compact block>
+            {addon}
+            <Input
+              style={{ flex: 1, minWidth: 0 }}
+              disabled={disabled}
+              value={text}
+              aria-label={name}
+              suffix={clear}
+              onChange={(event) => onChange(event.currentTarget.value)}
+            />
+          </Space.Compact>
+        )}
+      </AntdClearableInput>
     );
   }
 
@@ -367,15 +376,35 @@ export const AntdCronControl = (props: ControlProps) => {
         and the way in for anything the dropdowns cannot say. With `showActions`
         the field below shows what is saved and this shows what is being edited.
       */}
-      <Input
-        size='small'
-        disabled={disabled}
-        value={text}
-        placeholder={DEFAULT_CRON}
-        status={editedProblem ? 'error' : undefined}
-        aria-label={label('cron.expression')}
-        onChange={(event) => changeText(event.currentTarget.value)}
-      />
+      <AntdClearableInput
+        data={text}
+        enabled={!disabled}
+        onClear={() => changeText('')}
+      >
+        {(clear) => (
+          <Space.Compact block>
+            <Space.Addon
+              disabled={disabled}
+              style={{
+                width: `${labelColumn}ch`,
+                justifyContent: 'flex-start',
+              }}
+            >
+              {label('cron.expression')}
+            </Space.Addon>
+            <Input
+              style={{ flex: 1, minWidth: 0 }}
+              disabled={disabled}
+              value={text}
+              placeholder={DEFAULT_CRON}
+              status={editedProblem ? 'error' : undefined}
+              aria-label={label('cron.expression')}
+              suffix={clear}
+              onChange={(event) => changeText(event.currentTarget.value)}
+            />
+          </Space.Compact>
+        )}
+      </AntdClearableInput>
 
       {showActions && (
         <Flex justify='end' gap='small'>

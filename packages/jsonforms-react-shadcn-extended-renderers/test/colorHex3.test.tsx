@@ -3,6 +3,15 @@ import { createRoot } from 'react-dom/client';
 import { Simulate } from 'react-dom/test-utils';
 import { ShadcnColorControl } from '../src/renderers/ColorControlRenderer';
 
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+
+const openPicker = (host: HTMLElement) =>
+  act(() =>
+    host
+      .querySelector<HTMLButtonElement>('button[aria-label="Color picker"]')!
+      .click(),
+  );
+
 it.each([
   ['picker', '#ed5050', '#e55'],
   ['picker', '#c47878', '#c77'],
@@ -11,6 +20,7 @@ it.each([
   ['text', '', undefined],
 ])('saves hex3 from %s: %s', (kind, value, expected) => {
   const host = document.createElement('div');
+  document.body.append(host);
   const root = createRoot(host);
   const handleChange = vi.fn();
   act(() =>
@@ -31,7 +41,8 @@ it.each([
     ),
   );
   expect(handleChange).not.toHaveBeenCalled();
-  const input = host.querySelector<HTMLInputElement>(
+  if (kind === 'picker') openPicker(host);
+  const input = document.querySelector<HTMLInputElement>(
     kind === 'picker' ? 'input[type="color"]' : 'input:not([type="color"])',
   )!;
   act(() => {
@@ -40,10 +51,12 @@ it.each([
   });
   expect(handleChange).toHaveBeenLastCalledWith('color', expected);
   act(() => root.unmount());
+  host.remove();
 });
 
 it('rejects transparency without changing stored data and honors global hex3 configuration', () => {
   const host = document.createElement('div');
+  document.body.append(host);
   const root = createRoot(host);
   const handleChange = vi.fn();
   act(() =>
@@ -76,17 +89,21 @@ it('rejects transparency without changing stored data and honors global hex3 con
   expect(host.textContent).toContain(
     'Three-digit hex cannot store transparency',
   );
+  openPicker(host);
   expect(
-    host.querySelector<HTMLInputElement>('input[type="color"]')!.disabled,
+    document.querySelector<HTMLInputElement>('input[type="color"]')!.disabled,
   ).toBe(true);
   act(() => root.unmount());
+  host.remove();
 });
 
 it('shows a checkerboard only for an empty color without writing fallback black', () => {
   const host = document.createElement('div');
+  document.body.append(host);
   const root = createRoot(host);
   const handleChange = vi.fn();
   try {
+    let opened = false;
     for (const data of [undefined, '#123', '']) {
       act(() =>
         root.render(
@@ -105,13 +122,90 @@ it('shows a checkerboard only for an empty color without writing fallback black'
           />,
         ),
       );
+      if (!opened) {
+        openPicker(host);
+        opened = true;
+      }
       expect(Boolean(host.querySelector('[data-color-empty-swatch]'))).toBe(
         !data,
       );
-      expect(host.querySelector('input[type="color"]')).not.toBeNull();
+      expect(document.querySelector('input[type="color"]')).not.toBeNull();
     }
     expect(handleChange).not.toHaveBeenCalled();
   } finally {
     act(() => root.unmount());
+    host.remove();
   }
 });
+
+it('clears a populated color from the picker footer', () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const handleChange = vi.fn();
+  act(() =>
+    root.render(
+      <ShadcnColorControl
+        {...({
+          visible: true,
+          enabled: true,
+          path: 'color',
+          label: 'Color',
+          data: '#2255aa',
+          errors: '',
+          schema: {},
+          uischema: { options: {} },
+          handleChange,
+        } as any)}
+      />,
+    ),
+  );
+  openPicker(host);
+  const clear = document.querySelector<HTMLButtonElement>(
+    '[data-color-panel-clear]',
+  );
+  expect(clear?.textContent).toBe('Clear value');
+  act(() => clear!.click());
+  expect(handleChange).toHaveBeenCalledWith('color', undefined);
+  act(() => root.unmount());
+  host.remove();
+});
+
+it.each([
+  [undefined, {}, false],
+  ['#2255aa', { clearable: false }, false],
+  ['#2255aa', {}, true],
+] as const)(
+  'gates the picker footer for %s and %j',
+  (data, options, readonly) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    act(() =>
+      root.render(
+        <ShadcnColorControl
+          {...({
+            visible: true,
+            enabled: true,
+            readonly,
+            path: 'color',
+            label: 'Color',
+            data,
+            errors: '',
+            schema: {},
+            uischema: { options },
+            handleChange: vi.fn(),
+          } as any)}
+        />,
+      ),
+    );
+    const trigger = host.querySelector<HTMLButtonElement>(
+      'button[aria-label="Color picker"]',
+    )!;
+    expect(trigger.disabled).toBe(readonly);
+    if (!readonly) openPicker(host);
+    expect(document.querySelector('[data-color-panel-clear]')).toBeNull();
+    act(() => root.unmount());
+    host.remove();
+  },
+);

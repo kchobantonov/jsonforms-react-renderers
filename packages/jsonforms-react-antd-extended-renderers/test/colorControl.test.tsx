@@ -435,7 +435,9 @@ describe('clearing from the picker', () => {
       options: { colorTextEntry: false },
     });
     expect(await open(container)).toBeTruthy();
-    expect(document.querySelector('.ant-color-picker-clear')).toBeTruthy();
+    expect(
+      document.querySelector('[data-color-panel-clear]')?.textContent,
+    ).toBe('Clear value');
     unmount();
   });
 
@@ -445,13 +447,20 @@ describe('clearing from the picker', () => {
     });
     await open(container);
     const clear = document.querySelector<HTMLElement>(
-      '.ant-color-picker-clear',
+      '[data-color-panel-clear]',
     )!;
     act(() => {
       clear.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     await settle();
     expect(stored()).toBeUndefined();
+    unmount();
+  });
+
+  it('omits the footer action for an empty value', async () => {
+    const { container, unmount } = render({ data: {} });
+    await open(container);
+    expect(document.querySelector('[data-color-panel-clear]')).toBeNull();
     unmount();
   });
 });
@@ -492,7 +501,7 @@ describe('shared control options', () => {
     });
     await settle();
     expect(document.querySelector('.ant-color-picker-panel')).toBeTruthy();
-    expect(document.querySelector('.ant-color-picker-clear')).toBeNull();
+    expect(document.querySelector('[data-color-panel-clear]')).toBeNull();
     unmount();
   });
 });

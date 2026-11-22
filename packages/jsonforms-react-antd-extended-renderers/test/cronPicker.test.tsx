@@ -195,7 +195,12 @@ describe('a schedule the value already states', () => {
 
     expect(form.labels()[0]).toBe('Repeats');
     expect(form.rowFor('Repeats')?.textContent).toContain('Hourly');
-    expect(form.labels()).toEqual(['Repeats', 'Minutes', 'Seconds']);
+    expect(form.labels()).toEqual([
+      'Repeats',
+      'Minutes',
+      'Seconds',
+      'Expression',
+    ]);
     form.unmount();
   });
 
@@ -272,6 +277,25 @@ describe('a schedule the value already states', () => {
     expect(form.panel().textContent).toContain('Edited as text');
     form.unmount();
   });
+
+  it('clears an advanced text field to Every without committing the draft', async () => {
+    const form = draw('0 0 9 L * ?');
+    await form.openPicker();
+    const input = form
+      .rowFor('Days of month')
+      ?.querySelector<HTMLInputElement>('input')!;
+    act(() => input.focus());
+    const clear = form
+      .rowFor('Days of month')
+      ?.querySelector<HTMLButtonElement>('button[aria-label="Clear value"]');
+    expect(clear).toBeTruthy();
+    act(() => clear!.click());
+    await settle();
+
+    expect(form.expression()).toBe('0 0 9 * * ?');
+    expect(form.data().schedule).toBe('0 0 9 L * ?');
+    form.unmount();
+  });
 });
 
 describe('a property with no schedule in it', () => {
@@ -284,7 +308,7 @@ describe('a property with no schedule in it', () => {
     const form = draw();
     await form.openPicker();
 
-    expect(form.labels()).toEqual(['Repeats']);
+    expect(form.labels()).toEqual(['Repeats', 'Expression']);
     expect(form.rowFor('Repeats')?.textContent).toContain('Choose how often');
     expect(form.expression()).toBe('');
     form.unmount();
@@ -327,6 +351,30 @@ describe('applying without editing', () => {
 });
 
 describe('what the picker writes', () => {
+  it('clears a populated Expression draft without changing the saved value until Apply', async () => {
+    const form = draw('0 0 9 * * *');
+    await form.openPicker();
+    const input = form
+      .panel()
+      .querySelector<HTMLInputElement>('input[aria-label="Expression"]')!;
+    act(() => input.focus());
+    const clear = form
+      .panel()
+      .querySelector<HTMLButtonElement>('button[aria-label="Clear value"]');
+    expect(clear).toBeTruthy();
+    act(() => clear!.click());
+    await settle();
+
+    expect(form.expression()).toBe('');
+    expect(form.data().schedule).toBe('0 0 9 * * *');
+    expect(
+      form.panel().querySelector('button[aria-label="Clear value"]'),
+    ).toBeNull();
+    await form.press('Apply');
+    expect(form.data().schedule).toBe('');
+    form.unmount();
+  });
+
   it('commits an edited expression on Apply and not before', async () => {
     const form = draw('0 0 9 * * *');
     await form.openPicker();
