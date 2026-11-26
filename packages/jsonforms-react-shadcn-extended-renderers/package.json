@@ -47,34 +47,34 @@
     "@jsonforms/react": "catalog:",
     "ag-grid-community": "^36.1.0",
     "ag-grid-react": "^36.1.0",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "react": "catalog:peers",
+    "react-dom": "catalog:peers"
   },
   "devDependencies": {
     "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "ag-grid-community": "36.1.0",
-    "ag-grid-react": "36.1.0",
-    "jsdom": "^22.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "rimraf": "^3.0.2",
-    "tslib": "^2.5.0",
-    "typedoc": "~0.25.3",
-    "typescript": "~5.9.3",
+    "ag-grid-community": "catalog:",
+    "ag-grid-react": "catalog:",
+    "jsdom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "rimraf": "catalog:",
+    "tslib": "catalog:",
+    "typedoc": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
-    "@types/node": "^22.0.0",
+    "@types/node": "catalog:",
     "vite-plus": "catalog:"
   },
   "dependencies": {
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
-    "lucide-react": "1.37.0"
+    "lucide-react": "catalog:"
   },
   "publishConfig": {
     "access": "public"

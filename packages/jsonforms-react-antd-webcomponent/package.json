@@ -27,14 +27,14 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
   },
   "peerDependencies": {
-    "@ant-design/cssinjs": "2.1.2",
+    "@ant-design/cssinjs": "^2.1.2",
     "@chobantonov/jsonforms-react-antd-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "antd": "6.6.5",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "antd": "catalog:peers",
+    "react": "catalog:peers",
+    "react-dom": "catalog:peers"
   },
   "devDependencies": {
     "@ant-design/cssinjs": "2.1.2",
@@ -42,18 +42,18 @@
     "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
-    "antd": "6.6.5",
-    "jsdom": "^22.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "rimraf": "^3.0.2",
-    "tslib": "^2.5.0",
-    "typescript": "~5.9.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "antd": "catalog:",
+    "jsdom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "rimraf": "catalog:",
+    "tslib": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
-    "@types/node": "^22.0.0",
+    "@types/node": "catalog:",
     "vite-plus": "catalog:"
   },
   "publishConfig": {

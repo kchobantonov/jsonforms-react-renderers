@@ -14,26 +14,26 @@
     "lint:fix": "vp run lint --fix"
   },
   "dependencies": {
-    "@ant-design/icons": "6.3.2",
+    "@ant-design/icons": "catalog:",
     "@chobantonov/jsonforms-react-antd-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-antd-webcomponent": "workspace:*",
     "@chobantonov/jsonforms-react-demo-common": "workspace:*",
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/react": "catalog:",
+    "@emotion/styled": "catalog:",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "antd": "6.6.5",
-    "lucide-react": "1.37.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "antd": "catalog:",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^5.2.0",
-    "rimraf": "^3.0.2",
-    "typescript": "~5.9.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "rimraf": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:"
   },
