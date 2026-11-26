@@ -38,6 +38,7 @@
     "release:pack": "vp run build:libs && node scripts/pack-release.mjs",
     "test:release": "node --test scripts/test/*.test.mjs",
     "test:packed": "node scripts/test-packed-webcomponents.mjs",
+    "test:standalone": "node scripts/test-standalone-webcomponents.mjs",
     "shadcn:sync": "node scripts/sync-shadcn.mjs",
     "shadcn:check": "node scripts/sync-shadcn.mjs --check",
     "format": "vp fmt .",

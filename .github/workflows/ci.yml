@@ -58,6 +58,9 @@ jobs:
       - name: Test packed web components
         run: vp run test:packed
 
+      - name: Test standalone web components
+        run: pnpm run test:standalone
+
       - name: Run workspace tests
         run: vp test run
 

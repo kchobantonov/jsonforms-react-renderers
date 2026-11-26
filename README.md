@@ -13,10 +13,10 @@ the version used by the demos and tests.
 
 | Family     | Base renderers                                                                            | Extended renderers                                                                                          | Web Component                                                                                   |
 | ---------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Ant Design | [`jsonforms-react-antd-renderers`](packages/jsonforms-react-antd-renderers/README.md)     | `@chobantonov/jsonforms-react-antd-extended-renderers`                                                      | [`jsonforms-react-antd-webcomponent`](packages/jsonforms-react-antd-webcomponent/README.md)     |
+| Ant Design | [`jsonforms-react-antd-renderers`](packages/jsonforms-react-antd-renderers/README.md)     | [`jsonforms-react-antd-extended-renderers`](packages/jsonforms-react-antd-extended-renderers/README.md)     | [`jsonforms-react-antd-webcomponent`](packages/jsonforms-react-antd-webcomponent/README.md)     |
 | shadcn/ui  | [`jsonforms-react-shadcn-renderers`](packages/jsonforms-react-shadcn-renderers/README.md) | [`jsonforms-react-shadcn-extended-renderers`](packages/jsonforms-react-shadcn-extended-renderers/README.md) | [`jsonforms-react-shadcn-webcomponent`](packages/jsonforms-react-shadcn-webcomponent/README.md) |
 
-`@chobantonov/jsonforms-react-extended-renderers` contains the shared
+[`@chobantonov/jsonforms-react-extended-renderers`](packages/jsonforms-react-extended-renderers/README.md) contains the shared
 `ExtendedJsonForms` component and extended controls;
 `@chobantonov/jsonforms-react-renderer-common` holds shared renderer utilities.
 The demos are in `apps/`; `jsonforms-react-demo-common` is private demo support.

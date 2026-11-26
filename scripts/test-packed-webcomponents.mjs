@@ -13,9 +13,10 @@ import { chromium } from 'playwright';
 import { parse, stringify } from 'yaml';
 import { build, preview } from 'vite-plus';
 
-// React custom elements have npm peers, unlike the standalone Svelte bundles.
-// Install the tarballs into a fresh host so workspace links cannot hide missing
-// files, unresolved dependencies, or invalid package entry points.
+// Exercise the application-bundler entries and their npm peers in a fresh host
+// so workspace links cannot hide missing files, unresolved dependencies, or
+// invalid package entry points. The standalone browser entries have a separate
+// static-server check.
 const artifacts = path.resolve(
   process.argv[2] ?? path.join(tmpdir(), 'jsonforms-react-release-packs'),
 );

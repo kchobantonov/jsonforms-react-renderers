@@ -17,7 +17,7 @@
   "module": "dist/jsonforms-react-antd.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "vp build && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
+    "build": "vp build && vp build --config vite.standalone.config.mjs && tsc --emitDeclarationOnly && tsc --noEmit -p test/tsconfig.json",
     "clean": "rimraf dist lib 2> /dev/null",
     "lint": "vp lint .",
     "lint:fix": "vp run lint --fix",

@@ -1,10 +1,92 @@
 # React shadcn Web Component
 
-This project is a consuming host for the base and extended shadcn renderer sets.
-It owns the generated components in `src/components/ui`, their dependencies,
-and the Tailwind styles used inside its shadow root. Customize those files when
-building your own element. The renderer packages themselves do not own UI source.
+`<jsonforms-react-shadcn>` includes the shadcn base and extended renderer
+registries, generated UI components, and styles inside its shadow root. Its
+browser distribution is `dist/standalone/`: a registration module and
+supporting chunks that load directly in a plain HTML page.
 
-Run `pnpm wc:shadcn:build` to build the element. See the
-[base renderer setup](../jsonforms-react-shadcn-renderers/README.md) for the
-component contract and alias required when bundling renderers in another host.
+## Plain HTML and self-hosting
+
+Run `pnpm run wc:shadcn:build` from the workspace root. Copy the entire
+`dist/standalone/` directory to your web server. Serve it over HTTP(S), then
+load `index.js` as a module:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>shadcn JSON Forms</title>
+  </head>
+  <body>
+    <jsonforms-react-shadcn id="form"></jsonforms-react-shadcn>
+    <pre id="result"></pre>
+    <script type="module" src="./standalone/index.js"></script>
+    <script type="module">
+      await customElements.whenDefined('jsonforms-react-shadcn');
+      const form = document.getElementById('form');
+      form.addEventListener('change', (event) => {
+        if (event instanceof CustomEvent) {
+          document.getElementById('result').textContent = JSON.stringify(
+            event.detail.data,
+            null,
+            2,
+          );
+        }
+      });
+      form.schema = {
+        type: 'object',
+        properties: { name: { type: 'string' } },
+      };
+      form.uischema = { type: 'Control', scope: '#/properties/name' };
+      form.data = { name: 'Ada' };
+    </script>
+  </body>
+</html>
+```
+
+The module registers the custom element automatically. Keep its supporting
+chunks beside `index.js`; the bundle loads them by relative URL when needed.
+
+## npm CDN after publication
+
+Once a version is published to npm, replace `VERSION` with that exact version
+and use **one** of these script tags in place of the local `src` above:
+
+```html
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@chobantonov/jsonforms-react-shadcn-webcomponent@VERSION/dist/standalone/index.js"
+></script>
+```
+
+Or use UNPKG:
+
+```html
+<script
+  type="module"
+  src="https://unpkg.com/@chobantonov/jsonforms-react-shadcn-webcomponent@VERSION/dist/standalone/index.js"
+></script>
+```
+
+Neither React Web Component package is currently on public npm, so those URLs
+are templates, not live examples. The existing `dist/register.js` and
+`dist/jsonforms-react-shadcn.js` are application-bundler modules with bare
+package imports; they cannot be loaded directly from a plain HTML page
+through a file CDN. [UNPKG](https://unpkg.com/) and
+[jsDelivr](https://www.jsdelivr.com/documentation) serve published npm files
+by version and path.
+
+## Application bundlers
+
+In a TypeScript application, import `registerJsonFormsShadcn` from
+`@chobantonov/jsonforms-react-shadcn-webcomponent` and call it before creating
+the element. The app's bundler resolves its React and JSON Forms peer
+dependencies. This project owns its generated components in
+`src/components/ui`; the renderer packages use the consuming application's
+components and aliases. See the
+[base renderer setup](../jsonforms-react-shadcn-renderers/README.md) for an
+application-bundler integration. The element accepts `schema`, `uischema`,
+`data`, `config`, and `external` as JavaScript properties or JSON string
+attributes. It emits `change` and `handle-action` events.

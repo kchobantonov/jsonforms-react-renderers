@@ -28,7 +28,7 @@
   "module": "dist/jsonforms-react-shadcn.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "vp build && tsc --emitDeclarationOnly",
+    "build": "vp build && vp build --config vite.standalone.config.mjs && tsc --emitDeclarationOnly",
     "clean": "rimraf dist 2> /dev/null",
     "lint": "vp lint .",
     "lint:fix": "vp run lint --fix",
