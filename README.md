@@ -1,283 +1,68 @@
-### Specification
+# JSON Forms React renderers
 
-See the [JSON Forms Extended Specification](https://github.com/kchobantonov/jsonforms-extended-spec)
-for the shared renderer behavior, UI Schema options, and reference examples.
+A pnpm monorepo for JSON Forms React renderer sets built with Ant Design and
+shadcn/ui. Each family has base and extended renderers, a demo application, and
+a Web Component. Shared packages supply extended behavior and renderer utilities.
 
-### Experimental `$dynamic`
+The [JSON Forms Extended Specification](https://github.com/kchobantonov/jsonforms-extended-spec)
+defines portable behavior and UI Schema options. This workspace consumes
+`@chobantonov/jsonforms-extended-spec@0.2.0`; the manifests and lockfile record
+the version used by the demos and tests.
 
-Ant Design and shadcn resolve spec §11 overlays before normal renderer and cell
-selection. Enable them explicitly on the shared form component:
+## Packages
 
-```tsx
-<ExtendedJsonForms
-  schema={schema}
-  uischema={uischema}
-  data={data}
-  renderers={renderers}
-  cells={cells}
-  dynamic={{ external: { settings } }}
-  onChange={({ data }) => setData(data)}
-/>
-```
+| Family     | Base renderers                                                                            | Extended renderers                                                                                          | Web Component                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Ant Design | [`jsonforms-react-antd-renderers`](packages/jsonforms-react-antd-renderers/README.md)     | `@chobantonov/jsonforms-react-antd-extended-renderers`                                                      | [`jsonforms-react-antd-webcomponent`](packages/jsonforms-react-antd-webcomponent/README.md)     |
+| shadcn/ui  | [`jsonforms-react-shadcn-renderers`](packages/jsonforms-react-shadcn-renderers/README.md) | [`jsonforms-react-shadcn-extended-renderers`](packages/jsonforms-react-shadcn-extended-renderers/README.md) | [`jsonforms-react-shadcn-webcomponent`](packages/jsonforms-react-shadcn-webcomponent/README.md) |
 
-Import `ExtendedJsonForms` from the shared extended-renderer package (also
-re-exported by the Ant Design extended package). For a base-only application,
-`DynamicJsonForms` from `@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider`
-provides the same explicit `dynamic` prop. Alternatively wrap plain `JsonForms`
-in `DynamicUiProvider value={...}` when using the supplied Ant Design/shadcn
-registries. Custom registries can use `withDynamicRenderers` and `withDynamicCells`.
-The ordinary interpolation `dynamicValues.enabled` option does not enable this.
+`@chobantonov/jsonforms-react-extended-renderers` contains the shared
+`ExtendedJsonForms` component and extended controls;
+`@chobantonov/jsonforms-react-renderer-common` holds shared renderer utilities.
+The demos are in `apps/`; `jsonforms-react-demo-common` is private demo support.
+The examples app combines the two demos into one selector.
 
-An element's own `$dynamic` supports ordered conditions, generic deep overlays,
-`bind`, CEL `expression`, restricted path `template`, and `literal`. Nested UI
-metadata remains untouched until that child is dispatched. Supported environment
-roots are `data`, `value`, `item`, `path`, `locale`, `external`, `config` (excluding
-`jsonformsExtended`), and core `errors`. Replace external namespaces and authored
-UI schemas immutably. Getter-bearing objects, indexed array getters, unsafe keys,
-non-JSON results, and out-of-range CEL integers are rejected. Diagnostics contain
-rule/target information, not bound values; use `dynamic.onDiagnostic` to collect them.
+The shadcn renderer follows the consuming application's component ownership
+model. Its [setup guide](packages/jsonforms-react-shadcn-renderers/README.md)
+lists the required components, aliases, and styles.
 
-Trusted in-process function leaves require `dynamic.trustedFunctions: true`.
-Never deserialize callbacks or enable that profile from untrusted configuration.
-Both web components expose the same **JavaScript property** `element.dynamic`;
-there is deliberately no attribute that enables executable callbacks.
+## Get started
 
-Prop-only changes preserve the selected renderer. A different renderer or Control
-scope replaces only that editing session, discards its unfinished draft, and
-retains committed data. Focus follows a replaced focused editor; it is not taken
-from the configuration form. Custom renderers must cancel their own asynchronous
-work on unmount; shared debounced editors already cancel pending writes. Parent
-layout visibility/sizing and category labels use effective child elements.
-Third-party parent consumers should use `useDynamicElements` rather than reading
-raw dynamic children. No whole-form remount or synthetic data update is needed.
-
-Open **Spec: Dynamic playground: preview and configuration forms** in either
-React demo. Preview and configuration data are independent; both direct React
-and web-component modes receive immutable `external.settings` replacements.
-The External tab edits the same host state as the configuration form and retains
-invalid JSON drafts without publishing them. The UI Schema editor shows the actual dynamic asset. Arbitrary extension payloads
-are forwarded, but only a renderer implementing those fields can display them.
-
-The implementation is experimental; these tests do not certify every custom
-renderer, asynchronous editor, or cross-adapter CEL behavior.
-
-### First time setup
-
-- Install [Node.js](https://nodejs.org/) 22.18 or newer within Node 22.
-- Install [Vite+](https://viteplus.dev/guide/). It manages Node and the pinned pnpm version.
-- Clone this repository
-- Install dependencies: `vp install --frozen-lockfile`
-
-### Build & Testing
-
-The workspace uses Vite+ for builds, tests, linting and formatting. Library
-output formats and browser targets are preserved. See the
-[toolchain guide](docs/toolchain-upgrade.md) for migration details.
-
-- Build (all packages): `vp run build`
-- Build renderer packages: `vp run build:libs`
-- Check formatting and lint: `vp check`
-- Format: `vp fmt .`
-- Test (all packages): `vp run test`
-- Clean generated package output: `vp run clean`
-- Run React Ant Design examples: `vp run example:antd:dev`
-- Run React Shadcn UI examples: `vp run example:shadcn:dev`
-- Build examples app: `vp run examples-app:build`
-- Run the examples selector: `vp run examples-app:dev`
-
-### Workspace
-
-- `packages/jsonforms-react-antd-renderers` - Ant Design renderer set.
-- `packages/jsonforms-react-antd-extended-renderers` - optional advanced Ant Design renderers.
-- `packages/jsonforms-react-antd-webcomponent` - Ant Design custom element.
-- `packages/jsonforms-react-shadcn-renderers` - Shadcn UI renderer set.
-- `packages/jsonforms-react-shadcn-extended-renderers` - optional advanced Shadcn UI renderers.
-- `packages/jsonforms-react-shadcn-webcomponent` - Shadcn UI custom element.
-- `packages/jsonforms-react-extended-renderers` - shared extended renderers.
-- `packages/jsonforms-react-demo-common` - shared React demo state, editor plumbing, UI adapter contracts, and examples; each renderer demo supplies its own UI-library shell and controls.
-- `apps/jsonforms-react-antd-demo` - Ant Design demo app.
-- `apps/jsonforms-react-shadcn-demo` - Shadcn UI demo app.
-- `apps/jsonforms-react-examples-app` - aggregated React examples app.
-
-### Presentation renderers
-
-The Ant Design and Shadcn extended renderer sets include the shared
-presentation elements. They honor JSON Forms visibility rules and accept defaults
-from the form configuration, with UI Schema options taking precedence.
-
-```json
-{
-  "type": "VerticalLayout",
-  "elements": [
-    { "type": "Spacer", "options": { "height": 32 } },
-    { "type": "Separator" },
-    {
-      "type": "ImageView",
-      "options": { "src": "/image.png", "alt": "Description" }
-    }
-  ]
-}
-```
-
-`Spacer` uses a height in pixels (default 32, negative values clamped to zero).
-`ImageView` preserves aspect ratio, fits its container, and omits images without a
-nonempty string source. `Separator` renders a horizontal rule. The shared demo
-includes **Spec: Presentation elements**, with image banners, default and custom
-spacers, separators, links and visibility rules. Open `#spec-presentation`.
-
-The default catalog contains spec examples and original JSON Forms examples.
-See [Demo examples](docs/demo-examples.md) for the coverage map and instructions
-for adding host examples or native spec tabs.
-
-### Horizontal layout columns
-
-The Ant Design and Shadcn extended renderer sets support 16-column allocation on each
-direct child of a `HorizontalLayout`:
-
-- `options.columns`: an integer from 2 through 16 reserves that fraction of the row.
-- Omitted, `null`, or `"auto"`: shares the row's remaining space equally.
-- Invalid values fall back to Auto and expose a `data-columns-diagnostic` attribute.
-
-For example, children with columns `4, "auto", "auto"` receive `4, 6, 6`.
-Fixed-only rows leave unused space; `12, 8, "auto"` forms rows `12` and `8, 8`.
-All-Auto layouts stay in one equally divided row. A `1rem` gap is included in
-the width calculation. Hidden children release their space; disabled children
-keep it. Columns apply to controls, presentation elements, and nested layouts,
-and do not affect vertical or split layouts.
-
-Select **Horizontal Layout Sizing** in either React demo to explore column allocation.
-
-### Split layouts
-
-Select **Spec: Split layout** (or open `#spec-split-layout`) in any React demo for the
-horizontal and vertical split-pane examples. Set
-`options.variant` to `"splitter"` on a HorizontalLayout or VerticalLayout.
-Vertical splits accept `height` and `minHeight` as CSS lengths or pixel numbers.
-Ant Design uses its native splitter; Shadcn uses the
-shared draggable splitter with arrow-key resizing. Resizing preserves form data
-and does not change `options.columns`.
-
-### Collapsible groups
-
-Groups in Ant Design and Shadcn support
-`options.collapsible`, `options.collapsed`, and
-`options.showDataIndicator` (all opt-in with `true`). Collapsed content stays
-mounted, preserving edits. The accessible data indicator checks bound descendant
-controls, including hidden controls and nested paths; `false` and `0` count as
-data, while blank strings and empty containers do not. Form configuration can
-provide defaults, overridden by UI Schema options. Try **Collapsible Groups** in
-the example menu.
-
-### Implementation specification
-
-See [Renderer Set and Demo Application Specification](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
-for the required demo layout, settings, renderer behavior, Web Component
-parity, project structure, and acceptance checklist for new UI-library
-renderer sets.
-
-### Extended control availability
-
-| Renderer                                                   | Ant Design     | Shadcn |
-| ---------------------------------------------------------- | -------------- | ------ |
-| Button actions                                             | Yes            | Yes    |
-| Color, Duration, Null                                      | Yes            | Yes    |
-| File                                                       | Yes (base set) | Yes    |
-| Monaco editor                                              | Yes            | Yes    |
-| AG Grid arrays                                             | Yes            | Yes    |
-| Spacer, ImageView, Separator, Template, Slot, Split Layout | Yes            | Yes    |
-
-The shared demos include **Color**, **Duration**, **Null**, **Monaco Editor**, and
-**AG Grid**. Use string schema `format: "color"` or `format: "duration"`, or
-schema `type: "null"` for those controls.
-
-Duration pickers support weeks or year/month/day/time components, `showActions`
-(default `true`), `okLabel`, `cancelLabel`, `placeholder`, and `focus`. With
-`showActions: false`, component edits apply immediately. Weeks cannot be combined
-with the other components. Null controls distinguish explicit `null` from an absent value.
-
-Monaco is selected with `options: { format: "code", language: "javascript" }`.
-Use `language: "json", convertJson: true` to edit JSON values; incomplete JSON
-remains in the editor without replacing the last valid form value. `:language`
-reads a language from a root-data path. `monaco.rows`, `monaco.autoGrow`,
-`monaco.minRows`, `monaco.maxRows`, `monaco.options`, and `monaco.initActions`
-configure the editor. Maximize/restore and Escape are supported. The integration
-uses `@monaco-editor/react`'s loader; applications can configure that loader for
-self-hosted Monaco assets as usual.
-
-AG Grid is selected with `options: { variant: "ag-grid", height: 400 }` on an
-array control. It supports object and primitive rows, native cell editing,
-selection, sorting, filtering, adding and removing rows, and read-only mode.
-Schema `minItems`/`maxItems` restrict removal/addition unless `restrict: false`.
-The React implementation uses AG Grid Community. Enterprise options and
-advanced features beyond those listed here are not claimed as supported.
-
-### React shadcn/ui component ownership
-
-The shadcn renderer packages use components owned by the consuming application.
-They do not bundle generated shadcn UI source. Configure the component import
-alias, install all required components, and provide the theme/styles using the
-[shadcn setup guide](packages/jsonforms-react-shadcn-renderers/README.md).
-The demo and Web Component each include their own generated component sources.
-
-## Releasing packages
-
-Releases use Changesets:
-
-1. Run `pnpm changeset`, select the public packages and bump type, and commit the
-   generated file under `.changeset/`.
-2. Merge it into `master`. The `Release Packages` workflow opens or updates a
-   `task: release` PR containing versions, dependency updates, and changelogs.
-3. Merge that PR. The workflow validates the release tarballs, publishes to npm,
-   pushes tags, and creates GitHub Releases.
-
-Creating a release manually in GitHub does not trigger npm publishing. Demos and
-`jsonforms-react-demo-common` stay private. All eight public packages share one
-fixed version: a changeset for any member releases all eight at that version.
-Add any new public package to `.changeset/config.json` before releasing it.
-
-### Repository setup
-
-Use the Node version in `.node-version` and Vite+ 1.3.0; the workspace pins pnpm 10.28.2.
-The repository needs an `NPM_TOKEN` Actions secret with permission to publish
-under `@chobantonov`. Enable GitHub Actions to create pull requests and grant the
-workflow's `GITHUB_TOKEN` contents and pull-request write permissions. Release
-PRs should pass the normal branch protection checks.
-
-### Validate before release
+Use Node 22.18+ within Node 22 and the pinned pnpm version. Install
+[Vite+](https://viteplus.dev/guide/) and run:
 
 ```sh
-pnpm test:release
-pnpm release:pack /tmp/jsonforms-react-release-packs
-pnpm exec playwright install chromium
-pnpm test:packed /tmp/jsonforms-react-release-packs
+vp install --frozen-lockfile
+vp run build:libs
+vp run example:antd:dev
+# Or: vp run example:shadcn:dev
 ```
 
-Packing builds every public library, rehearses pending Changesets versions in
-temporary copies, and validates the actual npm contents with publint. Tarballs
-and `overrides.json` are written to the chosen directory. The checkout's
-versions are unchanged. See [.changeset/README.md](.changeset/README.md).
+For a combined example selector, run `vp run examples-app:dev`. The default
+catalog loads portable spec examples and original JSON Forms examples. See the
+[demo example guide](docs/demo-examples.md) to add a host example.
 
-## Published specification dependency
+For a plain HTML host, start with the [Ant Design Web Component guide](packages/jsonforms-react-antd-webcomponent/README.md)
+or the [shadcn Web Component guide](packages/jsonforms-react-shadcn-webcomponent/README.md).
 
-The demo and fixture tests use `@chobantonov/jsonforms-extended-spec@0.2.0`
-from npm. The exact version is recorded in the root and demo-common manifests
-and in `pnpm-lock.yaml`; no sibling checkout or spec build is needed. The demo
-registers the packaged example catalog with `spec-` IDs and `Spec: ` labels.
-Native React template and action demonstrations remain optional enhancements
-here.
+## Documentation
 
-TypeScript consumers can import `forSchema`, `DataOf`, and `CssLength` from
-`@chobantonov/jsonforms-extended-spec/typescript`. For a fresh checkout, run
-`vp install` and `vp run build`. To adopt new portable examples or translations,
-update the spec package version and lockfile. The maintained
-[renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
-defines the shared design.
+- [React renderer features](docs/renderer-features.md): layouts, extended controls, and React-specific limits.
+- [Dynamic UI overlays](docs/dynamic-ui.md): the `ExtendedJsonForms` props and experimental `$dynamic` setup.
+- [Shared renderer architecture](docs/renderer-common.md): package boundaries and UI ownership.
+- [Development checks](docs/linting-and-formatting.md): build, test, lint, and format commands.
+- [Release guide](.changeset/README.md): Changesets and package validation.
+- [Renderer and demo contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md): shared acceptance requirements.
 
-### Dynamic external values in templates
+## Development and releases
 
-`ExtendedJsonForms` exposes host-owned `external` as `context.external`
-in JSX, Ractive and registered TSX template layouts. Replace the external object
-to update templates without changing form data. `settings` is only the
-playground's namespace; hosts can use their own keys. The bridge exposes external
-values, not resolver settings such as `trustedFunctions`, and does not change
-template security gates.
+Run `pnpm run lint` and `pnpm run check-format` before reporting renderer work
+complete. Run `pnpm run test` for the workspace tests and `vp run build` for
+all packages and demos. See [development checks](docs/linting-and-formatting.md)
+for focused commands.
+
+Public packages form one fixed Changesets group. Add a changeset for a
+publishable package change with `pnpm changeset`; private demos do not need
+one. Merge to `master` to open or update the release pull request, then merge
+that pull request to publish. The [release guide](.changeset/README.md)
+explains the version policy and validation commands.

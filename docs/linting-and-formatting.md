@@ -1,34 +1,22 @@
-# Linting and formatting
+# Development checks
 
-Run `pnpm lint` for all package, app, and script JavaScript/TypeScript (including TSX).
-Use `pnpm lint:fix` for safe automatic lint fixes. Package-local lint scripts use
-the same root configuration. Run `pnpm check-format` or `pnpm format` to check or
-apply the shared Prettier configuration.
+The workspace uses Vite+ for builds, tests, linting and formatting. Use the
+Node and pnpm versions in the root `package.json` and `.node-version`.
 
-ESLint 8 and TypeScript ESLint 5 match this workspace's existing TypeScript 4.9
-stack. React Hooks rules are enabled: invalid hook order is an error, dependency
-suggestions are warnings requiring review rather than blind automatic edits.
-TypeScript checks props and module resolution; ESLint's prop-types and unresolved
-import rules are disabled. Explicit any and non-null assertions are permitted at
-the JSON Forms integration boundary. Tests allow empty stubs and require calls
-for hoisted mocks. Formatting runs separately from semantic lint checks.
+| Command                        | Purpose                                           |
+| ------------------------------ | ------------------------------------------------- |
+| `vp install --frozen-lockfile` | Install the pinned workspace.                     |
+| `pnpm run lint`                | Lint packages, apps and scripts with Oxlint.      |
+| `pnpm run check-format`        | Check repository formatting with Oxfmt.           |
+| `pnpm run format`              | Apply formatting.                                 |
+| `pnpm run check`               | Run the combined Vite+ check.                     |
+| `pnpm run test`                | Run workspace test projects.                      |
+| `pnpm run build`               | Build packages and demos.                         |
+| `pnpm run build:libs`          | Build public libraries and Web Components.        |
+| `pnpm run test:release`        | Check release configuration and version planning. |
+| `pnpm run test:packed`         | Test packed Web Components in Chromium.           |
 
-Generated builds, dependencies, coverage and synchronized shadcn UI copies are
-excluded. Run `pnpm shadcn:check` to verify those copies against their source.
-
-## Historical context: review of the other port
-
-This records the earlier cleanup, not current pending work or a clean lint baseline.
-
-The supplied check folder identified useful defects also present here:
-conditional hooks in TemplateLayout and mixed renderers, unnamed runtime
-components, redundant exports, and unused legacy ReactDOM cleanup in tests.
-The MarkupLabel visibility guard was already after its hooks here. Its changes
-were not copied wholesale; our implementation and localization behavior differ.
-The supplied cron changes were primarily formatting. Existing shared formatting
-settings were retained, and duplicate package configs removed.
-
-A re-export repeated from the same underlying binding is redundant but is not
-necessarily an ambiguous runtime export. The cleanup preserves the public names
-while avoiding duplicate routes. Empty example namespaces were replaced with
-side-effect imports because those modules register examples but export no API.
+Build scripts still run TypeScript declaration and test checks. Generated
+builds, dependencies, coverage, and synchronized shadcn UI copies are excluded
+from formatting and lint. Run `pnpm run shadcn:check` for the copied components.
+See [the release guide](../.changeset/README.md) for package rehearsal.

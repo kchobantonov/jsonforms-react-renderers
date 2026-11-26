@@ -2,9 +2,8 @@
 
 Reviewed against current source and regression-test coverage on 2026-10-02.
 This is a backlog review, not a new full-suite or cross-platform certification.
-Completed work is summarized below; historical investigations remain in Git history.
-The older [implementation gaps review](jsonforms-react-antd-implementation-gaps.md)
-is background evidence and may predate fixes. Reproduce its claims before acting.
+Historical investigations and completed work remain in Git history.
+Reproduce older claims against current code before acting.
 
 ## Current implementation gaps and verification work
 
@@ -71,12 +70,9 @@ Paths are under the corresponding packages in this repository.
 
 ## Open designs
 
-- [ ] **Dynamic UI-element overlays and remote choices.** Neither is an
-      implemented authoring contract. Revisit placement above tester dispatch,
-      stable UI-schema identity, typed values, trust boundaries, lifecycle and remote
-      cancellation before publishing option shapes. The old claim that the shape
-      was already agreed is superseded by the spec's design backlog. Label dynamic
-      interpolation remains a separate implemented capability.
+- [ ] **Remote choices.** Define loading, cancellation, and error handling before
+      publishing option shapes. The existing experimental `$dynamic` overlays
+      are separate from this proposal.
 - [ ] **Composite-dialog Remove footer action.** Decide whether to implement
       showRemoveButton/removeLabel with ownership and confirmation guards or retire
       the proposal. Existing cell removal is separate; removed schema options should
@@ -100,29 +96,6 @@ for portable design decisions and promotion criteria.
       Antd native-dialog and extended-grid fixtures exceeded the five-second test
       deadline; their suites now allow twenty seconds so flush diagnostics complete before the
       runner aborts an active `act` scope. Sustained stability remains unverified.
-- [x] Establish a clean lint baseline: `vp run check` reports zero warnings and
-      errors. Fixed hook dependencies, render-time ref writes, derived-state resets,
-      and unstable memoization; documented narrow compiler/API false positives.
-      Redundant observer stubs remain a separate housekeeping opportunity.
-
-## Completed items removed from the backlog
-
-- Object errors now use shared error summaries and native object/group feedback
-  in Antd and shadcn; the blanket “object errors are never displayed” defect is
-  obsolete. The default inline-error fixture remains open above; this
-  implementation alone does not close its absence assertions.
-- Required-asterisk visibility is implemented; the accessibility follow-up above
-  is narrower than the old unimplemented-option entry.
-- Mixed type-specific details and generalized detail resolution are implemented,
-  with schemas, authoring types, examples and tests. They are no longer proposed
-  options awaiting a consumer.
-- Conditional object discovery is implemented for its documented opt-in slice.
-- Label CEL interpolation, layout sizing, template evaluation gates, template
-  URL checks and extended AJV integration are implemented. Old design narratives
-  are not active tasks. Ractive's post-write URL check remains an acknowledged
-  limitation; it can follow a resource request beginning.
-- The Antd object registry-cycle regression has a guard and test. This does not
-  close the separate named Template recursion gap listed above.
 
 ## Draft-07 visual support follow-up
 
@@ -163,16 +136,3 @@ preservation of unsupported keywords. Keep editor-only preview/selection state
 separate from runtime data. See the spec's
 [conditional authoring guidance](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/conditional-fields.md)
 and [Draft-07 audit](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/draft-07-visual-support.md).
-
-## PrimeReact retirement
-
-- [x] Remove PrimeReact base/extended renderers, web component and demo.
-- [x] Remove workspace commands, demo links, packaging checks and pending release
-      entries for PrimeReact. Ant Design and shadcn are the supported families.
-- [x] Retire the PrimeReact parity upgrade backlog. Avoid adopting v11 licensing
-      restrictions or taking on general maintenance of v10.
-- [x] Verify workspace build (27 tasks), the two-demo site build, frozen lockfile,
-      formatting/lint (zero errors; 257 warnings), 40 release-tooling tests and
-      release tarball validation. Both packed Antd/shadcn web components pass
-      Chromium rendering, editing, change-event and readonly checks.
-- [x] Full remaining unit suite: all 2,970 tests passed (exit status 0).

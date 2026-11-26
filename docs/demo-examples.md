@@ -5,12 +5,12 @@ examples. Portable examples live in `jsonforms-extended-spec/examples`; demo-com
 loads the catalog automatically. Framework-specific additions can augment those
 fixtures or be registered by a host.
 
-## Coverage after consolidation
+## Portable example coverage
 
-The removed local examples are covered as follows. This maps authored scenarios;
+The spec examples cover the following scenarios. This maps authored cases;
 renderer support is established separately by integration tests.
 
-| Removed example                                                                 | Spec coverage                                                                                                                                                                    |
+| Feature                                                                         | Spec coverage                                                                                                                                                                    |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Color                                                                           | `color-control`: hex3 output, ordinary colors, alpha colors and restrictions                                                                                                     |
 | Duration                                                                        | `temporal-controls`: ordinary and week durations, hidden action bar                                                                                                              |
@@ -25,12 +25,10 @@ renderer support is established separately by integration tests.
 | Link                                                                            | `presentation`: explicit translations, unprefixed label, new tab, relative/mail URLs, empty/refused destinations                                                                 |
 | Template Layout                                                                 | `template-layout`: named and positional slots, nested templates, data, validation errors and actions; native augmentation demonstrates host components                           |
 
-The old File example's schema-level size hint is represented by the spec's
-explicit UI size limit. Unused translation assets and library-specific template
-component fallbacks are not separate portable features. Native components remain
+File-size limits use the spec's explicit UI option. Native components remain
 in the native template demonstration.
 
-## Recent spec examples
+## Additional spec examples
 
 The catalog also includes array-detail-modes, editor-details, template-slots,
 conditional-fields, recursive-tree, draft-07-metaschema, json-editor and
@@ -42,7 +40,7 @@ passed through to the demo; named lookup uses entry.uischema.name, while ordinar
 registered details use declarative match rules. Keep these registries when copying examples.
 
 An explicit empty schema {} permits any JSON value. An omitted schema requests
-inference from JSON Forms 3.9.0-alpha.2, and omitted initial data must remain
+inference from JSON Forms, and omitted initial data must remain
 absent. The inferred schema follows changes to the root JSON type. Clearing the
 Schema editor and applying changes switches the demo from an explicit schema
 to inference.
