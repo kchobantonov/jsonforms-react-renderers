@@ -19,12 +19,9 @@
     "@chobantonov/jsonforms-react-antd-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-antd-webcomponent": "workspace:*",
     "@chobantonov/jsonforms-react-demo-common": "workspace:*",
-    "@emotion/react": "catalog:",
-    "@emotion/styled": "catalog:",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
     "antd": "catalog:",
-    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

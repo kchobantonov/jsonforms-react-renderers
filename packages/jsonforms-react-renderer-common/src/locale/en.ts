@@ -1,4 +1,4 @@
-export const i18nDefaults = {
+export const enRendererLocale = {
   'oneOf.chooseKind': 'Choose a kind.',
   'oneOf.clear': 'Clear selection',
   'collection.resizeColumn': 'Resize {field} column',
@@ -254,8 +254,8 @@ export const i18nDefaults = {
 /**
  * Every string this package can draw.
  *
- * Declared here rather than beside the hook that consumes it, because the
- * locale bundles in `../locale` are typed by it and importing it from
- * `translate.ts` would cycle back through `rendererLocale.ts`.
+ * Declared with the English defaults because other locale bundles are typed
+ * by it; importing it from `translate.ts` would cycle through
+ * `rendererLocale.ts`.
  */
-export type I18nKey = keyof typeof i18nDefaults;
+export type I18nKey = keyof typeof enRendererLocale;

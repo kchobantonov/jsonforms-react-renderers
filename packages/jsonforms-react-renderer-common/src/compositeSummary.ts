@@ -7,7 +7,7 @@ import {
   createCleanLabel,
   getI18nKey,
 } from '@jsonforms/core';
-import { I18nKey } from './i18nDefaults';
+import { I18nKey } from './locale';
 
 export interface CompositeSummary {
   text: string;

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vite-plus/test';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
-import { i18nDefaults } from '../src/util/i18nDefaults';
+import { i18nDefaults } from '@chobantonov/jsonforms-react-renderer-common/locale/index';
 
 vi.stubGlobal(
   'ResizeObserver',

@@ -56,8 +56,6 @@
   },
   "peerDependencies": {
     "@ant-design/icons": "catalog:peers",
-    "@emotion/react": "catalog:",
-    "@emotion/styled": "catalog:",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
     "antd": "catalog:peers",
@@ -67,8 +65,6 @@
   "devDependencies": {
     "@ant-design/icons": "catalog:",
     "@cfaester/enzyme-adapter-react-18": "^0.8.0",
-    "@emotion/react": "catalog:",
-    "@emotion/styled": "catalog:",
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
     "@types/enzyme": "^3.10.3",
@@ -83,13 +79,14 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "catalog:",
-    "tslib": "catalog:",
     "typedoc": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "@chobantonov/jsonforms-extended-spec": "0.2.0",
+    "@types/lodash": "^4.14.149"
   },
   "publishConfig": {
     "access": "public"

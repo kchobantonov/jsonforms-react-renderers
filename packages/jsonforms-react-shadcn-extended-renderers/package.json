@@ -64,13 +64,14 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "catalog:",
-    "tslib": "catalog:",
     "typedoc": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "@chobantonov/jsonforms-extended-spec": "0.2.0",
+    "@monaco-editor/react": "catalog:"
   },
   "dependencies": {
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*",

@@ -13,7 +13,6 @@ export * from './debounce';
 export * from './dynamicProperties';
 export * from './focus';
 export * from './groupState';
-export * from './i18nDefaults';
 export * from './layoutContext';
 export * from './layoutSizing';
 export * from './literalPropertySchema';

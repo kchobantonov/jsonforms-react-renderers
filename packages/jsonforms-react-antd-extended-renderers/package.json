@@ -63,17 +63,16 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "catalog:",
-    "tslib": "catalog:",
     "typedoc": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
     "vite-plus": "catalog:",
-    "ag-grid-react": "catalog:"
+    "ag-grid-react": "catalog:",
+    "@chobantonov/jsonforms-extended-spec": "0.2.0"
   },
   "dependencies": {
-    "maska": "^3.2.1",
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   },
   "publishConfig": {

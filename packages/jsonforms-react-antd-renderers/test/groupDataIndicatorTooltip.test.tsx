@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
 import { createTranslator } from '@jsonforms/core';
 import { antdRenderers, antdCells } from '../src';
-import { i18nDefaults } from '../src/util/i18nDefaults';
+import { i18nDefaults } from '@chobantonov/jsonforms-react-renderer-common/locale/index';
 
 // An antd Tooltip cannot be opened in jsdom: rc-trigger needs layout APIs jsdom
 // does not implement, and no pointer or focus event opens one. Replace it with

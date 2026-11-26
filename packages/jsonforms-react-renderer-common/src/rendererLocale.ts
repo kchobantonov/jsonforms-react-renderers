@@ -1,5 +1,4 @@
-import { I18nKey, i18nDefaults } from './i18nDefaults';
-import { bgRendererLocale } from './locale/bg';
+import { bgRendererLocale, i18nDefaults, type I18nKey } from './locale';
 
 /**
  * Synchronous catalogs for shared renderer messages. Each UI library owns its

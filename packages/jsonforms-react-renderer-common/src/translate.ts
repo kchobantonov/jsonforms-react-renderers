@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { rendererDefault } from './rendererLocale';
 // `I18nKey` is declared beside the defaults it indexes, not here: re-exporting
 // it from both modules makes `util/index.ts` export the name twice.
-import { I18nKey } from './i18nDefaults';
+import { I18nKey } from './locale';
 
 /**
  * The form's translator, or a passthrough returning each default message.

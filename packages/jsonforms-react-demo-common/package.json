@@ -10,8 +10,6 @@
     "@jsonforms/examples": "catalog:",
     "@jsonforms/react": "catalog:",
     "@monaco-editor/react": "catalog:",
-    "json-refs": "3.0.15",
-    "lodash": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -21,7 +19,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "rimraf": "catalog:",
-    "tslib": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
     "vite-plus": "catalog:"

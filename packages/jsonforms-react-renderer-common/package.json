@@ -60,11 +60,11 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "catalog:",
-    "tslib": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@chobantonov/jsonforms-extended-spec": "0.2.0"
   },
   "publishConfig": {
     "access": "public"

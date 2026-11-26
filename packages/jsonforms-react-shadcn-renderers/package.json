@@ -60,7 +60,6 @@
     "@radix-ui/react-dialog": "catalog:",
     "@radix-ui/react-popover": "catalog:",
     "@radix-ui/react-select": "catalog:",
-    "@radix-ui/react-slot": "catalog:",
     "@radix-ui/react-tabs": "catalog:",
     "@radix-ui/react-tooltip": "catalog:",
     "@types/react": "catalog:",
@@ -75,14 +74,14 @@
     "react-dom": "catalog:",
     "react-resizable-panels": "catalog:",
     "rimraf": "catalog:",
-    "tailwind-merge": "catalog:",
-    "tslib": "catalog:",
     "typedoc": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "@chobantonov/jsonforms-extended-spec": "0.2.0",
+    "@types/lodash": "^4.14.149"
   },
   "publishConfig": {
     "access": "public"

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vite-plus/test';
 import { compositeSummaryPresentation } from '../src/compositeSummary';
-import { i18nDefaults } from '../src/i18nDefaults';
+import { i18nDefaults } from '../src/locale';
 
 const summary = { type: 'Control', scope: '#/properties/city' };
 const present = (data: unknown, descriptor: any = summary) =>
