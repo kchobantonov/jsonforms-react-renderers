@@ -1,10 +1,11 @@
 # React renderer features
 
-The [extended specification](https://github.com/kchobantonov/jsonforms-extended-spec)
-defines shared behavior and UI Schema options. The
-[renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
+The installed `@chobantonov/jsonforms-extended-spec@0.2.0` package defines
+shared behavior and UI Schema options. Its
+[renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/renderer-and-demo.md)
 defines host and demo requirements. This page records React-specific use and
-limits for the Ant Design and shadcn sets.
+limits for the Ant Design and shadcn sets. See the [documentation guide](README.md)
+for verification and open work.
 
 ## Layout and presentation
 
@@ -51,6 +52,14 @@ array control. It supports object and primitive rows, cell editing, selection,
 sorting, filtering, add/remove actions, and read-only mode. `minItems` and
 `maxItems` constrain those actions unless `restrict: false`. The React
 implementation uses AG Grid Community; Enterprise behavior is unverified.
+
+## Verification boundary
+
+The feature descriptions above identify implemented React behavior. The
+[demo example catalog](demo-examples.md) maps authored examples to the demos;
+those mappings alone do not prove renderer acceptance. Use current package,
+demo, and Web Component test output for a passing claim. The [open-work list](TODO.md)
+records known gaps and checks still needed at its stated review date.
 
 ## shadcn component ownership
 

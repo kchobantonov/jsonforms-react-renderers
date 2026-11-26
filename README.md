@@ -47,12 +47,13 @@ or the [shadcn Web Component guide](packages/jsonforms-react-shadcn-webcomponent
 
 ## Documentation
 
+- [Documentation guide](docs/README.md): React implementation, verification, and open work.
 - [React renderer features](docs/renderer-features.md): layouts, extended controls, and React-specific limits.
 - [Dynamic UI overlays](docs/dynamic-ui.md): the `ExtendedJsonForms` props and experimental `$dynamic` setup.
 - [Shared renderer architecture](docs/renderer-common.md): package boundaries and UI ownership.
 - [Development checks](docs/linting-and-formatting.md): build, test, lint, and format commands.
 - [Release guide](.changeset/README.md): Changesets and package validation.
-- [Renderer and demo contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md): shared acceptance requirements.
+- [Renderer and demo contract](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/renderer-and-demo.md): acceptance requirements in the installed spec release.
 
 ## Development and releases
 

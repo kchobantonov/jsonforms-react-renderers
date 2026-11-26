@@ -8,8 +8,8 @@ extended renderers. Demo application state stays in `jsonforms-react-demo-common
 ## Specification ownership
 
 The portable contracts, schemas, examples, and TypeScript authoring helpers are
-owned by [jsonforms-extended-spec](https://github.com/kchobantonov/jsonforms-extended-spec).
-The [renderer/demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared presentation and host requirements. This document describes how the React packages implement those contracts.
+owned by the installed `@chobantonov/jsonforms-extended-spec@0.2.0` package.
+The [renderer/demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/renderer-and-demo.md) defines the shared presentation and host requirements. This document describes how the React packages implement those contracts.
 
 | Contract                                        | Common implementation                                                                                                            | Family-owned implementation                                                   |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |

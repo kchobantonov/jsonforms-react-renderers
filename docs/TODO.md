@@ -83,7 +83,7 @@ Paths are under the corresponding packages in this repository.
       spec, including drag/drop, branch preview and lossless round trips. Current
       conditionalFields support is runtime field discovery, not a graphical editor.
 
-See the [spec backlog](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/todo.md)
+See the [spec backlog](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/todo.md)
 for portable design decisions and promotion criteria.
 
 ## Test infrastructure and housekeeping
@@ -134,5 +134,5 @@ through `conditionalFields`; extend it rather than introduce another switch.
 For graphical authoring, plan constraint panels, reference selection and lossless
 preservation of unsupported keywords. Keep editor-only preview/selection state
 separate from runtime data. See the spec's
-[conditional authoring guidance](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/conditional-fields.md)
-and [Draft-07 audit](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/draft-07-visual-support.md).
+[conditional authoring guidance](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/conditional-fields.md)
+and [Draft-07 audit](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/draft-07-visual-support.md).

@@ -1,7 +1,7 @@
 # Dynamic UI overlays in React
 
 The Ant Design and shadcn renderer sets support the experimental `$dynamic`
-overlay contract in [spec §11](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/spec.md).
+overlay contract in the installed [spec §11](https://github.com/kchobantonov/jsonforms-extended-spec/blob/v0.2.0/docs/spec.md).
 Use `ExtendedJsonForms` from `@chobantonov/jsonforms-react-extended-renderers`
 (also re-exported by the Ant Design extended package):
 
