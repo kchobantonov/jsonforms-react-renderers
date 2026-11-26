@@ -33,19 +33,11 @@ jobs:
           cache: true
           run-install: false
           registry-url: https://registry.npmjs.org
-      - name: Checkout local specification dependency
-        uses: actions/checkout@v4
-        with:
-          repository: kchobantonov/jsonforms-extended-spec
-          path: .spec-source
-      - name: Place specification beside the renderer workspace
-        run: mv .spec-source ../jsonforms-extended-spec
-      - name: Build specification package
-        run: |
-          pnpm --dir ../jsonforms-extended-spec install --frozen-lockfile
-          pnpm --dir ../jsonforms-extended-spec build
       - name: Install dependencies
         run: vp install --frozen-lockfile
+
+      - name: Test release policy
+        run: vp run test:release
 
       - name: Configure npm authentication
         run: pnpm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"

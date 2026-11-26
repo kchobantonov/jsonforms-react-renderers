@@ -15,7 +15,7 @@ import { test } from 'node:test';
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const cli = path.join(root, 'node_modules/.bin/changeset');
 
-test('versioning keeps pre-1.0 workspace peer updates below 1.0 and updates exact peer ranges', () => {
+test('a fixed group releases together below 1.0 and updates workspace peer ranges', () => {
   const cwd = mkdtempSync(path.join(tmpdir(), 'renderer-release-policy-'));
   const write = (file, content) => {
     const target = path.join(cwd, file);
@@ -31,7 +31,7 @@ test('versioning keeps pre-1.0 workspace peer updates below 1.0 and updates exac
     write('.changeset/config.json', {
       changelog: false,
       commit: false,
-      fixed: [],
+      fixed: [['@fixture/core', '@fixture/renderer']],
       linked: [],
       access: 'public',
       baseBranch: 'master',
@@ -50,7 +50,7 @@ test('versioning keeps pre-1.0 workspace peer updates below 1.0 and updates exac
     });
     write(
       '.changeset/feature.md',
-      '---\n"@fixture/core": minor\n"@fixture/renderer": minor\n---\n\nInitial API.\n',
+      '---\n"@fixture/core": minor\n---\n\nInitial API.\n',
     );
     execFileSync(cli, ['version'], { cwd, stdio: 'pipe' });
     const core = JSON.parse(

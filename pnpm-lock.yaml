@@ -7,14 +7,14 @@ settings:
 catalogs:
   default:
     '@jsonforms/core':
-      specifier: 3.9.0-alpha.2
-      version: 3.9.0-alpha.2
+      specifier: 3.9.0-alpha.4
+      version: 3.9.0-alpha.4
     '@jsonforms/examples':
-      specifier: 3.9.0-alpha.2
-      version: 3.9.0-alpha.2
+      specifier: 3.9.0-alpha.4
+      version: 3.9.0-alpha.4
     '@jsonforms/react':
-      specifier: 3.9.0-alpha.2
-      version: 3.9.0-alpha.2
+      specifier: 3.9.0-alpha.4
+      version: 3.9.0-alpha.4
     '@vitest/coverage-v8':
       specifier: 5.0.5
       version: 5.0.5
@@ -51,8 +51,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       '@chobantonov/jsonforms-extended-spec':
-        specifier: link:../jsonforms-extended-spec
-        version: link:../jsonforms-extended-spec
+        specifier: 0.2.0
+        version: 0.2.0(@jsonforms/core@3.9.0-alpha.4)
       '@istanbuljs/nyc-config-typescript':
         specifier: ^1.0.2
         version: 1.0.2(nyc@15.1.0)
@@ -142,10 +142,10 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       antd:
         specifier: 6.6.5
         version: 6.6.5(date-fns@4.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -225,10 +225,10 @@ importers:
         version: link:../../packages/jsonforms-react-shadcn-webcomponent
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@radix-ui/react-avatar':
         specifier: ^1.2.6
         version: 1.2.6(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -350,10 +350,10 @@ importers:
         version: link:../jsonforms-react-extended-renderers
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.7.0(monaco-editor@0.52.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -435,10 +435,10 @@ importers:
         version: 11.14.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@types/enzyme':
         specifier: ^3.10.3
         version: 3.10.19
@@ -510,10 +510,10 @@ importers:
         version: link:../jsonforms-react-antd-renderers
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@types/node':
         specifier: ^22.0.0
         version: 22.15.29
@@ -557,20 +557,20 @@ importers:
   packages/jsonforms-react-demo-common:
     dependencies:
       '@chobantonov/jsonforms-extended-spec':
-        specifier: link:../../../jsonforms-extended-spec
-        version: link:../../../jsonforms-extended-spec
+        specifier: 0.2.0
+        version: 0.2.0(@jsonforms/core@3.9.0-alpha.4)
       '@chobantonov/jsonforms-react-extended-renderers':
         specifier: workspace:*
         version: link:../jsonforms-react-extended-renderers
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/examples':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(ajv@8.20.0)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(ajv@8.20.0)
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.7.0(monaco-editor@0.52.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -674,10 +674,10 @@ importers:
         version: 11.14.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@types/enzyme':
         specifier: ^3.10.3
         version: 3.10.19
@@ -759,10 +759,10 @@ importers:
     devDependencies:
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@types/lodash':
         specifier: ^4.14.149
         version: 4.17.17
@@ -820,10 +820,10 @@ importers:
         version: link:../jsonforms-react-shadcn-renderers
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@types/node':
         specifier: ^22.0.0
         version: 22.15.29
@@ -893,10 +893,10 @@ importers:
         version: 1.8.0(@date-fns/tz@1.5.0)(@types/react@18.3.31)(date-fns@4.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@radix-ui/react-avatar':
         specifier: ^1.2.6
         version: 1.2.6(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1053,10 +1053,10 @@ importers:
         version: link:../jsonforms-react-shadcn-renderers
       '@jsonforms/core':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2
+        version: 3.9.0-alpha.4
       '@jsonforms/react':
         specifier: 'catalog:'
-        version: 3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)
+        version: 3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)
       '@tailwindcss/postcss':
         specifier: ^4.3.3
         version: 4.3.3
@@ -1442,6 +1442,15 @@ packages:
     resolution: {integrity: sha512-q/ThtP9gcnEP6xlv7LrY26C2mHqdGBti/MmOVngt/M/oIGYkssmQGxPK9WzBNt2juVcH/vml2WQ+ra8LXYOTaA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
+  '@chobantonov/jsonforms-extended-spec@0.2.0':
+    resolution: {integrity: sha512-D+dteucwSkv7yoJNk9W8eR4ZUmXvvzfY9oQnDa7s3qLjpqsQBoLEHeLzXk5SNsJVhfbRXBGbMNtZrTXwtwTjIQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@jsonforms/core': ^3.9.0-alpha.2
+    peerDependenciesMeta:
+      '@jsonforms/core':
+        optional: true
+
   '@clack/core@1.5.1':
     resolution: {integrity: sha512-iHTrHA8MtVuLl2TfZySmcKv1qO2PoyC9Z7pfSDozEuV5vtY3/wcOPKJXlqJ5Oq2Cx5DDGQGAMVx6HZfRRoVEbQ==}
     engines: {node: '>= 20.12.0'}
@@ -1760,18 +1769,18 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsonforms/core@3.9.0-alpha.2':
-    resolution: {integrity: sha512-LDQ9v32PohM+dI7RJwirVC2rH1NjVN/0amUIl1Z2dYJvak4vL/9U/k+M9QbHEwlZ2bUH3Aw53xdJttKrCjGkVw==}
+  '@jsonforms/core@3.9.0-alpha.4':
+    resolution: {integrity: sha512-hClo0hIhPxd18LP+fgA4/EGtMP3FPod3Zc1QOznz0pXxqlx4127s8BUaIx+Za1vAvmVA2CVYNl+ZrNkcnMTe+g==}
 
-  '@jsonforms/examples@3.9.0-alpha.2':
-    resolution: {integrity: sha512-qb97uPC03UsDETGNKpOSq/MGnoeSZFv6T61tAQGwnuCKjInDA6kk1jh6pLoFomAk5C2F4IwWKhMVLS3DN6HZJw==}
+  '@jsonforms/examples@3.9.0-alpha.4':
+    resolution: {integrity: sha512-6XwUVmN6QtckUq5apglVSeYRtSxW2jh95uakQfHSs5pvyP+LzZdyF9BrMBJbv9XZ7hhLOGisSZJI9lh/E4fMfQ==}
     peerDependencies:
-      '@jsonforms/core': 3.9.0-alpha.2
+      '@jsonforms/core': 3.9.0-alpha.4
 
-  '@jsonforms/react@3.9.0-alpha.2':
-    resolution: {integrity: sha512-svYoHQ8ls0Vc3zste4v/NaN3W5XErJz9fzgIOzzceck8M1ByqHTXPmRrJ9iDBdnZ+WApcrvS5Mr9EcSIzf4FIg==}
+  '@jsonforms/react@3.9.0-alpha.4':
+    resolution: {integrity: sha512-DugX8bbzthnrECsQtodd/lfVUH9KdqjEvMLGV+M/FAPHJ3DhQ6E0c3TdPJqMxW4YibE+gbaNwHD+HJnx81m/Ig==}
     peerDependencies:
-      '@jsonforms/core': 3.9.0-alpha.2
+      '@jsonforms/core': 3.9.0-alpha.4
       react: ^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   '@manypkg/find-root@3.1.0':
@@ -6658,6 +6667,10 @@ snapshots:
       '@changesets/types': 7.0.0
       human-id: 4.2.1
 
+  '@chobantonov/jsonforms-extended-spec@0.2.0(@jsonforms/core@3.9.0-alpha.4)':
+    optionalDependencies:
+      '@jsonforms/core': 3.9.0-alpha.4
+
   '@clack/core@1.5.1':
     dependencies:
       fast-wrap-ansi: 0.2.2
@@ -6945,24 +6958,24 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@jsonforms/core@3.9.0-alpha.2':
+  '@jsonforms/core@3.9.0-alpha.4':
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       lodash: 4.18.1
 
-  '@jsonforms/examples@3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(ajv@8.20.0)':
+  '@jsonforms/examples@3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(ajv@8.20.0)':
     dependencies:
-      '@jsonforms/core': 3.9.0-alpha.2
+      '@jsonforms/core': 3.9.0-alpha.4
       ajv-i18n: 4.2.0(ajv@8.20.0)
       lodash: 4.18.1
     transitivePeerDependencies:
       - ajv
 
-  '@jsonforms/react@3.9.0-alpha.2(@jsonforms/core@3.9.0-alpha.2)(react@18.3.1)':
+  '@jsonforms/react@3.9.0-alpha.4(@jsonforms/core@3.9.0-alpha.4)(react@18.3.1)':
     dependencies:
-      '@jsonforms/core': 3.9.0-alpha.2
+      '@jsonforms/core': 3.9.0-alpha.4
       lodash: 4.18.1
       react: 18.3.1
 

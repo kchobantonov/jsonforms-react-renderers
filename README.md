@@ -231,7 +231,9 @@ Releases use Changesets:
    pushes tags, and creates GitHub Releases.
 
 Creating a release manually in GitHub does not trigger npm publishing. Demos and
-`jsonforms-react-demo-common` stay private. Package versions are independent.
+`jsonforms-react-demo-common` stay private. All eight public packages share one
+fixed version: a changeset for any member releases all eight at that version.
+Add any new public package to `.changeset/config.json` before releasing it.
 
 ### Repository setup
 
@@ -255,22 +257,21 @@ temporary copies, and validates the actual npm contents with publint. Tarballs
 and `overrides.json` are written to the chosen directory. The checkout's
 versions are unchanged. See [.changeset/README.md](.changeset/README.md).
 
-## Local specification dependency
+## Published specification dependency
 
-Clone `jsonforms-extended-spec` beside this repository before running `vp install`. The demo and fixture tests temporarily use `link:../../../jsonforms-extended-spec` until that package is released. Specification text, schemas, examples, and TypeScript authoring helpers are maintained there. The demo automatically registers the spec package catalog with `spec-` IDs and `Spec: ` labels. Native React template and action demonstrations remain optional enhancements here.
+The demo and fixture tests use `@chobantonov/jsonforms-extended-spec@0.2.0`
+from npm. The exact version is recorded in the root and demo-common manifests
+and in `pnpm-lock.yaml`; no sibling checkout or spec build is needed. The demo
+registers the packaged example catalog with `spec-` IDs and `Spec: ` labels.
+Native React template and action demonstrations remain optional enhancements
+here.
 
-TypeScript consumers should import `forSchema`, `DataOf`, and `CssLength` from `@chobantonov/jsonforms-extended-spec/typescript`; the React extended renderer package no longer exports these portable helpers. Build that package with `pnpm --dir ../jsonforms-extended-spec build` when using its authoring API locally.
-
-For a fresh checkout, prepare the sibling package before the React build:
-
-```sh
-pnpm --dir ../jsonforms-extended-spec install
-pnpm --dir ../jsonforms-extended-spec build
-vp install
-vp run build
-```
-
-New spec examples only need a catalog entry in the spec project. Run its build (or `pnpm generate:examples` there) to refresh the linked example module; no React registration file needs editing. The maintained [renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md) defines the shared design.
+TypeScript consumers can import `forSchema`, `DataOf`, and `CssLength` from
+`@chobantonov/jsonforms-extended-spec/typescript`. For a fresh checkout, run
+`vp install` and `vp run build`. To adopt new portable examples or translations,
+update the spec package version and lockfile. The maintained
+[renderer and demo guide](https://github.com/kchobantonov/jsonforms-extended-spec/blob/master/docs/renderer-and-demo.md)
+defines the shared design.
 
 ### Dynamic external values in templates
 

@@ -2,7 +2,18 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    [
+      "@chobantonov/jsonforms-react-antd-extended-renderers",
+      "@chobantonov/jsonforms-react-antd-renderers",
+      "@chobantonov/jsonforms-react-antd-webcomponent",
+      "@chobantonov/jsonforms-react-extended-renderers",
+      "@chobantonov/jsonforms-react-renderer-common",
+      "@chobantonov/jsonforms-react-shadcn-extended-renderers",
+      "@chobantonov/jsonforms-react-shadcn-renderers",
+      "@chobantonov/jsonforms-react-shadcn-webcomponent"
+    ]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "master",

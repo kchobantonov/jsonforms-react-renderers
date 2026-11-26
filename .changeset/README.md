@@ -8,25 +8,29 @@ This repository uses Changesets to version and publish its public React packages
 4. Merge that PR to publish the versioned packages to npm and create GitHub
    Releases and tags.
 
-Demos and demo-common are private and excluded. Public packages have independent
-versions. Internal workspace dependencies, including peers, follow the release
-plan. Do not use Lerna or manually created GitHub releases to publish.
+Demos and demo-common are private and excluded. All eight public packages
+form one fixed Changesets group: a changeset for any one of them bumps and
+publishes all eight at the same version, using the highest bump level in the
+group. Internal workspace dependencies, including peers, follow the release
+plan. Add any new public package to the fixed group before its first release.
+The release tests verify group membership. Do not use Lerna or manually created
+GitHub releases to publish.
 
 ## Version policy
 
-Public package versions are independent of JSON Forms. Keep unpublished packages
-on the existing `0.0.1` baseline and let Changesets calculate release versions;
-do not manually synchronize them with upstream versions or each other. Move to
-`1.0.0` deliberately when the public API is ready for a compatibility commitment.
-Check npm versions and dist-tags before changing an already published baseline.
+The public packages share a version with each other, independently of JSON
+Forms. Keep unpublished packages on the existing `0.0.1` baseline and let
+Changesets calculate the shared release version. Move to `1.0.0` deliberately
+when the public API is ready for a compatibility commitment. Check npm versions
+and dist-tags before changing an already published baseline.
 
 Use Changesets 3 or newer: peer dependency updates no longer automatically force
 major releases. The initial pending release plan targets `0.1.0` for all eight
-public packages. Future releases remain independent; add explicit changesets for
-breaking changes rather than relying on automatic peer bumps.
+public packages. Future releases keep the group together; add explicit changesets
+for breaking changes rather than relying on automatic peer bumps.
 
 Declare JSON Forms compatibility through peer dependencies. While targeting an
-upstream alpha, use the exact tested version (currently `3.9.0-alpha.1`). Private
+upstream alpha, use the exact tested version (currently `3.9.0-alpha.4`). Private
 demo applications and demo-common use `0.0.0`, remain `private: true`, and are
 excluded from releases.
 

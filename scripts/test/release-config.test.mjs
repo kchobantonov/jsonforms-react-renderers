@@ -24,6 +24,15 @@ test('release configuration excludes every private host and includes every publi
       .sort(),
   );
   assert.equal(config.access, 'public');
+  assert.equal(config.fixed.length, 1);
+  assert.deepEqual(
+    [...config.fixed[0]].sort(),
+    packages
+      .filter((pkg) => !pkg.private)
+      .map((pkg) => pkg.name)
+      .sort(),
+  );
+  assert.deepEqual(config.linked, []);
 });
 for (const pkg of packages.filter((pkg) => !pkg.private)) {
   test(`${pkg.name} is public and tracks workspace peers through version changes`, () => {

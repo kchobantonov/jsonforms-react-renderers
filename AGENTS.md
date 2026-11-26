@@ -1,8 +1,12 @@
 # Renderer parity and implementation guidance
 
-For renderer behavior changes, consult the sibling specification's
-[implementation guide](../jsonforms-extended-spec/docs/implementation-guide.md)
-and [implementation pitfalls](../jsonforms-extended-spec/docs/implementation-pitfalls.md).
+For renderer behavior changes, use the installed
+`@chobantonov/jsonforms-extended-spec@0.2.0` as the contract. Consult its
+[implementation guide](node_modules/@chobantonov/jsonforms-extended-spec/docs/implementation-guide.md)
+and [implementation pitfalls](node_modules/@chobantonov/jsonforms-extended-spec/docs/implementation-pitfalls.md).
+The package manifests and lockfile record the consumed release. Use a sibling
+`jsonforms-extended-spec` source checkout when proposing changes to the spec,
+then update the package version when adopting a new release.
 
 When resolving a commonly overlooked semantic, usability, presentation,
 accessibility or performance distinction, record the lesson in the spec's
@@ -15,3 +19,12 @@ claiming parity. Distinguish executable tests from proposed acceptance cases.
 Before reporting renderer work complete, run the repository lint and format
 checks (`pnpm run lint` and `pnpm run check-format`). Fix errors in changed files
 and report any remaining warnings or failures accurately.
+
+# Changesets
+
+For every publishable change to a public React package, include a Markdown
+changeset under `.changeset/` in the same change. Select the affected public
+package and the appropriate patch, minor, or major bump; the fixed Changesets
+group releases all public packages together. An existing pending changeset may
+cover the change if its release note still describes it accurately. Changes
+limited to private demos, tooling, or documentation do not need a changeset.
