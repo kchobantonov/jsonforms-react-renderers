@@ -260,11 +260,7 @@ export default function DynamicJSXRenderer({
   // Compile once when jsxTemplate changes
   const Component = useMemo<React.ComponentType<CompiledTemplateProps>>(() => {
     try {
-      // Compile JSX to JS code
-      // const { code } = Babel.transform(jsxTemplate, {
-      //   presets: [['react', { runtime: 'classic', pragma: 'createElement' }]],
-      // });
-
+      // Compile JSX with the custom element pragma.
       const { code } = Sucrase.transform(jsxTemplate, {
         transforms: ['jsx'],
         jsxPragma: 'createElement',

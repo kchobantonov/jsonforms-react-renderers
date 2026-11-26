@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "ignorePatterns": [
+    "apps/jsonforms-react-shadcn-demo/src/components/ui/**",
+    "packages/jsonforms-react-shadcn-webcomponent/src/components/ui/**",
+    "scripts/shadcn-upstream/**"
+  ],
+  "publicPackages": [
+    "@chobantonov/jsonforms-react-antd-extended-renderers",
+    "@chobantonov/jsonforms-react-antd-renderers",
+    "@chobantonov/jsonforms-react-antd-webcomponent",
+    "@chobantonov/jsonforms-react-extended-renderers",
+    "@chobantonov/jsonforms-react-renderer-common",
+    "@chobantonov/jsonforms-react-shadcn-extended-renderers",
+    "@chobantonov/jsonforms-react-shadcn-renderers",
+    "@chobantonov/jsonforms-react-shadcn-webcomponent"
+  ]
+}

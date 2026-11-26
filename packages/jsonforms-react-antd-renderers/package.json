@@ -50,7 +50,6 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
   },
   "dependencies": {
-    "@date-io/dayjs": "^3.0.0",
     "dayjs": "catalog:",
     "lodash": "catalog:",
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"

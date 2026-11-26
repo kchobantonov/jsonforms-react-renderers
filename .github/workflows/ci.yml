@@ -16,6 +16,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  fallow:
+    name: Fallow changed-code audit
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          cache: true
+          run-install: false
+
+      - name: Install dependencies
+        run: vp install --frozen-lockfile
+
+      - name: Audit introduced findings
+        run: pnpm run fallow:audit --base "${{ github.event.pull_request.base.sha }}" --format github-summary >> "$GITHUB_STEP_SUMMARY"
+
   build:
     # Playwright 1.58.1 does not provide Chromium or install-deps for Ubuntu 26.04.
     runs-on: ubuntu-24.04

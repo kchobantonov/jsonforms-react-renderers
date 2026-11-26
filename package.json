@@ -8,6 +8,9 @@
     "preparePublish": "vp run test:release && vp run release:pack",
     "merge-report": "mkdir -p coverage && lcov-result-merger 'packages/**/coverage/lcov.info' 'coverage/lcov.info' --prepend-source-files",
     "check-format": "vp fmt --check .",
+    "fallow": "fallow",
+    "fallow:report": "fallow --format json --pretty --output-file .fallow/report.json",
+    "fallow:audit": "fallow audit",
     "example:antd:dev": "vp run --filter jsonforms-react-antd-demo dev",
     "example:antd:build": "vp run --filter jsonforms-react-antd-demo build",
     "example:shadcn:dev": "vp run --filter jsonforms-react-shadcn-demo dev",
@@ -45,8 +48,6 @@
     "check": "vp check"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5",
-    "@babel/plugin-proposal-optional-chaining": "^7.16.5",
     "@changesets/cli": "^3.0.3",
     "@chobantonov/jsonforms-extended-spec": "0.2.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -57,6 +58,7 @@
     "core-js": "^3.9.1",
     "coveralls": "^3.0.9",
     "cross-env": "^7.0.2",
+    "fallow": "^3.49.0",
     "istanbul-lib-coverage": "^3.2.0",
     "lcov-result-merger": "^3.1.0",
     "nan": "^2.14.2",

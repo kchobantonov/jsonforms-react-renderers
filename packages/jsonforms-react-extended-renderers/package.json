@@ -38,7 +38,6 @@
   "module": "lib/jsonforms-react-extended.esm.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@babel/standalone": "^7.28.3",
     "@marcbachmann/cel-js": "^8.0.0",
     "@monaco-editor/react": "catalog:",
     "ag-grid-community": "catalog:",
