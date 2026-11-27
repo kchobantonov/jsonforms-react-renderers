@@ -39,6 +39,12 @@ const defaults = {
 };
 const style = { width: '100%' };
 
+function defaultDisplayFormat(kind: keyof typeof defaults, ampm: unknown) {
+  if (kind === 'date') return 'YYYY-MM-DD';
+  if (kind === 'dateTime') return 'YYYY-MM-DD HH:mm';
+  return ampm === true ? 'hh:mm a' : 'HH:mm';
+}
+
 export function useTemporalPicker(
   props: CellProps & WithClassname,
   kind: keyof typeof defaults,
@@ -64,15 +70,8 @@ export function useTemporalPicker(
     () => resolveDataBounds(schema as Record<string, unknown>, path, rootData),
     [schema, path, rootData],
   );
-  const defaultFormat =
-    kind === 'date'
-      ? 'YYYY-MM-DD'
-      : kind === 'dateTime'
-        ? 'YYYY-MM-DD HH:mm'
-        : options.ampm === true
-          ? 'hh:mm a'
-          : 'HH:mm';
-  const format = options[`${kind}Format`] ?? defaultFormat;
+  const format =
+    options[`${kind}Format`] ?? defaultDisplayFormat(kind, options.ampm);
   const saveFormat = options[`${kind}SaveFormat`] ?? defaults[kind].saveFormat;
   const formats = useMemo(
     () => [saveFormat, format, ...defaults[kind].formats],

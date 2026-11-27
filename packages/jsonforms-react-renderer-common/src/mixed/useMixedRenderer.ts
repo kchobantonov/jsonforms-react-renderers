@@ -33,6 +33,95 @@ import {
 } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
 
+const withoutControlLabel = (element: UISchemaElement): UISchemaElement =>
+  isControl(element) && element.scope === '#'
+    ? { ...element, label: false }
+    : element;
+
+function useMixedTreeSelection(
+  data: ControlProps['data'],
+  label: ControlProps['label'],
+  rootSchema: ControlProps['rootSchema'],
+  selectedSchema: ControlProps['schema'] | undefined,
+  selectedType: JsonDataType | null | undefined,
+) {
+  const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
+  const tree = useMemo(
+    () =>
+      selectedSchema && (selectedType === 'object' || selectedType === 'array')
+        ? buildMixedTree(data, selectedSchema, rootSchema, label || 'Value')
+        : undefined,
+    [data, label, rootSchema, selectedSchema, selectedType],
+  );
+  const matchedNode = tree && findMixedTreeNode(tree, selectedPath);
+  if (tree && selectedPath.length > 0 && !matchedNode) setSelectedPath([]);
+  return {
+    tree,
+    selectedPath,
+    selectedNode: matchedNode ?? tree,
+    setSelectedPath,
+  };
+}
+
+function useMixedDetailSchema(
+  { schema, rootSchema, uischema, path }: ControlProps,
+  selectedType: ReturnType<typeof useMixedType>['selectedType'],
+  uischemas: NonNullable<ReturnType<typeof useJsonForms>['uischemas']>,
+) {
+  const selectedSchema = useMemo(
+    () =>
+      selectedType
+        ? schemaForType(schema, selectedType, rootSchema)
+        : undefined,
+    [rootSchema, schema, selectedType],
+  );
+  const detailUiSchema = useMemo(
+    () =>
+      selectedSchema
+        ? findMixedDetailUiSchema(
+            selectedSchema,
+            {
+              ...uischema,
+              options: {
+                ...uischema.options,
+                detail:
+                  uischema.options?.[`${selectedType}-detail`] ??
+                  uischema.options?.detail,
+              },
+            },
+            path,
+            rootSchema,
+            uischemas,
+          )
+        : undefined,
+    [path, rootSchema, selectedSchema, selectedType, uischema, uischemas],
+  );
+  return { selectedSchema, detailUiSchema };
+}
+
+function useMixedTypeOptions(
+  { schema, data, path, enabled, readonly, errors, required }: ControlProps,
+  t: ReturnType<typeof useI18n>,
+) {
+  const types = useMemo(() => getSchemaTypes(schema), [schema]);
+  const { selectedType, selectNumericType } = useMixedType(data, types, path);
+  const numericError =
+    selectedType === 'integer' &&
+    typeof data === 'number' &&
+    !Number.isInteger(data)
+      ? t('mixed.integerRequired')
+      : undefined;
+  const selector = {
+    disabled: !enabled || Boolean(readonly),
+    error: numericError ?? (!selectedType ? errors : undefined),
+    fullWidth: !selectedType,
+    required,
+    types,
+    value: selectedType,
+  };
+  return { types, selectedType, selectNumericType, numericError, selector };
+}
+
 export const useMixedRenderer = (
   props: ControlProps,
   requestConfirmation: (request: ConfirmationRequest) => void,
@@ -42,8 +131,6 @@ export const useMixedRenderer = (
     enabled,
     readonly,
     renderers,
-    errors,
-    required,
     handleChange,
     data,
     config,
@@ -76,67 +163,22 @@ export const useMixedRenderer = (
     'mixed',
   );
   const expanded = !collapsed;
-  const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
-  const types = useMemo(() => getSchemaTypes(schema), [schema]);
-  const { selectedType, selectNumericType } = useMixedType(data, types, path);
-  const numericError =
-    selectedType === 'integer' &&
-    typeof data === 'number' &&
-    !Number.isInteger(data)
-      ? t('mixed.integerRequired')
-      : undefined;
-  const selectedSchema = useMemo(
-    () =>
-      selectedType
-        ? schemaForType(schema, selectedType, rootSchema)
-        : undefined,
-    [rootSchema, schema, selectedType],
+  const { types, selectedType, selectNumericType, numericError, selector } =
+    useMixedTypeOptions(props, t);
+  const { selectedSchema, detailUiSchema } = useMixedDetailSchema(
+    props,
+    selectedType,
+    uischemas,
   );
-  const detailUiSchema = useMemo(
-    () =>
-      selectedSchema
-        ? findMixedDetailUiSchema(
-            selectedSchema,
-            {
-              ...uischema,
-              options: {
-                ...uischema.options,
-                detail:
-                  uischema.options?.[`${selectedType}-detail`] ??
-                  uischema.options?.detail,
-              },
-            },
-            path,
-            rootSchema,
-            uischemas ?? [],
-          )
-        : undefined,
-    [path, rootSchema, selectedSchema, selectedType, uischema, uischemas],
-  );
-  const tree = useMemo(
-    () =>
-      selectedSchema && (selectedType === 'object' || selectedType === 'array')
-        ? buildMixedTree(data, selectedSchema, rootSchema, label || 'Value')
-        : undefined,
-    [data, label, rootSchema, selectedSchema, selectedType],
-  );
-  const selectedNode = tree
-    ? (findMixedTreeNode(tree, selectedPath) ?? tree)
-    : undefined;
+  const { tree, selectedPath, selectedNode, setSelectedPath } =
+    useMixedTreeSelection(
+      data,
+      label,
+      rootSchema,
+      selectedSchema,
+      selectedType,
+    );
   const preserveDynamicPropertyKey = useDynamicProperty(path);
-  const withoutControlLabel = (element: UISchemaElement): UISchemaElement =>
-    isControl(element) && element.scope === '#'
-      ? { ...element, label: false }
-      : element;
-
-  if (
-    tree &&
-    selectedPath.length > 0 &&
-    !findMixedTreeNode(tree, selectedPath)
-  ) {
-    setSelectedPath([]);
-  }
-
   const arrayElement = isArrayElementPath(jsonforms.core?.data, path);
   const changeType = createMixedTypeChangeHandler({
     data,
@@ -160,15 +202,10 @@ export const useMixedRenderer = (
     setExpanded,
   );
   const selectorProps = {
+    ...selector,
     clearable: !preserveDynamicPropertyKey && !arrayElement,
-    disabled: !enabled || Boolean(readonly),
-    error: numericError ?? (!selectedType ? errors : undefined),
-    fullWidth: !selectedType,
     onChange: (value: string | undefined) =>
       changeType(value as JsonDataType | undefined),
-    required,
-    types,
-    value: selectedType,
   };
   const latest = useRef({ data, path, enabled, readonly });
   useLayoutEffect(() => {

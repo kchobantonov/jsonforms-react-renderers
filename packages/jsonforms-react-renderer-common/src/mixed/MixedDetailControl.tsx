@@ -14,6 +14,25 @@ type MixedDetailProps = Pick<
 > &
   Pick<MixedRendererState, 'detailUiSchema' | 'withoutControlLabel'>;
 
+function scalarContextPath(type: string | null | undefined, path: string) {
+  return type === 'string' || type === 'number' || type === 'integer'
+    ? path
+    : undefined;
+}
+
+function nodeControlUiSchema(
+  node: MixedTreeNode,
+  detailUiSchema: MixedDetailProps['detailUiSchema'],
+  isNestedPrimitive: boolean,
+  withoutControlLabel: MixedDetailProps['withoutControlLabel'],
+) {
+  const uiSchema =
+    node.path.length === 0 && detailUiSchema
+      ? detailUiSchema
+      : { type: 'Control', scope: '#' };
+  return isNestedPrimitive ? withoutControlLabel(uiSchema) : uiSchema;
+}
+
 export function MixedNodeControl({
   node,
   path,
@@ -62,27 +81,20 @@ export function MixedNodeControl({
         />
       </div>
     ) : null;
-  const nodeUiSchema =
-    node.path.length === 0 && detailUiSchema
-      ? detailUiSchema
-      : { type: 'Control', scope: '#' };
   const nodeControl =
     node.type === 'null' ? null : (
       <div className='jsonforms-mixed-renderer-detail-control'>
         <MixedScalarContext.Provider
-          value={
-            ['string', 'number', 'integer'].includes(node.type)
-              ? nodePath
-              : undefined
-          }
+          value={scalarContextPath(node.type, nodePath)}
         >
           <JsonFormsDispatch
             schema={nodeSchema}
-            uischema={
-              isNestedPrimitive
-                ? withoutControlLabel(nodeUiSchema)
-                : nodeUiSchema
-            }
+            uischema={nodeControlUiSchema(
+              node,
+              detailUiSchema,
+              isNestedPrimitive,
+              withoutControlLabel,
+            )}
             path={nodePath}
             enabled={enabled}
             renderers={renderers}
@@ -93,19 +105,18 @@ export function MixedNodeControl({
       </div>
     );
 
-  return isNestedPrimitive ? (
-    <div className='jsonforms-mixed-renderer-detail-primitive'>
+  const content = (
+    <>
       {nodeSelector}
       {nodeControl}
-    </div>
-  ) : (
-    wrapStructured(
-      <>
-        {nodeSelector}
-        {nodeControl}
-      </>,
-    )
+    </>
   );
+  if (isNestedPrimitive) {
+    return (
+      <div className='jsonforms-mixed-renderer-detail-primitive'>{content}</div>
+    );
+  }
+  return wrapStructured(content);
 }
 export function MixedDetailControl({
   path,
@@ -120,13 +131,7 @@ export function MixedDetailControl({
 }: MixedDetailProps &
   Pick<MixedRendererState, 'selectedType' | 'selectedSchema'>) {
   return selectedType !== 'null' && selectedSchema && detailUiSchema ? (
-    <MixedScalarContext.Provider
-      value={
-        selectedType && ['string', 'number', 'integer'].includes(selectedType)
-          ? path
-          : undefined
-      }
-    >
+    <MixedScalarContext.Provider value={scalarContextPath(selectedType, path)}>
       <JsonFormsDispatch
         schema={selectedSchema}
         uischema={withoutControlLabel(detailUiSchema)}

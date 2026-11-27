@@ -63,6 +63,60 @@ export const hasInvalidCompositeEditorDraft = (
   );
 };
 
+function acceptsDraftUpdate(
+  path: string,
+  action: { type: string; path: string },
+) {
+  return (
+    action.type === UPDATE_DATA &&
+    (!path || action.path === path || action.path.startsWith(`${path}.`))
+  );
+}
+
+function canEmptyCompositeValue(
+  value: unknown,
+  schema: CompositeDraftInput['schema'],
+  options: CompositeDetailDialogOptions,
+  isArray: boolean,
+) {
+  return (
+    !options.disableRemove &&
+    value != null &&
+    typeof value === 'object' &&
+    Object.keys(value).length > 0 &&
+    (options.restrict === false || !preventsEmpty(schema, isArray))
+  );
+}
+
+function useIsolatedDraft(
+  parentCore: JsonFormsCore | undefined,
+  path: string,
+  open: boolean,
+  enabled: boolean,
+) {
+  const [draft, setDraft] = useState<JsonFormsCore>();
+  const draftRef = useRef<JsonFormsCore>();
+  const [originalValue, setOriginalValue] = useState<unknown>();
+  const localDispatch = useCallback(
+    (action: any) => {
+      const core = draftRef.current;
+      if (!core || !enabled || !acceptsDraftUpdate(path, action)) return;
+      const next = coreReducer(core, action);
+      draftRef.current = next;
+      setDraft(next);
+    },
+    [enabled, path],
+  );
+  if (open && !draft && parentCore) {
+    setOriginalValue(cloneDeep(valueAtPath(parentCore.data, path)));
+    setDraft({ ...parentCore, data: cloneDeep(parentCore.data) });
+  }
+  React.useLayoutEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
+  return { draft, draftRef, setDraft, originalValue, localDispatch };
+}
+
 /** Isolates detail edits until Apply, including pending writes and external-data conflicts. */
 export const useCompositeDraft = ({
   open,
@@ -80,36 +134,15 @@ export const useCompositeDraft = ({
     path,
   );
   const defaultMessage = useI18nDefault();
-  const [draft, setDraft] = useState<JsonFormsCore>();
-  const draftRef = useRef<JsonFormsCore>();
-  const [originalValue, setOriginalValue] = useState<unknown>();
+  const { draft, draftRef, setDraft, originalValue, localDispatch } =
+    useIsolatedDraft(parent.core, path, open, enabled);
   const pending = useMemo(() => new Set<PendingChange>(), []);
   const value = draft ? valueAtPath(draft.data, path) : undefined;
-  const readParentValue = () => valueAtPath(parent.core?.data, path);
-  const localDispatch = useCallback(
-    (action: any) => {
-      const core = draftRef.current;
-      if (!core || !enabled || action.type !== UPDATE_DATA) return;
-      if (path && action.path !== path && !action.path.startsWith(`${path}.`))
-        return;
-      const next = coreReducer(core, action);
-      draftRef.current = next;
-      setDraft(next);
-    },
-    [enabled, path],
-  );
-  if (open && !draft && parent.core) {
-    setOriginalValue(cloneDeep(readParentValue()));
-    setDraft({ ...parent.core, data: cloneDeep(parent.core.data) });
-  }
-  React.useLayoutEffect(() => {
-    draftRef.current = draft;
-  }, [draft]);
   const discardDraft = useCallback(() => {
     pending.forEach((change) => change.cancel());
     draftRef.current = undefined;
     setDraft(undefined);
-  }, [pending]);
+  }, [draftRef, pending, setDraft]);
   const cancel = useCallback(() => {
     discardDraft();
     onClose();
@@ -124,6 +157,7 @@ export const useCompositeDraft = ({
     onClose();
   }, [
     invalidEditorDraft,
+    draftRef,
     originalValue,
     pending,
     path,
@@ -136,16 +170,11 @@ export const useCompositeDraft = ({
     [parent, draft, localDispatch],
   );
   const isArray = Array.isArray(value) || schema?.type === 'array';
-  const restricted = options.restrict !== false;
   const canEmpty =
-    enabled &&
-    !options.disableRemove &&
-    value != null &&
-    typeof value === 'object' &&
-    Object.keys(value).length > 0 &&
-    (!restricted || !preventsEmpty(schema, isArray));
+    enabled && canEmptyCompositeValue(value, schema, options, isArray);
   const conflicted =
-    Boolean(draft) && !isEqual(readParentValue(), originalValue);
+    Boolean(draft) &&
+    !isEqual(valueAtPath(parent.core?.data, path), originalValue);
   const buttonLabel = (
     override: string | undefined,
     key: 'composite.empty' | 'composite.cancel' | 'composite.apply',
