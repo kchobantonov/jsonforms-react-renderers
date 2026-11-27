@@ -42,5 +42,10 @@ export default defineConfig({
     ],
     globals: true,
     include: ['test/**/*.test.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['text-summary', 'lcov', 'html'],
+    },
   },
 });

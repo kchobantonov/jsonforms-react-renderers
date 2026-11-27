@@ -3,23 +3,25 @@
 The workspace uses Vite+ for builds, tests, linting and formatting. Use the
 Node and pnpm versions in the root `package.json` and `.node-version`.
 
-| Command                        | Purpose                                                 |
-| ------------------------------ | ------------------------------------------------------- |
-| `vp install --frozen-lockfile` | Install the pinned workspace.                           |
-| `pnpm run lint`                | Lint packages, apps and scripts with Oxlint.            |
-| `pnpm run check-format`        | Check repository formatting with Oxfmt.                 |
-| `pnpm run format`              | Apply formatting.                                       |
-| `pnpm run check`               | Run the combined Vite+ check.                           |
-| `pnpm run test`                | Run workspace test projects.                            |
-| `pnpm run build`               | Build packages and demos.                               |
-| `pnpm run build:libs`          | Build public libraries and Web Components.              |
-| `pnpm run test:release`        | Check release configuration and version planning.       |
-| `pnpm run test:packed`         | Test packed Web Components in Chromium.                 |
-| `pnpm run fallow`              | Show full code health findings in the terminal.         |
-| `pnpm exec fallow dead-code`   | Inspect unused files, exports, types, and dependencies. |
-| `pnpm exec fallow dupes`       | Inspect duplicate code groups.                          |
-| `pnpm run fallow:report`       | Write a full JSON report to `.fallow/report.json`.      |
-| `pnpm run fallow:audit`        | Check findings introduced since the Git base.           |
+| Command                        | Purpose                                                    |
+| ------------------------------ | ---------------------------------------------------------- |
+| `vp install --frozen-lockfile` | Install the pinned workspace.                              |
+| `pnpm run lint`                | Lint packages, apps and scripts with Oxlint.               |
+| `pnpm run check-format`        | Check repository formatting with Oxfmt.                    |
+| `pnpm run format`              | Apply formatting.                                          |
+| `pnpm run check`               | Run the combined Vite+ check.                              |
+| `pnpm run test-cov`            | Run all eight public package test suites with V8 coverage. |
+| `pnpm run merge-report`        | Merge package LCOV reports into `coverage/lcov.info`.      |
+| `pnpm run test`                | Run workspace test projects.                               |
+| `pnpm run build`               | Build packages and demos.                                  |
+| `pnpm run build:libs`          | Build public libraries and Web Components.                 |
+| `pnpm run test:release`        | Check release configuration and version planning.          |
+| `pnpm run test:packed`         | Test packed Web Components in Chromium.                    |
+| `pnpm run fallow`              | Show full code health findings in the terminal.            |
+| `pnpm exec fallow dead-code`   | Inspect unused files, exports, types, and dependencies.    |
+| `pnpm exec fallow dupes`       | Inspect duplicate code groups.                             |
+| `pnpm run fallow:report`       | Write a full JSON report to `.fallow/report.json`.         |
+| `pnpm run fallow:audit`        | Check findings introduced since the Git base.              |
 
 To run one file, pass its repository-relative path from the workspace root.
 For example, this runs the Ant Design editor theme hook tests:
@@ -27,6 +29,17 @@ For example, this runs the Ant Design editor theme hook tests:
 ```sh
 pnpm exec vp test run packages/jsonforms-react-antd-extended-renderers/test/hooks/editorTheme.test.tsx
 ```
+
+Coverage reports are written to each package's `coverage/` folder. Open
+`packages/<package>/coverage/index.html` for the HTML report, or use
+`packages/<package>/coverage/lcov.info` with coverage services. Run
+`pnpm run merge-report` after coverage completes to combine the LCOV reports.
+
+To collect coverage for one package, use
+`pnpm --filter @chobantonov/jsonforms-react-renderer-common run test-cov`.
+All source TypeScript and TSX files are included, including files without tests.
+The shadcn web component's copied `src/components/ui/` files are excluded.
+Coverage includes the eight public packages.
 
 To typecheck a package’s tests independently, run
 `pnpm exec tsc --noEmit -p packages/<package>/test/tsconfig.json`.

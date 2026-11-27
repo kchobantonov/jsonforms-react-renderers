@@ -24,7 +24,8 @@
     "test": "vp test run",
     "test:watch": "vp test",
     "tsc": "tsc --build tsconfig.json",
-    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json",
+    "test-cov": "vp test run --coverage"
   },
   "peerDependencies": {
     "@ant-design/cssinjs": "^2.1.2",
@@ -53,7 +54,8 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "@vitest/coverage-v8": "catalog:"
   },
   "dependencies": {
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"

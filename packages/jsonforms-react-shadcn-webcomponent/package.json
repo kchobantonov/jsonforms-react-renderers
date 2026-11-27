@@ -34,7 +34,8 @@
     "lint:fix": "vp run lint --fix",
     "test": "vp test run",
     "test:watch": "vp test",
-    "tsc": "tsc --build tsconfig.json"
+    "tsc": "tsc --build tsconfig.json",
+    "test-cov": "vp test run --coverage"
   },
   "peerDependencies": {
     "@chobantonov/jsonforms-react-extended-renderers": "workspace:*",
@@ -65,7 +66,8 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "@vitest/coverage-v8": "catalog:"
   },
   "dependencies": {
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
