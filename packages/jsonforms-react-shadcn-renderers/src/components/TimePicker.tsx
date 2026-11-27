@@ -8,8 +8,11 @@ export type TimePickerProps = {
   value?: string;
   onChange: (value: string) => void;
   useSeconds?: boolean;
+  showHours?: boolean;
+  showMinutes?: boolean;
   ampm?: boolean;
   disabled?: boolean;
+  isAllowed?: (time: TimeValue) => boolean;
 };
 
 type TimePart = 'hours' | 'minutes' | 'seconds';
@@ -20,8 +23,11 @@ export const TimePicker = ({
   value,
   onChange,
   useSeconds = false,
+  showHours = true,
+  showMinutes = true,
   ampm = false,
   disabled = false,
+  isAllowed,
 }: TimePickerProps) => {
   const parsedValue = parseTimeValue(value);
   const [time, setTime] = React.useState<TimeValue | undefined>(parsedValue);
@@ -34,7 +40,8 @@ export const TimePicker = ({
 
   const commit = (next: TimeValue) => {
     setTime(next);
-    onChange(formatTimeValue(next, useSeconds));
+    if (!isAllowed || isAllowed(next))
+      onChange(formatTimeValue(next, useSeconds));
   };
 
   const updatePart = (part: TimePart, value: number) => {
@@ -99,6 +106,7 @@ export const TimePicker = ({
         max={part === 'hours' ? (ampm ? 12 : 23) : 59}
         disabled={disabled}
         aria-label={label}
+        aria-invalid={time && isAllowed ? !isAllowed(time) : undefined}
         onChange={(event) => {
           if (event.currentTarget.value !== '') {
             onValueChange(Number(event.currentTarget.value));
@@ -123,16 +131,21 @@ export const TimePicker = ({
       className='flex items-center justify-center gap-2'
       data-slot='time-picker'
     >
-      {renderPart('hours', 'Hours', displayedHour, updateDisplayedHour)}
-      <span className='select-none text-2xl font-semibold'>:</span>
-      {renderPart('minutes', 'Minutes', time?.minutes)}
+      {showHours &&
+        renderPart('hours', 'Hours', displayedHour, updateDisplayedHour)}
+      {showHours && showMinutes && (
+        <span className='select-none text-2xl font-semibold'>:</span>
+      )}
+      {showMinutes && renderPart('minutes', 'Minutes', time?.minutes)}
       {useSeconds ? (
         <>
-          <span className='select-none text-2xl font-semibold'>:</span>
+          {(showHours || showMinutes) && (
+            <span className='select-none text-2xl font-semibold'>:</span>
+          )}
           {renderPart('seconds', 'Seconds', time?.seconds)}
         </>
       ) : null}
-      {ampm ? (
+      {ampm && showHours ? (
         <div className='ml-2 grid gap-1' aria-label='Period'>
           <Button
             type='button'

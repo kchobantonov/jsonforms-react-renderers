@@ -1,3 +1,4 @@
+import { createDeleteConfirmation } from '@chobantonov/jsonforms-react-renderer-common/interaction/createDeleteConfirmation';
 import React from 'react';
 import {
   ValidationIcon,
@@ -29,23 +30,10 @@ import { useAntdEditorTheme } from '../hooks/useAntdEditorTheme';
  * with the renderer set that actually registers it. That keeps the
  * framework-agnostic package free of both antd and the policy vocabulary.
  */
-const useAgGridRemoveConfirmation = () => {
-  const confirmation = useConfirmation();
-  return {
-    request: (input: {
-      discarded: unknown[];
-      options?: Record<string, unknown>;
-      config?: unknown;
-      perform: () => void;
-    }) =>
-      confirmation.request({
-        operation: 'delete',
-        catalogId: 'agGrid',
-        ...input,
-      }),
-    dialog: confirmation.dialog,
-  };
-};
+const useAgGridRemoveConfirmation = createDeleteConfirmation(
+  useConfirmation,
+  'agGrid',
+);
 
 export const AntdAgGridControlRenderer = createAgGridControlRenderer({
   RowErrorIndicator: ({ message }) => (

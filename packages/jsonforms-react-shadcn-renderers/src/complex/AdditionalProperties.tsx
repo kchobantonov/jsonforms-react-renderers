@@ -1,3 +1,4 @@
+import { literalPropertySchema } from '@chobantonov/jsonforms-react-renderer-common/objects/literalPropertySchema';
 import { renamePropertyKey } from '@chobantonov/jsonforms-react-renderer-common/objects/additionalProperties';
 import {
   DynamicPropertyProvider,
@@ -209,14 +210,16 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                   className='mb-1 block text-sm font-medium text-foreground'
                   htmlFor='shadcn-additional-property-name'
                 >
-                  Property Name
+                  {t('additionalProperties.namePlaceholder')}
                 </label>
                 <div className='relative pr-12'>
                   <Input
                     id='shadcn-additional-property-name'
                     className='shadcn-jsonforms-input'
                     aria-label={
-                      label ? `Add property to ${label}` : 'Add property'
+                      label
+                        ? t('additionalProperties.addTo', { label })
+                        : t('additionalProperties.add')
                     }
                     aria-invalid={
                       newPropertyName !== '' && Boolean(propertyNameError)
@@ -238,8 +241,8 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                     disabled={addPropertyDisabled}
                     size='icon'
                     type='button'
-                    aria-label='Add property'
-                    title='Add property'
+                    aria-label={t('additionalProperties.add')}
+                    title={t('additionalProperties.add')}
                     onClick={addProperty}
                   >
                     <Plus className='h-4 w-4' />
@@ -295,8 +298,12 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                           size='icon'
                           disabled={readonly}
                           type='button'
-                          aria-label={`Rename ${item.propertyName}`}
-                          title={`Rename ${item.propertyName}`}
+                          aria-label={t('additionalProperties.renameNamed', {
+                            name: item.propertyName,
+                          })}
+                          title={t('additionalProperties.renameNamed', {
+                            name: item.propertyName,
+                          })}
                           onClick={() => {
                             setRenamingPropertyName(item.propertyName);
                             setRenameValue(item.propertyName);
@@ -310,8 +317,12 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                           size='icon'
                           disabled={removePropertyDisabled}
                           type='button'
-                          aria-label={`Delete ${item.propertyName}`}
-                          title={`Delete ${item.propertyName}`}
+                          aria-label={t('additionalProperties.deleteNamed', {
+                            name: item.propertyName,
+                          })}
+                          title={t('additionalProperties.deleteNamed', {
+                            name: item.propertyName,
+                          })}
                           onClick={() => removeProperty(item.propertyName)}
                         >
                           <Trash2 className='h-4 w-4' />
@@ -324,7 +335,10 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                       <>
                         <IsolatedPropertyEditor
                           value={objectData?.[item.propertyName]}
-                          schema={item.schema}
+                          schema={literalPropertySchema(
+                            item.schema,
+                            rootSchema,
+                          )}
                           uischema={{
                             type: 'Control',
                             scope: '#',

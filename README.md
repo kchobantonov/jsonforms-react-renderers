@@ -1,5 +1,7 @@
 # JSON Forms React renderers
 
+[![Coverage Status](https://coveralls.io/repos/github/kchobantonov/jsonforms-react-renderers/badge.svg?branch=master)](https://coveralls.io/github/kchobantonov/jsonforms-react-renderers?branch=master)
+
 A pnpm monorepo for JSON Forms React renderer sets built with Ant Design and
 shadcn/ui. Each family has base and extended renderers, a demo application, and
 a Web Component. Shared packages supply extended behavior and renderer utilities.

@@ -19,6 +19,7 @@ export const enRendererLocale = {
   'collection.editDetails': 'Edit details',
   'collection.selectItem': 'Select an item to view its details.',
 
+  'enum.search': 'Search choices',
   'enum.none': 'None',
   // Shown when a search query matches no choice. The specification requires a
   // searchable renderer to define its empty-result behaviour, so this is part

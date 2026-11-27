@@ -1,3 +1,4 @@
+import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import { ArrayPanelToggle } from './ArrayPanelToggle';
 import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
 import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
@@ -82,6 +83,8 @@ function arrayPresentation(
 export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
   const {
     addItem,
+    moveUp,
+    moveDown,
     cells,
     config,
     readonly,
@@ -105,10 +108,31 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
     uischema.options,
     !options.hideArraySummaryValidation,
   );
-  const [addedItem, setAddedItem] = React.useState<{
-    index: number;
-    open: boolean;
-  }>();
+  const [expandedIndex, setExpandedIndex] = React.useState<number | undefined>(
+    () =>
+      data > 0 && !resolveCollapsed(uischema.options, config, 'array')
+        ? 0
+        : undefined,
+  );
+  const removeItem = (index: number) => {
+    setExpandedIndex((current) =>
+      current === undefined || current < index
+        ? current
+        : current === index
+          ? undefined
+          : current - 1,
+    );
+    removeItems?.(path, [index])();
+  };
+  const moveItem = (index: number, direction: -1 | 1) => {
+    if (!enabled || readonly) return;
+    const target = index + direction;
+    if (target < 0 || target >= data) return;
+    setExpandedIndex((current) =>
+      current === index ? target : current === target ? index : current,
+    );
+    (direction === -1 ? moveUp : moveDown)?.(path, index)();
+  };
   const translate = (key: string, fallback: string) =>
     ctx.i18n?.translate?.(key, fallback) ?? fallback;
   const translations = {
@@ -171,7 +195,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
       )
     )
       setPendingIndex(index);
-    else removeItems?.(path, [index])();
+    else removeItem(index);
   };
   const detail = React.useMemo(
     () =>
@@ -296,7 +320,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
               disabled={!canAdd}
               onClick={() => {
                 if (!canAdd) return;
-                setAddedItem({ index: data, open: !options.collapseNewItems });
+                if (!options.collapseNewItems) setExpandedIndex(data);
                 addItem(path, createDefaultValue(schema, rootSchema))();
               }}
             >
@@ -332,7 +356,12 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
               {...itemView}
               config={config}
               uischema={uischema}
-              addedItem={addedItem}
+              expandedIndex={expandedIndex}
+              onExpand={setExpandedIndex}
+              onMove={moveItem}
+              canMove={enabled && !readonly}
+              count={data}
+              translations={translations}
             />
           )}
           {!table && <CollectionPager page={page} />}
@@ -347,7 +376,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
           onCancel={() => setPendingIndex(undefined)}
           onConfirm={() => {
             if (canRemove && pendingIndex !== undefined && pendingIndex < data)
-              removeItems?.(path, [pendingIndex])();
+              removeItem(pendingIndex);
             setPendingIndex(undefined);
           }}
         />

@@ -8,6 +8,8 @@ import {
 } from '@jsonforms/core';
 import { TranslateProps } from '@jsonforms/react';
 import React from 'react';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
 import {
   ClearValueButton,
   hasClearableValue,
@@ -37,6 +39,17 @@ export const ShadcnEnumControl = ({
   uischema,
   visible,
 }: ControlProps & OwnPropsOfEnum & TranslateProps) => {
+  const t = useI18n();
+  const [query, setQuery] = React.useState('');
+  const searchable =
+    (uischema.options?.autocomplete ?? config?.autocomplete) === true;
+  const choices = (options ?? [])
+    .map((option, index) => ({ option, index }))
+    .filter(
+      ({ option }) =>
+        !searchable ||
+        option.label.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+    );
   if (!visible) return null;
   const id = makeId(path, label);
   const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
@@ -57,6 +70,7 @@ export const ShadcnEnumControl = ({
     >
       <div className='group relative w-full'>
         <Select
+          onOpenChange={() => setQuery('')}
           disabled={!enabled || readonly}
           value={(() => {
             const index = (options ?? []).findIndex((option) =>
@@ -82,7 +96,29 @@ export const ShadcnEnumControl = ({
             />
           </SelectTrigger>
           <SelectContent className='shadcn-jsonforms-select-content'>
-            {(options ?? []).map((option, index) => (
+            {searchable && (
+              <Input
+                type='search'
+                role='searchbox'
+                aria-label={t('enum.search')}
+                value={query}
+                disabled={!enabled || readonly}
+                onChange={(event) => setQuery(event.currentTarget.value)}
+                onKeyDown={(event) => {
+                  if (
+                    !['ArrowUp', 'ArrowDown', 'Escape', 'Tab'].includes(
+                      event.key,
+                    )
+                  ) {
+                    event.stopPropagation();
+                  }
+                }}
+              />
+            )}
+            {searchable && choices.length === 0 && (
+              <div role='status'>{t('enum.noMatches')}</div>
+            )}
+            {choices.map(({ option, index }) => (
               <SelectItem
                 className='shadcn-jsonforms-select-item'
                 key={index}

@@ -8,6 +8,7 @@ import {
 } from '@jsonforms/react';
 import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedSchema';
 import {
+  isUnselectedBranchValue,
   clearedBranchValue,
   branchChangeData,
   discardedByBranchChange,
@@ -74,6 +75,7 @@ export const ShadcnAnyOfRenderer = ({
     indexOfFittingSchema ??
       (combinator === 'oneOf' && isEmptyData(data) ? -1 : 0),
   );
+  const [chosen, setChosen] = useState(false);
   const confirmation = useConfirmation();
   const [pendingIndex, setPendingIndex] = useState<number>();
   const [previousInput, setPreviousInput] = useState({
@@ -96,15 +98,17 @@ export const ShadcnAnyOfRenderer = ({
     });
     if (
       combinator === 'oneOf' &&
-      (data === undefined ||
-        (data !== null &&
-          typeof data === 'object' &&
-          !Array.isArray(data) &&
-          Object.keys(data).length === 0 &&
-          (indexOfFittingSchema == null || indexOfFittingSchema < 0)))
+      isUnselectedBranchValue(data, indexOfFittingSchema)
     ) {
+      setChosen(false);
       setSelectedIndex(-1);
       setPendingIndex(undefined);
+    } else if (
+      !chosen &&
+      indexOfFittingSchema != null &&
+      indexOfFittingSchema >= 0
+    ) {
+      setSelectedIndex(indexOfFittingSchema);
     }
   }
 
@@ -122,6 +126,7 @@ export const ShadcnAnyOfRenderer = ({
           createDefaultValue(renderInfos[index].schema, rootSchema),
         );
       }
+      setChosen(true);
       setSelectedIndex(index);
     },
     [handleChange, path, renderInfos, rootSchema],
@@ -151,6 +156,7 @@ export const ShadcnAnyOfRenderer = ({
               schema,
             ),
           );
+          setChosen(true);
           setSelectedIndex(index);
         },
       });

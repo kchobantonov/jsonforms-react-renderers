@@ -1,9 +1,11 @@
 import React from 'react';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { ControlProps, isRangeControl, rankWith } from '@jsonforms/core';
 import { Slider } from '@jsonforms-react-shadcn-ui/slider';
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnSliderControl = (props: ControlProps) => {
+  const t = useI18n();
   if (!props.visible) return null;
   const id = makeId(props.path, props.label);
   const min = props.schema.minimum ?? 0;
@@ -46,6 +48,9 @@ export const ShadcnSliderControl = (props: ControlProps) => {
           <Slider
             id={id}
             aria-label={props.label}
+            aria-valuetext={
+              value === undefined ? t('control.notSet') : undefined
+            }
             min={min}
             max={max}
             step={props.schema.multipleOf ?? 1}

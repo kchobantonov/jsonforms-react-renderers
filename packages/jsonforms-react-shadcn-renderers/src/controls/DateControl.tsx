@@ -1,3 +1,4 @@
+import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
   isDateControl,
@@ -24,13 +25,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@jsonforms-react-shadcn-ui/popover';
-import { formatDisplayDate, parseDateValue } from '../util/dateTime';
+import { formatDisplayDate } from '../util/dateTime';
 import { InputShell, makeId } from './InputControl';
-
-type DateSchema = ControlProps['schema'] & {
-  formatMinimum?: string;
-  formatMaximum?: string;
-};
 
 export const ShadcnDateControl = (props: ControlProps) => {
   const {
@@ -42,10 +38,10 @@ export const ShadcnDateControl = (props: ControlProps) => {
     label,
     path,
     required,
-    schema,
     uischema,
     visible,
   } = props;
+  const temporal = useTemporalControl(props, 'date');
   const ctx = useJsonForms();
   const t = (key: string, fallback: string) =>
     ctx.i18n?.translate?.(key, fallback) ?? fallback;
@@ -81,12 +77,8 @@ export const ShadcnDateControl = (props: ControlProps) => {
 
   const id = makeId(path, label);
 
-  const min = parseDateValue((schema as DateSchema).formatMinimum);
-  const max = parseDateValue((schema as DateSchema).formatMaximum);
-  const disabledDates = [
-    ...(min ? [{ before: min }] : []),
-    ...(max ? [{ after: max }] : []),
-  ];
+  const disabledDates = temporal.disabledDate;
+  const { min, max } = temporal;
   const placeholder =
     typeof uischema.options?.placeholder === 'string'
       ? uischema.options.placeholder
@@ -196,7 +188,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     type='button'
                     disabled={!!((min && draft < min) || (max && draft > max))}
                     onClick={() => {
-                      handleChange(path, format(draft, saveFormat));
+                      temporal.commit(draft);
                       setOpen(false);
                     }}
                   >
@@ -210,10 +202,9 @@ export const ShadcnDateControl = (props: ControlProps) => {
                 selected={selected}
                 defaultMonth={selected}
                 onSelect={(date) => {
-                  handleChange(
-                    path,
-                    date ? format(date, saveFormat) : undefined,
-                  );
+                  if (date) temporal.commit(date);
+                  else if (enabled && !props.readonly)
+                    handleChange(path, undefined);
                   setOpen(false);
                 }}
                 disabled={disabledDates}

@@ -1,5 +1,5 @@
 import { examples as sharedSpecExamples } from '@chobantonov/jsonforms-extended-spec/examples';
-import { flattenExampleNavigation } from '../support/flattenExampleNavigation';
+import { flattenExampleNavigation } from '../../../jsonforms-react-renderer-common/test/support/flattenExampleNavigation';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vite-plus/test';

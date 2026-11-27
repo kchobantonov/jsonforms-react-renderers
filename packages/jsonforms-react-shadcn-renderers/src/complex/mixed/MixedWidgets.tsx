@@ -285,7 +285,9 @@ export const MixedTree = (props: MixedTreeProps) => {
           {props.canDelete(node) &&
             !renaming &&
             action(
-              t('mixed.delete'),
+              t('additionalProperties.deleteNamed', {
+                name: mixedTreeLabel(node),
+              }),
               <Trash2 aria-hidden='true' />,
               () => props.onDelete(node),
               true,

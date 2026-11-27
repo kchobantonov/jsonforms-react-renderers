@@ -29,6 +29,7 @@
   "module": "lib/jsonforms-react-shadcn.esm.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
+    "dayjs": "catalog:",
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
     "date-fns": "4.4.0",
     "lucide-react": "catalog:",
@@ -79,7 +80,6 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:",
     "@chobantonov/jsonforms-extended-spec": "0.2.0",
     "@types/lodash": "^4.17.27"
   },

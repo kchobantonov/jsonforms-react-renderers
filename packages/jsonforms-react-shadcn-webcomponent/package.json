@@ -66,7 +66,6 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "@types/node": "catalog:",
-    "vite-plus": "catalog:",
     "@vitest/coverage-v8": "catalog:"
   },
   "dependencies": {

@@ -1,10 +1,16 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { ItemValidationIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/ItemValidationIndicator';
 import { ContainerValidationIndicator } from '../../layouts/ValidationIndicator';
-import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import { ArrayLayoutProps, composePaths } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
 import React from 'react';
-import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import {
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  ArrowUp,
+  ArrowDown,
+} from 'lucide-react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Collapsible,
@@ -15,7 +21,8 @@ import type { ArrayItemViewProps } from './ArrayItemViewProps';
 const ArrayItemPanel = ({
   label,
   index,
-  initiallyOpen,
+  open,
+  onOpenChange,
   hideAvatar,
   actions,
   indicator,
@@ -23,16 +30,17 @@ const ArrayItemPanel = ({
 }: React.PropsWithChildren<{
   label: string;
   index: number;
-  initiallyOpen: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   hideAvatar: boolean;
   actions: React.ReactNode;
   indicator: React.ReactNode;
 }>) => {
-  const [open, setOpen] = React.useState(initiallyOpen);
+  const t = useI18n();
   return (
     <Collapsible
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       className='shadcn-jsonforms-array-item'
     >
       <div className='relative flex items-center'>
@@ -42,12 +50,18 @@ const ArrayItemPanel = ({
           aria-label={label || String(index + 1)}
         >
           {!hideAvatar && (
-            <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground'>
+            <span
+              data-array-index
+              aria-label={`${t('array.indexLabel')} ${index + 1}`}
+              className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground'
+            >
               {index + 1}
             </span>
           )}
           <span className='flex min-w-0 flex-1 items-center gap-2 pe-10'>
-            <span className='min-w-0'>{label}</span>
+            <span className='min-w-0'>
+              {hideAvatar ? `${index + 1} ${label}` : label}
+            </span>
             <span className='flex shrink-0 items-center leading-none'>
               {indicator}
             </span>
@@ -85,10 +99,25 @@ export function ArrayItemPanels({
   removeTooltip,
   config,
   uischema,
-  addedItem,
+  expandedIndex,
+  onExpand,
+  onMove,
+  canMove,
+  count,
+  translations,
 }: ArrayItemViewProps &
   Pick<ArrayLayoutProps, 'config' | 'uischema'> & {
-    addedItem?: { index: number; open: boolean };
+    expandedIndex?: number;
+    onExpand: (index: number | undefined) => void;
+    onMove: (index: number, direction: -1 | 1) => void;
+    canMove: boolean;
+    count: number;
+    translations: {
+      upAriaLabel: string;
+      up: string;
+      downAriaLabel: string;
+      down: string;
+    };
   }) {
   return (
     <>
@@ -108,16 +137,38 @@ export function ArrayItemPanels({
               />
             }
             index={index}
-            initiallyOpen={
-              index === addedItem?.index
-                ? addedItem.open
-                : index === 0 &&
-                  !resolveCollapsed(uischema.options, config, 'array')
-            }
+            open={expandedIndex === index}
+            onOpenChange={(open) => onExpand(open ? index : undefined)}
             hideAvatar={hideAvatar}
             actions={
               <>
-                {' '}
+                {(uischema.options?.showSortButtons ??
+                  config?.showSortButtons) && (
+                  <>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      aria-label={translations.upAriaLabel}
+                      title={translations.up}
+                      disabled={!canMove || index === 0}
+                      onClick={() => onMove(index, -1)}
+                    >
+                      <ArrowUp aria-hidden='true' />
+                    </Button>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      aria-label={translations.downAriaLabel}
+                      title={translations.down}
+                      disabled={!canMove || index === count - 1}
+                      onClick={() => onMove(index, 1)}
+                    >
+                      <ArrowDown aria-hidden='true' />
+                    </Button>
+                  </>
+                )}
                 <Button
                   variant='destructive'
                   size='icon'

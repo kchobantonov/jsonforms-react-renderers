@@ -13,7 +13,10 @@ import {
 import { DeleteDialog } from './DeleteDialog';
 import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
 import { CollectionPager } from './CollectionPager';
-import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/objects/dynamicProperties';
+import {
+  DynamicPropertyProvider,
+  clearedDynamicPropertyValue,
+} from '@chobantonov/jsonforms-react-renderer-common/objects/dynamicProperties';
 
 import type { JsonSchema } from '@jsonforms/core';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
@@ -340,7 +343,13 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                               assignOwnProperty(
                                 { ...objectData },
                                 item.propertyName,
-                                next,
+                                next === undefined
+                                  ? clearedDynamicPropertyValue(
+                                      item.schema,
+                                      rootSchema,
+                                      objectData?.[item.propertyName],
+                                    )
+                                  : next,
                               ),
                             )
                           }

@@ -6,7 +6,10 @@ import {
   withJsonFormsOneOfProps,
 } from '@jsonforms/react';
 import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedSchema';
-import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/composition/combinators';
+import {
+  isUnselectedBranchValue,
+  clearedBranchValue,
+} from '@chobantonov/jsonforms-react-renderer-common/composition/combinators';
 import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorBranch';
 import React, { useCallback, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
@@ -91,14 +94,7 @@ export const OneOfRenderer = ({
     previousInput.indexOfFittingSchema !== indexOfFittingSchema
   ) {
     setPreviousInput({ initialized: true, data, indexOfFittingSchema });
-    if (
-      data === undefined ||
-      (data !== null &&
-        typeof data === 'object' &&
-        !Array.isArray(data) &&
-        Object.keys(data).length === 0 &&
-        (indexOfFittingSchema == null || indexOfFittingSchema < 0))
-    ) {
+    if (isUnselectedBranchValue(data, indexOfFittingSchema)) {
       setChosen(false);
       setSelectedIndex(null);
       setConfirmDialogOpen(false);

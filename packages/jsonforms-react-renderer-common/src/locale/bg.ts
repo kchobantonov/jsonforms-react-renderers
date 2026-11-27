@@ -35,6 +35,7 @@ export const bgRendererLocale = {
   'oneOf.chooseKind': 'Изберете вид.',
   'oneOf.clear': 'Изчистване на избора',
   'collection.resizeColumn': 'Промяна на ширината на колоната {field}',
+  'enum.search': 'Търсене на възможности',
   'enum.none': 'Няма',
   'enum.noMatches': 'Няма съвпадения',
   'chips.addPlaceholder': 'Въведете стойност и натиснете Enter',

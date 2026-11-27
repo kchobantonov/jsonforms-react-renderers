@@ -112,6 +112,8 @@ export type ButtonRendererComponentProps = LayoutProps &
   };
 
 export type ButtonRendererOptions = {
+  /** Return the component before JSON Forms prop injection for native adapter exports. */
+  withProps?: boolean;
   ButtonComponent?: React.ComponentType<any>;
   buttonProps?: Record<string, any>;
   getButtonProps?: (
@@ -164,6 +166,7 @@ const DIAGNOSTIC_STYLE: React.CSSProperties = {
 };
 
 export const createButtonRenderer = ({
+  withProps = true,
   ButtonComponent = 'button' as any,
   buttonProps = {},
   getButtonProps,
@@ -316,9 +319,9 @@ export const createButtonRenderer = ({
     );
   };
 
-  return withJsonFormsLayoutProps(
-    withTranslateProps(ButtonRenderer as any) as any,
-  );
+  return withProps
+    ? withJsonFormsLayoutProps(withTranslateProps(ButtonRenderer as any) as any)
+    : ButtonRenderer;
 };
 
 export const ButtonRenderer = createButtonRenderer();

@@ -40,6 +40,23 @@ To collect coverage for one package, use
 All source TypeScript and TSX files are included, including files without tests.
 The shadcn web component's copied `src/components/ui/` files are excluded.
 Coverage includes the eight public packages.
+Vite+ is installed once at the workspace root so package runners and
+`vite-plus/test` imports share the same Vitest runtime.
+
+CI runs these coverage suites on pushes and pull requests targeting `master`,
+then merges their LCOV reports and uploads `coverage/lcov.info` to
+[Coveralls](https://coveralls.io/github/kchobantonov/jsonforms-react-renderers?branch=master).
+The README badge displays coverage for `master`; the Coveralls report provides
+file-level coverage and comparisons between builds. This is aggregate coverage
+for the public packages, not the renderer-common package's individual percentage.
+The private demo support tests also run in CI, separately from public-package coverage.
+
+The upload uses the automatically supplied `GITHUB_TOKEN`; no manually created
+repository secret is required. The first successful upload creates the Coveralls
+repository entry. Sign in to Coveralls with GitHub to manage its settings and PR
+notifications. Coverage reports are also available as the `coverage-reports`
+artifact on the GitHub Actions run for 14 days. The badge needs a successful
+coverage upload from `master` before it can show that branch's percentage.
 
 To typecheck a package’s tests independently, run
 `pnpm exec tsc --noEmit -p packages/<package>/test/tsconfig.json`.

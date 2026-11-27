@@ -20,6 +20,10 @@ docs describe React-specific capabilities, integration, and verification.
 
 ## Verification evidence and open work
 
+The [renderer test parity map](renderer-test-parity.md) identifies the Ant Design
+and shadcn contract suites, shared regressions, common coverage thresholds, and
+verification limits.
+
 The [demo example catalog](demo-examples.md) maps spec scenarios to demos;
 renderer support requires the corresponding tests. Run current package and
 workspace tests before claiming a passing result. The [known defects and open

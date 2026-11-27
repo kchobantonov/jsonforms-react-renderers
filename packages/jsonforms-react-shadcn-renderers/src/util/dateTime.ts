@@ -53,7 +53,7 @@ export const formatTimeValue = (time: TimeValue, useSeconds = true) => {
   return useSeconds ? `${value}:${pad(time.seconds)}` : value;
 };
 
-export const formatDisplayTime = (time: TimeValue, ampm = false) => {
+const formatDisplayTime = (time: TimeValue, ampm = false) => {
   if (!ampm) return formatTimeValue(time, time.seconds !== 0);
   const period = time.hours >= 12 ? 'PM' : 'AM';
   const hours = time.hours % 12 || 12;
