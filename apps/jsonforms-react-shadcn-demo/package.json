@@ -39,7 +39,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "postcss": "8.5.6",
+    "postcss": "8.5.23",
     "rimraf": "catalog:",
     "tailwindcss": "4.3.3",
     "tailwindcss-animate": "1.0.7",
