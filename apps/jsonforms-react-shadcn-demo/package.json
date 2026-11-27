@@ -35,14 +35,14 @@
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/postcss": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "postcss": "8.5.6",
+    "postcss": "catalog:",
     "rimraf": "catalog:",
-    "tailwindcss": "4.3.3",
-    "tailwindcss-animate": "1.0.7",
+    "tailwindcss": "catalog:",
+    "tailwindcss-animate": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:"
