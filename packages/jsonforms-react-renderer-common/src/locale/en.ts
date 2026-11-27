@@ -65,6 +65,10 @@ export const enRendererLocale = {
   'file.select': 'Select File',
 
   // Clear affordance shared by the input controls
+  'temporal.datePlaceholder': 'Pick a date',
+  'temporal.timePlaceholder': 'Pick a time',
+  'temporal.dateTimePlaceholder': 'Pick a date and time',
+
   'control.clearValue': 'Clear value',
   // Announced for a control that is showing a position without holding a
   // value - the slider sitting at its default. Same words as boolean.notSet

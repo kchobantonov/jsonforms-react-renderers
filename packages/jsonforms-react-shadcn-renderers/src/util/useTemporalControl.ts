@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import type { TimeValue } from './dateTime';
 import type { ControlProps } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
@@ -25,6 +26,53 @@ const saveFormats = {
   dateTime: specDateTimeSaveFormat,
 };
 
+const displayFormats = {
+  date: 'YYYY-MM-DD',
+  time: 'HH:mm',
+  dateTime: 'YYYY-MM-DD HH:mm',
+};
+const placeholderKeys = {
+  date: 'temporal.datePlaceholder',
+  time: 'temporal.timePlaceholder',
+  dateTime: 'temporal.dateTimePlaceholder',
+} as const;
+
+function resolveTimeViews(views: unknown, displayFormat: string) {
+  const timeViews = Array.isArray(views)
+    ? views.filter((view) => ['hours', 'minutes', 'seconds'].includes(view))
+    : [];
+  const hasTimeViews = timeViews.length > 0;
+  return {
+    showHours: !hasTimeViews || timeViews.includes('hours'),
+    showMinutes: !hasTimeViews || timeViews.includes('minutes'),
+    useSeconds: hasTimeViews
+      ? timeViews.includes('seconds')
+      : displayFormat.includes('s'),
+  };
+}
+
+function resolvePresentation(
+  options: NonNullable<ControlProps['config']>,
+  kind: keyof typeof saveFormats,
+  defaultPlaceholder: string,
+) {
+  const ampm = options.ampm === true;
+  const displayFormat: string =
+    options[`${kind}Format`] ??
+    (kind === 'time' && ampm ? 'hh:mm a' : displayFormats[kind]);
+  const saveFormat: string = options[`${kind}SaveFormat`] ?? saveFormats[kind];
+  return {
+    ampm,
+    displayFormat,
+    saveFormat,
+    placeholder:
+      typeof options.placeholder === 'string'
+        ? options.placeholder
+        : defaultPlaceholder,
+    ...resolveTimeViews(options.views, displayFormat),
+  };
+}
+
 /** Shared serialization and bound policy for the three shadcn pickers. */
 export function useTemporalControl(
   props: ControlProps,
@@ -32,16 +80,13 @@ export function useTemporalControl(
 ) {
   const context = useJsonForms();
   const options = { ...props.config, ...props.uischema.options };
-  const displayFormat: string =
-    options[`${kind}Format`] ??
-    (kind === 'date'
-      ? 'YYYY-MM-DD'
-      : kind === 'time'
-        ? options.ampm === true
-          ? 'hh:mm a'
-          : 'HH:mm'
-        : 'YYYY-MM-DD HH:mm');
-  const saveFormat: string = options[`${kind}SaveFormat`] ?? saveFormats[kind];
+  const t = useI18n();
+  const presentation = resolvePresentation(
+    options,
+    kind,
+    t(placeholderKeys[kind]),
+  );
+  const { displayFormat, saveFormat, useSeconds } = presentation;
   useEffect(() => {
     warnOnSaveFormat(props.schema.format, saveFormat);
   }, [props.schema.format, saveFormat]);
@@ -61,24 +106,6 @@ export function useTemporalControl(
         seconds: selected.second(),
       }
     : undefined;
-  const ampm = options.ampm === true;
-  const placeholder =
-    typeof options.placeholder === 'string'
-      ? options.placeholder
-      : kind === 'dateTime'
-        ? 'Pick a date and time'
-        : kind === 'time'
-          ? 'Pick a time'
-          : 'Pick a date';
-  const views: unknown = options.views;
-  const hasTimeViews =
-    Array.isArray(views) &&
-    views.some((view) => ['hours', 'minutes', 'seconds'].includes(view));
-  const showHours = !hasTimeViews || views.includes('hours');
-  const showMinutes = !hasTimeViews || views.includes('minutes');
-  const useSeconds = hasTimeViews
-    ? views.includes('seconds')
-    : displayFormat.includes('s');
   const precision = useSeconds ? 'second' : 'minute';
   const schema = resolveDataBounds(
     props.schema as Record<string, unknown>,
@@ -122,14 +149,8 @@ export function useTemporalControl(
     options,
     selected,
     selectedTime,
-    ampm,
-    placeholder,
-    displayFormat,
+    ...presentation,
     displayText: selected ? formatDate(selected, displayFormat) : undefined,
-    saveFormat,
-    useSeconds,
-    showHours,
-    showMinutes,
     allowed,
     disabledDate,
     commit,

@@ -79,10 +79,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
 
   const disabledDates = temporal.disabledDate;
   const { min, max } = temporal;
-  const placeholder =
-    typeof uischema.options?.placeholder === 'string'
-      ? uischema.options.placeholder
-      : 'Pick a date';
+  const { placeholder } = temporal;
 
   return (
     <InputShell

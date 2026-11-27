@@ -20,3 +20,7 @@ Connect shadcn grid deletion to confirmation policies, distinguish unset and inv
 Refresh the inferred shadcn composition branch when externally supplied data changes its discriminator, while retaining explicit user selection.
 
 Centralize shared object detail assembly, deletion-confirmation binding, composition selection checks, temporal picker state, and test navigation support; remove an unused temporal export.
+
+Separate shadcn temporal presentation, time picker inputs, and array item actions into focused helpers and components while preserving their behavior.
+
+Localize default shadcn date, time, and date-time placeholders through the renderer catalogs, including Bulgarian defaults, while preserving explicit UI schema and configuration placeholders.

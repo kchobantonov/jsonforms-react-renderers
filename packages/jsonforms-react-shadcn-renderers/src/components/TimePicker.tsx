@@ -19,6 +19,102 @@ type TimePart = 'hours' | 'minutes' | 'seconds';
 
 const emptyTime: TimeValue = { hours: 0, minutes: 0, seconds: 0 };
 
+const TimePartInput = ({
+  part,
+  label,
+  displayedValue,
+  onValueChange,
+  onStep,
+  ampm,
+  disabled,
+  time,
+  isAllowed,
+}: {
+  part: TimePart;
+  label: string;
+  displayedValue?: number;
+  onValueChange: (value: number) => void;
+  onStep: (amount: number) => void;
+  ampm: boolean;
+  disabled: boolean;
+  time?: TimeValue;
+  isAllowed?: TimePickerProps['isAllowed'];
+}) => (
+  <div className='flex flex-col items-center gap-1'>
+    <Button
+      type='button'
+      variant='ghost'
+      size='icon'
+      disabled={disabled}
+      aria-label={`Increase ${label.toLowerCase()}`}
+      onClick={() => onStep(1)}
+    >
+      <ChevronUp className='h-4 w-4' />
+    </Button>
+    <Input
+      type='number'
+      inputMode='numeric'
+      className='h-12 w-16 appearance-none text-center text-xl font-semibold [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+      value={displayedValue ?? ''}
+      placeholder='--'
+      min={ampm && part === 'hours' ? 1 : 0}
+      max={part === 'hours' ? (ampm ? 12 : 23) : 59}
+      disabled={disabled}
+      aria-label={label}
+      aria-invalid={time && isAllowed ? !isAllowed(time) : undefined}
+      onChange={(event) => {
+        if (event.currentTarget.value !== '') {
+          onValueChange(Number(event.currentTarget.value));
+        }
+      }}
+    />
+    <Button
+      type='button'
+      variant='ghost'
+      size='icon'
+      disabled={disabled}
+      aria-label={`Decrease ${label.toLowerCase()}`}
+      onClick={() => onStep(-1)}
+    >
+      <ChevronDown className='h-4 w-4' />
+    </Button>
+  </div>
+);
+
+const TimePeriodButtons = ({
+  hours = 0,
+  disabled,
+  onChange,
+}: {
+  hours?: number;
+  disabled: boolean;
+  onChange: (isPm: boolean) => void;
+}) => (
+  <div className='ml-2 grid gap-1' aria-label='Period'>
+    <Button
+      type='button'
+      size='sm'
+      variant={hours < 12 ? 'default' : 'outline'}
+      disabled={disabled}
+      onClick={() => onChange(false)}
+    >
+      AM
+    </Button>
+    <Button
+      type='button'
+      size='sm'
+      variant={hours >= 12 ? 'default' : 'outline'}
+      disabled={disabled}
+      onClick={() => onChange(true)}
+    >
+      PM
+    </Button>
+  </div>
+);
+
+const displayHour = (hours: number, ampm: boolean) =>
+  ampm ? hours % 12 || 12 : hours;
+
 export const TimePicker = ({
   value,
   onChange,
@@ -57,11 +153,7 @@ export const TimePicker = ({
     commit({ ...current, [part]: next });
   };
 
-  const displayedHour = time
-    ? ampm
-      ? time.hours % 12 || 12
-      : time.hours
-    : undefined;
+  const displayedHour = time ? displayHour(time.hours, ampm) : undefined;
 
   const updateDisplayedHour = (hour: number) => {
     if (!ampm) {
@@ -85,45 +177,17 @@ export const TimePicker = ({
     displayedValue: number | undefined,
     onValueChange = (next: number) => updatePart(part, next),
   ) => (
-    <div className='flex flex-col items-center gap-1'>
-      <Button
-        type='button'
-        variant='ghost'
-        size='icon'
-        disabled={disabled}
-        aria-label={`Increase ${label.toLowerCase()}`}
-        onClick={() => stepPart(part, 1)}
-      >
-        <ChevronUp className='h-4 w-4' />
-      </Button>
-      <Input
-        type='number'
-        inputMode='numeric'
-        className='h-12 w-16 appearance-none text-center text-xl font-semibold [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-        value={displayedValue ?? ''}
-        placeholder='--'
-        min={ampm && part === 'hours' ? 1 : 0}
-        max={part === 'hours' ? (ampm ? 12 : 23) : 59}
-        disabled={disabled}
-        aria-label={label}
-        aria-invalid={time && isAllowed ? !isAllowed(time) : undefined}
-        onChange={(event) => {
-          if (event.currentTarget.value !== '') {
-            onValueChange(Number(event.currentTarget.value));
-          }
-        }}
-      />
-      <Button
-        type='button'
-        variant='ghost'
-        size='icon'
-        disabled={disabled}
-        aria-label={`Decrease ${label.toLowerCase()}`}
-        onClick={() => stepPart(part, -1)}
-      >
-        <ChevronDown className='h-4 w-4' />
-      </Button>
-    </div>
+    <TimePartInput
+      part={part}
+      label={label}
+      displayedValue={displayedValue}
+      onValueChange={onValueChange}
+      onStep={(amount) => stepPart(part, amount)}
+      ampm={ampm}
+      disabled={disabled}
+      time={time}
+      isAllowed={isAllowed}
+    />
   );
 
   return (
@@ -146,26 +210,11 @@ export const TimePicker = ({
         </>
       ) : null}
       {ampm && showHours ? (
-        <div className='ml-2 grid gap-1' aria-label='Period'>
-          <Button
-            type='button'
-            size='sm'
-            variant={(time?.hours ?? 0) < 12 ? 'default' : 'outline'}
-            disabled={disabled}
-            onClick={() => setPeriod(false)}
-          >
-            AM
-          </Button>
-          <Button
-            type='button'
-            size='sm'
-            variant={(time?.hours ?? 0) >= 12 ? 'default' : 'outline'}
-            disabled={disabled}
-            onClick={() => setPeriod(true)}
-          >
-            PM
-          </Button>
-        </div>
+        <TimePeriodButtons
+          hours={time?.hours}
+          disabled={disabled}
+          onChange={setPeriod}
+        />
       ) : null}
     </div>
   );

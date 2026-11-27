@@ -63,6 +63,10 @@ export const bgRendererLocale = {
   'file.attached': 'Прикачен файл',
   'file.clearAll': 'Премахване на всички файлове',
   'file.select': 'Изберете файл',
+  'temporal.datePlaceholder': 'Изберете дата',
+  'temporal.timePlaceholder': 'Изберете час',
+  'temporal.dateTimePlaceholder': 'Изберете дата и час',
+
   'control.clearValue': 'Изчистване на стойността',
   'control.notSet': 'Не е зададено',
   'password.show': 'Показване на паролата',

@@ -83,29 +83,7 @@ const ArrayItemPanel = ({
   );
 };
 
-export function ArrayItemPanels({
-  schema,
-  path,
-  enabled,
-  cells,
-  renderers,
-  detail,
-  indices,
-  hideAvatar,
-  canRemove,
-  requestRemove,
-  childLabelForIndex,
-  removeLabel,
-  removeTooltip,
-  config,
-  uischema,
-  expandedIndex,
-  onExpand,
-  onMove,
-  canMove,
-  count,
-  translations,
-}: ArrayItemViewProps &
+type ArrayItemPanelsProps = ArrayItemViewProps &
   Pick<ArrayLayoutProps, 'config' | 'uischema'> & {
     expandedIndex?: number;
     onExpand: (index: number | undefined) => void;
@@ -118,7 +96,87 @@ export function ArrayItemPanels({
       downAriaLabel: string;
       down: string;
     };
-  }) {
+  };
+
+const ArrayItemActions = ({
+  index,
+  settings,
+}: {
+  index: number;
+  settings: ArrayItemPanelsProps;
+}) => {
+  const {
+    uischema,
+    config,
+    translations,
+    canMove,
+    count,
+    removeLabel,
+    removeTooltip,
+    canRemove,
+    onMove,
+    requestRemove,
+  } = settings;
+  return (
+    <>
+      {(uischema.options?.showSortButtons ?? config?.showSortButtons) && (
+        <>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            aria-label={translations.upAriaLabel}
+            title={translations.up}
+            disabled={!canMove || index === 0}
+            onClick={() => onMove(index, -1)}
+          >
+            <ArrowUp aria-hidden='true' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            aria-label={translations.downAriaLabel}
+            title={translations.down}
+            disabled={!canMove || index === count - 1}
+            onClick={() => onMove(index, 1)}
+          >
+            <ArrowDown aria-hidden='true' />
+          </Button>
+        </>
+      )}
+      <Button
+        variant='destructive'
+        size='icon'
+        className='h-7 w-7'
+        aria-label={removeLabel || 'Remove'}
+        title={removeTooltip || 'Remove item'}
+        type='button'
+        disabled={!canRemove}
+        onClick={() => requestRemove(index)}
+      >
+        <Trash2 className='h-4 w-4' aria-hidden='true' />
+      </Button>
+    </>
+  );
+};
+
+export function ArrayItemPanels(props: ArrayItemPanelsProps) {
+  const {
+    schema,
+    path,
+    enabled,
+    cells,
+    renderers,
+    detail,
+    indices,
+    hideAvatar,
+    childLabelForIndex,
+    config,
+    uischema,
+    expandedIndex,
+    onExpand,
+  } = props;
   return (
     <>
       {indices.map((index) => {
@@ -140,49 +198,7 @@ export function ArrayItemPanels({
             open={expandedIndex === index}
             onOpenChange={(open) => onExpand(open ? index : undefined)}
             hideAvatar={hideAvatar}
-            actions={
-              <>
-                {(uischema.options?.showSortButtons ??
-                  config?.showSortButtons) && (
-                  <>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='icon'
-                      aria-label={translations.upAriaLabel}
-                      title={translations.up}
-                      disabled={!canMove || index === 0}
-                      onClick={() => onMove(index, -1)}
-                    >
-                      <ArrowUp aria-hidden='true' />
-                    </Button>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='icon'
-                      aria-label={translations.downAriaLabel}
-                      title={translations.down}
-                      disabled={!canMove || index === count - 1}
-                      onClick={() => onMove(index, 1)}
-                    >
-                      <ArrowDown aria-hidden='true' />
-                    </Button>
-                  </>
-                )}
-                <Button
-                  variant='destructive'
-                  size='icon'
-                  className='h-7 w-7'
-                  aria-label={removeLabel || 'Remove'}
-                  title={removeTooltip || 'Remove item'}
-                  type='button'
-                  disabled={!canRemove}
-                  onClick={() => requestRemove(index)}
-                >
-                  <Trash2 className='h-4 w-4' aria-hidden='true' />
-                </Button>
-              </>
-            }
+            actions={<ArrayItemActions index={index} settings={props} />}
           >
             <JsonFormsDispatch
               schema={schema}

@@ -40,7 +40,8 @@ jobs:
         run: vp install --frozen-lockfile
 
       - name: Audit introduced findings
-        run: pnpm run fallow:audit --base "${{ github.event.pull_request.base.sha }}" --format github-summary >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
+        run: pnpm run fallow:audit --base "${{ github.event.pull_request.base.sha }}" --format github-summary | tee -a "$GITHUB_STEP_SUMMARY"
 
   build:
     # Playwright 1.58.1 does not provide Chromium or install-deps for Ubuntu 26.04.
