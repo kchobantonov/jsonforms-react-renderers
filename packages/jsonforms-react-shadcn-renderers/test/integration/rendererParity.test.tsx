@@ -211,3 +211,122 @@ it('renders fields from every matching dynamic property pattern', () => {
   expect(view.container.querySelector('input[value="12"]')).not.toBeNull();
   expect(view.container.querySelector('input[value="Office"]')).not.toBeNull();
 });
+
+it.each(
+  ['customNote', 'note.with.dot', ''].flatMap((key) =>
+    ['clear button', 'delete text'].map((operation) => ({ key, operation })),
+  ),
+)(
+  'keeps additional string property "$key" and its editor after $operation',
+  ({ key, operation }) => {
+    const { container, data } = mount(
+      {
+        type: 'object',
+        additionalProperties: { type: 'string', default: 'default note' },
+      },
+      {},
+      { [key]: 'written note' },
+    );
+    const input = container.querySelector<HTMLInputElement>(
+      '.jsonforms-additional-property-control input',
+    )!;
+    if (operation === 'clear button') {
+      act(() =>
+        container
+          .querySelector<HTMLButtonElement>(
+            '.jsonforms-additional-property-control button[aria-label="Clear value"]',
+          )!
+          .click(),
+      );
+    } else {
+      act(() => {
+        Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          'value',
+        )!.set!.call(input, '');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    }
+    act(() => vi.runAllTimers());
+    act(() => vi.runAllTimers());
+    expect(data()).toEqual({ [key]: '' });
+    expect(Object.hasOwn(data(), key)).toBe(true);
+    expect(
+      container.querySelector(`[aria-label="Delete ${key}"]`),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('.jsonforms-additional-property-control input'),
+    ).toBe(input);
+    expect(input.value).toBe('');
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>(`[aria-label="Delete ${key}"]`)!
+        .click(),
+    );
+    act(() => vi.runAllTimers());
+    expect(data()).toEqual({});
+    expect(
+      container.querySelector('.jsonforms-additional-property-control'),
+    ).toBeNull();
+  },
+);
+
+it('clears a nested declared field without removing its additional-property parent', () => {
+  const { container, data } = mount(
+    {
+      type: 'object',
+      additionalProperties: {
+        type: 'object',
+        properties: { note: { type: 'string' } },
+      },
+    },
+    {},
+    { custom: { note: 'nested note' } },
+  );
+  act(() =>
+    container
+      .querySelector<HTMLButtonElement>(
+        '.jsonforms-additional-property-control button[aria-label="Clear value"]',
+      )!
+      .click(),
+  );
+  act(() => vi.runAllTimers());
+  expect(data()).toEqual({ custom: {} });
+  expect(
+    container.querySelector('[aria-label="Delete custom"]'),
+  ).not.toBeNull();
+  expect(
+    container.querySelector('.jsonforms-additional-property-control input'),
+  ).not.toBeNull();
+});
+
+it.each([
+  { schema: { type: 'number' }, initial: 12, empty: 0, label: 'Clear value' },
+  {
+    schema: { type: 'string', format: 'date' },
+    initial: '2026-11-27',
+    empty: '',
+    label: 'Clear date',
+  },
+])(
+  'keeps an additional property when clearing $schema',
+  ({ schema, initial, empty, label }) => {
+    const { container, data } = mount(
+      { type: 'object', additionalProperties: schema },
+      {},
+      { custom: initial },
+    );
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>(
+          `.jsonforms-additional-property-control button[aria-label="${label}"]`,
+        )!
+        .click(),
+    );
+    act(() => vi.runAllTimers());
+    expect(data()).toEqual({ custom: empty });
+    expect(
+      container.querySelector('[aria-label="Delete custom"]'),
+    ).not.toBeNull();
+  },
+);

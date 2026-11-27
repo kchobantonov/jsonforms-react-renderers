@@ -1,5 +1,9 @@
 import { renamePropertyKey } from '@chobantonov/jsonforms-react-renderer-common/objects/additionalProperties';
 import {
+  DynamicPropertyProvider,
+  clearedDynamicPropertyValue,
+} from '@chobantonov/jsonforms-react-renderer-common/objects/dynamicProperties';
+import {
   useAdditionalPropertyEntries,
   useAdditionalPropertyActions,
   type AdditionalPropertiesProps,
@@ -336,22 +340,34 @@ export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
                               assignOwnProperty(
                                 { ...objectData },
                                 item.propertyName,
-                                value,
+                                value === undefined
+                                  ? clearedDynamicPropertyValue(
+                                      item.schema,
+                                      rootSchema,
+                                      objectData?.[item.propertyName],
+                                    )
+                                  : value,
                               ),
                             )
                           }
                         />
                       </>
                     ) : (
-                      <JsonFormsDispatch
-                        schema={item.schema}
-                        uischema={{ ...item.uischema, label: false } as any}
+                      <DynamicPropertyProvider
                         path={item.path}
-                        enabled={enabled}
-                        renderers={renderers}
-                        cells={cells}
-                        readonly={readonly}
-                      />
+                        schema={item.schema}
+                        rootSchema={rootSchema}
+                      >
+                        <JsonFormsDispatch
+                          schema={item.schema}
+                          uischema={{ ...item.uischema, label: false } as any}
+                          path={item.path}
+                          enabled={enabled}
+                          renderers={renderers}
+                          cells={cells}
+                          readonly={readonly}
+                        />
+                      </DynamicPropertyProvider>
                     )}
                   </div>
                 </div>

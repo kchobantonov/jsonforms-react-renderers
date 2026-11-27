@@ -303,7 +303,7 @@ describe('AdditionalProperties', () => {
     ['string', 'value', undefined, undefined, 'dynamic', 'dynamic.child'],
     ['number', 12.5, 0],
     ['integer', 12, 0],
-    ['string', 'value', 'schema default', 'schema default'],
+    ['string', 'value', '', 'schema default'],
   ] as const)(
     'preserves a cleared %s key only at the dynamic property path',
     async (
