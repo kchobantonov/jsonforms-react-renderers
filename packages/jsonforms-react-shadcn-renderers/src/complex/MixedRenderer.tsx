@@ -145,7 +145,7 @@ export const MixedRendererComponent = (props: ControlProps) => {
               <CollapsibleTrigger
                 render={<Button type='button' variant='ghost' />}
                 className='flex-1 justify-end'
-                aria-label={label || 'Value'}
+                aria-label={label || t('control.value')}
               >
                 {expanded ? (
                   <ChevronUp aria-hidden='true' />
@@ -180,7 +180,7 @@ export const MixedRendererComponent = (props: ControlProps) => {
                 <ResizableHandle withHandle />
                 <ResizablePanel minSize='30%' className='pl-3'>
                   <div className='min-w-0 space-y-2'>
-                    <Breadcrumb aria-label='Value path'>
+                    <Breadcrumb aria-label={t('mixed.valuePath')}>
                       <BreadcrumbList>
                         {[
                           [],
@@ -194,7 +194,7 @@ export const MixedRendererComponent = (props: ControlProps) => {
                               {index === selectedNode.path.length ? (
                                 <BreadcrumbPage>
                                   {index === 0
-                                    ? label || 'Value'
+                                    ? label || t('control.value')
                                     : String(nodePath[index - 1])}
                                 </BreadcrumbPage>
                               ) : (
@@ -204,7 +204,7 @@ export const MixedRendererComponent = (props: ControlProps) => {
                                     onClick={() => setSelectedPath(nodePath)}
                                   >
                                     {index === 0
-                                      ? label || 'Value'
+                                      ? label || t('control.value')
                                       : String(nodePath[index - 1])}
                                   </button>
                                 </BreadcrumbLink>

@@ -25,6 +25,16 @@ export const enclosingPropertyNames = (
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+/** A missing value, or an empty object without an applicable branch, clears selection. */
+export const isUnselectedBranchValue = (
+  data: unknown,
+  fittingIndex: number | null | undefined,
+): boolean =>
+  data === undefined ||
+  (isPlainObject(data) &&
+    Object.keys(data).length === 0 &&
+    (fittingIndex == null || fittingIndex < 0));
+
 /**
  * The part of the current value a branch change would discard.
  *

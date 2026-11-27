@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { ScrollRegion } from '../../components/ScrollRegion';
 import {
   ResizablePanelGroup,
@@ -111,6 +112,7 @@ function ArrayListItem({
   itemLabel: string;
   onSelect: (index: number) => void;
 }) {
+  const t = useI18n();
   return (
     <Item
       role='listitem'
@@ -128,11 +130,17 @@ function ArrayListItem({
           onClick={() => onSelect(index)}
         >
           {!hideAvatar && (
-            <Avatar className='border'>
+            <Avatar
+              data-array-index
+              aria-label={`${t('array.indexLabel')} ${index + 1}`}
+              className='border'
+            >
               <AvatarFallback>{index + 1}</AvatarFallback>
             </Avatar>
           )}
-          <span className='min-w-0 flex-1 truncate'>{itemLabel}</span>
+          <span className='min-w-0 flex-1 truncate'>
+            {hideAvatar ? `${index + 1} ${itemLabel}` : itemLabel}
+          </span>
           {selected && (
             <Check className='h-4 w-4 shrink-0' aria-hidden='true' />
           )}

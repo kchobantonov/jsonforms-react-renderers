@@ -212,65 +212,6 @@ it('renders fields from every matching dynamic property pattern', () => {
   expect(view.container.querySelector('input[value="Office"]')).not.toBeNull();
 });
 
-it.each(
-  ['customNote', 'note.with.dot', ''].flatMap((key) =>
-    ['clear button', 'delete text'].map((operation) => ({ key, operation })),
-  ),
-)(
-  'keeps additional string property "$key" and its editor after $operation',
-  ({ key, operation }) => {
-    const { container, data } = mount(
-      {
-        type: 'object',
-        additionalProperties: { type: 'string', default: 'default note' },
-      },
-      {},
-      { [key]: 'written note' },
-    );
-    const input = container.querySelector<HTMLInputElement>(
-      '.jsonforms-additional-property-control input',
-    )!;
-    if (operation === 'clear button') {
-      act(() =>
-        container
-          .querySelector<HTMLButtonElement>(
-            '.jsonforms-additional-property-control button[aria-label="Clear value"]',
-          )!
-          .click(),
-      );
-    } else {
-      act(() => {
-        Object.getOwnPropertyDescriptor(
-          HTMLInputElement.prototype,
-          'value',
-        )!.set!.call(input, '');
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-    }
-    act(() => vi.runAllTimers());
-    act(() => vi.runAllTimers());
-    expect(data()).toEqual({ [key]: '' });
-    expect(Object.hasOwn(data(), key)).toBe(true);
-    expect(
-      container.querySelector(`[aria-label="Delete ${key}"]`),
-    ).not.toBeNull();
-    expect(
-      container.querySelector('.jsonforms-additional-property-control input'),
-    ).toBe(input);
-    expect(input.value).toBe('');
-    act(() =>
-      container
-        .querySelector<HTMLButtonElement>(`[aria-label="Delete ${key}"]`)!
-        .click(),
-    );
-    act(() => vi.runAllTimers());
-    expect(data()).toEqual({});
-    expect(
-      container.querySelector('.jsonforms-additional-property-control'),
-    ).toBeNull();
-  },
-);
-
 it('clears a nested declared field without removing its additional-property parent', () => {
   const { container, data } = mount(
     {

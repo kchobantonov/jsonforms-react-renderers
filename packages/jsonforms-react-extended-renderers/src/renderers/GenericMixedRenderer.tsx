@@ -1,3 +1,8 @@
+import {
+  useTranslator,
+  useI18n,
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+
 import { findMixedDetailUiSchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
 import {
   ControlProps,
@@ -71,6 +76,8 @@ export const GenericMixedRendererComponent = ({
   uischema,
   visible,
 }: ControlProps) => {
+  const text = useI18n();
+  const translateType = useTranslator();
   const jsonforms = useJsonForms();
   const uischemas = useMemo(
     () => jsonforms.uischemas ?? [],
@@ -139,11 +146,14 @@ export const GenericMixedRendererComponent = ({
           }}
         >
           <option disabled value=''>
-            Select a type
+            {text('mixed.typePlaceholder')}
           </option>
           {types.map((type) => (
-            <option key={type} value={type}>
-              {type}
+            <option
+              key={translateType(`mixed.type.${type}`, type)}
+              value={type}
+            >
+              {translateType(`mixed.type.${type}`, type)}
             </option>
           ))}
         </select>

@@ -1,117 +1,48 @@
+import React from 'react';
+import { withJsonFormsLayoutProps, withTranslateProps } from '@jsonforms/react';
 import {
-  LayoutProps,
-  RankedTester,
-  UISchemaElement,
-  deriveLabelForUISchemaElement,
-  rankWith,
-  uiTypeIs,
-} from '@jsonforms/core';
-import {
-  TranslateProps,
-  useJsonForms,
-  withJsonFormsLayoutProps,
-  withTranslateProps,
-} from '@jsonforms/react';
-import { useHandleAction } from '@chobantonov/jsonforms-react-extended-renderers';
+  buttonRendererTester,
+  createButtonRenderer,
+  type ButtonUiSchema,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 
-import React from 'react';
+export type ShadcnButtonElement = ButtonUiSchema;
+export const shadcnButtonRendererTester = buttonRendererTester;
 
-export type ShadcnButtonElement = UISchemaElement & {
-  label?: string;
-  text?: string;
-  name?: string;
-  action?: string;
-  icon?: string;
-  color?: string;
-  params?: Record<string, unknown>;
-  script?: string;
-  options?: Record<string, any> & { fullWidth?: boolean };
-};
+const variants = {
+  primary: 'default',
+  secondary: 'outline',
+  alternative: 'secondary',
+  success: 'default',
+  warning: 'outline',
+  error: 'destructive',
+} as const;
 
-export const shadcnButtonRendererTester: RankedTester = rankWith(
-  1,
-  uiTypeIs('Button'),
-);
-
-export const ShadcnButtonRenderer = ({
-  enabled,
-  visible,
-  uischema,
-  t,
-}: LayoutProps & TranslateProps & { uischema: ShadcnButtonElement }) => {
-  const handleAction = useHandleAction();
-  const jsonforms = useJsonForms();
-  const [loading, setLoading] = React.useState(false);
-  if (!visible) return null;
-  const options = uischema.options ?? {};
-  const label =
-    deriveLabelForUISchemaElement(uischema as any, t) ??
-    uischema.label ??
-    uischema.text ??
-    uischema.name ??
-    'Action';
-  const configuredAction = uischema.action;
-  const script = uischema.script;
-  const action =
-    configuredAction ??
-    (script === undefined ? uischema.name : undefined) ??
-    '';
-  const params = uischema.params;
-  const color = uischema.color;
-  const variants = {
-    primary: 'default',
-    secondary: 'outline',
-    alternative: 'secondary',
-    success: 'default',
-    warning: 'outline',
-    error: 'destructive',
-  } as const;
-  const variant =
-    options.variant ?? variants[color as keyof typeof variants] ?? 'default';
-  return (
-    <Button
-      className={
-        [
-          color === 'warning' && 'text-destructive',
-          options.fullWidth === true && 'w-full',
-        ]
-          .filter(Boolean)
-          .join(' ') || undefined
-      }
-      type='button'
-      variant={variant}
-      disabled={!enabled || options.disabled || loading}
-      aria-busy={loading || undefined}
-      onClick={async () => {
-        if (loading) return;
-        setLoading(true);
-        try {
-          if (configuredAction !== undefined && handleAction) {
-            await handleAction({ action, label, params, element: uischema });
-          } else if (script) {
-            const AsyncFunction = Object.getPrototypeOf(async function () {
-              /* Used only to obtain the AsyncFunction constructor. */
-            }).constructor;
-            await new AsyncFunction(script).call({
-              action,
-              context: jsonforms,
-              params: params ? { ...params } : {},
-              element: uischema,
-            });
-          } else if (handleAction) {
-            await handleAction({ action, label, params, element: uischema });
-          }
-        } finally {
-          setLoading(false);
-        }
-      }}
-    >
-      {uischema.icon ? <span aria-hidden='true'>{uischema.icon}</span> : null}
-      {loading ? `${label}…` : label}
+/** Keep action, script, permission and pending semantics shared across adapters. */
+export const ShadcnButtonRenderer = createButtonRenderer({
+  withProps: false,
+  ButtonComponent: ({ icon, children, ...props }) => (
+    <Button {...props}>
+      {icon ? <span aria-hidden='true'>{icon}</span> : null}
+      {children}
     </Button>
-  );
-};
+  ),
+  getButtonProps: ({ color, icon, uischema }) => ({
+    icon,
+    variant:
+      uischema.options?.variant ??
+      (color ? variants[color] : undefined) ??
+      'default',
+    className:
+      [
+        color === 'warning' && 'text-destructive',
+        uischema.options?.fullWidth === true && 'w-full',
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined,
+  }),
+});
 
 export const ShadcnButtonRendererWithProps = withJsonFormsLayoutProps(
   withTranslateProps(ShadcnButtonRenderer as any) as any,

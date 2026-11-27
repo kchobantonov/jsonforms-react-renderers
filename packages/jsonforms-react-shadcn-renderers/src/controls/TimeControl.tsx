@@ -1,3 +1,5 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
   isTimeControl,
@@ -13,14 +15,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@jsonforms-react-shadcn-ui/popover';
-import {
-  formatDisplayTime,
-  formatTimeValue,
-  parseTimeValue,
-} from '../util/dateTime';
+import { formatTimeValue, parseTimeValue } from '../util/dateTime';
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnTimeControl = (props: ControlProps) => {
+  const text = useI18n();
   const {
     data,
     description,
@@ -33,21 +32,13 @@ export const ShadcnTimeControl = (props: ControlProps) => {
     uischema,
     visible,
   } = props;
+  const temporal = useTemporalControl(props, 'time');
   const [open, setOpen] = React.useState(false);
 
   if (!visible) return null;
 
   const id = makeId(path, label);
-  const selected = parseTimeValue(data);
-  const ampm = uischema.options?.ampm === true;
-  const configuredFormat = uischema.options?.timeFormat;
-  const useSeconds =
-    (typeof configuredFormat === 'string' && configuredFormat.includes('s')) ||
-    !!selected?.seconds;
-  const placeholder =
-    typeof uischema.options?.placeholder === 'string'
-      ? uischema.options.placeholder
-      : 'Pick a time';
+  const { selectedTime: selected, ampm, useSeconds, placeholder } = temporal;
 
   return (
     <InputShell
@@ -72,23 +63,50 @@ export const ShadcnTimeControl = (props: ControlProps) => {
               data-empty={!selected}
             >
               <Clock3 className='h-4 w-4' />
-              {selected ? formatDisplayTime(selected, ampm) : placeholder}
+              {selected
+                ? temporal.displayText
+                : typeof data === 'string' && data
+                  ? data
+                  : placeholder}
             </Button>
           </PopoverTrigger>
           <PopoverContent align='start' className='w-auto p-4'>
             <TimePicker
-              value={typeof data === 'string' ? data : undefined}
+              value={
+                selected
+                  ? formatTimeValue(selected, true)
+                  : typeof data === 'string'
+                    ? data
+                    : undefined
+              }
               useSeconds={useSeconds}
+              showHours={temporal.showHours}
+              showMinutes={temporal.showMinutes}
               ampm={ampm}
               disabled={!enabled || props.readonly}
+              isAllowed={(time) =>
+                temporal.allowed(
+                  new Date(2000, 0, 1, time.hours, time.minutes, time.seconds),
+                )
+              }
               onChange={(value) => {
                 const time = parseTimeValue(value);
-                if (time) handleChange(path, formatTimeValue(time, true));
+                if (time) {
+                  const date = new Date(
+                    2000,
+                    0,
+                    1,
+                    time.hours,
+                    time.minutes,
+                    time.seconds,
+                  );
+                  temporal.commit(date);
+                }
               }}
             />
             <div className='mt-3 flex justify-end'>
               <Button type='button' size='sm' onClick={() => setOpen(false)}>
-                Done
+                {text('control.done')}
               </Button>
             </div>
           </PopoverContent>
@@ -102,7 +120,8 @@ export const ShadcnTimeControl = (props: ControlProps) => {
             variant='ghost'
             size='icon'
             className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
-            aria-label='Clear time'
+            aria-label={text('temporal.clearTime')}
+            title={text('temporal.clearTime')}
             onClick={() => handleChange(path, undefined)}
           >
             <X className='h-4 w-4' />

@@ -1,6 +1,17 @@
+import {
+  useTranslator,
+  useI18n,
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import {
+  enumToEnumOptionMapper,
+  oneOfToEnumOptionMapper,
+  getI18nKeyPrefix,
+  CellProps,
+} from '@jsonforms/core';
+
 import isEqual from 'lodash/isEqual';
 import React from 'react';
-import { CellProps } from '@jsonforms/core';
+
 import {
   Select,
   SelectContent,
@@ -18,12 +29,15 @@ export const ShadcnEnumCell = ({
   handleChange,
   errors,
   schema,
+  uischema,
 }: CellProps) => {
+  const t = useI18n();
+  const translate = useTranslator();
   if (visible === false) return null;
-  const choices = schema.oneOf?.map((entry) => ({
-    value: entry.const,
-    label: entry.title ?? String(entry.const),
-  }));
+  const prefix = getI18nKeyPrefix(schema, uischema, path);
+  const choices = schema.oneOf?.map((entry) =>
+    oneOfToEnumOptionMapper(entry, translate, prefix),
+  );
   const values =
     choices?.map((entry) => entry.value) ??
     schema.enum ??
@@ -42,15 +56,16 @@ export const ShadcnEnumCell = ({
       <SelectTrigger
         className='w-full min-w-0'
         id={id}
-        aria-label={path || 'Value'}
+        aria-label={path || t('control.value')}
         aria-invalid={Boolean(errors)}
       >
-        <SelectValue placeholder='Select...' />
+        <SelectValue placeholder={t('enum.select')} />
       </SelectTrigger>
       <SelectContent>
         {values.map((value, index) => (
           <SelectItem key={index} value={`option-${index}`}>
-            {choices?.[index].label ?? String(value)}
+            {choices?.[index].label ??
+              enumToEnumOptionMapper(value, translate, prefix).label}
           </SelectItem>
         ))}
       </SelectContent>

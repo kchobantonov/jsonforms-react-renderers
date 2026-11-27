@@ -31,6 +31,7 @@ export const ShadcnNullControl = (props: ControlProps) => {
     <InputShell
       {...props}
       id={id}
+      label={undefined}
       description={props.description}
       errors={props.errors}
     >
@@ -38,8 +39,14 @@ export const ShadcnNullControl = (props: ControlProps) => {
         <Checkbox
           className='shadcn-jsonforms-checkbox-control'
           id={id}
-          checked={props.data === null ? true : 'indeterminate'}
-          disabled={!props.enabled}
+          checked={
+            props.data === null
+              ? true
+              : props.data === undefined
+                ? false
+                : 'indeterminate'
+          }
+          disabled={!props.enabled || props.readonly}
           onCheckedChange={(checked) =>
             props.handleChange(props.path, checked ? null : undefined)
           }

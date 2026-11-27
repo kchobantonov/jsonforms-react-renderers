@@ -16,9 +16,22 @@ Do not catalogue ordinary coding mistakes. Preserve behavior across renderer
 sets; explicitly record platform limitations and unverified support instead of
 claiming parity. Distinguish executable tests from proposed acceptance cases.
 
-Before reporting renderer work complete, run the repository lint and format
-checks (`pnpm run lint` and `pnpm run check-format`). Fix errors in changed files
-and report any remaining warnings or failures accurately.
+# Implementation verification
+
+After every implementation, before reporting the work complete:
+
+- Run the tests relevant to the affected behavior and packages.
+- Run repository lint and formatting checks: `pnpm run lint` and
+  `pnpm run check-format`.
+- Run both Fallow checks: `pnpm exec fallow dead-code` for unused files,
+  exports, types, and dependencies, and `pnpm exec fallow dupes` for duplicate
+  code.
+
+Review the findings and fix errors, unused code, and unnecessary duplication
+introduced by the change. Do not suppress findings merely to pass the checks.
+Report any remaining warnings, failures, or findings accurately, distinguishing
+existing findings from those introduced by the change. See
+[development checks](docs/linting-and-formatting.md) for the Fallow workflow.
 
 # Changesets
 

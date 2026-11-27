@@ -9,6 +9,7 @@ export default defineConfig({
     include: ['test/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
+      thresholds: { statements: 85, branches: 85, functions: 85, lines: 85 },
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['text-summary', 'lcov', 'html'],
     },

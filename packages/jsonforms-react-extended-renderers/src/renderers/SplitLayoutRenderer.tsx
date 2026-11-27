@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import {
   Layout,
@@ -50,6 +51,7 @@ export const initialSplitSizes = (elements: UISchemaElement[]): number[] => {
 };
 
 export const SharedSplitLayout = (props: LayoutProps) => {
+  const t = useI18n();
   const layout = props.uischema as Layout;
   const horizontal = layout.type === 'HorizontalLayout';
   /*
@@ -143,7 +145,7 @@ export const SharedSplitLayout = (props: LayoutProps) => {
                 stops being focusable and stops responding to keys or pointers.
               */
               {...(resizable ? { tabIndex: 0 } : { 'aria-disabled': true })}
-              aria-label={`Resize pane ${index + 1}`}
+              aria-label={t('layout.resizePane', { index: index + 1 })}
               aria-orientation={horizontal ? 'vertical' : 'horizontal'}
               aria-valuemin={1}
               aria-valuemax={sizes[index] + sizes[index + 1] - 1}

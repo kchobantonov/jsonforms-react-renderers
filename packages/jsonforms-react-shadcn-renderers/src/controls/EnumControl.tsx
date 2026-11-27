@@ -8,6 +8,8 @@ import {
 } from '@jsonforms/core';
 import { TranslateProps } from '@jsonforms/react';
 import React from 'react';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { Input } from '@jsonforms-react-shadcn-ui/input';
 import {
   ClearValueButton,
   hasClearableValue,
@@ -20,6 +22,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@jsonforms-react-shadcn-ui/select';
+
+function enumPresentation(
+  options: ControlProps['uischema']['options'],
+  config: ControlProps['config'],
+) {
+  const local = options ?? {};
+  const global = config ?? {};
+  return {
+    searchable: (local.autocomplete ?? global.autocomplete) === true,
+    clearable: local.clearable ?? global.clearable ?? true,
+    placeholder: local.placeholder ?? global.placeholder,
+  };
+}
 
 export const ShadcnEnumControl = ({
   schema,
@@ -37,9 +52,21 @@ export const ShadcnEnumControl = ({
   uischema,
   visible,
 }: ControlProps & OwnPropsOfEnum & TranslateProps) => {
+  const t = useI18n();
+  const [query, setQuery] = React.useState('');
+  const { searchable, clearable, placeholder } = enumPresentation(
+    uischema.options,
+    config,
+  );
+  const choices = (options ?? [])
+    .map((option, index) => ({ option, index }))
+    .filter(
+      ({ option }) =>
+        !searchable ||
+        option.label.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+    );
   if (!visible) return null;
   const id = makeId(path, label);
-  const clearable = uischema.options?.clearable ?? config?.clearable ?? true;
   const showClear =
     clearable && enabled && !readonly && hasClearableValue(data);
 
@@ -57,6 +84,7 @@ export const ShadcnEnumControl = ({
     >
       <div className='group relative w-full'>
         <Select
+          onOpenChange={() => setQuery('')}
           disabled={!enabled || readonly}
           value={(() => {
             const index = (options ?? []).findIndex((option) =>
@@ -78,11 +106,33 @@ export const ShadcnEnumControl = ({
           >
             <SelectValue
               className={showClear ? 'mr-10 min-w-0' : 'min-w-0'}
-              placeholder='Select...'
+              placeholder={placeholder ?? t('enum.select')}
             />
           </SelectTrigger>
           <SelectContent className='shadcn-jsonforms-select-content'>
-            {(options ?? []).map((option, index) => (
+            {searchable && (
+              <Input
+                type='search'
+                role='searchbox'
+                aria-label={t('enum.search')}
+                value={query}
+                disabled={!enabled || readonly}
+                onChange={(event) => setQuery(event.currentTarget.value)}
+                onKeyDown={(event) => {
+                  if (
+                    !['ArrowUp', 'ArrowDown', 'Escape', 'Tab'].includes(
+                      event.key,
+                    )
+                  ) {
+                    event.stopPropagation();
+                  }
+                }}
+              />
+            )}
+            {searchable && choices.length === 0 && (
+              <div role='status'>{t('enum.noMatches')}</div>
+            )}
+            {choices.map(({ option, index }) => (
               <SelectItem
                 className='shadcn-jsonforms-select-item'
                 key={index}

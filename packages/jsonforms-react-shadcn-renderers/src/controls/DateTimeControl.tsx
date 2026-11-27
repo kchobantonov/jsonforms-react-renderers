@@ -1,3 +1,6 @@
+import { useJsonForms } from '@jsonforms/react';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
   isDateTimeControl,
@@ -16,15 +19,15 @@ import {
 } from '@jsonforms-react-shadcn-ui/popover';
 import {
   TimeValue,
-  formatDateTimeValue,
   formatDisplayDateTime,
   formatTimeValue,
-  parseDateValue,
   parseTimeValue,
 } from '../util/dateTime';
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnDateTimeControl = (props: ControlProps) => {
+  const text = useI18n();
+  const locale = useJsonForms().i18n?.locale;
   const {
     data,
     description,
@@ -37,6 +40,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
     uischema,
     visible,
   } = props;
+  const temporal = useTemporalControl(props, 'dateTime');
   const [open, setOpen] = React.useState(false);
   const [calendarYear] = React.useState(() => new Date().getFullYear());
   const [draftDate, setDraftDate] = React.useState<Date>();
@@ -45,21 +49,14 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
   if (!visible) return null;
 
   const id = makeId(path, label);
-  const selectedDate = parseDateValue(data);
-  const selectedTime = parseTimeValue(data);
-  const ampm = uischema.options?.ampm === true;
-  const configuredFormat = uischema.options?.dateTimeFormat;
-  const useSeconds =
-    (typeof configuredFormat === 'string' && configuredFormat.includes('s')) ||
-    !!selectedTime?.seconds;
-  const placeholder =
-    typeof uischema.options?.placeholder === 'string'
-      ? uischema.options.placeholder
-      : 'Pick a date and time';
+  const selectedDate = temporal.selected?.toDate();
+  const { selectedTime, ampm, useSeconds, placeholder } = temporal;
 
   const updateValue = (date: Date | undefined, time: TimeValue | undefined) => {
     if (date && time) {
-      handleChange(path, formatDateTimeValue(date, time));
+      const value = new Date(date);
+      value.setHours(time.hours, time.minutes, time.seconds, 0);
+      temporal.commit(value);
     }
   };
 
@@ -96,13 +93,23 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             >
               <CalendarClock className='h-4 w-4' />
               {selectedDate && selectedTime
-                ? formatDisplayDateTime(selectedDate, selectedTime, ampm)
-                : placeholder}
+                ? typeof temporal.options.dateTimeFormat === 'string'
+                  ? temporal.displayText
+                  : formatDisplayDateTime(
+                      selectedDate,
+                      selectedTime,
+                      ampm,
+                      locale,
+                    )
+                : typeof data === 'string' && data
+                  ? data
+                  : placeholder}
             </Button>
           </PopoverTrigger>
           <PopoverContent align='start' className='w-auto p-2'>
             <Calendar
               mode='single'
+              disabled={temporal.disabledDate}
               selected={draftDate}
               defaultMonth={draftDate ?? selectedDate}
               captionLayout='dropdown'
@@ -128,8 +135,17 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
                       : undefined
                 }
                 useSeconds={useSeconds}
+                showHours={temporal.showHours}
+                showMinutes={temporal.showMinutes}
                 ampm={ampm}
                 disabled={!enabled || props.readonly}
+                isAllowed={(time) => {
+                  const date = new Date(
+                    draftDate ?? selectedDate ?? new Date(),
+                  );
+                  date.setHours(time.hours, time.minutes, time.seconds, 0);
+                  return temporal.allowed(date);
+                }}
                 onChange={(value) => {
                   const nextTime = parseTimeValue(value);
                   setDraftTime(nextTime);
@@ -139,7 +155,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             </div>
             <div className='flex justify-end p-2 pt-0'>
               <Button type='button' size='sm' onClick={() => setOpen(false)}>
-                Done
+                {text('control.done')}
               </Button>
             </div>
           </PopoverContent>
@@ -153,7 +169,8 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             variant='ghost'
             size='icon'
             className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
-            aria-label='Clear date and time'
+            aria-label={text('temporal.clearDateTime')}
+            title={text('temporal.clearDateTime')}
             onClick={() => handleChange(path, undefined)}
           >
             <X className='h-4 w-4' />

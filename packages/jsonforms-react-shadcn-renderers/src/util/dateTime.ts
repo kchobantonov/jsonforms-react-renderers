@@ -1,3 +1,4 @@
+import { resolveIntlLocale } from '@chobantonov/jsonforms-react-renderer-common/locale/intl';
 const pad = (value: number) => String(value).padStart(2, '0');
 
 export type TimeValue = {
@@ -26,8 +27,8 @@ export const parseDateValue = (value: unknown): Date | undefined => {
 export const formatDateValue = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
-export const formatDisplayDate = (date: Date) =>
-  new Intl.DateTimeFormat(undefined, {
+export const formatDisplayDate = (date: Date, locale?: string) =>
+  new Intl.DateTimeFormat(resolveIntlLocale(locale), {
     year: 'numeric',
     month: 'short',
     day: '2-digit',
@@ -53,7 +54,7 @@ export const formatTimeValue = (time: TimeValue, useSeconds = true) => {
   return useSeconds ? `${value}:${pad(time.seconds)}` : value;
 };
 
-export const formatDisplayTime = (time: TimeValue, ampm = false) => {
+const formatDisplayTime = (time: TimeValue, ampm = false) => {
   if (!ampm) return formatTimeValue(time, time.seconds !== 0);
   const period = time.hours >= 12 ? 'PM' : 'AM';
   const hours = time.hours % 12 || 12;
@@ -75,4 +76,5 @@ export const formatDisplayDateTime = (
   date: Date,
   time: TimeValue,
   ampm = false,
-) => `${formatDisplayDate(date)}, ${formatDisplayTime(time, ampm)}`;
+  locale?: string,
+) => `${formatDisplayDate(date, locale)}, ${formatDisplayTime(time, ampm)}`;

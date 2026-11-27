@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
@@ -10,13 +11,14 @@ export function ArrayPanelToggle({
   panel: ReturnType<typeof useArrayPanelState>;
   label?: string;
 }) {
+  const t = useI18n();
   if (!panel.collapsible) return null;
   return (
     <Button
       type='button'
       variant='ghost'
       size='icon-sm'
-      aria-label={label || 'Array'}
+      aria-label={label || t('control.array')}
       aria-expanded={!panel.collapsed}
       aria-controls={panel.contentId}
       onClick={panel.toggle}

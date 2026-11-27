@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   RankedTester,
   UISchemaElement,
@@ -76,18 +77,17 @@ export const TemplateDiagnostic = ({
   config,
   visible,
 }: TemplateDiagnosticProps) => {
+  const text = useI18n();
   const resolved = resolveTemplateEngine(uischema, config);
   if (visible === false || !resolved.diagnostic) {
     return null;
   }
   const message =
     resolved.diagnostic === 'unsupported'
-      ? `Unsupported template language ${JSON.stringify(
-          resolved.requested,
-        )}. This renderer set implements "ractive" and "jsx".`
-      : 'Template rendering is disabled. It compiles the template string into ' +
-        'executable code, which requires ' +
-        'jsonformsExtended.security.allowScriptEvaluation to be true.';
+      ? text('template.unsupported', {
+          language: JSON.stringify(resolved.requested),
+        })
+      : text('template.disabled');
   return (
     <div
       role='alert'

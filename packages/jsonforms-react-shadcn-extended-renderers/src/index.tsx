@@ -1,3 +1,4 @@
+import { ShadcnMarkupLabelRenderer } from './renderers/MarkupLabelRenderer';
 import {
   MaskControlRenderer,
   maskControlTester,
@@ -7,6 +8,7 @@ import {
   extendedAgGridTester,
   monacoControlTester,
   createExtendedRenderers,
+  markupLabelTester,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { ShadcnAgGridControlRenderer } from './renderers/ShadcnAgGridControlRenderer';
 import { ShadcnMonacoControlRenderer } from './renderers/ShadcnMonacoControlRenderer';
@@ -35,6 +37,7 @@ import {
 export const createShadcnExtendedRenderers =
   (): JsonFormsRendererRegistryEntry[] => {
     return [
+      { tester: markupLabelTester, renderer: ShadcnMarkupLabelRenderer },
       { tester: maskControlTester, renderer: MaskControlRenderer },
       { tester: extendedAgGridTester, renderer: ShadcnAgGridControlRenderer },
       { tester: monacoControlTester, renderer: ShadcnMonacoControlRenderer },
@@ -51,7 +54,7 @@ export const createShadcnExtendedRenderers =
       ...createExtendedRenderers({
         components: undefined,
         includeButtonRenderer: false,
-      }),
+      }).filter((entry) => entry.tester !== markupLabelTester),
     ];
   };
 

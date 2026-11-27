@@ -54,3 +54,31 @@ describe('ShadcnTimeControl', () => {
     container.remove();
   });
 });
+
+it('lets explicit time views choose the segmented columns', async () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  try {
+    await act(async () =>
+      root.render(
+        <ShadcnTimeControl
+          {...props}
+          uischema={{
+            ...props.uischema,
+            options: { timeFormat: 'HH:mm:ss', views: ['hours'] },
+          }}
+        />,
+      ),
+    );
+    await act(async () =>
+      container.querySelector<HTMLButtonElement>('button')!.click(),
+    );
+    expect(document.querySelector('input[aria-label="Hours"]')).not.toBeNull();
+    expect(document.querySelector('input[aria-label="Minutes"]')).toBeNull();
+    expect(document.querySelector('input[aria-label="Seconds"]')).toBeNull();
+  } finally {
+    await act(async () => root.unmount());
+    container.remove();
+  }
+});

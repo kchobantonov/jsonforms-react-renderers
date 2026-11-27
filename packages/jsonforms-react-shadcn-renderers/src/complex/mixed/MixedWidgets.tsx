@@ -1,3 +1,7 @@
+import {
+  useTranslator,
+  useI18n,
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import type { MixedTreeProps } from '@chobantonov/jsonforms-react-renderer-common/mixed/RecursiveTreeRenderer';
 import { JsonTypeIcon } from './JsonTypeIcon';
 import React, { useState } from 'react';
@@ -27,7 +31,6 @@ import {
   mixedPathKey,
   mixedTreeLabel,
 } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedTree';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 export const MixedNavigationContext = React.createContext<{
   selectPath: (path: string) => void;
@@ -50,6 +53,7 @@ export const MixedTypeSelector = ({
   value: string | null;
 }) => {
   const t = useI18n();
+  const translateType = useTranslator();
   return (
     <div className='min-w-0'>
       <div className='group relative'>
@@ -71,8 +75,11 @@ export const MixedTypeSelector = ({
           </SelectTrigger>
           <SelectContent>
             {types.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
+              <SelectItem
+                key={translateType(`mixed.type.${type}`, type)}
+                value={type}
+              >
+                {translateType(`mixed.type.${type}`, type)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -83,8 +90,8 @@ export const MixedTypeSelector = ({
             variant='ghost'
             size='icon-sm'
             disabled={disabled}
-            aria-label='Clear type'
-            title='Clear type'
+            aria-label={t('mixed.clearType')}
+            title={t('mixed.clearType')}
             className='absolute right-7 top-1/2 h-7 w-7 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100'
             onPointerDown={(event) => event.preventDefault()}
             onClick={(event) => {
@@ -113,23 +120,26 @@ export const NestedMixedNavigation = ({
   label?: string;
   onView: () => void;
   selector: React.ReactNode;
-}) => (
-  <div className='space-y-1'>
-    {label && <div>{label}</div>}
-    <div className='flex items-center gap-2'>
-      {selector}
-      <Button
-        type='button'
-        variant='ghost'
-        size='icon-sm'
-        aria-label={`View ${label || 'value'}`}
-        onClick={onView}
-      >
-        <Eye aria-hidden='true' />
-      </Button>
+}) => {
+  const t = useI18n();
+  return (
+    <div className='space-y-1'>
+      {label && <div>{label}</div>}
+      <div className='flex items-center gap-2'>
+        {selector}
+        <Button
+          type='button'
+          variant='ghost'
+          size='icon-sm'
+          aria-label={t('mixed.view', { label: label || t('control.value') })}
+          onClick={onView}
+        >
+          <Eye aria-hidden='true' />
+        </Button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const MixedTree = (props: MixedTreeProps) => {
   const t = useI18n();
@@ -192,7 +202,7 @@ export const MixedTree = (props: MixedTreeProps) => {
             <CollapsibleTrigger
               render={<Button type='button' variant='ghost' size='icon-sm' />}
               className='size-8 shrink-0'
-              aria-label={`Expand ${mixedTreeLabel(node)}`}
+              aria-label={t('mixed.expand', { label: mixedTreeLabel(node) })}
             >
               <ChevronRight aria-hidden='true' />
             </CollapsibleTrigger>
@@ -285,7 +295,9 @@ export const MixedTree = (props: MixedTreeProps) => {
           {props.canDelete(node) &&
             !renaming &&
             action(
-              t('mixed.delete'),
+              t('additionalProperties.deleteNamed', {
+                name: mixedTreeLabel(node),
+              }),
               <Trash2 aria-hidden='true' />,
               () => props.onDelete(node),
               true,

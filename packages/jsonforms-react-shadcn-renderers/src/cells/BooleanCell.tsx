@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React from 'react';
 import { CellProps } from '@jsonforms/core';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
@@ -10,14 +11,16 @@ export const ShadcnBooleanCell = ({
   path,
   handleChange,
   errors,
-}: CellProps) =>
-  visible === false ? null : (
+}: CellProps) => {
+  const t = useI18n();
+  return visible === false ? null : (
     <Checkbox
       id={id}
-      aria-label={path || 'Value'}
+      aria-label={path || t('control.value')}
       aria-invalid={Boolean(errors)}
       checked={typeof data === 'boolean' ? data : 'indeterminate'}
       disabled={!enabled}
       onCheckedChange={(checked) => handleChange(path, checked === true)}
     />
   );
+};

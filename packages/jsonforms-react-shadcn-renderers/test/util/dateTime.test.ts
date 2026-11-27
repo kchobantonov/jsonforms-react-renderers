@@ -27,7 +27,7 @@ describe('Shadcn picker value conversion', () => {
     });
   });
 
-  it('saves complete JSON Schema time and date-time strings', () => {
+  it('formats clock and date-time strings used inside picker widgets', () => {
     const time = { hours: 7, minutes: 5, seconds: 9 };
     const date = new Date(2026, 7, 29);
 

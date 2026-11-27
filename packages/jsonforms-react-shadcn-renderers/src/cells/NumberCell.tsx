@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { ClearValueButton } from '../components/ClearValueButton';
 import React from 'react';
 import { CellProps } from '@jsonforms/core';
@@ -14,15 +15,16 @@ export const ShadcnNumberCell = ({
   handleChange,
   errors,
   schema,
-}: CellProps) =>
-  visible === false ? null : (
+}: CellProps) => {
+  const t = useI18n();
+  return visible === false ? null : (
     <div className='group relative w-full'>
       <Input
         className='pr-10'
         id={id}
         type='number'
         step={schema.type === 'integer' ? 1 : 'any'}
-        aria-label={path || 'Value'}
+        aria-label={path || t('control.value')}
         aria-invalid={Boolean(errors)}
         value={data ?? ''}
         disabled={!enabled}
@@ -46,3 +48,4 @@ export const ShadcnNumberCell = ({
       />
     </div>
   );
+};

@@ -142,7 +142,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
           {headerElements}
           <CollapsibleTrigger
             render={<Button type='button' variant='ghost' />}
-            aria-label={headerTitle || props.label || 'Group'}
+            aria-label={headerTitle || props.label || t('control.group')}
             aria-controls={group.contentId}
           >
             {header}

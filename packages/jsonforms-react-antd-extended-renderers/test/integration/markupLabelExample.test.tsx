@@ -1,4 +1,4 @@
-import { flattenExampleNavigation } from '../../../jsonforms-react-antd-renderers/test/support/flattenExampleNavigation';
+import { flattenExampleNavigation } from '../../../jsonforms-react-renderer-common/test/support/flattenExampleNavigation';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vite-plus/test';

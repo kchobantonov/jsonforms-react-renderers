@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   Layout,
   LayoutProps,
@@ -34,6 +35,7 @@ import {
 } from '@jsonforms-react-shadcn-ui/resizable';
 
 export const ShadcnSplitLayout = (props: LayoutProps) => {
+  const t = useI18n();
   const layout = props.uischema as Layout;
   const elements = useEffectiveElements(
     layout.elements,
@@ -66,7 +68,7 @@ export const ShadcnSplitLayout = (props: LayoutProps) => {
           {index > 0 && (
             <ResizableHandle
               withHandle
-              aria-label={`Resize pane ${index}`}
+              aria-label={t('layout.resizePane', { index })}
               disabled={options.resizable === false}
             />
           )}

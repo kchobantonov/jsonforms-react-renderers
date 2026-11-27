@@ -33,11 +33,23 @@ const uischema = {
 
 let container: HTMLElement;
 let root: ReturnType<typeof createRoot>;
-let consoleError: ReturnType<typeof vi.spyOn>;
+const expectedChunkFailure = (error: unknown): boolean => {
+  if (!(error instanceof Error)) return false;
+  return (
+    error.message === 'chunk unavailable' || expectedChunkFailure(error.cause)
+  );
+};
+const expectedErrors: ErrorEvent[] = [];
+const onExpectedError = (event: ErrorEvent) => {
+  if (expectedChunkFailure(event.error)) {
+    expectedErrors.push(event);
+    event.preventDefault();
+  }
+};
 
 beforeEach(() => {
-  // React logs the caught error; the test is about what renders, not that.
-  consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  expectedErrors.length = 0;
+  window.addEventListener('error', onExpectedError);
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -45,13 +57,13 @@ beforeEach(() => {
 
 afterEach(() => {
   act(() => root.unmount());
+  window.removeEventListener('error', onExpectedError);
   document.body.innerHTML = '';
-  consoleError.mockRestore();
 });
 
 describe('a Markdown label whose parser never loads', () => {
   it('falls back to the unparsed text instead of taking the form down', async () => {
-    act(() =>
+    await act(async () => {
       root.render(
         <JsonForms
           data={{}}
@@ -63,10 +75,14 @@ describe('a Markdown label whose parser never loads', () => {
           cells={[]}
           onChange={() => undefined}
         />,
-      ),
-    );
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      );
+      await expect(
+        import('../../src/renderers/MarkupLabelRenderer.impl'),
+      ).rejects.toSatisfy(expectedChunkFailure);
+    });
+    await vi.waitFor(async () => {
+      await act(async () => {});
+      expect(expectedErrors.length).toBeGreaterThan(0);
     });
 
     // The form is still on the page...

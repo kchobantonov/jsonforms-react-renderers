@@ -40,7 +40,8 @@ jobs:
         run: vp install --frozen-lockfile
 
       - name: Audit introduced findings
-        run: pnpm run fallow:audit --base "${{ github.event.pull_request.base.sha }}" --format github-summary >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
+        run: pnpm run fallow:audit --base "${{ github.event.pull_request.base.sha }}" --format github-summary | tee -a "$GITHUB_STEP_SUMMARY"
 
   build:
     # Playwright 1.58.1 does not provide Chromium or install-deps for Ubuntu 26.04.
@@ -87,8 +88,31 @@ jobs:
       - name: Test standalone web components
         run: pnpm run test:standalone
 
-      - name: Run workspace tests
-        run: vp test run
+      - name: Run public package tests with coverage
+        run: pnpm run test-cov
+
+      - name: Run demo support tests
+        run: pnpm --filter jsonforms-react-demo-common test
+
+      - name: Merge coverage reports
+        run: pnpm run merge-report
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage/lcov.info
+            packages/*/coverage/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage/lcov.info
+          format: lcov
 
       # Build and deploy only after all checks and tests succeed.
       - name: Setup GitHub Pages

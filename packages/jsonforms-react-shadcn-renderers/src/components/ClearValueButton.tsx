@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { X } from 'lucide-react';
 import React from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
@@ -24,13 +25,14 @@ export const ClearValueButton = ({
   onClear,
   readonly,
 }: ClearValueButtonProps) => {
+  const t = useI18n();
   if (!clearable || !enabled || readonly || !hasClearableValue(data)) {
     return null;
   }
 
   return (
     <Button
-      aria-label='Clear value'
+      aria-label={t('control.clearValue')}
       className='absolute top-1/2 h-8 w-8 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
       style={{
         insetInlineEnd: adornmentAware
@@ -44,7 +46,7 @@ export const ClearValueButton = ({
       onMouseDown={(event) => event.preventDefault()}
       onPointerDown={(event) => event.preventDefault()}
       size='icon'
-      title='Clear value'
+      title={t('control.clearValue')}
       type='button'
       variant='ghost'
     >

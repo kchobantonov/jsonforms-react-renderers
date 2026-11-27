@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
 import { expect, it } from 'vite-plus/test';
 import { shadcnExtendedRenderers } from '../../src';
+import { ShadcnButtonRenderer } from '../../src/renderers/ButtonRenderer';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 it('updates native full-width presentation without changing the element allocation', () => {
@@ -30,5 +31,31 @@ it('updates native full-width presentation without changing the element allocati
   } finally {
     act(() => root.unmount());
     host.remove();
+  }
+});
+
+it('preserves the direct component export and native leading icon', () => {
+  const host = document.createElement('div');
+  const root = createRoot(host);
+  try {
+    act(() =>
+      root.render(
+        <ShadcnButtonRenderer
+          {...({
+            enabled: true,
+            visible: true,
+            config: {},
+            t: (_key: string, fallback: string) => fallback,
+            uischema: { type: 'Button', label: 'Save', icon: '✓' },
+          } as any)}
+        />,
+      ),
+    );
+    expect(host.querySelector('button')?.textContent).toBe('✓Save');
+    expect(
+      host.querySelector('button span[aria-hidden=true]')?.textContent,
+    ).toBe('✓');
+  } finally {
+    act(() => root.unmount());
   }
 });

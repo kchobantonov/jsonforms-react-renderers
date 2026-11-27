@@ -1,3 +1,6 @@
+import { resolveIntlLocale } from '@chobantonov/jsonforms-react-renderer-common/locale/intl';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
   isDateControl,
@@ -24,15 +27,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@jsonforms-react-shadcn-ui/popover';
-import { formatDisplayDate, parseDateValue } from '../util/dateTime';
+import { formatDisplayDate } from '../util/dateTime';
 import { InputShell, makeId } from './InputControl';
 
-type DateSchema = ControlProps['schema'] & {
-  formatMinimum?: string;
-  formatMaximum?: string;
-};
-
 export const ShadcnDateControl = (props: ControlProps) => {
+  const text = useI18n();
   const {
     data,
     description,
@@ -42,13 +41,11 @@ export const ShadcnDateControl = (props: ControlProps) => {
     label,
     path,
     required,
-    schema,
     uischema,
     visible,
   } = props;
+  const temporal = useTemporalControl(props, 'date');
   const ctx = useJsonForms();
-  const t = (key: string, fallback: string) =>
-    ctx.i18n?.translate?.(key, fallback) ?? fallback;
   const options = { ...props.config, ...uischema.options };
   const datePattern = (value: string) =>
     value.replace(/\[([^\]]*)\]|YYYY|YY|DD|D/g, (token, literal) =>
@@ -81,16 +78,9 @@ export const ShadcnDateControl = (props: ControlProps) => {
 
   const id = makeId(path, label);
 
-  const min = parseDateValue((schema as DateSchema).formatMinimum);
-  const max = parseDateValue((schema as DateSchema).formatMaximum);
-  const disabledDates = [
-    ...(min ? [{ before: min }] : []),
-    ...(max ? [{ after: max }] : []),
-  ];
-  const placeholder =
-    typeof uischema.options?.placeholder === 'string'
-      ? uischema.options.placeholder
-      : 'Pick a date';
+  const disabledDates = temporal.disabledDate;
+  const { min, max } = temporal;
+  const { placeholder } = temporal;
 
   return (
     <InputShell
@@ -124,7 +114,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
               {selected
                 ? typeof options.dateFormat === 'string'
                   ? format(selected, datePattern(options.dateFormat))
-                  : formatDisplayDate(selected)
+                  : formatDisplayDate(selected, ctx.i18n?.locale)
                 : placeholder}
             </Button>
           </PopoverTrigger>
@@ -139,7 +129,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     }
                   >
                     <SelectTrigger
-                      aria-label={t('Month', 'Month')}
+                      aria-label={text('temporal.month')}
                       className='w-36'
                     >
                       <SelectValue />
@@ -147,9 +137,12 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     <SelectContent>
                       {Array.from({ length: 12 }, (_, month) => (
                         <SelectItem key={month} value={String(month)}>
-                          {new Intl.DateTimeFormat(ctx.i18n?.locale, {
-                            month: 'long',
-                          }).format(new Date(2000, month, 1))}
+                          {new Intl.DateTimeFormat(
+                            resolveIntlLocale(ctx.i18n?.locale),
+                            {
+                              month: 'long',
+                            },
+                          ).format(new Date(2000, month, 1))}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -161,7 +154,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     }
                   >
                     <SelectTrigger
-                      aria-label={t('Year', 'Year')}
+                      aria-label={text('temporal.year')}
                       className='w-24'
                     >
                       <SelectValue />
@@ -190,17 +183,17 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     type='button'
                     onClick={() => setOpen(false)}
                   >
-                    {t('Cancel', 'Cancel')}
+                    {text('control.cancel')}
                   </Button>
                   <Button
                     type='button'
                     disabled={!!((min && draft < min) || (max && draft > max))}
                     onClick={() => {
-                      handleChange(path, format(draft, saveFormat));
+                      temporal.commit(draft);
                       setOpen(false);
                     }}
                   >
-                    {t('Apply', 'Apply')}
+                    {text('control.apply')}
                   </Button>
                 </div>
               </div>
@@ -210,10 +203,9 @@ export const ShadcnDateControl = (props: ControlProps) => {
                 selected={selected}
                 defaultMonth={selected}
                 onSelect={(date) => {
-                  handleChange(
-                    path,
-                    date ? format(date, saveFormat) : undefined,
-                  );
+                  if (date) temporal.commit(date);
+                  else if (enabled && !props.readonly)
+                    handleChange(path, undefined);
                   setOpen(false);
                 }}
                 disabled={disabledDates}
@@ -233,7 +225,8 @@ export const ShadcnDateControl = (props: ControlProps) => {
             variant='ghost'
             size='icon'
             className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
-            aria-label='Clear date'
+            aria-label={text('temporal.clearDate')}
+            title={text('temporal.clearDate')}
             onClick={() => handleChange(path, undefined)}
           >
             <X className='h-4 w-4' />

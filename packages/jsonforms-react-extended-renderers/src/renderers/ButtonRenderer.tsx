@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React, {
   useMemo,
   useCallback,
@@ -112,6 +113,8 @@ export type ButtonRendererComponentProps = LayoutProps &
   };
 
 export type ButtonRendererOptions = {
+  /** Return the component before JSON Forms prop injection for native adapter exports. */
+  withProps?: boolean;
   ButtonComponent?: React.ComponentType<any>;
   buttonProps?: Record<string, any>;
   getButtonProps?: (
@@ -164,12 +167,14 @@ const DIAGNOSTIC_STYLE: React.CSSProperties = {
 };
 
 export const createButtonRenderer = ({
+  withProps = true,
   ButtonComponent = 'button' as any,
   buttonProps = {},
   getButtonProps,
 }: ButtonRendererOptions = {}) => {
   const ButtonRenderer = (props: ButtonRendererComponentProps) => {
     const { enabled, uischema, visible, config, t } = props;
+    const text = useI18n();
     const handleAction = useHandleAction();
     const ctx = useJsonForms();
 
@@ -188,7 +193,7 @@ export const createButtonRenderer = ({
       element.label ??
       element.text ??
       element.name ??
-      'Action';
+      text('button.action');
     /*
       Deliberately **not** falling back to the label. The label is translated,
       so an action derived from it would change with the form's language - a
@@ -287,8 +292,7 @@ export const createButtonRenderer = ({
           data-button-diagnostic='script.evaluationDisabled'
           style={DIAGNOSTIC_STYLE}
         >
-          {`"${label}" runs a script, which compiles a string into executable code. ` +
-            'That requires jsonformsExtended.security.allowScriptEvaluation to be true.'}
+          {text('button.scriptDisabled', { label })}
         </div>
       );
     }
@@ -316,9 +320,9 @@ export const createButtonRenderer = ({
     );
   };
 
-  return withJsonFormsLayoutProps(
-    withTranslateProps(ButtonRenderer as any) as any,
-  );
+  return withProps
+    ? withJsonFormsLayoutProps(withTranslateProps(ButtonRenderer as any) as any)
+    : ButtonRenderer;
 };
 
 export const ButtonRenderer = createButtonRenderer();

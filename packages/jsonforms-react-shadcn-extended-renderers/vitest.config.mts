@@ -9,6 +9,12 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers',
+        replacement: fromPackage(
+          '../jsonforms-react-extended-renderers/src/core/ajvI18n/localizers',
+        ),
+      },
+      {
         find: '@monaco-editor/react',
         replacement: fromPackage(
           '../jsonforms-react-extended-renderers/node_modules/@monaco-editor/react/dist/index.mjs',
@@ -44,6 +50,7 @@ export default defineConfig({
     sequence: { groupOrder: 7 },
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['../jsonforms-react-shadcn-renderers/test/setup.ts'],
     include: ['test/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',

@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   JsonSchema,
   LayoutProps,
@@ -47,6 +48,7 @@ export interface ImageViewDiagnostic {
   code: ImageViewDiagnosticCode;
   severity: 'warning' | 'error';
   message: string;
+  values?: Record<string, unknown>;
 }
 
 /**
@@ -156,6 +158,7 @@ export const resolveImageView = (
       code: 'image.scopeNotString',
       severity: 'error',
       message: `The schema at ${element.scope} does not permit strings.`,
+      values: { scope: element.scope },
     });
     return { alt, diagnostics };
   }
@@ -177,6 +180,7 @@ export const resolveImageView = (
       message: `The value at ${
         element.scope
       } is a ${typeof value}, not a URL string.`,
+      values: { scope: element.scope, type: typeof value },
     });
     return { alt, diagnostics };
   }
@@ -202,6 +206,7 @@ const ImageDiagnostic = ({
 }: {
   diagnostic: ImageViewDiagnostic;
 }) => {
+  const t = useI18n();
   const [open, setOpen] = React.useState(false);
   const id = React.useId();
   return (
@@ -217,7 +222,7 @@ const ImageDiagnostic = ({
       >
         <button
           type='button'
-          aria-label='Image warning details'
+          aria-label={t('image.warningDetails')}
           aria-describedby={open ? id : undefined}
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
@@ -268,14 +273,14 @@ const ImageDiagnostic = ({
               fontWeight: 'normal',
             }}
           >
-            {diagnostic.message}
+            {t(diagnostic.code, diagnostic.values)}
           </span>
         )}
       </span>
       <span>
         {diagnostic.code === 'image.urlRefused'
-          ? 'Image blocked'
-          : 'Image configuration warning'}
+          ? t('image.blocked')
+          : t('image.configurationWarning')}
       </span>
     </div>
   );

@@ -74,7 +74,6 @@
     "rimraf": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vite-plus": "catalog:",
     "vitest": "catalog:",
     "@chobantonov/jsonforms-extended-spec": "0.2.0",
     "@vitest/coverage-v8": "catalog:"

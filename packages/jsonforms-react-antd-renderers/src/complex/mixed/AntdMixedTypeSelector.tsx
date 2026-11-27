@@ -1,3 +1,4 @@
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { Select, Typography } from 'antd';
 import React from 'react';
 import { useI18n } from '../../util/translate';
@@ -25,6 +26,7 @@ export const AntdMixedTypeSelector = ({
   value,
 }: AntdMixedTypeSelectorProps) => {
   const t = useI18n();
+  const translateType = useTranslator();
   return (
     <div
       className={
@@ -39,7 +41,10 @@ export const AntdMixedTypeSelector = ({
         aria-label={t('mixed.typeLabel')}
         disabled={disabled}
         onChange={onChange}
-        options={types.map((type) => ({ label: type, value: type }))}
+        options={types.map((type) => ({
+          label: translateType(`mixed.type.${type}`, type),
+          value: type,
+        }))}
         placeholder={t('mixed.typePlaceholder')}
         popupMatchSelectWidth={false}
         status={error ? 'error' : undefined}
