@@ -1,4 +1,4 @@
-import MarkdownIt from 'markdown-it';
+import MarkdownIt, { type MarkdownIt as MarkdownItInstance } from 'markdown-it';
 import React from 'react';
 import { isAllowedUrl, UrlPolicy } from './urlPolicy';
 
@@ -104,7 +104,7 @@ const ALLOWED_TAGS = new Set([
   'td',
 ]);
 
-const parsers = new Map<MarkdownProfile, MarkdownIt>();
+const parsers = new Map<MarkdownProfile, MarkdownItInstance>();
 
 /**
  * `linkify` is off: turning a bare URL into a link is in neither profile, and
@@ -116,7 +116,7 @@ const parsers = new Map<MarkdownProfile, MarkdownIt>();
  */
 export const markdownParser = (
   profile: MarkdownProfile = 'basic',
-): MarkdownIt => {
+): MarkdownItInstance => {
   const existing = parsers.get(profile);
   if (existing) {
     return existing;
@@ -190,7 +190,7 @@ interface Frame {
  * its own, it needs only to be in {@link ALLOWED_TAGS}.
  */
 const walk = (
-  tokens: ReturnType<MarkdownIt['parse']>,
+  tokens: ReturnType<MarkdownItInstance['parse']>,
   context: MarkdownContext,
   counter: { next: number },
 ): React.ReactNode[] => {
@@ -227,7 +227,7 @@ const walk = (
     }
     if (token.nesting === 1) {
       if (token.type === 'link_open') {
-        const href = token.attrGet('href') ?? '';
+        const href = String(token.attrGet('href') ?? '');
         if (isAllowedUrl(href, context.urlPolicy)) {
           stack.push({
             tag: 'a',

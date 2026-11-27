@@ -81,7 +81,7 @@
     "@types/node": "catalog:",
     "vite-plus": "catalog:",
     "@chobantonov/jsonforms-extended-spec": "0.2.0",
-    "@types/lodash": "^4.14.149"
+    "@types/lodash": "^4.17.27"
   },
   "publishConfig": {
     "access": "public"

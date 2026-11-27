@@ -54,7 +54,7 @@
     "ajv": "catalog:",
     "dayjs": "catalog:",
     "lodash": "catalog:",
-    "maska": "^3.2.1"
+    "maska": "^3.2.2"
   },
   "peerDependencies": {
     "@jsonforms/core": "catalog:",
@@ -64,7 +64,7 @@
   "devDependencies": {
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.17.27",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

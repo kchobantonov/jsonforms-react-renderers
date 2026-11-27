@@ -48,9 +48,9 @@
     "ajv-keywords": "^5.1.0",
     "dayjs": "catalog:",
     "lodash": "catalog:",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^15.0.3",
     "ractive": "^1.4.4",
-    "sucrase": "^3.35.0",
+    "sucrase": "^3.35.1",
     "valtio": "^1.11.2",
     "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
   },
@@ -63,8 +63,7 @@
   "devDependencies": {
     "@jsonforms/core": "catalog:",
     "@jsonforms/react": "catalog:",
-    "@types/lodash": "^4.14.178",
-    "@types/markdown-it": "^14.1.2",
+    "@types/lodash": "^4.17.27",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",

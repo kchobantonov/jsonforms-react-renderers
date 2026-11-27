@@ -54,7 +54,7 @@
     "fallow": "^3.49.0",
     "lcov-result-merger": "^3.1.0",
     "playwright": "1.58.1",
-    "publint": "^0.3.17",
+    "publint": "^0.3.25",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
