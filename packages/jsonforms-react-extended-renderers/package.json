@@ -48,7 +48,7 @@
     "ajv-keywords": "^5.1.0",
     "dayjs": "catalog:",
     "lodash": "catalog:",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.3.3",
     "ractive": "^1.4.4",
     "sucrase": "^3.35.0",
     "valtio": "^1.11.2",
