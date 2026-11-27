@@ -60,7 +60,7 @@ const TAB_TO_QUERY: Record<DemoTab, string> = {
   data: 'data',
 };
 
-const isPromise = <T>(value: T | Promise<T>): value is Promise<T> =>
+export const isPromise = <T>(value: T | Promise<T>): value is Promise<T> =>
   typeof (value as Promise<T> | undefined)?.then === 'function';
 
 const parseStoredSettings = (value: string | null) => {

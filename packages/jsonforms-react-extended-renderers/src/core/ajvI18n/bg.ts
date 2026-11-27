@@ -1,5 +1,7 @@
 import type { Localize } from 'ajv-i18n/localize/types';
 
+// Each AJV keyword has its own Bulgarian message and grammatical forms.
+// fallow-ignore-next-line complexity
 export const localize_bg: Localize = (errors) => {
   if (!(errors && errors.length)) return;
   for (const e of errors) {

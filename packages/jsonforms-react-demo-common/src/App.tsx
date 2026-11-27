@@ -1,3 +1,5 @@
+import { useDemoNavigation, routeFromLocation } from './app/useDemoNavigation';
+import { useDemoPreferences } from './app/useDemoPreferences';
 import type { JsonFormsInitStateProps } from '@jsonforms/react';
 import { isSpecExample, isPrefixedOfficialExample } from './examples';
 import React, {
@@ -31,29 +33,12 @@ import { applyDemoHostAction } from './app/demoHostActions';
 import { DemoFormPanel } from './app/DemoFormPanel';
 import { DemoHome } from './app/DemoHome';
 import { useMonacoSchema } from './app/useMonacoSchema';
-import {
-  useDemoPreferencePersistence,
-  useDocumentChrome,
-} from './app/useDemoChrome';
+import { useDocumentChrome } from './app/useDemoChrome';
 import { DemoWorkspace } from './app/DemoWorkspace';
 import { DemoSettingsPanel } from './app/DemoSettings';
 import { ExternalEditor } from './app/ExternalEditor';
 import { EditorModels, stringifyEditorValue } from './app/editorModels';
-import {
-  DemoLayout,
-  DemoMode,
-  DemoQueryKey,
-  DemoSettingsStorage,
-  DemoTab,
-  PersistedDemoSettings,
-  demoSettingsStorageKey,
-  encodeDemoHashRoute,
-  getWebDemoSettingsStorage,
-  readDemoQueryState,
-  readPersistedDemoSettings,
-  splitDemoHash,
-  writeDemoQueryValue,
-} from './app/demoPreferences';
+import { DemoLayout, DemoSettingsStorage } from './app/demoPreferences';
 import './App.css';
 
 export * from './app/types';
@@ -97,11 +82,16 @@ const getProps = (
   i18n: example.i18n,
 });
 
-const routeFromLocation = (examples: ExampleDescription[]) => {
-  const hash = splitDemoHash(window.location.hash).route;
-  const index = examples.findIndex((example) => example.name === hash);
-  return { index: index === -1 ? 0 : index, isHome: index === -1 };
-};
+function editorModelsFor(example: ExampleDescription): EditorModels {
+  return {
+    data: stringifyEditorValue(example.data),
+    schema: stringifyEditorValue(example.schema),
+    uischema: stringifyEditorValue(example.uischema),
+    uischemas: stringifyEditorValue(example.uischemas),
+    i18n: stringifyEditorValue(i18nEditorValue(example)),
+    config: stringifyEditorValue(example.config),
+  };
+}
 
 const useSystemDark = () => {
   const [systemDark, setSystemDark] = useState(false);
@@ -197,80 +187,40 @@ const App = ({
   Shell = DefaultDemoShell,
   Ui = defaultDemoUi,
 }: AppProps) => {
-  const [initialProviderSettingsRef] = useState(() => initialProviderSettings);
-  const [defaultDrawer] = useState(
-    () => window.matchMedia('(min-width: 1280px)').matches,
-  );
-  const [queryDefaults] = useState(() => ({
-    readonly: false,
-    formOnly: false,
-    activeTab: 'demo' as DemoTab,
-    useWebComponent: false,
-    drawer: defaultDrawer,
-  }));
-  const [initialQuery] = useState(() =>
-    readDemoQueryState(window.location, queryDefaults),
-  );
-  const preferenceStorage = useMemo(
-    () =>
-      settingsStorage === undefined
-        ? getWebDemoSettingsStorage()
-        : (settingsStorage ?? undefined),
-    [settingsStorage],
-  );
-  const preferenceStorageKey =
-    settingsStorageKey ?? demoSettingsStorageKey(rendererName);
-  const initialPersistedRead = useMemo(
-    () => readPersistedDemoSettings(preferenceStorage, preferenceStorageKey),
-    [preferenceStorage, preferenceStorageKey],
-  );
-  const initialPersisted =
-    initialPersistedRead &&
-    typeof (initialPersistedRead as Promise<unknown>).then !== 'function'
-      ? (initialPersistedRead as Partial<PersistedDemoSettings>)
-      : undefined;
-  const initialRoute = routeFromLocation(examples);
-  const [currentIndex, setIndex] = useState(initialRoute.index);
-  const [isHome, setIsHome] = useState(initialRoute.isHome);
-  const [exampleProps, setExampleProps] = useState(
+  const {
+    mode,
+    setMode,
+    locale,
+    setLocale,
+    layout,
+    setLayout,
+    rendererSettings,
+    setRendererSettings,
+  } = useDemoPreferences({
+    rendererName,
+    initialLayout,
+    initialProviderSettings,
+    settingsStorage,
+    settingsStorageKey,
+  });
+  const [initialRoute] = useState(() => routeFromLocation(examples));
+  const [exampleProps, setExampleProps] = useState(() =>
     getProps(examples[initialRoute.index], cells, renderers),
   );
-  const [models, setModels] = useState<EditorModels>({
-    data: stringifyEditorValue(examples[initialRoute.index].data),
-    schema: stringifyEditorValue(examples[initialRoute.index].schema),
-    uischema: stringifyEditorValue(examples[initialRoute.index].uischema),
-    uischemas: stringifyEditorValue(examples[initialRoute.index].uischemas),
-    i18n: stringifyEditorValue(i18nEditorValue(examples[initialRoute.index])),
-    config: stringifyEditorValue(examples[initialRoute.index].config),
-  });
+  const [models, setModels] = useState(() =>
+    editorModelsFor(examples[initialRoute.index]),
+  );
   useMonacoSchema(models.schema);
 
-  const [activeTab, setActiveTab] = useState<DemoTab>(initialQuery.activeTab);
   const [search, setSearch] = useState('');
   const [exampleSource, setExampleSource] = useState(() =>
     examples.some((e) => isSpecExample(e.name)) ? 'spec' : 'all',
   );
   const ExampleSourceSelect = Ui.Select;
-  const [sidebarOpen, setSidebarOpen] = useState(initialQuery.drawer);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [formOnly, setFormOnly] = useState(initialQuery.formOnly);
-  const [useWebComponent, setUseWebComponent] = useState(
-    initialQuery.useWebComponent,
-  );
-  const [mode, setMode] = useState<DemoMode>(
-    initialPersisted?.mode === 'light' || initialPersisted?.mode === 'dark'
-      ? initialPersisted.mode
-      : 'system',
-  );
   const [formModeOverride, setFormModeOverride] = useState<'light' | 'dark'>();
   const [formLocaleOverride, setFormLocaleOverride] = useState<string>();
   const [rtl, setRtl] = useState(false);
-  const [readonly, setReadonly] = useState(initialQuery.readonly);
-  const [locale, setLocale] = useState(
-    typeof initialPersisted?.locale === 'string'
-      ? initialPersisted.locale
-      : 'en',
-  );
   // Catalogs live outside `exampleProps.i18n` because `translate` is a function:
   // it cannot be serialized for the editor, and it cannot follow the locale
   // switcher. Holding the raw catalogs lets both work.
@@ -279,32 +229,16 @@ const App = ({
   >(() => exampleTranslations(examples[initialRoute.index]));
   const [validationMode, setValidationMode] =
     useState<ValidationMode>('ValidateAndShow');
-  const [layout, setLayout] = useState<DemoLayout>(
-    initialPersisted?.layout === 'default' ||
-      initialPersisted?.layout === 'demo-and-data'
-      ? initialPersisted.layout
-      : initialLayout,
-  );
   const [configOptions, setConfigOptions] = useState<Record<string, any>>({
     restrict: true,
   });
   const [errors, setErrors] = useState<any[]>([]);
-  const [rendererSettings, setRendererSettings] = useState<Record<string, any>>(
-    {
-      ...initialProviderSettingsRef,
-      ...initialPersisted?.rendererSettings,
-    },
-  );
-  const [preferencesHydrated, setPreferencesHydrated] = useState(
-    initialPersistedRead === undefined || initialPersisted !== undefined,
-  );
   const systemDark = useSystemDark();
 
-  const currentExample = examples[currentIndex];
   const [external, setExternalState] = useState<Record<string, unknown>>(
     () => ({
       settings: structuredClone(
-        (currentExample as any).configuration?.data ?? {},
+        (examples[initialRoute.index] as any).configuration?.data ?? {},
       ),
     }),
   );
@@ -319,85 +253,11 @@ const App = ({
   const formDark = formModeOverride ? formModeOverride === 'dark' : dark;
   const formMode = formModeOverride ?? mode;
   const formLocale = formLocaleOverride ?? locale;
-  const actions: Action[] = currentExample.actions ?? [];
-  useEffect(() => {
-    let cancelled = false;
-    Promise.resolve(initialPersistedRead).then((persisted) => {
-      if (cancelled || initialPersisted !== undefined) return;
-      if (persisted) {
-        if (
-          persisted.mode === 'system' ||
-          persisted.mode === 'light' ||
-          persisted.mode === 'dark'
-        ) {
-          setMode(persisted.mode);
-        }
-        if (typeof persisted.locale === 'string') setLocale(persisted.locale);
-        if (
-          persisted.layout === 'default' ||
-          persisted.layout === 'demo-and-data'
-        ) {
-          setLayout(persisted.layout);
-        }
-        if (
-          persisted.rendererSettings &&
-          typeof persisted.rendererSettings === 'object' &&
-          !Array.isArray(persisted.rendererSettings)
-        ) {
-          setRendererSettings({
-            ...initialProviderSettingsRef,
-            ...persisted.rendererSettings,
-          });
-        }
-      }
-      setPreferencesHydrated(true);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [initialPersisted, initialPersistedRead, initialProviderSettingsRef]);
-
-  useDemoPreferencePersistence(
-    preferenceStorage,
-    preferenceStorageKey,
-    preferencesHydrated,
-    { mode, locale, layout, rendererSettings },
-  );
-
-  const setQueryOption = useCallback(
-    <T extends boolean | DemoTab>(
-      key: DemoQueryKey,
-      value: T,
-      defaultValue: T,
-    ) => {
-      writeDemoQueryValue(
-        window.location,
-        window.history,
-        key,
-        value,
-        defaultValue,
-      );
-    },
-    [],
-  );
-
   useDocumentChrome(dark, mode, rtl);
 
-  const updateModels = useCallback((example: ExampleDescription) => {
-    setModels({
-      data: stringifyEditorValue(example.data),
-      schema: stringifyEditorValue(example.schema),
-      uischema: stringifyEditorValue(example.uischema),
-      uischemas: stringifyEditorValue(example.uischemas),
-      i18n: stringifyEditorValue(i18nEditorValue(example)),
-      config: stringifyEditorValue(example.config),
-    });
-  }, []);
-
   const loadExample = useCallback(
-    (index: number, resetActiveTab = true) => {
+    (index: number) => {
       const example = examples[index];
-      setIndex(index);
       const nextExternal = {
         settings: structuredClone((example as any).configuration?.data ?? {}),
       };
@@ -407,85 +267,29 @@ const App = ({
       setFormLocaleOverride(undefined);
       setExampleProps(getProps(example, cells, renderers));
       setTranslations(exampleTranslations(example));
-      updateModels(example);
-      if (resetActiveTab) setActiveTab('demo');
-      setIsHome(false);
+      setModels(editorModelsFor(example));
     },
-    [cells, examples, renderers, updateModels],
+    [cells, examples, renderers],
   );
 
-  useEffect(() => {
-    const syncRoute = () => {
-      const route = routeFromLocation(examples);
-      const query = readDemoQueryState(window.location, queryDefaults);
-      setReadonly(query.readonly);
-      setFormOnly(query.formOnly);
-      setActiveTab(query.activeTab);
-      setUseWebComponent(query.useWebComponent);
-      setSidebarOpen(query.drawer);
-      if (route.isHome) {
-        setIsHome(true);
-      } else {
-        loadExample(route.index, false);
-        setActiveTab(query.activeTab);
-      }
-    };
-    window.addEventListener('hashchange', syncRoute);
-    window.addEventListener('popstate', syncRoute);
-    return () => {
-      window.removeEventListener('hashchange', syncRoute);
-      window.removeEventListener('popstate', syncRoute);
-    };
-  }, [examples, loadExample, queryDefaults]);
-
-  const changeExample = (exampleName: string) => {
-    const index = examples.findIndex((example) => example.name === exampleName);
-    if (index === -1) return;
-    loadExample(index);
-    setQueryOption('active-tab', 'demo', 'demo');
-    const currentHash = splitDemoHash(window.location.hash);
-    if (currentHash.route !== exampleName) {
-      window.location.hash = `${encodeDemoHashRoute(exampleName)}${
-        currentHash.query ? `?${currentHash.query}` : ''
-      }`;
-    }
-    if (!window.matchMedia('(min-width: 1280px)').matches) {
-      setSidebarOpen(false);
-      setQueryOption('drawer', false, defaultDrawer);
-    }
-  };
-
-  const goHome = () => {
-    window.history.pushState(
-      null,
-      '',
-      `${window.location.pathname}${window.location.search}`,
-    );
-    setIsHome(true);
-    setFormOnly(false);
-  };
-
-  const changeActiveTab = (value: DemoTab) => {
-    setActiveTab(value);
-    setQueryOption('active-tab', value, 'demo');
-  };
-
-  const changeReadonly = (value: boolean) => {
-    setReadonly(value);
-    setQueryOption('read-only', value, false);
-  };
-
-  useEffect(() => {
-    if (
-      (layout === 'demo-and-data' && activeTab === 'data') ||
-      (activeTab === 'external' && !(currentExample as any).configuration)
-    ) {
-      // eslint-disable-next-line react/set-state-in-effect -- Keep tab state and the browser URL synchronized when the externally restored layout hides the data tab.
-      setActiveTab('demo');
-      setQueryOption('active-tab', 'demo', 'demo');
-    }
-  }, [activeTab, layout, setQueryOption, currentExample]);
-
+  const {
+    currentIndex,
+    currentExample,
+    isHome,
+    activeTab,
+    sidebarOpen,
+    formOnly,
+    useWebComponent,
+    readonly,
+    goHome,
+    changeExample,
+    changeActiveTab,
+    changeReadonly,
+    toggleSidebar,
+    toggleFormOnly,
+    toggleWebComponent,
+  } = useDemoNavigation(examples, initialRoute, loadExample, layout);
+  const actions: Action[] = currentExample.actions ?? [];
   const filteredExamples = useMemo(() => {
     const needle = search.trim().toLowerCase();
     return examples
@@ -769,21 +573,9 @@ const App = ({
       onHome={goHome}
       onSelectExample={changeExample}
       onSearch={setSearch}
-      onToggleSidebar={() => {
-        const value = !sidebarOpen;
-        setSidebarOpen(value);
-        setQueryOption('drawer', value, defaultDrawer);
-      }}
-      onToggleFormOnly={() => {
-        const value = !formOnly;
-        setFormOnly(value);
-        setQueryOption('form-only', value, false);
-      }}
-      onToggleWebComponent={() => {
-        const value = !useWebComponent;
-        setUseWebComponent(value);
-        setQueryOption('use-webcomponent', value, false);
-      }}
+      onToggleSidebar={toggleSidebar}
+      onToggleFormOnly={toggleFormOnly}
+      onToggleWebComponent={toggleWebComponent}
       onOpenSettings={() => setSettingsOpen(true)}
       onCloseSettings={() => setSettingsOpen(false)}
     >

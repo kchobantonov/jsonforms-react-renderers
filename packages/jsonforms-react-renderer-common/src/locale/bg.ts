@@ -1,4 +1,4 @@
-import type { RendererLocaleCatalog } from './rendererLocale';
+import type { I18nKey } from './en';
 
 /**
  * Bulgarian for the renderer set's own strings.
@@ -10,15 +10,21 @@ import type { RendererLocaleCatalog } from './rendererLocale';
  * registerRendererLocale('bg', bgRendererLocale);
  * ```
  *
- * Every key is optional: a bundle that omits one falls through to English, so
- * a new key never breaks a translated form.
+ * This built-in catalog covers every English renderer message.
  */
-export const bgRendererLocale: RendererLocaleCatalog = {
+export const bgRendererLocale = {
   'collection.firstError': 'Към първата грешка',
   'collection.addedHidden': 'Новият елемент е скрит от текущия филтър.',
   'collection.clearFilters': 'Изчистване на филтрите',
   'composite.summary.emptyObject': 'Празен обект',
   'composite.summary.unspecified': '{label} не е зададено',
+  'collection.pagination': 'Странициране',
+  'collection.pageSize': 'Брой елементи на страница',
+  'collection.previous': 'Предишна страница',
+  'collection.next': 'Следваща страница',
+  'collection.editDetails': 'Редактиране на подробностите',
+  'collection.selectItem':
+    'Изберете елемент, за да видите подробностите за него.',
   'collection.showDetails': 'Показване на подробностите',
   'collection.hideDetails': 'Скриване на подробностите',
   'collection.deleteSelected': 'Изтриване на избраните редове',
@@ -177,10 +183,12 @@ export const bgRendererLocale: RendererLocaleCatalog = {
   'composite.empty': 'Изчистване',
   'composite.emptyTooltip':
     'Изчиства съдържанието, като запазва обекта или масива.',
+  'dialog.maximize': 'Увеличаване на диалоговия прозорец',
+  'dialog.restore': 'Възстановяване на размера на диалоговия прозорец',
   'composite.cancel': 'Отказ',
   'composite.cancelTooltip': 'Отхвърля промените и затваря.',
   'composite.apply': 'Прилагане',
   'composite.applyTooltip': 'Прилага промените и затваря.',
   'composite.applyConflict':
     'Стойността беше променена другаде, докато диалогът беше отворен. Откажете и го отворете отново.',
-};
+} satisfies Record<I18nKey, string>;
