@@ -160,7 +160,9 @@ export const AntdMixedTree = ({
             {renameable ? (
               <Tooltip title={t('mixed.rename')}>
                 <Button
-                  aria-label={`Rename ${mixedTreeLabel(node)}`}
+                  aria-label={t('mixed.renameNamed', {
+                    name: mixedTreeLabel(node),
+                  })}
                   icon={<EditOutlined />}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -179,7 +181,9 @@ export const AntdMixedTree = ({
             {deletable ? (
               <Tooltip title={t('mixed.delete')}>
                 <Button
-                  aria-label={`Delete ${mixedTreeLabel(node)}`}
+                  aria-label={t('mixed.deleteNamed', {
+                    name: mixedTreeLabel(node),
+                  })}
                   danger
                   icon={<DeleteOutlined />}
                   onClick={(event) => {

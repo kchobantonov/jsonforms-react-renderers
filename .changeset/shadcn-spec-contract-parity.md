@@ -5,6 +5,8 @@
 '@chobantonov/jsonforms-react-extended-renderers': patch
 '@chobantonov/jsonforms-react-antd-renderers': patch
 '@chobantonov/jsonforms-react-antd-extended-renderers': patch
+'@chobantonov/jsonforms-react-antd-webcomponent': patch
+'@chobantonov/jsonforms-react-shadcn-webcomponent': patch
 ---
 
 Expand shadcn specification contract tests to cover the behavioral cases exercised by Ant Design, including property editing, confirmation policies, localization, validation, array expansion, temporal constraints, and extended editor integration.
@@ -24,3 +26,5 @@ Centralize shared object detail assembly, deletion-confirmation binding, composi
 Separate shadcn temporal presentation, time picker inputs, and array item actions into focused helpers and components while preserving their behavior.
 
 Localize default shadcn date, time, and date-time placeholders through the renderer catalogs, including Bulgarian defaults, while preserving explicit UI schema and configuration placeholders.
+
+Translate renderer-owned controls, actions, accessible names, calendar text, and diagnostics with locale-aware fallbacks. Preserve localization adapters during shadcn synchronization and support own nested translation catalog keys in both web-component wrappers.

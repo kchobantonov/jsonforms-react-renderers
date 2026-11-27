@@ -151,7 +151,7 @@ export const createRecursiveTreeRenderer = (
           rootSchema,
           options.childrenProperty,
           options.labelProperty,
-          label || 'Value',
+          label || t('control.value'),
         ),
       [
         data,
@@ -160,6 +160,7 @@ export const createRecursiveTreeRenderer = (
         options.childrenProperty,
         options.labelProperty,
         label,
+        t,
       ],
     );
     const [selection, setSelection] = useState<{

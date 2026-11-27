@@ -1,3 +1,4 @@
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import { ArrayPanelToggle } from './ArrayPanelToggle';
 import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
@@ -133,8 +134,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
     );
     (direction === -1 ? moveUp : moveDown)?.(path, index)();
   };
-  const translate = (key: string, fallback: string) =>
-    ctx.i18n?.translate?.(key, fallback) ?? fallback;
+  const translate = useTranslator();
   const translations = {
     addAriaLabel: translate('array.addAriaLabel', 'Add'),
     addTooltip: translate('array.addTooltip', 'Add item'),
@@ -315,8 +315,14 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
             <Button
               type='button'
               size='icon-sm'
-              aria-label={translations?.addAriaLabel || 'Add'}
-              title={translations?.addTooltip || 'Add item'}
+              aria-label={
+                translations?.addAriaLabel ??
+                translate('array.addAriaLabel', 'Add')
+              }
+              title={
+                translations?.addTooltip ??
+                translate('array.addTooltip', 'Add item')
+              }
               disabled={!canAdd}
               onClick={() => {
                 if (!canAdd) return;

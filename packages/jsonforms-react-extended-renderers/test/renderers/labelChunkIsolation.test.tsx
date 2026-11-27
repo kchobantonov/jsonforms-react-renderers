@@ -22,7 +22,9 @@ import { MarkupLabelRenderer, markupLabelTester } from '../../src';
  *
  * The Markdown side has the same guard in `markupLabelFallback.test.tsx`.
  */
+const { loadAttempt } = vi.hoisted(() => ({ loadAttempt: vi.fn() }));
 vi.mock('../../src/util/celTemplate', () => {
+  loadAttempt();
   throw new Error('the evaluator must not be requested here');
 });
 
@@ -30,10 +32,22 @@ const schema: any = { type: 'object', properties: {} };
 
 let container: HTMLElement;
 let root: ReturnType<typeof createRoot>;
-let consoleError: ReturnType<typeof vi.spyOn>;
+const expectedFailure = (error: unknown): boolean =>
+  error instanceof Error &&
+  (error.message === 'the evaluator must not be requested here' ||
+    expectedFailure(error.cause));
+const expectedErrors: ErrorEvent[] = [];
+const onExpectedError = (event: ErrorEvent) => {
+  if (expectedFailure(event.error)) {
+    expectedErrors.push(event);
+    event.preventDefault();
+  }
+};
 
 beforeEach(() => {
-  consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  loadAttempt.mockClear();
+  expectedErrors.length = 0;
+  window.addEventListener('error', onExpectedError);
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -42,11 +56,11 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   document.body.innerHTML = '';
-  consoleError.mockRestore();
+  window.removeEventListener('error', onExpectedError);
 });
 
 const draw = async (uischema: any) => {
-  act(() =>
+  await act(async () =>
     root.render(
       <JsonForms
         data={{}}
@@ -61,9 +75,6 @@ const draw = async (uischema: any) => {
       />,
     ),
   );
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 60));
-  });
 };
 
 describe('a label reaches only for what it needs', () => {
@@ -77,8 +88,9 @@ describe('a label reaches only for what it needs', () => {
     await vi.waitFor(
       async () => {
         await act(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await Promise.resolve();
         });
+        expect(loadAttempt).not.toHaveBeenCalled();
         expect(container.querySelector('strong')?.textContent).toBe(
           'Doors open',
         );
@@ -98,6 +110,7 @@ describe('a label reaches only for what it needs', () => {
       text: 'Seats are limited. {{note}} is literal.',
       options: { interpolate: true },
     });
+    expect(loadAttempt).not.toHaveBeenCalled();
     expect(container.textContent).toContain(
       'Seats are limited. {note} is literal.',
     );
@@ -112,8 +125,9 @@ describe('a label reaches only for what it needs', () => {
     await vi.waitFor(
       async () => {
         await act(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await Promise.resolve();
         });
+        expect(loadAttempt).not.toHaveBeenCalled();
         expect(container.querySelector('strong')?.textContent).toBe('Seats');
       },
       { timeout: 5000 },
@@ -134,6 +148,11 @@ describe('a label reaches only for what it needs', () => {
         textParams: { name: '{data.firstName}' },
       },
     });
+    await vi.waitFor(async () => {
+      await act(async () => {});
+      expect(expectedErrors.length).toBeGreaterThan(0);
+    });
+    expect(loadAttempt).toHaveBeenCalledOnce();
     expect(container.textContent).toContain('Welcome, !');
     expect(container.textContent).not.toContain('{name}');
     // The form is still standing.

@@ -268,6 +268,9 @@ importers:
       '@chobantonov/jsonforms-react-demo-common':
         specifier: workspace:*
         version: link:../../packages/jsonforms-react-demo-common
+      '@chobantonov/jsonforms-react-renderer-common':
+        specifier: workspace:*
+        version: link:../../packages/jsonforms-react-renderer-common
       '@chobantonov/jsonforms-react-shadcn-extended-renderers':
         specifier: workspace:*
         version: link:../../packages/jsonforms-react-shadcn-extended-renderers

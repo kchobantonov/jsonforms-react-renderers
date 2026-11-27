@@ -6,3 +6,5 @@ These are the upstream new-york-v4 Radix components, except Collapsible, which u
 Run `pnpm shadcn:sync` to install the pinned copies in both hosts. Run `pnpm shadcn:check` to detect drift. The `cn` and sibling UI import paths are rewritten. Button, Input, and DialogOverlay additionally receive a `forwardRef` compatibility transform for React 18; their styles and behavior remain upstream. Do not format or customize these generated host files independently.
 
 Tailwind 4 is required. Current upstream ref handling targets React 19. The ref compatibility transforms support the existing React 18 hosts without changing the pinned source. `utils.ts` and `index.ts` are local integration files, not upstream UI components.
+
+The synchronization step also applies `scripts/localize-shadcn.mjs`: calendar text follows the form locale, and dialog, breadcrumb, and pagination messages resolve through the shared renderer catalogs. The web-component dialog keeps portals inside its styled shadow tree. These adapters are verified by `pnpm shadcn:check`; preserve them when refreshing the upstream revision.

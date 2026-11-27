@@ -19,6 +19,7 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@chobantonov/jsonforms-react-demo-common": "workspace:*",
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-extended-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-renderers": "workspace:*",
     "@chobantonov/jsonforms-react-shadcn-webcomponent": "workspace:*",

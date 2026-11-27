@@ -1,21 +1,39 @@
-import { defaultTranslator, Translator } from '@jsonforms/core';
+import { Translator } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
 import { useCallback } from 'react';
 import { rendererDefault } from './rendererLocale';
 // `I18nKey` is declared beside the defaults it indexes, not here: re-exporting
 // it from both modules makes `util/index.ts` export the name twice.
-import { I18nKey } from '.';
+import { I18nKey, i18nDefaults } from '.';
 
 /**
- * The form's translator, or a passthrough returning each default message.
+ * The form's translator with locale defaults for renderer-owned keys.
+ * Authored keys keep their supplied fallbacks and are not interpolated here.
  *
  * For the shared components that take a `Translator` rather than using
  * {@link useI18n} - the composite dialog and the summary helper - because they
  * are also reached from cells, which receive one as a prop.
  */
 export const useTranslator = (): Translator => {
-  const translate = useJsonForms().i18n?.translate;
-  return translate ?? defaultTranslator;
+  const { translate, locale } = useJsonForms().i18n ?? {};
+  return useCallback(
+    (
+      key: string,
+      defaultMessage?: string,
+      values?: Record<string, unknown>,
+    ) => {
+      const owned = Object.prototype.hasOwnProperty.call(i18nDefaults, key);
+      const fallback = owned
+        ? rendererDefault(locale, key as I18nKey)
+        : defaultMessage;
+      const message = translate?.(key, fallback, values) ?? fallback;
+      if (!owned || !message || !values) return message;
+      return message.replace(/\{(\w+)\}/g, (placeholder, name: string) =>
+        values[name] === undefined ? placeholder : String(values[name]),
+      );
+    },
+    [translate, locale],
+  ) as Translator;
 };
 
 /**

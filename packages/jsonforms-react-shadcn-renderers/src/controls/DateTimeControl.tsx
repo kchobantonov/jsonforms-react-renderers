@@ -1,3 +1,5 @@
+import { useJsonForms } from '@jsonforms/react';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
@@ -24,6 +26,8 @@ import {
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnDateTimeControl = (props: ControlProps) => {
+  const text = useI18n();
+  const locale = useJsonForms().i18n?.locale;
   const {
     data,
     description,
@@ -91,7 +95,12 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
               {selectedDate && selectedTime
                 ? typeof temporal.options.dateTimeFormat === 'string'
                   ? temporal.displayText
-                  : formatDisplayDateTime(selectedDate, selectedTime, ampm)
+                  : formatDisplayDateTime(
+                      selectedDate,
+                      selectedTime,
+                      ampm,
+                      locale,
+                    )
                 : typeof data === 'string' && data
                   ? data
                   : placeholder}
@@ -146,7 +155,7 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             </div>
             <div className='flex justify-end p-2 pt-0'>
               <Button type='button' size='sm' onClick={() => setOpen(false)}>
-                Done
+                {text('control.done')}
               </Button>
             </div>
           </PopoverContent>
@@ -160,7 +169,8 @@ export const ShadcnDateTimeControl = (props: ControlProps) => {
             variant='ghost'
             size='icon'
             className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
-            aria-label='Clear date and time'
+            aria-label={text('temporal.clearDateTime')}
+            title={text('temporal.clearDateTime')}
             onClick={() => handleChange(path, undefined)}
           >
             <X className='h-4 w-4' />

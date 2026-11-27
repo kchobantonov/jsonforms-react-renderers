@@ -102,3 +102,40 @@ it('maps host properties and attributes into form input without losing JSON valu
   });
   expect(formAttributes).toContain('external');
 });
+
+it('resolves own nested catalog entries, preferring literal dotted keys', () => {
+  const translate = createTranslator(
+    {
+      bg: {
+        temporal: {
+          datePlaceholder: 'Nested date',
+          timePlaceholder: 'Nested time',
+        },
+        'temporal.datePlaceholder': 'Literal date',
+        empty: '',
+        invalid: { value: 1 },
+      },
+    },
+    'bg',
+  );
+  expect(translate('temporal.datePlaceholder', 'fallback')).toBe(
+    'Literal date',
+  );
+  expect(translate('temporal.timePlaceholder', 'fallback')).toBe('Nested time');
+  expect(translate('empty', 'fallback')).toBe('');
+  expect(translate('invalid.value', 'fallback')).toBe('fallback');
+  const inherited = Object.create({ hidden: 'Inherited' });
+  inherited.visible = 'Own';
+  expect(createTranslator(inherited)('hidden', 'fallback')).toBe('fallback');
+  expect(createTranslator(inherited)('visible', 'fallback')).toBe('Own');
+  expect(translate('constructor.name', 'fallback')).toBe('fallback');
+});
+
+it('falls back from a regional wrapper locale to its language catalog', () => {
+  const translate = createTranslator(
+    { bg: { nested: { label: 'Български' } }, fallback: 'Root' },
+    'bg-BG',
+  );
+  expect(translate('nested.label', 'English')).toBe('Български');
+  expect(translate('fallback', 'English')).toBe('Root');
+});

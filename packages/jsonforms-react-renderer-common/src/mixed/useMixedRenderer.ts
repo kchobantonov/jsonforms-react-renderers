@@ -45,13 +45,20 @@ function useMixedTreeSelection(
   selectedSchema: ControlProps['schema'] | undefined,
   selectedType: JsonDataType | null | undefined,
 ) {
+  const t = useI18n();
+  const fallbackLabel = t('control.value');
   const [selectedPath, setSelectedPath] = useState<MixedTreePath>([]);
   const tree = useMemo(
     () =>
       selectedSchema && (selectedType === 'object' || selectedType === 'array')
-        ? buildMixedTree(data, selectedSchema, rootSchema, label || 'Value')
+        ? buildMixedTree(
+            data,
+            selectedSchema,
+            rootSchema,
+            label || fallbackLabel,
+          )
         : undefined,
-    [data, label, rootSchema, selectedSchema, selectedType],
+    [data, label, fallbackLabel, rootSchema, selectedSchema, selectedType],
   );
   const matchedNode = tree && findMixedTreeNode(tree, selectedPath);
   if (tree && selectedPath.length > 0 && !matchedNode) setSelectedPath([]);

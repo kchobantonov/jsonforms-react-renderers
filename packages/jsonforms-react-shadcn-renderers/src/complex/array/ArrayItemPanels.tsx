@@ -105,6 +105,7 @@ const ArrayItemActions = ({
   index: number;
   settings: ArrayItemPanelsProps;
 }) => {
+  const t = useI18n();
   const {
     uischema,
     config,
@@ -149,8 +150,8 @@ const ArrayItemActions = ({
         variant='destructive'
         size='icon'
         className='h-7 w-7'
-        aria-label={removeLabel || 'Remove'}
-        title={removeTooltip || 'Remove item'}
+        aria-label={removeLabel || t('array.removeAriaLabel')}
+        title={removeTooltip || t('array.removeTooltip')}
         type='button'
         disabled={!canRemove}
         onClick={() => requestRemove(index)}

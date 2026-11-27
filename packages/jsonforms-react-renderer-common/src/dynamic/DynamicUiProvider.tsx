@@ -1,3 +1,4 @@
+import { rendererDefault } from '../locale/rendererLocale';
 import {
   createDynamicTreeResolver,
   hasDynamicTree,
@@ -93,13 +94,10 @@ export const DynamicUiProvider = ({
   useEffect(() => {
     if (!pending) setHasPresented(true);
   }, [pending]);
-  const fallback = failed
-    ? locale === 'bg'
-      ? 'Зареждането на формуляра е неуспешно.'
-      : 'Unable to load dynamic expressions.'
-    : locale === 'bg'
-      ? 'Зареждане на формуляра…'
-      : 'Loading form…';
+  const fallback = rendererDefault(
+    locale,
+    failed ? 'dynamic.loadFailed' : 'dynamic.loading',
+  );
   return (
     <DynamicCacheContext.Provider value={cache}>
       <ExternalContext.Provider value={external}>

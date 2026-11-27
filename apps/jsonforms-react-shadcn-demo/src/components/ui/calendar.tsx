@@ -1,4 +1,5 @@
 "use client"
+import { useCalendarLocalization } from "@chobantonov/jsonforms-react-renderer-common/locale/calendar"
 
 import * as React from "react"
 import { cn } from "./utils"
@@ -22,11 +23,13 @@ function Calendar({
   captionLayout = "label",
   buttonVariant = "ghost",
   formatters,
+  labels,
   components,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
+  const localization = useCalendarLocalization(props.locale?.code)
   const defaultClassNames = getDefaultClassNames()
 
   return (
@@ -40,10 +43,10 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
+        ...localization.formatters,
         ...formatters,
       }}
+      labels={{ ...localization.labels, ...labels }}
       classNames={{
         root: cn("w-fit", defaultClassNames.root),
         months: cn(

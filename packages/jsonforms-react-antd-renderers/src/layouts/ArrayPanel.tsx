@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React from 'react';
 import { Button, Card, CardProps } from 'antd';
 import DownOutlined from '@ant-design/icons/DownOutlined';
@@ -16,6 +17,7 @@ export const ArrayPanel = ({
   config?: any;
   panelLabel?: string;
 }) => {
+  const t = useI18n();
   const panel = useArrayPanelState(options, config);
   return (
     <Card
@@ -27,7 +29,7 @@ export const ArrayPanel = ({
           {panel.collapsible && (
             <Button
               shape='circle'
-              aria-label={panelLabel || 'Array'}
+              aria-label={panelLabel || t('control.array')}
               aria-expanded={!panel.collapsed}
               aria-controls={panel.contentId}
               onClick={panel.toggle}

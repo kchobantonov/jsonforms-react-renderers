@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
@@ -19,24 +20,24 @@ export const CombinatorSwitchDialog = ({
   open,
   onCancel,
   onConfirm,
-}: CombinatorSwitchDialogProps) => (
-  <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Clear form?</DialogTitle>
-        <DialogDescription>
-          Your data will be cleared if you select a schema with a different data
-          type. Do you want to proceed?
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <Button type='button' variant='outline' onClick={onCancel}>
-          No
-        </Button>
-        <Button type='button' onClick={onConfirm}>
-          Yes
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-);
+}: CombinatorSwitchDialogProps) => {
+  const t = useI18n();
+  return (
+    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('combinator.clearTitle')}</DialogTitle>
+          <DialogDescription>{t('combinator.clearMessage')}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button type='button' variant='outline' onClick={onCancel}>
+            {t('confirm.decline')}
+          </Button>
+          <Button type='button' onClick={onConfirm}>
+            {t('confirm.accept')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

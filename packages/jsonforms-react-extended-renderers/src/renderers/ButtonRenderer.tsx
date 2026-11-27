@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React, {
   useMemo,
   useCallback,
@@ -173,6 +174,7 @@ export const createButtonRenderer = ({
 }: ButtonRendererOptions = {}) => {
   const ButtonRenderer = (props: ButtonRendererComponentProps) => {
     const { enabled, uischema, visible, config, t } = props;
+    const text = useI18n();
     const handleAction = useHandleAction();
     const ctx = useJsonForms();
 
@@ -191,7 +193,7 @@ export const createButtonRenderer = ({
       element.label ??
       element.text ??
       element.name ??
-      'Action';
+      text('button.action');
     /*
       Deliberately **not** falling back to the label. The label is translated,
       so an action derived from it would change with the form's language - a
@@ -290,8 +292,7 @@ export const createButtonRenderer = ({
           data-button-diagnostic='script.evaluationDisabled'
           style={DIAGNOSTIC_STYLE}
         >
-          {`"${label}" runs a script, which compiles a string into executable code. ` +
-            'That requires jsonformsExtended.security.allowScriptEvaluation to be true.'}
+          {text('button.scriptDisabled', { label })}
         </div>
       );
     }

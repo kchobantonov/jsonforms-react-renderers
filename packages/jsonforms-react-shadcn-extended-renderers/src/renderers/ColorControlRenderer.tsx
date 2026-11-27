@@ -160,7 +160,9 @@ export const ShadcnColorControl = (props: ControlProps) => {
               variant='ghost'
               size='icon'
               className='absolute start-1 top-1/2 h-8 w-8 -translate-y-1/2 p-1'
-              aria-label={`${props.label || 'Color'} picker`}
+              aria-label={message('color.pickerLabel', {
+                label: props.label || message('color.label'),
+              })}
               disabled={disabled}
             >
               <span
@@ -186,7 +188,9 @@ export const ShadcnColorControl = (props: ControlProps) => {
           <PopoverContent align='start' className='w-72 space-y-3'>
             <div
               role='slider'
-              aria-label={`${props.label || 'Color'} saturation and brightness`}
+              aria-label={message('color.saturationLabel', {
+                label: props.label || message('color.label'),
+              })}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={s}
@@ -256,7 +260,9 @@ export const ShadcnColorControl = (props: ControlProps) => {
               min={0}
               max={359}
               value={h}
-              aria-label={`${props.label || 'Color'} hue`}
+              aria-label={message('color.hueLabel', {
+                label: props.label || message('color.label'),
+              })}
               disabled={transparent}
               className='w-full cursor-pointer'
               style={{
@@ -276,7 +282,10 @@ export const ShadcnColorControl = (props: ControlProps) => {
                     min={0}
                     max={255}
                     value={pickerColor[channel]}
-                    aria-label={`${props.label || 'Color'} ${channel.toUpperCase()}`}
+                    aria-label={message('color.channelLabel', {
+                      label: props.label || message('color.label'),
+                      channel: channel.toUpperCase(),
+                    })}
                     disabled={transparent}
                     className='mb-1 h-9 px-1 text-center'
                     onChange={(event) => {

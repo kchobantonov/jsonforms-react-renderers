@@ -1,3 +1,4 @@
+import { JsonFormsContext } from '@jsonforms/react';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { describe, expect, it, vi } from 'vite-plus/test';
@@ -29,28 +30,30 @@ const schema = {
 const uischema = { type: 'Control', scope: '#' } as any;
 
 describe('file size rejection', () => {
-  const renderControl = (handleChange = vi.fn()) => {
+  const renderControl = (handleChange = vi.fn(), locale?: string) => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const root = createRoot(container);
     act(() =>
       root.render(
-        <AntdFile
-          data='previously-committed-base64'
-          schema={schema}
-          uischema={uischema}
-          path='attachment'
-          handleChange={handleChange}
-          enabled
-          t={(_k: string, fallback: string) => fallback}
-          {...({
-            isValid: true,
-            rootSchema: schema,
-            errors: '',
-            id: 'f',
-            visible: true,
-          } as any)}
-        />,
+        <JsonFormsContext.Provider value={{ i18n: { locale } } as any}>
+          <AntdFile
+            data='previously-committed-base64'
+            schema={schema}
+            uischema={uischema}
+            path='attachment'
+            handleChange={handleChange}
+            enabled
+            t={(_k: string, fallback: string) => fallback}
+            {...({
+              isValid: true,
+              rootSchema: schema,
+              errors: '',
+              id: 'f',
+              visible: true,
+            } as any)}
+          />
+        </JsonFormsContext.Provider>,
       ),
     );
     return {
@@ -65,6 +68,28 @@ describe('file size rejection', () => {
       },
     };
   };
+
+  it.each([
+    [5000, 'по-малък'],
+    [2, 'по-голям'],
+  ])('localizes the rejection reason for a file of %s bytes', (size, bound) => {
+    const c = renderControl(vi.fn(), 'bg-BG');
+    try {
+      act(() => {
+        c.props.beforeUpload({ size, name: 'Raw filename.json' });
+      });
+      const text = c.container.querySelector(
+        '[data-file-rejection]',
+      )!.textContent;
+      expect(text).toContain('Raw filename.json');
+      expect(text).toContain('не беше прикачен');
+      expect(text).toContain(bound);
+      expect(text).not.toContain('size should');
+      expect(c.handleChange).not.toHaveBeenCalled();
+    } finally {
+      c.unmount();
+    }
+  });
 
   it('rejects an oversized file without touching the committed value', () => {
     const c = renderControl();

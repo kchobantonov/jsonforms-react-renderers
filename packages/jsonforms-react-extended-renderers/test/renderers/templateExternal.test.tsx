@@ -56,11 +56,12 @@ for (const lang of ['jsx', 'ractive', 'tsx']) {
             </DynamicUiProvider>,
           ),
         );
-        await vi.waitFor(() =>
+        await vi.waitFor(async () => {
+          await act(async () => {});
           expect(host.querySelector('[data-external]')?.textContent).toBe(
             title ?? 'absent',
-          ),
-        );
+          );
+        });
       }
       expect(ctx.core.data).toEqual({ value: 'business' });
     } finally {

@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   ControlProps,
   isBooleanControl,
@@ -7,6 +8,17 @@ import {
 import React from 'react';
 import { InputShell, makeId } from './InputControl';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
+
+function BooleanValueLabel({ value }: { value: unknown }) {
+  const t = useI18n();
+  return (
+    <span>
+      {typeof value === 'boolean'
+        ? t(value ? 'boolean.yes' : 'boolean.no')
+        : ''}
+    </span>
+  );
+}
 
 export const ShadcnBooleanControl = ({
   config,
@@ -46,7 +58,7 @@ export const ShadcnBooleanControl = ({
           checked={typeof data === 'boolean' ? data : 'indeterminate'}
           onCheckedChange={(checked) => handleChange(path, checked === true)}
         />
-        <span>{data === true ? 'Yes' : data === false ? 'No' : ''}</span>
+        <BooleanValueLabel value={data} />
       </label>
     </InputShell>
   );

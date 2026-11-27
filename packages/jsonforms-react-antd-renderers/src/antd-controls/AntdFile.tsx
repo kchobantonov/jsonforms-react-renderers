@@ -17,7 +17,7 @@ import {
 } from '@jsonforms/core';
 import toNumber from 'lodash/toNumber';
 import { TranslateProps } from '@jsonforms/react';
-import { useI18nDefault } from '../util/translate';
+import { useI18n, useI18nDefault } from '../util/translate';
 
 const FileActionButton = ({
   type: _type,
@@ -48,12 +48,12 @@ interface UploadProgressEvent extends Partial<ProgressEvent> {
   percent?: number;
 }
 
-const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return '0 Bytes';
+const formatBytes = (bytes: number, byteUnit: string, decimals = 2) => {
+  if (bytes === 0) return `0 ${byteUnit}`;
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = [byteUnit, 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
@@ -175,6 +175,7 @@ export const AntdFile = React.memo(function AntdFile(
     read straight out of the English table.
   */
   const d = useI18nDefault();
+  const text = useI18n();
   const cell = useCellMode();
   const [attachment, setAttachment] = useState<{
     value: unknown;
@@ -215,8 +216,8 @@ export const AntdFile = React.memo(function AntdFile(
             ? 'error.formatExclusiveMaximum'
             : 'error.formatMaximum',
         );
-        const formatSize = formatBytes(maxFileSize);
-        return t(key, `size should be less than ${formatSize}`, {
+        const formatSize = formatBytes(maxFileSize, text('file.bytes'));
+        return t(key, text('file.maximumSize', { limitText: formatSize }), {
           limitText: `${formatSize}`,
           limit: `${maxFileSize}`,
         });
@@ -236,8 +237,8 @@ export const AntdFile = React.memo(function AntdFile(
             ? 'error.formatExclusiveMinimum'
             : 'error.formatMinimum',
         );
-        const formatSize = formatBytes(minFileSize);
-        return t(key, `size should be greater than ${formatSize}`, {
+        const formatSize = formatBytes(minFileSize, text('file.bytes'));
+        return t(key, text('file.minimumSize', { limitText: formatSize }), {
           limitText: `${formatSize}`,
           limit: `${minFileSize}`,
         });

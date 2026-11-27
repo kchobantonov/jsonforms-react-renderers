@@ -154,7 +154,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
             items={[
               {
                 key: 'group',
-                label: props.label || 'Group',
+                label: props.label || t('control.group'),
                 extra,
                 forceRender: true,
                 children: content,
@@ -234,7 +234,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
             {group.collapsible && (
               <button
                 type='button'
-                aria-label={headerTitle || props.label || 'Group'}
+                aria-label={headerTitle || props.label || t('control.group')}
                 aria-expanded={!group.collapsed}
                 aria-controls={group.contentId}
                 onClick={group.toggle}

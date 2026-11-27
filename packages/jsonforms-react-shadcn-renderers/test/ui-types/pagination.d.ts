@@ -8,3 +8,10 @@ export declare const PaginationContent: React.ComponentType<
 export declare const PaginationItem: React.ComponentType<
   React.ComponentProps<'li'>
 >;
+
+export const PaginationPrevious: React.ComponentType<
+  React.HTMLAttributes<HTMLAnchorElement>
+>;
+export const PaginationNext: React.ComponentType<
+  React.HTMLAttributes<HTMLAnchorElement>
+>;

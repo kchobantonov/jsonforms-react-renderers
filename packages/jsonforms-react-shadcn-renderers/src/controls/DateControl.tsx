@@ -1,3 +1,5 @@
+import { resolveIntlLocale } from '@chobantonov/jsonforms-react-renderer-common/locale/intl';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { useTemporalControl } from '../util/useTemporalControl';
 import {
   ControlProps,
@@ -29,6 +31,7 @@ import { formatDisplayDate } from '../util/dateTime';
 import { InputShell, makeId } from './InputControl';
 
 export const ShadcnDateControl = (props: ControlProps) => {
+  const text = useI18n();
   const {
     data,
     description,
@@ -43,8 +46,6 @@ export const ShadcnDateControl = (props: ControlProps) => {
   } = props;
   const temporal = useTemporalControl(props, 'date');
   const ctx = useJsonForms();
-  const t = (key: string, fallback: string) =>
-    ctx.i18n?.translate?.(key, fallback) ?? fallback;
   const options = { ...props.config, ...uischema.options };
   const datePattern = (value: string) =>
     value.replace(/\[([^\]]*)\]|YYYY|YY|DD|D/g, (token, literal) =>
@@ -113,7 +114,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
               {selected
                 ? typeof options.dateFormat === 'string'
                   ? format(selected, datePattern(options.dateFormat))
-                  : formatDisplayDate(selected)
+                  : formatDisplayDate(selected, ctx.i18n?.locale)
                 : placeholder}
             </Button>
           </PopoverTrigger>
@@ -128,7 +129,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     }
                   >
                     <SelectTrigger
-                      aria-label={t('Month', 'Month')}
+                      aria-label={text('temporal.month')}
                       className='w-36'
                     >
                       <SelectValue />
@@ -136,9 +137,12 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     <SelectContent>
                       {Array.from({ length: 12 }, (_, month) => (
                         <SelectItem key={month} value={String(month)}>
-                          {new Intl.DateTimeFormat(ctx.i18n?.locale, {
-                            month: 'long',
-                          }).format(new Date(2000, month, 1))}
+                          {new Intl.DateTimeFormat(
+                            resolveIntlLocale(ctx.i18n?.locale),
+                            {
+                              month: 'long',
+                            },
+                          ).format(new Date(2000, month, 1))}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -150,7 +154,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     }
                   >
                     <SelectTrigger
-                      aria-label={t('Year', 'Year')}
+                      aria-label={text('temporal.year')}
                       className='w-24'
                     >
                       <SelectValue />
@@ -179,7 +183,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                     type='button'
                     onClick={() => setOpen(false)}
                   >
-                    {t('Cancel', 'Cancel')}
+                    {text('control.cancel')}
                   </Button>
                   <Button
                     type='button'
@@ -189,7 +193,7 @@ export const ShadcnDateControl = (props: ControlProps) => {
                       setOpen(false);
                     }}
                   >
-                    {t('Apply', 'Apply')}
+                    {text('control.apply')}
                   </Button>
                 </div>
               </div>
@@ -221,7 +225,8 @@ export const ShadcnDateControl = (props: ControlProps) => {
             variant='ghost'
             size='icon'
             className='absolute end-1 top-1 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
-            aria-label='Clear date'
+            aria-label={text('temporal.clearDate')}
+            title={text('temporal.clearDate')}
             onClick={() => handleChange(path, undefined)}
           >
             <X className='h-4 w-4' />

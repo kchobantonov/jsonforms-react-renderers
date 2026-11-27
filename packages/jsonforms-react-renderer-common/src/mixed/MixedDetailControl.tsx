@@ -1,3 +1,4 @@
+import { useI18n } from '../locale/translate';
 import React from 'react';
 import { type ControlProps } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
@@ -153,13 +154,9 @@ export function MixedCodeControl({
   renderers,
   cells,
 }: ControlProps) {
+  const t = useI18n();
   if (uischema.options?.format === 'code')
-    return (
-      <div role='alert'>
-        Code presentation requires the Monaco renderer from the extended
-        renderer registry.
-      </div>
-    );
+    return <div role='alert'>{t('mixed.codeUnavailable')}</div>;
   return (
     <JsonFormsDispatch
       schema={schema}

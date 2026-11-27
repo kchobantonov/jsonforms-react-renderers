@@ -1,3 +1,4 @@
+import { localizeShadcn } from './localize-shadcn.mjs';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
@@ -70,6 +71,7 @@ for (const file of Object.keys(manifest.files)) {
         '\n})\n\nfunction DialogContent',
       );
   }
+  expected = localizeShadcn(file, expected);
   for (const host of [
     'apps/jsonforms-react-shadcn-demo',
     'packages/jsonforms-react-shadcn-webcomponent',

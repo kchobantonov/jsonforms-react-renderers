@@ -1,3 +1,4 @@
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import type { ItemContext } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import {
   LabelProps,
@@ -114,6 +115,7 @@ export const MarkupLabelRendererComponent = ({
   typography,
 }: MarkupLabelProps) => {
   const t = useExtendedTranslator();
+  const ownedText = useI18n();
   const ctx = useJsonForms();
   if (visible === false) {
     return null;
@@ -299,8 +301,8 @@ export const MarkupLabelRendererComponent = ({
             >
               {t('markup.interpolationFailed', {
                 detail: [
-                  ...reserved.map(
-                    (name) => `textParams.${name} is a reserved name`,
+                  ...reserved.map((name) =>
+                    ownedText('markup.reservedParam', { name }),
                   ),
                   ...result.failures,
                 ].join('; '),
