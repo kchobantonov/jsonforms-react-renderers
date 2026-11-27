@@ -6,8 +6,8 @@ import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   useDetailDialog,
   DetailDialogOptions,
-} from '@chobantonov/jsonforms-react-renderer-common/detailDialog';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/interaction/detailDialog';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 export const DetailDialogContent = ({
   options = {},

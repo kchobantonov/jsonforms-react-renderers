@@ -1,13 +1,13 @@
 import { LayoutProps } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
 import React from 'react';
-import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import {
   containerStyle,
   itemSizing,
   resolveGap,
   resolveGridColumns,
-} from '@chobantonov/jsonforms-react-renderer-common/layoutSizing';
+} from '@chobantonov/jsonforms-react-renderer-common/layout/layoutSizing';
 
 export const ShadcnLayout = ({
   direction,

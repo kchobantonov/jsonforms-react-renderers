@@ -1,15 +1,15 @@
 import React from 'react';
-import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/controls/inputAdornments';
 import { Form } from 'antd';
 import { useJsonForms } from '@jsonforms/react';
 import { ErrorFeedback } from '../complex/ErrorFeedback';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 
-import { useCellMode } from '@chobantonov/jsonforms-react-renderer-common/cellMode';
+import { useCellMode } from '@chobantonov/jsonforms-react-renderer-common/cells/cellMode';
 export {
   CellModeProvider,
   useCellMode,
-} from '@chobantonov/jsonforms-react-renderer-common/cellMode';
+} from '@chobantonov/jsonforms-react-renderer-common/cells/cellMode';
 
 export interface ControlFormItemProps {
   path?: string;

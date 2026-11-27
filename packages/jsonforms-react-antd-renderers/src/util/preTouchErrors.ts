@@ -2,9 +2,9 @@
 export {
   filterErrorsBeforeTouch,
   usePreTouchErrors,
-} from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
+} from '@chobantonov/jsonforms-react-renderer-common/validation/preTouchErrors';
 export type {
   FilterErrorsBeforeTouchInput,
   PreTouchErrorsProps,
   PreTouchErrors,
-} from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
+} from '@chobantonov/jsonforms-react-renderer-common/validation/preTouchErrors';

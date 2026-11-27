@@ -148,6 +148,9 @@ export const createExtendedRenderers = (
   ];
 };
 export * from './renderers';
+export * from './components/GenericAdditionalProperties';
+export * from './util/actionContext';
+export * from './util/horizontalLayout';
 
 export * from './core/ajv';
 export * from './core/keywords';
@@ -169,9 +172,10 @@ export * from './util/editorDiagnostics';
 export * from './util/extendedControls';
 export * from './util/maskControls';
 export * from './util/cron';
+export * from './util/useCronPicker';
 export * from './util/useDurationControl';
 export * from './util/editorControls';
-export * from './renderers/EditorControlFrame';
+export * from './components/editorRendererTypes';
 export * from './util/useEditorAppearance';
 export * from './util/i18nDefaults';
 export * from './util/useExtendedTranslator';
@@ -189,4 +193,4 @@ export * from './locale/bg';
 export * from './renderers/MonacoControlRenderer';
 export * from './renderers/AgGridControlRenderer';
 
-export { TRUST_DYNAMIC_FUNCTIONS } from '@chobantonov/jsonforms-react-renderer-common/dynamicConfig';
+export { TRUST_DYNAMIC_FUNCTIONS } from '@chobantonov/jsonforms-react-renderer-common/dynamic/dynamicConfig';

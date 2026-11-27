@@ -1,8 +1,12 @@
 export * from './AdditionalProperties';
-export * from './AllOfRenderer';
+export {
+  AllOfRenderer as ShadcnAllOfRenderer,
+  AllOfControl as ShadcnAllOfControl,
+  allOfControlTester,
+} from '@chobantonov/jsonforms-react-renderer-common/composition/AllOfRenderer';
 export * from './AnyOfRenderer';
 export * from './ArrayControlRenderer';
-export * from './CombinatorProperties';
+export * from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 export * from './CombinatorSwitchDialog';
 export * from './MixedRenderer';
 export * from './ObjectRenderer';

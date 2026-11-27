@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import merge from 'lodash/merge';
 import { Button, Steps } from 'antd';
 import {
@@ -6,7 +6,6 @@ import {
   Categorization,
   categorizationHasCategory,
   Category,
-  deriveLabelForUISchemaElement,
   optionIs,
   RankedTester,
   rankWith,
@@ -19,7 +18,7 @@ import {
   withTranslateProps,
 } from '@jsonforms/react';
 import { CategoryHeader } from './CategoryHeader';
-import { useCategorySelection } from '../util/categoryState';
+import { useCategorySelection, useCategoryLabels } from '../util/categoryState';
 import { useI18n } from '../util/translate';
 import {
   AjvProps,
@@ -37,16 +36,12 @@ export const categorizationStepperTester: RankedTester = rankWith(
   ),
 );
 
-export interface CategorizationStepperState {
-  activeCategory: number;
-}
-
-export interface CategorizationStepperLayoutRendererProps
+interface CategorizationStepperLayoutRendererProps
   extends StatePropsOfLayout, AjvProps, TranslateProps {
   data: any;
 }
 
-export const CategorizationStepperLayoutRenderer = (
+const CategorizationStepperLayoutRenderer = (
   props: CategorizationStepperLayoutRendererProps,
 ) => {
   // The `t` from props is core's Translator, which returns undefined for a
@@ -109,9 +104,7 @@ export const CategorizationStepperLayoutRenderer = (
     renderers,
     cells,
   };
-  const tabLabels = useMemo(() => {
-    return categories.map((e: Category) => deriveLabelForUISchemaElement(e, t));
-  }, [categories, t]);
+  const tabLabels = useCategoryLabels(categories, t);
 
   if (!visible) {
     return null;

@@ -1,4 +1,4 @@
-import { dynamicCellEntry } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { dynamicCellEntry } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import {
   ShadcnNumberFormatCell,
   numberFormatCellTester,

@@ -19,7 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@jsonforms-react-shadcn-ui/popover';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 import React, { useState } from 'react';
 import {
@@ -29,7 +29,7 @@ import {
   hsbToRgb,
   rgbToHsb,
   toCssColor,
-} from '@chobantonov/jsonforms-react-renderer-common/colorFormat';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/colorFormat';
 import {
   resolveExtendedOption,
   useExtendedTranslator,

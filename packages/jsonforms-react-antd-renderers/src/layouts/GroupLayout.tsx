@@ -1,7 +1,7 @@
-import { ObjectDetailContext } from '../complex/ObjectDetailContext';
+import { ObjectDetailContext } from '@chobantonov/jsonforms-react-renderer-common/objects/ObjectDetail';
 import { ValidationIcon } from '../complex/ValidationIcon';
-import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
+import { useGroupHeaderTitle } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import React from 'react';
 import { Card, Collapse, theme as antTheme } from 'antd';
 import {
@@ -16,12 +16,12 @@ import {
 import { JsonFormsDispatch, withJsonFormsLayoutProps } from '@jsonforms/react';
 import { AntdLayoutRenderer } from '../util/layout';
 import { useGroupState } from '../util/groupState';
-import { useI18n, useTranslator } from '../util/translate';
+import { useI18n } from '../util/translate';
 import { useContainerValidation } from '../util/validationIndicator';
 import { ContainerIndicator, DataDotIcon } from './ContainerIndicator';
 import { ContainerValidationIndicator } from './ValidationIndicator';
 
-export const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
+const groupTester: RankedTester = rankWith(1, uiTypeIs('Group'));
 
 export const GroupLayoutRenderer = (props: LayoutProps) => {
   /*
@@ -36,7 +36,6 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   */
   const { token } = antTheme.useToken();
   const t = useI18n();
-  const translate = useTranslator();
   const group = useGroupState(props.uischema, props.path, props.config);
   // Default false for a Group: no indicator exists today, so defaulting to
   // true would change every existing form's appearance.
@@ -58,7 +57,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
     header?: UISchemaElement[];
     footer?: UISchemaElement[];
   };
-  const resolveHeader = useDynamicTreeResolver(props.path);
+  const headerTitle = useGroupHeaderTitle(props.path, regions.header);
   if (!props.visible) return null;
   const renderRegion = (element: UISchemaElement, key: string) => (
     <JsonFormsDispatch
@@ -80,14 +79,7 @@ export const GroupLayoutRenderer = (props: LayoutProps) => {
   const footer = regions.footer?.map((element, index) =>
     renderRegion(element, `footer-${index}`),
   );
-  const headerLabel = regions.header
-    ?.map(resolveHeader)
-    .find((element) => element.type === 'Label') as
-    | { text?: string; i18n?: string }
-    | undefined;
-  const headerTitle = headerLabel?.i18n
-    ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
-    : headerLabel?.text;
+
   // One string for the tooltip and the accessible name, so the two cannot
   // drift apart.
   const indicatorLabel = t('group.dataIndicator');

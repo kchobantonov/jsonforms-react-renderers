@@ -28,4 +28,3 @@ export const ValidationIcon: React.FC<ValidationProps> = ({
     </ErrorFeedback>
   ) : null;
 };
-export default ValidationIcon;

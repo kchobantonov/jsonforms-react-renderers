@@ -5,7 +5,7 @@ import {
   ShadcnNumberControl,
 } from '../../src/controls/InputControl';
 import { ShadcnPasswordControl } from '../../src/controls/PasswordControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: 'Ada',

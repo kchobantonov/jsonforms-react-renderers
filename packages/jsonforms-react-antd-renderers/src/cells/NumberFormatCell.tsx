@@ -1,4 +1,5 @@
 import React from 'react';
+import { IntegerCell } from './IntegerCell';
 import {
   CellProps,
   Formatted,
@@ -11,8 +12,19 @@ import { withJsonFormsCellProps } from '@jsonforms/react';
 import { AntdInputNumberFormat } from '../antd-controls/AntdInputNumberFormat';
 
 export const NumberFormatCell = (
-  props: CellProps & WithClassname & Formatted<number>,
-) => <AntdInputNumberFormat {...props} />;
+  props: CellProps & WithClassname & Partial<Formatted<number>>,
+) => {
+  const { toFormatted, fromFormatted } = props;
+  return toFormatted && fromFormatted ? (
+    <AntdInputNumberFormat
+      {...props}
+      toFormatted={toFormatted}
+      fromFormatted={fromFormatted}
+    />
+  ) : (
+    <IntegerCell {...props} />
+  );
+};
 /**
  * Default tester for text-based/string controls.
  * @type {RankedTester}

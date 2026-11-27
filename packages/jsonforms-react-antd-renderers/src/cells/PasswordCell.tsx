@@ -13,7 +13,7 @@ import { passwordControlTester } from '../controls/PasswordControl';
  * without this, a password column fell through to the plain text cell and
  * showed the value to anyone looking at the screen.
  */
-export const PasswordCell = (props: CellProps & WithClassname) => (
+const PasswordCell = (props: CellProps & WithClassname) => (
   <AntdPassword {...props} />
 );
 

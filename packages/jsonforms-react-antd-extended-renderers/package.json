@@ -37,7 +37,8 @@
     "test:watch": "vp test",
     "doc": "typedoc --name 'JSON Forms React Ant Design Extended Renderers' --excludeExternals --out docs src",
     "tsc": "tsc --build tsconfig.json",
-    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json",
+    "test-cov": "vp test run --coverage"
   },
   "peerDependencies": {
     "@ant-design/icons": "catalog:peers",

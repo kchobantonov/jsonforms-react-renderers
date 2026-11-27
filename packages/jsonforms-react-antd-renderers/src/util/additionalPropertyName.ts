@@ -4,9 +4,8 @@ export {
   assignOwnProperty,
   createAdditionalPropertyNameSchema,
   validateAdditionalPropertyName,
-} from '@chobantonov/jsonforms-react-renderer-common/additionalPropertyName';
+} from '@chobantonov/jsonforms-react-renderer-common/objects/additionalPropertyName';
 export type {
   AdditionalPropertyNameError,
   AdditionalPropertyNameResult,
-  ValidateAdditionalPropertyNameOptions,
-} from '@chobantonov/jsonforms-react-renderer-common/additionalPropertyName';
+} from '@chobantonov/jsonforms-react-renderer-common/objects/additionalPropertyName';

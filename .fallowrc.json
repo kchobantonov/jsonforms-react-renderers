@@ -1,5 +1,51 @@
 {
   "$schema": "./node_modules/fallow/schema.json",
+  "minimumVersion": "3.49.0",
+  "entry": ["packages/jsonforms-react-shadcn-webcomponent/src/register.ts"],
+  "ignoreDependencies": ["@chobantonov/jsonforms-extended-spec"],
+  "ignoreExports": [
+    {
+      "file": "packages/jsonforms-react-demo-common/src/examples/nativeSpecExamples/button-actions.ts",
+      "exports": ["composed"]
+    },
+    {
+      "file": "packages/jsonforms-react-demo-common/src/examples/nativeSpecExamples/template-layout.tsx",
+      "exports": ["composed"]
+    }
+  ],
+  "workspaces": {
+    "settings": {
+      "apps/jsonforms-react-examples-app": {
+        "ignoreDependencies": [
+          "jsonforms-react-antd-demo",
+          "jsonforms-react-shadcn-demo"
+        ]
+      },
+      "apps/jsonforms-react-shadcn-demo": {
+        "ignoreDependencies": [
+          "@base-ui/react",
+          "class-variance-authority",
+          "clsx",
+          "radix-ui",
+          "react-day-picker",
+          "react-resizable-panels",
+          "tailwind-merge"
+        ]
+      },
+      "packages/jsonforms-react-shadcn-webcomponent": {
+        "ignoreDependencies": [
+          "@base-ui/react",
+          "class-variance-authority",
+          "clsx",
+          "lucide-react",
+          "radix-ui",
+          "react-day-picker",
+          "react-resizable-panels",
+          "tailwind-merge"
+        ]
+      }
+    }
+  },
   "ignorePatterns": [
     "apps/jsonforms-react-shadcn-demo/src/components/ui/**",
     "packages/jsonforms-react-shadcn-webcomponent/src/components/ui/**",

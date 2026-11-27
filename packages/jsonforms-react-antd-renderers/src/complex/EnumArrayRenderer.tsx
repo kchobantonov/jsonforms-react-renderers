@@ -77,7 +77,7 @@ export const EnumArrayRenderer = ({
         vertical={vertical}
         wrap={!vertical}
       >
-        {options.map((option: any, index: number) => {
+        {(options ?? []).map((option: any, index: number) => {
           const optionPath = Paths.compose(path, `${index}`);
           const checkboxValue = data?.includes(option.value) ? true : false;
           return (
@@ -90,7 +90,7 @@ export const EnumArrayRenderer = ({
               handleChange={(_childPath, newValue) =>
                 newValue
                   ? addItem(path, option.value)
-                  : removeItem(path, option.value)
+                  : removeItem?.(path, option.value)
               }
               data={checkboxValue}
               errors={errors}
@@ -136,7 +136,10 @@ export const enumArrayRendererTester: RankedTester = rankWith(
         const resolvedSchema = schema.$ref
           ? resolveSchema(rootSchema, schema.$ref, rootSchema)
           : schema;
-        return hasOneOfItems(resolvedSchema) || hasEnumItems(resolvedSchema);
+        return (
+          !!resolvedSchema &&
+          (hasOneOfItems(resolvedSchema) || hasEnumItems(resolvedSchema))
+        );
       }),
     ),
   ),

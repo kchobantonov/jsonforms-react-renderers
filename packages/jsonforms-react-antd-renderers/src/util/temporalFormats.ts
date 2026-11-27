@@ -5,10 +5,10 @@ export {
   saveFormatSatisfies,
   SAVE_FORMAT_DIAGNOSTIC,
   warnOnSaveFormat,
-} from '@chobantonov/jsonforms-react-renderer-common/temporalFormats';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/temporalFormats';
 
 /** The calendar views a date picker may offer, per section 18. */
-export type DateView = 'year' | 'month' | 'day';
+type DateView = 'year' | 'month' | 'day';
 
 /**
  * The picker granularity, from `views` or - failing that - the save format.
@@ -25,7 +25,7 @@ export type DateView = 'year' | 'month' | 'day';
  * explicit `views`.
  */
 /** The time columns a picker may offer. */
-export type TimeView = 'hours' | 'minutes' | 'seconds';
+type TimeView = 'hours' | 'minutes' | 'seconds';
 
 /**
  * Which time columns `views` asks for, or `undefined` to leave it to the

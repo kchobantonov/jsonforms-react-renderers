@@ -1,9 +1,9 @@
-import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 export {
   useEffectiveElements,
   withAjvProps,
-} from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
-export type { AjvProps } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+} from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
+export type { AjvProps } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import isEmpty from 'lodash/isEmpty';
 import { ConfigProvider } from 'antd';
 import React from 'react';
@@ -90,8 +90,8 @@ const AntdLayoutRendererComponent = ({
   visible,
   elements,
   schema,
-  path,
-  enabled,
+  path = '',
+  enabled = true,
   direction,
   layoutOptions,
   config,
@@ -99,7 +99,7 @@ const AntdLayoutRendererComponent = ({
   cells,
 }: AntdLayoutRendererProps) => {
   const effective = useEffectiveElements(elements, path, config);
-  if (isEmpty(effective) || !visible) {
+  if (!schema || isEmpty(effective) || !visible) {
     return null;
   }
   return renderLayoutElements(

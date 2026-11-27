@@ -20,10 +20,21 @@
       "types": "./lib/*.d.ts",
       "import": "./lib/*.esm.js",
       "require": "./lib/*.cjs.js"
+    },
+    "./locale": {
+      "types": "./lib/locale/index.d.ts",
+      "import": "./lib/locale/index.esm.js",
+      "require": "./lib/locale/index.cjs.js"
     }
   },
   "typesVersions": {
     "*": {
+      "lib/index.d.ts": [
+        "lib/index.d.ts"
+      ],
+      "locale": [
+        "lib/locale/index.d.ts"
+      ],
       "*": [
         "lib/*"
       ]
@@ -35,7 +46,8 @@
     "test": "vp test run",
     "clean": "rimraf lib coverage",
     "lint": "vp lint .",
-    "lint:fix": "vp run lint --fix"
+    "lint:fix": "vp run lint --fix",
+    "test-cov": "vp test run --coverage"
   },
   "dependencies": {
     "@marcbachmann/cel-js": "8.0.0",
@@ -64,7 +76,8 @@
     "vite": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "@chobantonov/jsonforms-extended-spec": "0.2.0"
+    "@chobantonov/jsonforms-extended-spec": "0.2.0",
+    "@vitest/coverage-v8": "catalog:"
   },
   "publishConfig": {
     "access": "public"

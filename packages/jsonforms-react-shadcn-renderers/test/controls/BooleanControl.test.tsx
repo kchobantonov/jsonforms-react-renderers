@@ -1,7 +1,7 @@
 import type { ControlProps } from '@jsonforms/core';
 import React from 'react';
 import { ShadcnBooleanControl } from '../../src/controls/BooleanControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: true,

@@ -1,12 +1,7 @@
-import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useCompositeCellPresentation } from '@chobantonov/jsonforms-react-renderer-common/cells/useCompositeCellPresentation';
 import React, { useLayoutEffect, useState, useRef } from 'react';
-import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
-import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
-import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import {
-  usePathErrorMessages,
-  labelDetailErrorPaths,
-} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
+import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import { ValidationIcon } from '../complex/ValidationIcon';
 import { Button, theme } from 'antd';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
@@ -16,7 +11,6 @@ import {
   Translator,
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
-  RankedTester,
   UISchemaElement,
 } from '@jsonforms/core';
 
@@ -35,28 +29,15 @@ import {
 } from '@jsonforms/react';
 import { useConfirmation } from '../util/useConfirmation';
 import { useI18nDefault } from '../util/translate';
-import { compositeSummaryPresentation } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
 import {
   CompositeDetailDialog,
   CompositeDetailDialogOptions,
 } from './CompositeDetailDialog';
 
-export const AntdCompositeCell = (props: CompositeCellProps) => {
+const AntdCompositeCell = (props: CompositeCellProps) => {
   const { t } = props;
   const context = useJsonForms();
   const { token } = theme.useToken();
-  const resolveTree = useDynamicTreeResolver(props.path);
-  const authoredDetail = props.uischema.options?.detail;
-  const errorOptions =
-    authoredDetail &&
-    typeof authoredDetail === 'object' &&
-    typeof authoredDetail.type === 'string'
-      ? { ...props.uischema.options, detail: resolveTree(authoredDetail) }
-      : props.uischema.options;
-  const errors = usePathErrorMessages(
-    props.path,
-    labelDetailErrorPaths(props.path, errorOptions),
-  );
   /*
     The default message carries the locale bundle (§6.5), so it must not be
     read straight out of the English table.
@@ -77,14 +58,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
     summaryOnly?: boolean;
     showTypeIndicator?: boolean;
   };
-  const summary = compositeSummaryPresentation(
-    props.data,
-    options.summary?.type === 'Control' ? (options.summary as any) : undefined,
-    props.schema?.title,
-    t,
-    d,
-    props.schema,
-  );
+  const { errors, summary } = useCompositeCellPresentation(props, t, d);
   const isArray = Array.isArray(props.data) || props.schema?.type === 'array';
   const label =
     props.schema?.title ??
@@ -247,19 +221,7 @@ export const AntdCompositeCell = (props: CompositeCellProps) => {
  * Structured, mixed and composed values. A catch-all would tie with scalar cells (also
  * rank 1) and win on registration order, swallowing every string column.
  */
-export const antdCompositeCellTester: RankedTester = (_ui, schema, context) =>
-  _ui.options?.summary?.type === 'Label'
-    ? 6
-    : schema?.type === 'object' ||
-        schema?.type === 'array' ||
-        Boolean(
-          schema?.anyOf?.length ||
-          schema?.oneOf?.length ||
-          schema?.allOf?.length,
-        ) ||
-        isMixedSchema({ ..._ui, scope: '#' }, schema, context)
-      ? 1
-      : -1;
+export { compositeCellTester as antdCompositeCellTester } from '@chobantonov/jsonforms-react-renderer-common/cells/compositeCellTester';
 
 export default withJsonFormsCellProps(
   withTranslateProps(AntdCompositeCell) as any,

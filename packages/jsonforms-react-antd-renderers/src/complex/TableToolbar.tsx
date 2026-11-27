@@ -1,4 +1,4 @@
-import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 import { ArrayPanel } from '../layouts/ArrayPanel';
 import React from 'react';
 import {
@@ -7,16 +7,16 @@ import {
   JsonSchema,
   ArrayTranslations,
 } from '@jsonforms/core';
-import { Button, Tooltip, Typography, Row, Col, Card } from 'antd';
+import { Button, Tooltip } from 'antd';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
-import ValidationIcon from './ValidationIcon';
+import { renderArrayTitle } from '../layouts/arrayTitle';
 
 export interface TableToolbarProps {
   errors: string;
   options?: Record<string, any>;
   config?: any;
   label: string;
-  description: string;
+  description: string | undefined;
   path: string;
   uischema: ControlElement;
   schema: JsonSchema;
@@ -28,30 +28,6 @@ export interface TableToolbarProps {
   children?: React.ReactNode;
   actions?: React.ReactNode;
 }
-
-const { Title } = Typography;
-
-const renderTitle = (label: string, errors: string, description: string) => (
-  <>
-    <Row align='middle'>
-      <Col>
-        <Title level={5} style={{ margin: 0 }}>
-          {label}
-        </Title>
-      </Col>
-      <Col style={{ paddingLeft: 8 }}>
-        {errors.length !== 0 && (
-          <ValidationIcon
-            id='tooltip-validation'
-            errorMessages={errors}
-            local
-          />
-        )}
-      </Col>
-    </Row>
-    {description && <Card.Meta description={description} />}
-  </>
-);
 
 const TableToolbar = React.memo(function TableToolbar({
   label,
@@ -78,7 +54,7 @@ const TableToolbar = React.memo(function TableToolbar({
       style={{ width: '100%' }}
       size='small'
       type='inner'
-      title={renderTitle(label, arrayErrors, description)}
+      title={renderArrayTitle(label, arrayErrors, description)}
       extra={[
         actions,
         <Tooltip

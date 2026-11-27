@@ -1,5 +1,5 @@
-import { useDynamicElements } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
-import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useDynamicElements } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
+import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import {
   LayoutProps,
   RankedTester,
@@ -7,11 +7,7 @@ import {
   UISchemaElement,
   uiTypeIs,
 } from '@jsonforms/core';
-import {
-  JsonFormsDispatch,
-  useJsonForms,
-  withJsonFormsLayoutProps,
-} from '@jsonforms/react';
+import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React, { useEffect, useMemo } from 'react';
 import { proxy } from 'valtio';
 import { resolveChildNames } from '../util/childNames';
@@ -394,5 +390,3 @@ function Template(props) {
     />
   );
 };
-
-export default withJsonFormsLayoutProps(TemplateLayoutRenderer);

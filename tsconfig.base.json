@@ -10,6 +10,7 @@
     "jsx": "react",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
+    "strict": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,

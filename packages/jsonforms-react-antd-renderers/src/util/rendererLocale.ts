@@ -6,5 +6,5 @@ export {
   registerRendererLocale,
   resolveRendererLocale,
   rendererDefault,
-} from '@chobantonov/jsonforms-react-renderer-common/rendererLocale';
-export type { RendererLocaleCatalog } from '@chobantonov/jsonforms-react-renderer-common/rendererLocale';
+} from '@chobantonov/jsonforms-react-renderer-common/locale/rendererLocale';
+export type { RendererLocaleCatalog } from '@chobantonov/jsonforms-react-renderer-common/locale/rendererLocale';

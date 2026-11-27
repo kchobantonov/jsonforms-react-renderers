@@ -1,11 +1,9 @@
+import { findMixedDetailUiSchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
 import {
-  ControlElement,
   ControlProps,
-  createControlElement,
   createDefaultValue,
   findUISchema,
   isControl,
-  JsonFormsUISchemaRegistryEntry,
   JsonSchema,
   JsonSchema7,
   rankWith,
@@ -22,101 +20,15 @@ import {
 } from '@jsonforms/react';
 import React, { useMemo } from 'react';
 
-type JsonDataType =
-  | 'array'
-  | 'boolean'
-  | 'integer'
-  | 'null'
-  | 'number'
-  | 'object'
-  | 'string';
-
-const ANY_TYPES: JsonDataType[] = [
-  'array',
-  'boolean',
-  'integer',
-  'null',
-  'number',
-  'object',
-  'string',
-];
-
-const ARRAY_KEYWORDS = [
-  'items',
-  'maxItems',
-  'minItems',
-  'uniqueItems',
-] as const;
-const OBJECT_KEYWORDS = [
-  'additionalProperties',
-  'dependencies',
-  'dependentRequired',
-  'dependentSchemas',
-  'maxProperties',
-  'minProperties',
-  'patternProperties',
-  'properties',
-  'propertyNames',
-  'required',
-] as const;
-const STRING_KEYWORDS = [
-  'contentEncoding',
-  'contentMediaType',
-  'format',
-  'maxLength',
-  'minLength',
-  'pattern',
-] as const;
-const NUMBER_KEYWORDS = [
-  'exclusiveMaximum',
-  'exclusiveMinimum',
-  'maximum',
-  'minimum',
-  'multipleOf',
-] as const;
-const removeKeywords = (schema: JsonSchema7, keywords: readonly string[]) =>
-  keywords.forEach(
-    (keyword) => delete (schema as Record<string, unknown>)[keyword],
-  );
-
-const getJsonDataType = (value: any): JsonDataType | null => {
-  if (typeof value === 'string') {
-    return 'string';
-  }
-  if (typeof value === 'number') {
-    return Number.isInteger(value) ? 'integer' : 'number';
-  }
-  if (typeof value === 'boolean') {
-    return 'boolean';
-  }
-  if (Array.isArray(value)) {
-    return 'array';
-  }
-  if (value === null) {
-    return 'null';
-  }
-  if (typeof value === 'object') {
-    return 'object';
-  }
-
-  return null;
-};
-
-const getSchemaTypes = (schema: JsonSchema): JsonDataType[] => {
-  if (typeof schema !== 'object') {
-    return ANY_TYPES;
-  }
-
-  if (typeof schema.type === 'string') {
-    return [schema.type as JsonDataType];
-  }
-
-  if (Array.isArray(schema.type)) {
-    return schema.type as JsonDataType[];
-  }
-
-  return ANY_TYPES;
-};
+import {
+  ANY_TYPES,
+  getJsonDataType,
+  getSchemaTypes,
+  mixedControlFor,
+  resolveMixedArrayItems,
+  removeInapplicableKeywords,
+  type JsonDataType,
+} from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedSchema';
 
 export const schemaForType = (
   schema: JsonSchema,
@@ -130,27 +42,12 @@ export const schemaForType = (
   delete nextSchema.anyOf;
   delete nextSchema.oneOf;
   delete nextSchema.allOf;
-  if (type !== 'array') removeKeywords(nextSchema, ARRAY_KEYWORDS);
-  if (type !== 'object') removeKeywords(nextSchema, OBJECT_KEYWORDS);
-  if (type !== 'string') removeKeywords(nextSchema, STRING_KEYWORDS);
-  if (type !== 'integer' && type !== 'number')
-    removeKeywords(nextSchema, NUMBER_KEYWORDS);
+  removeInapplicableKeywords(nextSchema, type);
 
   if (type === 'object') {
-    nextSchema.additionalProperties =
-      nextSchema.additionalProperties !== false
-        ? (nextSchema.additionalProperties ?? true)
-        : false;
+    nextSchema.additionalProperties = nextSchema.additionalProperties ?? true;
   } else if (type === 'array') {
-    const items =
-      typeof nextSchema.items === 'object' &&
-      typeof (nextSchema.items as JsonSchema).$ref === 'string'
-        ? (resolveSchema(
-            rootSchema,
-            (nextSchema.items as JsonSchema).$ref,
-            rootSchema,
-          ) ?? nextSchema.items)
-        : nextSchema.items;
+    const items = resolveMixedArrayItems(nextSchema.items, rootSchema);
     nextSchema.items =
       items && typeof items === 'object'
         ? (items as JsonSchema7 | JsonSchema7[])
@@ -159,23 +56,6 @@ export const schemaForType = (
 
   return nextSchema;
 };
-
-const findDetailUiSchema = (
-  schema: JsonSchema,
-  uischema: ControlElement,
-  path: string,
-  rootSchema: JsonSchema,
-  uischemas: JsonFormsUISchemaRegistryEntry[],
-) =>
-  findUISchema(
-    uischemas,
-    schema,
-    uischema.scope,
-    path,
-    () => createControlElement('#'),
-    uischema,
-    rootSchema,
-  );
 
 export const GenericMixedRendererComponent = ({
   cells,
@@ -214,12 +94,13 @@ export const GenericMixedRendererComponent = ({
   const detailUiSchema = useMemo(
     () =>
       selectedSchema
-        ? findDetailUiSchema(
+        ? findMixedDetailUiSchema(
             selectedSchema,
             uischema,
             path,
             rootSchema,
             uischemas ?? [],
+            findUISchema,
           )
         : undefined,
     [path, rootSchema, selectedSchema, uischema, uischemas],
@@ -321,24 +202,7 @@ export const isMixedSchema = (
   return false;
 };
 
-const isDefaultGeneratedUiSchema = (uischema: UISchemaElement): boolean => {
-  const elements = (uischema as any)?.elements;
-  return (
-    (uischema.type === 'VerticalLayout' || uischema.type === 'Group') &&
-    Array.isArray(elements) &&
-    elements.length === 1 &&
-    elements[0].scope === '#' &&
-    elements[0].type === 'Control'
-  );
-};
-
-export const isMixedControl = (
-  uischema: UISchemaElement,
-  schema: JsonSchema,
-  context: TesterContext,
-) =>
-  isMixedSchema(uischema as UISchemaElement & Scopable, schema, context) &&
-  (isControl(uischema) || isDefaultGeneratedUiSchema(uischema));
+export const isMixedControl = mixedControlFor(isMixedSchema);
 
 export const genericMixedControlTester: RankedTester = rankWith(
   20,

@@ -1,25 +1,21 @@
+import { useCombinatorSelection } from '@chobantonov/jsonforms-react-renderer-common/composition/useCombinatorSelection';
 import { X } from 'lucide-react';
-import {
-  missingDiscriminatorError,
-  discriminatorBranch,
-} from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
-import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/discriminatorBranch';
 import {
   useJsonForms,
   JsonFormsDispatch,
   withJsonFormsAnyOfProps,
 } from '@jsonforms/react';
-import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
+import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedSchema';
 import {
   clearedBranchValue,
   branchChangeData,
   discardedByBranchChange,
-} from '@chobantonov/jsonforms-react-renderer-common/combinators';
+} from '@chobantonov/jsonforms-react-renderer-common/composition/combinators';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import React, { useId, useCallback, useState } from 'react';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
 import { useConfirmation } from './mixed/useConfirmation';
-import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorBranch';
 import {
   Select,
   SelectTrigger,
@@ -29,10 +25,8 @@ import {
 } from '@jsonforms-react-shadcn-ui/select';
 import {
   CombinatorRendererProps,
-  createCombinatorRenderInfos,
   createDefaultValue,
   isAnyOfControl,
-  JsonSchema,
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
@@ -42,7 +36,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@jsonforms-react-shadcn-ui/tabs';
-import { CombinatorProperties } from './CombinatorProperties';
+import { CombinatorProperties } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 import { CombinatorSwitchDialog } from './CombinatorSwitchDialog';
 
 const isEmptyData = (data: unknown) =>
@@ -114,34 +108,11 @@ export const ShadcnAnyOfRenderer = ({
     }
   }
 
-  const translate = useTranslator();
-  const [primaryErrors, additionalErrors] = displayableErrors(
-    formContext.core ?? {},
-  );
-  const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
-    ...(primaryErrors ?? []),
-    ...(additionalErrors ?? []),
-  ]);
-  const selectionError = missingKind
-    ? translate('oneOf.chooseKind', 'Choose a kind.')
-    : '';
-
-  const renderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema)[combinator],
-    rootSchema,
+  const { translate, selectionError, renderInfos } = useCombinatorSelection(
+    { schema, rootSchema, uischema, path, uischemas },
     combinator,
-    uischema,
-    path,
-    uischemas,
-  ).map((info) => {
-    const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
-    return typeof prefix === 'string'
-      ? {
-          ...info,
-          label: translate(`${prefix}.label`, info.label) ?? info.label,
-        }
-      : info;
-  });
+    formContext.core,
+  );
 
   const selectSchema = useCallback(
     (index: number, resetData: boolean) => {

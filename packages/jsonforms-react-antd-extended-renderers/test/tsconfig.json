@@ -4,13 +4,12 @@
     "lib": ["ES2022", "DOM"],
     "types": ["vitest/globals", "node"],
     "noEmit": true,
-    "baseUrl": "..",
     "paths": {
       "@chobantonov/jsonforms-react-antd-renderers": [
-        "../jsonforms-react-antd-renderers/src"
+        "../../jsonforms-react-antd-renderers/src"
       ],
       "@chobantonov/jsonforms-react-extended-renderers": [
-        "../jsonforms-react-extended-renderers/src"
+        "../../jsonforms-react-extended-renderers/src"
       ]
     },
     "rootDir": "../..",

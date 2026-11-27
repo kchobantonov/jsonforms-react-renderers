@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ControlProps,
   and,
@@ -14,25 +14,17 @@ import {
   makeId,
   ClearValueButton,
 } from '@chobantonov/jsonforms-react-shadcn-renderers';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
+  useCronPicker,
   CRON_FIELDS,
   CronField,
   CronPeriod,
   DEFAULT_CRON,
   FIELD_RANGE,
-  NOTHING_CHOSEN,
-  cronProblem,
-  fieldsForPeriod,
   formatField,
-  joinCron,
   labelFor,
   parseField,
-  periodOf,
-  sameExpression,
-  splitCron,
-  standDown,
-  withTimeDefaults,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { CalendarClock, Check, ChevronDown, X } from 'lucide-react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
@@ -221,72 +213,28 @@ const FieldPicker = ({
 
 /** Uses the shared cron parser and preserves untouched fields and expressions. */
 export const ShadcnCronControl = (props: ControlProps) => {
-  const label = useI18n();
-  const expression = typeof props.data === 'string' ? props.data : '';
-  const [open, setOpen] = useState(false);
-
-  const [text, setText] = useState('');
-
-  const [period, setPeriod] = useState<CronPeriod | undefined>(undefined);
-
-  const [touched, setTouched] = useState(false);
-
+  const {
+    label,
+    expression,
+    open,
+    setOpen,
+    text,
+    period,
+    options,
+    showActions,
+    disabled,
+    localError,
+    draft,
+    changeField,
+    changeText,
+    changePeriod,
+    editedProblem,
+    shownFields,
+    hasCustomField,
+    openOn,
+    accept,
+  } = useCronPicker(props);
   if (!props.visible) return null;
-
-  const options = { ...props.config, ...props.uischema.options };
-  const showActions = options.showActions !== false;
-  const disabled = !props.enabled || Boolean(props.readonly);
-  const problem =
-    expression.trim() === '' ? undefined : cronProblem(expression);
-  const localError = problem ? label(`cron.error.${problem}` as any) : '';
-
-  const commit = (next: string) => {
-    if (disabled || sameExpression(next, expression)) return;
-    props.handleChange(props.path, next);
-  };
-
-  const draft = splitCron(text) ?? NOTHING_CHOSEN;
-
-  const change = (next: string) => {
-    setText(next);
-    setTouched(true);
-    if (!showActions) commit(next);
-  };
-
-  const changeField = (field: CronField, value: string) => {
-    const next = [...draft];
-    const chosen = value.trim() !== '' && value !== '*';
-    next[CRON_FIELDS.indexOf(field)] = chosen ? value : '*';
-    change(joinCron(chosen ? withTimeDefaults(next, field) : next));
-  };
-
-  const changeText = (next: string) => {
-    const fields = splitCron(next);
-    if (fields) setPeriod(periodOf(fields));
-    change(next);
-  };
-
-  const changePeriod = (next: CronPeriod) => {
-    if (disabled || next === period) return;
-    setPeriod(next);
-
-    if (next === 'second') change(joinCron(NOTHING_CHOSEN));
-    else if (splitCron(text)) change(joinCron(standDown(draft, next)));
-  };
-
-  const editedProblem = text.trim() === '' ? undefined : cronProblem(text);
-  const shownFields = period ? fieldsForPeriod(period) : [];
-
-  const openOn = (next: boolean) => {
-    if (disabled) return;
-    if (next) {
-      const fields = splitCron(expression);
-      setText(expression);
-      setPeriod(fields ? periodOf(fields) : undefined);
-      setTouched(false);
-    }
-    setOpen(next);
-  };
 
   const id = makeId(props.path, props.label);
   return (
@@ -363,11 +311,7 @@ export const ShadcnCronControl = (props: ControlProps) => {
                 onChange={(value) => changeField(field, value)}
               />
             ))}
-            {shownFields.some(
-              (field) =>
-                parseField(draft[CRON_FIELDS.indexOf(field)] ?? '*', field) ===
-                undefined,
-            ) && (
+            {hasCustomField && (
               <p className='text-sm text-muted-foreground'>
                 {label('cron.advanced')}
               </p>
@@ -398,10 +342,7 @@ export const ShadcnCronControl = (props: ControlProps) => {
                 <Button
                   type='button'
                   disabled={disabled || Boolean(editedProblem)}
-                  onClick={() => {
-                    if (touched) commit(text);
-                    setOpen(false);
-                  }}
+                  onClick={accept}
                 >
                   {label('cron.ok')}
                 </Button>

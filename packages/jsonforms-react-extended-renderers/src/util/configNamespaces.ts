@@ -3,4 +3,4 @@ export {
   JSONFORMS_CONFIG_KEY,
   extendedConfig,
   resolveExtendedOption,
-} from '@chobantonov/jsonforms-react-renderer-common/configNamespaces';
+} from '@chobantonov/jsonforms-react-renderer-common/core/configNamespaces';

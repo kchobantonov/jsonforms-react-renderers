@@ -2,7 +2,7 @@ import type { ControlProps } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ShadcnTimeControl } from '../../src/controls/TimeControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: '13:45:00',

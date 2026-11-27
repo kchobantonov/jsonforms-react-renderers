@@ -24,5 +24,3 @@ export const MarkdownText = ({
 }: MarkdownTextProps) => (
   <>{renderMarkdown(text, { profile, urlPolicy, onRefusedUrl })}</>
 );
-
-export default MarkdownText;

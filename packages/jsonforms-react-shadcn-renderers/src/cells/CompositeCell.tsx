@@ -1,11 +1,7 @@
-import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
-import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/detail';
-import { isMixedSchema } from '@chobantonov/jsonforms-react-renderer-common/mixed';
-import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import {
-  usePathErrorMessages,
-  labelDetailErrorPaths,
-} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { hasInvalidCompositeEditorDraft } from '@chobantonov/jsonforms-react-renderer-common/cells/useCompositeDraft';
+import { useCompositeCellPresentation } from '@chobantonov/jsonforms-react-renderer-common/cells/useCompositeCellPresentation';
+import { resolveEditorDetail } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
+import { CellSummary } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import { ErrorIndicator } from '../complex/ErrorIndicator';
 import { DetailDialogContent } from '../complex/DetailDialogContent';
 import React, { useRef, useState } from 'react';
@@ -25,15 +21,14 @@ import {
   JsonFormsDispatch,
   useJsonForms,
 } from '@jsonforms/react';
-import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
+import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/interaction/confirmation';
 import { DeleteDialog } from '../complex/DeleteDialog';
-import { compositeSummaryPresentation } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
-import { preventsEmpty } from '@chobantonov/jsonforms-react-renderer-common/compositeActions';
+import { preventsEmpty } from '@chobantonov/jsonforms-react-renderer-common/cells/compositeActions';
 import {
   useI18n,
   useI18nDefault,
   useTranslator,
-} from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Dialog,
@@ -54,30 +49,9 @@ type Props = CellProps & {
 /** A compact summary with isolated editing; only Apply writes to the form. */
 export const ShadcnCompositeCell = (props: Props) => {
   const parent = useJsonForms();
-  const pointer =
-    '/' +
-    props.path
-      .split('.')
-      .map((part) => part.replace(/~/g, '~0').replace(/\//g, '~1'))
-      .join('/');
-  const invalidEditorDraft = (parent.core?.additionalErrors ?? []).some(
-    (error) =>
-      error.params?.source === 'monaco' &&
-      (error.instancePath === pointer ||
-        error.instancePath.startsWith(pointer + '/')),
-  );
-
-  const resolveTree = useDynamicTreeResolver(props.path);
-  const authoredDetail = props.uischema.options?.detail;
-  const errorOptions =
-    authoredDetail &&
-    typeof authoredDetail === 'object' &&
-    typeof authoredDetail.type === 'string'
-      ? { ...props.uischema.options, detail: resolveTree(authoredDetail) }
-      : props.uischema.options;
-  const errors = usePathErrorMessages(
+  const invalidEditorDraft = hasInvalidCompositeEditorDraft(
+    parent.core?.additionalErrors,
     props.path,
-    labelDetailErrorPaths(props.path, errorOptions),
   );
   const t = useTranslator();
   const d = useI18nDefault();
@@ -90,14 +64,7 @@ export const ShadcnCompositeCell = (props: Props) => {
   const draftRef = useRef<JsonFormsCore>();
   const [original, setOriginal] = useState<unknown>();
   const options = props.uischema.options ?? {};
-  const summary = compositeSummaryPresentation(
-    props.data,
-    options.summary?.type === 'Control' ? (options.summary as any) : undefined,
-    props.schema?.title,
-    t,
-    d,
-    props.schema,
-  );
+  const { errors, summary } = useCompositeCellPresentation(props, t, d);
   const enabled =
     props.enabled &&
     !(parent as any).readonly &&
@@ -174,6 +141,7 @@ export const ShadcnCompositeCell = (props: Props) => {
           title={text('composite.edit', { label })}
           aria-label={text('composite.edit', { label })}
           onClick={() => {
+            if (!parent.core) return;
             setOriginal(copy(current()));
             draftRef.current = {
               ...parent.core,
@@ -304,20 +272,4 @@ export const ShadcnCompositeCell = (props: Props) => {
     </div>
   );
 };
-export const shadcnCompositeCellTester = (
-  _ui: any,
-  schema: any,
-  context: any,
-) =>
-  _ui.options?.summary?.type === 'Label'
-    ? 6
-    : schema?.type === 'object' ||
-        schema?.type === 'array' ||
-        Boolean(
-          schema?.anyOf?.length ||
-          schema?.oneOf?.length ||
-          schema?.allOf?.length,
-        ) ||
-        isMixedSchema({ ..._ui, scope: '#' }, schema, context)
-      ? 1
-      : -1;
+export { compositeCellTester as shadcnCompositeCellTester } from '@chobantonov/jsonforms-react-renderer-common/cells/compositeCellTester';

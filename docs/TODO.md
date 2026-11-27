@@ -7,17 +7,10 @@ Reproduce older claims against current code before acting.
 
 ## Current implementation gaps and verification work
 
-- [ ] **Default inline object errors.** Current objectControl.test.tsx still
-      passes assertions that minProperties and forbidden-key message text is absent
-      in its fixture. Shared container indicators exist, so this is a specific
+- [ ] **Default inline object errors.** The [Ant Design object layout and error tests](../packages/jsonforms-react-antd-renderers/test/complex/objectLayoutAndErrors.test.tsx) show that `minProperties` and forbidden-key message text is absent
+      in the fixture. Shared container indicators exist, so this is a specific
       inline/discoverability gap, not universal absence of object feedback. Verify
       default and configured presentations before closing it.
-- [ ] **Stale legacy-detail regression.** objectControl.test.tsx still expects
-      elements-only detail layouts to be ignored. It now fails because the shared
-      detail resolver deliberately normalizes them to VerticalLayout. Update that
-      expectation to the supported layout semantics; preserve the field-selection
-      assertion rather than dropping the test.
-
 - [ ] **Required-state accessibility when hiding the asterisk.** The old claim
       that ordinary controls ignore hideRequiredAsterisk is obsolete: Antd
       ControlFormItem consumes it, and requiredAsterisk.test.tsx covers local/global

@@ -1,10 +1,5 @@
 import { useEffect } from 'react';
-import {
-  DemoLayout,
-  DemoMode,
-  DemoSettingsStorage,
-  writePersistedDemoSettings,
-} from '../demoPreferences';
+import type { DemoMode } from './demoPreferences';
 
 /**
  * Puts the demo's appearance on the document, and takes it off again.
@@ -29,38 +24,4 @@ export const useDocumentChrome = (
       document.documentElement.removeAttribute('dir');
     };
   }, [dark, mode, rtl]);
-};
-
-export interface PersistedPreferences {
-  mode: DemoMode;
-  locale: string;
-  layout: DemoLayout;
-  rendererSettings: Record<string, unknown>;
-}
-
-/**
- * Writes the preferences back, once they have been read.
- *
- * `hydrated` is the guard that matters: writing before the stored values have
- * been read would persist the defaults over whatever the user had chosen, and
- * the read is asynchronous.
- */
-export const useDemoPreferencePersistence = (
-  storage: DemoSettingsStorage,
-  storageKey: string,
-  hydrated: boolean,
-  { mode, locale, layout, rendererSettings }: PersistedPreferences,
-): void => {
-  useEffect(() => {
-    if (!hydrated) {
-      return;
-    }
-    writePersistedDemoSettings(storage, storageKey, {
-      version: 1,
-      mode,
-      locale,
-      layout,
-      rendererSettings,
-    });
-  }, [storage, storageKey, hydrated, mode, locale, layout, rendererSettings]);
 };

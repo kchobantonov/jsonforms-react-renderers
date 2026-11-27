@@ -1,8 +1,8 @@
 import { createMonacoControlRenderer } from '@chobantonov/jsonforms-react-extended-renderers';
 import React from 'react';
 import { Maximize, Minimize } from 'lucide-react';
-import { ShadcnEditorToggleButton } from './ShadcnEditorButton';
-import { ShadcnEditorFrame } from './ShadcnEditorFrame';
+import { ShadcnEditorToggleButton } from '../components/ShadcnEditorButton';
+import { ShadcnEditorFrame } from '../components/ShadcnEditorFrame';
 export const ShadcnMonacoControlRenderer = createMonacoControlRenderer({
   Frame: ShadcnEditorFrame,
   Button: ShadcnEditorToggleButton,

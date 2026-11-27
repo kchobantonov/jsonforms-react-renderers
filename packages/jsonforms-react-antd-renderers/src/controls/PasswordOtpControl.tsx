@@ -13,7 +13,7 @@ import { AntdOtp, otpLength } from '../antd-controls/AntdOtp';
 import { InputControl } from './InputControl';
 import { isPasswordControl } from './PasswordControl';
 
-export const PasswordOtpControl = (props: ControlProps) => (
+const PasswordOtpControl = (props: ControlProps) => (
   <InputControl {...props} input={AntdOtp} />
 );
 

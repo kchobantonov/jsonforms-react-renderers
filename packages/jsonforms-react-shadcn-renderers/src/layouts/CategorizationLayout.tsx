@@ -16,13 +16,13 @@ import { ChevronDown } from 'lucide-react';
 import {
   categoryKey,
   useCategorySelection,
-} from '@chobantonov/jsonforms-react-renderer-common/categoryState';
-import { useGroupState } from '@chobantonov/jsonforms-react-renderer-common/groupState';
-import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+} from '@chobantonov/jsonforms-react-renderer-common/layout/categoryState';
+import { useGroupState } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';
 import {
   useI18n,
   useTranslator,
-} from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Tabs,

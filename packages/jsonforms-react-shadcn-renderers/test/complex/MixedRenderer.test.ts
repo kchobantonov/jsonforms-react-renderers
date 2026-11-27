@@ -6,7 +6,7 @@ import {
   MixedRendererComponent,
   schemaForType,
 } from '../../src/complex/MixedRenderer';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 describe('Shadcn mixed renderer schemas', () => {
   it('keeps only constraints that apply to the selected type', () => {

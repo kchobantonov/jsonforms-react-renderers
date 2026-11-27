@@ -5,21 +5,17 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
-import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/cells/compositeSummary';
+import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 import {
   CollectionErrorNavigation,
   RowErrorCount,
-} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
-import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
-import {
-  tableColumnFields,
-  tableColumnStyle,
-  TableColumnDefinition,
-} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
-import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/CollectionErrorNavigation';
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
+import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
+import { TableColumnDefinition } from '@chobantonov/jsonforms-react-renderer-common/collections/tableColumns';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
 import { useEditorAppearance } from '../util/useEditorAppearance';
 import { useExtendedTranslator } from '../util/useExtendedTranslator';
 import {
@@ -30,6 +26,7 @@ import {
   JsonSchema,
 } from '@jsonforms/core';
 import { DispatchCell, useJsonForms } from '@jsonforms/react';
+import { resolveGridColumns } from '../util/gridColumns';
 import { fileFilterValue } from '../util/fileFilterValue';
 import { labelFilterValue } from '../util/labelFilterValue';
 import {
@@ -43,7 +40,7 @@ import {
   EditorArrayAction,
   EditorArrayFrameProps,
   EditorRendererComponents,
-} from './EditorControlFrame';
+} from '../components/editorRendererTypes';
 
 // A bounded cache for one set of summary bindings. Its mutation is internal to
 // this factory; the renderer only memoizes the callable it returns.
@@ -378,24 +375,18 @@ export const createAgGridControl = ({
           editable: false,
           // AG Grid uses this value for sorting and its default text filters;
           // the cell editor still binds to the original row/property below.
-          valueGetter: (event) =>
-            (cellOptions?.[field]?.summary as any)?.type === 'Label'
-              ? summaryValueRef.current(
-                  cellOptions[field].summary,
-                  event.data?.value,
-                )
-              : (cellOptions?.[field]?.summary as any)?.type === 'Control'
-                ? controlSummaryRef.current(
-                    cellOptions[field].summary,
-                    object ? event.data?.value?.[field] : event.data?.value,
-                    schema,
-                  )
-                : (fileFilterValue(
-                    object ? event.data?.value?.[field] : event.data?.value,
-                    schema,
-                    props.rootSchema,
-                  ) ??
-                  (object ? event.data?.value?.[field] : event.data?.value)),
+          valueGetter: ({ data }) => {
+            const summary = cellOptions?.[field]?.summary as
+              | { type?: string }
+              | undefined;
+            const row = data?.value;
+            if (summary?.type === 'Label')
+              return summaryValueRef.current(summary, row);
+            const value = object ? row?.[field] : row;
+            if (summary?.type === 'Control')
+              return controlSummaryRef.current(summary, value, schema);
+            return fileFilterValue(value, schema, props.rootSchema) ?? value;
+          },
           cellRenderer: (event: { data: { index: number } }) => {
             const rowBound = props.uischema.options?.columnDefs?.some(
               (c: TableColumnDefinition) =>
@@ -479,70 +470,21 @@ export const createAgGridControl = ({
     const portable = props.uischema.options?.columnDefs as
       | TableColumnDefinition[]
       | undefined;
-    const portableFields = tableColumnFields(
-      Object.fromEntries(columns.map((column) => [column.colId!, true])),
+    const resolvedColumns = resolveGridColumns(
+      columns,
       portable,
-      columns.map((column) => column.colId!),
+      agGridOptions.columnDefs,
+      items,
+      cellOptions,
+      options.hideRequiredAsterisk,
     );
-    const mergeColumn = (definition: ColDef): ColDef => {
-      const generated = columns.find(
-        (column) => column.colId === (definition.field ?? definition.colId),
-      );
-      return {
-        ...generated,
-        ...(definition.width !== undefined && definition.flex === undefined
-          ? { flex: 0 }
-          : {}),
-        ...definition,
-      };
-    };
-    // Native definitions replace the portable list as a whole, including groups
-    // and computed columns. Known fields retain their JSON Forms cell editor.
-    const nativeColumns = (definitions: any[]): any[] =>
-      definitions.map((definition) =>
-        definition.children
-          ? { ...definition, children: nativeColumns(definition.children) }
-          : mergeColumn(definition),
-      );
-    const resolvedColumns: ColDef[] =
-      agGridOptions.columnDefs !== undefined
-        ? nativeColumns(agGridOptions.columnDefs)
-        : portableFields.map((field) =>
-            mergeColumn({
-              field,
-              ...(portable?.find((c) => c.field === field)?.headerName
-                ? {
-                    headerName: portable.find((c) => c.field === field)!
-                      .headerName,
-                  }
-                : {}),
-              ...tableColumnStyle(
-                portable?.find((column) => column.field === field),
-              ),
-            } as ColDef),
-          );
-    const markRequiredHeaders = (definitions: ColDef[]) => {
-      definitions.forEach((definition: any) => {
-        if (definition.children) markRequiredHeaders(definition.children);
-        else if (
-          items?.required?.includes(definition.field) &&
-          !(
-            cellOptions?.[definition.field]?.hideRequiredAsterisk ??
-            options.hideRequiredAsterisk
-          )
-        ) {
-          definition.headerName = `${
-            definition.headerName ?? definition.field
-          } *`;
-        }
-      });
-    };
-    markRequiredHeaders(resolvedColumns);
     // `showSortButtons` is the same option the table renderer uses for its
     // per-row up/down buttons; in a grid the equivalent affordance is a drag
     // handle column. A column the uischema already marks `rowDrag` wins.
-    const hasDragColumn = resolvedColumns.some((column) => column.rowDrag);
-    const columnDefs: ColDef[] =
+    const hasDragColumn = resolvedColumns.some(
+      (column) => 'rowDrag' in column && column.rowDrag,
+    );
+    const columnDefs =
       editable && showSortButtons && !hasDragColumn
         ? [
             {

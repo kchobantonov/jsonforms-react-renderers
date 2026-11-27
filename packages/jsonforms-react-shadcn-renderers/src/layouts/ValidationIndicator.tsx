@@ -1,6 +1,6 @@
 import React from 'react';
 import { CircleAlert } from 'lucide-react';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   Tooltip,
   TooltipContent,

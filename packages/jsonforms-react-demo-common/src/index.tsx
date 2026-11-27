@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import React from 'react';
 import App, { DemoShell, DemoUi, ProviderSettingsProps } from './App';
-import { DemoSettingsStorage } from './demoPreferences';
+import { DemoSettingsStorage } from './app/demoPreferences';
 import { RankedTester } from '@jsonforms/core';
 import { listExamples } from './examples';
 import { ExampleDescription } from '@jsonforms/examples';
@@ -9,9 +9,9 @@ import { ExampleDescription } from '@jsonforms/examples';
 export { registerProjectExamples, listExamples } from './examples';
 
 export * from './App';
-export * from './DemoSplitter';
-export * from './editorModels';
-export * from './demoPreferences';
+export * from './app/DemoSplitter';
+export * from './app/editorModels';
+export * from './app/demoPreferences';
 
 export const renderExample = (
   renderers: { tester: RankedTester; renderer: any }[],

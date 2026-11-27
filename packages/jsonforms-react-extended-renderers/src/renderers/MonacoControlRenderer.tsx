@@ -2,7 +2,7 @@ import React from 'react';
 import { ControlProps } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import { createLazyControl } from '../util/lazyControl';
-import { EditorRendererComponents } from './EditorControlFrame';
+import { EditorRendererComponents } from '../components/editorRendererTypes';
 
 /**
  * @monaco-editor/react pulls in the Monaco loader; importing it here would put

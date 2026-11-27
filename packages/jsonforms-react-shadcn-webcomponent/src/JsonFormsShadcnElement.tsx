@@ -1,4 +1,9 @@
-import type { Translator, ValidationMode } from '@jsonforms/core';
+import { defaultTranslator } from '@jsonforms/core';
+import {
+  FormElement,
+  formAttributes,
+  type FormElementState,
+} from '@chobantonov/jsonforms-react-renderer-common/webcomponent/element';
 import {
   ShadcnRendererSettings,
   createShadcnRendererStyle,
@@ -16,91 +21,32 @@ import {
 } from './renderers';
 import rendererStyles from '../../jsonforms-react-shadcn-renderers/src/styles.css?inline';
 import webcomponentStyles from './styles.css?inline';
+import {
+  createTranslator,
+  parseBoolean,
+  parseJson,
+  parseMode,
+  type JsonInput,
+} from '@chobantonov/jsonforms-react-renderer-common/webcomponent/input';
+
+export { createTranslator, parseBoolean, parseJson, parseMode };
+export type { JsonInput };
 
 export const JSON_FORMS_SHADCN_TAG = 'jsonforms-react-shadcn';
 
-export type JsonInput = unknown;
-
-export const parseJson = (value: JsonInput) => {
-  if (typeof value !== 'string') {
-    return value;
-  }
-  if (value.trim() === '') {
-    return undefined;
-  }
-  return JSON.parse(value);
-};
-
-export const parseBoolean = (value: JsonInput) => {
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') {
-    if (value === '' || value.toLowerCase() === 'true') return true;
-    if (value.toLowerCase() === 'false') return false;
-  }
-  return undefined;
-};
-
-export const parseMode = (value: JsonInput) =>
-  value === 'dark' || value === 'light' || value === 'system'
-    ? value
-    : 'system';
-
-export const createTranslator = (translations: JsonInput, locale = 'en') => {
-  if (typeof translations === 'function') return translations as Translator;
-  const dictionary = parseJson(translations) as any;
-  return (id: string, defaultMessage: string | undefined) => {
-    const value = dictionary?.[locale]?.[id] ?? dictionary?.[id];
-    if (typeof value === 'string') return value;
-    if (typeof value?.label === 'string') return value.label;
-    return defaultMessage ?? id;
-  };
-};
-
-type ElementState = {
-  external?: JsonInput;
-  data?: JsonInput;
-  schema?: JsonInput;
-  uischema?: JsonInput;
-  uischemas?: JsonInput;
-  config?: JsonInput;
-  readonly?: JsonInput;
-  validationMode?: ValidationMode;
-  locale?: string;
-  translations?: JsonInput;
-  additionalErrors?: JsonInput;
-  dark?: JsonInput;
-  mode?: JsonInput;
-  rtl?: JsonInput;
-  customStyle?: string;
-  rendererSettings?: JsonInput;
+type ElementState = FormElementState & {
   accentColor?: string;
   borderRadius?: JsonInput;
   density?: ShadcnRendererSettings['density'];
 };
-
 const observedAttributes = [
-  'data',
-  'schema',
-  'uischema',
-  'uischemas',
-  'config',
-  'external',
-  'readonly',
-  'validation-mode',
-  'locale',
-  'translations',
-  'additional-errors',
-  'dark',
-  'mode',
-  'rtl',
-  'custom-style',
-  'renderer-settings',
+  ...formAttributes,
   'accent-color',
   'border-radius',
   'density',
 ];
 
-export class JsonFormsShadcnElement extends HTMLElement {
+export class JsonFormsShadcnElement extends FormElement {
   static get observedAttributes() {
     return observedAttributes;
   }
@@ -112,10 +58,10 @@ export class JsonFormsShadcnElement extends HTMLElement {
       locale: this.state.locale,
       translate: this.state.translations
         ? createTranslator(this.state.translations, this.state.locale)
-        : (_key, fallback) => fallback,
+        : defaultTranslator,
     }),
   });
-  private state: ElementState = {
+  protected state: ElementState = {
     validationMode: 'ValidateAndShow',
     locale: 'en',
     mode: 'system',
@@ -144,62 +90,6 @@ export class JsonFormsShadcnElement extends HTMLElement {
     });
   }
 
-  attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
-    this.setValue(name, newValue);
-  }
-
-  set data(value: JsonInput) {
-    this.setValue('data', value);
-  }
-  set schema(value: JsonInput) {
-    this.setValue('schema', value);
-  }
-  set uischema(value: JsonInput) {
-    this.setValue('uischema', value);
-  }
-  set uischemas(value: JsonInput) {
-    this.setValue('uischemas', value);
-  }
-  /** Host-owned external values; JSON attributes and object properties are supported. */
-  set external(value: JsonInput) {
-    this.setValue('external', value);
-  }
-  get external() {
-    return this.state.external;
-  }
-  set config(value: JsonInput) {
-    this.setValue('config', value);
-  }
-  set readonly(value: JsonInput) {
-    this.setValue('readonly', value);
-  }
-  set validationMode(value: ValidationMode) {
-    this.setValue('validationMode', value);
-  }
-  set locale(value: string) {
-    this.setValue('locale', value);
-  }
-  set translations(value: JsonInput) {
-    this.setValue('translations', value);
-  }
-  set additionalErrors(value: JsonInput) {
-    this.setValue('additionalErrors', value);
-  }
-  set dark(value: JsonInput) {
-    this.setValue('dark', value);
-  }
-  set mode(value: JsonInput) {
-    this.setValue('mode', value);
-  }
-  set rtl(value: JsonInput) {
-    this.setValue('rtl', value);
-  }
-  set customStyle(value: string) {
-    this.setValue('customStyle', value);
-  }
-  set rendererSettings(value: JsonInput) {
-    this.setValue('rendererSettings', value);
-  }
   set accentColor(value: string) {
     this.setValue('accentColor', value);
   }
@@ -210,13 +100,13 @@ export class JsonFormsShadcnElement extends HTMLElement {
     this.setValue('density', value);
   }
 
-  private setValue(name: string, value: JsonInput) {
+  protected setValue(name: string, value: JsonInput) {
     const key = name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
     (this.state as any)[key] = value;
     this.render();
   }
 
-  private emitChange(data: unknown, errors: unknown[]) {
+  private emitChange(data: unknown, errors: unknown[] = []) {
     this.dispatchEvent(
       new CustomEvent('change', {
         bubbles: true,
@@ -238,10 +128,9 @@ export class JsonFormsShadcnElement extends HTMLElement {
 
   private render() {
     if (!this.root) return;
-    const schema = parseJson(this.state.schema);
-    const data = parseJson(this.state.data);
-    // Hosts may attach the element before assigning its form properties.
-    if (schema === undefined && (data === undefined || data === null)) return;
+    const input = this.readFormInput();
+    if (!input) return;
+    const { schema, data } = input;
 
     const dark =
       parseBoolean(this.state.dark) ?? parseMode(this.state.mode) === 'dark';

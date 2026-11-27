@@ -20,7 +20,7 @@ import {
   withJsonFormsLayoutProps,
   withTranslateProps,
 } from '@jsonforms/react';
-import { useHandleAction, type ActionEvent } from './actionContext';
+import { useHandleAction, type ActionEvent } from '../util/actionContext';
 import { allowsScriptEvaluation } from '../util/templateLang';
 
 /**

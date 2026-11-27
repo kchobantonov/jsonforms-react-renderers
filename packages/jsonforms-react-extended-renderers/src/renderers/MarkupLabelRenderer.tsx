@@ -1,4 +1,4 @@
-import type { ItemContext } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+import type { ItemContext } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import {
   LabelProps,
   RankedTester,
@@ -19,7 +19,7 @@ import {
 } from '../util/interpolate';
 import { escapeMarkdown } from '../util/markdownEscape';
 import { markdownProfile, resolveMarkup } from '../util/markup';
-import { InterpolatedText } from './InterpolatedText';
+import { InterpolatedText } from '../components/InterpolatedText';
 import { resolveUrlPolicy } from '../util/urlPolicy';
 import { useExtendedTranslator } from '../util/useExtendedTranslator';
 import type { MarkdownTextProps } from './MarkupLabelRenderer.impl';

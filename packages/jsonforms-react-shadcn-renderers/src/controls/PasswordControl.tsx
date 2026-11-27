@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@jsonforms-react-shadcn-ui/tooltip';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { InputShell, makeId } from './InputControl';
 import { ClearValueButton } from '../components/ClearValueButton';
 

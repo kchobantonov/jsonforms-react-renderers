@@ -150,7 +150,7 @@ const build = (locale: string): Environment =>
 const environments = new Map<string, Environment>();
 
 /** The base environment for a locale, built once. */
-export const environmentFor = (locale: string | undefined): Environment => {
+const environmentFor = (locale: string | undefined): Environment => {
   const key = locale ?? 'en';
   const existing = environments.get(key);
   if (existing) {

@@ -13,8 +13,8 @@ import {
   SelectItem,
 } from '@jsonforms-react-shadcn-ui/select';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { CollectionPage } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { CollectionPage } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
 export const CollectionPager = ({ page }: { page: CollectionPage }) => {
   const t = useI18n();
   if (!page.enabled || !page.total) return null;

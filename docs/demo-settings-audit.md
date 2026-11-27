@@ -29,6 +29,8 @@ For the shadcn demo:
 
 This is a wiring audit plus focused regression coverage, not exhaustive browser certification of every control or renderer family. Initialization and future-action settings intentionally differ from immediate visual toggles. Native/provider appearance should also be checked in a browser.
 
-Evidence: shadcn settingsConfig.test.tsx; common expansionSettings.test.tsx,
-arrayPanelState.ts and groupState.ts. Conditional field discovery and detail
+The [shadcn settings tests](../packages/jsonforms-react-shadcn-renderers/test/integration/settingsConfig.test.tsx)
+and [shared expansion tests](../packages/jsonforms-react-renderer-common/test/layout/expansionSettings.test.tsx)
+exercise these settings. Array panels use the [shared state hook](../packages/jsonforms-react-renderer-common/src/collections/useArrayPanelState.ts).
+Conditional field discovery and detail
 modes are authored through example config/UI schema, not dedicated Settings toggles.

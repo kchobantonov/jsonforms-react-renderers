@@ -1,3 +1,4 @@
+import { rendererTestAlias } from '../../vite/renderer-test-alias.mjs';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite-plus';
 
@@ -7,16 +8,8 @@ const fromPackage = (path: string) =>
 export default defineConfig({
   resolve: {
     alias: [
-      {
-        find: '@chobantonov/jsonforms-react-renderer-common',
-        replacement: fileURLToPath(
-          new URL('../jsonforms-react-renderer-common/src', import.meta.url),
-        ),
-      },
-      {
-        find: '@chobantonov/jsonforms-react-antd-renderers',
-        replacement: fromPackage('./src'),
-      },
+      rendererTestAlias('jsonforms-react-renderer-common'),
+      rendererTestAlias('jsonforms-react-antd-renderers'),
       {
         find: '@chobantonov/jsonforms-react-antd-extended-renderers',
         replacement: fromPackage(
@@ -60,7 +53,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: [
-      './test/renderers/MatchMediaMock.ts',
+      './test/setup/MatchMediaMock.ts',
       './test/setup/jsdomShims.ts',
     ],
     include: ['test/**/*.test.{ts,tsx}'],

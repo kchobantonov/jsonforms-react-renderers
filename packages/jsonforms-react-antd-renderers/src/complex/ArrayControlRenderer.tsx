@@ -23,9 +23,7 @@ import { TableControl } from './TableControl';
 export const ArrayControlRenderer = (
   props: ArrayLayoutProps & { translations: ArrayTranslations },
 ) => {
-  const [open, setOpen] = useState(false);
-  const [path, setPath] = useState(undefined);
-  const [rowData, setRowData] = useState(undefined);
+  const [pending, setPending] = useState<{ path: string; index: number }>();
   const { removeItems, visible, translations } = props;
 
   /*
@@ -38,6 +36,7 @@ export const ArrayControlRenderer = (
   const ctx = useJsonForms();
   const confirmDelete = useCallback(
     (p: string, rowIndex: number) => {
+      if (!removeItems) return;
       const parent = p.substring(0, p.lastIndexOf('.'));
       /*
         `p` is the *row's* path, and `props.data` on an array control is the
@@ -58,9 +57,7 @@ export const ArrayControlRenderer = (
           discarded,
         )
       ) {
-        setOpen(true);
-        setPath(p);
-        setRowData(rowIndex);
+        setPending({ path: parent, index: rowIndex });
         return;
       }
       removeItems(parent, [rowIndex])();
@@ -68,12 +65,11 @@ export const ArrayControlRenderer = (
     [ctx.core?.data, props.config, props.uischema, removeItems],
   );
   const openDeleteDialog = confirmDelete;
-  const deleteCancel = useCallback(() => setOpen(false), [setOpen]);
+  const deleteCancel = useCallback(() => setPending(undefined), []);
   const deleteConfirm = useCallback(() => {
-    const p = path.substring(0, path.lastIndexOf('.'));
-    removeItems(p, [rowData])();
-    setOpen(false);
-  }, [setOpen, path, rowData, removeItems]);
+    if (pending) removeItems?.(pending.path, [pending.index])();
+    setPending(undefined);
+  }, [pending, removeItems]);
 
   if (!visible) {
     return null;
@@ -87,7 +83,7 @@ export const ArrayControlRenderer = (
         translations={translations}
       />
       <DeleteDialog
-        open={open}
+        open={!!pending}
         onCancel={deleteCancel}
         onConfirm={deleteConfirm}
         acceptText={translations.deleteDialogAccept}

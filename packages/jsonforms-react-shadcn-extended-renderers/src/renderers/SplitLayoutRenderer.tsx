@@ -22,7 +22,7 @@ export const splitLayoutTester: RankedTester = rankWith(
 
 import React from 'react';
 import { JsonFormsDispatch, withJsonFormsLayoutProps } from '@jsonforms/react';
-import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import {
   initialSplitSizes,
   splitCssSize,

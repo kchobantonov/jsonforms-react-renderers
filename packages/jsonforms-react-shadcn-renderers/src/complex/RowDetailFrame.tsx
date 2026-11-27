@@ -8,7 +8,11 @@ import {
   TooltipContent,
 } from '@jsonforms-react-shadcn-ui/tooltip';
 import React from 'react';
-import { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+import {
+  type RowDetailState,
+  createRowDetailToggle,
+  createRowDetailFrame,
+} from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
 import {
   Dialog,
   DialogHeader,
@@ -21,51 +25,46 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from '@jsonforms-react-shadcn-ui/resizable';
-export const RowDetailFrame = ({
+const RowDialog = ({ state }: { state: RowDetailState }) => {
+  const { options, t } = state;
+  return (
+    <Dialog
+      open={!!state.selection}
+      onOpenChange={(open) => !open && state.close()}
+    >
+      <DetailDialogContent
+        open={!!state.selection}
+        options={options.dialog}
+        aria-describedby={undefined}
+      >
+        <DialogHeader>
+          <DialogTitle>{t('collection.editDetails')}</DialogTitle>
+        </DialogHeader>
+        <div className='p-1'>
+          {state.conflict && <p role='alert'>{t('composite.applyConflict')}</p>}
+          {state.content}
+        </div>
+        <DialogFooter>
+          <Button type='button' variant='outline' onClick={state.close}>
+            {t('composite.cancel')}
+          </Button>
+          <Button
+            type='button'
+            disabled={!state.enabled || state.conflict}
+            onClick={state.apply}
+          >
+            {t('composite.apply')}
+          </Button>
+        </DialogFooter>
+      </DetailDialogContent>
+    </Dialog>
+  );
+};
+const RowPanel = ({
   state,
   children,
 }: React.PropsWithChildren<{ state: RowDetailState }>) => {
-  const { options, t } = state;
-  const { panelOpen } = state;
-  if (!options) return <>{children}</>;
-  if (options.presentation === 'dialog')
-    return (
-      <>
-        {children}
-        <Dialog
-          open={!!state.selection}
-          onOpenChange={(open) => !open && state.close()}
-        >
-          <DetailDialogContent
-            open={!!state.selection}
-            options={options.dialog}
-            aria-describedby={undefined}
-          >
-            <DialogHeader>
-              <DialogTitle>{t('collection.editDetails')}</DialogTitle>
-            </DialogHeader>
-            <div className='p-1'>
-              {state.conflict && (
-                <p role='alert'>{t('composite.applyConflict')}</p>
-              )}
-              {state.content}
-            </div>
-            <DialogFooter>
-              <Button type='button' variant='outline' onClick={state.close}>
-                {t('composite.cancel')}
-              </Button>
-              <Button
-                type='button'
-                disabled={!state.enabled || state.conflict}
-                onClick={state.apply}
-              >
-                {t('composite.apply')}
-              </Button>
-            </DialogFooter>
-          </DetailDialogContent>
-        </Dialog>
-      </>
-    );
+  const { options, panelOpen } = state;
   return (
     <div>
       <ResizablePanelGroup
@@ -101,38 +100,33 @@ export const RowDetailFrame = ({
   );
 };
 
-export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
-  const { panelOpen, setPanelOpen, t, options } = state;
-  if (options?.presentation !== 'panel') return null;
-  const toggleLabel = t(
-    panelOpen ? 'collection.hideDetails' : 'collection.showDetails',
-  );
-  return (
-    <div className='flex items-center'>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon-sm'
-              aria-label={toggleLabel}
-              aria-expanded={panelOpen}
-              onClick={() => setPanelOpen((open) => !open)}
-            >
-              {panelOpen ? (
-                <EyeOff aria-hidden='true' />
-              ) : (
-                <Eye aria-hidden='true' />
-              )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{toggleLabel}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
-  );
-};
+export const RowDetailFrame = createRowDetailFrame(RowDialog, RowPanel);
+
+export const RowDetailToggle = createRowDetailToggle((toggle) => (
+  <div className='flex items-center'>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon-sm'
+            aria-label={toggle.label}
+            aria-expanded={toggle.expanded}
+            onClick={toggle.toggle}
+          >
+            {toggle.expanded ? (
+              <EyeOff aria-hidden='true' />
+            ) : (
+              <Eye aria-hidden='true' />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{toggle.label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
+));
 
 /** Shared row edit action for native tables and AG Grid. */
 export const RowDetailEditButton = ({

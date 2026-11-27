@@ -1,13 +1,13 @@
-import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
-import { usePreTouchErrors } from '@chobantonov/jsonforms-react-renderer-common/preTouchErrors';
+import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedScalar';
+import { usePreTouchErrors } from '@chobantonov/jsonforms-react-renderer-common/validation/preTouchErrors';
 import { useJsonForms } from '@jsonforms/react';
 import {
   getControlHelp,
   ControlHelpProps,
-} from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
+} from '@chobantonov/jsonforms-react-renderer-common/controls/controlHelp';
 import { ControlProps } from '@jsonforms/core';
 import React, { useContext } from 'react';
-import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/controls/inputAdornments';
 import { ShadcnCellMode } from '../cells/asCell';
 import { ClearValueButton } from '../components/ClearValueButton';
 import { Input } from '@jsonforms-react-shadcn-ui/input';

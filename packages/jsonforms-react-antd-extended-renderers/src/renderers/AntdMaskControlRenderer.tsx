@@ -3,7 +3,7 @@ import { withJsonFormsControlProps } from '@jsonforms/react';
 import { InputControl } from '@chobantonov/jsonforms-react-antd-renderers';
 import { extendedMaskTester } from '@chobantonov/jsonforms-react-extended-renderers';
 import React from 'react';
-import { AntdMaskInput } from './AntdMaskInput';
+import { AntdMaskInput } from '../components/AntdMaskInput';
 
 /**
  * Selection is `options.mask` carrying a pattern, on a string with no format of

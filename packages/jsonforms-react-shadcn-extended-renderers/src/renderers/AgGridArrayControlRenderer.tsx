@@ -1,9 +1,9 @@
 import { ShadcnGridCellFrame } from '@chobantonov/jsonforms-react-shadcn-renderers';
 import { Plus, Trash2 } from 'lucide-react';
-import { ShadcnArrayFrame } from './ShadcnArrayFrame';
+import { ShadcnArrayFrame } from '../components/ShadcnArrayFrame';
 import { createAgGridControl } from '@chobantonov/jsonforms-react-extended-renderers';
-import { ShadcnEditorButton } from './ShadcnEditorButton';
-import { ShadcnEditorFrame } from './ShadcnEditorFrame';
+import { ShadcnEditorButton } from '../components/ShadcnEditorButton';
+import { ShadcnEditorFrame } from '../components/ShadcnEditorFrame';
 export { extendedAgGridTester as agGridArrayTester } from '@chobantonov/jsonforms-react-extended-renderers';
 export { ShadcnAgGridControlRenderer as AgGridArrayControlRenderer } from './ShadcnAgGridControlRenderer';
 export const ShadcnAgGridArrayControl = createAgGridControl({

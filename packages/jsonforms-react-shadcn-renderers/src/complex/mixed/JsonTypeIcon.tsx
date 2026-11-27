@@ -5,7 +5,7 @@ export const JsonTypeIcon = ({
   type,
   active = false,
 }: {
-  type: string;
+  type: string | null;
   active?: boolean;
 }) => (
   <svg

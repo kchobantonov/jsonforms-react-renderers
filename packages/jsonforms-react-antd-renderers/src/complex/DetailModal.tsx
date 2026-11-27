@@ -4,8 +4,8 @@ import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
 import {
   useDetailDialog,
   DetailDialogOptions,
-} from '@chobantonov/jsonforms-react-renderer-common/detailDialog';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/interaction/detailDialog';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 export const DetailModal = ({
   options = {},

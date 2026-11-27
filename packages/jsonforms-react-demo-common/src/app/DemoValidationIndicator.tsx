@@ -2,7 +2,7 @@ import React from 'react';
 import { CircleAlert } from 'lucide-react';
 import type { DemoUi } from './types';
 
-export const formatDemoErrors = (errors: unknown[]) =>
+const formatDemoErrors = (errors: unknown[]) =>
   errors
     .map((error) => {
       if (typeof error === 'string') return error;

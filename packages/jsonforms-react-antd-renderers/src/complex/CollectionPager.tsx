@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pagination, theme } from 'antd';
-import { CollectionPage } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { CollectionPage } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
 export const CollectionPager = ({ page }: { page: CollectionPage }) => {
   const { token } = theme.useToken();
   return !page.enabled || page.total === 0 ? null : (

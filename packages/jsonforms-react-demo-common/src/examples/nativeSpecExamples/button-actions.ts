@@ -1,9 +1,6 @@
+import { insertExampleTab } from './insertExampleTab';
 import { UISchemaElement } from '@jsonforms/core';
 import type { ButtonUiSchema } from '@chobantonov/jsonforms-react-extended-renderers';
-import config from '@chobantonov/jsonforms-extended-spec/examples/button-actions/config.json';
-import data from '@chobantonov/jsonforms-extended-spec/examples/button-actions/data.json';
-import schema from '@chobantonov/jsonforms-extended-spec/examples/button-actions/schema.json';
-import translations from '@chobantonov/jsonforms-extended-spec/examples/button-actions/translations.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/button-actions/uischema.json';
 
 /**
@@ -120,33 +117,10 @@ const typescriptCategory = {
   ],
 } as unknown as UISchemaElement;
 
-type Layoutish = { type: string; elements: UISchemaElement[] };
+const composed = insertExampleTab(
+  uischema as unknown as UISchemaElement,
+  typescriptCategory,
+  'button-actions: uischema.json no longer has a Categorization to add the TypeScript tab to.',
+);
 
-/*
-  Structural, not positional. Finding the `Categorization` by type means
-  reordering `uischema.json` cannot silently append the tab to the wrong
-  parent - which an `elements[4]` would do without a word.
-*/
-const withTypescriptTab = (root: UISchemaElement): UISchemaElement => {
-  const layout = root as unknown as Layoutish;
-  const elements = layout.elements ?? [];
-  const index = elements.findIndex(
-    (element) => (element as { type?: string }).type === 'Categorization',
-  );
-  if (index === -1) {
-    throw new Error(
-      'button-actions: uischema.json no longer has a Categorization to add the TypeScript tab to.',
-    );
-  }
-  const categorization = elements[index] as unknown as Layoutish;
-  const replaced = elements.slice();
-  replaced[index] = {
-    ...categorization,
-    elements: [...categorization.elements, typescriptCategory],
-  } as unknown as UISchemaElement;
-  return { ...layout, elements: replaced } as unknown as UISchemaElement;
-};
-
-const composed = withTypescriptTab(uischema as unknown as UISchemaElement);
-
-export { config, data, schema, translations, uischema, composed };
+export { composed };

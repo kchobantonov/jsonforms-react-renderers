@@ -2,18 +2,16 @@ import dayjs from 'dayjs';
 import type {
   TemporalBounds,
   BoundPrecision,
-} from '@chobantonov/jsonforms-react-renderer-common/temporalBounds';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/temporalBounds';
 export {
   temporalBounds,
   effectiveRestrict,
-  resolveDataPointer,
   resolveDataBounds,
-} from '@chobantonov/jsonforms-react-renderer-common/temporalBounds';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/temporalBounds';
 export type {
-  TemporalBoundsSchema,
   BoundPrecision,
   TemporalBounds,
-} from '@chobantonov/jsonforms-react-renderer-common/temporalBounds';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/temporalBounds';
 const CLOCK_DAY = '2000-01-01';
 
 /** A `disabledDate` for antd, or undefined when nothing is bounded. */

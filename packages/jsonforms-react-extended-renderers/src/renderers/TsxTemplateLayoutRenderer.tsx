@@ -1,5 +1,7 @@
-import { useDynamicElements } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
-import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import {
+  useDynamicElements,
+  useDynamicExternal,
+} from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import {
   Actions,
   JsonSchema,
@@ -17,9 +19,9 @@ import {
 } from '@jsonforms/react';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import type { ExtendedUISchemaElement } from '../core/uiSchema';
-import { resolveChildNames } from '../util/childNames';
+import { useNamedChildren } from '../util/childNames';
 import { buildFormContext, type FormContext } from '../util/formContext';
-import { useHandleAction } from './actionContext';
+import { useHandleAction } from '../util/actionContext';
 import { UrlPolicy, resolveUrlPolicy } from '../util/urlPolicy';
 import type { TemplateLayoutElement } from '../util/templateLang';
 
@@ -180,11 +182,7 @@ export const TsxTemplateLayoutRendererComponent = (
   const external = useDynamicExternal();
   const fireActionEvent = useHandleAction();
 
-  const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
-  const { names, diagnostics } = useMemo(
-    () => resolveChildNames(children),
-    [children],
-  );
+  const { children, names, diagnostics } = useNamedChildren(uischema.elements);
 
   useEffect(() => {
     for (const diagnostic of diagnostics) {

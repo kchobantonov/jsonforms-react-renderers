@@ -1,3 +1,4 @@
+import { PickerFormItem } from '../components/PickerFormItem';
 import {
   useExtendedTranslator,
   useDurationControl,
@@ -5,7 +6,6 @@ import {
   durationFieldMax,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import {
-  ControlFormItem,
   usePreTouchErrors,
   useClearAffordance,
   useI18n,
@@ -183,13 +183,13 @@ export const AntdDurationControl = (props: ControlProps) => {
         </div>
       ))}
       {state.addableFields.length > 0 && (
-        <Select
+        <Select<(typeof state.addableFields)[number]>
           size='small'
           /* Stops where the inputs do: the button column plus its gap. */
           style={{
             width: `calc(100% - ${token.controlHeight + token.paddingXXS}px)`,
           }}
-          value={null}
+          value={undefined}
           disabled={state.disabled}
           placeholder={label('duration.addUnit')}
           aria-label={label('duration.addUnit')}
@@ -226,15 +226,7 @@ export const AntdDurationControl = (props: ControlProps) => {
     </Flex>
   );
   return (
-    <ControlFormItem
-      adornmentSchema={props.schema}
-      adornmentOptions={props.uischema.options as Record<string, unknown>}
-      id={props.id}
-      required={props.required}
-      errors={localError || filteredErrors || undefined}
-      label={props.label}
-      help={localError || filteredErrors || props.description}
-    >
+    <PickerFormItem props={props} error={localError || filteredErrors}>
       {/*
         One field, like the color control: the ISO 8601 value stays editable as
         text and the picker hangs off an icon inside the input rather than
@@ -274,7 +266,7 @@ export const AntdDurationControl = (props: ControlProps) => {
           </Popover>
         }
       />
-    </ControlFormItem>
+    </PickerFormItem>
   );
 };
 

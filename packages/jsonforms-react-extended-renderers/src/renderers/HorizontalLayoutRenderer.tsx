@@ -14,7 +14,7 @@ import {
   withJsonFormsLayoutProps,
 } from '@jsonforms/react';
 import React from 'react';
-import { horizontalLayoutWidths } from './horizontalLayout';
+import { horizontalLayoutWidths } from '../util/horizontalLayout';
 
 // Above the base layouts, below specialized split layouts (rank 5).
 export const horizontalColumnsLayoutTester: RankedTester = rankWith(

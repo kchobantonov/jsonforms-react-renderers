@@ -86,7 +86,8 @@
     "lint:fix": "vp run lint --fix",
     "test": "vp test run",
     "clean": "rimraf lib coverage dist .nyc_output 2> /dev/null",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test-cov": "vp test run --coverage"
   },
   "exports": {
     ".": {

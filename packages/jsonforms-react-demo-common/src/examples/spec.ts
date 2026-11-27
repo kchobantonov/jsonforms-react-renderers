@@ -6,10 +6,9 @@ import {
   ExampleWithTranslations,
   TranslationCatalogs,
   translatorFor,
-} from '../i18nCatalogs';
+} from '../locale/i18nCatalogs';
 import { registerProjectExamples } from './registry';
 
-export type { TranslationCatalogs };
 export { translatorFor };
 
 /** Prefix applied to a spec example's `name`, which is also its URL hash. */
@@ -23,7 +22,7 @@ const specExampleNames = new Set<string>();
 export const isSpecExample = (name: string): boolean =>
   specExampleNames.has(name);
 
-export type SpecExampleInput = Omit<
+type SpecExampleInput = Omit<
   ExampleDescription,
   'name' | 'label' | 'schema' | 'uischema' | 'data'
 > & {
@@ -46,7 +45,7 @@ export type SpecExampleInput = Omit<
  * Prefixing name and label keeps spec examples identifiable in the demo's
  * example list, the same way official JSON Forms examples are prefixed.
  */
-export const registerSpecExamples = (examples: SpecExampleInput[]): void => {
+const registerSpecExamples = (examples: SpecExampleInput[]): void => {
   const described = examples.map(
     ({ id, label, translations, locale = 'en', ...rest }) => {
       const name = `${SPEC_EXAMPLE_NAME_PREFIX}${id}`;

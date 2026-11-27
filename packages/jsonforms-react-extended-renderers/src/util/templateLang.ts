@@ -49,7 +49,7 @@ export type TemplateLayoutElement = Omit<Layout, 'elements'> & {
 };
 
 /** "then ractive for the default web profile" */
-export const DEFAULT_TEMPLATE_LANG: TemplateLang = 'ractive';
+const DEFAULT_TEMPLATE_LANG: TemplateLang = 'ractive';
 
 export interface ResolvedTemplateLang {
   /** The engine to use, or undefined when the request cannot be honoured. */

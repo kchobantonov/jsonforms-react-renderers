@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   and,
   Categorization,
   Category,
-  deriveLabelForUISchemaElement,
   RankedTester,
   rankWith,
   StatePropsOfLayout,
@@ -17,7 +16,7 @@ import {
   withTranslateProps,
 } from '@jsonforms/react';
 import { CategoryHeader } from './CategoryHeader';
-import { useCategorySelection } from '../util/categoryState';
+import { useCategorySelection, useCategoryLabels } from '../util/categoryState';
 import {
   AjvProps,
   AntdLayoutRenderer,
@@ -26,7 +25,7 @@ import {
 } from '../util/layout';
 import { Tabs } from 'antd';
 
-export const isSingleLevelCategorization: Tester = and(
+const isSingleLevelCategorization: Tester = and(
   uiTypeIs('Categorization'),
   (uischema: UISchemaElement): boolean => {
     const categorization = uischema as Categorization;
@@ -45,9 +44,6 @@ export const categorizationTester: RankedTester = rankWith(
   1,
   isSingleLevelCategorization,
 );
-export interface CategorizationState {
-  activeCategory: number;
-}
 
 export interface CategorizationLayoutRendererProps
   extends StatePropsOfLayout, AjvProps, TranslateProps {
@@ -114,9 +110,7 @@ export const CategorizationLayoutRenderer = (
     select(category);
   };
 
-  const tabLabels = useMemo(() => {
-    return categories.map((e: Category) => deriveLabelForUISchemaElement(e, t));
-  }, [categories, t]);
+  const tabLabels = useCategoryLabels(categories, t);
 
   if (!visible) {
     return null;

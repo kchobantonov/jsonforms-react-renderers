@@ -1,4 +1,4 @@
-import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
 import {
   and,
   ArrayLayoutProps,
@@ -57,16 +57,16 @@ export const ListWithDetailRenderer = (
     disableRemove,
     translations,
   } = props;
-  const [selectedIndex, setSelectedIndex] = useState(undefined);
+  const [selectedIndex, setSelectedIndex] = useState<number>();
   const confirmation = useConfirmation();
   const ctx = useJsonForms();
   const handleRemoveItem = useCallback(
-    (p: string, value: any) => () => {
+    (p: string, value: number) => () => {
       const remove = () => {
-        removeItems(p, [value])();
+        removeItems?.(p, [value])();
         if (selectedIndex === value) {
           setSelectedIndex(undefined);
-        } else if (selectedIndex > value) {
+        } else if (selectedIndex !== undefined && selectedIndex > value) {
           setSelectedIndex(selectedIndex - 1);
         }
       };
@@ -106,7 +106,7 @@ export const ListWithDetailRenderer = (
   const foundUISchema = useMemo(
     () =>
       findUISchema(
-        uischemas,
+        uischemas ?? [],
         schema,
         uischema.scope,
         path,
@@ -126,13 +126,14 @@ export const ListWithDetailRenderer = (
       path,
       schema,
       (errorPath: string) => errorPath === path,
-    )(ctx.core?.errors ?? []).map((error) => error.message),
+    )(ctx.core?.errors ?? []).flatMap((error) => error.message ?? []),
   );
   const summaryErrors = appliedUiSchemaOptions.hideArraySummaryValidation
     ? ownErrors
     : errors;
   const doDisableAdd = disableAdd || appliedUiSchemaOptions.disableAdd;
-  const doDisableRemove = disableRemove || appliedUiSchemaOptions.disableRemove;
+  const doDisableRemove =
+    !removeItems || disableRemove || appliedUiSchemaOptions.disableRemove;
 
   const [previousSchema, setPreviousSchema] = React.useState(schema);
   if (previousSchema !== schema) {
@@ -162,7 +163,7 @@ export const ListWithDetailRenderer = (
         translations={translations}
         label={computeLabel(
           label,
-          required,
+          required ?? false,
           appliedUiSchemaOptions.hideRequiredAsterisk,
         )}
         description={description}

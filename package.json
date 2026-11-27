@@ -6,7 +6,7 @@
   },
   "scripts": {
     "preparePublish": "vp run test:release && vp run release:pack",
-    "merge-report": "mkdir -p coverage && lcov-result-merger 'packages/**/coverage/lcov.info' 'coverage/lcov.info' --prepend-source-files",
+    "merge-report": "mkdir -p coverage && lcov-result-merger 'packages/jsonforms-react-{renderer-common,*-renderers,*-webcomponent}/coverage/lcov.info' 'coverage/lcov.info' --prepend-source-files",
     "check-format": "vp fmt --check .",
     "fallow": "fallow",
     "fallow:report": "fallow --format json --pretty --output-file .fallow/report.json",

@@ -1,24 +1,20 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readdirSync } from 'node:fs';
+import { resolve, sep } from 'node:path';
 import { defineConfig } from 'vite-plus';
-const root = fileURLToPath(new URL('.', import.meta.url));
-const pkg = JSON.parse(
-  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
-);
-const dependencies = [
-  ...Object.keys(pkg.dependencies),
-  ...Object.keys(pkg.peerDependencies),
-];
+import { packageBuild } from '../../vite/package-build.mjs';
+
+const { packageDir, isExternal } = packageBuild(import.meta.url);
+const sourceDir = resolve(packageDir, 'src');
 const entry = Object.fromEntries(
-  ['', 'locale/'].flatMap((dir) =>
-    readdirSync(resolve(root, 'src', dir))
-      .filter((name) => /\.tsx?$/.test(name))
-      .map((name) => [
-        dir + name.replace(/\.tsx?$/, ''),
-        resolve(root, 'src', dir, name),
-      ]),
-  ),
+  readdirSync(sourceDir, { recursive: true })
+    .filter((file) => /(?<!\.d)\.tsx?$/.test(file))
+    .map((file) => [
+      file
+        .split(sep)
+        .join('/')
+        .replace(/\.tsx?$/, ''),
+      resolve(sourceDir, file),
+    ]),
 );
 export default defineConfig({
   build: {
@@ -33,9 +29,6 @@ export default defineConfig({
     outDir: 'lib',
     emptyOutDir: true,
     sourcemap: true,
-    rolldownOptions: {
-      external: (id) =>
-        dependencies.some((name) => id === name || id.startsWith(name + '/')),
-    },
+    rolldownOptions: { external: isExternal },
   },
 });

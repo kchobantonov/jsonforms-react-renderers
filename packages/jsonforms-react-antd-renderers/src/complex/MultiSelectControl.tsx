@@ -11,8 +11,8 @@ import {
   uiTypeIs,
 } from '@jsonforms/core';
 import { useJsonForms, withJsonFormsControlProps } from '@jsonforms/react';
-import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';
+import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import { ControlFormItem } from '../util/cellMode';
 import { usePreTouchErrors } from '../util/preTouchErrors';
 import { useI18n } from '../util/translate';

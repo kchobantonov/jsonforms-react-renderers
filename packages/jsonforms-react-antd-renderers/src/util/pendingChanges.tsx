@@ -2,5 +2,5 @@
 export {
   PendingChangesProvider,
   useRegisterPendingChange,
-} from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
-export type { PendingChange } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
+} from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
+export type { PendingChange } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';

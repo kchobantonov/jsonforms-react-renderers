@@ -1,7 +1,6 @@
+import { PickerFormItem } from '../components/PickerFormItem';
 import {
   AntdClearableInput,
-  ControlFormItem,
-  useI18n,
   usePreTouchErrors,
 } from '@chobantonov/jsonforms-react-antd-renderers';
 import ScheduleOutlined from '@ant-design/icons/ScheduleOutlined';
@@ -28,25 +27,17 @@ import {
   Typography,
   theme as antTheme,
 } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import {
+  useCronPicker,
   CRON_FIELDS,
   CronField,
   CronPeriod,
   DEFAULT_CRON,
   FIELD_RANGE,
-  NOTHING_CHOSEN,
-  cronProblem,
-  fieldsForPeriod,
   formatField,
-  joinCron,
   labelFor,
   parseField,
-  periodOf,
-  sameExpression,
-  splitCron,
-  standDown,
-  withTimeDefaults,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 
 /**
@@ -209,11 +200,27 @@ const FieldPicker = ({
  */
 export const AntdCronControl = (props: ControlProps) => {
   const { token } = antTheme.useToken();
-  const label = useI18n();
-  /*
-    See `usePreTouchErrors` in the base package: the filtered message, plus the
-    touch state it needs. Unchanged unless filtering is switched on.
-  */
+  const {
+    label,
+    expression,
+    open,
+    setOpen,
+    text,
+    period,
+    options,
+    showActions,
+    disabled,
+    localError,
+    draft,
+    changeField,
+    changeText,
+    changePeriod,
+    editedProblem,
+    shownFields,
+    hasCustomField,
+    openOn,
+    accept,
+  } = useCronPicker(props);
   const { errors: filteredErrors, onBlur: onBlurTouch } = usePreTouchErrors({
     errors: props.errors,
     path: props.path,
@@ -221,106 +228,7 @@ export const AntdCronControl = (props: ControlProps) => {
     uischema: props.uischema as ControlElement,
     config: props.config,
   });
-
-  const expression = typeof props.data === 'string' ? props.data : '';
-  const [open, setOpen] = useState(false);
-  /**
-   * What the picker is editing, as text, and **exactly what the field said when
-   * it opened**.
-   *
-   * Not seeded with a default. A picker opened on an empty property that
-   * arrived showing `0 0/15 * * * *` in its dropdowns is showing the
-   * placeholder as though it were the value: OK would then write a schedule
-   * nobody chose, and Cancel would be the only way to leave the property as it
-   * was found.
-   */
-  const [text, setText] = useState('');
-  /**
-   * Which rows are on screen - and nothing else.
-   *
-   * `undefined` until the value says one or somebody picks one. A property with
-   * no schedule in it that opened already reading "Daily" would be asserting a
-   * repetition it does not have, and the rows under it would be answering a
-   * question nobody asked. Held rather than derived, so emptying the last
-   * dropdown of the current period does not re-derive a finer one mid-edit and
-   * take the row being cleared off the screen.
-   */
-  const [period, setPeriod] = useState<CronPeriod | undefined>(undefined);
-  /**
-   * Whether anything in the picker was touched.
-   *
-   * OK on an untouched picker must write nothing, and comparing the schedules
-   * cannot answer that on an empty property: there is no schedule to compare
-   * with.
-   */
-  const [touched, setTouched] = useState(false);
-
   if (!props.visible) return null;
-
-  const options = { ...props.config, ...props.uischema.options };
-  const showActions = options.showActions !== false;
-  const disabled = !props.enabled || Boolean(props.readonly);
-  const problem =
-    expression.trim() === '' ? undefined : cronProblem(expression);
-  const localError = problem ? label(`cron.error.${problem}` as any) : '';
-
-  const commit = (next: string) => {
-    /*
-      Never a rewrite for its own sake: a value that already says this is left
-      exactly as it was written.
-    */
-    if (disabled || sameExpression(next, expression)) return;
-    props.handleChange(props.path, next);
-  };
-
-  /** What the rows are drawn from. An empty or unreadable value has chosen nothing yet. */
-  const draft = splitCron(text) ?? NOTHING_CHOSEN;
-
-  const change = (next: string) => {
-    setText(next);
-    setTouched(true);
-    if (!showActions) commit(next);
-  };
-
-  /**
-   * Replaces one field, leaves the other five exactly as they were spelled, and
-   * pins the time below it where nothing has been said.
-   */
-  const changeField = (field: CronField, value: string) => {
-    const next = [...draft];
-    const chosen = value.trim() !== '' && value !== '*';
-    next[CRON_FIELDS.indexOf(field)] = chosen ? value : '*';
-    change(joinCron(chosen ? withTimeDefaults(next, field) : next));
-  };
-
-  const changeText = (next: string) => {
-    const fields = splitCron(next);
-    if (fields) setPeriod(periodOf(fields));
-    change(next);
-  };
-
-  /**
-   * Changes which rows are on screen, and writes only what that hides.
-   *
-   * On a property with no schedule yet this writes nothing at all: the rows
-   * appear, every one of them reading "every", and the expression stays empty
-   * until something is actually chosen. On one that has a schedule, the fields
-   * the new period hides stand down, because a condition with no row left to
-   * state it is a schedule nobody can see.
-   */
-  const changePeriod = (next: CronPeriod) => {
-    if (disabled || next === period) return;
-    setPeriod(next);
-    /*
-      Every second is the one period that leaves no row to choose from, so the
-      period is the whole answer rather than a lens on one.
-    */
-    if (next === 'second') change(joinCron(NOTHING_CHOSEN));
-    else if (splitCron(text)) change(joinCron(standDown(draft, next)));
-  };
-
-  const editedProblem = text.trim() === '' ? undefined : cronProblem(text);
-  const shownFields = period ? fieldsForPeriod(period) : [];
 
   const picker = (
     <Flex vertical gap='small' style={{ width: 340 }}>
@@ -356,11 +264,7 @@ export const AntdCronControl = (props: ControlProps) => {
         />
       ))}
 
-      {shownFields.some(
-        (field) =>
-          parseField(draft[CRON_FIELDS.indexOf(field)] ?? '*', field) ===
-          undefined,
-      ) && (
+      {hasCustomField && (
         <Typography.Text
           type='secondary'
           style={{ fontSize: token.fontSizeSM }}
@@ -412,11 +316,7 @@ export const AntdCronControl = (props: ControlProps) => {
           <Button
             type='primary'
             disabled={disabled || Boolean(editedProblem)}
-            onClick={() => {
-              // Untouched writes nothing, which leaves an empty property empty.
-              if (touched) commit(text);
-              setOpen(false);
-            }}
+            onClick={accept}
           >
             {label('cron.ok')}
           </Button>
@@ -432,27 +332,8 @@ export const AntdCronControl = (props: ControlProps) => {
    * So Cancel restores it, and a schedule edited as text is what the picker
    * picks up rather than whatever was left behind last time.
    */
-  const openOn = (next: boolean) => {
-    if (disabled) return;
-    if (next) {
-      const fields = splitCron(expression);
-      setText(expression);
-      setPeriod(fields ? periodOf(fields) : undefined);
-      setTouched(false);
-    }
-    setOpen(next);
-  };
-
   return (
-    <ControlFormItem
-      adornmentSchema={props.schema}
-      adornmentOptions={props.uischema.options as Record<string, unknown>}
-      id={props.id}
-      required={props.required}
-      errors={localError || filteredErrors || undefined}
-      label={props.label}
-      help={localError || filteredErrors || props.description}
-    >
+    <PickerFormItem props={props} error={localError || filteredErrors}>
       {/*
         One field, like the duration and color controls: the expression stays
         editable as text and the picker hangs off an icon inside the input
@@ -504,7 +385,7 @@ export const AntdCronControl = (props: ControlProps) => {
           />
         )}
       </AntdClearableInput>
-    </ControlFormItem>
+    </PickerFormItem>
   );
 };
 

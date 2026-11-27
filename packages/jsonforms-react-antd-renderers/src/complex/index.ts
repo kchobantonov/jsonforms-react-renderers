@@ -1,4 +1,7 @@
-import AllOfRenderer, { allOfControlTester } from './AllOfRenderer';
+import {
+  AllOfControl as AllOfRenderer,
+  allOfControlTester,
+} from '@chobantonov/jsonforms-react-renderer-common/composition/AllOfRenderer';
 import AnyOfRenderer, { anyOfControlTester } from './AnyOfRenderer';
 import ArrayControlRenderer, {
   arrayControlTester,
@@ -33,7 +36,7 @@ export {
   ScalarCompositionRenderer,
 };
 
-export * from './CombinatorProperties';
+export * from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 export * from './DeleteDialog';
 export * from './TableControl';
 export * from './TableToolbar';

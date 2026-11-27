@@ -1,7 +1,7 @@
-import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
+import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controls/controlHelp';
 import { ControlProps } from '@jsonforms/core';
 import React, { useCallback } from 'react';
-import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/inputAdornments';
+import { InputAdornments } from '@chobantonov/jsonforms-react-renderer-common/controls/inputAdornments';
 
 import { AntdCheckbox } from '../antd-controls';
 import { ControlFormItem, useCellMode } from '../util';
@@ -17,19 +17,13 @@ export interface WithInput {
 
 export const InputControl = (props: ControlProps & WithInput) => {
   const cell = useCellMode();
-  const { id, label, visible, required, config, input, handleChange } = props;
+  const { id, label, visible, required, input, handleChange } = props;
   /*
     Replaces `useFocus`: the same focus state, plus the touch state pre-touch
     error filtering needs, and the filtered message. With filtering off this
     returns `props.errors` unchanged.
   */
-  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({
-    errors: props.errors,
-    path: props.path,
-    schema: props.schema,
-    uischema: props.uischema as any,
-    config,
-  });
+  const { errors, focused, onFocus, onBlur } = usePreTouchErrors(props);
   const isValid = errors.length === 0;
   const preserveDynamicPropertyKey = useDynamicProperty(props.path);
   const handleInputChange = useCallback(

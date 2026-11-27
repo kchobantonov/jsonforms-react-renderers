@@ -8,9 +8,9 @@ or the optional extended renderer package.
 Use module entry points to load only the behavior your renderer needs:
 
 ```ts
-import { useGroupState } from '@chobantonov/jsonforms-react-renderer-common/groupState';
-import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
-import { temporalBounds } from '@chobantonov/jsonforms-react-renderer-common/temporalBounds';
+import { useGroupState } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
+import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/interaction/confirmation';
+import { temporalBounds } from '@chobantonov/jsonforms-react-renderer-common/formats/temporalBounds';
 ```
 
 The package also exports these APIs from its root. Temporal helpers use Dayjs;
@@ -18,15 +18,21 @@ mask helpers use Maska. Importing a temporal helper registers its required Dayjs
 plugins. Renderer message catalogs are shared across consumers in the same
 module instance.
 
-Each renderer family supplies its own controls, dialogs, icons, accessibility
-wiring, themes, component locales, and widget event adapters. Layout helpers
-accept family spacing defaults; their fallback is zero. Ant Design's wrapper
-retains its 16px horizontal gap and zero vertical gap.
+Modules under `src/` are grouped by feature. For example, `tuple/` contains the
+tuple schema, hooks, and components. `composition/` handles JSON Schema
+combinators, and `mixed/` handles values with multiple permitted types.
+Place a hook beside the behavior it implements. Use the `use` prefix for
+hooks and PascalCase for component modules. A module’s path relative to
+`src/` is its package subpath. The root `index.ts` defines the root API.
 
-Existing module paths in the renderer packages remain compatibility exports.
-Shadcn consumes the shared group-state hook. Other shared
-APIs support porting features without importing Ant Design. This extraction
-does not register new controls or claim feature parity between the families.
+Each renderer family supplies its own controls, dialogs, icons, accessibility
+wiring, themes, component locales, and widget event adapters. Shared layout
+helpers default to a 16px gap for both rows and columns and honor an explicit
+zero. Family adapters can supply their own defaults.
+
+Import `i18nDefaults` from the `/locale` entry point to use the default catalog.
+The same entry point exports `enRendererLocale` and `bgRendererLocale` for
+explicit language selection. Tests mirror the source features under `test/`.
 
 See [the ownership map](../../docs/renderer-common.md) for the specification
 boundaries and migration details.

@@ -3,4 +3,4 @@ export {
   enclosingPropertyNames,
   discardedByBranchChange,
   branchChangeData,
-} from '@chobantonov/jsonforms-react-renderer-common/combinators';
+} from '@chobantonov/jsonforms-react-renderer-common/composition/combinators';

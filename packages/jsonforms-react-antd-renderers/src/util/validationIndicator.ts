@@ -6,5 +6,5 @@ export {
   displayableErrors,
   resolveIndicatorOption,
   useContainerValidation,
-} from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
-export type { ContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+} from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';
+export type { ContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';

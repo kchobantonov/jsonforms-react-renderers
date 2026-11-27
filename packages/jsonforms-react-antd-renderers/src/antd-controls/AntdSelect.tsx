@@ -21,7 +21,7 @@ export const AntdSelect = (
     uischema,
     path,
     handleChange,
-    options,
+    options = [],
     config,
     inputProps,
     t,

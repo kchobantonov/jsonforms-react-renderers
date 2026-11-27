@@ -1,5 +1,9 @@
+import {
+  useCompositeDraft,
+  type CompositeDetailDialogProps,
+} from '@chobantonov/jsonforms-react-renderer-common/cells/useCompositeDraft';
 import { DetailDialogContent } from '../complex/DetailDialogContent';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {
   Dialog,
@@ -7,157 +11,19 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@jsonforms-react-shadcn-ui/dialog';
-import {
-  JsonFormsCore,
-  JsonSchema,
-  Translator,
-  UPDATE_DATA,
-  coreReducer,
-  update,
-} from '@jsonforms/core';
-import { JsonFormsContext, useJsonForms } from '@jsonforms/react';
-import cloneDeep from 'lodash/cloneDeep';
-import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
-import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { JsonFormsContext } from '@jsonforms/react';
 import { ShadcnCellMode } from './asCell';
-import {
-  PendingChange,
-  PendingChangesProvider,
-} from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
-import { preventsEmpty } from '@chobantonov/jsonforms-react-renderer-common/compositeActions';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
 
-export type CompositeDetailDialogOptions = {
-  dialog?: import('@chobantonov/jsonforms-react-renderer-common/detailDialog').DetailDialogOptions;
-  showEmptyButton?: boolean;
-  disableRemove?: boolean;
-  restrict?: boolean;
-  emptyLabel?: string;
-  cancelLabel?: string;
-  okLabel?: string;
-};
-
-type Props = React.PropsWithChildren<{
-  open: boolean;
-  title: string;
-  label: string;
-  path: string;
-  schema: JsonSchema | undefined;
-  enabled: boolean;
-  options: CompositeDetailDialogOptions;
-  t: Translator;
-  onClose: () => void;
-  onApply: (value: unknown) => void;
-}>;
-
-const at = (data: unknown, path: string) =>
-  path ? get(data, path.split('.')) : data;
-
-export const CompositeDetailDialog = ({
-  open,
-  title,
-  label,
-  path,
-  schema,
-  enabled,
-  options,
-  t,
-  onClose,
-  onApply,
-  children,
-}: Props) => {
-  const parent = useJsonForms();
-
-  const d = useI18nDefault();
-  const [draft, setDraft] = useState<JsonFormsCore | undefined>();
-  // Apply has to read the draft in the same tick it flushes pending writes
-  // into it, which React state cannot do.
-  const draftRef = useRef<JsonFormsCore | undefined>();
-  const [original, setOriginal] = useState<unknown>();
-  const pending = useMemo(() => new Set<PendingChange>(), []);
-
-  const value = draft ? at(draft.data, path) : undefined;
-  const current = () => at(parent.core?.data, path);
-
-  const localDispatch = useCallback(
-    (action: any) => {
-      const core = draftRef.current;
-      if (!core || !enabled) return;
-      if (action.type !== UPDATE_DATA) return;
-      // A control outside the dialog's subtree must not be able to write
-      // through the draft.
-      if (path && action.path !== path && !action.path.startsWith(`${path}.`)) {
-        return;
-      }
-      const next = coreReducer(core, action);
-      draftRef.current = next;
-      setDraft(next);
-    },
-    [enabled, path],
-  );
-
-  // Opening is driven by the parent, so the draft is taken the first time the
-  // dialog renders open and released whenever it closes.
-  if (open && !draft && parent.core) {
-    setOriginal(cloneDeep(current()));
-    const started = { ...parent.core, data: cloneDeep(parent.core.data) };
-    setDraft(started);
-  }
-
-  React.useLayoutEffect(() => {
-    draftRef.current = draft;
-  }, [draft]);
-
-  const release = useCallback(() => {
-    pending.forEach((change) => change.cancel());
-    draftRef.current = undefined;
-    setDraft(undefined);
-  }, [pending]);
-
-  const cancel = useCallback(() => {
-    release();
-    onClose();
-  }, [release, onClose]);
-
-  const apply = useCallback(() => {
-    // Whatever a debounced control is still holding belongs in this Apply.
-    pending.forEach((change) => change.flush());
-    const next = cloneDeep(at(draftRef.current?.data, path));
-    const changed = !isEqual(original, next);
-    release();
-    if (changed) onApply(next);
-    onClose();
-  }, [original, pending, path, release, onApply, onClose]);
-
-  const context = useMemo(
-    () => ({ ...parent, core: draft ?? parent.core, dispatch: localDispatch }),
-    [parent, draft, localDispatch],
-  );
-
-  const isArray = Array.isArray(value) || schema?.type === 'array';
-  const restricted = options.restrict !== false;
-  const canEmpty =
-    enabled &&
-    !options.disableRemove &&
-    value != null &&
-    typeof value === 'object' &&
-    Object.keys(value).length > 0 &&
-    (!restricted || !preventsEmpty(schema, isArray));
-  // The draft was taken from data that has since moved on, so applying it
-  // would silently overwrite the newer value.
-  const conflicted = Boolean(draft) && !isEqual(current(), original);
-
-  const text = (
-    override: string | undefined,
-    key: 'composite.empty' | 'composite.cancel' | 'composite.apply',
-    // An option may name an i18n key of its own, or be the literal label.
-  ) => (override ? t(override, override) : t(key, d(key)));
+export const CompositeDetailDialog = (props: CompositeDetailDialogProps) => {
+  const { open, title, label, options, t, children } = props;
+  const dialog = useCompositeDraft(props);
 
   return (
     <Dialog
       open={open}
       onOpenChange={(next) => {
-        if (!next) cancel();
+        if (!next) dialog.cancel();
       }}
     >
       <DetailDialogContent
@@ -170,16 +36,19 @@ export const CompositeDetailDialog = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <JsonFormsContext.Provider value={context as any}>
-          <PendingChangesProvider changes={pending}>
+        <JsonFormsContext.Provider value={dialog.context as any}>
+          <PendingChangesProvider changes={dialog.pending}>
             <ShadcnCellMode.Provider value={false}>
               <div className='p-1'>{children}</div>
             </ShadcnCellMode.Provider>
           </PendingChangesProvider>
         </JsonFormsContext.Provider>
-        {conflicted && (
+        {dialog.conflicted && (
           <p role='alert'>
-            {t('composite.applyConflict', d('composite.applyConflict'))}
+            {t(
+              'composite.applyConflict',
+              dialog.defaultMessage('composite.applyConflict'),
+            )}
           </p>
         )}
         <DialogFooter>
@@ -187,24 +56,21 @@ export const CompositeDetailDialog = ({
             <Button
               type='button'
               variant='outline'
-              disabled={!canEmpty}
-              onClick={() => {
-                pending.forEach((change) => change.cancel());
-                localDispatch(update(path, () => (isArray ? [] : {})));
-              }}
+              disabled={!dialog.canEmpty}
+              onClick={dialog.clear}
             >
-              {text(options.emptyLabel, 'composite.empty')}
+              {dialog.buttonLabel(options.emptyLabel, 'composite.empty')}
             </Button>
           )}
-          <Button type='button' variant='outline' onClick={cancel}>
-            {text(options.cancelLabel, 'composite.cancel')}
+          <Button type='button' variant='outline' onClick={dialog.cancel}>
+            {dialog.buttonLabel(options.cancelLabel, 'composite.cancel')}
           </Button>
           <Button
             type='button'
-            disabled={!enabled || !draft || conflicted}
-            onClick={apply}
+            disabled={!dialog.canApply}
+            onClick={dialog.apply}
           >
-            {text(options.okLabel, 'composite.apply')}
+            {dialog.buttonLabel(options.okLabel, 'composite.apply')}
           </Button>
         </DialogFooter>
       </DetailDialogContent>

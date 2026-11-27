@@ -2,12 +2,10 @@ import React from 'react';
 import Editor from '@monaco-editor/react';
 import { RotateCcw, Save } from 'lucide-react';
 import { defaultDemoUi } from './defaultUi';
-import { DefaultDemoTypography } from '../DefaultDemoTypography';
+import { DefaultDemoTypography } from './DefaultDemoTypography';
 import type { DemoUi } from './types';
 
-export function parseExternal(
-  value: string,
-): Record<string, unknown> | undefined {
+function parseExternal(value: string): Record<string, unknown> | undefined {
   try {
     const parsed = JSON.parse(value);
     if (

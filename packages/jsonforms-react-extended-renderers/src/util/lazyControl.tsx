@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { ControlProps } from '@jsonforms/core';
-import { EditorRendererComponents } from '../renderers/EditorControlFrame';
+import { EditorRendererComponents } from '../components/editorRendererTypes';
 import { ExtendedI18nKey } from './i18nDefaults';
 import { useExtendedTranslator } from './useExtendedTranslator';
 

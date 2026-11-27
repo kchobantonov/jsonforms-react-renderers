@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DemoSplitterProps } from '../DemoSplitter';
+import type { DemoSplitterProps } from './DemoSplitter';
 
 /**
  * The demo's own component contract.
@@ -73,7 +73,7 @@ export type DemoButtonProps = React.PropsWithChildren<{
   disabled?: boolean;
   iconOnly?: boolean;
   tooltip?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }>;
 
 export type DemoPanelProps = React.PropsWithChildren<{

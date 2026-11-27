@@ -3,7 +3,7 @@ import {
   attachmentName,
   fileItemSchema,
   isFileString,
-} from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+} from '@chobantonov/jsonforms-react-renderer-common/controls/FileArrayInput';
 
 /** Undefined means this is not a file column; nameless files have no search text. */
 export const fileFilterValue = (

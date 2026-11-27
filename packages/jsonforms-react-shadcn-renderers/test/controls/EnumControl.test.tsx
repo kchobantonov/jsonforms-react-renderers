@@ -2,7 +2,7 @@ import type { ControlProps, OwnPropsOfEnum } from '@jsonforms/core';
 import type { TranslateProps } from '@jsonforms/react';
 import React from 'react';
 import { ShadcnEnumControl } from '../../src/controls/EnumControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: undefined,
