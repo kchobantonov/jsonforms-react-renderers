@@ -7,8 +7,10 @@ fixtures or be registered by a host.
 
 ## Portable example coverage
 
-The spec examples cover the following scenarios. This maps authored cases;
-renderer support is established separately by integration tests.
+This guide covers the 50 fixtures in `@chobantonov/jsonforms-extended-spec@0.2.0`.
+Open a fixture in either demo with the URL hash `#spec-<id>`, for example
+`#spec-ag-grid`. The tables describe authored scenarios. See the integration
+tests for renderer support and each fixture’s README for host requirements.
 
 | Feature                                                                         | Spec coverage                                                                                                                                                                    |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -17,6 +19,8 @@ renderer support is established separately by integration tests.
 | Null                                                                            | `null-control`: absent versus explicit null                                                                                                                                      |
 | Monaco Editor                                                                   | `code-editor`: growing/fixed editors, initialization actions and JSON conversion; `additional-errors`: dynamic language                                                          |
 | AG Grid / Table Cells                                                           | `array-controls`: staff table and grid with scalar formats, alpha color, reorder controls, native widths/filter/pagination, object/array summaries, Clear and nested cell detail |
+| AG Grid options                                                                 | `ag-grid` compares portable grid options with native AG Grid overrides                                                                                                           |
+| Table row details                                                               | `table-row-details` demonstrates row details in a recruitment table                                                                                                              |
 | File                                                                            | `file-control`: data URI, named binary URI and base64 encodings; explicit UI file-size limits                                                                                    |
 | Collapsible Groups                                                              | `group-layout`: open/collapsed groups, data indicators, false and zero                                                                                                           |
 | Horizontal Layout Sizing                                                        | `layout-sizing`: fixed/automatic spans, wrapping, hidden fields, nested presentation and groups                                                                                  |
@@ -30,9 +34,21 @@ in the native template demonstration.
 
 ## Additional spec examples
 
-The catalog also includes array-detail-modes, editor-details, template-slots,
-conditional-fields, recursive-tree, draft-07-metaschema, json-editor and
-json-inference. See each fixture's README for supported scope and host requirements.
+| Topic                    | Fixture IDs and scenarios                                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Basic inputs             | `string-controls`, `numeric-controls`, `boolean-controls`, `password-control`, `cron-control` and `input-adornments`                                         |
+| Choices                  | `choice-controls` for single values and `array-choices` for arrays of choices and tokens                                                                     |
+| Structured values        | `object-control`, `additional-properties`, `mixed-control` and `tuple-control`                                                                               |
+| Detail editors           | `array-detail-modes` for generated and registered array details, and `editor-details` for objects, mixed types and cells                                     |
+| Pagination               | `collection-pagination` for collections, `property-pagination` for object properties and `additional-items-pagination` for additional items                  |
+| Trees                    | `recursive-tree` for files and folders, and `tree-max-depth` for a five-level limit                                                                          |
+| Navigation and labels    | `categorization` for tabs, steppers and accordions, `label-interpolation` for labels with variable content, and `markup-label` for formatted labels          |
+| Actions                  | `button-actions` for actions and callbacks, and `destructive-confirmation` for confirming destructive changes                                                |
+| Schema-driven forms      | `combinators` for schema alternatives and conditions, `conditional-fields` for generated and authored layouts, and `draft-07-metaschema` for editing schemas |
+| Validation               | `container-validation-indicator`, `pre-touch-errors` and the Ajv configuration in `validator-profile`                                                        |
+| Templates and dynamic UI | `template-slots` for named UI schema reuse, and `dynamic-playground` for a configuration form with a preview                                                 |
+| JSON editing             | `json-editor` for editing any JSON value, and `json-inference` for inferring a schema from pasted data                                                       |
+| Complete forms           | `job-application` and `kitchen-sink` combine features in job application forms                                                                               |
 
 Template/Slot named UI-model composition is distinct from TemplateLayout source
 templates. Portable uischemas.json registries are exported by the spec catalog and
