@@ -63,7 +63,11 @@ describe('shared split layout', () => {
   );
   it('does not claim ordinary layouts', () => {
     expect(
-      sharedSplitLayoutTester({ type: 'HorizontalLayout' }, {}, undefined),
+      sharedSplitLayoutTester(
+        { type: 'HorizontalLayout' },
+        {},
+        { rootSchema: {}, config: {} },
+      ),
     ).toBe(-1);
   });
 });

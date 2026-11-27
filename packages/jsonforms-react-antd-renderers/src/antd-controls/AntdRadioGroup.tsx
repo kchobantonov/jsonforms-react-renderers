@@ -10,8 +10,15 @@ export const AntdRadioGroup = React.memo(function AntdRadioGroup(
       inputProps?: React.ComponentProps<typeof Radio.Group>;
     },
 ) {
-  const { data, options, handleChange, path, enabled, uischema, inputProps } =
-    props;
+  const {
+    data,
+    options = [],
+    handleChange,
+    path,
+    enabled,
+    uischema,
+    inputProps,
+  } = props;
   /*
     `options.vertical` is the single orientation encoding for a radio group:
     false (the default) arranges the choices in a row that may wrap, true

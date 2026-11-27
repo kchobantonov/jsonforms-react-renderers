@@ -125,9 +125,9 @@ export function resolveMixedArrayItems(
   rootSchema: JsonSchema,
 ) {
   return typeof items === 'object' &&
-    typeof (items as JsonSchema).$ref === 'string'
-    ? (resolveSchema(rootSchema, (items as JsonSchema).$ref, rootSchema) ??
-        items)
+    !Array.isArray(items) &&
+    typeof items.$ref === 'string'
+    ? (resolveSchema(rootSchema, items.$ref, rootSchema) ?? items)
     : items;
 }
 

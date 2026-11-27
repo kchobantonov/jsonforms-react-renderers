@@ -12,9 +12,9 @@ export const initCore = (
 
 export const TestEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
   const ctx = useJsonForms();
-  const { data, errors } = ctx.core;
+  const { data, errors } = ctx.core ?? {};
   React.useEffect(() => {
-    onChange({ data, errors });
+    onChange?.({ data, errors });
   }, [data, errors, onChange]);
   return null;
 };

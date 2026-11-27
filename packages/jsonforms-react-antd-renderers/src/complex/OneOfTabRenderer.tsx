@@ -27,23 +27,20 @@ const OneOfTabRenderer = ({
   rootSchema,
   id,
   visible,
-  indexOfFittingSchema,
+  indexOfFittingSchema = 0,
   uischema,
   uischemas,
   data,
 }: CombinatorRendererProps) => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
+  const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema);
   const [newSelectedIndex, setNewSelectedIndex] = useState(0);
   const handleClose = useCallback(
     () => setConfirmDialogOpen(false),
     [setConfirmDialogOpen],
   );
-  const cancel = useCallback(() => {
-    setConfirmDialogOpen(false);
-  }, [setConfirmDialogOpen]);
   const oneOfRenderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema).oneOf,
+    (schema as JsonSchema).oneOf ?? [],
     rootSchema,
     'oneOf',
     uischema,
@@ -88,7 +85,7 @@ const OneOfTabRenderer = ({
         rootSchema={rootSchema}
       />
       <Tabs
-        defaultActiveKey={selectedIndex?.toString()}
+        defaultActiveKey={String(selectedIndex)}
         onChange={handleTabChange}
         items={oneOfRenderInfos.map(
           (oneOfRenderInfo, idx) =>
@@ -108,7 +105,7 @@ const OneOfTabRenderer = ({
         )}
       ></Tabs>
       <TabSwitchConfirmDialog
-        cancel={cancel}
+        cancel={handleClose}
         confirm={confirm}
         id={'oneOf-' + id}
         open={confirmDialogOpen}

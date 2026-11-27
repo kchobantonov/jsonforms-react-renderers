@@ -1,3 +1,4 @@
+import { defaultTranslator } from '@jsonforms/core';
 import {
   FormElement,
   formAttributes,
@@ -111,11 +112,8 @@ export class JsonFormsAntdElement extends FormElement {
     i18n: () => ({
       locale: this.state.locale,
       translate: this.state.translations
-        ? (createTranslator(
-            this.state.translations,
-            this.state.locale,
-          ) as never)
-        : (((_key: string, fallback?: string) => fallback) as unknown as never),
+        ? createTranslator(this.state.translations, this.state.locale)
+        : defaultTranslator,
     }),
     /*
       Deliberately absent from here in the common case: Ajv's own messages are

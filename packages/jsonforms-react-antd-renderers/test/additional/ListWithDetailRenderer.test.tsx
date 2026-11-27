@@ -24,7 +24,7 @@ describe('ListWithDetailRenderer primitive arrays', () => {
             values: { type: 'array', items: { type: 'number' } },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(4);
   });

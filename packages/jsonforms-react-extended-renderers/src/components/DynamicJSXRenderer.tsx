@@ -343,7 +343,11 @@ export default function DynamicJSXRenderer({
                 { key: 'title' },
                 'Template Runtime Error: ',
               ),
-              React.createElement('span', { key: 'message' }, error.message),
+              React.createElement(
+                'span',
+                { key: 'message' },
+                error instanceof Error ? error.message : String(error),
+              ),
               React.createElement(
                 'details',
                 { key: 'details', style: { marginTop: '10px' } },
@@ -385,7 +389,7 @@ export default function DynamicJSXRenderer({
         >
           <strong>Template Compilation Error:</strong>
           <pre style={{ fontSize: '12px', marginTop: '5px' }}>
-            {err.message}
+            {err instanceof Error ? err.message : String(err)}
           </pre>
           <details style={{ marginTop: '10px' }}>
             <summary>Template Source</summary>

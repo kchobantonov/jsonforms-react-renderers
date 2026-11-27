@@ -60,7 +60,7 @@ export const OneOfRenderer = ({
         ? 0 // uses the first schema and report errors if not empty
         : null,
   );
-  const [newSelectedIndex, setNewSelectedIndex] = useState(0);
+  const [newSelectedIndex, setNewSelectedIndex] = useState<number | null>(0);
 
   /*
     The displayed branch follows the data until the user picks one.

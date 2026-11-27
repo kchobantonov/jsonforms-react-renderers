@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 export interface TableColumnDefinition {
   field: string;
   /** Bind to the whole row instead of a property; field remains the column key. */
@@ -22,10 +21,15 @@ export const tableColumnFields = (
             (column) => column.field === field && column.scope === '#',
           ),
       );
+type ColumnDimensions = Pick<
+  TableColumnDefinition,
+  'width' | 'minWidth' | 'maxWidth'
+>;
+
 export const tableColumnStyle = (
   definition?: TableColumnDefinition,
-): CSSProperties => {
-  const style: CSSProperties = {};
+): ColumnDimensions => {
+  const style: ColumnDimensions = {};
   for (const key of ['width', 'minWidth', 'maxWidth'] as const) {
     const value = definition?.[key];
     if (typeof value === 'number' && Number.isFinite(value) && value > 0)

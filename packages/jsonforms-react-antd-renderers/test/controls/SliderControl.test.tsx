@@ -1,3 +1,4 @@
+import { testInvalidInput } from '../support/invalidTesterInput';
 import '../setup/MatchMediaMock';
 import * as React from 'react';
 import { ControlElement, JsonSchema, NOT_APPLICABLE } from '@jsonforms/core';
@@ -36,16 +37,14 @@ const uischema: ControlElement = {
 
 describe('Ant Design slider tester', () => {
   it('should fail', () => {
-    expect(sliderControlTester(undefined, undefined, undefined)).toBe(
+    expect(testInvalidInput(sliderControlTester, undefined)).toBe(
       NOT_APPLICABLE,
     );
-    expect(sliderControlTester(null, undefined, undefined)).toBe(
+    expect(testInvalidInput(sliderControlTester, null)).toBe(NOT_APPLICABLE);
+    expect(testInvalidInput(sliderControlTester, { type: 'Foo' })).toBe(
       NOT_APPLICABLE,
     );
-    expect(sliderControlTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE,
-    );
-    expect(sliderControlTester({ type: 'Control' }, undefined, undefined)).toBe(
+    expect(testInvalidInput(sliderControlTester, { type: 'Control' })).toBe(
       NOT_APPLICABLE,
     );
   });
@@ -60,7 +59,7 @@ describe('Ant Design slider tester', () => {
             foo: { type: 'string' },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -76,7 +75,7 @@ describe('Ant Design slider tester', () => {
             bar: { type: 'number' },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -91,7 +90,7 @@ describe('Ant Design slider tester', () => {
             foo: { type: 'number' },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -109,7 +108,7 @@ describe('Ant Design slider tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -127,7 +126,7 @@ describe('Ant Design slider tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -146,7 +145,7 @@ describe('Ant Design slider tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -166,7 +165,7 @@ describe('Ant Design slider tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(4);
   });
@@ -186,7 +185,7 @@ describe('Ant Design slider tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(4);
   });

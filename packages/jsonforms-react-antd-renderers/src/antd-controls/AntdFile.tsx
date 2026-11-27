@@ -324,7 +324,7 @@ export const AntdFile = React.memo(function AntdFile(
   }
   const name = props.data
     ? (attachmentName(props.data) ??
-      (attachment?.value === props.data
+      (attachment && attachment.value === props.data
         ? attachment.name
         : t('file.attached', d('file.attached'))))
     : '';

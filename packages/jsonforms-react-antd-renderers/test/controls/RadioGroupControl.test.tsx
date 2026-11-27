@@ -32,7 +32,10 @@ const uischema: ControlElement = {
 
 describe('Ant Design radio group tester', () => {
   it('should return valid rank for enums with radio format', () => {
-    const rank = radioGroupControlTester(uischema, schema, undefined);
+    const rank = radioGroupControlTester(uischema, schema, {
+      rootSchema: {},
+      config: {},
+    });
     expect(rank).not.toBe(NOT_APPLICABLE);
   });
 
@@ -41,7 +44,10 @@ describe('Ant Design radio group tester', () => {
       type: 'Control',
       scope: '#/properties/foo',
     };
-    const rank = radioGroupControlTester(uiSchemaNoRadio, schema, undefined);
+    const rank = radioGroupControlTester(uiSchemaNoRadio, schema, {
+      rootSchema: {},
+      config: {},
+    });
     expect(rank).toBe(NOT_APPLICABLE);
   });
 });

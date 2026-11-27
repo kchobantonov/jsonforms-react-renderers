@@ -8,7 +8,6 @@ import DeleteFilled from '@ant-design/icons/DeleteFilled';
 import {
   ArrayLayoutProps,
   ArrayTranslations,
-  OwnPropsOfJsonFormsRenderer,
   Resolve,
   composePaths,
   computeLabel,
@@ -21,7 +20,7 @@ import {
 import {
   JsonFormsDispatch,
   JsonFormsStateContext,
-  withJsonFormsContext,
+  useJsonForms,
 } from '@jsonforms/react';
 import {
   Avatar,
@@ -35,7 +34,7 @@ import {
 import map from 'lodash/map';
 import merge from 'lodash/merge';
 import range from 'lodash/range';
-import React, { ComponentType, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useI18n } from '../util/translate';
 import { useConfirmation } from '../util/useConfirmation';
 import { ArrayLayoutToolbar } from './ArrayToolbar';
@@ -147,7 +146,7 @@ const ArrayLayoutComponent = (
           path,
           schema,
           (errorPath: string) => errorPath === path,
-        )(props.ctx.core?.errors ?? []).map((error) => error.message),
+        )(props.ctx.core?.errors ?? []).flatMap((error) => error.message ?? []),
       ),
     [path, schema, props.ctx.core],
   );
@@ -210,9 +209,9 @@ const ArrayLayoutComponent = (
                 onClick={(event) => {
                   event.stopPropagation();
                   trackSwap(rowIndex, rowIndex - 1);
-                  moveUp(path, rowIndex)();
+                  moveUp?.(path, rowIndex)();
                 }}
-                disabled={!enabled || !enableUp}
+                disabled={!enabled || !enableUp || !moveUp}
               />
             </Tooltip>
             <Tooltip title={translations.down}>
@@ -223,9 +222,9 @@ const ArrayLayoutComponent = (
                 onClick={(event) => {
                   event.stopPropagation();
                   trackSwap(rowIndex, rowIndex + 1);
-                  moveDown(path, rowIndex)();
+                  moveDown?.(path, rowIndex)();
                 }}
-                disabled={!enabled || !enableDown}
+                disabled={!enabled || !enableDown || !moveDown}
               />
             </Tooltip>
           </>
@@ -245,7 +244,7 @@ const ArrayLayoutComponent = (
                 */
                 discarded: [
                   Resolve.data(
-                    props.ctx.core.data,
+                    props.ctx.core?.data,
                     composePaths(path, `${rowIndex}`),
                   ),
                 ],
@@ -253,12 +252,12 @@ const ArrayLayoutComponent = (
                 config,
                 perform: () => {
                   trackRemoval(rowIndex);
-                  removeItems(path, [rowIndex])();
+                  removeItems?.(path, [rowIndex])();
                 },
               });
             }}
             shape='circle'
-            disabled={!enabled || disableRemove}
+            disabled={!enabled || disableRemove || !removeItems}
             icon={<DeleteFilled rev={undefined} />}
             aria-label={translations.removeAriaLabel}
           />
@@ -270,7 +269,7 @@ const ArrayLayoutComponent = (
   const foundUISchema = useMemo(
     () =>
       findUISchema(
-        uischemas,
+        uischemas ?? [],
         schema,
         uischema.scope,
         path,
@@ -308,7 +307,7 @@ const ArrayLayoutComponent = (
       return `${index}`;
     }
     const labelValue = Resolve.data(
-      props.ctx.core.data,
+      props.ctx.core?.data,
       composePaths(childPath, childLabelProp),
     );
     if (
@@ -330,7 +329,7 @@ const ArrayLayoutComponent = (
         translations={translations}
         label={computeLabel(
           label,
-          required,
+          required ?? false,
           appliedUiSchemaOptions.hideRequiredAsterisk,
         )}
         description={description}
@@ -428,20 +427,9 @@ const ArrayLayoutComponent = (
   );
 };
 
-const withContextToJsonFormsRendererProps = (
-  Component: ComponentType<ArrayLayoutProps>,
-): ComponentType<OwnPropsOfJsonFormsRenderer> =>
-  function WithContextToJsonFormsRendererProps({
-    ctx,
-    props,
-  }: JsonFormsStateContext & ArrayLayoutProps) {
-    return <Component {...props} ctx={ctx} />;
-  };
-
-export const ArrayLayout = React.memo(
-  withJsonFormsContext(
-    withContextToJsonFormsRendererProps(ArrayLayoutComponent),
-  ),
-);
-
-ArrayLayout.displayName = 'ArrayLayout';
+export const ArrayLayout = React.memo(function ArrayLayout(
+  props: ArrayLayoutProps & { translations: ArrayTranslations },
+) {
+  const ctx = useJsonForms();
+  return <ArrayLayoutComponent {...props} ctx={ctx} />;
+});

@@ -1,3 +1,4 @@
+import { createTranslator } from '@jsonforms/core';
 import '../setup/MatchMediaMock';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -40,8 +41,9 @@ it('selects typed cards, translates labels and swaps selected content', async ()
           cells={antdCells}
           i18n={{
             locale: 'bg',
-            translate: (key, fallback) =>
+            translate: createTranslator((key, fallback) =>
               key === 'off.label' ? 'Изключено' : fallback,
+            ),
           }}
           onChange={({ data }) => {
             value = data.selection;

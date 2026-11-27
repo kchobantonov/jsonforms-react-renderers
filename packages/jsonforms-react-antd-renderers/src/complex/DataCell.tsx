@@ -49,7 +49,7 @@ const DataCell = ({
 }: DataCellProps) => {
   return (
     <CellFrame errors={errors} path={path}>
-      {schema.properties ? (
+      {schema.properties && propName !== undefined ? (
         <DispatchCell
           schema={Resolve.schema(
             schema,

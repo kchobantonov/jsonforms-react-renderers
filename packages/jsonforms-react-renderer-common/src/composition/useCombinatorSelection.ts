@@ -33,7 +33,7 @@ export function useCombinatorSelection(
     : '';
 
   const renderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema)[combinator],
+    (schema as JsonSchema)[combinator] ?? [],
     rootSchema,
     combinator,
     uischema,

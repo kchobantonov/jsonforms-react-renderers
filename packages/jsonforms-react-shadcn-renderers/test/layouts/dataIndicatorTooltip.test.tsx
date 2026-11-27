@@ -1,3 +1,4 @@
+import { createTranslator } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -36,8 +37,9 @@ it.each(['group', 'accordion', 'stepper', 'tabs'])(
             renderers={shadcnRenderers}
             i18n={{
               locale,
-              translate: (key, fallback) =>
+              translate: createTranslator((key, fallback) =>
                 key === 'group.dataIndicator' && custom ? custom : fallback,
+              ),
             }}
           />,
         ),

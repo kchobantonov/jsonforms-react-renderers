@@ -1,6 +1,7 @@
 import { useDynamicTreeResolver } from '../dynamic/DynamicUiProvider';
 import React from 'react';
 import {
+  defaultTranslator,
   JsonSchema,
   Generate,
   OwnPropsOfControl,
@@ -92,8 +93,7 @@ export const createChoiceCards = (
       errors,
     } = props;
     const ctx = useJsonForms();
-    const translate =
-      ctx.i18n?.translate ?? ((_key: string, fallback?: string) => fallback);
+    const translate = ctx.i18n?.translate ?? defaultTranslator;
     const confirmation = useConfirmation();
     const colors = useColors();
     const groupId = React.useId();
@@ -114,9 +114,9 @@ export const createChoiceCards = (
     const custom: CardChoice[] = uischema.options?.choices ?? [];
     const infos = branchMode
       ? branches!.map((branch, index) => {
-          const resolved =
-            branch.$ref &&
-            Resolve.schema(props.rootSchema!, branch.$ref, props.rootSchema!);
+          const resolved = branch.$ref
+            ? Resolve.schema(props.rootSchema!, branch.$ref, props.rootSchema!)
+            : undefined;
           const branchSchema = resolved || branch;
           const detail = custom.find(
             (choice) => choice.branch === index,

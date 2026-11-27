@@ -16,7 +16,7 @@ export interface TableToolbarProps {
   options?: Record<string, any>;
   config?: any;
   label: string;
-  description: string;
+  description: string | undefined;
   path: string;
   uischema: ControlElement;
   schema: JsonSchema;

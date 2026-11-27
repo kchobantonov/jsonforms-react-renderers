@@ -1,5 +1,8 @@
 import {
   ControlElement,
+  defaultTranslator,
+  type Translator,
+  type ErrorTranslator,
   JsonSchema,
   getCombinedErrorMessage,
   getControlPath,
@@ -46,12 +49,8 @@ export interface FilterErrorsBeforeTouchInput {
   path: string;
   schema?: JsonSchema;
   uischema?: ControlElement;
-  translate?: (key: string, defaultMessage?: string, context?: any) => string;
-  translateError?: (
-    error: ErrorObject,
-    translate: any,
-    uischema?: any,
-  ) => string;
+  translate?: Translator;
+  translateError?: ErrorTranslator;
 }
 
 /**
@@ -111,7 +110,7 @@ export const filterErrorsBeforeTouch = ({
     return getCombinedErrorMessage(
       errorsToShow,
       translateError,
-      translate,
+      translate ?? defaultTranslator,
       schema,
       uischema,
       path,
@@ -178,8 +177,8 @@ export const usePreTouchErrors = (
     path: props.path,
     schema: props.schema,
     uischema: props.uischema,
-    translate: ctx.i18n?.translate as any,
-    translateError: ctx.i18n?.translateError as any,
+    translate: ctx.i18n?.translate,
+    translateError: ctx.i18n?.translateError,
   });
 
   return { errors, focused, touched, onFocus, onBlur };

@@ -1,3 +1,4 @@
+import { testInvalidInput } from '../support/invalidTesterInput';
 import { act } from 'react';
 import '../setup/MatchMediaMock';
 import * as React from 'react';
@@ -47,17 +48,17 @@ describe('Ant Design boolean toggle control tester', () => {
   };
 
   it('should fail', () => {
-    expect(booleanToggleControlTester(undefined, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanToggleControlTester, undefined)).toBe(
       NOT_APPLICABLE,
     );
-    expect(booleanToggleControlTester(null, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanToggleControlTester, null)).toBe(
+      NOT_APPLICABLE,
+    );
+    expect(testInvalidInput(booleanToggleControlTester, { type: 'Foo' })).toBe(
       NOT_APPLICABLE,
     );
     expect(
-      booleanToggleControlTester({ type: 'Foo' }, undefined, undefined),
-    ).toBe(NOT_APPLICABLE);
-    expect(
-      booleanToggleControlTester({ type: 'Control' }, undefined, undefined),
+      testInvalidInput(booleanToggleControlTester, { type: 'Control' }),
     ).toBe(NOT_APPLICABLE);
     expect(
       booleanToggleControlTester(
@@ -66,7 +67,7 @@ describe('Ant Design boolean toggle control tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
     expect(
@@ -83,7 +84,7 @@ describe('Ant Design boolean toggle control tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
 
@@ -105,7 +106,7 @@ describe('Ant Design boolean toggle control tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
 
@@ -124,7 +125,7 @@ describe('Ant Design boolean toggle control tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -141,7 +142,7 @@ describe('Ant Design boolean toggle control tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(3);
   });

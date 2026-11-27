@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { defaultTranslator } from '@jsonforms/core';
+import { createTranslator, defaultTranslator } from '@jsonforms/core';
 import {
   formatErrorSummary,
   ErrorSummaryList,
@@ -45,10 +45,11 @@ describe('structured error summaries', () => {
       scope: '#/properties/comments/items/properties/message',
       i18n: 'comment',
     };
-    const translate = (key: string, fallback?: string) =>
+    const translate = createTranslator((key, fallback) =>
       key === 'comment.error.custom'
         ? 'Please shorten your comment.'
-        : fallback;
+        : fallback,
+    );
     expect(
       formatErrorSummary(errors, schema, ui, translate, () => 'Other')[0]
         .message,

@@ -52,7 +52,7 @@ describe('password selection', () => {
       passwordControlTester(
         plain as any,
         formatSchema.properties.secret as any,
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).not.toBe(NOT_APPLICABLE);
   });
@@ -64,7 +64,7 @@ describe('password selection', () => {
       passwordControlTester(
         uiFormat as any,
         stringSchema.properties.secret as any,
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).not.toBe(NOT_APPLICABLE);
   });
@@ -74,15 +74,14 @@ describe('password selection', () => {
       passwordControlTester(
         plain as any,
         stringSchema.properties.secret as any,
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
     expect(
-      passwordControlTester(
-        uiFormat as any,
-        { type: 'number' } as any,
-        undefined,
-      ),
+      passwordControlTester(uiFormat as any, { type: 'number' } as any, {
+        rootSchema: {},
+        config: {},
+      }),
     ).toBe(NOT_APPLICABLE);
   });
 

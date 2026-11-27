@@ -141,6 +141,12 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
     (schema.formatExclusiveMaximum !== undefined ||
       options.formatExclusiveMaximum !== undefined);
 
+  const displayName = props.data
+    ? (attachmentName(props.data) ??
+      (attachment && attachment.value === props.data
+        ? attachment.name
+        : t('file.attached')))
+    : '';
   return (
     <InputShell
       {...props}
@@ -235,22 +241,8 @@ const ShadcnSingleFileControl = (props: ControlProps) => {
           className={cell && localError ? 'pl-10 pr-16' : 'pl-10 pr-10'}
           aria-label={props.label}
           aria-invalid={Boolean(props.errors)}
-          value={
-            props.data
-              ? (attachmentName(props.data) ??
-                (attachment?.value === props.data
-                  ? attachment.name
-                  : t('file.attached')))
-              : ''
-          }
-          title={
-            props.data
-              ? (attachmentName(props.data) ??
-                (attachment?.value === props.data
-                  ? attachment.name
-                  : t('file.attached')))
-              : ''
-          }
+          value={displayName}
+          title={displayName}
         />
         {cell && localError && (
           <div className='absolute right-10'>

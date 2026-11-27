@@ -1,3 +1,4 @@
+import { testInvalidInput } from '../support/invalidTesterInput';
 import '../setup/MatchMediaMock';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
 import * as React from 'react';
@@ -41,16 +42,14 @@ const uischema2: ControlElement = {
 
 describe('Ant Design object renderer tester', () => {
   test('should fail', () => {
-    expect(objectControlTester(undefined, undefined, undefined)).toBe(
+    expect(testInvalidInput(objectControlTester, undefined)).toBe(
       NOT_APPLICABLE,
     );
-    expect(objectControlTester(null, undefined, undefined)).toBe(
+    expect(testInvalidInput(objectControlTester, null)).toBe(NOT_APPLICABLE);
+    expect(testInvalidInput(objectControlTester, { type: 'Foo' })).toBe(
       NOT_APPLICABLE,
     );
-    expect(objectControlTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE,
-    );
-    expect(objectControlTester({ type: 'Control' }, undefined, undefined)).toBe(
+    expect(testInvalidInput(objectControlTester, { type: 'Control' })).toBe(
       NOT_APPLICABLE,
     );
     expect(

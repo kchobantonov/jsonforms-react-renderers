@@ -1,6 +1,6 @@
-import { Translator } from '@jsonforms/core';
+import { defaultTranslator, Translator } from '@jsonforms/core';
 import { useJsonForms } from '@jsonforms/react';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { rendererDefault } from './rendererLocale';
 // `I18nKey` is declared beside the defaults it indexes, not here: re-exporting
 // it from both modules makes `util/index.ts` export the name twice.
@@ -15,10 +15,7 @@ import { I18nKey } from '.';
  */
 export const useTranslator = (): Translator => {
   const translate = useJsonForms().i18n?.translate;
-  return useMemo(
-    () => translate ?? ((_id, defaultMessage) => defaultMessage),
-    [translate],
-  );
+  return translate ?? defaultTranslator;
 };
 
 /**

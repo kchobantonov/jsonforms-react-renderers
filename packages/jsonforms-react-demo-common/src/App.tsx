@@ -69,8 +69,8 @@ type Action = {
 
 const getProps = (
   example: ExampleDescription,
-  cells?: JsonFormsCellRendererRegistryEntry[],
-  renderers?: JsonFormsRendererRegistryEntry[],
+  cells: JsonFormsCellRendererRegistryEntry[],
+  renderers: JsonFormsRendererRegistryEntry[],
 ) => ({
   schema: example.schema,
   uischema: example.uischema,
@@ -204,8 +204,8 @@ const App = ({
     settingsStorageKey,
   });
   const [initialRoute] = useState(() => routeFromLocation(examples));
-  const [exampleProps, setExampleProps] = useState(() =>
-    getProps(examples[initialRoute.index], cells, renderers),
+  const [exampleProps, setExampleProps] = useState<JsonFormsInitStateProps>(
+    () => getProps(examples[initialRoute.index], cells, renderers),
   );
   const [models, setModels] = useState(() =>
     editorModelsFor(examples[initialRoute.index]),

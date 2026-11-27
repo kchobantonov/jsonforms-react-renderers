@@ -295,15 +295,22 @@ export const runRendererContract = (
 
   describe(`${name} tester contract`, () => {
     it('selects its matching JSON Forms schema and UI schema', () => {
-      expect(tester(contract.uischema, contract.schema, undefined)).toBe(
-        contract.rank,
-      );
+      expect(
+        tester(contract.uischema, contract.schema, {
+          rootSchema: {},
+          config: {},
+        }),
+      ).toBe(contract.rank);
     });
 
     it('does not select an unrelated UI schema', () => {
-      expect(tester({ type: 'Unknown' }, { type: 'null' }, undefined)).toBe(
-        NOT_APPLICABLE,
-      );
+      expect(
+        tester(
+          { type: 'Unknown' },
+          { type: 'null' },
+          { rootSchema: {}, config: {} },
+        ),
+      ).toBe(NOT_APPLICABLE);
     });
   });
 };

@@ -1,3 +1,4 @@
+import type { Dayjs } from 'dayjs';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { DatePicker } from 'antd';
 import React from 'react';
@@ -6,12 +7,14 @@ import { useTemporalPicker } from './useTemporalPicker';
 
 export const AntdDateTimePicker = React.memo(function AntdDateTimePicker(
   props: CellProps &
-    WithClassname & { inputProps?: React.ComponentProps<typeof DatePicker> },
+    WithClassname & {
+      inputProps?: React.ComponentProps<typeof DatePicker<Dayjs>>;
+    },
 ) {
   const { pickerProps, options, disabledDate, disabledTime } =
     useTemporalPicker(props, 'dateTime');
   return (
-    <DatePicker
+    <DatePicker<Dayjs>
       {...pickerProps}
       disabledDate={disabledDate}
       disabledTime={disabledTime}

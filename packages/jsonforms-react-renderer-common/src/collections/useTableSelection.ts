@@ -9,11 +9,9 @@ export const useTableSelection = (props: any) => {
   const rows = Resolve.data(ctx.core?.data, props.path) as
     | unknown[]
     | undefined;
-  const schema = Resolve.schema(
-    ctx.core?.schema,
-    props.uischema.scope,
-    ctx.core?.schema,
-  );
+  const schema =
+    ctx.core &&
+    Resolve.schema(ctx.core.schema, props.uischema.scope, ctx.core.schema);
   const options = { ...props.config, ...props.uischema.options };
   const [selected, setSelected] = useState<number[]>([]);
   const [pending, setPending] = useState<{
@@ -27,6 +25,7 @@ export const useTableSelection = (props: any) => {
     setPending(undefined);
   }
   const allowed = (indices: number[]) =>
+    props.removeItems &&
     props.enabled &&
     !props.readonly &&
     !options.disableRemove &&
@@ -55,7 +54,7 @@ export const useTableSelection = (props: any) => {
     confirming: !!pending,
     cancel: () => setPending(undefined),
     confirm: () => {
-      if (pending?.rows === rows) remove(pending.indices);
+      if (pending && pending.rows === rows) remove(pending.indices);
       setPending(undefined);
     },
     request: () => {

@@ -183,13 +183,13 @@ export const AntdDurationControl = (props: ControlProps) => {
         </div>
       ))}
       {state.addableFields.length > 0 && (
-        <Select
+        <Select<(typeof state.addableFields)[number]>
           size='small'
           /* Stops where the inputs do: the button column plus its gap. */
           style={{
             width: `calc(100% - ${token.controlHeight + token.paddingXXS}px)`,
           }}
-          value={null}
+          value={undefined}
           disabled={state.disabled}
           placeholder={label('duration.addUnit')}
           aria-label={label('duration.addUnit')}

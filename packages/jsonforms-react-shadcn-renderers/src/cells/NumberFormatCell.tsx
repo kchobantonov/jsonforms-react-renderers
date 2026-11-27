@@ -1,3 +1,4 @@
+import { ShadcnNumberCell } from './NumberCell';
 import React from 'react';
 import {
   CellProps,
@@ -10,9 +11,11 @@ import { Textarea } from '@jsonforms-react-shadcn-ui/textarea';
 import { ClearValueButton } from '../components/ClearValueButton';
 export const numberFormatCellTester = rankWith(4, isNumberFormatControl);
 export const ShadcnNumberFormatCell = (
-  props: CellProps & Formatted<number>,
+  props: CellProps & Partial<Formatted<number>>,
 ) => {
   if (props.visible === false) return null;
+  const { toFormatted, fromFormatted } = props;
+  if (!toFormatted || !fromFormatted) return <ShadcnNumberCell {...props} />;
   const options = { ...props.config, ...props.uischema.options };
   const Component = options.multi ? Textarea : Input;
   return (
@@ -21,7 +24,7 @@ export const ShadcnNumberFormatCell = (
         id={props.id}
         className='pr-10'
         disabled={!props.enabled}
-        value={props.toFormatted(props.data)}
+        value={toFormatted(props.data)}
         aria-invalid={Boolean(props.errors)}
         autoFocus={options.focus}
         placeholder={options.placeholder}
@@ -29,7 +32,7 @@ export const ShadcnNumberFormatCell = (
         onChange={(event) =>
           props.handleChange(
             props.path,
-            props.fromFormatted(event.currentTarget.value),
+            fromFormatted(event.currentTarget.value),
           )
         }
       />

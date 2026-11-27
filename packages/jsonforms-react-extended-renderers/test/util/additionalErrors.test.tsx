@@ -107,7 +107,8 @@ describe('publishing through the middleware', () => {
     const store = createAdditionalErrorStore();
     store.publish('server', [err('/a', 'x')]);
     const state = init(store, { a: '' });
-    expect(additionalErrorOwner(state.additionalErrors[0])).toBe('server');
+    const [error] = state.additionalErrors ?? [];
+    expect(error && additionalErrorOwner(error)).toBe('server');
   });
 
   it('does not mutate the caller s error objects', () => {

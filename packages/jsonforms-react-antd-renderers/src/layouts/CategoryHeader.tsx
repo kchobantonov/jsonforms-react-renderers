@@ -9,7 +9,7 @@ import { ContainerValidationIndicator } from './ValidationIndicator';
 
 export interface CategoryHeaderProps {
   category: Category;
-  label: string;
+  label?: string;
   path: string;
   config?: Record<string, unknown>;
 }

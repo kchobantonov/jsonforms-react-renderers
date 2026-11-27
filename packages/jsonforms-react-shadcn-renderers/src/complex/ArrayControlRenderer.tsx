@@ -144,6 +144,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
       data >= arraySchema.maxItems
     );
   const canRemove =
+    !!removeItems &&
     enabled &&
     !readonly &&
     !options.disableRemove &&
@@ -155,7 +156,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
   const requestRemove = (index: number) => {
     if (!canRemove) return;
     const value = Resolve.data(
-      ctx.core.data,
+      ctx.core?.data,
       composePaths(path, String(index)),
     );
     if (
@@ -170,7 +171,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
       )
     )
       setPendingIndex(index);
-    else removeItems(path, [index])();
+    else removeItems?.(path, [index])();
   };
   const detail = React.useMemo(
     () =>
@@ -217,7 +218,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
       return `${index}`;
     }
     const labelValue = Resolve.data(
-      ctx.core.data,
+      ctx.core?.data,
       composePaths(childPath, childLabelProp),
     );
     if (
@@ -346,7 +347,7 @@ export const ShadcnArrayRenderer = (props: ArrayLayoutProps) => {
           onCancel={() => setPendingIndex(undefined)}
           onConfirm={() => {
             if (canRemove && pendingIndex !== undefined && pendingIndex < data)
-              removeItems(path, [pendingIndex])();
+              removeItems?.(path, [pendingIndex])();
             setPendingIndex(undefined);
           }}
         />

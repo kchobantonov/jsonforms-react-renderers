@@ -7,7 +7,7 @@ import { useDetailDialog } from '../../src/interaction/detailDialog';
 it('uses measured viewport edges, including negative offsets, and remeasures after resizing', () => {
   const host = document.createElement('div');
   const root = createRoot(host);
-  let geometry: ReturnType<typeof useDetailDialog>;
+  let geometry!: ReturnType<typeof useDetailDialog>;
   let rect = { left: 300, top: 100, width: 400, height: 300 };
   const surface = { getBoundingClientRect: () => rect } as HTMLElement;
   const Probe = () => {
@@ -57,7 +57,7 @@ it('uses measured viewport edges, including negative offsets, and remeasures aft
 it('inherits form dialog settings and lets local false override them', () => {
   const host = document.createElement('div');
   const root = createRoot(host);
-  let geometry: ReturnType<typeof useDetailDialog>;
+  let geometry!: ReturnType<typeof useDetailDialog>;
   const Probe = () => {
     const committedGeometry = useDetailDialog(true, { draggable: false });
     React.useLayoutEffect(() => {

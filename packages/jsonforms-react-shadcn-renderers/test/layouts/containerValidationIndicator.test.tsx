@@ -1,3 +1,4 @@
+import { createTranslator } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -40,10 +41,11 @@ it.each(['group', 'tabs', 'stepper', 'accordion'])(
             renderers={shadcnRenderers}
             cells={shadcnCells}
             i18n={{
-              translate: (key, fallback) =>
+              translate: createTranslator((key, fallback) =>
                 key === 'validation.containerError'
                   ? 'Section: {count} problem'
                   : fallback,
+              ),
             }}
           />,
         ),
@@ -92,10 +94,11 @@ it('keeps an icon with a generic translated tooltip when counts are disabled', (
           }}
           renderers={shadcnRenderers}
           i18n={{
-            translate: (key, fallback) =>
+            translate: createTranslator((key, fallback) =>
               key === 'validation.containerHasErrors'
                 ? 'Please review this section'
                 : fallback,
+            ),
           }}
         />,
       ),

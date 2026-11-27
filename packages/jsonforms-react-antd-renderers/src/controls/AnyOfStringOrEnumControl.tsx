@@ -41,16 +41,18 @@ const AntdAutocompleteInputText = (props: EnumCellProps & WithClassname) => {
     handleChange,
     schema,
   } = props;
-  const enumSchema = findEnumSchema(schema.anyOf);
-  const stringSchema = findTextSchema(schema.anyOf);
-  const maxLength = stringSchema.maxLength;
+  const enumSchema = findEnumSchema(schema.anyOf ?? []);
+  const stringSchema = findTextSchema(schema.anyOf ?? []);
+  const maxLength = stringSchema?.maxLength;
   const appliedUiSchemaOptions = useMemo(
     () => merge({}, config, uischema.options),
     [config, uischema.options],
   );
-  const options: AutoCompleteOption[] = enumSchema.enum?.map((value) => ({
-    value,
-  }));
+  const options: AutoCompleteOption[] = (enumSchema?.enum ?? []).map(
+    (value) => ({
+      value,
+    }),
+  );
   const [filteredOptions, setFilteredOptions] =
     useState<AutoCompleteOption[]>(options);
   const [inputText, onChange] = useDebouncedChange(
@@ -104,14 +106,14 @@ const hasEnumAndText = (schemas: JsonSchema[]) => {
     (s) => s !== enumSchema || s !== stringSchema,
   );
   const wrongType = remainingSchemas.find((s) => s.type && s.type !== 'string');
-  return enumSchema && stringSchema && !wrongType;
+  return !!enumSchema && !!stringSchema && !wrongType;
 };
 const simpleAnyOf = and(
   uiTypeIs('Control'),
   schemaMatches(
     (schema) =>
       Object.prototype.hasOwnProperty.call(schema, 'anyOf') &&
-      hasEnumAndText(schema.anyOf),
+      hasEnumAndText(schema.anyOf ?? []),
   ),
 );
 export const anyOfStringOrEnumControlTester: RankedTester = rankWith(

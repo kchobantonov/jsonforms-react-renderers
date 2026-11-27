@@ -1,3 +1,4 @@
+import { defaultTranslator } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonFormsContext } from '@jsonforms/react';
@@ -39,7 +40,7 @@ it('keeps Apply unavailable while the nested code editor has an invalid draft', 
             schema={{ type: 'object' }}
             enabled
             options={{}}
-            t={(_key, fallback) => fallback}
+            t={defaultTranslator}
             onClose={() => undefined}
             onApply={() => undefined}
           >

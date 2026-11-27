@@ -73,7 +73,7 @@ export type DemoButtonProps = React.PropsWithChildren<{
   disabled?: boolean;
   iconOnly?: boolean;
   tooltip?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }>;
 
 export type DemoPanelProps = React.PropsWithChildren<{

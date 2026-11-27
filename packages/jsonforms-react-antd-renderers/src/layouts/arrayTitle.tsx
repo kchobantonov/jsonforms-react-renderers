@@ -6,7 +6,7 @@ const { Title } = Typography;
 export const renderArrayTitle = (
   label: string,
   errors: string,
-  description: string,
+  description: string | undefined,
 ) => (
   <>
     <Row align='middle'>

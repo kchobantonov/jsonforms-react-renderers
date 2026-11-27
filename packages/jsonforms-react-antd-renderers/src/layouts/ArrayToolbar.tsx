@@ -9,7 +9,7 @@ export interface ArrayLayoutToolbarProps {
   options?: Record<string, any>;
   config?: any;
   label: string;
-  description: string;
+  description: string | undefined;
   errors: string;
   path: string;
   enabled: boolean;

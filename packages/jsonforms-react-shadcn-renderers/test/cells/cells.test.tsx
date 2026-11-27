@@ -1,3 +1,5 @@
+import { DispatchCell, JsonForms } from '@jsonforms/react';
+import type { ControlElement, JsonSchema } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import {
@@ -81,6 +83,48 @@ describe('cell edits', () => {
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
     expect(handleChange).toHaveBeenLastCalledWith('items.0.value', expected);
+  });
+  it('edits a formatted integer through the JSON Forms cell registry', async () => {
+    const schema: JsonSchema = { type: 'integer' };
+    const uischema: ControlElement = {
+      type: 'Control',
+      scope: '#',
+      options: { format: true },
+    };
+    const onChange = vi.fn();
+    act(() =>
+      root.render(
+        <JsonForms
+          data={12}
+          schema={schema}
+          uischema={uischema}
+          cells={shadcnCells}
+          renderers={[
+            {
+              tester: () => 1,
+              renderer: () => (
+                <DispatchCell schema={schema} uischema={uischema} path='' />
+              ),
+            },
+          ]}
+          onChange={onChange}
+        />,
+      ),
+    );
+    const input = container.querySelector('input')!;
+    expect(input.value).toBe('12');
+    act(() => {
+      Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        'value',
+      )!.set!.call(input, '0');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await vi.waitFor(() =>
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ data: 0 }),
+      ),
+    );
   });
   it.each(['string', 'number', 'integer', 'boolean'])(
     'registers a cell for %s',

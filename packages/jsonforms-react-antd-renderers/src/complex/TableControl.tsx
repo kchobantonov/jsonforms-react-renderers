@@ -45,13 +45,21 @@ import startCase from 'lodash/startCase';
 import union from 'lodash/union';
 import React, { useMemo } from 'react';
 
-import { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';
 import { DeleteDialog, WithDeleteDialogSupport } from './DeleteDialog';
 import DataCell, { DataCellProps } from './DataCell';
 import TableToolbar from './TableToolbar';
 
-const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
+type TableRow = { index: number; key: number };
+
+interface TableColumn extends TableColumnProps<TableRow> {
+  dataIndex?: string;
+  title?: string;
+  width?: number;
+  render: (value: unknown, row: TableRow, index: number) => React.ReactNode;
+}
+
+const generateDataColumns = (props: ArrayLayoutProps): TableColumn[] => {
   const { path, schema, enabled, cells } = props;
   const cellOptions = (props.uischema as ControlElement)?.options?.cells as
     | Record<string, Record<string, unknown>>
@@ -65,7 +73,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
       schema.properties ?? {},
       definitions,
       getValidColumnProps(schema, cellOptions),
-    ).map((prop) => {
+    ).map<TableColumn>((prop) => {
       const style = tableColumnStyle(
         definitions?.find((column) => column.field === prop),
       );
@@ -86,11 +94,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
         onHeaderCell: () => ({ style }),
         onCell: () => ({ style }),
         title: props.title,
-        render: (
-          _field: any,
-          row: { index: number; key: number },
-          _index: number,
-        ) => {
+        render: (_field, row) => {
           const rowPath = Paths.compose(path, `${row.index}`);
           if (definitions?.some((c) => c.field === prop && c.scope === '#'))
             return (
@@ -123,7 +127,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
             </ItemProvider>
           );
         },
-      } as TableColumnProps;
+      };
     });
   } else {
     // primitives
@@ -133,11 +137,7 @@ const generateDataColumns = (props: ArrayLayoutProps): TableColumnProps[] => {
     };
     return [
       {
-        render: (
-          _field: any,
-          row: { index: number; key: number },
-          _index: number,
-        ) => {
+        render: (_field, row) => {
           const rowPath = Paths.compose(path, `${row.index}`);
 
           return <RowDataCell {...props} rowPath={rowPath} />;
@@ -151,16 +151,13 @@ const getValidColumnProps = (
   scopedSchema: JsonSchema,
   cellOptions?: Record<string, unknown>,
 ) => {
-  if (
-    scopedSchema.type === 'object' &&
-    typeof scopedSchema.properties === 'object'
-  ) {
-    return Object.keys(scopedSchema.properties).filter(
+  const properties = scopedSchema.properties;
+  if (scopedSchema.type === 'object' && typeof properties === 'object') {
+    return Object.keys(properties).filter(
       (prop) =>
         // Array columns are skipped by default because a plain cell cannot show
         // them, but a `cells` entry says how to summarise one, so keep it.
-        scopedSchema.properties[prop].type !== 'array' ||
-        Boolean(cellOptions?.[prop]),
+        properties[prop].type !== 'array' || Boolean(cellOptions?.[prop]),
     );
   }
   // primitives
@@ -191,13 +188,13 @@ const ctxToDataCellProps = (
         path,
         ownProps.schema,
         (p) => p === path,
-      )(ctx.core.errors).map((error: ErrorObject) => error.message),
+      )(ctx.core?.errors ?? []).flatMap((error) => error.message ?? []),
     ),
   );
   return {
     propName: ownProps.propName,
     schema: ownProps.schema,
-    rootSchema: ctx.core.schema,
+    rootSchema: ctx.core?.schema ?? ownProps.schema,
     errors,
     path,
     enabled: ownProps.enabled,
@@ -217,8 +214,8 @@ const RowDataCell = (ownProps: RowDataCellProps) => {
 interface ActionCellProps {
   childPath: string;
   rowIndex: number;
-  moveUpCreator: (path: string, position: number) => () => void;
-  moveDownCreator: (path: string, position: number) => () => void;
+  moveUpCreator?: (path: string, position: number) => () => void;
+  moveDownCreator?: (path: string, position: number) => () => void;
   enabled: boolean;
   enableUp: boolean;
   enableDown: boolean;
@@ -240,11 +237,11 @@ const ActionCell = ({
   translations,
 }: ActionCellProps & WithDeleteDialogSupport) => {
   const moveUp = useMemo(
-    () => moveUpCreator(path, rowIndex),
+    () => moveUpCreator?.(path, rowIndex),
     [moveUpCreator, path, rowIndex],
   );
   const moveDown = useMemo(
-    () => moveDownCreator(path, rowIndex),
+    () => moveDownCreator?.(path, rowIndex),
     [moveDownCreator, path, rowIndex],
   );
 
@@ -258,7 +255,7 @@ const ActionCell = ({
               aria-label={translations.upAriaLabel}
               icon={<ArrowUpOutlined rev={undefined} />}
               onClick={moveUp}
-              disabled={!enabled || !enableUp}
+              disabled={!enabled || !enableUp || !moveUp}
             />
           </Tooltip>
           <Tooltip title={translations.down}>
@@ -267,7 +264,7 @@ const ActionCell = ({
               aria-label={translations.downAriaLabel}
               icon={<ArrowDownOutlined rev={undefined} />}
               onClick={moveDown}
-              disabled={!enabled || !enableDown}
+              disabled={!enabled || !enableDown || !moveDown}
             />
           </Tooltip>
         </>
@@ -277,8 +274,8 @@ const ActionCell = ({
 };
 
 interface GenerateColumns extends ArrayLayoutProps, WithDeleteDialogSupport {
-  moveUpCreator: (path: string, position: number) => () => void;
-  moveDownCreator: (path: string, position: number) => () => void;
+  moveUpCreator?: (path: string, position: number) => () => void;
+  moveDownCreator?: (path: string, position: number) => () => void;
   showSortButtons: boolean;
   path: string;
   translations: ArrayTranslations;
@@ -297,11 +294,7 @@ const generateColumns = (props: GenerateColumns) => {
             dataIndex: '',
             title: '',
             width: width,
-            render: (
-              _field: any,
-              row: { index: number; key: number },
-              _index: number,
-            ) => {
+            render: (_field, row) => {
               const rowIndex = row.index;
               const childPath = Paths.compose(path, `${rowIndex}`);
 
@@ -330,10 +323,19 @@ const CollectionTable = ({
   dataSource,
   isObjectSchema,
   renderFrame,
-}: any) => {
+}: {
+  props: ArrayLayoutProps;
+  columns: TableColumn[];
+  dataSource: TableRow[];
+  isObjectSchema: boolean;
+  renderFrame: (
+    table: React.ReactNode,
+    actions: React.ReactNode,
+  ) => React.ReactNode;
+}) => {
   const { token } = theme.useToken();
   const page = useCollectionPagination(
-    dataSource.map((row: any) => row.index),
+    dataSource.map((row) => row.index),
     props.uischema.options?.pagination,
     props.config,
     'array',
@@ -342,15 +344,15 @@ const CollectionTable = ({
   const [columnWidths, setColumnWidths] = useColumnWidths();
   const detail = useRowDetail(props);
   const selection = useTableSelection(props);
-  const actionColumn = columns.find((column: any) => column.key === 'actions');
-  const displayColumns = detail.options
+  const actionColumn = columns.find((column) => column.key === 'actions');
+  const displayColumns: TableColumn[] = detail.options
     ? [
-        ...columns.filter((column: any) => column.key !== 'actions'),
+        ...columns.filter((column) => column.key !== 'actions'),
         {
           key: 'actions',
           title: '',
           width: (actionColumn?.width ?? 0) + 40,
-          render: (value: any, row: any, index: number) => (
+          render: (value, row, index) => (
             <div
               style={{
                 display: 'flex',
@@ -393,7 +395,7 @@ const CollectionTable = ({
       {renderFrame(
         <RowDetailFrame state={detail}>
           <div style={{ minWidth: 0, overflow: 'auto' }}>
-            <Table
+            <Table<TableRow>
               style={
                 columnWidths.__selection
                   ? {
@@ -409,7 +411,12 @@ const CollectionTable = ({
               rowSelection={{
                 columnWidth: columnWidths.__selection,
                 selectedRowKeys: selection.selected,
-                onChange: (keys) => selection.setSelected(keys as number[]),
+                onChange: (keys) =>
+                  selection.setSelected(
+                    keys.filter(
+                      (key): key is number => typeof key === 'number',
+                    ),
+                  ),
                 getCheckboxProps: () => ({ disabled: !selection.selectable }),
               }}
               scroll={{
@@ -422,7 +429,7 @@ const CollectionTable = ({
               }}
               dataSource={page.indices.map((index) => dataSource[index])}
               showHeader={isObjectSchema}
-              columns={displayColumns.map((column: any) => {
+              columns={displayColumns.map((column) => {
                 if (!column.dataIndex)
                   return {
                     ...column,
@@ -489,14 +496,14 @@ const CollectionTable = ({
               })}
               size='small'
               pagination={false}
-              rowClassName={(row: any) =>
+              rowClassName={(row) =>
                 detail.options?.presentation === 'panel' &&
                 detail.panelOpen &&
                 detail.selection?.index === row.index
                   ? 'ant-table-row-selected'
                   : ''
               }
-              onRow={(row: any) => ({
+              onRow={(row) => ({
                 'aria-current':
                   detail.options?.presentation === 'panel' &&
                   detail.panelOpen &&
@@ -575,7 +582,6 @@ export class TableControl extends React.Component<
       rootSchema,
       uischema,
       errors,
-      openDeleteDialog,
       moveUp,
       moveDown,
       visible,
@@ -599,9 +605,7 @@ export class TableControl extends React.Component<
       return null;
     }
 
-    const columns: any = generateColumns({
-      openDeleteDialog,
-      translations,
+    const columns = generateColumns({
       ...this.props,
       disableRemove: doDisableRemove,
       showSortButtons: appliedUiSchemaOptions.showSortButtons,

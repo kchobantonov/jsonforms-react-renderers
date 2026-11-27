@@ -44,7 +44,7 @@ export const AllOfRenderer = ({
   }
 
   const allOfRenderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema).allOf,
+    (schema as JsonSchema).allOf ?? [],
     rootSchema,
     'allOf',
     uischema,

@@ -21,7 +21,7 @@ type PersistedPreferences = Omit<PersistedDemoSettings, 'version'>;
  * the read is asynchronous.
  */
 const useDemoPreferencePersistence = (
-  storage: DemoSettingsStorage,
+  storage: DemoSettingsStorage | undefined,
   storageKey: string,
   hydrated: boolean,
   { mode, locale, layout, rendererSettings }: PersistedPreferences,

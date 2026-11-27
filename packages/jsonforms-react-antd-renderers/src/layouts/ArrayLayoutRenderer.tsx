@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import {
   and,
   ArrayLayoutProps,
+  ArrayTranslations,
   isControl,
   isObjectArrayWithNesting,
   or,
@@ -21,7 +22,7 @@ export const ArrayLayoutRenderer = ({
   visible,
   addItem,
   ...props
-}: ArrayLayoutProps) => {
+}: ArrayLayoutProps & { translations: ArrayTranslations }) => {
   const addItemCb = useCallback(
     (p: string, value: any) => addItem(p, value),
     [addItem],

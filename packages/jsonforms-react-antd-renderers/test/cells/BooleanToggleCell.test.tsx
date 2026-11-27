@@ -1,3 +1,4 @@
+import { testInvalidInput } from '../support/invalidTesterInput';
 import { act } from 'react';
 import '../setup/MatchMediaMock';
 import * as React from 'react';
@@ -41,18 +42,18 @@ describe('Ant Design boolean toggle cell tester', () => {
   };
 
   it('should fail', () => {
-    expect(booleanToggleCellTester(undefined, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanToggleCellTester, undefined)).toBe(
       NOT_APPLICABLE,
     );
-    expect(booleanToggleCellTester(null, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanToggleCellTester, null)).toBe(
       NOT_APPLICABLE,
     );
-    expect(booleanToggleCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanToggleCellTester, { type: 'Foo' })).toBe(
       NOT_APPLICABLE,
     );
-    expect(
-      booleanToggleCellTester({ type: 'Control' }, undefined, undefined),
-    ).toBe(NOT_APPLICABLE);
+    expect(testInvalidInput(booleanToggleCellTester, { type: 'Control' })).toBe(
+      NOT_APPLICABLE,
+    );
     expect(
       booleanToggleCellTester(
         control,
@@ -60,7 +61,7 @@ describe('Ant Design boolean toggle cell tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
     expect(
@@ -77,7 +78,7 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
 
@@ -99,7 +100,7 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
 
@@ -118,7 +119,7 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -135,7 +136,7 @@ describe('Ant Design boolean toggle cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(3);
   });

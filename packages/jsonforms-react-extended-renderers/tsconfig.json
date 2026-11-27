@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base",
   "compilerOptions": {
     "outDir": "lib",
-    "sourceMap": true,
-    "downlevelIteration": true
+    "sourceMap": true
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts"],

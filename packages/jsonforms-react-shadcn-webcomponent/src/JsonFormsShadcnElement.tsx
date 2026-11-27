@@ -1,3 +1,4 @@
+import { defaultTranslator } from '@jsonforms/core';
 import {
   FormElement,
   formAttributes,
@@ -57,7 +58,7 @@ export class JsonFormsShadcnElement extends FormElement {
       locale: this.state.locale,
       translate: this.state.translations
         ? createTranslator(this.state.translations, this.state.locale)
-        : (_key, fallback) => fallback,
+        : defaultTranslator,
     }),
   });
   protected state: ElementState = {
@@ -105,7 +106,7 @@ export class JsonFormsShadcnElement extends FormElement {
     this.render();
   }
 
-  private emitChange(data: unknown, errors: unknown[]) {
+  private emitChange(data: unknown, errors: unknown[] = []) {
     this.dispatchEvent(
       new CustomEvent('change', {
         bubbles: true,

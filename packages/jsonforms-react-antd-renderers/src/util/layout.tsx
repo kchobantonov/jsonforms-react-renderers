@@ -90,8 +90,8 @@ const AntdLayoutRendererComponent = ({
   visible,
   elements,
   schema,
-  path,
-  enabled,
+  path = '',
+  enabled = true,
   direction,
   layoutOptions,
   config,
@@ -99,7 +99,7 @@ const AntdLayoutRendererComponent = ({
   cells,
 }: AntdLayoutRendererProps) => {
   const effective = useEffectiveElements(elements, path, config);
-  if (isEmpty(effective) || !visible) {
+  if (!schema || isEmpty(effective) || !visible) {
     return null;
   }
   return renderLayoutElements(

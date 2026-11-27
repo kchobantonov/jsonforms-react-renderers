@@ -13,7 +13,7 @@ describe('ArrayLayout unrestricted items', () => {
       arrayLayoutTester(
         { type: 'Control', scope: '#' },
         booleanItemsSchema({ type: 'array', items: true }),
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(4);
   });

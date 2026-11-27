@@ -1,3 +1,4 @@
+import { testInvalidInput } from '../support/invalidTesterInput';
 import '../setup/MatchMediaMock';
 import * as React from 'react';
 import { ControlElement, NOT_APPLICABLE } from '@jsonforms/core';
@@ -27,14 +28,12 @@ describe('Ant Design boolean cell tester', () => {
   };
 
   it('should fail', () => {
-    expect(booleanCellTester(undefined, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanCellTester, undefined)).toBe(NOT_APPLICABLE);
+    expect(testInvalidInput(booleanCellTester, null)).toBe(NOT_APPLICABLE);
+    expect(testInvalidInput(booleanCellTester, { type: 'Foo' })).toBe(
       NOT_APPLICABLE,
     );
-    expect(booleanCellTester(null, undefined, undefined)).toBe(NOT_APPLICABLE);
-    expect(booleanCellTester({ type: 'Foo' }, undefined, undefined)).toBe(
-      NOT_APPLICABLE,
-    );
-    expect(booleanCellTester({ type: 'Control' }, undefined, undefined)).toBe(
+    expect(testInvalidInput(booleanCellTester, { type: 'Control' })).toBe(
       NOT_APPLICABLE,
     );
     expect(
@@ -44,7 +43,7 @@ describe('Ant Design boolean cell tester', () => {
           type: 'object',
           properties: { foo: { type: 'string' } },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
     expect(
@@ -61,7 +60,7 @@ describe('Ant Design boolean cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(NOT_APPLICABLE);
   });
@@ -78,7 +77,7 @@ describe('Ant Design boolean cell tester', () => {
             },
           },
         },
-        undefined,
+        { rootSchema: {}, config: {} },
       ),
     ).toBe(2);
   });

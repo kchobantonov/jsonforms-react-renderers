@@ -6,7 +6,7 @@ export const ItemValidationIndicator = ({
   options,
   config,
 }: {
-  Indicator: React.ComponentType<{ count: number }>;
+  Indicator: React.ComponentType<{ count?: number }>;
   path: string;
   options?: Record<string, any>;
   config?: Record<string, any>;

@@ -11,7 +11,7 @@ export const createOnChangeHandler =
     handleChange: (path: string, value: any) => void,
     saveFormat: string,
   ) =>
-  (value: dayjs.Dayjs) => {
+  (value: dayjs.Dayjs | null) => {
     if (!value) {
       handleChange(path, undefined);
     } else if (value.isValid()) {

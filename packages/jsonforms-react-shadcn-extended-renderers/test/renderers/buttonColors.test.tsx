@@ -1,3 +1,4 @@
+import { createTranslator } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JsonForms } from '@jsonforms/react';
@@ -80,8 +81,9 @@ it('translates action button labels through the form locale', () => {
             renderers={shadcnExtendedRenderers}
             i18n={{
               locale,
-              translate: (key, fallback) =>
+              translate: createTranslator((key, fallback) =>
                 key === 'static-text.English' ? label : fallback,
+              ),
             }}
           />,
         ),

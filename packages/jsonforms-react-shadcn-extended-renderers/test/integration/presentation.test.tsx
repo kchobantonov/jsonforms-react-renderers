@@ -31,14 +31,15 @@ describe('shared presentation renderers', () => {
         createShadcnExtendedRenderers(),
       ]) {
         const matching = entries.filter(
-          (entry) => entry.tester({ type }, {}, undefined) === 1,
+          (entry) =>
+            entry.tester({ type }, {}, { rootSchema: {}, config: {} }) === 1,
         );
         expect(matching).toHaveLength(1);
         expect(
           matching[0].tester(
             { type: 'Control', scope: '#' } as UISchemaElement,
             {},
-            undefined,
+            { rootSchema: {}, config: {} },
           ),
         ).toBe(-1);
       }

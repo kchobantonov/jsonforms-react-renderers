@@ -141,6 +141,7 @@ export const ShadcnCompositeCell = (props: Props) => {
           title={text('composite.edit', { label })}
           aria-label={text('composite.edit', { label })}
           onClick={() => {
+            if (!parent.core) return;
             setOriginal(copy(current()));
             draftRef.current = {
               ...parent.core,

@@ -186,14 +186,20 @@ describe('explicitly registered legacy columns layout', () => {
 
   test('selects horizontal layouts below split layouts without affecting vertical layouts', () => {
     expect(
-      horizontalColumnsLayoutTester({ type: 'VerticalLayout' }, {}, undefined),
+      horizontalColumnsLayoutTester(
+        { type: 'VerticalLayout' },
+        {},
+        { rootSchema: {}, config: {} },
+      ),
     ).toBe(-1);
     const split = {
       type: 'HorizontalLayout',
       options: { variant: 'splitter' },
     };
-    expect(horizontalColumnsLayoutTester(split, {}, undefined)).toBeLessThan(
-      splitLayoutTester(split, {}, undefined),
+    expect(
+      horizontalColumnsLayoutTester(split, {}, { rootSchema: {}, config: {} }),
+    ).toBeLessThan(
+      splitLayoutTester(split, {}, { rootSchema: {}, config: {} }),
     );
   });
 });

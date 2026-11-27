@@ -137,6 +137,7 @@ const withTupleProps = (Component: React.ComponentType<TupleControlProps>) =>
     ctx: JsonFormsStateContext;
     props: any;
   }) {
+    if (!ctx.dispatch) return null;
     return (
       <Component
         {...props}
