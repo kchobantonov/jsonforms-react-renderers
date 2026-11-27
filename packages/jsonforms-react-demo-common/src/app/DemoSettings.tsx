@@ -1,10 +1,10 @@
 import React from 'react';
 import { LaptopMinimalCheck, Moon, Sun } from 'lucide-react';
 import type { ValidationMode } from '@jsonforms/core';
-import type { DemoLayout, DemoMode } from '../demoPreferences';
+import type { DemoLayout, DemoMode } from './demoPreferences';
 import type { DemoUi } from '../App';
-import { DefaultDemoTextInput } from '../DefaultDemoTextInput';
-import { DefaultDemoTypography } from '../DefaultDemoTypography';
+import { DefaultDemoTextInput } from './DefaultDemoTextInput';
+import { DefaultDemoTypography } from './DefaultDemoTypography';
 
 /**
  * The settings drawer.

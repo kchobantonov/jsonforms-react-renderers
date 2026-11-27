@@ -68,6 +68,7 @@
     "vite-plus": "catalog:"
   },
   "dependencies": {
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*",
     "@base-ui/react": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",

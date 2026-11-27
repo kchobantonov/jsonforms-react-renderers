@@ -4,7 +4,7 @@ import {
   DemoMode,
   DemoSettingsStorage,
   writePersistedDemoSettings,
-} from '../demoPreferences';
+} from './demoPreferences';
 
 /**
  * Puts the demo's appearance on the document, and takes it off again.

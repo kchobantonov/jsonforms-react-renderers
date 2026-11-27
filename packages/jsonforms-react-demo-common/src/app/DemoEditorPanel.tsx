@@ -3,11 +3,14 @@ import Editor from '@monaco-editor/react';
 import { RotateCcw, Save } from 'lucide-react';
 import type { JsonFormsInitStateProps } from '@jsonforms/react';
 import type { ExampleDescription } from '@jsonforms/examples';
-import { EditorModels, reloadOriginalEditorModel } from '../editorModels';
-import { TranslationCatalogs, asTranslationCatalogs } from '../i18nCatalogs';
-import type { DemoTab } from '../demoPreferences';
+import { EditorModels, reloadOriginalEditorModel } from './editorModels';
+import {
+  TranslationCatalogs,
+  asTranslationCatalogs,
+} from '../locale/i18nCatalogs';
+import type { DemoTab } from './demoPreferences';
 import type { DemoUi } from './types';
-import { DefaultDemoTypography } from '../DefaultDemoTypography';
+import { DefaultDemoTypography } from './DefaultDemoTypography';
 import { parseEditorValue } from './editorValue';
 
 /**

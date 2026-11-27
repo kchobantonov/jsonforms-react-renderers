@@ -14,9 +14,8 @@ import {
 } from '@jsonforms-react-shadcn-ui/popover';
 import {
   ErrorSummaryList,
-  useErrorSummary,
-  useErrorSummaryCount,
-} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+  useErrorFeedback,
+} from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 
 export const ErrorIndicator = ({
   errors,
@@ -29,12 +28,11 @@ export const ErrorIndicator = ({
   path?: string;
   local?: boolean;
 }) => {
-  const [open, setOpen] = React.useState(false);
-  const count = useErrorSummaryCount(
-    local ? '' : errors,
-    local ? undefined : path,
+  const { open, setOpen, count, entries, message } = useErrorFeedback(
+    errors,
+    path,
+    local,
   );
-  const entries = useErrorSummary(errors, path, open && !local);
   const timer = React.useRef<ReturnType<typeof setTimeout>>();
   const trigger = React.useRef<HTMLButtonElement>(null);
   const content = React.useRef<HTMLDivElement>(null);
@@ -79,9 +77,7 @@ export const ErrorIndicator = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent className='max-w-sm whitespace-pre-line'>
-            {!local && entries[0]
-              ? [entries[0].path, entries[0].message].filter(Boolean).join(': ')
-              : errors}
+            {message}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

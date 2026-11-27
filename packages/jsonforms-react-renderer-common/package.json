@@ -20,10 +20,21 @@
       "types": "./lib/*.d.ts",
       "import": "./lib/*.esm.js",
       "require": "./lib/*.cjs.js"
+    },
+    "./locale": {
+      "types": "./lib/locale/index.d.ts",
+      "import": "./lib/locale/index.esm.js",
+      "require": "./lib/locale/index.cjs.js"
     }
   },
   "typesVersions": {
     "*": {
+      "lib/index.d.ts": [
+        "lib/index.d.ts"
+      ],
+      "locale": [
+        "lib/locale/index.d.ts"
+      ],
       "*": [
         "lib/*"
       ]

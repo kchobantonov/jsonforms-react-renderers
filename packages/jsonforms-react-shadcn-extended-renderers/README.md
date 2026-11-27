@@ -23,3 +23,9 @@ Pass `cells={[...shadcnExtendedCells, ...shadcnCells]}` to JSON Forms.
 The base cells include date, time and date-time pickers; the extended cells add
 color, duration, cron and null controls. Both tables and AG Grid use these
 registries. The demo and web component register both sets automatically.
+
+## Duration helpers
+
+Import `parseDuration` and `formatDurationIso` from this package’s root to
+round-trip ISO week durations. For example, parsing `P2W` produces parts
+with `weeks: 2`, and formatting those parts returns `P2W`.

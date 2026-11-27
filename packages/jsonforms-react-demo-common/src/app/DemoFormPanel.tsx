@@ -7,7 +7,7 @@ import {
   ExtendedJsonForms,
   createAdditionalErrorStore,
 } from '@chobantonov/jsonforms-react-extended-renderers';
-import type { DemoMode } from '../demoPreferences';
+import type { DemoMode } from './demoPreferences';
 import type { DemoWrapperProps } from './types';
 import { WebComponentHost } from './WebComponentHost';
 

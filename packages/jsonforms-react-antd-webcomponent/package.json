@@ -55,6 +55,9 @@
     "@types/node": "catalog:",
     "vite-plus": "catalog:"
   },
+  "dependencies": {
+    "@chobantonov/jsonforms-react-renderer-common": "workspace:*"
+  },
   "publishConfig": {
     "access": "public"
   }

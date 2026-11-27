@@ -5,21 +5,21 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/compositeSummary';
-import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { compositeSummary } from '@chobantonov/jsonforms-react-renderer-common/cells/compositeSummary';
+import { useI18nDefault } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 import {
   CollectionErrorNavigation,
   RowErrorCount,
-} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
-import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
-import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/CollectionErrorNavigation';
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
+import { resolvePagination } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
 import {
   tableColumnFields,
   tableColumnStyle,
   TableColumnDefinition,
-} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
-import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/tableColumns';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
 import { useEditorAppearance } from '../util/useEditorAppearance';
 import { useExtendedTranslator } from '../util/useExtendedTranslator';
 import {
@@ -43,7 +43,7 @@ import {
   EditorArrayAction,
   EditorArrayFrameProps,
   EditorRendererComponents,
-} from './EditorControlFrame';
+} from '../components/editorRendererTypes';
 
 // A bounded cache for one set of summary bindings. Its mutation is internal to
 // this factory; the renderer only memoizes the callable it returns.

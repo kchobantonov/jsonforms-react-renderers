@@ -1,4 +1,4 @@
-import { AllOfRenderer } from './AllOfRenderer';
+import { AllOfRenderer } from '@chobantonov/jsonforms-react-renderer-common/composition/AllOfRenderer';
 import { AnyOfRenderer } from './AnyOfRenderer';
 import { ArrayControlRenderer } from './ArrayControlRenderer';
 import { EnumArrayRenderer } from './EnumArrayRenderer';

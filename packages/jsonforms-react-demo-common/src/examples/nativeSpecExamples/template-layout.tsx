@@ -1,10 +1,7 @@
+import { insertExampleTab } from './insertExampleTab';
 import { UISchemaElement } from '@jsonforms/core';
 import type { TemplateRender } from '@chobantonov/jsonforms-react-extended-renderers';
 import React from 'react';
-import config from '@chobantonov/jsonforms-extended-spec/examples/template-layout/config.json';
-import data from '@chobantonov/jsonforms-extended-spec/examples/template-layout/data.json';
-import schema from '@chobantonov/jsonforms-extended-spec/examples/template-layout/schema.json';
-import translations from '@chobantonov/jsonforms-extended-spec/examples/template-layout/translations.json';
 import uischema from '@chobantonov/jsonforms-extended-spec/examples/template-layout/uischema.json';
 
 /**
@@ -115,42 +112,11 @@ const nativeCategory = {
   ],
 } as unknown as UISchemaElement;
 
-type Layoutish = { type: string; elements: UISchemaElement[] };
+const composed = insertExampleTab(
+  uischema as unknown as UISchemaElement,
+  nativeCategory,
+  'template-layout: uischema.json no longer has a Categorization to add the native tab to.',
+  'resolution',
+);
 
-/*
-  Inserted before the language-resolution tab, and located **structurally**.
-  An `elements[3]` would keep compiling and quietly attach the tab to the wrong
-  parent the first time `uischema.json` is reordered.
-*/
-const withNativeTab = (root: UISchemaElement): UISchemaElement => {
-  const layout = root as unknown as Layoutish;
-  const elements = layout.elements ?? [];
-  const index = elements.findIndex(
-    (element) => (element as { type?: string }).type === 'Categorization',
-  );
-  if (index === -1) {
-    throw new Error(
-      'template-layout: uischema.json no longer has a Categorization to add the native tab to.',
-    );
-  }
-  const categorization = elements[index] as unknown as Layoutish;
-  const categories = categorization.elements.slice();
-  const resolution = categories.findIndex(
-    (category) => (category as { name?: string }).name === 'resolution',
-  );
-  categories.splice(
-    resolution === -1 ? categories.length : resolution,
-    0,
-    nativeCategory,
-  );
-  const replaced = elements.slice();
-  replaced[index] = {
-    ...categorization,
-    elements: categories,
-  } as unknown as UISchemaElement;
-  return { ...layout, elements: replaced } as unknown as UISchemaElement;
-};
-
-const composed = withNativeTab(uischema as unknown as UISchemaElement);
-
-export { config, data, schema, translations, uischema, composed };
+export { composed };

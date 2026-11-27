@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DemoSplitterProps } from '../DemoSplitter';
+import type { DemoSplitterProps } from './DemoSplitter';
 
 /**
  * The demo's own component contract.

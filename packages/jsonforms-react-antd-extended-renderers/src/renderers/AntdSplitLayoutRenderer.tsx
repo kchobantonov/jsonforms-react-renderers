@@ -1,4 +1,4 @@
-import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import {
   initialSplitSizes,
   splitCssSize,

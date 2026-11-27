@@ -2,7 +2,7 @@ import {
   DynamicUiProvider,
   withDynamicRenderers,
   withDynamicCells,
-} from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+} from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import React, {
   useLayoutEffect,
   useState,
@@ -28,7 +28,7 @@ import {
   HandleAction,
   HandleActionContext,
   useHandleAction,
-} from '../renderers/actionContext';
+} from '../util/actionContext';
 
 // Keep authored UI options at the published spellings before core resolves them.
 export const canonicalUiOptions = <T,>(value: T): T => {

@@ -1,7 +1,7 @@
-import { ObjectDetailContext } from '../complex/ObjectDetailContext';
+import { ObjectDetailContext } from '@chobantonov/jsonforms-react-renderer-common/objects/ObjectDetail';
 import { ErrorIndicator } from '../complex/ErrorIndicator';
-import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ObjectErrorContext } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
+import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';
 import { ContainerValidationIndicator } from './ValidationIndicator';
 import {
   LayoutProps,
@@ -11,7 +11,7 @@ import {
   uiTypeIs,
 } from '@jsonforms/core';
 import { JsonFormsDispatch } from '@jsonforms/react';
-import { useDynamicTreeResolver } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useGroupHeaderTitle } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { ShadcnLayout } from './Layout';
@@ -28,10 +28,7 @@ import {
   CardTitle,
 } from '@jsonforms-react-shadcn-ui/card';
 import { useGroupState } from '../util/groupState';
-import {
-  useI18n,
-  useTranslator,
-} from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 export const ShadcnGroupLayout = (props: LayoutProps) => {
   const regions = props.uischema as typeof props.uischema & {
@@ -53,21 +50,13 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
   );
   const group = useGroupState(props.uischema, props.path, props.config);
   const t = useI18n();
-  const translate = useTranslator();
   const footer = regions.footer;
   const hasRegions = Boolean(
     regions.cover || regions.header?.length || footer?.length,
   );
   const HeaderSection = hasRegions ? CardHeader : 'div';
-  const resolveHeader = useDynamicTreeResolver(props.path);
-  const headerLabel = regions.header
-    ?.map(resolveHeader)
-    .find((element) => element.type === 'Label') as
-    | { text?: string; i18n?: string }
-    | undefined;
-  const headerTitle = headerLabel?.i18n
-    ? translate(`${headerLabel.i18n}.text`, headerLabel.text || '')
-    : headerLabel?.text;
+  const headerTitle = useGroupHeaderTitle(props.path, regions.header);
+
   const validation = useContainerValidation(
     props.uischema,
     props.path,
@@ -117,6 +106,19 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
     </>
   );
 
+  const headerElements = regions.header?.length ? (
+    <div data-group-header>
+      {regions.header.map((element, index) => (
+        <div
+          className={index === 0 ? 'group-header-title' : 'group-header-detail'}
+          key={index}
+        >
+          {renderRegion(element, `header-${index}`)}
+        </div>
+      ))}
+    </div>
+  ) : null;
+
   return (
     <Collapsible
       className='shadcn-jsonforms-group'
@@ -137,20 +139,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
       )}
       {group.collapsible ? (
         <HeaderSection className='shadcn-jsonforms-group-header px-0 gap-0'>
-          {regions.header?.length ? (
-            <div data-group-header>
-              {regions.header.map((element, index) => (
-                <div
-                  className={
-                    index === 0 ? 'group-header-title' : 'group-header-detail'
-                  }
-                  key={index}
-                >
-                  {renderRegion(element, `header-${index}`)}
-                </div>
-              ))}
-            </div>
-          ) : null}
+          {headerElements}
           <CollapsibleTrigger
             render={<Button type='button' variant='ghost' />}
             aria-label={headerTitle || props.label || 'Group'}
@@ -172,20 +161,7 @@ export const ShadcnGroupLayout = (props: LayoutProps) => {
           ) : (
             header
           )}
-          {regions.header?.length ? (
-            <div data-group-header>
-              {regions.header.map((element, index) => (
-                <div
-                  className={
-                    index === 0 ? 'group-header-title' : 'group-header-detail'
-                  }
-                  key={index}
-                >
-                  {renderRegion(element, `header-${index}`)}
-                </div>
-              ))}
-            </div>
-          ) : null}
+          {headerElements}
         </HeaderSection>
       ) : null}
       <CollapsibleContent

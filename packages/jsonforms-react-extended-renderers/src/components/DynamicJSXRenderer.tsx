@@ -26,13 +26,6 @@ export function useTrackedSnapshot(proxy: any) {
 }
 
 /**
- * Custom createElement: calls .render() if any child object has it
- */
-// Re-exported for compatibility; defined apart so importing it does not pull
-// Sucrase into the initial bundle. See ./elementRender.
-export { ElementRender } from './elementRender';
-
-/**
  * Builds the JSX pragma, bound to a URL policy.
  *
  * A factory rather than a module-level "current policy" cell, because two
@@ -42,7 +35,7 @@ export { ElementRender } from './elementRender';
  * not rebuilt - and the controls it slots are not remounted - when config
  * changes.
  */
-export const makeCreateElement = (getPolicy: () => UrlPolicy) =>
+const makeCreateElement = (getPolicy: () => UrlPolicy) =>
   function createElement(type: any, props: any, ...children: any[]) {
     return createElementWithPolicy(getPolicy(), type, props, ...children);
   };
@@ -51,10 +44,6 @@ export const makeCreateElement = (getPolicy: () => UrlPolicy) =>
  * Custom createElement: automatically renders objects with [ElementRender],
  * and applies the URL policy to whatever the template produced.
  */
-export function createElement(type: any, props: any, ...children: any[]) {
-  return createElementWithPolicy(defaultUrlPolicy, type, props, ...children);
-}
-
 function createElementWithPolicy(
   policy: UrlPolicy,
   type: any,

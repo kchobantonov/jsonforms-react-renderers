@@ -4,7 +4,7 @@ import {
   FileArrayInput,
   fileItemSchema,
   attachmentName,
-} from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+} from '@chobantonov/jsonforms-react-renderer-common/controls/FileArrayInput';
 import { Input, Tooltip, theme, Button, Upload } from 'antd';
 import FileOutlined from '@ant-design/icons/FileOutlined';
 import { useCellMode } from '../util/cellMode';

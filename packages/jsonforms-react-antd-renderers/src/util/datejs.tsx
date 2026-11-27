@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { formatDate } from '@chobantonov/jsonforms-react-renderer-common/datejs';
+import { formatDate } from '@chobantonov/jsonforms-react-renderer-common/formats/dateValues';
 export {
   formatDate,
-  getData,
-} from '@chobantonov/jsonforms-react-renderer-common/datejs';
+  parseDateValue as getData,
+} from '@chobantonov/jsonforms-react-renderer-common/formats/dateValues';
 
 export const createOnChangeHandler =
   (
@@ -15,8 +15,8 @@ export const createOnChangeHandler =
     if (!value) {
       handleChange(path, undefined);
     } else if (value.isValid()) {
-      const formatedDate = formatDate(value, saveFormat);
-      handleChange(path, formatedDate);
+      const formattedDate = formatDate(value, saveFormat);
+      handleChange(path, formattedDate);
     }
   };
 
@@ -31,12 +31,12 @@ export const createOnBlurHandler =
   ) =>
   (e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>) => {
     const date = dayjs(e.target.value, format);
-    const formatedDate = formatDate(date, saveFormat);
-    if (formatedDate.toString() === 'Invalid Date') {
+    const formattedDate = formatDate(date, saveFormat);
+    if (formattedDate.toString() === 'Invalid Date') {
       handleChange(path, undefined);
       rerenderChild();
     } else {
-      handleChange(path, formatedDate);
+      handleChange(path, formattedDate);
     }
     onBlur();
   };

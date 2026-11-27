@@ -14,8 +14,8 @@ export {
   removeChoice,
   canAddChoice,
   canRemoveChoice,
-} from '@chobantonov/jsonforms-react-renderer-common/arrayChoices';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/arrayChoices';
 export type {
   ArrayChoice,
   ArrayChoiceLimits,
-} from '@chobantonov/jsonforms-react-renderer-common/arrayChoices';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/arrayChoices';

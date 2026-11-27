@@ -60,6 +60,7 @@ export const advancedShadcnRenderers = shadcnExtendedRenderers;
 
 export * from './theme';
 export * from './renderers';
+export * from './util/duration';
 export * from '@chobantonov/jsonforms-react-extended-renderers';
 
 export * from './renderers/ShadcnMonacoControlRenderer';

@@ -1,9 +1,9 @@
-import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+import { useEffectiveElements } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 export {
   useEffectiveElements,
   withAjvProps,
-} from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
-export type { AjvProps } from '@chobantonov/jsonforms-react-renderer-common/layoutContext';
+} from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
+export type { AjvProps } from '@chobantonov/jsonforms-react-renderer-common/layout/layoutContext';
 import isEmpty from 'lodash/isEmpty';
 import { ConfigProvider } from 'antd';
 import React from 'react';

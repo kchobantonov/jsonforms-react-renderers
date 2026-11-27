@@ -1,4 +1,4 @@
-import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useDynamicExternal } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import { LayoutProps } from '@jsonforms/core';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import React, { useEffect, useMemo } from 'react';
@@ -20,6 +20,7 @@ const RactiveTemplate = createLazyTemplate<RactiveTemplateProps>(
 import {
   ractiveTransitionAttributes,
   resolveChildNames,
+  useNamedChildren,
 } from '../util/childNames';
 import { buildFormContext } from '../util/formContext';
 import { resolveUrlPolicy } from '../util/urlPolicy';
@@ -54,16 +55,8 @@ export const RactiveTemplateLayoutRenderer = (
   const external = useDynamicExternal();
   const resolved = resolveTemplateEngine(uischema, config);
 
-  const children = useMemo(() => uischema.elements ?? [], [uischema.elements]);
-  /*
-    Collision-aware: an index fallback never steals a name another child
-    declared, and a child that cannot be addressed is reported rather than
-    silently left off the form.
-  */
-  const { names, diagnostics } = useMemo(
-    () => resolveChildNames(children),
-    [children],
-  );
+  const { children, names, diagnostics } = useNamedChildren(uischema.elements);
+
   const nameKey = JSON.stringify(names);
 
   /*

@@ -1,5 +1,5 @@
 import { theme } from 'antd';
-import { createChoiceCards } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
+import { createChoiceCards } from '@chobantonov/jsonforms-react-renderer-common/composition/choiceCards';
 import { useConfirmation } from '../util/useConfirmation';
 export const ChoiceCards = createChoiceCards(useConfirmation, () => {
   const { token } = theme.useToken();

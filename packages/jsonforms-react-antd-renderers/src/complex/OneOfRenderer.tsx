@@ -1,17 +1,13 @@
-import {
-  missingDiscriminatorError,
-  discriminatorBranch,
-} from '@chobantonov/jsonforms-react-renderer-common/discriminatorBranch';
-import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { useCombinatorSelection } from '@chobantonov/jsonforms-react-renderer-common/composition/useCombinatorSelection';
+import { discriminatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/discriminatorBranch';
 import {
   useJsonForms,
   JsonFormsDispatch,
   withJsonFormsOneOfProps,
 } from '@jsonforms/react';
-import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed';
-import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/combinators';
-import { useTranslator } from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
+import { isArrayElementPath } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedSchema';
+import { clearedBranchValue } from '@chobantonov/jsonforms-react-renderer-common/composition/combinators';
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorBranch';
 import React, { useCallback, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { shouldConfirm } from '../util/confirmation';
@@ -20,24 +16,17 @@ import { TabSwitchConfirmDialog } from './TabSwitchConfirmDialog';
 
 import {
   CombinatorRendererProps,
-  createCombinatorRenderInfos,
   createDefaultValue,
   isDescriptionHidden,
   isOneOfControl,
-  JsonSchema,
-  OwnPropsOfControl,
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
 import { Select, Form } from 'antd';
-import CombinatorProperties from './CombinatorProperties';
+import { CombinatorProperties } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 import merge from 'lodash/merge';
 import { useFocus } from '../util';
 import { branchChangeData, discardedByBranchChange } from '../util/combinators';
-
-export interface OwnOneOfProps extends OwnPropsOfControl {
-  indexOfFittingSchema?: number;
-}
 
 export const OneOfRenderer = ({
   handleChange,
@@ -128,34 +117,12 @@ export const OneOfRenderer = ({
   const cancel = useCallback(() => {
     setConfirmDialogOpen(false);
   }, [setConfirmDialogOpen]);
-  const translate = useTranslator();
-  const [primaryErrors, additionalErrors] = displayableErrors(
-    formContext.core ?? {},
-  );
-  const missingKind = missingDiscriminatorError(schema, rootSchema, path, [
-    ...(primaryErrors ?? []),
-    ...(additionalErrors ?? []),
-  ]);
-  const selectionError = missingKind
-    ? translate('oneOf.chooseKind', 'Choose a kind.')
-    : '';
-
-  const oneOfRenderInfos = createCombinatorRenderInfos(
-    (schema as JsonSchema).oneOf,
-    rootSchema,
-    'oneOf',
-    uischema,
-    path,
-    uischemas,
-  ).map((info) => {
-    const prefix = (info.schema as JsonSchema & { i18n?: string }).i18n;
-    return typeof prefix === 'string'
-      ? {
-          ...info,
-          label: translate(`${prefix}.label`, info.label) ?? info.label,
-        }
-      : info;
-  });
+  const { selectionError, renderInfos: oneOfRenderInfos } =
+    useCombinatorSelection(
+      { schema, rootSchema, uischema, path, uischemas },
+      'oneOf',
+      formContext.core,
+    );
 
   /*
     A branch change initializes from the new branch's generated defaults and

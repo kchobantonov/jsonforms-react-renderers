@@ -2,7 +2,7 @@ import React from 'react';
 import { ControlProps } from '@jsonforms/core';
 import { withJsonFormsControlProps } from '@jsonforms/react';
 import { createLazyControl } from '../util/lazyControl';
-import { EditorRendererComponents } from './EditorControlFrame';
+import { EditorRendererComponents } from '../components/editorRendererTypes';
 
 /**
  * ag-grid-community + ag-grid-react are ~1MB; importing them here would put

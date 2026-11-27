@@ -13,11 +13,14 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
 } from '@ant-design/icons';
-import { AntdEditorButton } from './AntdEditorButton';
-import { AntdArrayFrame } from './AntdArrayFrame';
-import { AntdEditorFrame } from './AntdEditorFrame';
-import { AntdEditorLoadError, AntdEditorLoading } from './AntdEditorLoading';
-import { useAntdEditorTheme } from './useAntdEditorTheme';
+import { AntdEditorButton } from '../components/AntdEditorButton';
+import { AntdArrayFrame } from '../components/AntdArrayFrame';
+import { AntdEditorFrame } from '../components/AntdEditorFrame';
+import {
+  AntdEditorLoadError,
+  AntdEditorLoading,
+} from '../components/AntdEditorLoading';
+import { useAntdEditorTheme } from '../hooks/useAntdEditorTheme';
 /**
  * The grid's own confirmation, supplied from this side of the boundary.
  *

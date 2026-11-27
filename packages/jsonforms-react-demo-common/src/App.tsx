@@ -21,7 +21,7 @@ import {
   exampleTranslations,
   i18nEditorValue,
   translatorFor,
-} from './i18nCatalogs';
+} from './locale/i18nCatalogs';
 import {
   JsonFormsCellRendererRegistryEntry,
   JsonFormsRendererRegistryEntry,
@@ -38,7 +38,7 @@ import {
 import { DemoWorkspace } from './app/DemoWorkspace';
 import { DemoSettingsPanel } from './app/DemoSettings';
 import { ExternalEditor } from './app/ExternalEditor';
-import { EditorModels, stringifyEditorValue } from './editorModels';
+import { EditorModels, stringifyEditorValue } from './app/editorModels';
 import {
   DemoLayout,
   DemoMode,
@@ -53,7 +53,7 @@ import {
   readPersistedDemoSettings,
   splitDemoHash,
   writeDemoQueryValue,
-} from './demoPreferences';
+} from './app/demoPreferences';
 import './App.css';
 
 export * from './app/types';

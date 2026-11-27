@@ -41,5 +41,3 @@ export const ContainerValidationIndicator = ({
     </ContainerIndicator>
   );
 };
-
-export default ContainerValidationIndicator;

@@ -2,7 +2,7 @@ import type { ControlProps } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ShadcnDateControl } from '../../src/controls/DateControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: '1985-06-02',

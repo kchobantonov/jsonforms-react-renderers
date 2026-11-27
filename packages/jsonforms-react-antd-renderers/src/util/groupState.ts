@@ -5,5 +5,4 @@ export {
   boundDataPaths,
   groupHasData,
   useGroupState,
-} from '@chobantonov/jsonforms-react-renderer-common/groupState';
-export type { BoundPath } from '@chobantonov/jsonforms-react-renderer-common/groupState';
+} from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';

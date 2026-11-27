@@ -1,4 +1,5 @@
-import { dynamicAuthoredElement } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { useMemo } from 'react';
+import { dynamicAuthoredElement } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import type { ExtendedUISchemaElement } from '../core/uiSchema';
 
 /**
@@ -124,3 +125,11 @@ export const ractiveTransitionAttributes = (template: string): string[] => {
   }
   return [...found];
 };
+
+export function useNamedChildren(
+  elements: ExtendedUISchemaElement[] | undefined,
+) {
+  const children = useMemo(() => elements ?? [], [elements]);
+  const resolved = useMemo(() => resolveChildNames(children), [children]);
+  return { children, ...resolved };
+}

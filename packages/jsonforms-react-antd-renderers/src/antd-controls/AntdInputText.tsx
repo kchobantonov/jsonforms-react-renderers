@@ -1,4 +1,4 @@
-import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixedScalar';
+import { useMixedScalar } from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedScalar';
 import { CellProps, WithClassname } from '@jsonforms/core';
 import { AutoComplete, AutoCompleteProps, Input } from 'antd';
 import every from 'lodash/every';

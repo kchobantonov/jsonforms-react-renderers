@@ -1,7 +1,7 @@
-import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
-import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
+import { ItemValidationIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/ItemValidationIndicator';
 import { ContainerValidationIndicator } from './ValidationIndicator';
-import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
+import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 import DeleteFilled from '@ant-design/icons/DeleteFilled';
@@ -388,6 +388,7 @@ const ArrayLayoutComponent = (
                     >
                       {text ? <Typography.Text>{text}</Typography.Text> : null}
                       <ItemValidationIndicator
+                        Indicator={ContainerValidationIndicator}
                         path={childPath}
                         options={props.uischema.options}
                         config={props.config}
@@ -427,7 +428,7 @@ const ArrayLayoutComponent = (
   );
 };
 
-export const withContextToJsonFormsRendererProps = (
+const withContextToJsonFormsRendererProps = (
   Component: ComponentType<ArrayLayoutProps>,
 ): ComponentType<OwnPropsOfJsonFormsRenderer> =>
   function WithContextToJsonFormsRendererProps({
@@ -444,23 +445,3 @@ export const ArrayLayout = React.memo(
 );
 
 ArrayLayout.displayName = 'ArrayLayout';
-
-const ItemValidationIndicator = ({
-  path,
-  options,
-  config,
-}: {
-  path: string;
-  options?: Record<string, any>;
-  config?: Record<string, any>;
-}) => {
-  const indicator = useContainerValidation(
-    { type: 'Control', scope: '#', options } as any,
-    path,
-    config,
-    false,
-  );
-  return indicator.show ? (
-    <ContainerValidationIndicator count={indicator.count} />
-  ) : null;
-};

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, CardProps } from 'antd';
 import DownOutlined from '@ant-design/icons/DownOutlined';
 import UpOutlined from '@ant-design/icons/UpOutlined';
-import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
+import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/collections/useArrayPanelState';
 
 export const ArrayPanel = ({
   options,

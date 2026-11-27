@@ -13,7 +13,7 @@ import { AntdToggle } from '../antd-controls/AntdToggle';
 
 import { ValidationIcon } from '../complex/ValidationIcon';
 
-export const BooleanToggleCell = (props: CellProps & WithClassname) => {
+const BooleanToggleCell = (props: CellProps & WithClassname) => {
   return props.visible === false ? null : (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
       <AntdToggle

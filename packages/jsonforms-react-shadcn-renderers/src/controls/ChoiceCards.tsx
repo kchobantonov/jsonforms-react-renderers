@@ -1,4 +1,4 @@
-import { createChoiceCards } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
+import { createChoiceCards } from '@chobantonov/jsonforms-react-renderer-common/composition/choiceCards';
 import { useConfirmation } from '../complex/mixed/useConfirmation';
 export const ChoiceCards = createChoiceCards(useConfirmation, () => ({
   border: 'hsl(var(--border, 214.3 31.8% 91.4%))',

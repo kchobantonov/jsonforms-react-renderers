@@ -3,7 +3,7 @@ import { useConfirmation } from '../util/useConfirmation';
 import {
   createRecursiveTreeRenderer,
   recursiveTreeTester,
-} from '@chobantonov/jsonforms-react-renderer-common/RecursiveTreeRenderer';
+} from '@chobantonov/jsonforms-react-renderer-common/mixed/RecursiveTreeRenderer';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
 import { AntdMixedTree as Tree } from './mixed/AntdMixedTree';
 import { Button } from 'antd';

@@ -1,4 +1,4 @@
-import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/CombinatorBranch';
+import { CombinatorBranch } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorBranch';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from '@jsonforms/core';
 import { JsonFormsDispatch, withJsonFormsAnyOfProps } from '@jsonforms/react';
 import { Tabs } from 'antd';
-import CombinatorProperties from './CombinatorProperties';
+import { CombinatorProperties } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 
 /**
  * `anyOf` - tabs over one value.

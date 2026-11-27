@@ -18,7 +18,7 @@ the version used by the demos and tests.
 
 [`@chobantonov/jsonforms-react-extended-renderers`](packages/jsonforms-react-extended-renderers/README.md) contains the shared
 `ExtendedJsonForms` component and extended controls;
-`@chobantonov/jsonforms-react-renderer-common` holds shared renderer utilities.
+[`@chobantonov/jsonforms-react-renderer-common`](packages/jsonforms-react-renderer-common/README.md) holds shared renderer utilities.
 The demos are in `apps/`; `jsonforms-react-demo-common` is private demo support.
 The examples app combines the two demos into one selector.
 
@@ -60,7 +60,12 @@ or the [shadcn Web Component guide](packages/jsonforms-react-shadcn-webcomponent
 Run `pnpm run lint` and `pnpm run check-format` before reporting renderer work
 complete. Run `pnpm run test` for the workspace tests and `vp run build` for
 all packages and demos. See [development checks](docs/linting-and-formatting.md)
-for focused commands.
+for focused commands. To investigate unused code or duplication, run
+`pnpm exec fallow dead-code` or `pnpm exec fallow dupes`.
+
+Package tests follow the source feature folders under `test/`. Cross-feature
+scenarios live under `test/integration/`. The [shared renderer architecture](docs/renderer-common.md)
+explains where to place behavior, UI components, and their tests.
 
 Public packages form one fixed Changesets group. Add a changeset for a
 publishable package change with `pnpm changeset`; private demos do not need

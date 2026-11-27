@@ -1,10 +1,10 @@
-import { dynamicRendererEntry } from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+import { dynamicRendererEntry } from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import {
   RecursiveTreeRenderer,
   recursiveTreeTester,
 } from './complex/RecursiveTreeRenderer';
 import { ChoiceCards } from './controls/ChoiceCards';
-import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
+import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/composition/choiceCards';
 import {
   ShadcnArrayChoicesControl,
   chipsControlTester,

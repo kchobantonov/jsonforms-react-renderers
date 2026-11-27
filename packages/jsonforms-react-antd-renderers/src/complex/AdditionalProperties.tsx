@@ -1,28 +1,21 @@
+import { renamePropertyKey } from '@chobantonov/jsonforms-react-renderer-common/objects/additionalProperties';
+import {
+  useAdditionalPropertyEntries,
+  useAdditionalPropertyActions,
+  type AdditionalPropertiesProps,
+} from '@chobantonov/jsonforms-react-renderer-common/objects/useAdditionalPropertyEntries';
 import { ValidationIcon } from './ValidationIcon';
 import {
   useNameConstraintMessage,
   usePropertyNameErrors,
   useAdditionalPropertyErrors,
-} from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
-import { useCollectionDelete } from '@chobantonov/jsonforms-react-renderer-common/useCollectionDelete';
+} from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 import { DeleteDialog } from './DeleteDialog';
-import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
-import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
 import { CollectionPager } from './CollectionPager';
-import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
-import {
-  toObjectSchema,
-  hasAdditionalProperties,
-  toAdditionalPropertyItem,
-} from '@chobantonov/jsonforms-react-renderer-common/additionalProperties';
-import {
-  ControlElement,
-  createDefaultValue,
-  JsonFormsCellRendererRegistryEntry,
-  JsonFormsRendererRegistryEntry,
-  JsonFormsUISchemaRegistryEntry,
-  JsonSchema,
-} from '@jsonforms/core';
+import { DynamicPropertyProvider } from '@chobantonov/jsonforms-react-renderer-common/objects/dynamicProperties';
+
+import type { JsonSchema } from '@jsonforms/core';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import { JsonFormsDispatch, useJsonForms } from '@jsonforms/react';
 import {
@@ -36,7 +29,7 @@ import {
   Tooltip,
   Typography,
 } from 'antd';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useI18n } from '../util/translate';
 import {
   AdditionalPropertyNameError,
@@ -45,43 +38,28 @@ import {
   needsIsolatedEditor,
   validateAdditionalPropertyName,
 } from '../util/additionalPropertyName';
-import { AntdIsolatedPropertyEditor } from './additionalProperties/AntdIsolatedPropertyEditor';
+import { IsolatedPropertyEditor } from '@chobantonov/jsonforms-react-renderer-common/objects/IsolatedPropertyEditor';
 import { literalPropertySchema } from '../util/literalPropertySchema';
 import { AntdAdditionalPropertyActions } from './additionalProperties/AntdAdditionalPropertyActions';
 import { AntdAdditionalPropertyRenameDialog } from './additionalProperties/AntdAdditionalPropertyRenameDialog';
 
-export type AdditionalPropertiesProps = {
-  cells?: JsonFormsCellRendererRegistryEntry[];
-  config?: any;
-  data: any;
-  enabled: boolean;
-  handleChange(path: string, value: any): void;
-  label: string;
-  path: string;
-  readonly?: boolean;
-  renderers?: JsonFormsRendererRegistryEntry[];
-  rootSchema: JsonSchema;
-  schema: JsonSchema;
-  uischema: ControlElement;
-  uischemas?: JsonFormsUISchemaRegistryEntry[];
-  embedded?: boolean;
-};
+export type { AdditionalPropertiesProps } from '@chobantonov/jsonforms-react-renderer-common/objects/useAdditionalPropertyEntries';
 
-export const AdditionalProperties = ({
-  embedded = false,
-  cells,
-  config,
-  data,
-  enabled,
-  handleChange,
-  label,
-  path,
-  readonly,
-  renderers,
-  rootSchema,
-  schema,
-  uischema,
-}: AdditionalPropertiesProps) => {
+export const AdditionalProperties = (props: AdditionalPropertiesProps) => {
+  const {
+    embedded = false,
+    cells,
+
+    data,
+    enabled,
+    handleChange,
+    label,
+    path,
+    readonly,
+    renderers,
+    rootSchema,
+    schema,
+  } = props;
   const context = useJsonForms();
   const [newPropertyName, setNewPropertyName] = useState('');
   const [renamingPropertyName, setRenamingPropertyName] = useState<
@@ -89,52 +67,19 @@ export const AdditionalProperties = ({
   >(null);
   const t = useI18n();
   const [renameValue, setRenameValue] = useState('');
-  const objectSchema = toObjectSchema(schema);
-  const appliedOptions = { ...config, ...uischema.options };
+  const entries = useAdditionalPropertyEntries(props);
+  const {
+    objectSchema,
+    appliedOptions,
+    objectData,
+    reservedPropertyNames,
+    page,
+    additionalPropertyItems,
+    shouldShow,
+  } = entries;
   const restrict = appliedOptions.restrict !== false;
-  /*
-    Section 18: defaults to false, available in global config and
-    `uischema.options`, and "an explicitly supplied UI-schema option overrides
-    global config, including `false` overriding `true`" - which the element-over
-    -config spread above already gives, because only `undefined` falls through.
-  */
   const allowEmptyPropertyNames =
     appliedOptions.allowEmptyPropertyNames === true;
-  const objectData =
-    typeof data === 'object' && data !== null && !Array.isArray(data)
-      ? data
-      : undefined;
-  const allowIfMissing =
-    appliedOptions.allowAdditionalPropertiesIfMissing === true &&
-    objectSchema.additionalProperties === undefined;
-  const reservedPropertyNames = Object.keys(objectSchema.properties ?? {});
-  const additionalKeys = Object.keys(objectData ?? {}).filter(
-    (key) => !reservedPropertyNames.includes(key),
-  );
-  const page = useCollectionPagination(
-    additionalKeys,
-    uischema.options?.additionalProperties?.pagination,
-    config,
-    'additionalProperties',
-  );
-  const additionalKeySnapshot = JSON.stringify(additionalKeys);
-  const additionalPropertyItems = useMemo(
-    () =>
-      (JSON.parse(additionalKeySnapshot) as string[]).map((propertyName) =>
-        toAdditionalPropertyItem(
-          propertyName,
-          path,
-          schema,
-          rootSchema,
-          allowIfMissing,
-        ),
-      ),
-    [additionalKeySnapshot, allowIfMissing, path, rootSchema, schema],
-  );
-  const shouldShow =
-    hasAdditionalProperties(schema) ||
-    allowIfMissing ||
-    additionalKeys.length > 0;
 
   // Exactly as typed. Trimming here would store `"a"` for `"  a  "`, and with
   // empty names permitted it would erase a whitespace-only key entirely.
@@ -191,70 +136,18 @@ export const AdditionalProperties = ({
   */
   const showPropertyNameError =
     newPropertyName !== '' && Boolean(propertyNameError);
-  const maxPropertiesReached =
-    objectSchema.maxProperties !== undefined &&
-    objectData &&
-    Object.keys(objectData).length >= objectSchema.maxProperties;
-  const minPropertiesReached =
-    objectSchema.minProperties !== undefined &&
-    objectData &&
-    Object.keys(objectData).length <= objectSchema.minProperties;
-  const addPropertyDisabled =
-    !enabled ||
-    readonly ||
-    (restrict && maxPropertiesReached) ||
-    Boolean(propertyNameError);
-  const removePropertyDisabled =
-    !enabled || readonly || (restrict && minPropertiesReached);
-
-  const addProperty = () => {
-    if (addPropertyDisabled) {
-      return;
-    }
-
-    const additionalProperty = toAdditionalPropertyItem(
-      propertyName,
-      path,
-      schema,
-      rootSchema,
-      allowIfMissing,
-    );
-    const updatedData = objectData ? { ...objectData } : {};
-
-    assignOwnProperty(
-      updatedData,
-      propertyName,
-      createDefaultValue(additionalProperty.schema, rootSchema),
-    );
-    handleChange(path, updatedData);
-    setNewPropertyName('');
-  };
-
-  const deletion = useCollectionDelete<string>({
-    data: objectData,
-    identity: path,
-    catalogId: 'additionalProperties',
-    options: uischema.options,
-    config,
-    canRemove: (key) =>
-      !removePropertyDisabled &&
-      !appliedOptions.disableRemove &&
-      !!objectData &&
-      Object.prototype.hasOwnProperty.call(objectData, key) &&
-      !reservedPropertyNames.includes(key) &&
-      !(
-        appliedOptions.restrict !== false &&
-        objectSchema.required?.includes(key)
-      ),
-    value: (key) => objectData?.[key],
-    remove: (key) => {
-      const updatedData = { ...objectData };
-      delete updatedData[key];
-      handleChange(path, updatedData);
-    },
+  const {
+    addPropertyDisabled,
+    removePropertyDisabled,
+    deletion,
+    addProperty,
+    removeProperty,
+  } = useAdditionalPropertyActions(props, entries, {
+    restrict,
+    propertyName,
+    propertyNameError,
+    setNewPropertyName,
   });
-  const removeProperty = deletion.request;
-
   const renameProperty = (propertyToRename: string) => {
     const nextName = renameValue;
     const renameError = validateName(nextName, propertyToRename);
@@ -263,14 +156,10 @@ export const AdditionalProperties = ({
     }
 
     // Rebuilt in order, so renaming does not move the property to the end.
-    const updatedData = Object.entries(objectData).reduce(
-      (result, [key, value]) =>
-        assignOwnProperty(
-          result,
-          key === propertyToRename ? nextName : key,
-          value,
-        ),
-      {} as Record<string, unknown>,
+    const updatedData = renamePropertyKey(
+      objectData,
+      propertyToRename,
+      nextName,
     );
     handleChange(path, updatedData);
     setRenamingPropertyName(null);
@@ -442,7 +331,7 @@ export const AdditionalProperties = ({
                       style={{ width: '100%' }}
                     >
                       {isolated ? (
-                        <AntdIsolatedPropertyEditor
+                        <IsolatedPropertyEditor
                           cells={cells}
                           enabled={Boolean(enabled)}
                           onChange={(next) =>

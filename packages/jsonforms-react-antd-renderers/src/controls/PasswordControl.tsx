@@ -14,7 +14,7 @@ import React from 'react';
 import { AntdPassword } from '../antd-controls/AntdPassword';
 import { InputControl } from './InputControl';
 
-export const PasswordControl = (props: ControlProps) => (
+const PasswordControl = (props: ControlProps) => (
   <InputControl {...props} input={AntdPassword} />
 );
 

@@ -1,13 +1,14 @@
-import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/detail';
-import { useContainerValidation } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+import { ArrayPanelToggle } from './ArrayPanelToggle';
+import { findDetailUISchema as findUISchema } from '@chobantonov/jsonforms-react-renderer-common/core/detailUiSchema';
+import { ItemValidationIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/ItemValidationIndicator';
 import { ContainerValidationIndicator } from '../layouts/ValidationIndicator';
-import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/groupState';
-import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/errorSummary';
+import { resolveCollapsed } from '@chobantonov/jsonforms-react-renderer-common/layout/groupState';
+import { usePathErrorIndicator } from '@chobantonov/jsonforms-react-renderer-common/validation/errorSummary';
 import {
   CollectionErrorNavigation,
   RowErrorCount,
-} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
-import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/CollectionErrorNavigation';
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import {
   Tooltip,
   TooltipProvider,
@@ -19,29 +20,29 @@ import { ScrollRegion } from '../components/ScrollRegion';
 import {
   ColumnResizeHandle,
   useColumnWidths,
-} from '@chobantonov/jsonforms-react-renderer-common/columnResize';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/columnResize';
 import {
   tableColumnFields,
   tableColumnStyle,
   TableColumnDefinition,
-} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
-import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/tableColumns';
+import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/collections/useTableSelection';
 import { Checkbox } from '@jsonforms-react-shadcn-ui/checkbox';
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
 } from '@jsonforms-react-shadcn-ui/resizable';
-import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
-import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
-import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
 import { CollectionPager } from './CollectionPager';
 import {
   RowDetailFrame,
   RowDetailToggle,
   RowDetailEditButton,
 } from './RowDetailFrame';
-import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/arrayPanelState';
+import { useArrayPanelState } from '@chobantonov/jsonforms-react-renderer-common/collections/useArrayPanelState';
 import {
   and,
   ArrayLayoutProps,
@@ -68,7 +69,7 @@ import {
 } from '@jsonforms/react';
 import React from 'react';
 import { Check, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
-import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/confirmation';
+import { shouldConfirm } from '@chobantonov/jsonforms-react-renderer-common/interaction/confirmation';
 import { DeleteDialog } from './DeleteDialog';
 import {
   Item,
@@ -353,6 +354,16 @@ export const ShadcnArrayRenderer = ({
     return `${labelValue}`;
   };
 
+  const columnStyle = (field: string) => {
+    const style = tableColumnStyle(
+      definitions?.find((column) => column.field === field),
+    );
+    const width = columnWidths[field];
+    return width === undefined
+      ? style
+      : { ...style, width, minWidth: width, maxWidth: width };
+  };
+
   return (
     <PendingChangesProvider changes={page.pending}>
       <div className='shadcn-jsonforms-array'>
@@ -409,23 +420,7 @@ export const ShadcnArrayRenderer = ({
             >
               <Plus className='h-4 w-4' aria-hidden='true' />
             </Button>
-            {panel.collapsible && (
-              <Button
-                type='button'
-                variant='ghost'
-                size='icon-sm'
-                aria-label={label || 'Array'}
-                aria-expanded={!panel.collapsed}
-                aria-controls={panel.contentId}
-                onClick={panel.toggle}
-              >
-                {panel.collapsed ? (
-                  <ChevronDown aria-hidden='true' />
-                ) : (
-                  <ChevronUp aria-hidden='true' />
-                )}
-              </Button>
-            )}
+            <ArrayPanelToggle panel={panel} label={label} />
           </div>
         </div>
         <div id={panel.contentId} hidden={panel.collapsed}>
@@ -605,20 +600,7 @@ export const ShadcnArrayRenderer = ({
                           <th
                             key={field}
                             data-column-key={field}
-                            style={{
-                              ...tableColumnStyle(
-                                definitions?.find(
-                                  (column) => column.field === field,
-                                ),
-                              ),
-                              ...(columnWidths[field] !== undefined
-                                ? {
-                                    width: columnWidths[field],
-                                    minWidth: columnWidths[field],
-                                    maxWidth: columnWidths[field],
-                                  }
-                                : {}),
-                            }}
+                            style={columnStyle(field)}
                             className='relative p-2 pe-4 text-left font-medium'
                           >
                             {definitions?.find((c) => c.field === field)
@@ -724,20 +706,7 @@ export const ShadcnArrayRenderer = ({
                           {columns.map(([field, column]) => (
                             <td
                               key={field}
-                              style={{
-                                ...tableColumnStyle(
-                                  definitions?.find(
-                                    (column) => column.field === field,
-                                  ),
-                                ),
-                                ...(columnWidths[field] !== undefined
-                                  ? {
-                                      width: columnWidths[field],
-                                      minWidth: columnWidths[field],
-                                      maxWidth: columnWidths[field],
-                                    }
-                                  : {}),
-                              }}
+                              style={columnStyle(field)}
                               className='shadcn-jsonforms-table-cell p-2'
                             >
                               <div
@@ -938,6 +907,7 @@ export const ShadcnArrayRenderer = ({
                   label={childLabel}
                   indicator={
                     <ItemValidationIndicator
+                      Indicator={ContainerValidationIndicator}
                       path={childPath}
                       options={uischema.options}
                       config={config}
@@ -1009,23 +979,3 @@ export const arrayControlTester: RankedTester = rankWith(
     schemaTypeIs('array'),
   ),
 );
-
-const ItemValidationIndicator = ({
-  path,
-  options,
-  config,
-}: {
-  path: string;
-  options?: Record<string, any>;
-  config?: Record<string, any>;
-}) => {
-  const indicator = useContainerValidation(
-    { type: 'Control', scope: '#', options } as any,
-    path,
-    config,
-    false,
-  );
-  return indicator.show ? (
-    <ContainerValidationIndicator count={indicator.count} />
-  ) : null;
-};

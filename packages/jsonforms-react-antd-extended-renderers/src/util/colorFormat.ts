@@ -1,4 +1,4 @@
-import type { ColorSaveFormat } from '@chobantonov/jsonforms-react-renderer-common/colorFormat';
+import type { ColorSaveFormat } from '@chobantonov/jsonforms-react-renderer-common/formats/colorFormat';
 export {
   COLOR_SAVE_FORMATS,
   DEFAULT_COLOR_SAVE_FORMAT,
@@ -13,11 +13,11 @@ export {
   serializeColor,
   toCssColor,
   placeholderKeyFor,
-} from '@chobantonov/jsonforms-react-renderer-common/colorFormat';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/colorFormat';
 export type {
   ColorSaveFormat,
   Rgba,
-} from '@chobantonov/jsonforms-react-renderer-common/colorFormat';
+} from '@chobantonov/jsonforms-react-renderer-common/formats/colorFormat';
 
 /**
  * Which of antd's three picker panels matches a save format.

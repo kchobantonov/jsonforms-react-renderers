@@ -1,3 +1,4 @@
+import { formatDurationComponents } from '@chobantonov/jsonforms-react-renderer-common/formats/duration';
 import { ControlProps } from '@jsonforms/core';
 import { useState } from 'react';
 import { useExtendedTranslator } from './useExtendedTranslator';
@@ -108,13 +109,7 @@ export const formatExtendedDuration = (parts: ExtendedDurationParts) => {
     ]),
   ) as ExtendedDurationParts;
   if (safe.weeks) return `P${safe.weeks}W`;
-  const date = `${safe.years ? `${safe.years}Y` : ''}${
-    safe.months ? `${safe.months}M` : ''
-  }${safe.days ? `${safe.days}D` : ''}`;
-  const time = `${safe.hours ? `${safe.hours}H` : ''}${
-    safe.minutes ? `${safe.minutes}M` : ''
-  }${safe.seconds ? `${safe.seconds}S` : ''}`;
-  return date || time ? `P${date}${time ? `T${time}` : ''}` : 'P0D';
+  return formatDurationComponents(safe);
 };
 export const useDurationControl = (props: ControlProps) => {
   const t = useExtendedTranslator();

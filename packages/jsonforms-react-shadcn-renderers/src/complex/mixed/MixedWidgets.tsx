@@ -1,3 +1,4 @@
+import type { MixedTreeProps } from '@chobantonov/jsonforms-react-renderer-common/mixed/RecursiveTreeRenderer';
 import { JsonTypeIcon } from './JsonTypeIcon';
 import React, { useState } from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
@@ -23,11 +24,10 @@ import {
 import { ChevronRight, Pencil, Trash2, Eye, EyeOff, X } from 'lucide-react';
 import {
   MixedTreeNode,
-  MixedTreePath,
   mixedPathKey,
   mixedTreeLabel,
-} from '@chobantonov/jsonforms-react-renderer-common/mixedTree';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/mixed/mixedTree';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 
 export const MixedNavigationContext = React.createContext<{
   selectPath: (path: string) => void;
@@ -131,19 +131,7 @@ export const NestedMixedNavigation = ({
   </div>
 );
 
-type TreeProps = {
-  domainTree?: boolean;
-  renderIndicator?: (node: MixedTreeNode) => React.ReactNode;
-  root: MixedTreeNode;
-  selectedPath: MixedTreePath;
-  onSelect: (node: MixedTreeNode) => void;
-  canDelete: (node: MixedTreeNode) => boolean;
-  canRename: (node: MixedTreeNode) => boolean;
-  onDelete: (node: MixedTreeNode) => void;
-  onRename: (node: MixedTreeNode, name: string) => void;
-  validateRename: (node: MixedTreeNode, name: string) => string | undefined;
-};
-export const MixedTree = (props: TreeProps) => {
+export const MixedTree = (props: MixedTreeProps) => {
   const t = useI18n();
   const [search, setSearch] = useState('');
   const [showPrimitives, setShowPrimitives] = useState(false);

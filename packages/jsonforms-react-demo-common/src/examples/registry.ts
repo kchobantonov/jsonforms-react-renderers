@@ -3,7 +3,7 @@ import {
   getExamples,
   registerExamples,
 } from '@jsonforms/examples';
-import { ExampleWithTranslations } from '../i18nCatalogs';
+import { ExampleWithTranslations } from '../locale/i18nCatalogs';
 
 /**
  * `@jsonforms/examples` keeps one flat registry keyed by `name`, and the

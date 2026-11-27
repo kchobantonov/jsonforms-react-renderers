@@ -2,34 +2,35 @@ import { DetailModal } from '../complex/DetailModal';
 import React from 'react';
 import { Splitter, Empty, Button, Tooltip } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { RowDetailState } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
-export const RowDetailFrame = ({
+import {
+  type RowDetailState,
+  createRowDetailToggle,
+  createRowDetailFrame,
+} from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
+const RowDialog = ({ state }: { state: RowDetailState }) => {
+  const { options, t } = state;
+  return (
+    <DetailModal
+      options={options.dialog}
+      open={!!state.selection}
+      title={t('collection.editDetails')}
+      onCancel={state.close}
+      onOk={state.apply}
+      okText={t('composite.apply')}
+      cancelText={t('composite.cancel')}
+      okButtonProps={{ disabled: !state.enabled || state.conflict }}
+      styles={{ body: { maxHeight: '65vh', overflow: 'auto' } }}
+    >
+      {state.conflict && <p role='alert'>{t('composite.applyConflict')}</p>}
+      {state.content}
+    </DetailModal>
+  );
+};
+const RowPanel = ({
   state,
   children,
 }: React.PropsWithChildren<{ state: RowDetailState }>) => {
-  const { options, t } = state;
-  const { panelOpen } = state;
-  if (!options) return <>{children}</>;
-  if (options.presentation === 'dialog')
-    return (
-      <>
-        {children}
-        <DetailModal
-          options={options.dialog}
-          open={!!state.selection}
-          title={t('collection.editDetails')}
-          onCancel={state.close}
-          onOk={state.apply}
-          okText={t('composite.apply')}
-          cancelText={t('composite.cancel')}
-          okButtonProps={{ disabled: !state.enabled || state.conflict }}
-          styles={{ body: { maxHeight: '65vh', overflow: 'auto' } }}
-        >
-          {state.conflict && <p role='alert'>{t('composite.applyConflict')}</p>}
-          {state.content}
-        </DetailModal>
-      </>
-    );
+  const { options, panelOpen, t } = state;
   return (
     <div>
       <Splitter
@@ -81,23 +82,18 @@ export const RowDetailFrame = ({
   );
 };
 
-export const RowDetailToggle = ({ state }: { state: RowDetailState }) => {
-  const { panelOpen, setPanelOpen, t, options } = state;
-  if (options?.presentation !== 'panel') return null;
-  const toggleLabel = t(
-    panelOpen ? 'collection.hideDetails' : 'collection.showDetails',
-  );
-  return (
-    <div style={{ display: 'inline-flex' }}>
-      <Tooltip title={toggleLabel}>
-        <Button
-          shape='circle'
-          aria-label={toggleLabel}
-          aria-expanded={panelOpen}
-          icon={panelOpen ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-          onClick={() => setPanelOpen((open) => !open)}
-        />
-      </Tooltip>
-    </div>
-  );
-};
+export const RowDetailFrame = createRowDetailFrame(RowDialog, RowPanel);
+
+export const RowDetailToggle = createRowDetailToggle((toggle) => (
+  <div style={{ display: 'inline-flex' }}>
+    <Tooltip title={toggle.label}>
+      <Button
+        shape='circle'
+        aria-label={toggle.label}
+        aria-expanded={toggle.expanded}
+        icon={toggle.expanded ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+        onClick={toggle.toggle}
+      />
+    </Tooltip>
+  </div>
+));

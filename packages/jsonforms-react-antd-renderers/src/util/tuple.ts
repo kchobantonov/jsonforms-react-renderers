@@ -9,8 +9,8 @@ export {
   tupleRenderSchema,
   isComplexTupleSchema,
   tupleFieldOwnsLabel,
-} from '@chobantonov/jsonforms-react-renderer-common/tuple';
+} from '@chobantonov/jsonforms-react-renderer-common/tuple/tupleSchema';
 export type {
   TupleSchema,
   TupleDefinition,
-} from '@chobantonov/jsonforms-react-renderer-common/tuple';
+} from '@chobantonov/jsonforms-react-renderer-common/tuple/tupleSchema';

@@ -1,13 +1,13 @@
-import { FileFeedback } from './FileFeedback';
+import { FileFeedback } from '../components/FileFeedback';
 import { File as FileIcon } from 'lucide-react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import {
   FileArrayInput,
   fileArrayTester,
   fileItemSchema,
   attachmentName,
-} from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+} from '@chobantonov/jsonforms-react-renderer-common/controls/FileArrayInput';
 import {
   ControlProps,
   JsonSchema,

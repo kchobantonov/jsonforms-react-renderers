@@ -1,4 +1,4 @@
-import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/translate';
+import { useI18n } from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
 import React from 'react';
 import { Button } from '@jsonforms-react-shadcn-ui/button';
 import {

@@ -3,4 +3,4 @@ export {
   DynamicPropertyProvider,
   useDynamicProperty,
   clearedDynamicPropertyValue,
-} from '@chobantonov/jsonforms-react-renderer-common/dynamicProperties';
+} from '@chobantonov/jsonforms-react-renderer-common/objects/dynamicProperties';

@@ -3,4 +3,4 @@ export {
   useTranslator,
   useI18n,
   useI18nDefault,
-} from '@chobantonov/jsonforms-react-renderer-common/translate';
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';

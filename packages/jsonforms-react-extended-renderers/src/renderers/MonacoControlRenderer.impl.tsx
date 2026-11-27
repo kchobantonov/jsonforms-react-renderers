@@ -8,7 +8,7 @@ import Editor from '@monaco-editor/react';
 import {
   EditorRendererComponents,
   EditorSurfaceProps,
-} from './EditorControlFrame';
+} from '../components/editorRendererTypes';
 import {
   decodeEditorValue,
   encodeEditorValue,

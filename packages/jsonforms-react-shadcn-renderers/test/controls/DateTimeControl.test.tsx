@@ -2,7 +2,7 @@ import type { ControlProps } from '@jsonforms/core';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ShadcnDateTimeControl } from '../../src/controls/DateTimeControl';
-import { renderMarkup } from '../render';
+import { renderMarkup } from '../support/render';
 
 const props = {
   data: '2026-08-29T13:45:00-04:00',

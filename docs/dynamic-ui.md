@@ -26,7 +26,7 @@ example namespace. Template layouts also expose external values as
 `context.external`.
 
 For a base-only application, `DynamicJsonForms` from
-`@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider` accepts the
+`@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider` accepts the
 same `external` and `config` props. A plain `JsonForms` can instead be wrapped
 in `DynamicUiProvider` with `config` and `external` when using the supplied
 Ant Design or shadcn registries. Custom registries can use

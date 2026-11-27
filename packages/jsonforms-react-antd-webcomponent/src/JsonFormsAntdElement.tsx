@@ -1,4 +1,8 @@
-import type { ValidationMode } from '@jsonforms/core';
+import {
+  FormElement,
+  formAttributes,
+  type FormElementState,
+} from '@chobantonov/jsonforms-react-renderer-common/webcomponent/element';
 import {
   ExtendedJsonForms,
   createAdditionalErrorStore,
@@ -12,85 +16,18 @@ import { useAntdLocale } from '@chobantonov/jsonforms-react-antd-renderers';
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { StyleProvider } from '@ant-design/cssinjs';
+import {
+  createTranslator,
+  parseBoolean,
+  parseJson,
+  parseMode,
+  type JsonInput,
+} from '@chobantonov/jsonforms-react-renderer-common/webcomponent/input';
+
+export { createTranslator, parseBoolean, parseJson, parseMode };
+export type { JsonInput };
 
 export const JSON_FORMS_ANTD_TAG = 'jsonforms-react-antd';
-
-export type JsonInput = unknown;
-
-export const parseJson = (value: JsonInput) => {
-  if (typeof value !== 'string') {
-    return value;
-  }
-  if (value.trim() === '') {
-    return undefined;
-  }
-  return JSON.parse(value);
-};
-
-export const parseBoolean = (value: JsonInput) => {
-  if (typeof value === 'boolean') {
-    return value;
-  }
-  if (typeof value === 'string') {
-    if (value === '' || value.toLowerCase() === 'true') return true;
-    if (value.toLowerCase() === 'false') return false;
-  }
-  return undefined;
-};
-
-export const parseMode = (value: JsonInput) =>
-  value === 'dark' || value === 'light' || value === 'system'
-    ? value
-    : 'system';
-
-export const createTranslator = (translations: JsonInput, locale = 'en') => {
-  if (typeof translations === 'function') return translations as any;
-  const dictionary = parseJson(translations) as any;
-  return (id: string, defaultMessage: string | undefined) => {
-    const value = dictionary?.[locale]?.[id] ?? dictionary?.[id];
-    if (typeof value === 'string') return value;
-    if (typeof value?.label === 'string') return value.label;
-    return defaultMessage ?? id;
-  };
-};
-
-type ElementState = {
-  external?: JsonInput;
-  data?: JsonInput;
-  schema?: JsonInput;
-  uischema?: JsonInput;
-  uischemas?: JsonInput;
-  config?: JsonInput;
-  readonly?: JsonInput;
-  validationMode?: ValidationMode;
-  locale?: string;
-  translations?: JsonInput;
-  additionalErrors?: JsonInput;
-  dark?: JsonInput;
-  mode?: JsonInput;
-  rtl?: JsonInput;
-  customStyle?: string;
-  rendererSettings?: JsonInput;
-};
-
-const observedAttributes = [
-  'data',
-  'schema',
-  'uischema',
-  'uischemas',
-  'config',
-  'external',
-  'readonly',
-  'validation-mode',
-  'locale',
-  'translations',
-  'additional-errors',
-  'dark',
-  'mode',
-  'rtl',
-  'custom-style',
-  'renderer-settings',
-];
 
 /**
  * `ConfigProvider`, told which language it is in.
@@ -149,9 +86,9 @@ export const setAjvLocalizers = (localizers: AjvLocalizers | undefined) => {
   ajvLocalizers = localizers;
 };
 
-export class JsonFormsAntdElement extends HTMLElement {
+export class JsonFormsAntdElement extends FormElement {
   static get observedAttributes() {
-    return observedAttributes;
+    return formAttributes;
   }
 
   private root?: Root;
@@ -195,7 +132,7 @@ export class JsonFormsAntdElement extends HTMLElement {
   private colorScheme?: MediaQueryList;
   private renderQueued = false;
   private connectionVersion = 0;
-  private state: ElementState = {
+  protected state: FormElementState = {
     validationMode: 'ValidateAndShow',
     locale: 'en',
     mode: 'system',
@@ -241,64 +178,7 @@ export class JsonFormsAntdElement extends HTMLElement {
 
   private handleColorSchemeChange = () => this.scheduleRender();
 
-  attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
-    this.setValue(name, newValue);
-  }
-
-  set data(value: JsonInput) {
-    this.setValue('data', value);
-  }
-  set schema(value: JsonInput) {
-    this.setValue('schema', value);
-  }
-  set uischema(value: JsonInput) {
-    this.setValue('uischema', value);
-  }
-  set uischemas(value: JsonInput) {
-    this.setValue('uischemas', value);
-  }
-  /** Host-owned external values; JSON attributes and object properties are supported. */
-  set external(value: JsonInput) {
-    this.setValue('external', value);
-  }
-  get external() {
-    return this.state.external;
-  }
-  set config(value: JsonInput) {
-    this.setValue('config', value);
-  }
-  set readonly(value: JsonInput) {
-    this.setValue('readonly', value);
-  }
-  set validationMode(value: ValidationMode) {
-    this.setValue('validationMode', value);
-  }
-  set locale(value: string) {
-    this.setValue('locale', value);
-  }
-  set translations(value: JsonInput) {
-    this.setValue('translations', value);
-  }
-  set additionalErrors(value: JsonInput) {
-    this.setValue('additionalErrors', value);
-  }
-  set dark(value: JsonInput) {
-    this.setValue('dark', value);
-  }
-  set mode(value: JsonInput) {
-    this.setValue('mode', value);
-  }
-  set rtl(value: JsonInput) {
-    this.setValue('rtl', value);
-  }
-  set customStyle(value: string) {
-    this.setValue('customStyle', value);
-  }
-  set rendererSettings(value: JsonInput) {
-    this.setValue('rendererSettings', value);
-  }
-
-  private setValue(name: string, value: JsonInput) {
+  protected setValue(name: string, value: JsonInput) {
     const key = name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
     this.state = {
       ...this.state,
@@ -329,9 +209,9 @@ export class JsonFormsAntdElement extends HTMLElement {
   private render() {
     if (!this.root) return;
 
-    const schema = parseJson(this.state.schema);
-    const data = parseJson(this.state.data);
-    if (schema === undefined && (data === undefined || data === null)) return;
+    const input = this.readFormInput();
+    if (!input) return;
+    const { schema, data } = input;
 
     const readonly = parseBoolean(this.state.readonly) ?? false;
     const selectedMode = parseMode(this.state.mode);

@@ -11,19 +11,14 @@ import {
   isOneOfControl,
   JsonSchema,
   optionIs,
-  OwnPropsOfControl,
   RankedTester,
   rankWith,
 } from '@jsonforms/core';
 import { Tabs } from 'antd';
 import { JsonFormsDispatch, withJsonFormsOneOfProps } from '@jsonforms/react';
-import CombinatorProperties from './CombinatorProperties';
+import { CombinatorProperties } from '@chobantonov/jsonforms-react-renderer-common/composition/CombinatorProperties';
 
-export interface OwnOneOfProps extends OwnPropsOfControl {
-  indexOfFittingSchema?: number;
-}
-
-export const OneOfTabRenderer = ({
+const OneOfTabRenderer = ({
   handleChange,
   schema,
   path,

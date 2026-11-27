@@ -38,3 +38,10 @@ for templates. `ExtendedJsonForms` is re-exported from the
 See the [React feature guide](../../docs/renderer-features.md) for supported
 behavior and the [dynamic UI guide](../../docs/dynamic-ui.md) for experimental
 `$dynamic` overlays.
+
+## Duration helpers
+
+The package root exports `parseDuration`, `formatDuration`, `EMPTY_DURATION`,
+and the `DurationParts` type from the common package. For code that only needs
+these helpers, import them from
+`@chobantonov/jsonforms-react-renderer-common/formats/duration`.

@@ -1,4 +1,4 @@
-import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controlHelp';
+import { getControlHelp } from '@chobantonov/jsonforms-react-renderer-common/controls/controlHelp';
 import { ControlFormItem, useDebouncedChange } from '../util';
 import { usePreTouchErrors } from '../util/preTouchErrors';
 import React from 'react';
@@ -28,13 +28,7 @@ export const NativeControl = (props: ControlProps) => {
     config,
   } = props;
   // See `usePreTouchErrors`; with filtering off this is `props.errors`.
-  const { errors, focused, onFocus, onBlur } = usePreTouchErrors({
-    errors: props.errors,
-    path: props.path,
-    schema: props.schema,
-    uischema: props.uischema as any,
-    config,
-  });
+  const { errors, focused, onFocus, onBlur } = usePreTouchErrors(props);
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
   const [inputValue, onChange] = useDebouncedChange(

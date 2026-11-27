@@ -1,3 +1,4 @@
+import { rendererTestAlias } from '../../vite/renderer-test-alias.mjs';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite-plus';
 
@@ -7,16 +8,8 @@ const fromPackage = (path: string) =>
 export default defineConfig({
   resolve: {
     alias: [
-      {
-        find: '@chobantonov/jsonforms-react-renderer-common',
-        replacement: fileURLToPath(
-          new URL('../jsonforms-react-renderer-common/src', import.meta.url),
-        ),
-      },
-      {
-        find: '@chobantonov/jsonforms-react-antd-renderers',
-        replacement: fromPackage('../jsonforms-react-antd-renderers/src'),
-      },
+      rendererTestAlias('jsonforms-react-renderer-common'),
+      rendererTestAlias('jsonforms-react-antd-renderers'),
       {
         /*
           Before the bare-name alias, because vite matches in order and
@@ -44,7 +37,7 @@ export default defineConfig({
     sequence: { groupOrder: 0 },
     environment: 'jsdom',
     setupFiles: [
-      './test/setup/matchMedia.ts',
+      '../jsonforms-react-extended-renderers/test/setup/matchMedia.ts',
       '../jsonforms-react-antd-renderers/test/setup/jsdomShims.ts',
     ],
     globals: true,

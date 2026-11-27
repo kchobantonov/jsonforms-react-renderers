@@ -21,8 +21,8 @@ import { X, Plus, ChevronDown, CircleAlert } from 'lucide-react';
 import {
   useI18n,
   useTranslator,
-} from '@chobantonov/jsonforms-react-renderer-common/translate';
-import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validationIndicator';
+} from '@chobantonov/jsonforms-react-renderer-common/locale/translate';
+import { displayableErrors } from '@chobantonov/jsonforms-react-renderer-common/validation/validationIndicator';
 import {
   addChoice,
   arrayChoiceItemErrors,
@@ -36,7 +36,7 @@ import {
   removeChoiceAt,
   resolveItemSchema,
   sameChoice,
-} from '@chobantonov/jsonforms-react-renderer-common/arrayChoices';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/arrayChoices';
 import { InputShell, makeId } from '../controls/InputControl';
 
 export const chipsControlTester = rankWith(

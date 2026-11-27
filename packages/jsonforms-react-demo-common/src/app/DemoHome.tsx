@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ExampleDescription } from '@jsonforms/examples';
 import type { DemoUi } from './types';
-import { DefaultDemoTypography } from '../DefaultDemoTypography';
+import { DefaultDemoTypography } from './DefaultDemoTypography';
 
 /**
  * The landing page, shown when no example is selected.

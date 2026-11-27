@@ -2,21 +2,21 @@ import { ValidationIcon } from './ValidationIcon';
 import {
   CollectionErrorNavigation,
   RowErrorCount,
-} from '@chobantonov/jsonforms-react-renderer-common/CollectionErrorNavigation';
-import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/CellSummary';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/CollectionErrorNavigation';
+import { ItemProvider } from '@chobantonov/jsonforms-react-renderer-common/cells/CellSummary';
 import {
   ColumnResizeHandle,
   useColumnWidths,
-} from '@chobantonov/jsonforms-react-renderer-common/columnResize';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/columnResize';
 import {
   tableColumnFields,
   tableColumnStyle,
   TableColumnDefinition,
-} from '@chobantonov/jsonforms-react-renderer-common/tableColumns';
-import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/tableSelection';
-import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/pendingChanges';
-import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collectionPagination';
-import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/rowDetail';
+} from '@chobantonov/jsonforms-react-renderer-common/collections/tableColumns';
+import { useTableSelection } from '@chobantonov/jsonforms-react-renderer-common/collections/useTableSelection';
+import { PendingChangesProvider } from '@chobantonov/jsonforms-react-renderer-common/interaction/pendingChanges';
+import { useCollectionPagination } from '@chobantonov/jsonforms-react-renderer-common/collections/collectionPagination';
+import { useRowDetail } from '@chobantonov/jsonforms-react-renderer-common/collections/rowDetail';
 import { RowDetailFrame, RowDetailToggle } from './RowDetailFrame';
 import { CollectionPager } from './CollectionPager';
 import ArrowDownOutlined from '@ant-design/icons/ArrowDownOutlined';

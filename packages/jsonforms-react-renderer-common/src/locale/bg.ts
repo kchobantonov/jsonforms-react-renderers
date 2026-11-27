@@ -1,4 +1,4 @@
-import type { RendererLocaleCatalog } from '../rendererLocale';
+import type { RendererLocaleCatalog } from './rendererLocale';
 
 /**
  * Bulgarian for the renderer set's own strings.

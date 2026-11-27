@@ -1,13 +1,13 @@
 import {
   dynamicRendererEntry,
   dynamicCellEntry,
-} from '@chobantonov/jsonforms-react-renderer-common/DynamicUiProvider';
+} from '@chobantonov/jsonforms-react-renderer-common/dynamic/DynamicUiProvider';
 import {
   RecursiveTreeRenderer,
   recursiveTreeTester,
 } from './complex/RecursiveTreeRenderer';
 import { ChoiceCards } from './controls/ChoiceCards';
-import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/choiceCards';
+import { choiceCardsTester } from '@chobantonov/jsonforms-react-renderer-common/composition/choiceCards';
 import { withJsonFormsCellProps, withTranslateProps } from '@jsonforms/react';
 import { AntdFile } from './antd-controls/AntdFile';
 import AntdCompositeCell, {

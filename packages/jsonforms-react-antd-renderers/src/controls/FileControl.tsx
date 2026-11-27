@@ -1,4 +1,4 @@
-import { fileArrayTester } from '@chobantonov/jsonforms-react-renderer-common/FileArrayInput';
+import { fileArrayTester } from '@chobantonov/jsonforms-react-renderer-common/controls/FileArrayInput';
 import React from 'react';
 import {
   and,
@@ -21,7 +21,7 @@ export const FileControl = (props: ControlProps & TranslateProps) => {
   return <InputControl {...props} input={AntdFile} />;
 };
 
-export const isBase64String = and(
+const isBase64String = and(
   uiTypeIs('Control'),
   isStringControl,
   schemaMatches(

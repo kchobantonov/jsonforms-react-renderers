@@ -1,25 +1,13 @@
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite-plus';
+import { packageBuild } from '../../vite/package-build.mjs';
 
-const packageJson = JSON.parse(
-  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
-);
-const packageDir = dirname(fileURLToPath(import.meta.url));
-const externalPackages = new Set([
-  ...Object.keys(packageJson.dependencies ?? {}),
-  ...Object.keys(packageJson.peerDependencies ?? {}),
-]);
-const bundledRenderers = new Set([
-  '@chobantonov/jsonforms-react-shadcn-renderers',
-  '@chobantonov/jsonforms-react-shadcn-extended-renderers',
-]);
-const isExternal = (id) =>
-  !bundledRenderers.has(id) &&
-  [...externalPackages].some(
-    (packageName) => id === packageName || id.startsWith(`${packageName}/`),
-  );
+const { packageDir, isExternal } = packageBuild(import.meta.url, {
+  excludeIds: [
+    '@chobantonov/jsonforms-react-shadcn-renderers',
+    '@chobantonov/jsonforms-react-shadcn-extended-renderers',
+  ],
+});
 
 export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
