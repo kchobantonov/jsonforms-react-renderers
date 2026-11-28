@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import type { ValidationMode } from '@jsonforms/core';
 import type { JsonFormsInitStateProps } from '@jsonforms/react';
-import type { ActionEvent } from '@chobantonov/jsonforms-react-extended-renderers';
+import type {
+  ActionEvent,
+  AdditionalErrorStore,
+} from '@chobantonov/jsonforms-react-extended-renderers';
 
 /**
  * Renders the demo through the published web component instead of React.
@@ -34,9 +37,11 @@ export const WebComponentHost = ({
   validationMode: ValidationMode;
   rendererSettings: Record<string, any>;
   onChange: (data: unknown) => void;
-  onAction: (event: ActionEvent) => void;
+  onAction: (event: ActionEvent, store: AdditionalErrorStore) => void;
 }) => {
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<
+    HTMLElement & { readonly errorStore: AdditionalErrorStore }
+  >();
 
   useEffect(() => {
     const element = ref.current as any;
@@ -75,7 +80,7 @@ export const WebComponentHost = ({
     const handleChange = (event: Event) =>
       onChange((event as CustomEvent).detail?.data);
     const handleAction = (event: Event) =>
-      onAction((event as CustomEvent).detail);
+      onAction((event as CustomEvent<ActionEvent>).detail, element.errorStore);
 
     element.addEventListener('change', handleChange);
     element.addEventListener('handle-action', handleAction);

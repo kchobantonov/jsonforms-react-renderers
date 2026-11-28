@@ -35,7 +35,10 @@ export interface DemoFormPanelProps {
   formKey: number;
   ajv: unknown;
   errorStore: AdditionalErrorStore;
-  onAction: (event: ActionEvent) => void | Promise<void>;
+  onAction: (
+    event: ActionEvent,
+    store: AdditionalErrorStore,
+  ) => void | Promise<void>;
   setData: (data: unknown) => void;
   setErrors: (errors: unknown[]) => void;
   /** A renderer family's own provider - antd's ConfigProvider, here. */
@@ -85,6 +88,7 @@ const DemoFormSurface = ({
   if (webComponentTag && useWebComponent) {
     return (
       <WebComponentHost
+        key={formKey}
         tagName={webComponentTag}
         props={jsonFormsProps}
         external={external}
@@ -117,7 +121,7 @@ const DemoFormSurface = ({
       key={formKey}
       ajv={ajv as never}
       store={errorStore}
-      onAction={onAction}
+      onAction={(event) => onAction(event, errorStore)}
       {...jsonFormsProps}
       external={external}
       onChange={({ data, errors: nextErrors }) => {

@@ -14,6 +14,7 @@ import {
   createAdditionalErrorStore,
   createAjvErrorTranslator,
   ActionEvent,
+  type AdditionalErrorStore,
 } from '@chobantonov/jsonforms-react-extended-renderers';
 import { ajvLocalizers } from '@chobantonov/jsonforms-react-extended-renderers/ajv-localizers';
 import type { JsonFormsI18nState } from '@jsonforms/core';
@@ -384,7 +385,7 @@ const App = ({
     with `{ "lang": "bg" }` and `toggleMode`.
   */
   const handleAction = useCallback(
-    async (event: ActionEvent) => {
+    async (event: ActionEvent, store: AdditionalErrorStore) => {
       if (
         applyDemoHostAction(event.action, event.params, {
           setLocale: setFormLocaleOverride,
@@ -410,14 +411,14 @@ const App = ({
       if (event.action === 'reportServer') {
         const reported = (event.params as { errors?: unknown } | undefined)
           ?.errors;
-        errorStore.publish(
+        store.publish(
           'server',
           Array.isArray(reported) ? (reported as never[]) : [],
         );
         return;
       }
       if (event.action === 'clearServer') {
-        errorStore.clear('server');
+        store.clear('server');
         return;
       }
       setErrors((oldErrors) => [
@@ -425,7 +426,7 @@ const App = ({
         { message: `Action handled: ${event.label}` },
       ]);
     },
-    [formDark, errorStore],
+    [formDark],
   );
 
   const renderForm = () => (

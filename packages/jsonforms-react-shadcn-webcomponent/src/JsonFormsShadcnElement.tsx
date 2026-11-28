@@ -52,7 +52,7 @@ export class JsonFormsShadcnElement extends FormElement {
   }
 
   private root?: Root;
-  private errorStore = createAdditionalErrorStore();
+  readonly errorStore = createAdditionalErrorStore();
   private ajv = createFormsAjv({
     i18n: () => ({
       locale: this.state.locale,

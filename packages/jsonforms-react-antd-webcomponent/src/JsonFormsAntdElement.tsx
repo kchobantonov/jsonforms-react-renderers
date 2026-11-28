@@ -126,7 +126,7 @@ export class JsonFormsAntdElement extends FormElement {
     Per element, like the validator: a store is the identity errors are
     published against, and it outlives every render of this element.
   */
-  private errorStore = createAdditionalErrorStore();
+  readonly errorStore = createAdditionalErrorStore();
   private colorScheme?: MediaQueryList;
   private renderQueued = false;
   private connectionVersion = 0;
