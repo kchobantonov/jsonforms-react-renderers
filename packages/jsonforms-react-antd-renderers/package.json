@@ -1,6 +1,6 @@
 {
   "name": "@chobantonov/jsonforms-react-antd-renderers",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Ant Design Renderer Set for JSON Forms",
   "repository": {
     "type": "git",
