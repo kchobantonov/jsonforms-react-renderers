@@ -1,6 +1,6 @@
 {
   "name": "@chobantonov/jsonforms-react-shadcn-webcomponent",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Shadcn UI JSON Forms React custom element",
   "repository": {
     "type": "git",

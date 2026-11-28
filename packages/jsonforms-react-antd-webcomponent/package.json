@@ -1,6 +1,6 @@
 {
   "name": "@chobantonov/jsonforms-react-antd-webcomponent",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Ant Design-based JSON Forms React web component",
   "repository": {
     "type": "git",
